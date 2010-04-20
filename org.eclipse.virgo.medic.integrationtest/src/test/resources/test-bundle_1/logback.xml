@@ -1,0 +1,15 @@
+<configuration>
+	<appender name="STDOUT" class="org.eclipse.virgo.medic.log.logback.ReroutingAwareConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</Pattern>
+    	</layout>
+  	</appender>
+  	
+  	<appender name="bundle1-stub" class="org.eclipse.virgo.medic.log.appender.StubAppender"/>
+  	
+  	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="bundle1-stub" />
+	</root>
+  	      	
+</configuration>

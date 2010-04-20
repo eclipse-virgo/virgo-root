@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.medic
+Bundle-Vendor: SpringSource Inc.
+Import-Template: 
+ org.aspectj.*;version="${org.aspectj:[=.=.= , +1.0.0)}",
+ javax.management.*;version="0",
+ org.osgi.framework;version="0",
+ org.slf4j.*;version="${org.slf4j:[=.=.=, =.+1.0)}"
+Bundle-Version: 1.0.0
+Bundle-Name: Medic API

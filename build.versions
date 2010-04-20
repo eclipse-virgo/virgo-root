@@ -1,0 +1,13 @@
+# Compile
+ch.qos.logback=0.9.18
+org.slf4j=1.5.10
+org.eclipse.osgi=3.5.1.R35x_v20091005
+org.apache.felix.configadmin=1.2.4
+org.aspectj=1.6.6.RELEASE
+
+# Test
+org.junit=4.7.0
+org.easymock=2.3.0
+org.eclipse.virgo.test=2.1.0.D-20100420091951
+org.eclipse.virgo.teststubs=1.0.0.D-20100420091314
+org.eclipse.virgo.util=2.1.0.D-20100420091708

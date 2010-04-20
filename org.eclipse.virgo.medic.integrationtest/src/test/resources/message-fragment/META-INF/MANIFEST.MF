@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: message.fragment
+Bundle-ManifestVersion: 2
+Fragment-Host: message.bundle
+

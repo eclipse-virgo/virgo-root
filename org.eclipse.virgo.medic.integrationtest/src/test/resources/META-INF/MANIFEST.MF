@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Excluded-Import: ch.qos.logback.classic
+Tool: Bundlor 1.0.0.M6
+Bundle-Name: Medic Logging Integration Tests
+Bundle-SymbolicName: org.eclipse.virgo.medic.log.test
+Import-Package: ch.qos.logback.classic.spi,
+ ch.qos.logback.core,
+ org.aspectj.lang;version="[1.6.6,2.0.0)",
+ org.aspectj.lang.reflect;version="[1.6.6,2.0.0)",
+ org.aspectj.runtime.internal;version="[1.6.6,2.0.0)",
+ org.aspectj.runtime.reflect;version="[1.6.6,2.0.0)",
+ org.eclipse.virgo.medic.dump;version="[1.0.1,1.0.2)",
+ org.eclipse.virgo.medic.eventlog;version="[1.0.1,1.0.2)",
+ org.eclipse.virgo.medic.log;version="[1.0.1,1.0.2)",
+ org.eclipse.virgo.medic.log.appender;version=0,
+ org.eclipse.virgo.test.framework,
+ org.junit,
+ org.junit.runner,
+ org.osgi.framework;version=0,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-Version: 1.0.0
+Bundle-ManifestVersion: 2

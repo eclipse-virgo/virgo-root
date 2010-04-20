@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.medic.log.test
+Bundle-Name: Medic Logging Integration Tests
+Bundle-Version: 1.0.0
+Import-Template: 
+ org.eclipse.virgo.medic.*;version="[1.0.1, 1.0.2)",
+ org.aspectj.*;version="${org.aspectj:[=.=.= , +1.0.0)}"
+Import-Package: 
+ org.osgi.framework;version="0",
+ org.eclipse.virgo.medic.log.appender;version="0"
+Excluded-Exports: 
+ *
+Excluded-Imports: 
+ ch.qos.logback.classic
