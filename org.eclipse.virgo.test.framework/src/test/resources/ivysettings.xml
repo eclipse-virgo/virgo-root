@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+
+	<settings defaultResolver="external-lookup" defaultLatestStrategy="latest-lexico" defaultConflictManager="all"/>
+
+	<caches resolutionCacheDir="${ivy.cache.dir}/resolution" repositoryCacheDir="${ivy.cache.dir}/repository"
+			ivyPattern="[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
+			artifactPattern="[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
+			useOrigin="true"/>
+
+
+
+	<resolvers>
+		<filesystem name="integration">
+			<ivy pattern="${integration.repo.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+			<artifact pattern="${integration.repo.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+		</filesystem>
+
+		<!-- Lookup repositories -->
+		<chain name="external-lookup" returnFirst="true">
+			<resolver ref="integration"/>
+		</chain>
+
+
+	</resolvers>
+
+</ivysettings>
