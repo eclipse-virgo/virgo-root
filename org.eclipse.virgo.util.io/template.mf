@@ -1,0 +1,7 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: IO Utility Code
+Bundle-Vendor: SpringSource Inc.
+Bundle-SymbolicName: org.eclipse.virgo.util.io
+Bundle-Version: 0
+Import-Template: 
+ org.eclipse.virgo.util.*;version="[2.1.0, 2.1.1)"

@@ -1,0 +1,267 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2010 VMware Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   VMware Inc. - initial contribution
+ *******************************************************************************/
+
+package org.eclipse.virgo.util.osgi;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Dictionary;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+
+
+/**
+ * TODO Document StubBundleContext
+ * <p />
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ *
+ * TODO Document concurrent semantics of StubBundleContext
+ *
+ */
+public class StubBundleContext implements BundleContext {
+    
+
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void addBundleListener(BundleListener arg0) {
+        //System.out.println("1");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void addFrameworkListener(FrameworkListener arg0) {
+        //System.out.println("2");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void addServiceListener(ServiceListener arg0) {
+        //System.out.println("3");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void addServiceListener(ServiceListener arg0, String arg1) throws InvalidSyntaxException {
+        //System.out.println("4");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Filter createFilter(String arg0) throws InvalidSyntaxException {
+        //System.out.println("5");
+        return new Filter(){
+
+            public boolean match(ServiceReference arg0) {
+                // TODO Auto-generated method stub
+                return true;
+            }
+
+            @SuppressWarnings("unchecked")
+            public boolean match(Dictionary arg0) {
+                // TODO Auto-generated method stub
+                return true;
+            }
+
+            @SuppressWarnings("unchecked")
+            public boolean matchCase(Dictionary arg0) {
+                // TODO Auto-generated method stub
+                return true;
+            }
+            
+        };
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public ServiceReference[] getAllServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
+        //System.out.println("6");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Bundle getBundle() {
+        //System.out.println("7");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Bundle getBundle(long arg0) {
+        //System.out.println("8");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Bundle[] getBundles() {
+        //System.out.println("9");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public File getDataFile(String arg0) {
+        //System.out.println("10");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public String getProperty(String arg0) {
+        //System.out.println("11");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Object getService(ServiceReference arg0) {
+        //System.out.println("12");
+        return new ServiceObject();
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public ServiceReference getServiceReference(String arg0) {
+        //System.out.println("13");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public ServiceReference[] getServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
+        //System.out.println("14");
+        ServiceReference[] refs = new ServiceReference[1];
+        refs[0] = new ServiceReference(){
+
+            public int compareTo(Object arg0) {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            public Bundle getBundle() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public Object getProperty(String arg0) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public String[] getPropertyKeys() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public Bundle[] getUsingBundles() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public boolean isAssignableTo(Bundle arg0, String arg1) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+            
+        };
+        return refs;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Bundle installBundle(String arg0) throws BundleException {
+        //System.out.println("15");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Bundle installBundle(String arg0, InputStream arg1) throws BundleException {
+        //System.out.println("16");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public ServiceRegistration registerService(String[] arg0, Object arg1, Dictionary arg2) {
+        //System.out.println("17");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public ServiceRegistration registerService(String arg0, Object arg1, Dictionary arg2) {
+        //System.out.println("18");
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void removeBundleListener(BundleListener arg0) {
+        //System.out.println("19");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void removeFrameworkListener(FrameworkListener arg0) {
+        //System.out.println("20");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public void removeServiceListener(ServiceListener arg0) {
+        //System.out.println("21");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public boolean ungetService(ServiceReference arg0) {
+        //System.out.println("22");
+        return true;
+    }
+
+}
