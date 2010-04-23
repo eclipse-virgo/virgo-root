@@ -25,7 +25,7 @@ import org.osgi.framework.BundleContext;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
 
-
+public class DmKernelTestRunnerTests {
 
  private DmKernelTestRunner testRunner;
 
