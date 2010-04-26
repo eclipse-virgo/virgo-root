@@ -15,6 +15,6 @@
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
 
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, clover"
-		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
+		description="Performs a CI server-like build, should be run prior to performing a git push"/>
 
 </project>
