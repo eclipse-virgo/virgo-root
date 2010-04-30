@@ -52,7 +52,7 @@ public final class HeapDumpContributor implements DumpContributor {
             } else {
                 PrintWriter writer = null;
                 try {
-                    writer = new PrintWriter(dump.createFileWriter("heap.out"));
+                    writer = new PrintWriter(dump.createFileWriter("heap.err"));
                     writer.println("Diagnostic MXBean is not available. Heap dump cannot be generated.");
                 } finally {
                     if (writer != null) {
