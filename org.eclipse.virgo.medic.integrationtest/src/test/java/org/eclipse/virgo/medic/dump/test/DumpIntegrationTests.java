@@ -35,6 +35,8 @@ import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.test.framework.OsgiTestRunner;
 import org.eclipse.virgo.test.framework.TestFrameworkUtils;
 
+// Medic integration tests do not run in the Eclipse IDE.
+
 @RunWith(OsgiTestRunner.class)
 public class DumpIntegrationTests {
 	
@@ -87,7 +89,11 @@ public class DumpIntegrationTests {
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
-		assertDumpContributionsMade(file.listFiles()[0], "heap.out", "summary.txt", "thread.txt");
+
+        assertDumpContributionsNumberOf(file.listFiles()[0], 3);               
+        assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
+        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
+
 		
 		properties.put("dump.root.directory", "target/dumps/2");
 		configuration.update(properties);
@@ -100,7 +106,11 @@ public class DumpIntegrationTests {
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
-		assertDumpContributionsMade(file.listFiles()[0], "heap.out", "summary.txt", "thread.txt");
+
+		assertDumpContributionsNumberOf(file.listFiles()[0], 3);               
+		assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
+		assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
+
 	}
 	
 	@Test
@@ -125,7 +135,10 @@ public class DumpIntegrationTests {
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
-		assertDumpContributionsMade(file.listFiles()[0], "summary.txt", "thread.txt");				
+
+		assertDumpContributionsNumberOf(file.listFiles()[0], 2);               
+		assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
+
 	}
 	
 	@Test
@@ -151,7 +164,10 @@ public class DumpIntegrationTests {
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
-		assertDumpContributionsMade(file.listFiles()[0], "heap.out", "summary.txt", "thread.txt", "log.log");				
+
+		assertDumpContributionsNumberOf(file.listFiles()[0], 4);               
+        assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt", "log.log");               
+        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt", "log.log");               
 	}
 	
 	private Configuration getConfiguration(String pid) throws IOException {
@@ -168,13 +184,25 @@ public class DumpIntegrationTests {
 		return (ConfigurationAdmin) this.bundleContext.getService(serviceReference);
 	}
 	
-	private static void assertDumpContributionsMade(File dumpDirectory, String... contributions) {
-		assertTrue(dumpDirectory.exists());
-		File[] files = dumpDirectory.listFiles();
-		assertEquals("Found '" + Arrays.toString(files) + "' but expected '" + Arrays.toString(contributions) + "'", contributions.length, files.length);
-		List<String> contributionsList = Arrays.asList(contributions);
-		for (File file : files) {
-			assertTrue("The file " + file.getName() + " was not expected", contributionsList.contains(file.getName()));
-		}
-	}
+    private static void assertDumpContributionsNumberOf(File dumpDirectory, int numberAllowed) {
+        assertTrue("No dump directory found or not a directory.", dumpDirectory.exists() && dumpDirectory.isDirectory());
+        File[] files = dumpDirectory.listFiles();
+        assertEquals("Found '" + Arrays.toString(files) + " which is not the right number of files.", numberAllowed, files.length);
+    }
+
+    private static void assertDumpContributionsEssential(File dumpDirectory, String... contributions) {
+        assertTrue("No dump directory found or not a directory.", dumpDirectory.exists() && dumpDirectory.isDirectory());
+        List<String> dumpDirectoryList = Arrays.asList(dumpDirectory.list());
+        for (String fileName : contributions) {
+            assertTrue("The file " + fileName + " was not contributed", dumpDirectoryList.contains(fileName));
+        }
+    }
+
+    private static void assertDumpContributionsAllowable(File dumpDirectory, String... contributions) {
+        assertTrue("No dump directory found or not a directory.", dumpDirectory.exists() && dumpDirectory.isDirectory());
+        List<String> contributionsList = Arrays.asList(contributions);
+        for (String fileName : dumpDirectory.list()) {
+            assertTrue("The file " + fileName + " was not expected", contributionsList.contains(fileName));
+        }
+    }
 }

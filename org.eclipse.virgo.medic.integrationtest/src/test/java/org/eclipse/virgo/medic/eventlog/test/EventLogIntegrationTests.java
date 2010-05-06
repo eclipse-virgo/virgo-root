@@ -35,6 +35,8 @@ import org.eclipse.virgo.medic.log.appender.StubAppender;
 import org.eclipse.virgo.test.framework.OsgiTestRunner;
 import org.eclipse.virgo.test.framework.TestFrameworkUtils;
 
+//Medic integration tests do not run in the Eclipse IDE.
+
 @RunWith(OsgiTestRunner.class)
 public class EventLogIntegrationTests {
 	
