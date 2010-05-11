@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel OSGi integration
+Bundle-SymbolicName: org.eclipse.virgo.kernel.osgi
+Bundle-Version: 2.1.0
+Excluded-Exports: 
+ *.internal.*
+Excluded-Imports: 
+ org.eclipse.virgo.kernel.services.repository.internal.*,
+ org.eclipse.virgo.osgi.extensions.*,
+ org.eclipse.virgo.osgi.launcher.*,
+ org.eclipse.virgo.repository.internal
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
+ org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, =.+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
+ org.aspectj.*;version="${org.aspectj:[=.=.=.=, +1)}",
+ org.eclipse.osgi.*;version="0",
+ org.osgi.framework.*;version="0",
+ org.osgi.service.*;version="0",
+ org.slf4j.*;version="${org.slf4j:[=.=.=, +1)}",
+ org.springframework.*;version="${org.springframework:[2.5.6, =.+1)}"

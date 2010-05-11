@@ -1,0 +1,10 @@
+# Summary
+Management and examination of PAR artifacts
+# Detail
+par list                       - List all PAR artifacts that are currently
+                                 installed
+par examine   <name> <version> - Examine a PAR artifact
+par start     <name> <version> - Start a PAR artifact
+par stop      <name> <version> - Stop a PAR artifact
+par refresh   <name> <version> - Refresh a PAR artifact
+par uninstall <name> <version> - Uninstall a PAR artifact

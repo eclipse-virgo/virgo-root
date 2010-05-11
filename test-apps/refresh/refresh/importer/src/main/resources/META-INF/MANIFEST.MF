@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Name: RefreshImporter
+Created-By: 1.5.0_13 (Apple Computer, Inc.)
+Import-Package: org.osgi.framework,
+ org.eclipse.virgo.kernel.osgi.framework,
+ org.eclipse.virgo.kernel.deployer.test,
+ refresh.exporter.b1,
+ refresh.exporter.b2;resolution:=optional
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: RefreshImporter
+Bundle-Version: 1.0.0
+

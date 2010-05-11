@@ -1,0 +1,5 @@
+Library-SymbolicName: org.springframework
+Library-Name: Spring framework
+Library-Description: description
+Library-Version: 2.5.1
+Import-Bundle: org.springframework.bundle.spring.core;version=2.5.1,org.springframework.bundle.spring.beans;version=2.5.1

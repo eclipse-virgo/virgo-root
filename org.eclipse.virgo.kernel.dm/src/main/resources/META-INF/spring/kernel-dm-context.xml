@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+	    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="serviceProxyInspector" class="org.eclipse.virgo.kernel.dm.internal.StandardServiceProxyInspector"/>
+
+	<osgi:service ref="serviceProxyInspector" interface="org.eclipse.virgo.kernel.module.ServiceProxyInspector">
+		<osgi:service-properties>
+			<entry key="com.springsource.service.scope" value="global"/>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="bundleDelegatingClassLoaderFactory" class="org.eclipse.virgo.kernel.dm.internal.StandardBundleDelegatingClassLoaderFactory"/>
+
+	<osgi:service ref="bundleDelegatingClassLoaderFactory" interface="org.eclipse.virgo.kernel.module.BundleDelegatingClassLoaderFactory">
+		<osgi:service-properties>
+			<entry key="com.springsource.service.scope" value="global"/>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:reference id="tracingService" interface="org.eclipse.virgo.kernel.shim.serviceability.TracingService"/>
+	
+	<osgi:reference id="eventLogger" interface="org.eclipse.virgo.medic.eventlog.EventLogger"/>
+</beans>

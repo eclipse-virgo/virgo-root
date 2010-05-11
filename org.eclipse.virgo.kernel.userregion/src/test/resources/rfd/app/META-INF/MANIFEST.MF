@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: rfd.app
+Bundle-Version: 1.0
+Export-Package: rfd.app
+Import-Package: rfd.hibernate;version="2.0",rfd.spring.orm

@@ -1,0 +1,196 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2010 VMware Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   VMware Inc. - initial contribution
+ *******************************************************************************/
+
+package org.eclipse.virgo.kernel.userregion.internal.equinox;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileReader;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import org.eclipse.osgi.launch.Equinox;
+import org.eclipse.osgi.service.resolver.PlatformAdmin;
+import org.junit.After;
+import org.junit.Before;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.packageadmin.ExportedPackage;
+import org.osgi.service.packageadmin.PackageAdmin;
+
+import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
+import org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean;
+import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
+import org.eclipse.virgo.kernel.userregion.internal.equinox.KernelClassLoaderCreator;
+import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
+import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
+import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
+
+import org.eclipse.virgo.osgi.extensions.equinox.EquinoxLauncherConfiguration;
+import org.eclipse.virgo.osgi.extensions.equinox.ExtendedEquinoxLauncher;
+import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
+import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
+import org.eclipse.virgo.medic.dump.DumpGenerator;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
+import org.eclipse.virgo.repository.ArtifactBridge;
+import org.eclipse.virgo.repository.Repository;
+import org.eclipse.virgo.repository.RepositoryFactory;
+import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
+import org.eclipse.virgo.util.io.FileSystemUtils;
+
+public abstract class AbstractOsgiFrameworkLaunchingTests {
+
+    protected EquinoxOsgiFramework framework;
+
+    protected PlatformAdmin platformAdmin;
+
+    protected Repository repository;
+
+    private RepositoryBundleActivator repositoryBundleActivator;
+
+    private BundleContext bundleContext;
+
+    private ServiceRegistration repositoryRegistration;
+
+    private ServiceRegistration eventLoggerRegistration;
+
+    private ServiceRegistration dumpGeneratorRegistration;
+
+    private Equinox equinox;
+
+    protected QuasiFramework quasiFramework;
+
+    @Before
+    public void setUp() throws Exception {
+
+        final File workDir = new File("target/work");
+
+        if (workDir.exists()) {
+            assertTrue(FileSystemUtils.deleteRecursively(new File("target/work")));
+        }
+
+        // Uncomment this line to enable Equinox debugging
+        // FrameworkProperties.setProperty("osgi.debug", "src/test/resources/debug.options");
+        EquinoxLauncherConfiguration launcherConfiguration = new EquinoxLauncherConfiguration();
+        launcherConfiguration.setClean(true);
+        URI targetURI = new File("./target").toURI();
+        launcherConfiguration.setConfigPath(targetURI);
+        launcherConfiguration.setInstallPath(targetURI);
+
+        equinox = ExtendedEquinoxLauncher.launch(launcherConfiguration);
+
+        this.bundleContext = equinox.getBundleContext();
+
+        DumpGenerator dumpGenerator = new DumpGenerator() {
+
+            public void generateDump(String cause, Throwable... throwables) {
+            }
+
+            public void generateDump(String cause, Map<String, Object> context, Throwable... throwables) {
+            }
+
+        };
+
+        final EventLogger mockEventLogger = new MockEventLogger();
+
+        eventLoggerRegistration = bundleContext.registerService(EventLogger.class.getName(), mockEventLogger, null);
+        dumpGeneratorRegistration = bundleContext.registerService(DumpGenerator.class.getName(), dumpGenerator, null);
+
+        this.repositoryBundleActivator = new RepositoryBundleActivator();
+        this.repositoryBundleActivator.start(bundleContext);
+
+        ServiceReference serviceReference = bundleContext.getServiceReference(RepositoryFactory.class.getName());
+        RepositoryFactory repositoryFactory = (RepositoryFactory) bundleContext.getService(serviceReference);
+
+        Properties repositoryProperties = new Properties();
+        repositoryProperties.load(new FileReader(new File(getRepositoryConfigDirectory(), "repository.properties")));
+
+        Set<ArtifactBridge> artifactBridges = new HashSet<ArtifactBridge>();
+        artifactBridges.add(new BundleBridge(new StubHashGenerator()));
+        artifactBridges.add(new LibraryBridge(new StubHashGenerator()));
+
+        RepositoryFactoryBean bean = new RepositoryFactoryBean(repositoryProperties, mockEventLogger, repositoryFactory, new File("target/work"),
+            artifactBridges, null);
+        repository = bean.getObject();
+
+        repositoryRegistration = bundleContext.registerService(Repository.class.getName(), repository, null);
+
+        serviceReference = bundleContext.getServiceReference(PlatformAdmin.class.getName());
+        this.platformAdmin = (PlatformAdmin) bundleContext.getService(serviceReference);
+
+        serviceReference = bundleContext.getServiceReference(PackageAdmin.class.getName());
+        PackageAdmin packageAdmin = (PackageAdmin) bundleContext.getService(serviceReference);
+
+        ImportExpander importExpander = createImportExpander(packageAdmin);
+        TransformedManifestProvidingBundleFileWrapper bundleFileWrapper = new TransformedManifestProvidingBundleFileWrapper(importExpander);
+        this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), packageAdmin, bundleFileWrapper);
+
+        PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
+        StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
+        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper).create();
+    }
+
+    private ImportExpander createImportExpander(PackageAdmin packageAdmin) {
+        Set<String> packagesExportedBySystemBundle = new HashSet<String>(30);
+        ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(bundleContext.getBundle(0));
+
+        for (ExportedPackage exportedPackage : exportedPackages) {
+            packagesExportedBySystemBundle.add(exportedPackage.getName());
+        }
+
+        return new ImportExpansionHandler(repository, bundleContext, packagesExportedBySystemBundle, new MockEventLogger());
+    }
+
+    @After
+    public void stop() throws Exception {
+
+        if (this.repositoryRegistration != null) {
+            this.repositoryRegistration.unregister();
+            this.repositoryRegistration = null;
+        }
+
+        if (this.dumpGeneratorRegistration != null) {
+            this.dumpGeneratorRegistration.unregister();
+            this.dumpGeneratorRegistration = null;
+        }
+
+        if (this.eventLoggerRegistration != null) {
+            this.eventLoggerRegistration.unregister();
+            this.eventLoggerRegistration = null;
+        }
+
+        if (this.repositoryBundleActivator != null) {
+            this.repositoryBundleActivator.stop(this.bundleContext);
+            this.repositoryBundleActivator = null;
+        }
+
+        if (this.framework != null) {
+            this.framework.stop();
+            this.framework = null;
+        }
+
+        if (this.equinox != null) {
+            this.equinox.stop();
+            this.equinox.waitForStop(30000);
+        }
+    }
+
+    protected abstract String getRepositoryConfigDirectory();
+}

@@ -1,0 +1,2 @@
+Bundle-SymbolicName: org.eclipse.virgo.server.invalid
+Import-Package: org.springframework.core

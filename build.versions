@@ -1,0 +1,36 @@
+# Compile
+net.sourceforge.jline=0.9.94.S2-A
+org.apache.felix.eventadmin=1.0.0
+org.apache.felix=1.2.4
+org.apache.mina=2.0.0.RC1
+org.apache.sshd=0.3.0
+org.aspectj=1.6.6.RELEASE
+org.eclipse.osgi=3.5.1.R35x_v20091005
+org.eclipse.virgo.medic=1.0.1.D-20100420092100
+org.eclipse.virgo.osgi=2.1.0.D-20100420091535
+org.eclipse.virgo.repository=2.1.0.D-20100426135454
+org.eclipse.virgo.util=2.1.0.D-20100420091708
+org.slf4j=1.5.10
+org.springframework.osgi=1.2.1
+org.springframework=3.0.0.RELEASE
+org.tanukisoftware.wrapper=3.2.3
+
+# Test
+org.springframework.old=2.5.6.SEC01
+javax.servlet=2.5.0
+commons.dbcp=1.2.2.osgi
+commons.pool=1.3.0
+org.aopalliance=1.0.0
+com.mchange.c3p0=0.9.1.2
+com.opensymphony.quartz=1.6.0
+com.oracle.toplink.essentials=2.0.0.b41-beta2
+javax.el=1.0.0
+javax.jms=1.1.0
+javax.portlet=2.0.0
+javax.servlet=2.5.0
+javax.transaction=1.1.0
+org.easymock=2.3.0
+org.eclipse.virgo.test=2.1.0.D-20100420091951
+org.eclipse.virgo.teststubs=1.0.0.D-20100420091314
+org.hsqldb=1.8.0.9
+org.junit=4.7.0

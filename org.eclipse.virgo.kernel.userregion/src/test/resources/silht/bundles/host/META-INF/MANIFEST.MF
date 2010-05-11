@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.foo.host
+Bundle-Version: 1.2
+Export-Package: com.foo.host;version="1.0",com.foo.host.a;version="1.0",com.foo.host.b;version="1.0"

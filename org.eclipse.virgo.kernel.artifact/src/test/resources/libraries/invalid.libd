@@ -1,0 +1,3 @@
+Manifest-Version: 1
+Library-Version: 1.2
+Import-Bundle: a,b,c

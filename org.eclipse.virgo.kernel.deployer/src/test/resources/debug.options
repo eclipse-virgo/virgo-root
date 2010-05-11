@@ -1,0 +1,4 @@
+org.eclipse.osgi/resolver/debug=true
+org.eclipse.osgi/resolver/wiring=true
+org.eclipse.osgi/resolver/imports=true
+org.eclipse.osgi/eclipseadaptor/debug/platformadmin/resolver=true

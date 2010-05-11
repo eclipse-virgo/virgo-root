@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: install.uses.spring
+Export-Package: uses.spring;version="2.5.5";uses:="uses.hibernate"
+Import-Package: uses.hibernate;version="[3.2.5, 3.2.5]"

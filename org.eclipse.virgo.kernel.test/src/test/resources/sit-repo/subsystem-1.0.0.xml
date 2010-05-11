@@ -1,0 +1,4 @@
+<subsystem name="subsystem.installation.test" description="subsystem installation test subsystem">
+        <bundle symbolic-name="sit.one" version="[1.0,1.0]"/>
+        <bundle symbolic-name="sit.two" version="[1.0,3.0)"/>
+</subsystem>

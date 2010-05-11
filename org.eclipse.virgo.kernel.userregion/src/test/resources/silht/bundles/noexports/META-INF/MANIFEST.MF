@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: silht.bundles.noexports
+Bundle-ManifestVersion: 2
+Bundle-Name: Bundle with no exports
+Bundle-Version: 1.0

@@ -1,0 +1,4 @@
+<subsystem name="unit.test.subsystem" description="Unit test subsystem descriptor">
+        <bundle symbolic-name="bundle1"/>
+        <bundle symbolic-name="bundle2"/>
+</subsystem>

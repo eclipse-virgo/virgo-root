@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: install.eight
+Export-Package: install.eight
+Import-Package: install.six, install.seven

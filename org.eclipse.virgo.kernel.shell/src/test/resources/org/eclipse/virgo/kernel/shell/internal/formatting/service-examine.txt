@@ -1,0 +1,8 @@
+Properties:
+    propertyName1:
+        This is a string array...., Second string
+
+Publisher: fake.test.bundle 1.2.3.test [2]
+
+Consumer(s):
+    None

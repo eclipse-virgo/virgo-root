@@ -1,0 +1,10 @@
+# Summary
+Management and examination of plan artifacts
+# Detail
+plan list                       - List all plan artifacts that are currently
+                                  installed
+plan examine   <name> <version> - Examine a plan artifact
+plan start     <name> <version> - Start a plan artifact
+plan stop      <name> <version> - Stop a plan artifact
+plan refresh   <name> <version> - Refresh a plan artifact
+plan uninstall <name> <version> - Uninstall a plan artifact

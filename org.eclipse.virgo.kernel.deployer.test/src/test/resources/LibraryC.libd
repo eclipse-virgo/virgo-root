@@ -1,0 +1,2 @@
+Library-SymbolicName: LibraryC
+Import-Bundle: ExporterC;import-scope:=application

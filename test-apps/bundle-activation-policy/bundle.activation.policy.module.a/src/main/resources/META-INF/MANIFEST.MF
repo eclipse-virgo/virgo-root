@@ -1,0 +1,5 @@
+Bundle-SymbolicName: bundle.activation.policy.module.a
+Bundle-Version: 1.0
+Bundle-ManifestVersion: 2
+Import-Package: b
+Export-Package: a

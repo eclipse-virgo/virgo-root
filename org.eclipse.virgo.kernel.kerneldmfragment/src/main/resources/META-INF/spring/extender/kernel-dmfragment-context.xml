@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	
+	<bean id="taskExecutor" class="org.eclipse.virgo.kernel.agent.dm.ContextPropagatingTaskExecutor">
+		<constructor-arg value="kernel-dm-" />
+		<constructor-arg value="15" />		
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+	
+	<alias alias="shutdownTaskExecutor" name="taskExecutor"/>
+	
+</beans>

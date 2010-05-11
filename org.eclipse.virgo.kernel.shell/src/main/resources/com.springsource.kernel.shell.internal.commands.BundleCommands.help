@@ -1,0 +1,19 @@
+# Summary
+Management and examination of bundle artifacts
+# Detail
+bundle list                            - List all bundle artifacts that are
+                                         currently installed
+bundle examine   [ id | name version ] - Examine a bundle artifact
+bundle start     [ id | name version ] - Start a bundle artifact. Starting this
+                                         artifact starts it in the OSGi
+                                         framework.
+bundle stop      [ id | name version ] - Stop a bundle artifact. Stopping this
+                                         artifact stops it in the OSGi
+                                         framework.
+bundle refresh   [ id | name version ] - Refresh a bundle artifact. Refreshing
+                                         this artifact updates its contents in
+                                         the OSGi framework.
+bundle uninstall [ id | name version ] - Uninstall a bundle artifact
+bundle diag      [ id | name version ] - Provide diagnostics for a bundle
+                                         artifact
+bundle headers   [ id | name version ] - Show the headers for a bundle artifact

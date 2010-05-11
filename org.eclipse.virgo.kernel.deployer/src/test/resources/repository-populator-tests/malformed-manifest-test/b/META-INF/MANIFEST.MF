@@ -1,0 +1,3 @@
+Bundle-SymbolicName: b
+Export-Package: com.foo.b;@$%,,
+Bundle-ManifestVersion: 2

@@ -1,0 +1,2 @@
+Name                      Version                                          State
+com.springsource.testName 0.0.0                                           ACTIVE

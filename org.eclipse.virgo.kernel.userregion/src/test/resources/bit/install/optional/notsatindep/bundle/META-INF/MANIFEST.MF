@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: install.optional.dep.bundle
+Import-Package: pqr;resolution:=optional
+

@@ -1,0 +1,4 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: TestImportP1P2ViaLibraries
+Import-Library: LibraryImportingP1,LibraryImportingP2
+

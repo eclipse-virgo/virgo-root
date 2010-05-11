@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="clashing.exports.in.a.scope">
+
+	<path id="bundles">
+		<pathelement location="../c1"/>
+		<pathelement location="../c2"/>
+	</path>
+
+	<property file="${basedir}/../build.properties"/>
+
+	<import file="${basedir}/../../../../spring-build/par/default.xml"/>
+
+</project>

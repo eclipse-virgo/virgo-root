@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hotel Booking Service Implementation
+Bundle-SymbolicName: org.springframework.booking.internal
+Import-Package: org.springframework.booking.domain,
+ org.springframework.booking.service,
+Export-Package: org.springframework.booking.internal
+Import-Library: javax_persistence;version="1.0.0",
+ org.springframework_spring;version="2.5.3",
+ org_hibernate;version="3.2.6.ga" 
+ 

@@ -1,0 +1,2 @@
+Import-Library: org.springframework_spring;version="[2.5.3,2.5.3]"
+Require-Bundle: com.foo

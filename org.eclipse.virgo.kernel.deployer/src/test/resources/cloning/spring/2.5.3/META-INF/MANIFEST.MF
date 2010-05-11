@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.springframework.clone
+Bundle-Version: 2.5.3
+Export-Package: org.springframework.orm.hibernate;version="2.5.3";uses:="org.hibernate"
+Import-Package: org.hibernate

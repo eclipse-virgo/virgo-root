@@ -1,0 +1,5 @@
+# Summary
+Examination of services
+# Detail
+service list         - List all services in the service registry
+service examine <id> - Examine a specific service

@@ -1,0 +1,7 @@
+State:  ACTIVE
+Scoped: false
+Atomic: false
+
+Children:
+    test com.springsource.test2 0.0.0
+    test com.springsource.test3 0.0.0

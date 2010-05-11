@@ -1,0 +1,3 @@
+Library-SymbolicName: com.foo
+Library-Version: 1.0
+Import-Bundle: com.foo.host, com.foo.fragment.one, com.foo.fragment.two

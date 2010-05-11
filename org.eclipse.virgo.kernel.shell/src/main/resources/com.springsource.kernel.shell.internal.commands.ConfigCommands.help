@@ -1,0 +1,18 @@
+# Summary
+Management and examination of configuration artifacts
+# Detail
+config list                       - List all configuration artifacts that are
+                                    currently installed
+config examine   <name> [version] - Examine a configuration artifact. A
+                                    configuration artifact must be active to
+                                    examine it.
+config start     <name> [version] - Start a configuration artifact. Starting
+                                    this artifact makes it visible to
+                                    ConfigurationAdmin.
+config stop      <name> [version] - Stop a configuration artifact. Stopping this
+                                    artifact makes it invisible to
+                                    ConfigurationAdmin.
+config refresh   <name> [version] - Refresh a configuration artifact. Refreshing
+                                    this artifact updates its contents in
+                                    ConfigurationAdmin.
+config uninstall <name> [version] - Uninstall a configuration artifact

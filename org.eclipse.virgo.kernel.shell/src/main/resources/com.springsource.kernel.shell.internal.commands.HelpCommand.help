@@ -1,0 +1,5 @@
+# Summary
+Get help on commands
+# Detail
+help           - List all the commands with summary help
+help <command> - List the detailed help for <command>

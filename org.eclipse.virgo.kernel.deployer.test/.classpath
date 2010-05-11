@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="false"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/com.mchange.c3p0/com.springsource.com.mchange.v2.c3p0/0.9.1.2/com.springsource.com.mchange.v2.c3p0-0.9.1.2.jar" sourcepath="/KERNEL_IVY_CACHE/com.mchange.c3p0/com.springsource.com.mchange.v2.c3p0/0.9.1.2/com.springsource.com.mchange.v2.c3p0-sources-0.9.1.2.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/com.oracle.toplink.essentials/com.springsource.oracle.toplink.essentials/2.0.0.b41-beta2/com.springsource.oracle.toplink.essentials-2.0.0.b41-beta2.jar" sourcepath="/KERNEL_IVY_CACHE/com.oracle.toplink.essentials/com.springsource.oracle.toplink.essentials/2.0.0.b41-beta2/com.springsource.oracle.toplink.essentials-sources-2.0.0.b41-beta2.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.weaver/1.6.6.RELEASE/com.springsource.org.aspectj.weaver-1.6.6.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.weaver/1.6.6.RELEASE/com.springsource.org.aspectj.weaver-sources-1.6.6.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.hsqldb/com.springsource.org.hsqldb/1.8.0.9/com.springsource.org.hsqldb-1.8.0.9.jar" sourcepath="/KERNEL_IVY_CACHE/org.hsqldb/com.springsource.org.hsqldb/1.8.0.9/com.springsource.org.hsqldb-sources-1.8.0.9.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.context/3.0.0.RELEASE/org.springframework.context-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.context/3.0.0.RELEASE/org.springframework.context-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.0.RELEASE/org.springframework.core-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.0.RELEASE/org.springframework.core-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.orm/3.0.0.RELEASE/org.springframework.orm-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.orm/3.0.0.RELEASE/org.springframework.orm-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.transaction/3.0.0.RELEASE/org.springframework.transaction-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.transaction/3.0.0.RELEASE/org.springframework.transaction-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.core/1.2.1/org.springframework.osgi.core-1.2.1.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.core/1.2.1/org.springframework.osgi.core-sources-1.2.1.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/2.1.0.D-20100420091708/org.eclipse.virgo.util.io-2.1.0.D-20100420091708.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/2.1.0.D-20100420091708/org.eclipse.virgo.util.io-sources-2.1.0.D-20100420091708.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/2.1.0.D-20100420091708/org.eclipse.virgo.util.math-2.1.0.D-20100420091708.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/2.1.0.D-20100420091708/org.eclipse.virgo.util.math-sources-2.1.0.D-20100420091708.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-3.5.1.R35x_v20091005.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-sources-3.5.1.R35x_v20091005.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/javax.transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.repository/org.eclipse.virgo.repository/2.1.0.D-20100426135454/org.eclipse.virgo.repository-2.1.0.D-20100426135454.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.repository/org.eclipse.virgo.repository/2.1.0.D-20100426135454/org.eclipse.virgo.repository-sources-2.1.0.D-20100426135454.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100420091708/org.eclipse.virgo.util.common-2.1.0.D-20100420091708.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100420091708/org.eclipse.virgo.util.common-sources-2.1.0.D-20100420091708.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.configadmin/1.2.4/org.apache.felix.configadmin-1.2.4.jar" sourcepath="/KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.configadmin/1.2.4/org.apache.felix.configadmin-sources-1.2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.osgi/org.osgi.compendium/4.1.0/org.osgi.compendium-4.1.0.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.1.0.D-20100420091535/org.eclipse.virgo.osgi.launcher-2.1.0.D-20100420091535.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.0.0.D-20090913205430/org.eclipse.virgo.osgi.launcher-sources-2.0.0.D-20090913205430.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.framework/2.1.0.D-20100420091951/org.eclipse.virgo.test.framework-2.1.0.D-20100420091951.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.framework/2.1.0.D-20100420091951/org.eclipse.virgo.test.framework-sources-2.1.0.D-20100420091951.jar"/>
+	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.model"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.dm"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

@@ -1,0 +1,2 @@
+Require-Bundle: org.springframework.core;version="[2.5.4, 2.6.0)"
+Import-Package: org.springframework.core;version="2.5.4"

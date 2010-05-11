@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: install.x
+Bundle-Version: 1.4.6
+

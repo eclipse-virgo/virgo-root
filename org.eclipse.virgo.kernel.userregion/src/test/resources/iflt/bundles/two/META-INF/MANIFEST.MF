@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: bundle.two
+Export-Package: bundle.two
+Import-Package: bundle.three

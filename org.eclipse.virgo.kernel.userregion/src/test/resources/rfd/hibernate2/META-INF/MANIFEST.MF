@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: rfd.hibernate
+Bundle-Version: 2.0
+Export-Package: rfd.hibernate;version="2.0"
+

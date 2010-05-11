@@ -1,0 +1,3 @@
+Bundle-SymbolicName: service.scoping.one
+Bundle-ManifestVersion: 2
+Bundle-Version: 1
