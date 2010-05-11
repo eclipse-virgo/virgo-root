@@ -114,9 +114,8 @@ public final class FileSystemChecker {
      */
     public void check() {
         synchronized (this.checkLock) {
-
-            File[] currentFiles = listCurrentDirFiles();
             try {
+                File[] currentFiles = listCurrentDirFiles();
                 Set<String> currentFileKeys = new HashSet<String>(currentFiles.length);
                 for (File file : currentFiles) {
                     // remember seen files to allow comparison for delete
@@ -147,7 +146,6 @@ public final class FileSystemChecker {
                         monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.MODIFIED));
                         setKnownFileState(file);
                     }
-
                 }
 
                 Set<String> deletedFiles = Sets.difference(this.fileState.keySet(), currentFileKeys);
@@ -164,8 +162,10 @@ public final class FileSystemChecker {
                     this.fileState.remove(deletedFile);
                     this.monitorRecords.remove(deletedFile);
                 }
-            } catch (Exception e) {
-                // TODO Exception handling? Swallow and carry on?
+            } catch (Exception _) {
+                // FatalIOException can arise from listCurrentDirFiles() which means that we cannot determine the list.
+                // In this case we have already retried the list, and we can ignore this check().   
+                // The check() then becomes a no-op which is better than assuming the directory is empty.
             }
         }
     }
@@ -184,8 +184,7 @@ public final class FileSystemChecker {
      * Initialises known files (<code>fileState</code>) from the check directory and starts monitoring them.
      */
     private void populateInitialState() {
-        File[] files = listCurrentDirFiles();
-        for (File file : files) {
+        for (File file : listCurrentDirFiles()) {
             String keyFile = key(file);
             monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.INITIAL));
             setKnownFileState(file);
@@ -198,8 +197,7 @@ public final class FileSystemChecker {
      * @return the <code>Files</code> that are in the check directory.
      */
     private File[] listCurrentDirFiles() {
-        File[] files = this.checkDir.listFiles(this.includeFilter);
-        return (files == null ? new File[0] : files);
+        return FileSystemUtils.listFiles(this.checkDir, this.includeFilter);
     }
 
     /**

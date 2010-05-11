@@ -12,6 +12,8 @@
 package org.eclipse.virgo.util.io;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 
@@ -30,7 +32,7 @@ public final class FileSystemUtils {
     private static final String URI_FILE_SCHEME = "file";
 
     private FileSystemUtils() {
-        /* no-op */
+        /* designed to prevent user instantiation of this class */
     }
 
     /**
@@ -117,8 +119,7 @@ public final class FileSystemUtils {
      * @see #deleteRecursively(String)
      */
     public static boolean deleteRecursively(File root) {
-        boolean success = doRecursiveDelete(root);
-        return success;
+        return doRecursiveDelete(root);
     }
 
     /**
@@ -131,6 +132,143 @@ public final class FileSystemUtils {
      */
     public static boolean deleteRecursively(String path) {
         return deleteRecursively(new File(path));
+    }
+
+    /**
+     * Generate array of {@link String}s of the names of the files in the directory <code>dir</code> 
+     * (just like {@link File#list()}).
+     * This function, however, <i>never</i> returns the <strong><code>null</code></strong> pointer, but instead throws
+     * an exception if it cannot determine the files, or if <code>dir</code> isn't a directory.
+     *  
+     * @param dir directory file for which the filenames should be generated.
+     * @return array of {@link String}s; may be the empty array.
+     * @throws FatalIOException when {@link File#list()} returns <strong><code>null</code></strong> even after a retry.
+     */
+    public static String[] list(File dir) throws FatalIOException {
+        String[] filenames = dir.list();
+        if (filenames==null) {
+            preRetryFileOp(dir);
+            filenames = dir.list();
+        }
+        if (filenames==null) {
+            throw new FatalIOException("list() failed for file " + dir);
+        }
+        return filenames;
+    }
+
+    /**
+     * Generate array of {@link String}s of the names of the files in the directory <code>dir</code>, filtered by <code>filenameFilter</code> 
+     * (just like {@link File#list(FilenameFilter)}).
+     * This function, however, <i>never</i> returns the <strong><code>null</code></strong> pointer, but instead throws
+     * an exception if it cannot determine the files, or if <code>dir</code> isn't a directory.
+     *  
+     * @param dir directory file for which the filenames should be generated.
+     * @param filenameFilter filter on the files' filenames
+     * @return array of {@link String}s; may be the empty array.
+     * @throws FatalIOException when {@link File#list(FilenameFilter)} returns <strong><code>null</code></strong> even after a retry.
+     */
+    public static String[] list(File dir, FilenameFilter filenameFilter) throws FatalIOException {
+        String[] filenames = dir.list(filenameFilter);
+        if (filenames==null) {
+            preRetryFileOp(dir);
+            filenames = dir.list(filenameFilter);
+        }
+        if (filenames==null) {
+            throw new FatalIOException("list(FilenameFilter) failed for file " + dir);
+        }
+        return filenames;
+    }
+    
+    /**
+     * Generate array of {@link File}s, one for each file in the directory <code>dir</code> (just like {@link File#listFiles()}).
+     * This function, however, <i>never</i> returns the <strong><code>null</code></strong> pointer, but instead throws
+     * an exception if it cannot determine the files, or if <code>dir</code> isn't a directory.
+     *  
+     * @param dir directory file for which the files should be generated.
+     * @return array of {@link File}s; may be the empty array.
+     * @throws FatalIOException when {@link File#listFiles()} returns <strong><code>null</code></strong> even after a retry.
+     */
+    public static File[] listFiles(File dir) throws FatalIOException {
+        File[] files = dir.listFiles();
+        if (files==null) {
+            preRetryFileOp(dir);
+            files = dir.listFiles();
+        }
+        if (files==null) {
+            throw new FatalIOException("listFiles() failed for file " + dir);
+        }
+        return files;
+    }
+    
+    /**
+     * Generate array of {@link File}s, one for each file in the directory <code>dir</code>, filtered by <code>fileFilter</code> 
+     * (just like {@link File#listFiles(FileFilter)}).
+     * This function, however, <i>never</i> returns the <strong><code>null</code></strong> pointer, but instead throws
+     * an exception if it cannot determine the files, or if <code>dir</code> isn't a directory.
+     *  
+     * @param dir directory file for which the files should be generated.
+     * @param fileFilter filter on the files
+     * @return array of {@link File}s; may be the empty array.
+     * @throws FatalIOException when {@link File#listFiles(FileFilter)} returns <strong><code>null</code></strong> even after a retry.
+     */
+    public static File[] listFiles(File dir, FileFilter fileFilter) throws FatalIOException {
+        File[] files = dir.listFiles(fileFilter);
+        if (files==null) {
+            preRetryFileOp(dir);
+            files = dir.listFiles(fileFilter);
+        }
+        if (files==null) {
+            throw new FatalIOException("listFiles(FileFilter) failed for file " + dir);
+        }
+        return files;
+    }
+    
+    /**
+     * Generate array of {@link File}s, one for each file in the directory <code>dir</code>, filtered by <code>filenameFilter</code> 
+     * (just like {@link File#listFiles(FilenameFilter)}).
+     * This function, however, <i>never</i> returns the <strong><code>null</code></strong> pointer, but instead throws
+     * an exception if it cannot determine the files, or if <code>dir</code> isn't a directory.
+     *  
+     * @param dir directory file for which the files should be generated.
+     * @param filenameFilter filter on the files' filenames
+     * @return array of {@link File}s; may be the empty array.
+     * @throws FatalIOException when {@link File#listFiles(FilenameFilter)} returns <strong><code>null</code></strong> even after a retry.
+     */
+    public static File[] listFiles(File dir, FilenameFilter filenameFilter) throws FatalIOException {
+        File[] files = dir.listFiles(filenameFilter);
+        if (files==null) {
+            preRetryFileOp(dir);
+            files = dir.listFiles(filenameFilter);
+        }
+        if (files==null) {
+            throw new FatalIOException("listFiles(FilenameFilter) failed for file " + dir);
+        }
+        return files;
+    }
+
+    /**
+     * This method is designed to allow the underlying file system time to 're-group' before trying the operation again.
+     * <br/>It invokes an operation that will potentially involve some I/O so that transient problems with file access
+     * (proto-typically directory lists) have a chance to pass before we retry them.
+     * 
+     * <p/>Callers typically perform:
+     * <pre>
+     * result = <strong>file.someOp()</strong>;
+     * if (possible transient error) 
+     * { <strong>preRetryFileOp(file)</strong>;
+     *   result = <strong>file.someOp()</strong>;
+     * }
+     * if (still possible transient error) 
+     *   throw RunTimeException(...);
+     * </pre>
+     * @param file associated with which transient error may have occurred
+     */
+    private final static void preRetryFileOp(File file) {
+        try {
+            file.getCanonicalPath(); // potentially involves I/O
+        } catch (IOException ioe) {
+            // don't care
+        }
     }
 
     private static boolean doRecursiveDelete(File root) {

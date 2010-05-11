@@ -168,11 +168,8 @@ public class ZipUtils {
                 zos.closeEntry();
             }
             
-            File[] dirFiles = file.listFiles();
-            if (dirFiles != null) {
-                for (File dirFile : dirFiles) {
-                    doZip(zos, dirFile, root, entryPrefix);
-                }
+            for (File dirFile : FileSystemUtils.listFiles(file)) {
+                doZip(zos, dirFile, root, entryPrefix);
             }
         } else {
             InputStream is = null;

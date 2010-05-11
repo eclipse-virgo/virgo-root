@@ -268,8 +268,8 @@ public final class PathReference {
                 }
             }
             copyFile(this.file, dest.file);
-        } else {
-            int length = this.file.list().length;
+        } else { // this.file.isDirectory() assumed true
+            int length = FileSystemUtils.list(this.file).length;
             if (length > 0 && !recursive) {
                 throw new FatalIOException("Cannot perform non-recursive copy on non-empty directory '" + this + "'");
             }
@@ -356,12 +356,11 @@ public final class PathReference {
     /**
      * Recursively copy the contents of <code>src</code> to <code>dest</code>.
      * 
-     * @param src the source file.
+     * @param src the source directory.
      * @param dest the destination file.
      */
     private static void recursiveCopy(File src, File dest, PathFilter filter) {
-        File[] entries = src.listFiles();
-        for (File file : entries) {
+        for (File file : FileSystemUtils.listFiles(src)) {
             PathReference newFile = PathReference.concat(dest.getAbsolutePath(), file.getName());
             if (filter != null && !filter.matches(new PathReference(file))) {
                 continue;
