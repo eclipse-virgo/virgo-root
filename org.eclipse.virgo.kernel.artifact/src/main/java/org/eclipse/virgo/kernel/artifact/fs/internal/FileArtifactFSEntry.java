@@ -24,6 +24,7 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
 import org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.PathReference;
 
 final class FileArtifactFSEntry implements ArtifactFSEntry {
@@ -45,9 +46,8 @@ final class FileArtifactFSEntry implements ArtifactFSEntry {
 
     public ArtifactFSEntry[] getChildren() {
         List<ArtifactFSEntry> children = new ArrayList<ArtifactFSEntry>();
-        File[] files = this.file.listFiles();
-        if (files != null) {
-            for (File child : files) {
+        if (this.file.isDirectory()) {
+            for (File child : FileSystemUtils.listFiles(this.file)) {
                 children.add(new FileArtifactFSEntry(this.root, child));
             }
         }

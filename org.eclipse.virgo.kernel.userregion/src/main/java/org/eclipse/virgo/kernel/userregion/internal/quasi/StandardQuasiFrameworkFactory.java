@@ -31,6 +31,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.repository.Repository;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 
 /**
  * {@link StandardQuasiFrameworkFactory} is the default implementation of {@link QuasiFrameworkFactory}.
@@ -115,10 +116,9 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
             throw new RuntimeException("Unable to read resolver state", e);
         } finally {
             try { // delete all state files written to this directory
-                String[] files = outdir.list();
-                if (files != null) {
-                    for (int i = 0; i < files.length; ++i) {
-                        File file = new File(outdir, files[i]);
+                if (outdir.isDirectory()) {
+                    for (String filename : FileSystemUtils.list(outdir)) {
+                        File file = new File(outdir, filename);
                         if (!file.delete()) {
                             this.logger.warn("Temporary file '{}' not deleted", file.getAbsolutePath());
                         }

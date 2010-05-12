@@ -31,6 +31,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
 import org.eclipse.virgo.util.io.FileCopyUtils;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.PathReference;
 
 /**
@@ -66,8 +67,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
     }
 
     private void clearPickup() {
-        File[] contents = this.pickup.toFile().listFiles();
-        for (File file : contents) {
+        for (File file : FileSystemUtils.listFiles(this.pickup.toFile())) {
             file.delete();
         }
     }

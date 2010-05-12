@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 
 /**
@@ -77,11 +78,10 @@ final class UserConfigurationPropertiesSource implements PropertiesSource {
     }
 
     private static File[] getPropertiesFiles(File directory) {
-        File[] files = directory.listFiles(PROPERTIES_FILENAME_FILTER);
-        if (files == null) {
-            return new File[0];
+        if (directory.isDirectory()) {
+            return FileSystemUtils.listFiles(directory, PROPERTIES_FILENAME_FILTER);
         }
-        return files;
+        return new File[0];
     }
 
     private Properties readPropertiesFromFile(File file) {
