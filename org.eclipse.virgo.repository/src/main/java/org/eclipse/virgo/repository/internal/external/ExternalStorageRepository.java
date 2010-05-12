@@ -38,6 +38,7 @@ import org.eclipse.virgo.repository.internal.PersistentRepository;
 import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
 import org.eclipse.virgo.repository.internal.management.StandardExternalStorageRepositoryInfo;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.osgi.VersionRange;
 
 /**
@@ -143,9 +144,8 @@ public final class ExternalStorageRepository extends PersistentRepository implem
         if (this.antPathMatchingFileSystemSearcher.matchPath(pathHere)) {
             locations.add(pathHere);
         }
-        File [] list = dir.listFiles();
-        if (list!=null) {
-            for (File f : list) {
+        if (dir.isDirectory()) {
+            for (File f : FileSystemUtils.listFiles(dir)) {
                 if (f.isDirectory()) {
                     locations.addAll(locationsInDirs(f, filename));
                 }

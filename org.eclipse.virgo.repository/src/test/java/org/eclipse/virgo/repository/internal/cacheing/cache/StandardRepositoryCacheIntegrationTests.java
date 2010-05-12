@@ -139,7 +139,7 @@ public class StandardRepositoryCacheIntegrationTests {
     }
 
     @Test
-    public void testGetCachedUriRefreshNoHashInDescriptor() throws IOException {
+    public void testGetCachedUriRefreshNoHashInDescriptor() {
         Set<Attribute> attributes = new HashSet<Attribute>();
         ArtifactDescriptor delegate = new StandardArtifactDescriptor(this.artifactURI, ARTIFACT_TYPE, ARTIFACT_NAME, ARTIFACT_VERSION,
             BUNDLE_FILE.getName(), attributes);

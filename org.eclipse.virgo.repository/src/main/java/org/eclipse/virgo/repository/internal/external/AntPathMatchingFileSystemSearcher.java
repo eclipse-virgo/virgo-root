@@ -14,6 +14,8 @@ package org.eclipse.virgo.repository.internal.external;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.virgo.util.io.FileSystemUtils;
+
 /**
  * A {@link FileSystemSearcher} implementation that searches based on an Ant-style search pattern. See
  * {@link AntPathMatcher} for more details of the syntax.
@@ -108,9 +110,8 @@ public final class AntPathMatchingFileSystemSearcher implements FileSystemSearch
             callback.found(file, false);
         }
         
-        File[] files = file.listFiles();
-        if (files != null) {
-            for (File fileInDir : files) {
+        if (file.isDirectory()) {
+            for (File fileInDir : FileSystemUtils.listFiles(file)) {
                 search(fileInDir, callback);
             }
         }        

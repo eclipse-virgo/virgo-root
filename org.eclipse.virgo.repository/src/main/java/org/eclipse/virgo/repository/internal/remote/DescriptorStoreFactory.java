@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.virgo.util.io.FileCopyUtils;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 
 /**
  * {@link DescriptorStoreFactory} is a utility for creating and persisting a {@link DescriptorStore} instance from an
@@ -102,7 +103,7 @@ public class DescriptorStoreFactory {
             }
 
         };
-        return this.descriptorStoreDirectory.listFiles(filter);
+        return FileSystemUtils.listFiles(this.descriptorStoreDirectory, filter);
     }
 
     /**
