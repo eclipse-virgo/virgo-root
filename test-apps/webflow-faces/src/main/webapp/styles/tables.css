@@ -1,0 +1,29 @@
+
+table {
+	background: #e0e7d3;
+	border: 2px solid #e0e7d3;
+	border-collapse: collapse;
+}
+
+table table {
+	margin: -5px 0;
+	border: 0px solid #e0e7d3;
+	width: 100%;
+}
+
+	table thead {
+		font-weight: bold;
+		font-style: italic;
+		background-color: #c9d3b8;
+	}
+
+	table th {
+		font-size: 12px;
+		text-align: left;
+		font-weight: bold;
+		padding: 5px;
+	}
+
+	table td, table th {
+		padding: 5px;
+	}

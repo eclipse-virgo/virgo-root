@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/tx
+			http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- Scans the impl package for module @Components to install and configure -->
+	<context:component-scan base-package="admin" />
+	
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="handlerMapping">
+		<property name="order" value="0" />
+		<property name="mappings">
+			<value>
+				/rewards/newReward=facesFlowController
+				/rewards/showReward=facesFlowController
+				/accounts/searchAccount=facesFlowController
+			</value>
+		</property>
+	</bean>
+	
+	<!-- Enables /[resource]/[action] to [Resource]Controller class mapping -->
+	<bean id="controllerMappings" class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" parent="handlerMapping">
+		<property name="order" value="1" />
+	</bean>
+	
+	<!-- Falls back to mapping the requested resource to a view name -->
+	<bean id="viewFallbackMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="handlerMapping">
+		<property name="defaultHandler">
+			<bean class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+		</property>
+	</bean>
+
+	<!-- Maps logical view names to Facelet templates in /WEB-INF (e.g. 'search' to '/WEB-INF/search.xhtml' -->
+	<bean id="faceletsViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.faces.mvc.JsfView"/>
+		<property name="prefix" value="/WEB-INF/" />
+		<property name="suffix" value=".xhtml" />
+	</bean>
+	
+	<!-- Resolves messages to support internationalization -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:messages/global</value>
+				<value>classpath:messages/validation</value>
+			</list>
+		 </property>
+	</bean>
+	
+	<!-- Enables locale resolution with the help of a browser cookie -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="en" />
+	</bean>
+
+	<!-- Enables theme resolution with the help of a browser cookie -->
+    <bean id="themeResolver" class="org.springframework.web.servlet.theme.CookieThemeResolver">
+    	<property name="defaultThemeName" value="theme-green" />
+    </bean>
+
+	<!-- Maps exceptions to view names. -->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="error" />
+		<property name="defaultStatusCode" value="500" />
+		<property name="warnLogCategory" value="debug" />
+	</bean>
+
+	<!-- Common parent for handler mapping beans; installs a interceptor chain -->		
+	<bean id="handlerMapping" abstract="true">
+		<property name="interceptors">
+			<list>
+  		 		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+   				<bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Dispatches requests mapped to POJO @Controllers implementations -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+	<!-- Dispatches requests mapped to org.springframework.web.servlet.mvc.Controller implementations -->
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+	<!-- Dispatches requests mapped to flows to FlowHandler implementations -->
+	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+		<property name="flowExecutor" ref="flowExecutor"/>
+	</bean>
+
+	<tx:annotation-driven/>
+		
+</beans>

@@ -1,0 +1,49 @@
+
+@IMPORT url("entity.css");
+@IMPORT url("forms.css");
+@IMPORT url("tables.css");
+
+div#header {
+  background: transparent none repeat scroll;
+  margin: 0 0 1.5em;
+  padding: 5px 0;	
+}
+
+div#branding {
+  padding:10px 0 10px 0;
+  width:100%;
+}
+
+.dijitTitlePaneTitle {
+	border:1px solid #B8C885;
+	font-weight:bold;
+	height:19px;
+	line-height:19px;
+	margin:0pt;
+	padding:3px 6px 0pt;
+	text-align:left;
+}
+
+h1 {
+  color: #050f0f;
+}
+div#nav a, div#nav a:link, div#nav a:active, div#nav a:visited {
+  background-color: #81aeae;
+}
+
+div#nav strong a, div#nav strong a:link, div#nav strong a:active, div#nav strong a:visited, div#nav strong a:hover {
+  background-color: #050f0f;
+}
+
+a:link{color:#050f0f; text-decoration:underline; font-size:13px; background:transparent;}
+a:hover{color:#456314; text-decoration:underline; font-size:13px; background:transparent;}
+a:active{color:#050f0f; text-decoration:underline; font-size:13px; background:transparent;}
+a:visited{color:#050f0f; text-decoration:underline; font-size:13px; background:transparent;}
+
+form > fieldset {
+  border-color: #050f0f;
+}
+
+body {
+  text-align: inherit;	
+}

@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:sf="http://www.springframework.org/tags/faces">	
+
+<ui:composition template="/WEB-INF/layouts/defaultLayout.xhtml">
+
+<ui:define name="title">Review Reward</ui:define>
+
+<ui:define name="content">
+
+<h:form id="confirmationForm">
+	<fieldset>
+		<legend>#{resourceBundle['label.Dining']}</legend>
+		<ol>
+			<li><label>#{resourceBundle['label.CreditCard']}</label> <h:outputText value="${diningForm.creditCardNumber}"/></li>
+			<li><label>#{resourceBundle['label.MerchantNumber']}</label> <h:outputText value="${diningForm.merchantNumber}"/></li>
+			<li><label>#{resourceBundle['label.DiningAmount']}</label> <h:outputText value="${diningForm.amount}"/></li>
+			<li><label>#{resourceBundle['label.Date']}</label> <h:outputText value="${diningForm.date.date}"/></li>
+		</ol>
+	</fieldset>
+
+	<fieldset>
+		<legend>#{resourceBundle['label.Reward']}</legend>
+		<ol>
+			<li><label>#{resourceBundle['label.AccountNumber']}</label> <h:outputText value="${accountContribution.accountNumber}"/></li>
+			<li><label>#{resourceBundle['label.RewardAmount']}</label> <h:outputText value="${accountContribution.amount}"/></li>
+			<li><label>#{resourceBundle['label.Beneficiaries']}</label>
+				<h:dataTable id="distributions" styleClass="summary" value="#{distributions}" var="distribution" rendered="#{distributions.rowCount > 0}">
+					<h:column>
+						<f:facet name="header">#{resourceBundle['label.Name']}</f:facet>
+						<h:outputText value="#{distribution.beneficiary}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{resourceBundle['label.Amount']}</f:facet>
+						<h:outputText value="#{distribution.amount}"/>
+					</h:column>
+					<h:column>				
+						<f:facet name="header">#{resourceBundle['label.AllocationPercentage']}</f:facet>
+						<h:outputText value="#{distribution.percentage}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{resourceBundle['label.Savings']}</f:facet>
+						<h:outputText value="#{distribution.totalSavings}"/>
+					</h:column>
+				</h:dataTable>
+			</li>
+		</ol>
+	</fieldset>
+
+	<sf:commandButton id="previous" action="previous" value="#{resourceBundle['navigate.Previous']}" />
+	<sf:commandButton id="confirm" action="confirm" value="#{resourceBundle['navigate.Confirm']}" />
+
+</h:form>
+
+</ui:define>
+
+</ui:composition>
+
+</html>

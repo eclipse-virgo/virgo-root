@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:sf="http://www.springframework.org/tags/faces">	
+
+<ui:composition template="/WEB-INF/layouts/defaultLayout.xhtml">
+
+<ui:define name="title">Account Search Results</ui:define>
+
+<ui:define name="content">
+
+<h:form id="accountSearchResults">
+<ul class="controlLinks">
+	<li>
+		<sf:commandLink value="#{resourceBundle['navigate.ModifySearch']}" action="changeSearch"/>
+	</li>
+
+</ul>
+
+<div id="accountsListingFragment">
+	<h:outputText id="noAccountsText" value="No Accounts Found" rendered="#{accounts.rowCount == 0}"/>
+	<h:dataTable id="accounts" styleClass="summary" value="#{accounts}" var="a" rendered="#{accounts.rowCount > 0}">
+		<h:column>
+			<f:facet name="header">#{resourceBundle['label.AccountNumber']}</f:facet>
+			<sf:commandLink id="accountDetailLink" value="#{a.number}" action="detail"/>
+		</h:column>
+		<h:column>
+			<f:facet name="header">#{resourceBundle['label.Name']}</f:facet>
+			#{a.name}
+		</h:column>
+	</h:dataTable>
+	
+	<ul class="controlLinks">
+		<li>
+			<sf:commandLink value="#{resourceBundle['navigate.Previous']}" action="previous" rendered="#{searchCriteria.page > 0}"/>
+		</li>
+		<li>
+			<sf:commandLink value="#{resourceBundle['navigate.Next']}" action="next" rendered="#{not empty accounts and accounts.rowCount == searchCriteria.pageSize}"/>
+		</li>
+	</ul>
+	
+</div>
+</h:form>
+
+</ui:define>
+
+</ui:composition>
+
+</html>

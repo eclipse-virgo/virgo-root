@@ -39,3 +39,4 @@ org.hsqldb=1.8.0.9
 org.slf4j=1.5.10
 
 version-RANGE=${version:[=.=.=, =.+1)}
+

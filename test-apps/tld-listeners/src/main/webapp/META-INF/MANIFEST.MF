@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: tld.listeners
+Bundle-Version: 1.0
+Web-ContextPath: tldlistener
+Bundle-Classpath: WEB-INF/classes
+
