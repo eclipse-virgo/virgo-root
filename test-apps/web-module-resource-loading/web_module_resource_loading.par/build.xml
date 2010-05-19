@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="web_module_resource_loading">
+
+	<path id="bundles">
+		<pathelement location="../web_module_resource_loading.web"/>
+	</path>
+
+	<property file="${basedir}/../build.properties"/>
+	<property name="par.output.file" value="${basedir}/../../../org.eclipse.virgo.web.test/src/test/apps/web_module_resource_loading.par"/>
+	<import file="${basedir}/../../../virgo-build/par/default.xml"/>
+
+</project>

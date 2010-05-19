@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"	
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<import resource="security.xml" />
+	
+	<!-- Drives transactions in a local Hibernate environment -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- Configures the Hibernate Object Relational Mapper (ORM) for the Admin and RewarNetwork applications -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="mappingLocations">
+			<list>
+				<value>classpath:admin/accounts/hibernate/Account.hbm.xml</value>
+				<value>classpath:admin/accounts/hibernate/Beneficiary.hbm.xml</value>
+				<value>classpath:accounts/internal/Account.hbm.xml</value>
+				<value>classpath:accounts/internal/Beneficiary.hbm.xml</value>
+				<value>classpath:restaurants/internal/Restaurant.hbm.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- Creates an in-memory "rewards" database populated with test data for fast testing -->
+	<bean id="dataSource" class="testdb.TestDataSourceFactory">
+		<property name="testDatabaseName" value="rewards"/>
+		<property name="schemaLocation" value="classpath:testdb/schema.sql"/>
+		<property name="testDataLocation" value="classpath:testdb/test-data.sql"/>
+	</bean>
+				
+</beans>

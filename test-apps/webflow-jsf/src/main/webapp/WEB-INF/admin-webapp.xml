@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xmlns:faces="http://www.springframework.org/schema/faces"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+			http://www.springframework.org/schema/faces http://www.springframework.org/schema/faces/spring-faces-2.0.xsd">
+
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings" value="/accounts=facesFlowController"/>
+	</bean>
+
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="en"/>
+	</bean>
+
+	<bean id="facesFlowController" class="org.springframework.webflow.mvc.servlet.FlowController">
+		<property name="flowExecutor" ref="facesFlowExecutor" />
+	</bean>
+
+	<webflow:flow-executor id="facesFlowExecutor" flow-registry="facesFlowRegistry" />
+	
+	<webflow:flow-registry id="facesFlowRegistry" flow-builder-services="facesFlowBuilderServices">
+		<webflow:flow-location path="/WEB-INF/flows/accounts/accounts.xml" />
+	</webflow:flow-registry>
+
+	<faces:flow-builder-services id="facesFlowBuilderServices"/>
+
+</beans>

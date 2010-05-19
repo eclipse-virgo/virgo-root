@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib>
+   <listener>
+		<listener-class>tld.listeners.RequestListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>tld.listeners.ContextListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>username</param-name>
+		<param-value>admin</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>password</param-name>
+		<param-value>springsource</param-value>
+	</context-param>
+	
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>substr</shortname>
+	<info>Sample taglib for Substr operation</info>
+	<uri>http://springsource.com/jsp/taglib/substr</uri>
+	<tag>
+		<name>substring</name>
+		<tagclass>tld.listeners.SubstrTagHandler</tagclass>
+		<info>Substring function.</info>
+		<attribute>
+			<name>input</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>start</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>end</name>
+			<required>true</required>
+		</attribute>
+	</tag>
+
+ </taglib>

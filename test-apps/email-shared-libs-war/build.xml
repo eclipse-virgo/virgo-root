@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="email_shared_libs_war">
+
+	<property file="${basedir}/build.properties"/>
+    <property file="${basedir}/../../build.versions"/>
+    <property name="war.output.file" value="${basedir}/../../org.eclipse.virgo.web.test/src/test/apps/email_shared_libs_war.war"/>
+    <import file="${basedir}/../../virgo-build/war/default.xml" />
+
+</project>

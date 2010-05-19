@@ -1,0 +1,83 @@
+
+form > fieldset { 
+  border: 1px solid; 
+  padding: 4px; 
+  padding-bottom: 8px;
+  margin: 0 0 10px; 
+}
+
+	legend {
+	  margin-bottom: 0.25em;
+	  margin-left: 0.25em;
+	}
+
+	form, legend { 
+	  border: 0; 
+	  padding: 0; 
+	  margin: 0; 
+	}
+
+	form ol, form ul { 
+	  list-style: none; 
+	  margin: 0; 
+	}
+
+		form li { 
+		  clear: both;
+		  margin: 0 0 .75em;
+		  padding: 0; 
+		} 
+		
+		.confirm { 
+		  margin-bottom: 0.75em; 
+		}
+
+			/* Labels */
+			label { 
+			  display: block;
+			  float: left;
+			  margin-right: 10px;
+			  text-align: right;
+			  width: 120px;
+			}
+
+			label:after {
+			  content: ':';
+			}
+			 
+			.radio label:after, 
+			.confirm label:after {
+			  content: ''; 
+			}
+
+			.confirm label { 
+			  display: block; 
+              float: none;
+              margin-left: 130px; 
+			  text-align: left;
+			  width: 270px; 
+			}
+
+			form .control {
+			  float: left;
+			  width: 200px;
+			  margin-bottom: 8px;
+			}
+
+				input[type="text"], input[type="password"], textarea { 
+				  width: 250px;
+				}
+				
+				.error {
+				  display: block;
+				  color: red;
+				  font-weight: bold; 	
+				}
+
+	fieldset button { 
+	  clear: both;
+	  float: left;
+	  margin-left: 130px; 
+	  margin-right: 5px;
+	  cursor: pointer;
+	}

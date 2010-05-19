@@ -1,0 +1,1 @@
+Session Id:<%=session.getId()%>
