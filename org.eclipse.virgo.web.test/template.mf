@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Test Bundle
+Bundle-SymbolicName: org.eclipse.virgo.web.test
+Bundle-Version: 2.0.0
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
+ javax.management.*;version="0",
+ org.junit.*;version="${org.junit:[=.=.=, +1)}",
+ javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
+ org.apache.commons.logging.*;version="${org.apache.commons.logging:[=.=.=, +1)}",
+ org.apache.commons.httpclient.*;version="${org.apache.commons.httpclient:[=.=.=, +1)}",
+ org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
+ org.osgi.framework.*;version="0",
+ org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.osgi.*;version="${org.springframework.osgi:[=.=.=, +1)}"
+Excluded-Imports: 
+ org.eclipse.virgo,
+ org.eclipse.virgo.osgi.extensions.equinox.hooks,
+ org.eclipse.virgo.test.*,
+ org.eclipse.gemini.web.tomcat.config,
+ org.eclipse.virgo.server
+Excluded-Exports: 
+ org.eclipse.virgo.kernel.*,
+ org.eclipse.virgo.util.*,
+ config,
+ config.management
+
