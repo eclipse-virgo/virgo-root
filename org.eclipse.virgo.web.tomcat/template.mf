@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Support Tomcat Support
+Bundle-SymbolicName: org.eclipse.virgo.web.tomcat
+Fragment-Host: org.eclipse.gemini.web.tomcat
+Bundle-Version: 2.0
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
+ org.eclipse.gemini.web.*;version="${org.eclipse.gemini.web:[=.=.=, +1)}",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
+ org.eclipse.virgo.web.*;version="${version-RANGE}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
+ org.apache.catalina.*;version="${org.apache.catalina:[=.=.=, =.+1)}",
+ javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
+ org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
+ org.osgi.framework.*;version="0"
+Excluded-Exports: 
+ *
