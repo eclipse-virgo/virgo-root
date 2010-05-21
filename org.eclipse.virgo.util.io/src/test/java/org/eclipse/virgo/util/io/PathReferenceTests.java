@@ -32,11 +32,23 @@ import org.junit.Test;
 public class PathReferenceTests {
 
     private static final String WORK_AREA_PATH = "target/work";
+    
+    private static final String WORK_AREA2_PATH = "target/work2";
 
     private static final String TEST_FILE = "src/test/resources/test.txt";
 
-    @Before public void workAreaSetUp() {
-        File f = new File(WORK_AREA_PATH);
+    private static final String TEST_FILE2 = "test2.txt";
+
+    @Before public void workAreaSetUp() throws Exception{
+        resetWorkArea(new File(WORK_AREA_PATH));
+        
+        File f2 = new File(WORK_AREA2_PATH);
+        resetWorkArea(f2);
+        File testFile = new File(f2, TEST_FILE2);
+        testFile.createNewFile();
+    }
+
+    private void resetWorkArea(File f) {
         if (f.exists()) {
             FileSystemUtils.deleteRecursively(f);
         }
@@ -44,8 +56,8 @@ public class PathReferenceTests {
     }
 
     @After public void workAreaClean() {
-        File f = new File(WORK_AREA_PATH);
-        FileSystemUtils.deleteRecursively(f);
+        FileSystemUtils.deleteRecursively(new File(WORK_AREA_PATH));
+        FileSystemUtils.deleteRecursively(new File(WORK_AREA2_PATH));
     }
 
     @Test public void createFromPath() {
@@ -157,6 +169,43 @@ public class PathReferenceTests {
         PathReference copy = pr.copy(dest, false);
         assertTrue(dest.exists());
         assertEquals(dest, copy);
+    }
+    
+    @Test public void moveFileToFile() {
+        PathReference pr = PathReference.concat(WORK_AREA2_PATH, TEST_FILE2);
+        assertTrue(pr.exists());
+        
+        PathReference dest = PathReference.concat(WORK_AREA2_PATH, "out.txt");
+        assertFalse(dest.exists());
+
+        PathReference moved = pr.moveTo(dest);
+        assertEquals("Resulting reference not to moved destination.", dest, moved);
+        assertTrue("File " + dest + " doesn't exist -- file not moved.", dest.exists());
+        assertFalse("File " + pr + " still exists -- not moved.", pr.exists());
+    }
+
+    @Test public void moveDirToDir() {
+        PathReference src = new PathReference(TEST_FILE).getParent();
+        assertTrue(src.exists());
+        
+        PathReference srcCopy = PathReference.concat(WORK_AREA2_PATH, "moveFromSrc");
+        src.copy(srcCopy, true);
+        assertTrue(srcCopy.exists());
+
+        PathReference dest = PathReference.concat(WORK_AREA2_PATH, "moveToDest");
+        assertFalse(dest.exists());
+
+        srcCopy.moveTo(dest);
+
+        assertTrue(dest + " does not exist", dest.exists());
+        assertTrue("child in destination does not exist", dest.newChild("child").exists());
+        assertTrue("child/grand-child in destination does not exist", dest.newChild("child").newChild("grand-child").exists());
+        assertTrue("child/grand-child/foo.txt in destination does not exist", dest.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
+        
+        assertFalse(srcCopy + " still exists", srcCopy.exists());
+        assertFalse("child in source still exists", srcCopy.newChild("child").exists());
+        assertFalse("child/grand-child in source still exists", srcCopy.newChild("child").newChild("grand-child").exists());
+        assertFalse("child/grand-child/foo.txt in source still exists", srcCopy.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
     }
 
     @Test(expected = FatalIOException.class) public void copyFileToExistingFile() {
