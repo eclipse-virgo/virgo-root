@@ -1,0 +1,38 @@
+Manifest-Version: 1.0
+Bundle-Name: Admin Console Web Bundle
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.apps.admin.web
+Import-Template: 
+ org.eclipse.virgo.apps.admin.*;version="[2.1.0, 2.1.1)",
+ org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[-1, +1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[-1, +1)}",
+ org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.js.*;version="${org.springframework.js:[=.=.=, +1)}",
+ org.eclipse.virgo.web.*;version="${org.eclipse.virgo.web:[-1, +1)}",
+ org.slf4j;version="${org.slf4j:[=.=.=, +1)}",
+ javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
+ org.apache.tiles.*;version="${org.apache.tiles:[=.=.=, +1)}",
+ javax.management.*;version="0",
+ javax.xml.stream.*;version="0",
+ org.osgi.framework.*;version="0",
+ org.osgi.service.cm.*;version="0"
+Import-Bundle: 
+ com.springsource.org.apache.taglibs.standard;version="${org.apache.taglibs.standard:[=.=.=, +1)}",
+ org.springframework.js;version="${org.springframework.js:[=.=.=, +1)}"
+Import-Package: 
+ javax.servlet.jsp.jstl.core;version="${javax.servlet.jstl:[=.=.=, +1)}",
+ org.eclipse.virgo.web.dm;version="${org.eclipse.virgo.web:[-1, +1)}",
+ org.springframework.web.multipart.commons;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.web.servlet.handler;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.web.servlet.view;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.web.servlet.mvc;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.web.servlet.mvc.annotation;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.web.servlet.support;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.web.context.support;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.context.support;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.context.config;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.beans.factory.xml;version="${org.springframework:[2.5.6, +1)}",
+ org.apache.juli.logging.impl;version="${org.apache.catalina:[=.=.=, +1)}"
+Excluded-Exports: *
+Web-ContextPath: admin

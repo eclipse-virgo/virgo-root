@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://ivyrep.jayasoft.org/ivy-doc.xsl"?>
+<ivy-module
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
+		version="1.3">
+
+	<info organisation="org.eclipse.virgo.apps" module="${ant.project.name}"/>
+
+	<configurations>
+		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
+	</configurations>
+
+	<publications>
+		<artifact name="${ant.project.name}"/>
+		<artifact name="${ant.project.name}-sources" type="src" ext="jar"/>
+	</publications>
+
+	<dependencies>
+		<!-- === PROVIDED-COMPILE============================================ -->
+	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
+	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
+	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
+	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
+	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.services" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
+	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shell" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi" rev="${org.eclipse.virgo.util}" conf="provided->compile"/>
+		<!-- === RUNTIME-DEFAULT =========================================== -->
+
+		<!-- === PROVIDED-RUNTIME =========================================== -->
+		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.configadmin" rev="${org.apache.felix}" conf="provided->runtime"/>
+		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.fileupload" rev="${org.apache.commons.fileupload}" conf="provided->runtime"/>
+		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.io" rev="${org.apache.commons.io}" conf="provided->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="provided->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="provided->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.beans" rev="${org.springframework}" conf="provided->runtime"/>
+		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="provided->runtime"/>		
+        <dependency org="org.slf4j" name="com.springsource.slf4j.api" rev="${org.slf4j}" conf="compile->runtime"/>
+		<!-- === TEST ====================================================== -->
+		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.teststubs" name="org.eclipse.virgo.teststubs.osgi" rev="${org.eclipse.virgo.teststubs}" conf="test->runtime"/>
+		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
+        <dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
+		
+		<override org="org.springframework" rev="${org.springframework}"/>
+	</dependencies>
+
+</ivy-module>
