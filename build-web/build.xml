@@ -35,9 +35,6 @@
 		<pathelement location="../test-apps/war-resource-loading"/>
 		<pathelement location="../test-apps/web-module-resource-loading/web_module_resource_loading.par"/>
 		<pathelement location="../test-apps/webfeature-tests"/>
-		<pathelement location="../test-apps/webflow-faces"/>
-		<pathelement location="../test-apps/webflow-jsf"/>
-		<pathelement location="../test-apps/webflow-mvc"/>
 	</path>
 
 	<target name="build-test-apps" description="Build all of the test applications">

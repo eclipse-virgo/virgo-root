@@ -14,7 +14,6 @@ package org.eclipse.virgo.web.test;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -22,29 +21,28 @@ import org.junit.Test;
 
 public class SpringWebFlowWarTests extends AbstractWebIntegrationTests {
 
+    private static final String WEBFLOW_VERSION = "2.0.8.RELEASE";
+    
     @Before
     public void configureHttpClient() {
         this.followRedirects = true;
         this.reuseHttpClient = false;
     }
 
-    @Ignore
-    @Test
-    public void bookingWithJavaServerFaces() throws Exception {
-        assertDeployAndUndeployBehavior("swf-booking-jsf", new File("src/test/apps/webflow.jsf.tests.war"), "intro.faces",
-            "main/enterSearchCriteria.faces", "main/reviewHotel.faces?id=1");
-    }
-
-    @Ignore
     @Test
     public void bookingWithSpringMVC() throws Exception {
-        assertDeployAndUndeployBehavior("swf-booking-mvc", new File("src/test/apps/webflow.mvc.tests.war"), "spring/hotels/index",
-            "spring/hotels/search?searchString=&pageSize=30", "spring/hotels/show?id=1");
+        assertDeployAndUndeployBehavior("swf-booking-mvc-" + WEBFLOW_VERSION, new File("target/test-apps/swf-booking-mvc-" + WEBFLOW_VERSION + ".war"), 
+            "", 
+            "spring/hotels/index", 
+            "spring/hotels/search?searchString=&pageSize=5",
+            "spring/hotels/show?id=17");
     }
-    
-    @Ignore
+
     @Test
     public void bookingWithSpringFaces() throws Exception {
-        assertDeployAndUndeployBehavior("swf-booking-faces", new File("src/test/apps/webflow.springfaces.tests.war"), "spring/intro", "spring/main");
+        assertDeployAndUndeployBehavior("swf-booking-faces-" + WEBFLOW_VERSION, new File("target/test-apps/swf-booking-faces-" + WEBFLOW_VERSION + ".war"), 
+            "", 
+            "spring/main"); 
     }
+
 }
