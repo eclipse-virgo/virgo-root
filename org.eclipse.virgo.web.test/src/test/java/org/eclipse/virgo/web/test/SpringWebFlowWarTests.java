@@ -22,6 +22,8 @@ import org.junit.Test;
 public class SpringWebFlowWarTests extends AbstractWebIntegrationTests {
 
     private static final String WEBFLOW_VERSION = "2.0.8.RELEASE";
+
+    private static final String REPO_PATH = "../ivy-cache/repository/org.springframework.webflow.samples";
     
     @Before
     public void configureHttpClient() {
@@ -31,7 +33,7 @@ public class SpringWebFlowWarTests extends AbstractWebIntegrationTests {
 
     @Test
     public void bookingWithSpringMVC() throws Exception {
-        assertDeployAndUndeployBehavior("swf-booking-mvc-" + WEBFLOW_VERSION, new File("target/test-apps/swf-booking-mvc-" + WEBFLOW_VERSION + ".war"), 
+        assertDeployAndUndeployBehavior("swf-booking-mvc-" + WEBFLOW_VERSION, new File(REPO_PATH + "/swf-booking-mvc/" + WEBFLOW_VERSION + "/swf-booking-mvc-" + WEBFLOW_VERSION + ".war"), 
             "", 
             "spring/hotels/index", 
             "spring/hotels/search?searchString=&pageSize=5",
@@ -40,7 +42,7 @@ public class SpringWebFlowWarTests extends AbstractWebIntegrationTests {
 
     @Test
     public void bookingWithSpringFaces() throws Exception {
-        assertDeployAndUndeployBehavior("swf-booking-faces-" + WEBFLOW_VERSION, new File("target/test-apps/swf-booking-faces-" + WEBFLOW_VERSION + ".war"), 
+        assertDeployAndUndeployBehavior("swf-booking-faces-" + WEBFLOW_VERSION, new File(REPO_PATH + "/swf-booking-faces/" + WEBFLOW_VERSION + "/swf-booking-faces-" + WEBFLOW_VERSION + ".war"),
             "", 
             "spring/main"); 
     }

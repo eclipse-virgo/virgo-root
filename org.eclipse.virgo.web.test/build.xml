@@ -6,17 +6,6 @@
 	<import file="${basedir}/../virgo-build/standard/default.xml"/>
 	
 	<target name="resolve.test" depends="common-common.resolve.test">
-		<property name="test.apps.dir" value="${basedir}/target/test-apps"/>
-		<delete dir="${test.apps.dir}" />
-		<mkdir dir="${test.apps.dir}" />
-        <get src="http://repository.springsource.com.s3.amazonaws.com/ivy/bundles/release/org.springframework.webflow.samples/swf-booking-faces/${org.springframework.webflow}/swf-booking-faces-${org.springframework.webflow}.war" dest="${test.apps.dir}/swf-booking-faces-${org.springframework.webflow}.war" verbose="true" usetimestamp="true"/>
-        <get src="http://repository.springsource.com.s3.amazonaws.com/ivy/bundles/release/org.springframework.webflow.samples/swf-booking-mvc/${org.springframework.webflow}/swf-booking-mvc-${org.springframework.webflow}.war" dest="${test.apps.dir}/swf-booking-mvc-${org.springframework.webflow}.war" verbose="true" usetimestamp="true"/>
-		
 		<ivy:resolve file="${basedir}/ivy.xml" conf="download"/>
 	</target>
-	
-	
-<!--http://repository.springsource.com.s3.amazonaws.com/ivy/bundles/release/org.springframework.webflow.samples/swf-booking-faces/2.0.9.RELEASE/swf-booking-faces-2.0.9.RELEASE.war
-http://repository.springsource.com.s3.amazonaws.com/ivy/bundles/release/org.springframework.webflow.samples/swf-booking-mvc/2.0.9.RELEASE/swf-booking-mvc-2.0.9.RELEASE.war-->
-
 </project>
