@@ -69,6 +69,10 @@
 			</patternset>
 			<globmapper from="wrapper-delta-pack-${org.tanukisoftware.wrapper}/*" to="bin/service/*"/>
 		</unzip>
+		
+		<copy todir="${package.output.dir}" failonerror="false">
+			<fileset dir="${basedir}/resources"/>
+		</copy>
 
 		<copy todir="${package.output.dir}/bin" failonerror="false">
 			<fileset dir="${basedir}/bin"/>
