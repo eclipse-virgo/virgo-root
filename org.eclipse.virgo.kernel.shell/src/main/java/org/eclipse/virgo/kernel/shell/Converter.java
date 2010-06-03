@@ -35,7 +35,7 @@ package org.eclipse.virgo.kernel.shell;
 public interface Converter {
         /**
          * This property is a string, or array of strings, and defines the classes
-         * or interfaces that this converter recognizes. Recognized classes can be
+         * or interfaces that this converter recognises. Recognised classes can be
          * converted from a string to a class and they can be printed in 3 different
          * modes.
          */
@@ -55,7 +55,7 @@ public interface Converter {
 
         /**
          * Print the value in a small format so that it is identifiable. This
-         * printed format must be recognizable by the conversion method.
+         * printed format must be recognisable by the conversion method.
          */
         int PART = 2;
 
