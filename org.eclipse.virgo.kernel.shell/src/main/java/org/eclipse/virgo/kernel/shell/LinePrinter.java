@@ -34,4 +34,11 @@ public interface LinePrinter {
      */
     LinePrinter println(String line) throws IOException;
 
+    /**
+     * Print an empty line.
+     * @return self, as an aid to chaining
+     * @throws IOException to indicate printing failures
+     */
+    LinePrinter println() throws IOException;
+
 }

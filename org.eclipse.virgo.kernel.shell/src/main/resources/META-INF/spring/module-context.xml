@@ -9,6 +9,10 @@
 		<constructor-arg ref="commandInvoker" />
 	</bean>
 
+	<bean id="singleCommandExecutor" class="org.eclipse.virgo.kernel.shell.internal.SingleSessionCommandExecutor">
+		<constructor-arg ref="commandProcessor"/>
+	</bean>
+
 	<bean id="shellFactory" class="org.eclipse.virgo.kernel.shell.internal.StandardLocalShellFactory" >
 		<constructor-arg ref="commandProcessor" />
 		<constructor-arg ref="commandRegistry" />
