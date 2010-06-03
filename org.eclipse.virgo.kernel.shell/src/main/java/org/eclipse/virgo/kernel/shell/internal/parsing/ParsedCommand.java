@@ -42,13 +42,11 @@ public final class ParsedCommand {
     }
 
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(command);
+        StringBuilder builder = new StringBuilder(command);
 
-        for (int i = 0; i < this.arguments.length; i++) {
-            builder.append(" ").append(this.arguments[i]);
+        for (String arg : this.arguments) {
+            builder.append(" ").append(arg);
         }
-
         return builder.toString();
     }
 

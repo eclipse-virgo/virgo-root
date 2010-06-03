@@ -16,7 +16,7 @@ package org.eclipse.virgo.kernel.shell;
 import java.io.IOException;
 
 /**
- * Interface for service to allow kernel commands to be invoked from the userregion
+ * Interface for service to allow kernel commands to be invoked from the user-region
  * <p />
  *
  * <strong>Concurrent Semantics</strong><br />
@@ -28,12 +28,11 @@ public interface CommandExecutor {
     
     /**
      * Execute the given command with the supplied parameters, and output results serially on the linePrinter.
-     * @param command the command to execute
-     * @param args the arguments to the command
-     * @param linePrinter the linePrinter to use for output lines
+     * @param commandLine the command line to execute
+     * @param linePrinter the linePrinter to use for outputting results of executing the command
      * @return false if the command requests termination of execution context; true otherwise
      * @throws IOException if linePrinter does; otherwise should throw unchecked exceptions for command failures
      */
-    boolean execute(String command, String[] args, LinePrinter linePrinter) throws IOException;
+    boolean execute(String commandLine, LinePrinter linePrinter) throws IOException;
 
 }

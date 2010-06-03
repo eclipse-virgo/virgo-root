@@ -35,7 +35,7 @@ public class StandardCommandSessionTests {
 
     private final CommandInvoker commandInvoker = createMock(CommandInvoker.class);
 
-    private final StandardCommandSession standardCommandSession = new StandardCommandSession(commandInvoker, System.err);
+    private final StandardCommandSession standardCommandSession = new StandardCommandSession(commandInvoker);
 
     @Test
     public void testExecute() throws CommandNotFoundException, ParametersMismatchException {

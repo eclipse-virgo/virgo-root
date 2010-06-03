@@ -11,9 +11,6 @@
 
 package org.eclipse.virgo.kernel.shell.internal;
 
-import java.io.PrintStream;
-
-
 /**
  * <p>
  * StandardCommandProcessor 
@@ -38,7 +35,7 @@ final class StandardCommandProcessor implements CommandProcessor {
     /** 
      * {@inheritDoc}
      */
-    public CommandSession createSession(PrintStream err) {
-        return new StandardCommandSession(commandInvoker, err);
+    public CommandSession createSession() {
+        return new StandardCommandSession(commandInvoker);
     }      
 }

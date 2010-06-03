@@ -28,7 +28,7 @@ public class StandardCommandProcessorTests {
     private StandardCommandProcessor standardCommandProcessor;
     
     /**
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception possibly
      */
     @Before
     public void setUp() throws Exception {
@@ -37,11 +37,11 @@ public class StandardCommandProcessorTests {
     }
 
     /**
-     * Test method for {@link StandardCommandProcessor#createSession(java.io.PrintStream)}.
+     * Test method for {@link StandardCommandProcessor#createSession()}.
      */
     @Test
     public void testCreateSession() {
-        CommandSession commandSession = this.standardCommandProcessor.createSession(System.err);
+        CommandSession commandSession = this.standardCommandProcessor.createSession();
         assertNotNull(commandSession);       
     }
 }

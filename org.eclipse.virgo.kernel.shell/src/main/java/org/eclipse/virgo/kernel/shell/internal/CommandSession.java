@@ -31,11 +31,4 @@ interface CommandSession
      */
     List<String> execute(CharSequence commandline) throws Exception;
 
-    /**
-     * Close this command session. After the session is closed, it will throw
-     * IllegalStateException when it is used.
-     *
-     * @param
-     */
-    void close();
 }

@@ -24,12 +24,13 @@ import java.util.Set;
 
 import jline.ConsoleReader;
 
+import org.eclipse.virgo.kernel.shell.CommandExecutor;
+import org.eclipse.virgo.kernel.shell.LinePrinter;
 import org.eclipse.virgo.kernel.shell.internal.completers.CommandCompleterRegistry;
 import org.eclipse.virgo.kernel.shell.internal.completers.CommandRegistryBackedJLineCompletor;
 import org.eclipse.virgo.kernel.shell.internal.completers.DelegatingJLineCompletor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * <p>
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * SpringShellWrapper is thread safe
  *
  */
-final class JLineLocalShell implements Runnable, LocalShell {
+final class JLineLocalShell implements Runnable, LocalShell, CommandExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JLineLocalShell.class);
 
@@ -60,8 +61,6 @@ final class JLineLocalShell implements Runnable, LocalShell {
 
     private final PrintStream out;
 
-    private final PrintStream err;
-
     private final Set<ExitCallback> callbacks = new HashSet<ExitCallback>();
 
     private final CommandRegistry commandRegistry;
@@ -69,13 +68,12 @@ final class JLineLocalShell implements Runnable, LocalShell {
     private final CommandCompleterRegistry completerRegistry;
 
     public JLineLocalShell(CommandRegistry commandRegistry, CommandCompleterRegistry completerRegistry, CommandProcessor commandProcessor,
-        InputStream in, PrintStream out, PrintStream err) {
+        InputStream in, PrintStream out) {
         this.commandRegistry = commandRegistry;
         this.completerRegistry = completerRegistry;
         this.commandProcessor = commandProcessor;
         this.in = in;
         this.out = out;
-        this.err = err;
     }
 
     /**
@@ -105,44 +103,23 @@ final class JLineLocalShell implements Runnable, LocalShell {
 
         console.addCompletor(new CommandRegistryBackedJLineCompletor(this.commandRegistry));
         console.addCompletor(new DelegatingJLineCompletor(this.completerRegistry));
-
-        CommandSession commandSession = this.commandProcessor.createSession(this.err);
         
-        String command;
-        boolean running = true;
-        List<String> executionResult;
+        LinePrinter consoleLinePrinter = new ConsoleLinePrinter(console);
+
+        CommandSession commandSession = this.commandProcessor.createSession();
+        
         try {
             this.printHeader(console);
-            while (running) {
-                command = console.readLine();
-                if (command != null) {
-                    command = command.trim();
-                    if (command.length() > 0) {
-                        if (EXIT.equalsIgnoreCase(command)) {
-                            running = false;
-                            printToScreen(console, Arrays.asList(EXIT_MSG));
-                            informCallbacksOfExit();
-                        } else {
-                            try {
-                                executionResult = commandSession.execute(command);
-                                if (executionResult == null) {
-                                    executionResult = Arrays.asList(String.format("Null result returned for '%s'", command));
-                                }
-                            } catch (Exception e) {
-                                executionResult = Arrays.asList(String.format("%s while executing command '%s': '%s'", e.getClass().getName(),
-                                    command, e.getMessage()));
-                            }
-                            printToScreen(console, executionResult);
-                        }
-                    }
-                }
-            }
+            
+            while (new SessionCommandExecutor(commandSession).execute(console.readLine(), consoleLinePrinter)) { }
+         
+            printToScreen(console, Arrays.asList(EXIT_MSG));
+            informCallbacksOfExit();
+            
         } catch (IOException e) {
             this.out.println("Error occurred while writing to the shell. Please restart the shell bundle.");
-            commandSession.close();
             throw new IllegalStateException("The Shell was unable to recover from an IO error", e);
         }
-        commandSession.close();
     }
 
     private void informCallbacksOfExit() {
@@ -221,4 +198,65 @@ final class JLineLocalShell implements Runnable, LocalShell {
         }
     }
 
+    public boolean execute(String commandLine, LinePrinter linePrinter) throws IOException {
+        CommandSession commandSession = this.commandProcessor.createSession();
+        CommandExecutor sessionCommandExecutor = new SessionCommandExecutor(commandSession);
+        return sessionCommandExecutor.execute(commandLine, linePrinter);
+    }
+
+    private static void printList(LinePrinter linePrinter, List<String> executionResult) throws IOException {
+        linePrinter.println("");
+        for (String line : executionResult) {
+            linePrinter.println(line);
+        }
+    }
+
+    final static class ConsoleLinePrinter implements LinePrinter {
+        
+        private final ConsoleReader consoleReader;
+        
+        ConsoleLinePrinter(ConsoleReader consoleReader) {
+            this.consoleReader = consoleReader;
+        }
+
+        public LinePrinter println(String line) throws IOException {
+            this.consoleReader.printString(String.format("%s%s", line, CR_LF));
+            return this;
+        }
+        
+    }
+
+    final static class SessionCommandExecutor implements CommandExecutor {
+        
+        private final CommandSession commandSession;
+        
+        SessionCommandExecutor(CommandSession commandSession) {
+            this.commandSession = commandSession;
+        }
+
+        public boolean execute(String commandLine, LinePrinter linePrinter) throws IOException {
+            if (commandLine!=null) {
+                commandLine = commandLine.trim();
+                if (commandLine.length()>0) {
+                    if (EXIT.equalsIgnoreCase(commandLine)) {
+                        return false;
+                    } else {
+                        try {
+                            List<String> executionResult = this.commandSession.execute(commandLine);
+                            if (executionResult == null) {
+                                linePrinter.println(String.format("Null result returned for '%s'", commandLine));
+                            } else {
+                                printList(linePrinter, executionResult);
+                            }
+                        } catch (Exception e) {
+                            linePrinter.println(String.format("%s while executing command '%s': '%s'", e.getClass().getName(), commandLine,
+                                e.getMessage()));
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        
+    }
 }

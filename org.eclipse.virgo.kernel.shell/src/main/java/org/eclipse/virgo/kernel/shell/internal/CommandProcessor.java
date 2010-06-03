@@ -11,9 +11,6 @@
 
 package org.eclipse.virgo.kernel.shell.internal;
 
-import java.io.PrintStream;
-
-
 /**
  * A command shell can create and maintain a number of command sessions.
  */
@@ -45,8 +42,7 @@ public interface CommandProcessor
      * The shell will provide any available commands to this session and
      * can set additional variables.
      *
-     * @param err The stream used for System.err
      * @return A new session.
      */
-    CommandSession createSession(PrintStream err);
+    CommandSession createSession();
 }
