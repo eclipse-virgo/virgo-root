@@ -15,6 +15,7 @@
 
     <dependencies>
     	<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
+    	<dependency org="org.eclipse.osgi" name='org.eclipse.osgi' rev='${org.eclipse.osgi}' conf='compile->compile' />
     </dependencies>
 
 </ivy-module>
