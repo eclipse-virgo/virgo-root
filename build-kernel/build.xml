@@ -49,27 +49,11 @@
 		<ivy:resolve resolveId="copy.path" file="${basedir}/kernel-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/repository/ext/[artifact]-[revision].[ext]" conf="repository-ext" type="jar"/>
 
-		<mkdir dir="${package.output.dir}/bin/service"/>
 		<mkdir dir="${package.output.dir}/config"/>
 		<mkdir dir="${package.output.dir}/work"/>
 
 		<echo file="${package.output.dir}/lib/.version"
 				message="virgo.kernel.version=${bundle.version}&#xa;"/>
-
-		<ivy:cachepath resolveId="jsw" pathid="jsw" organisation="org.tanukisoftware"
-				module="org.tanukisoftware.wrapper" revision="${org.tanukisoftware.wrapper}" conf="runtime" type="zip"
-				inline="true" log="download-only"/>
-
-		<unzip dest="${package.output.dir}">
-			<path refid="jsw"/>
-			<patternset>
-				<include name="*/bin/wrapper-*"/>
-				<include name="*/lib/libwrapper-*"/>
-				<include name="*/lib/wrapper-*"/>
-				<include name="*/lib/wrapper.jar"/>
-			</patternset>
-			<globmapper from="wrapper-delta-pack-${org.tanukisoftware.wrapper}/*" to="bin/service/*"/>
-		</unzip>
 		
 		<copy todir="${package.output.dir}" failonerror="false">
 			<fileset dir="${basedir}/resources"/>
@@ -144,12 +128,6 @@
 			<fileset dir="${package.output.dir}/bin">
 				<include name="*.sh"/>
 			</fileset>
-			<fileset dir="${package.output.dir}/bin/service">
-				<include name="*.sh"/>
-			</fileset>
-			<fileset dir="${package.output.dir}/bin/service/bin">
-				<exclude name="*.exe"/>
-			</fileset>
 		</chmod>
 
 		<copy todir="${package.output.dir}" failonerror="false">
@@ -159,13 +137,9 @@
 		<mkdir dir="${artifacts.dir}"/>
 		<zip destfile="${package.output.file}">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/service/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/service/bin/*" filemode="755"/>
 			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">
 				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/bin/service/*.sh"/>
-				<exclude name="${package.basename}/bin/service/bin/*"/>
 				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
