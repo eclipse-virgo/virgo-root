@@ -21,7 +21,6 @@ import org.eclipse.virgo.kernel.shell.CommandExecutor;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 
 /**
  * {@link BundleActivator} for the osgi.console command extension bundle
@@ -39,10 +38,10 @@ public class Activator implements BundleActivator {
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
     
     public void start(BundleContext context) throws Exception {
-        CommandExecutor commandExecutor = getPotentiallyDelayedService(context, CommandExecutor.class, COMMAND_EXECUTOR_SERVICE_WAIT);
-        if (commandExecutor==null) throw new BundleException("Cannot obtain " + CommandExecutor.class.getName() + " service.");
-        
-        this.registrationTracker.track(context.registerService(CommandProvider.class.getName(), new OsgiKernelShellCommand(commandExecutor), null));
+        Runnable runnable = new PostStartInitialisationRunnable(context, this.registrationTracker);
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void stop(BundleContext context) throws Exception {
@@ -81,5 +80,28 @@ public class Activator implements BundleActivator {
         }
         
         return service;
+    }
+    
+    private static final class PostStartInitialisationRunnable implements Runnable {
+        
+        private final BundleContext context;
+        
+        private final ServiceRegistrationTracker registrationTracker;
+        
+        public PostStartInitialisationRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker) {
+            this.context = context;
+            this.registrationTracker = registrationTracker;
+        }
+
+        /** 
+         * {@inheritDoc}
+         */
+        public void run() {
+            CommandExecutor commandExecutor = getPotentiallyDelayedService(context, CommandExecutor.class, COMMAND_EXECUTOR_SERVICE_WAIT);
+            if (commandExecutor == null)
+                return; // TODO: report this failure -- but where?
+
+            this.registrationTracker.track(context.registerService(CommandProvider.class.getName(), new OsgiKernelShellCommand(commandExecutor), null));
+        }
     }
 }
