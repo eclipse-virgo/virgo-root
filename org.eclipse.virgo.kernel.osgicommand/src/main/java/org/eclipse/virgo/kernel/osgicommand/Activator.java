@@ -38,7 +38,6 @@ public class Activator implements BundleActivator {
     
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
     
-    @Override
     public void start(BundleContext context) throws Exception {
         CommandExecutor commandExecutor = getPotentiallyDelayedService(context, CommandExecutor.class, COMMAND_EXECUTOR_SERVICE_WAIT);
         if (commandExecutor==null) throw new BundleException("Cannot obtain " + CommandExecutor.class.getName() + " service.");
@@ -46,7 +45,6 @@ public class Activator implements BundleActivator {
         this.registrationTracker.track(context.registerService(CommandProvider.class.getName(), new OsgiKernelShellCommand(commandExecutor), null));
     }
 
-    @Override
     public void stop(BundleContext context) throws Exception {
         this.registrationTracker.unregisterAll();
     }

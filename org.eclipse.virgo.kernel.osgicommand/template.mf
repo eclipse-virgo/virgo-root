@@ -7,6 +7,8 @@ Excluded-Exports:
  *
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
+ org.eclipse.osgi.framework.*;version="0",
  org.osgi.framework.*;version="0",
  org.osgi.service.*;version="0"
 Bundle-Activator: org.eclipse.virgo.kernel.osgicommand.Activator
