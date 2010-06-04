@@ -13,9 +13,12 @@
 
 package org.eclipse.virgo.kernel.osgicommand.internal;
 
+import java.io.IOException;
+
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.eclipse.virgo.kernel.shell.CommandExecutor;
+import org.eclipse.virgo.kernel.shell.LinePrinter;
 
 /**
  * This {@link CommandProvider} extends the osgi.console with the command "vsh ..." which accesses the kernel shell commands.
@@ -27,6 +30,7 @@ import org.eclipse.virgo.kernel.shell.CommandExecutor;
  * @author Steve Powell
  */
 public final class OsgiKernelShellCommand implements CommandProvider {
+    
     CommandExecutor commandExecutor;
     
     public OsgiKernelShellCommand(CommandExecutor commandExecutor) {
@@ -34,9 +38,29 @@ public final class OsgiKernelShellCommand implements CommandProvider {
     }
     
     public void _vsh(CommandInterpreter commandInterpreter) {
-        commandInterpreter.println("_vsh called");
+        String commandLine = getCommandLine(commandInterpreter);
+        LinePrinter linePrinter = new CommandInterpreterLinePrinter(commandInterpreter);
+        try {
+            boolean continueCommands = this.commandExecutor.execute(commandLine, linePrinter);
+            if (!continueCommands) {
+                commandInterpreter.println("vsh: command '" + commandLine + "' requested exit");
+            }
+        } catch (IOException e) {
+            commandInterpreter.println("vsh: command '" + commandLine + "' threw an exception...");
+            commandInterpreter.printStackTrace(e);
+        }
     }
     
+    private static String getCommandLine(CommandInterpreter commandInterpreter) {
+        StringBuilder sb = new StringBuilder();
+        String arg = commandInterpreter.nextArgument();
+        while (arg!=null) {
+            sb.append(arg).append(" ");
+            arg = commandInterpreter.nextArgument();
+        }
+        return sb.toString();
+    }
+
     /** 
      * {@inheritDoc}
      */
@@ -44,4 +68,21 @@ public final class OsgiKernelShellCommand implements CommandProvider {
         return "vsh - execute kernel shell commands; 'vsh help' to list available commands";
     }
 
+    /**
+     * {@link LinePrinter} which uses a {@link CommandInterpreter} to output lines
+     */
+    private static final class CommandInterpreterLinePrinter implements LinePrinter {
+        private final CommandInterpreter commandInterpreter;
+        public CommandInterpreterLinePrinter(CommandInterpreter commandInterpreter) {
+            this.commandInterpreter = commandInterpreter;
+        }
+        public LinePrinter println(String line) throws IOException {
+            this.commandInterpreter.println(line);
+            return this;
+        }
+        public LinePrinter println() throws IOException {
+            this.commandInterpreter.println();
+            return this;
+        }
+    }
 }
