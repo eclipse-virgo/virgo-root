@@ -131,9 +131,8 @@ final class JLineLocalShell implements Runnable, LocalShell {
      * @throws IOException
      */
     private void printHeader(LinePrinter linePrinter) throws IOException {
-        linePrinter.println();
         linePrinter.println("    _    ___");
-        linePrinter.println("   | |  / (_)________ _____");
+        linePrinter.println("   | |  / (_)________  ____");
         linePrinter.println("   | | / / / ___/ __ `/ __ \\");
         linePrinter.println("   | |/ / / /  / /_/ / /_/ /");
         linePrinter.println("   |___/_/_/   \\__, /\\____/");

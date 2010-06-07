@@ -65,7 +65,7 @@ public final class OsgiKernelShellCommand implements CommandProvider {
      * {@inheritDoc}
      */
     public String getHelp() {
-        return "vsh - execute kernel shell commands; 'vsh help' to list available commands";
+        return "\tvsh - Virgo shell commands; 'vsh help' to list available commands\n";
     }
 
     /**
