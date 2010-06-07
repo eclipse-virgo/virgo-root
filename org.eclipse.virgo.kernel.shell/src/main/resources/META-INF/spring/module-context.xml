@@ -13,12 +13,18 @@
 		<constructor-arg ref="commandProcessor"/>
 	</bean>
 
+	<bean id="shellFactory" class="org.eclipse.virgo.kernel.shell.internal.StandardLocalShellFactory" >
+		<constructor-arg ref="commandProcessor" />
+		<constructor-arg ref="commandRegistry" />
+		<constructor-arg ref="completerRegistry" />
+	</bean>
+	
 	<bean id="ioManager" class="org.eclipse.virgo.kernel.shell.internal.LocalInputOutputManager">
 		<constructor-arg ref="bundleContext"/>
 	</bean>
 
 	<bean id="launchingEventHandler" class="org.eclipse.virgo.kernel.shell.internal.ShellLauncher" init-method="launchShells" destroy-method="stop" >
-		<constructor-arg value="null" />
+		<constructor-arg ref="shellFactory" />
 		<constructor-arg ref="configAdmin" />
 		<constructor-arg ref="eventLogger" />
 		<constructor-arg ref="bundleContext" />
