@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.shell.internal.completers.InstallCompleter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -58,6 +59,7 @@ public class InstallCompleterTests {
         assertCompletionsPresent(completionCandidates);
     }
 
+    @Ignore("FileNameComplet(e|o)r no longer available.")
     @Test
     public void completionWithMultipleOptions() {
         List<String> completionCandidates = this.completer.getCompletionCandidates("file:target" + File.separatorChar + "install-completer"
@@ -69,6 +71,7 @@ public class InstallCompleterTests {
         assertCompletionsPresent(completionCandidates, ALPHA, APPLE);
     }
 
+    @Ignore("FileNameComplet(e|o)r no longer available.")
     @Test
     public void completionWithSingleOption() {
         List<String> completionCandidates = this.completer.getCompletionCandidates("file:target" + File.separatorChar + "install-completer"
