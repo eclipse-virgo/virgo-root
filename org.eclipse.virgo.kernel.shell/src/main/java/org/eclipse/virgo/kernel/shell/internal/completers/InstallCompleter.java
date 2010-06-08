@@ -24,8 +24,6 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import jline.FileNameCompletor;
-
 import org.eclipse.virgo.kernel.shell.CommandCompleter;
 import org.eclipse.virgo.repository.management.ArtifactDescriptorSummary;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
@@ -86,7 +84,7 @@ public class InstallCompleter implements CommandCompleter {
         List<String> candidates = new ArrayList<String>();
 
         String path = subcommand.substring(FILE_PREFIX.length());
-        int completionIndex = new FileNameCompletor().complete(path, path.length(), candidates);
+        int completionIndex = 0; //new FileNameCompletor().complete(path, path.length(), candidates);
         
         Set<String> candidateSet = new HashSet<String>(candidates.size());
 

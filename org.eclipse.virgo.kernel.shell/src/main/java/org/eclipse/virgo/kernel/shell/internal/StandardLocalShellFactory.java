@@ -54,6 +54,6 @@ final class StandardLocalShellFactory implements LocalShellFactory {
      * {@inheritDoc}
      */
     public LocalShell newShell(InputStream in, PrintStream out, PrintStream err) {
-        return new JLineLocalShell(this.commandRegistry, this.completerRegistry, this.commandProcessor, in, out);
+        return null;
     }
 }

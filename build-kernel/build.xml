@@ -69,7 +69,6 @@
 				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
 				<filter token="FELIX.CONFIGADMIN.VERSION" value="${org.apache.felix}"/>
 				<filter token="FELIX.EVENTADMIN.VERSION" value="${org.apache.felix.eventadmin}"/>
-				<filter token="JLINE.VERSION" value="${net.sourceforge.jline}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
@@ -86,7 +85,6 @@
 				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
 				<filter token="FELIX.CONFIGADMIN.VERSION" value="${org.apache.felix}"/>
 				<filter token="FELIX.EVENTADMIN.VERSION" value="${org.apache.felix.eventadmin}"/>
-				<filter token="JLINE.VERSION" value="${net.sourceforge.jline}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
