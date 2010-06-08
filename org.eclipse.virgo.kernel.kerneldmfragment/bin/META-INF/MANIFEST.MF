@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Export-Package: target.artifacts;version="0.0.0"
-Tool: Bundlor 1.0.0.M6
-
