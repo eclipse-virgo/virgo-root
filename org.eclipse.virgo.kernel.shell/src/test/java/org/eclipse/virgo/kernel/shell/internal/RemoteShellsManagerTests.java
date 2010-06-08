@@ -29,6 +29,7 @@ import org.apache.sshd.client.future.OpenFuture;
 import org.apache.sshd.common.future.CloseFuture;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.session.ServerSession;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.eclipse.virgo.kernel.shell.internal.RemoteShellsManager;
@@ -75,6 +76,7 @@ public class RemoteShellsManagerTests {
     }
 
     @Test
+    @Ignore("Remote shells disabled until LocalShell implementation supplied.")
     public void testRemoteShellEnabled() throws Exception {
         int port = NetUtils.getFreePort();
         Properties configuration = new Properties();
@@ -95,7 +97,9 @@ public class RemoteShellsManagerTests {
         }
     }
 
+    
     @Test
+    @Ignore("Remote shells disabled until LocalShell implementation supplied.")
     public void testRemoteShellEnabledPortClash() throws Exception {
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         ObjectName shutdownName = ObjectName.getInstance(DEFAULT_KERNEL_DOMAIN, MBEAN_KEY_TYPE, MBEAN_VALUE_SHUTDOWN);
@@ -116,6 +120,7 @@ public class RemoteShellsManagerTests {
     }
 
     @Test
+    @Ignore("Remote shells disabled until LocalShell implementation supplied.")
     public void testRemoteShellEnabledBadUser() throws Exception {
         int port = NetUtils.getFreePort();
         Properties configuration = new Properties();
@@ -144,6 +149,7 @@ public class RemoteShellsManagerTests {
     }
 
     @Test
+    @Ignore("Remote shells disabled until LocalShell implementation supplied.")
     public void testRemoteShellEnabledConnect() throws Exception {
         int port = NetUtils.getFreePort();
         Properties configuration = new Properties();

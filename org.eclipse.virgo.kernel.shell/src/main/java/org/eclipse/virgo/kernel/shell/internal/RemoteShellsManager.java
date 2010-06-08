@@ -72,12 +72,19 @@ class RemoteShellsManager {
 
     private final int port;
 
-    private final String portEnabled;
+    private final boolean portEnabled;
 
     private SshServer sshd = null;
 
     RemoteShellsManager(LocalShellFactory shellFactory, Properties configuration, EventLogger eventLogger) {
-        this.portEnabled = configuration.getProperty(PROPERTY_SHELL_ENABLED);
+        
+        String portEnabled = configuration.getProperty(PROPERTY_SHELL_ENABLED);
+        // Remote Shells are unsupported until we can create a LocalShell implementation.
+        if (portEnabled != null && TRUE.equals(portEnabled)) {
+            eventLogger.log(ShellLogEvents.SERVER_SHELL_UNSUPPORTED);
+        }
+        this.portEnabled = false;
+        
         String portString = configuration.getProperty(PROPERTY_SHELL_PORT);
         int initialisingPort = -1;
         try {
@@ -90,6 +97,7 @@ class RemoteShellsManager {
         }
         this.port = initialisingPort;
 
+        
         this.shellFactory = new SshdShellFactory(shellFactory);
         this.eventLogger = eventLogger;
     }
@@ -99,11 +107,11 @@ class RemoteShellsManager {
      * port then no server will be started.
      */
     final void start() {
-        if (this.sshd == null && portEnabled != null && TRUE.equals(portEnabled) && this.port != -1) {
-            if (NetUtils.isPortAvailable(port)) {
-                doStart(port);
+        if (this.sshd == null && portEnabled && this.port != -1) {
+            if (NetUtils.isPortAvailable(this.port)) {
+                doStart(this.port);
             } else {
-                this.eventLogger.log(ShellLogEvents.SERVER_SHELL_PORT_IN_USE, String.valueOf(port));
+                this.eventLogger.log(ShellLogEvents.SERVER_SHELL_PORT_IN_USE, String.valueOf(this.port));
                 callShutdownMBean();
             }
         }

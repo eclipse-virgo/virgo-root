@@ -27,7 +27,8 @@ import org.eclipse.virgo.medic.eventlog.LogEvent;
 public enum ShellLogEvents implements LogEvent {
     
     SERVER_CONSOLE_PORT(1, Level.INFO),
-    SERVER_SHELL_PORT_IN_USE(2, Level.ERROR);
+    SERVER_SHELL_PORT_IN_USE(2, Level.ERROR),
+    SERVER_SHELL_UNSUPPORTED(3, Level.WARNING);
 
     private static final String PREFIX = "SH";
 
