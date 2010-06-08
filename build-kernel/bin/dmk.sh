@@ -134,7 +134,8 @@ then
 	
 	if [ "$SHELL_FLAG" ]
 	then
-		LAUNCH_OPTS="$LAUNCH_OPTS -Forg.eclipse.virgo.kernel.shell.local=true"
+	    echo "Warning: Kernel shell not supported; -shell option ignored."
+		# LAUNCH_OPTS="$LAUNCH_OPTS -Forg.eclipse.virgo.kernel.shell.local=true"
 	fi
 	
 	# Set the required permissions on the JMX configuration files

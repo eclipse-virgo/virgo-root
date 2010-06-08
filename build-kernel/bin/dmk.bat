@@ -143,8 +143,9 @@ rem ------------------------------
   if not exist "%TMP_DIR%" mkdir "%TMP_DIR%"
 
   rem do Shell work:
-    if not "%SHELL_FLAG%"=="" (      
-      set LAUNCH_OPTS=%LAUNCH_OPTS% -Forg.eclipse.virgo.kernel.shell.local=true
+    if not "%SHELL_FLAG%"=="" ( 
+      echo "Warning: Kernel shell not supported; -shell option ignored."
+      rem set LAUNCH_OPTS=%LAUNCH_OPTS% -Forg.eclipse.virgo.kernel.shell.local=true
     )
 
   rem Set JMX options
