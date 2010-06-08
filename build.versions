@@ -1,5 +1,4 @@
 # Compile
-net.sourceforge.jline=0.9.94.S2-A
 org.apache.felix.eventadmin=1.0.0
 org.apache.felix=1.2.4
 org.apache.mina=2.0.0.RC1

@@ -18,11 +18,11 @@ import org.eclipse.virgo.kernel.shell.internal.completers.CommandCompleterRegist
 
 
 /**
- * <p>
- * StandardLocalShellFactory creates new local shells based on JLine and with the 
+ * A {@link LocalShellFactory} that creates a new local shells based on a shell implementation with the 
  * appropriate command information and the provided in/out streams. These shells 
  * can be wrapped to be made available remotely.
- * </p>
+ * <p>
+ * There are no shell implementations presently. This factory doesn't create a {@link LocalShell}.  
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
@@ -31,10 +31,13 @@ import org.eclipse.virgo.kernel.shell.internal.completers.CommandCompleterRegist
  */
 final class StandardLocalShellFactory implements LocalShellFactory {
 
+    @SuppressWarnings("unused")
     private final CommandProcessor commandProcessor;
 
+    @SuppressWarnings("unused")
     private final CommandRegistry commandRegistry;
 
+    @SuppressWarnings("unused")
     private final CommandCompleterRegistry completerRegistry;
     
     /**
