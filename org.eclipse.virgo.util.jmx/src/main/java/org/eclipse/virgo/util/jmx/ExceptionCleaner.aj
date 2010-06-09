@@ -19,17 +19,20 @@ import javax.management.MXBean;
  * them to make sure they can be safely thrown to a JMX client. Safe means that there will be no types thrown that
  * cannot be loaded by the JMX client.
  * <p/>
- * This is accomplished by throwing a new {@link RuntimeException} <em>with no cause</em> and the message from the caught
- * exception, and logging the original exception at error level with the logger for the throwing class. 
- * The <code>StackTrace</code> from the original exception is attached to the new {@link RuntimeException} for information purposes.<br/>
- * Moved from <code>com.springsource.kernel.model.management.internal</code> package and enhanced to catch all
- * @{@link MXBean} annotated interfaces.
+ * This is accomplished by throwing a <em>cleaned</em> exception instead, after logging the original exception at error level with the logger for the throwing class.
+ * <p/>  
+ * A <em>cleaned</em> exception, <code>cleaned(t)</code>, is a new {@link RuntimeException} with message that of <code>t</code> (prefixed with the
+ * class name of <code>t</code>), with cause <code>cleaned(t.getCause())</code>, and with stack trace set to <code>t.getStackTrace()</code>.
+ * <br/><em>Notice that this definition is recursive; <code>cleaned(<b>null</b>)</code> is defined to be <code><b>null</b></code>.</em>
+ * <p/>
+ * The {@link StackTraceElement StackTrace} from the original exception is attached to the new {@link RuntimeException} for information purposes.
+ * <p/>
+ * (Moved from <code>com.springsource.kernel.model.management.internal</code> package and enhanced to catch 
+ * all @{@link MXBean} annotated interfaces.)
  * <p/>
  * 
  * <strong>Concurrent Semantics</strong><br />
- * 
- * Threadsafe
- * 
+ * Thread-safe
  */
 public aspect ExceptionCleaner {
 
