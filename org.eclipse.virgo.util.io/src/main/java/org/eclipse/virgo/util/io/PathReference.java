@@ -285,6 +285,32 @@ public final class PathReference {
     }
 
     /**
+     * Move the file (or directory) associated with this path reference to the destination path reference.
+     * <p/>
+     * If the destination already exists, or if the file associated with this path reference <i>doesn't</i> exist, then a {@link FatalIOException} (unchecked) is thrown.
+     * <br/>This is otherwise functionally equivalent to the sequence <code>copy(dest,<strong>true</strong>); delete(<strong>true</strong>);</code> 
+     * returning the destination reference, except that a <i>fast move</i> is attempted first.
+     * <p/>
+     * If the <i>fast move</i> fails (for example because of file system limitations) 
+     * the slow version is attempted, <i>viz</i>: <code>copy(dest,<strong>true</strong>); delete(<strong>true</strong>); <strong>return</strong> dest;</code>
+     * @param dest path to move the current file to
+     * @return the destination path reference
+     */
+    public PathReference moveTo(PathReference dest) {
+        if (!exists()) {
+            throw new FatalIOException("Cannot move path '" + this + "' to '" + dest + "'. Source file does not exist.");
+        }
+        if (dest.exists()) {
+            throw new FatalIOException("Cannot move path '" + this + "' to '" + dest + "'. Destination path already exists.");
+        } 
+        if (!this.file.renameTo(dest.file)) {
+            copy(dest, true);   //can throw FatalIOException
+            delete(true);       //can throw FatalIOException
+        }
+        return dest;
+    }
+    
+    /**
      * Creates a new <code>PathReference</code> by concatenating the path of this <code>PathReference</code> with
      * the supplied <code>name</code>. Note that this method does <strong>not</strong> create a physical file or
      * directory at the child location.
