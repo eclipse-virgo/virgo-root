@@ -14,6 +14,7 @@ package org.eclipse.virgo.util.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -225,6 +226,28 @@ public class PathReferenceTests {
         assertFalse("child in source still exists", srcCopy.newChild("child").exists());
         assertFalse("child/grand-child in source still exists", srcCopy.newChild("child").newChild("grand-child").exists());
         assertFalse("child/grand-child/foo.txt in source still exists", srcCopy.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
+    }
+    
+    @Test 
+    public void moveToFails() {
+        PathReference pr = PathReference.concat(WORK_AREA2_PATH, TEST_FILE2);
+        assertTrue(pr.exists());
+        
+        PathReference dest = PathReference.concat(WORK_AREA2_PATH, "out.txt");
+        assertFalse(dest.exists());
+
+        pr.copy(dest);
+        assertTrue("File " + dest + " doesn't exist -- file not copied.", dest.exists());
+        
+        PathReference moved = null;
+        try {
+            moved = pr.moveTo(dest);
+        } catch (FatalIOException fioe) {
+            fioe.printStackTrace();
+        }
+        assertNull("Expecting moved to be null", moved);
+        assertTrue("File " + pr + " should still exist.", pr.exists());
+        assertTrue("File " + dest + " doesn't exist!", dest.exists());
     }
     
     @Test
