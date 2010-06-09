@@ -311,6 +311,31 @@ public final class PathReference {
     }
     
     /**
+     * Move the file (or directory) associated with this path reference to the destination path reference.
+     * <p/>
+     * If the destination already exists, or if the file associated with this path reference <i>doesn't</i> exist, then a {@link FatalIOException} (unchecked) is thrown.
+     * <br/>A <i>fast move</i> is attempted.
+     * <p/>
+     * If the <i>fast move</i> fails a {@link FataIOException} is thrown.
+     * <p/>
+     * This is a utility function for testing purposes, and is deliberately package private.
+     * @param dest path to move the current file to
+     * @return the destination path reference
+     */
+    PathReference fastMoveTo(PathReference dest) {
+        if (!exists()) {
+            throw new FatalIOException("Cannot move path '" + this + "' to '" + dest + "'. Source file does not exist.");
+        }
+        if (dest.exists()) {
+            throw new FatalIOException("Cannot move path '" + this + "' to '" + dest + "'. Destination path already exists.");
+        } 
+        if (!this.file.renameTo(dest.file)) {
+            throw new FatalIOException("Fast move from '" + this + "' to '" + dest + "' failed.");
+        }
+        return dest;
+    }
+    
+    /**
      * Creates a new <code>PathReference</code> by concatenating the path of this <code>PathReference</code> with
      * the supplied <code>name</code>. Note that this method does <strong>not</strong> create a physical file or
      * directory at the child location.

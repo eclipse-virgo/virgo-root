@@ -39,7 +39,8 @@ public class PathReferenceTests {
 
     private static final String TEST_FILE2 = "test2.txt";
 
-    @Before public void workAreaSetUp() throws Exception{
+    @Before 
+    public void workAreaSetUp() throws Exception{
         resetWorkArea(new File(WORK_AREA_PATH));
         
         File f2 = new File(WORK_AREA2_PATH);
@@ -55,38 +56,45 @@ public class PathReferenceTests {
         f.mkdir();
     }
 
-    @After public void workAreaClean() {
+    @After 
+    public void workAreaClean() {
         FileSystemUtils.deleteRecursively(new File(WORK_AREA_PATH));
         FileSystemUtils.deleteRecursively(new File(WORK_AREA2_PATH));
     }
 
-    @Test public void createFromPath() {
+    @Test 
+    public void createFromPath() {
         PathReference path = new PathReference("src/test/resources");
         assertNotNull(path.toFile());
     }
 
-    @Test public void createFromFile() {
+    @Test 
+    public void createFromFile() {
         PathReference path = new PathReference(new File("src/test/resources"));
         assertNotNull(path.toFile());
     }
 
-    @Test public void exists() {
+    @Test 
+    public void exists() {
         assertTrue(new PathReference("src/test/resources").exists());
         assertFalse(new PathReference("src/test/resources/non-existent").exists());
     }
 
-    @Test public void isFileOrDirectory() {
+    @Test 
+    public void isFileOrDirectory() {
         assertTrue(new PathReference("src/test/resources").isDirectory());
         assertTrue(new PathReference("src/test/resources/test.txt").isFile());
     }
 
-    @Test public void concat() {
+    @Test 
+    public void concat() {
         PathReference pr = PathReference.concat("src", "test", "resources", "test.txt");
         assertTrue(pr.exists());
         assertTrue(pr.isFile());
     }
 
-    @Test public void create() {
+    @Test 
+    public void create() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy.txt");
         assertFalse(pr.exists());
         pr.createFile();
@@ -94,7 +102,8 @@ public class PathReferenceTests {
         assertTrue(pr.isFile());
     }
 
-    @Test public void createDirectory() {
+    @Test 
+    public void createDirectory() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy");
         assertFalse(pr.exists());
         pr.createDirectory();
@@ -102,28 +111,32 @@ public class PathReferenceTests {
         assertTrue(pr.isDirectory());
     }
 
-    @Test public void createTree() {
+    @Test 
+    public void createTree() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy");
         assertFalse(pr.exists());
         PathReference file = pr.createDirectory().newChild("inner").createDirectory().newChild("foo.txt").createFile();
         assertTrue(file.exists());
     }
 
-    @Test public void createTreeNested() {
+    @Test 
+    public void createTreeNested() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy");
         assertFalse(pr.exists());
         PathReference ref = pr.newChild("inner").newChild("more").createDirectory();
         assertTrue(ref.exists());
     }
 
-    @Test public void createTreeNestedWithFile() {
+    @Test 
+    public void createTreeNestedWithFile() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy");
         assertFalse(pr.exists());
         PathReference ref = pr.newChild("inner").newChild("more.txt").createFile();
         assertTrue(ref.exists());
     }
 
-    @Test public void deleteNonRecursiveDir() {
+    @Test 
+    public void deleteNonRecursiveDir() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy_dir");
         PathReference nested = pr.createDirectory().newChild("foo").createDirectory().newChild("bar").createFile();
         assertTrue(pr.exists());
@@ -133,7 +146,8 @@ public class PathReferenceTests {
         assertTrue(nested.exists());
     }
 
-    @Test public void deleteNonRecursiveFile() {
+    @Test 
+    public void deleteNonRecursiveFile() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy.txt");
         pr.createFile();
         assertTrue(pr.exists());
@@ -141,7 +155,8 @@ public class PathReferenceTests {
         assertFalse(pr.exists());
     }
 
-    @Test public void deleteNonRecursiveEmptyDir() {
+    @Test 
+    public void deleteNonRecursiveEmptyDir() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy");
         pr.createDirectory();
         assertTrue(pr.exists());
@@ -149,7 +164,8 @@ public class PathReferenceTests {
         assertFalse(pr.exists());
     }
 
-    @Test public void deleteRecursive() {
+    @Test 
+    public void deleteRecursive() {
         PathReference pr = PathReference.concat(WORK_AREA_PATH, "dummy_dir");
         PathReference nested = pr.createDirectory().newChild("foo").createDirectory().newChild("bar").createFile();
         assertTrue(pr.exists());
@@ -159,7 +175,8 @@ public class PathReferenceTests {
         assertFalse(nested.exists());
     }
 
-    @Test public void copyFileToFile() {
+    @Test 
+    public void copyFileToFile() {
         PathReference pr = new PathReference(TEST_FILE);
         assertTrue(pr.exists());
 
@@ -171,7 +188,8 @@ public class PathReferenceTests {
         assertEquals(dest, copy);
     }
     
-    @Test public void moveFileToFile() {
+    @Test 
+    public void moveFileToFile() {
         PathReference pr = PathReference.concat(WORK_AREA2_PATH, TEST_FILE2);
         assertTrue(pr.exists());
         
@@ -179,12 +197,13 @@ public class PathReferenceTests {
         assertFalse(dest.exists());
 
         PathReference moved = pr.moveTo(dest);
-        assertEquals("Resulting reference not to moved destination.", dest, moved);
+        assertEquals("Resulting reference not destination.", dest, moved);
         assertTrue("File " + dest + " doesn't exist -- file not moved.", dest.exists());
         assertFalse("File " + pr + " still exists -- not moved.", pr.exists());
     }
 
-    @Test public void moveDirToDir() {
+    @Test 
+    public void moveDirToDir() {
         PathReference src = new PathReference(TEST_FILE).getParent();
         assertTrue(src.exists());
         
@@ -207,8 +226,43 @@ public class PathReferenceTests {
         assertFalse("child/grand-child in source still exists", srcCopy.newChild("child").newChild("grand-child").exists());
         assertFalse("child/grand-child/foo.txt in source still exists", srcCopy.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
     }
+    
+    @Test
+    public void moveDirToDirFast() {
+        PathReference src = new PathReference(TEST_FILE).getParent();
+        assertTrue(src.exists());
+        
+        PathReference srcCopy = PathReference.concat(WORK_AREA2_PATH, "moveFromSrc");
+        src.copy(srcCopy, true);
+        assertTrue(srcCopy.exists());
 
-    @Test(expected = FatalIOException.class) public void copyFileToExistingFile() {
+        PathReference dest = PathReference.concat(WORK_AREA2_PATH, "moveToDest");
+        assertFalse(dest.exists());
+
+        boolean movedFast = false;
+        try {
+            srcCopy.fastMoveTo(dest);
+            movedFast = true;
+        } catch (FatalIOException fioe) {
+            fioe.printStackTrace();
+            movedFast = false;
+        }
+
+        assertTrue("Fast move failed!", movedFast);
+        
+        assertTrue(dest + " does not exist", dest.exists());
+        assertTrue("child in destination does not exist", dest.newChild("child").exists());
+        assertTrue("child/grand-child in destination does not exist", dest.newChild("child").newChild("grand-child").exists());
+        assertTrue("child/grand-child/foo.txt in destination does not exist", dest.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
+        
+        assertFalse(srcCopy + " still exists", srcCopy.exists());
+        assertFalse("child in source still exists", srcCopy.newChild("child").exists());
+        assertFalse("child/grand-child in source still exists", srcCopy.newChild("child").newChild("grand-child").exists());
+        assertFalse("child/grand-child/foo.txt in source still exists", srcCopy.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
+    }
+
+    @Test(expected = FatalIOException.class) 
+    public void copyFileToExistingFile() {
         PathReference pr = new PathReference(TEST_FILE);
         assertTrue(pr.exists());
 
@@ -219,7 +273,8 @@ public class PathReferenceTests {
         pr.copy(dest, false);
     }
 
-    @Test public void copyFileToDirectory() {
+    @Test 
+    public void copyFileToDirectory() {
         PathReference pr = new PathReference(TEST_FILE);
         assertTrue(pr.exists());
 
@@ -234,7 +289,8 @@ public class PathReferenceTests {
         assertEquals(finalDest, copy);
     }
 
-    @Test(expected = FatalIOException.class) public void copyFileToDirectoryWhenExists() {
+    @Test(expected = FatalIOException.class) 
+    public void copyFileToDirectoryWhenExists() {
         PathReference pr = new PathReference(TEST_FILE);
         assertTrue(pr.exists());
 
@@ -248,7 +304,8 @@ public class PathReferenceTests {
         pr.copy(dest, false);
     }
 
-    @Test(expected = FatalIOException.class) public void copyDirNonEmptyNonRecursive() {
+    @Test(expected = FatalIOException.class) 
+    public void copyDirNonEmptyNonRecursive() {
         PathReference pr = new PathReference(TEST_FILE).getParent();
         assertTrue(pr.exists());
 
@@ -258,7 +315,8 @@ public class PathReferenceTests {
         pr.copy(dest, false);
     }
 
-    @Test public void copyDirEmptyNonRecursive() {
+    @Test 
+    public void copyDirEmptyNonRecursive() {
         PathReference pr = new PathReference(WORK_AREA_PATH).newChild("src").createDirectory();
         assertTrue(pr.exists());
 
@@ -270,7 +328,8 @@ public class PathReferenceTests {
         assertTrue(dest.exists());
     }
 
-    @Test public void copyDirNonEmptyRecursiveIntoExistingDir() {
+    @Test 
+    public void copyDirNonEmptyRecursiveIntoExistingDir() {
         PathReference src = new PathReference(TEST_FILE).getParent();
         assertTrue(src.exists());
 
@@ -286,7 +345,8 @@ public class PathReferenceTests {
         assertTrue(finalDest.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
     }
 
-    @Test public void copyDirNonEmptyRecursiveIntoNewDir() {
+    @Test 
+    public void copyDirNonEmptyRecursiveIntoNewDir() {
         PathReference src = new PathReference(TEST_FILE).getParent();
         assertTrue(src.exists());
 
@@ -301,7 +361,8 @@ public class PathReferenceTests {
         assertTrue(dest.newChild("child").newChild("grand-child").newChild("foo.txt").exists());
     }
 
-    @Test public void copyDirNonEmptyRecursiveIntoNewDirWithFilter() {
+    @Test 
+    public void copyDirNonEmptyRecursiveIntoNewDirWithFilter() {
         PathReference src = new PathReference(TEST_FILE).getParent();
         assertTrue(src.exists());
 
