@@ -194,8 +194,7 @@ public final class DeployerRecoveryLog {
         }
         // Now switch the files
         this.redeployDataset.delete();
-        this.redeployCompressionDataset.copy(this.redeployDataset);
-        this.redeployCompressionDataset.delete();
+        this.redeployCompressionDataset.moveTo(this.redeployDataset);
     }
 
     /**
