@@ -6,7 +6,7 @@ Bundle-Vendor: SpringSource Inc.
 Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.virgo.medic.impl.MedicActivator
 Import-Template: 
- org.eclipse.virgo.medic.*;version="[1.0.1,1.0.2)",
+ org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.osgi;version="${org.eclipse.virgo.util:[=.=.=, +1.0.0)}",
  javax.jms;version="0";resolution:=optional,
  javax.mail.*;version="0";resolution:=optional,
