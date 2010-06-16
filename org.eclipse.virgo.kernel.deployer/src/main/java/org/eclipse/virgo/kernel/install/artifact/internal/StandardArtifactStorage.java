@@ -109,16 +109,14 @@ final class StandardArtifactStorage implements ArtifactStorage {
     private void stashContent() {
         if (this.baseStagingPathReference.exists()) {
             this.pastStagingPathReference.delete(true);
-            this.baseStagingPathReference.copy(this.pastStagingPathReference, true);
-            this.baseStagingPathReference.delete(true);
+            this.baseStagingPathReference.moveTo(this.pastStagingPathReference);
         }
     }
 
     private void unstashContent() {
         if (this.pastStagingPathReference.exists()) {
             this.baseStagingPathReference.delete(true);
-            this.pastStagingPathReference.copy(this.baseStagingPathReference, true);
-            this.pastStagingPathReference.delete(true);
+            this.pastStagingPathReference.moveTo(this.baseStagingPathReference);
         }
     }
 
