@@ -1,10 +1,10 @@
 # Compile
-org.eclipse.virgo.kernel=2.1.0.M01
+org.eclipse.virgo.kernel=2.1.0.D-20100616143933
 org.eclipse.virgo.medic=2.1.0.M01
 org.eclipse.virgo.osgi=2.1.0.M01
 org.eclipse.virgo.repository=2.1.0.M01
 org.eclipse.virgo.util=2.1.0.M01
-org.eclipse.virgo.web=2.1.0.M01
+org.eclipse.virgo.web=2.1.0.D-20100616150546
 org.eclipse.gemini.web=1.0.0.CI-17
 javax.jms=1.1.0
 javax.annotation=1.0.0
