@@ -10,6 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.shell"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-3.5.1.R35x_v20091005.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-sources-3.5.1.R35x_v20091005.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.L/org.eclipse.virgo.util.osgi-2.1.0.L.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.L/org.eclipse.virgo.util.osgi-sources-2.1.0.L.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.M01/org.eclipse.virgo.util.osgi-2.1.0.M01.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.M01/org.eclipse.virgo.util.osgi-sources-2.1.0.M01.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
