@@ -63,6 +63,8 @@ public abstract class AbstractWebIntegrationTests {
 
     private static final long HOT_DEPLOY_TIMEOUT = 30000;
 
+	private static final String CURRENT_VERSION = "2.1.0";
+
     protected final List<String> deployedWebApps = new ArrayList<String>();
 
     protected OsgiFramework osgiFramework;
@@ -344,7 +346,7 @@ public abstract class AbstractWebIntegrationTests {
     @AfterClass
     public static void cleanup() throws Exception {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=plan,name=org.eclipse.virgo.web,version=2.0.0");
+        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=plan,name=org.eclipse.virgo.web,version=" + CURRENT_VERSION);
 
         try {
             mBeanServer.invoke(objectName, "stop", null, null);
@@ -355,7 +357,7 @@ public abstract class AbstractWebIntegrationTests {
 
     private void awaitInitialArtifactDeployment() throws JMException, InterruptedException {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=plan,name=org.eclipse.virgo.web,version=2.0.0");
+        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=plan,name=org.eclipse.virgo.web,version=" + CURRENT_VERSION);
 
         Object state = null;
         long startTime = System.currentTimeMillis();
