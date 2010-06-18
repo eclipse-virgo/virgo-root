@@ -145,7 +145,7 @@
 
 <!--publish-package, -->
 
-	<target name="publish" depends="publish-package, publish-multi-bundle.publish"/>
+	<target name="publish" depends="publish-package-eclipse, publish-multi-bundle.publish"/>
 
 	<target name="smoke-test" description="Runs a smoke test on the kernel packaged build">
 		<path id="smoke.test.bundles">
