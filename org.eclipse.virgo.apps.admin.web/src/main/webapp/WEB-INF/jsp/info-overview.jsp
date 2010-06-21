@@ -11,7 +11,7 @@
 <h2>Documentation</h2>
 <p>Documentation is available on-line for the Virgo Web Server.</p>
 <ul>
-  <li><a href="http://www.eclipse.org/virgo/documentation" target="_blank" title="Virgo Server&#153; - Documentation">Virgo Server&#153; - Documentation</a>, includes links to the User, Programmer and Getting Started Guides</li>
+  <li><a href="http://www.eclipse.org/virgo/documentation" target="_blank" title="Virgo Server - Documentation">Virgo Server - Documentation</a>, includes links to the User, Programmer and Application Development Guides</li>
 	<li><a href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/index.html" target="_blank" title="Spring Framework">Spring Framework Documentation</a>.</li>
 	<li><a href="http://static.springframework.org/osgi/docs/current/reference/html/" target="_blank" title="Spring Dynamic Modules">Spring Dynamic Modules Documentation</a>.</li>
 </ul>

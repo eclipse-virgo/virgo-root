@@ -40,7 +40,7 @@
         
         <h1>Welcome</h1>
         <p>
-          Congratulations on installing the Virgo Server&#153;.
+          Congratulations on installing the Virgo Server.
           From this splash page you can access the web-based <a href="/admin" title="Admin Console">admin console</a>.
         </p>
         
@@ -49,7 +49,7 @@
           Documentation is available on-line for the server and related products.
         </p>
         <ul>
-          <li><a href="http://www.eclipse.org/virgo/documentation" target="_blank" title="Virgo Server&#153; - Documentation">Virgo Server&#153; - Documentation</a>, includes links to the User, Programmer and Getting Started Guides</li>
+          <li><a href="http://www.eclipse.org/virgo/documentation" target="_blank" title="Virgo Server - Documentation">Virgo Server - Documentation</a>, includes links to the User, Programmer and Getting Started Guides</li>
           <li><a href="http://www.springsource.org/documentation" target="_blank" title="Spring Framework">Spring Framework Documentation</a></li>
           <li><a href="http://static.springframework.org/osgi/docs/current/reference/html/" target="_blank" title="Spring Dynamic Modules">Spring Dynamic Modules Documentation</a></li>
         </ul>

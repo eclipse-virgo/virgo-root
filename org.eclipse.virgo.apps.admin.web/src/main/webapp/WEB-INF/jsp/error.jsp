@@ -3,7 +3,7 @@
 --%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %><%-- 
 --%><jsp:include page="top.jsp" />
 
-<h1 class="title">Virgo Web Server&#153;</h1>
+<h1 class="title">Virgo Web Server</h1>
 <p>
 	An unexpected error occurred while performing your requested operation.
 	Please <a href="<c:url value="/web/info/overview.htm" />">return to the main page</a> and
