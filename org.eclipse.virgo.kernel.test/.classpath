@@ -20,6 +20,6 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.osgi/org.osgi.compendium/4.1.0/org.osgi.compendium-4.1.0.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/2.1.0.M01/org.eclipse.virgo.util.parser.manifest-2.1.0.M01.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/2.1.0.M01/org.eclipse.virgo.util.parser.manifest-sources-2.1.0.M01.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.M01/org.eclipse.virgo.medic-2.1.0.M01.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.D-20100622121302/org.eclipse.virgo.medic-2.1.0.D-20100622121302.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
