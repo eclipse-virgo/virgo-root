@@ -42,7 +42,7 @@ public final class DumpContributorPublisher {
     }
 
     public void publishDumpContributors() {
-        LoggingInterceptor.aspectOf().setLoggingListener(this.logDumpContributor);
+        //LoggingInterceptor.aspectOf().setLoggingListener(this.logDumpContributor);
         
         publishDumpContributor(new SummaryDumpContributor());
         publishDumpContributor(new HeapDumpContributor());

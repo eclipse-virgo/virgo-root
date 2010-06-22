@@ -20,6 +20,7 @@ public aspect LoggingInterceptor {
 	
 	private volatile LoggingListener loggingListener = new NoOpLoggingListener();
 	
+	/*
 	pointcut withinLoggingInterception() : cflowbelow(within(LoggingInterceptor) && adviceexecution());
 	
 	pointcut filteringAndAppendingWithZeroOr3PlusParams(Logger logger, String fqcn, Marker marker, Level level, String message, Object[] params, Throwable throwable)
@@ -58,6 +59,7 @@ public aspect LoggingInterceptor {
 		this.loggingListener.onLogging(logger, fqcn, marker, level, message, param1, param2, throwable);		
 	}		
 	
+	*/
 	public void setLoggingListener(LoggingListener listener) {
 		if (listener == null) {
 			listener = new NoOpLoggingListener();

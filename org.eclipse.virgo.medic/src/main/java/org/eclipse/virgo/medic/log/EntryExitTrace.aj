@@ -27,19 +27,23 @@ public aspect EntryExitTrace pertypewithin(*) {
 	
 	private volatile Logger logger;
 	
-	pointcut performingEntryExitTrace() : cflowbelow(adviceexecution() && within(EntryExitTrace));
-
     pointcut medic() : within(org.eclipse.virgo.medic..*);
 
     pointcut util() : within(org.eclipse.virgo.util..*);
     
+    pointcut repository() : within(org.eclipse.virgo.repository..*);
+    
     pointcut logback() : within(ch.qos.logback..*) || within(org.slf4j.impl..*);
     
-    pointcut infoCandidate() : execution(public * *(..)) && !medic() && !util() && !logback() && !performingEntryExitTrace();
+    pointcut setter() : execution(* set*(..));
     
-    pointcut debugCandidate() : execution(!public !private * *(..)) && !medic() && !util() && !logback() && !performingEntryExitTrace();
+    pointcut getter() : execution(* get*(..));
     
-    pointcut traceCandidate() : execution(private * *(..)) && !medic() && !util() && !logback() && !performingEntryExitTrace();
+    pointcut infoCandidate() : execution(public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !logback();
+    
+    pointcut debugCandidate() : execution(!public !private * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !logback();
+    
+    pointcut traceCandidate() : execution(private * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !logback();
     
     before() : infoCandidate() {
         getLogger(thisJoinPointStaticPart).info("{} {}", ">", getSignature(thisJoinPointStaticPart));
