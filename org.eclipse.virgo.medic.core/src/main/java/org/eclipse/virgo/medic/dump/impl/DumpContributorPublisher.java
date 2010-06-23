@@ -20,7 +20,6 @@ import org.eclipse.virgo.medic.dump.impl.logback.LogDumpContributor;
 import org.eclipse.virgo.medic.dump.impl.summary.SummaryDumpContributor;
 import org.eclipse.virgo.medic.dump.impl.thread.ThreadDumpContributor;
 import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
-import org.eclipse.virgo.medic.log.impl.logback.LoggingInterceptor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -42,8 +41,6 @@ public final class DumpContributorPublisher {
     }
 
     public void publishDumpContributors() {
-        //LoggingInterceptor.aspectOf().setLoggingListener(this.logDumpContributor);
-        
         publishDumpContributor(new SummaryDumpContributor());
         publishDumpContributor(new HeapDumpContributor());
         publishDumpContributor(new ThreadDumpContributor());
@@ -60,7 +57,6 @@ public final class DumpContributorPublisher {
             registration.unregister();
         }
         
-        LoggingInterceptor.aspectOf().setLoggingListener(null);
         this.logDumpContributor.clear();
         
         this.contributorRegistrations.clear();
