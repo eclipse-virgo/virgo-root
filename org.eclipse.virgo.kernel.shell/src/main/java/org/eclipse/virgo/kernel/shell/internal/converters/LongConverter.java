@@ -38,7 +38,7 @@ final public class LongConverter implements Converter {
      * @return String or String[] of the types this converter can convert
      */
     public static String[] getTypes() {
-        return TYPES;
+        return TYPES.clone();
     }
 
     /** 
