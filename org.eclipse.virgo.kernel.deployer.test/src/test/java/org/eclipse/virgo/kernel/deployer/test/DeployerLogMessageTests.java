@@ -24,6 +24,7 @@ import java.util.List;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -69,6 +70,7 @@ public class DeployerLogMessageTests extends AbstractParTests {
         return logMessages;
     }
 
+    @Ignore("DMS-2719, DMS-2714")
     @Test(expected = DeploymentException.class)
     public void unsatisfiablePackageImport() throws Throwable {
         try {
