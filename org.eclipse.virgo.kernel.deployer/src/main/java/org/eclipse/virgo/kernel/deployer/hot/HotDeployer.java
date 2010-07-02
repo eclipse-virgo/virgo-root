@@ -65,7 +65,7 @@ public final class HotDeployer implements EventHandler {
 
 	private FileSystemChecker createFileSystemChecker(
 			ApplicationDeployer deployer, EventLogger eventLogger) {
-		FileSystemChecker checker = new FileSystemChecker(this.pickupDir, EXCLUDE_PATTERN);
+		FileSystemChecker checker = new FileSystemChecker(this.pickupDir, EXCLUDE_PATTERN, this.logger);
         checker.addListener(new HotDeploymentFileSystemListener(deployer, eventLogger));
 		return checker;
 	}
