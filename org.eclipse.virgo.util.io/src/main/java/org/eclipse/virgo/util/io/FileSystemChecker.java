@@ -203,7 +203,7 @@ public final class FileSystemChecker {
     }
 
     private void debugState(final String heading, File[] files) {
-        if (logger!=null) {
+        if (logger!=null && logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder().append(this.checkDir).append(" - ").append(heading);
             if (files != null) {
                 sb.append("\n\tFileList():  [");
@@ -243,8 +243,10 @@ public final class FileSystemChecker {
         for (FileSystemListener listener : this.listeners) {
             try {
                 listener.onChange(file, event);
-            } catch (Exception _) {
-                // ignore any exceptions and carry on
+            } catch (Exception e) {
+                if (logger!=null) {
+                    logger.warn("Listener threw exception for event " + event, e);
+                }
             }
         }
     }
