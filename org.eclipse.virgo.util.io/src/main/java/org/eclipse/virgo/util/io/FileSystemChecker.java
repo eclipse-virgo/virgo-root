@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.virgo.util.common.Assert;
 import org.eclipse.virgo.util.math.Sets;
+import org.slf4j.Logger;
 
 
 /**
@@ -44,6 +45,7 @@ public final class FileSystemChecker {
 
     private final File checkDir;
 
+    private final Logger logger;
     private final Object checkLock = new Object();
 
     /**
@@ -68,20 +70,43 @@ public final class FileSystemChecker {
      * @param checkDir the directory to check.
      */
     public FileSystemChecker(File checkDir) {
-        this(checkDir, null);
+        this(checkDir, null, null);
     }
 
     /**
-     * Creates a new <code>FileSystemChecker</code>. Identifies changes to on all files, except thus that match
+     * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>, except those that match
+     * <code>excludePattern</code>. No diagnostics logging.
+     * 
+     * @param checkDir the directory to check.
+     * @param excludePattern regular expression for files to exclude.
+     */
+    public FileSystemChecker(File checkDir, String excludePattern) {
+        this(checkDir, excludePattern, null);
+    }
+    
+    /**
+     * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>. Diagnostics to logger.
+     * 
+     * @param checkDir the directory to check.
+     * @param logger where to log diagnostics -- can be null
+     */
+    public FileSystemChecker(File checkDir, Logger logger) {
+        this(checkDir, null, logger);
+    }
+
+    /**
+     * Creates a new <code>FileSystemChecker</code>. Identifies changes to on all files, except those that match
      * <code>excludePattern</code>.
      * 
      * @param checkDir the directory to check -- {@link File} must exist and be a directory
      * @param excludePattern regular expression for files to exclude.
+     * @param logger where to log diagnostics -- can be null
      */
-    public FileSystemChecker(File checkDir, String excludePattern) {
+    public FileSystemChecker(File checkDir, String excludePattern, Logger logger) {
         Assert.isTrue(checkDir.isDirectory(), "Check directory '%s' must exist and must be a directory.", checkDir.getAbsolutePath());
         this.checkDir = checkDir;
-
+        this.logger = logger;
+        
         final Pattern compiledExcludePattern;
         if (excludePattern == null) {
             compiledExcludePattern = null;
@@ -115,7 +140,13 @@ public final class FileSystemChecker {
     public void check() {
         synchronized (this.checkLock) {
             try {
-                File[] currentFiles = listCurrentDirFiles();
+                File[] currentFiles;
+                try {
+                    currentFiles = listCurrentDirFiles();
+                } catch (Exception e) {
+                    if (logger!=null) logger.warn("FileSystemChecker caught exception from listFiles()", e);
+                    throw e;
+                }
                 Set<String> currentFileKeys = new HashSet<String>(currentFiles.length);
                 for (File file : currentFiles) {
                     // remember seen files to allow comparison for delete
@@ -197,7 +228,7 @@ public final class FileSystemChecker {
      * @return the <code>Files</code> that are in the check directory.
      */
     private File[] listCurrentDirFiles() {
-        return FileSystemUtils.listFiles(this.checkDir, this.includeFilter);
+        return FileSystemUtils.listFiles(this.checkDir, this.includeFilter, this.logger);
     }
 
     /**
