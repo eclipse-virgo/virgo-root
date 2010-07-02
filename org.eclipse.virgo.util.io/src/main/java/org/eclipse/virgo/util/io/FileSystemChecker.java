@@ -107,15 +107,9 @@ public final class FileSystemChecker {
         this.checkDir = checkDir;
         this.logger = logger;
         
-        final Pattern compiledExcludePattern;
-        if (excludePattern == null) {
-            compiledExcludePattern = null;
-        } else {
-            compiledExcludePattern = Pattern.compile(excludePattern);
-        }
+        final Pattern compiledExcludePattern = (excludePattern==null) ? null : Pattern.compile(excludePattern);
 
         this.includeFilter = new FilenameFilter() {
-
             public boolean accept(File dir, String name) {
                 return compiledExcludePattern == null || !compiledExcludePattern.matcher(name).matches();
             }
@@ -147,10 +141,13 @@ public final class FileSystemChecker {
                     if (logger!=null) logger.warn("FileSystemChecker caught exception from listFiles()", e);
                     throw e;
                 }
+                
+                debugState("before check:", currentFiles);
+                
                 Set<String> currentFileKeys = new HashSet<String>(currentFiles.length);
                 for (File file : currentFiles) {
                     // remember seen files to allow comparison for delete
-                    String keyFile = key(file);
+                    String keyFile = this.key(file);
                     currentFileKeys.add(keyFile);
 
                     if (!isKnown(file)) {
@@ -166,7 +163,7 @@ public final class FileSystemChecker {
                             monitorRecord.setSize(size);
                         } else {
                             // not changing anymore so we can announce it:
-                            notifyListeners(key(file), monitorRecord.getEvent());
+                            notifyListeners(this.key(file), monitorRecord.getEvent());
                             // do not monitor it anymore
                             monitorRecords.remove(keyFile);
                         }
@@ -197,29 +194,81 @@ public final class FileSystemChecker {
                 // FatalIOException can arise from listCurrentDirFiles() which means that we cannot determine the list.
                 // In this case we have already retried the list, and we can ignore this check().   
                 // The check() then becomes a no-op which is better than assuming the directory is empty.
+            } finally {
+                
+                debugState("after check:", null);
+            
             }
         }
     }
 
+    private void debugState(final String heading, File[] files) {
+        if (logger!=null && logger.isDebugEnabled()) {
+            StringBuilder sb = new StringBuilder().append(this.checkDir).append(" - ").append(heading);
+            if (files != null) {
+                sb.append("\n\tFileList():  [");
+                boolean first = true;
+                for (File f : files) {
+                    if (!first) sb.append(", ");
+                    sb.append(f.getName());
+                    first = false;
+                }
+                sb.append("]");
+            }
+            if (this.fileState != null) {
+                sb.append("\n\tKnown files: [");
+                boolean first = true;
+                for (String s : this.fileState.keySet()) {
+                    if (!first) sb.append(", ");
+                    sb.append(s);
+                    first = false;
+                }
+                sb.append("]");
+            }
+            if (this.monitorRecords != null) {
+                sb.append("\n\tMonitored:   [");
+                boolean first = true;
+                for (String s : this.monitorRecords.keySet()) {
+                    if (!first) sb.append(", ");
+                    sb.append(s);
+                    first = false;
+                }
+                sb.append("]");
+            }
+            logger.debug(sb.toString());
+        }
+    }
+    
     private void notifyListeners(String file, FileSystemEvent event) {
         for (FileSystemListener listener : this.listeners) {
             try {
                 listener.onChange(file, event);
-            } catch (Exception _) {
-                // ignore any exceptions and carry on
+            } catch (Exception e) {
+                if (logger!=null) {
+                    logger.warn("Listener threw exception for event " + event, e);
+                }
             }
         }
     }
 
     /**
      * Initialises known files (<code>fileState</code>) from the check directory and starts monitoring them.
+     * @throws Exception 
      */
-    private void populateInitialState() {
-        for (File file : listCurrentDirFiles()) {
+    private void populateInitialState() throws RuntimeException {
+        File[] initialList;
+        try {
+            initialList = listCurrentDirFiles();
+        } catch (RuntimeException e) {
+            if (logger!=null) logger.warn("FileSystemChecker caught exception from listFiles()", e);
+            throw e;
+        }
+        for (File file : initialList) {
             String keyFile = key(file);
             monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.INITIAL));
             setKnownFileState(file);
         }
+        debugState("initial state:", initialList);
     }
 
     /**
