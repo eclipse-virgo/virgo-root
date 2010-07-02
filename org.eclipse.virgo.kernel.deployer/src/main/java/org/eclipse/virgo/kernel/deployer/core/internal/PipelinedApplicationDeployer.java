@@ -169,7 +169,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         }
 
         DeploymentIdentity oldDeploymentIdentity = new StandardDeploymentIdentity(oldType, oldName, oldVersion.toString());
-        undeployInternal(oldDeploymentIdentity, true);
+        undeployInternal(oldDeploymentIdentity, true, false);
 
         return null;
     }
@@ -397,7 +397,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private DeploymentIdentity redeploy(DeploymentIdentity toUndeploy, URI toDeploy, DeploymentOptions deploymentOptions) throws DeploymentException {
         synchronized (this.monitor) {
-            undeployInternal(toUndeploy, true);
+            undeployInternal(toUndeploy, true, false);
         }
         return deploy(toDeploy, deploymentOptions);
     }
@@ -464,7 +464,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     public void undeploy(String type, String symbolicName, String version) throws DeploymentException {
         DeploymentIdentity deploymentIdentity = new StandardDeploymentIdentity(type, symbolicName, version);
         synchronized (this.monitor) {
-            undeployInternal(deploymentIdentity, false);
+            undeployInternal(deploymentIdentity, false, false);
         }
     }
 
@@ -473,27 +473,44 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
      */
     public void undeploy(DeploymentIdentity deploymentIdentity) throws DeploymentException {
         synchronized (this.monitor) {
-            undeployInternal(deploymentIdentity, false);
+            undeployInternal(deploymentIdentity, false, false);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void undeploy(DeploymentIdentity deploymentIdentity, boolean deleted) throws DeploymentException {
+        synchronized (this.monitor) {
+            undeployInternal(deploymentIdentity, false, true);
         }
     }
 
     /**
      * All the undeploy work goes on in here -- it is assumed that any required monitors are already held by the caller.
+     * <p>
+     * The deleted parameter indicates whether the undeployment is a consequence of the artifact having been deleted.
+     * This affects the processing of "deployer owned" artifacts which undeploy would normally delete automatically. If
+     * the undeploy is a consequence of the artifact having been deleted, then undeploy must not delete the artifact
+     * automatically since this may actually delete a "new" artifact which has arrived shortly after the "old" artifact
+     * was deleted.
      * 
      * @param deploymentIdentity identity of artifact to undeploy
      * @param redeploying flag to indicate if we are performing a re-deploy
+     * @param deleted <code>true</code> if and only if undeploy is being driven as a consequence of the artifact having
+     *        been deleted
      * @throws DeploymentException
      */
-    private void undeployInternal(DeploymentIdentity deploymentIdentity, boolean redeploying) throws DeploymentException {
+    private void undeployInternal(DeploymentIdentity deploymentIdentity, boolean redeploying, boolean deleted) throws DeploymentException {
         DeploymentOptions options = this.deploymentOptionsMap.remove(deploymentIdentity);
         URI location = doUndeploy(deploymentIdentity);
         if (!redeploying) {
-            deleteArtifactIfNecessary(location, options);
+            deleteArtifactIfNecessary(location, options, deleted);
         }
     }
 
-    private void deleteArtifactIfNecessary(URI location, DeploymentOptions options) {
-        if (options != null && options.getDeployerOwned()) {
+    private void deleteArtifactIfNecessary(URI location, DeploymentOptions options, boolean deleted) {
+        if (options != null && options.getDeployerOwned() && !deleted) {
             new PathReference(location).delete(true);
         }
     }

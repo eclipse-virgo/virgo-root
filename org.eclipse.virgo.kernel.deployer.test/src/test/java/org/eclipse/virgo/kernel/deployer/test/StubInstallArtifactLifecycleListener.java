@@ -35,6 +35,11 @@ final class StubInstallArtifactLifecycleListener implements InstallArtifactLifec
         assertEquals("Unexpected stopped count", stopped, this.stoppedCount.get());
     }
 
+    public boolean checkLifecycleCounts(int starting, int started, int stopping, int stopped) {
+        return starting == this.startingCount.get() && started == this.startedCount.get() && stopping == this.stoppingCount.get()
+            && stopped == this.stoppedCount.get();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -111,12 +116,12 @@ final class StubInstallArtifactLifecycleListener implements InstallArtifactLifec
         this.stoppedCount.incrementAndGet();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void onUnresolved(InstallArtifact installArtifact) {
     }
-    
+
     /**
      * {@inheritDoc}
      */

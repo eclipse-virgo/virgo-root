@@ -41,6 +41,8 @@ import org.eclipse.virgo.util.io.PathReference;
  */
 public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrationTest {
 
+    private static final int POLLING_INTERVAL_MILLIS = 100;
+
     private ServiceRegistration dummyModuleDeployerServiceRegistration;
 
     private final PathReference pickup = new PathReference("./target/pickup");
@@ -60,7 +62,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         pr.createDirectory();
 
         clearPickup();
-        
+
         this.lifecycleListener = new StubInstallArtifactLifecycleListener();
         this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class.getName(),
             this.lifecycleListener, null);
@@ -87,6 +89,13 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
     private void undeploy() throws DeploymentException {
         if (this.deploymentIdentity != null) {
             this.deployer.undeploy(this.deploymentIdentity);
+            this.deploymentIdentity = null;
+        }
+    }
+
+    private void undeploy(boolean deleted) throws DeploymentException {
+        if (this.deploymentIdentity != null) {
+            this.deployer.undeploy(this.deploymentIdentity, deleted);
             this.deploymentIdentity = null;
         }
     }
@@ -154,11 +163,18 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         PathReference dummy = new PathReference("src/test/resources/dummy.jar");
         this.lifecycleListener.assertLifecycleCounts(0, 0, 0, 0);
         PathReference deployed = dummy.copy(this.pickup);
-        Thread.sleep(10000);
-        this.lifecycleListener.assertLifecycleCounts(1, 1, 0, 0);
+        assertLifecycleCountsAfterWait(1, 1, 0, 0, 10000);
         deployed.delete();
-        Thread.sleep(6000);
-        this.lifecycleListener.assertLifecycleCounts(1, 1, 1, 1);
+        assertLifecycleCountsAfterWait(1, 1, 1, 1, 6000);
+    }
+
+    private void assertLifecycleCountsAfterWait(int starting, int started, int stopping, int stopped, long waitMillis) throws InterruptedException {
+        long remainingWait = waitMillis;
+        while (remainingWait > 0 && !this.lifecycleListener.checkLifecycleCounts(starting, started, stopping, stopped)) {
+            Thread.sleep(POLLING_INTERVAL_MILLIS);
+            remainingWait -= POLLING_INTERVAL_MILLIS;
+        }
+        this.lifecycleListener.assertLifecycleCounts(starting, started, stopping, stopped);
     }
 
     @Test
@@ -182,8 +198,16 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         this.deploymentIdentity = this.deployer.deploy(copy.toURI(), new DeploymentOptions(false, true, true));
         copy.delete();
         undeploy();
+
+        // Check artifact not deleted when undeploy specifies deleted=true.
+        dummy.copy(this.target);
+        assertTrue(copy.exists());
+        this.deploymentIdentity = this.deployer.deploy(copy.toURI(), new DeploymentOptions(false, true, true));
+        undeploy(true);
+        assertTrue(copy.exists());
+        copy.delete();
     }
-    
+
     @Test
     public void testRedeployDeployerOwned() throws Exception {
         File dummyCopy = new File(this.target.toFile(), "dummy.jar");
@@ -197,16 +221,16 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         this.lifecycleListener.assertLifecycleCounts(0, 0, 0, 0);
         this.deploymentIdentity = this.deployer.deploy(copy.toURI(), new DeploymentOptions(false, true, true));
         this.lifecycleListener.assertLifecycleCounts(1, 1, 0, 0);
-        
+
         File dummyModifiedFile = (new PathReference("src/test/resources/dummymodified.jar")).toFile().getAbsoluteFile();
-        FileCopyUtils.copy(dummyModifiedFile, copy.toFile().getAbsoluteFile()); //force direct overwrite
-        
-        // simulate action on MODIFIED     
+        FileCopyUtils.copy(dummyModifiedFile, copy.toFile().getAbsoluteFile()); // force direct overwrite
+
+        // simulate action on MODIFIED
         this.deploymentIdentity = this.deployer.deploy(copy.toURI(), new DeploymentOptions(false, true, true));
-        
+
         this.lifecycleListener.assertLifecycleCounts(2, 2, 1, 1);
         assertTrue(copy.exists());
-        
+
         undeploy();
         this.lifecycleListener.assertLifecycleCounts(2, 2, 2, 2);
         assertFalse(copy.exists());

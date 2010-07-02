@@ -240,11 +240,30 @@ public interface ApplicationDeployer {
     /**
      * Undeploy an application with a given {@link DeploymentIdentity}. The application may be either an OSGi
      * application or a legacy application such as a WAR.
+     * <p>
+     * This method is equivalent to calling <code>undeploy(DeploymentIdentity, boolean)</code> with <code>false</code>.
      * 
      * @param deploymentIdentity the <code>DeploymentIdentity</code> of the application
      * @throws DeploymentException
      */
     void undeploy(DeploymentIdentity deploymentIdentity) throws DeploymentException;
+
+    /**
+     * Undeploy an application with a given {@link DeploymentIdentity}. The application may be either an OSGi
+     * application or a legacy application such as a WAR.
+     * <p>
+     * The deleted parameter indicates whether the undeployment is a consequence of the artifact having been deleted.
+     * This affects the processing of "deployer owned" artifacts which undeploy would normally delete automatically. If
+     * the undeploy is a consequence of the artifact having been deleted, then undeploy must not delete the artifact
+     * automatically since this may actually delete a "new" artifact which has arrived shortly after the "old" artifact
+     * was deleted.
+     * 
+     * @param deploymentIdentity the <code>DeploymentIdentity</code> of the application
+     * @param deleted <code>true</code> if and only if undeploy is being driven as a consequence of the artifact having
+     *        been deleted
+     * @throws DeploymentException
+     */
+    void undeploy(DeploymentIdentity deploymentIdentity, boolean deleted) throws DeploymentException;
 
     /**
      * Refresh a single bundle of the application (PAR or bundle) which was deployed from the given URI and return the
