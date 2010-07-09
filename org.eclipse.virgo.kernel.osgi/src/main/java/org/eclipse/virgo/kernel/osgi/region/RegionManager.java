@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -40,6 +39,8 @@ import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.eclipse.virgo.kernel.core.Shutdown;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
 
 /**
  * Creates and manages the user {@link Region regions}.
@@ -100,19 +101,21 @@ final class RegionManager {
     private String regionInheritedProperties;
 
     public RegionManager(BundleContext bundleContext, CompositeBundleFactory compositeBundleFactory, EventAdmin eventAdmin,
-        ServiceFactory eventLoggerServiceFactory, ConfigurationAdmin configAdmin) {
+        ServiceFactory eventLoggerServiceFactory, ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
         this.bundleContext = bundleContext;
         this.compositeBundleFactory = compositeBundleFactory;
         this.eventAdmin = eventAdmin;
         this.eventLoggerServiceFactory = eventLoggerServiceFactory;
-        getRegionConfiguration(configAdmin);
+        getRegionConfiguration(configAdmin, eventLogger, shutdown);
     }
 
-    @SuppressWarnings("unchecked")
-    private void getRegionConfiguration(ConfigurationAdmin configAdmin) {
+    private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
         try {
             Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID);
+            
+            @SuppressWarnings("unchecked")
             Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();
+            
             if (properties != null) {
                 this.userRegionProperties = properties;
                 this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY);
@@ -120,8 +123,13 @@ final class RegionManager {
                 this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
                 this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
                 this.regionInheritedProperties = properties.get(USER_REGION_PROPERTIES_PROPERTY);
+            } else {
+                eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
+                shutdown.immediateShutdown();
             }
-        } catch (IOException _) {
+        } catch (Exception e) {
+            eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE, e);
+            shutdown.immediateShutdown();
         }
     }
 
@@ -204,7 +212,6 @@ final class RegionManager {
 
     private Map<String, String> createChildFrameworkConfig() {
         HashMap<String, String> frameworkConfig = new HashMap<String, String>();
-        // debug frameworkConfig.put(CONFIG_PROPERTY_OSGI_CONSOLE, "2403");
 
         setUserConfiguredUserRegionProperties(frameworkConfig);
 
@@ -330,11 +337,7 @@ final class RegionManager {
         this.tracker.track(this.bundleContext.registerService(Region.class.getName(), region, props));
     }
 
-    /**
-     * @throws BundleException  
-     * @throws InterruptedException 
-     */
-    public void stop() throws BundleException, InterruptedException {
+    public void stop() {
         this.tracker.unregisterAll();
     }
 

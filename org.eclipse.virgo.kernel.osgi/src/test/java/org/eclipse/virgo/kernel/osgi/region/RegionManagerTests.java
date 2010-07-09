@@ -35,6 +35,8 @@ import org.osgi.service.framework.CompositeBundleFactory;
 import org.osgi.service.framework.SurrogateBundle;
 
 import org.eclipse.virgo.kernel.osgi.region.RegionManager;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 
@@ -72,8 +74,11 @@ public class RegionManagerTests {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         expect(configAdmin.getConfiguration(isA(String.class))).andReturn(config);
         
+        EventLogger eventLogger = createMock(EventLogger.class);       
+        Shutdown shutdown = createMock(Shutdown.class);
+        
         replay(factory, bundle, surrogate, eventAdmin, configAdmin, config);
-        RegionManager manager = new RegionManager(bundleContext, factory, eventAdmin, serviceFactory, configAdmin);
+        RegionManager manager = new RegionManager(bundleContext, factory, eventAdmin, serviceFactory, configAdmin, eventLogger, shutdown);
         manager.start();
         
         List<StubServiceRegistration> serviceRegistrations = bundleContext.getServiceRegistrations();

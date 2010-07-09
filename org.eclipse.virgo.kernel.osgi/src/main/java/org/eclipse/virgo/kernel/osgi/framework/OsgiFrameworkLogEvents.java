@@ -30,6 +30,7 @@ public enum OsgiFrameworkLogEvents implements LogEvent {
     REGION_IMPORT_NO_MATCH(2, Level.WARNING), //
     // 3 has been moved to the user region bundle and is unused here.
     // 4 has been moved to the user region bundle and is unused here. 
+    USER_REGION_CONFIGURATION_UNAVAILABLE(10, Level.ERROR),
     OSGI_CONSOLE_PORT(100, Level.INFO), //
     OSGI_CONSOLE_PORT_IN_USE(101, Level.ERROR);
 
