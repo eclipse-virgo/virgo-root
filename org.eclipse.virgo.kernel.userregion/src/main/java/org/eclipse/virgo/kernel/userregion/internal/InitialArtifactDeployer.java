@@ -54,7 +54,7 @@ final class InitialArtifactDeployer implements EventHandler {
     
     private final ApplicationDeployer deployer;
     
-    private final DeployUriNormaliser normaliser;
+    private final DeployUriNormaliser uriNormaliser;
     
     private final EventAdmin eventAdmin;
     
@@ -68,9 +68,9 @@ final class InitialArtifactDeployer implements EventHandler {
     
     private final KernelStartedAwaiter startAwaiter;
 
-    InitialArtifactDeployer(KernelStartedAwaiter startAwaiter, ApplicationDeployer deployer, String systemArtifactsProperty, String userArtifactsProperty, DeployUriNormaliser normaliser, EventAdmin eventAdmin, EventLogger eventLogger, Shutdown shutdown) {
+    InitialArtifactDeployer(KernelStartedAwaiter startAwaiter, ApplicationDeployer deployer, String systemArtifactsProperty, String userArtifactsProperty, DeployUriNormaliser uriNormaliser, EventAdmin eventAdmin, EventLogger eventLogger, Shutdown shutdown) {
         this.deployer = deployer;
-        this.normaliser = normaliser;
+        this.uriNormaliser = uriNormaliser;
         this.eventAdmin = eventAdmin;
         this.systemArtifactsProperty = systemArtifactsProperty;
         this.userArtifactsProperty = userArtifactsProperty;
@@ -161,7 +161,7 @@ final class InitialArtifactDeployer implements EventHandler {
 	        
 	        for (URI uri : this.artifacts) {
 	            try {
-	                normaliser.normalise(uri);
+	                uriNormaliser.normalise(uri);
 	            } catch (DeploymentException de) {
 	                normaliseFailed = true;
 	            }

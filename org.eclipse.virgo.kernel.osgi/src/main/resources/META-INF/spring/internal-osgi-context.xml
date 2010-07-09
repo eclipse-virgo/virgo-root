@@ -13,6 +13,8 @@
 	<osgi:reference id="eventLogger"
 		interface="org.eclipse.virgo.medic.eventlog.EventLogger" />
 
+	<osgi:reference id="shutdown" interface="org.eclipse.virgo.kernel.core.Shutdown"/>
+
 	<osgi:reference id="packageAdmin"
 		interface="org.osgi.service.packageadmin.PackageAdmin" />
 

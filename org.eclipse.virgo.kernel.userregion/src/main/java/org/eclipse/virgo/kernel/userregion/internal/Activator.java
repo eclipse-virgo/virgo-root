@@ -16,6 +16,8 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.BundleActivator;
@@ -67,6 +69,9 @@ import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
  */
 public class Activator implements BundleActivator {
     
+    private static final long MAX_SECONDS_WAIT_FOR_SERVICE = 30;
+    private static final long MAX_MILLIS_WAIT_FOR_SERVICE = TimeUnit.SECONDS.toMillis(MAX_SECONDS_WAIT_FOR_SERVICE);
+    
     private static final long SYSTEM_BUNDLE_ID = 0;
     
     private static final String PROPERTY_USER_REGION_ARTIFACTS = "initialArtifacts";
@@ -108,7 +113,7 @@ public class Activator implements BundleActivator {
         PackageAdminUtil packageAdminUtil = createPackageAdminUtil(context);
         this.registrationTracker.track(context.registerService(PackageAdminUtil.class.getName(), packageAdminUtil, null));
         
-        scheduleRegistrationOfServiceScopingRegistryHooks(context);
+        scheduleRegistrationOfServiceScopingRegistryHooks(context, eventLogger);
         
         Properties properties = new Properties();
         properties.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
@@ -159,8 +164,8 @@ public class Activator implements BundleActivator {
         return new StandardPackageAdminUtil(context);
     }
     
-    private void scheduleRegistrationOfServiceScopingRegistryHooks(final BundleContext context) {
-    	Runnable runnable = new ServiceScopingHookRegisteringRunnable(context, this.registrationTracker);
+    private void scheduleRegistrationOfServiceScopingRegistryHooks(final BundleContext context, EventLogger eventLogger) {
+    	Runnable runnable = new ServiceScopingHookRegisteringRunnable(context, this.registrationTracker, eventLogger);
     	Thread thread = new Thread(runnable);
     	thread.setDaemon(true);
     	thread.start();
@@ -194,25 +199,38 @@ public class Activator implements BundleActivator {
     
     private static final class ServiceScopingHookRegisteringRunnable implements Runnable {
     	
+        private final EventLogger eventLogger;
+        
     	private final BundleContext context;
     	
     	private final ServiceRegistrationTracker registrationTracker;
     	
-		public ServiceScopingHookRegisteringRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker) {		
+		public ServiceScopingHookRegisteringRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker, EventLogger eventLogger) {		
 			this.context = context;
 			this.registrationTracker = registrationTracker;
+			this.eventLogger = eventLogger;
 		}
 
 		public void run() {
 			ScopeFactory scopeFactory = OsgiFrameworkUtils.getService(context, ScopeFactory.class).getService();
-	        ScopeServiceRepository scopeServiceRepository = getPotentiallyDelayedService(context, ScopeServiceRepository.class);
-	        
-	        ServiceScopingStrategy serviceScopingStrategy = new ServiceScopingStrategy(scopeFactory, scopeServiceRepository);
-	        
-	        ServiceScopingRegistryHook serviceScopingRegistryHook = new ServiceScopingRegistryHook(serviceScopingStrategy);
-	        
-	        this.registrationTracker.track(context.registerService(new String[] { "org.osgi.framework.hooks.service.FindHook",
-	            "org.osgi.framework.hooks.service.EventHook" }, serviceScopingRegistryHook, null));	
+            Shutdown shutdown = OsgiFrameworkUtils.getService(context, Shutdown.class).getService();
+
+	        try {
+                ScopeServiceRepository scopeServiceRepository = getPotentiallyDelayedService(context, ScopeServiceRepository.class);
+                
+                ServiceScopingStrategy serviceScopingStrategy = new ServiceScopingStrategy(scopeFactory, scopeServiceRepository);
+                
+                ServiceScopingRegistryHook serviceScopingRegistryHook = new ServiceScopingRegistryHook(serviceScopingStrategy);
+                
+                this.registrationTracker.track(context.registerService(new String[] { "org.osgi.framework.hooks.service.FindHook",
+                    "org.osgi.framework.hooks.service.EventHook" }, serviceScopingRegistryHook, null));
+            } catch (TimeoutException te) {
+                this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, MAX_SECONDS_WAIT_FOR_SERVICE);
+                shutdown.immediateShutdown();
+            } catch (InterruptedException ie) {
+                this.eventLogger.log(UserRegionLogEvents.USERREGION_START_INTERRUPTED, ie);
+                shutdown.immediateShutdown();
+            }	
 		}
     }
     
@@ -241,20 +259,26 @@ public class Activator implements BundleActivator {
          */
         public void run() {
             EventAdmin eventAdmin = OsgiFrameworkUtils.getService(context, EventAdmin.class).getService();
-            DeployUriNormaliser uriNormaliser = getPotentiallyDelayedService(context, DeployUriNormaliser.class);
-            ApplicationDeployer deployer = getPotentiallyDelayedService(context, ApplicationDeployer.class);
             Shutdown shutdown = OsgiFrameworkUtils.getService(context, Shutdown.class).getService();
-            
-            Dictionary<String, String> artifactConfiguration = getRegionArtifactConfiguration();
-            
-            InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer, artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS), uriNormaliser, eventAdmin, eventLogger, shutdown);
-            Properties properties = new Properties();
-            properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
-            this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));     
-            
+
             try {
+                DeployUriNormaliser uriNormaliser = getPotentiallyDelayedService(context, DeployUriNormaliser.class);
+                ApplicationDeployer deployer = getPotentiallyDelayedService(context, ApplicationDeployer.class);
+                
+                Dictionary<String, String> artifactConfiguration = getRegionArtifactConfiguration();
+                
+                InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer, artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS), uriNormaliser, eventAdmin, eventLogger, shutdown);
+                Properties properties = new Properties();
+                properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
+                this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));     
+                
                 initialArtifactDeployer.deployArtifacts();
-            } catch (InterruptedException _) {
+            } catch (TimeoutException te) {
+                this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, MAX_SECONDS_WAIT_FOR_SERVICE);
+                shutdown.immediateShutdown();
+            } catch (InterruptedException ie) {
+                this.eventLogger.log(UserRegionLogEvents.USERREGION_START_INTERRUPTED, ie);
+                shutdown.immediateShutdown();
             }
         }
         
@@ -271,23 +295,29 @@ public class Activator implements BundleActivator {
         }
     }
     
-    private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass) {
+    private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass) throws TimeoutException, InterruptedException {
         T service = null;
-        
-        while (service == null) {
+        OsgiServiceHolder<T> serviceHolder;
+        long millisWaited = 0;
+        while (service == null && millisWaited <= MAX_MILLIS_WAIT_FOR_SERVICE) {
             try {
-                OsgiServiceHolder<T> serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
+                serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
                 if (serviceHolder != null) {
-                   service = serviceHolder.getService();
+                    service = serviceHolder.getService();
                 }
             } catch (IllegalStateException e) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                }
             }
+            millisWaited += sleepABitMore();
         }
-        
+        if (service==null) {
+            throw new TimeoutException(serviceClass.getName());
+        }
         return service;
+    }
+
+    private static long sleepABitMore() throws InterruptedException {
+        long before = System.currentTimeMillis();
+        Thread.sleep(100);
+        return (System.currentTimeMillis() - before);
     }
 }

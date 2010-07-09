@@ -13,6 +13,8 @@
 			</bean>
 		</constructor-arg>
 		<constructor-arg ref="configAdmin"/>
+		<constructor-arg ref="eventLogger"/>
+		<constructor-arg ref="shutdown"/>
 	</bean>
 
 </beans>
