@@ -25,7 +25,6 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Version;
 import org.osgi.service.event.Event;
@@ -85,7 +84,6 @@ public class StartupTrackerTests {
     }
 
     @Test
-    @Ignore("[DMS-2424] timeout is now hard-coded at one hour and so cannot be tested conveniently")
     public void startupTimeout() {
     	
         BundleStartTracker bundleStartTracker = new BundleStartTracker(new SyncTaskExecutor());

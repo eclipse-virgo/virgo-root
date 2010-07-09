@@ -69,23 +69,17 @@ final class StartupTracker {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupTracker.class);
 
     private final KernelStatus status = new KernelStatus();
-
+    
     private final KernelConfiguration configuration;
 
     private final Thread startupTrackingThread;
     
-    private final Shutdown shutdown;
-    
-    private final DumpGenerator dumpGenerator;
-
     private volatile ObjectInstance statusInstance;
 
     StartupTracker(BundleContext context, KernelConfiguration configuration, int startupWaitTime, BundleStartTracker asyncBundleStartTracker, Shutdown shutdown, DumpGenerator dumpGenerator) {
-    	Runnable startupTrackingRunnable = new StartupTrackingRunnable(context, startupWaitTime, asyncBundleStartTracker);
+    	Runnable startupTrackingRunnable = new StartupTrackingRunnable(context, startupWaitTime, asyncBundleStartTracker, this.status, shutdown, dumpGenerator);
         this.startupTrackingThread = new Thread(startupTrackingRunnable, THREAD_NAME_STARTUP_TRACKER);
         this.configuration = configuration;
-        this.shutdown = shutdown;
-        this.dumpGenerator = dumpGenerator;
     }
 
     void start() {
@@ -119,11 +113,7 @@ final class StartupTracker {
         }
     }
 
-    private void signalStarted() {
-        this.status.setStatus(KernelStatus.STATUS_STARTED);
-    }
-
-    private final class StartupTrackingRunnable implements Runnable {        
+    private final static class StartupTrackingRunnable implements Runnable {        
 
         private final BundleContext context;
         
@@ -131,43 +121,80 @@ final class StartupTracker {
         
         private final BundleStartTracker asyncBundleStartTracker;
 
-        private StartupTrackingRunnable(BundleContext context, int startupWaitTime, BundleStartTracker asyncBundleStartTracker) {
+        private final KernelStatus kernelStatus;
+        private final Shutdown shutdown;
+        private final DumpGenerator dumpGenerator;
+        
+        private final ServiceReferenceTracker serviceReferenceTracker;
+        
+        private EventLogger eventLogger = null;
+        private EventAdmin eventAdmin = null;
+        
+        private StartupTrackingRunnable(BundleContext context, int startupWaitTime, BundleStartTracker asyncBundleStartTracker, KernelStatus kernelStatus, Shutdown shutdown, DumpGenerator dumpGenerator) {
             this.context = context;
             this.startupWaitTime = startupWaitTime;
             this.asyncBundleStartTracker = asyncBundleStartTracker;
+            this.kernelStatus = kernelStatus;
+            this.shutdown = shutdown;
+            this.dumpGenerator = dumpGenerator;
+            this.serviceReferenceTracker = new ServiceReferenceTracker(context);
         }
 
         public void run() {
-            
-            kernelStarting();
-            
-            Bundle[] bundles = this.context.getBundles();
-            
+            this.eventLogger = getEventLoggerService();
+            this.eventAdmin = getEventAdminService();
+
             try {
-                for (Bundle bundle : bundles) {
-                	if (!BundleUtils.isFragmentBundle(bundle) && isKernelBundle(bundle)) {
-	                    BlockingSignal signal = new BlockingSignal();
-	                    
-	                    this.asyncBundleStartTracker.trackStart(bundle, signal);
-	                    
-	                    LOGGER.debug("Awaiting signal {} for up to {} seconds", signal, this.startupWaitTime);
-	                    
-	                    if (!signal.awaitCompletion(this.startupWaitTime, TimeUnit.SECONDS)) {
-	                    	LOGGER.error("Bundle {} did not start within {} seconds.", bundle, this.startupWaitTime);
-	                        kernelStartTimedOut();
-	                        return;
-	                    }
-                	}
+                kernelStarting();
+                
+                Bundle[] bundles = this.context.getBundles();
+                
+                try {
+                    for (Bundle bundle : bundles) {
+                    	if (!BundleUtils.isFragmentBundle(bundle) && isKernelBundle(bundle)) {
+                            BlockingSignal signal = new BlockingSignal();
+                            
+                            this.asyncBundleStartTracker.trackStart(bundle, signal);
+                            
+                            LOGGER.debug("Awaiting signal {} for up to {} seconds", signal, this.startupWaitTime);
+                            
+                            if (!signal.awaitCompletion(this.startupWaitTime, TimeUnit.SECONDS)) {
+                            	LOGGER.error("Bundle {} did not start within {} seconds.", bundle, this.startupWaitTime);
+                                kernelStartTimedOut();
+                                return;
+                            }
+                    	}
+                    }
+                } catch (FailureSignalledException fse) {
+                    kernelStartFailed(fse.getCause());
+                    return;
+                } catch (Exception e) {
+                    kernelStartFailed(e);
+                    return;
                 }
-            } catch (FailureSignalledException fse) {
-                kernelStartFailed(fse.getCause());
-                return;
-            } catch (Exception e) {
-                kernelStartFailed(e);
-                return;
+                
+                kernelStarted();
+            } finally {
+                this.serviceReferenceTracker.ungetAll();
             }
-            
-            kernelStarted();
+        }
+
+        private EventLogger getEventLoggerService() {
+            EventLogger eventLogger = null;
+            ServiceReference eventLoggerServiceReference = this.context.getServiceReference(EventLogger.class.getName());
+            if (eventLoggerServiceReference != null) {
+                eventLogger = (EventLogger) this.context.getService(this.serviceReferenceTracker.track(eventLoggerServiceReference));
+            }
+            return eventLogger;
+        }
+        
+        private EventAdmin getEventAdminService() {
+            EventAdmin eventAdmin = null;
+            ServiceReference eventAdminServiceReference = this.context.getServiceReference(EventAdmin.class.getName());
+            if (eventAdminServiceReference != null) {
+                eventAdmin = (EventAdmin) this.context.getService(this.serviceReferenceTracker.track(eventAdminServiceReference));
+            }
+            return eventAdmin;
         }
         
         private boolean isKernelBundle(Bundle bundle) {
@@ -181,7 +208,7 @@ final class StartupTracker {
         }
 
         private void kernelStarted() {
-            signalStarted();
+            this.kernelStatus.setStarted();
             postEvent(KERNEL_EVENT_STARTED);
             logEvent(KernelLogEvents.KERNEL_STARTED);
         }
@@ -200,21 +227,16 @@ final class StartupTracker {
         
         private void generateDumpAndShutdown(String cause, Throwable failure) {
             if (failure != null) {
-                StartupTracker.this.dumpGenerator.generateDump(cause, failure);
+                this.dumpGenerator.generateDump(cause, failure);
             } else {
-                StartupTracker.this.dumpGenerator.generateDump(cause);
+                this.dumpGenerator.generateDump(cause);
             }
-            StartupTracker.this.shutdown.immediateShutdown();
+            this.shutdown.immediateShutdown();
         }
         
         private void logEvent(KernelLogEvents event, Throwable throwable, Object...args) {
-            ServiceReference serviceReference = this.context.getServiceReference(EventLogger.class.getName());
-            if (serviceReference != null) {
-                EventLogger eventLogger = (EventLogger) this.context.getService(serviceReference);
-                if (eventLogger != null) {
-                    eventLogger.log(event, throwable, args);
-                    this.context.ungetService(serviceReference);
-                }
+            if (this.eventLogger != null) {
+                this.eventLogger.log(event, throwable, args);
             }
         }
 
@@ -223,13 +245,8 @@ final class StartupTracker {
         }
 
         private void postEvent(String topic) {
-            ServiceReference serviceReference = this.context.getServiceReference(EventAdmin.class.getName());
-            if (serviceReference != null) {
-                EventAdmin eventAdmin = (EventAdmin) this.context.getService(serviceReference);
-                if (eventAdmin != null) {
-                    eventAdmin.postEvent(new Event(topic, null));
-                    this.context.ungetService(serviceReference);
-                }
+            if (this.eventAdmin != null) {
+                this.eventAdmin.postEvent(new Event(topic, null));
             }
         }
     }    

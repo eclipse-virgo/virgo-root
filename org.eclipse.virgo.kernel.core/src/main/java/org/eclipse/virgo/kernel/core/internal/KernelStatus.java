@@ -23,8 +23,8 @@ final class KernelStatus implements KernelStatusMBean {
         return this.status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStarted() {
+        this.status = STATUS_STARTED;
     }
 
 }
