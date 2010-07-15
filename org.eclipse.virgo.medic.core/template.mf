@@ -24,7 +24,8 @@ Import-Template:
 Excluded-Imports: 
  org.codehaus.janino.*
 Export-Template: 
- org.slf4j.impl;version="1.5.10"
+ org.slf4j.impl;version="1.5.10",
+ ch.qos.logback.*;version="${ch.qos.logback}"
 Excluded-Exports: 
  org.eclipse.virgo.medic.*
 Medic-LoggingConfiguration: org.eclipse.virgo.medic
