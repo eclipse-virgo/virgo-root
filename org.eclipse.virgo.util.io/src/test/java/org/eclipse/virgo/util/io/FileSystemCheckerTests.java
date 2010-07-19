@@ -329,18 +329,18 @@ public class FileSystemCheckerTests {
         List<StubLogEntry> entries = stubLogger.getEntries();
         assertTrue("There should be five states debugged.", 5==entries.size());
         
-        String initialStateHeader = "target/work - initial state:";
-        String beforeStateHeader = "target/work - before check:";
-        String afterStateHeader = "target/work - after check:";
+        String initialStateHeader = "work - initial state:";
+        String beforeStateHeader = "work - before check:";
+        String afterStateHeader = "work - after check:";
         
-        assertTrue("Initial state not output in correct place.", entries.get(0).getString().startsWith(initialStateHeader));
+        assertTrue("Initial state not output in correct place.", entries.get(0).getString().contains(initialStateHeader));
         assertTrue("Initial state not reporting a.txt and b.txt files.", entries.get(0).getString().contains("FileList():  [a.txt, b.txt]") || entries.get(0).getString().contains("FileList():  [b.txt, a.txt]"));
-        assertTrue("Before state not output in correct place.", entries.get(1).getString().startsWith(beforeStateHeader));
+        assertTrue("Before state not output in correct place.", entries.get(1).getString().contains(beforeStateHeader));
         assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(1).getString().contains("FileList():  [a.txt, b.txt]") || entries.get(1).getString().contains("FileList():  [b.txt, a.txt]"));
-        assertTrue("After state not output in correct place.", entries.get(2).getString().startsWith(afterStateHeader));
-        assertTrue("Before state not output in correct place.", entries.get(3).getString().startsWith(beforeStateHeader));
+        assertTrue("After state not output in correct place.", entries.get(2).getString().contains(afterStateHeader));
+        assertTrue("Before state not output in correct place.", entries.get(3).getString().contains(beforeStateHeader));
         assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(3).getString().contains("FileList():  [a.txt, b.txt]") || entries.get(3).getString().contains("FileList():  [b.txt, a.txt]"));
-        assertTrue("After state not output in correct place.", entries.get(4).getString().startsWith(afterStateHeader));
+        assertTrue("After state not output in correct place.", entries.get(4).getString().contains(afterStateHeader));
 
 //        for (StubLogEntry sle : entries) {
 //            System.out.println(sle);
