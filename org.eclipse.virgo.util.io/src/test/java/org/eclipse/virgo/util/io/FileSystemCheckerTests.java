@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,6 +24,7 @@ import org.eclipse.virgo.util.io.FileSystemChecker;
 import org.eclipse.virgo.util.io.FileSystemEvent;
 import org.eclipse.virgo.util.io.FileSystemListener;
 import org.eclipse.virgo.util.io.FileSystemUtils;
+import org.eclipse.virgo.util.io.StubLogger.StubLogEntry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -174,7 +176,7 @@ public class FileSystemCheckerTests {
 
         private final String fileName;
 
-        private final AtomicInteger eP;
+        private final AtomicInteger eA;
 
         private final AtomicInteger eI;
 
@@ -186,7 +188,7 @@ public class FileSystemCheckerTests {
 
         public TestFileSystemListener(String fileName, int all, int ini, int cre, int del, int mod) {
             this.fileName = fileName;
-            eP = new AtomicInteger(all);
+            eA = new AtomicInteger(all);
             eI = new AtomicInteger(ini);
             eC = new AtomicInteger(cre);
             eD = new AtomicInteger(del);
@@ -195,7 +197,7 @@ public class FileSystemCheckerTests {
 
         public void onChange(String file, FileSystemEvent event) {
             if (file.endsWith(this.fileName)) {
-                this.eP.incrementAndGet(); // count all notifications for this file
+                this.eA.incrementAndGet(); // count all notifications for this file
                 switch (event) {
                     case INITIAL:
                         this.eI.incrementAndGet();
@@ -214,7 +216,7 @@ public class FileSystemCheckerTests {
         }
 
         public boolean checkEvents(int all, int ini, int cre, int del, int mod) {
-            return all == this.eP.get() && ini == this.eI.get() && cre == this.eC.get() && del == this.eD.get() && mod == this.eM.get();
+            return all == this.eA.get() && ini == this.eI.get() && cre == this.eC.get() && del == this.eD.get() && mod == this.eM.get();
         }
     }
 
@@ -302,5 +304,46 @@ public class FileSystemCheckerTests {
 
         checker.check();
         assertEquals("Too many INITIAL events", 2, initialEvents.get());
+    } @Test
+    
+    public void initialStateDebug() throws Exception {
+        StubLogger stubLogger = new StubLogger();
+        new File(this.checkDir, "a.txt").createNewFile();
+        new File(this.checkDir, "b.txt").createNewFile();
+        FileSystemChecker checker = new FileSystemChecker(this.checkDir, stubLogger);
+        final AtomicInteger initialEvents = new AtomicInteger(0);
+        checker.addListener(new FileSystemListener() {
+
+            public void onChange(String file, FileSystemEvent event) {
+                if (FileSystemEvent.INITIAL.equals(event)) {
+                    initialEvents.incrementAndGet();
+                }
+            }
+        });
+        checker.check();
+        assertEquals("Expected 2 INITIAL events", 2, initialEvents.get());
+
+        checker.check();
+        assertEquals("Too many INITIAL events", 2, initialEvents.get());
+        
+        List<StubLogEntry> entries = stubLogger.getEntries();
+        assertTrue("There should be five states debugged.", 5==entries.size());
+        
+        String initialStateHeader = "target/work - initial state:\n";
+        String beforeStateHeader = "target/work - before check:\n";
+        String afterStateHeader = "target/work - after check:\n";
+        
+        assertTrue("Initial state not output in correct place.", entries.get(0).getString().startsWith(initialStateHeader));
+        assertTrue("Initial state not reporting a.txt and b.txt files.", entries.get(0).getString().contains("FileList():  [a.txt, b.txt]"));
+        assertTrue("Before state not output in correct place.", entries.get(1).getString().startsWith(beforeStateHeader));
+        assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(1).getString().contains("FileList():  [a.txt, b.txt]"));
+        assertTrue("After state not output in correct place.", entries.get(2).getString().startsWith(afterStateHeader));
+        assertTrue("Before state not output in correct place.", entries.get(3).getString().startsWith(beforeStateHeader));
+        assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(3).getString().contains("FileList():  [a.txt, b.txt]"));
+        assertTrue("After state not output in correct place.", entries.get(4).getString().startsWith(afterStateHeader));
+
+//        for (StubLogEntry sle : entries) {
+//            System.out.println(sle);
+//        }
     }
 }

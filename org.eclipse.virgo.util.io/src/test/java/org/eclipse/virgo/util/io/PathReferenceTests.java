@@ -417,4 +417,33 @@ public class PathReferenceTests {
     	PathReference src = new PathReference(TEST_FILE);
     	assertEquals("hello", src.fileContents());
     }
+    
+    @Test
+    public void testTouch() throws Exception {
+        File file = new File(new File(WORK_AREA2_PATH), TEST_FILE2);
+        PathReference src = new PathReference(file);
+        long lm = file.lastModified();
+        Thread.sleep(1000L); //allow present time to change a bit
+        assertTrue(src.touch());
+        long newlm = file.lastModified();
+        assertTrue("LastModified ("+newlm+") not any greater now ("+lm+").", lm < newlm);
+    }
+    
+    @Test
+    public void testHashCode() {
+        PathReference src = new PathReference(TEST_FILE);
+        assertTrue("Hash code is zero!", 0 != src.hashCode());
+    }
+
+    @Test
+    public void testGetAbsolutePath() throws Exception {
+        PathReference src = new PathReference(TEST_FILE);
+        assertEquals("Absolute path not the same as File()", new File(TEST_FILE).getAbsolutePath(), src.toAbsoluteReference().getAbsolutePath());
+    }   
+    @Test
+    public void testGetCanonicalPath() throws Exception {
+        PathReference src = new PathReference(TEST_FILE);
+        assertEquals("Absolute path not the same as File()", new File(TEST_FILE).getCanonicalPath(), src.toCanonicalReference().getCanonicalPath());
+    }
+    
 }

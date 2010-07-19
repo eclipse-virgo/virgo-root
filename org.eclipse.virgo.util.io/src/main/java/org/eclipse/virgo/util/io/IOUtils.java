@@ -23,15 +23,6 @@ public final class IOUtils {
      * Quietly closes the supplied {@link Closeable} instance.
      * @param c to close
      */
-    @Deprecated
-    public static void closeQuitely(Closeable c) {
-        closeQuietly(c);
-    }
-
-    /**
-     * Quietly closes the supplied {@link Closeable} instance.
-     * @param c to close
-     */
     public static void closeQuietly(Closeable c) {
         if (c != null) {
             try {
