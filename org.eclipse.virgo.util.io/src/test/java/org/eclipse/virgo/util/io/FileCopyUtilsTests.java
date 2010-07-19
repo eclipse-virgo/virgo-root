@@ -11,24 +11,53 @@
 
 package org.eclipse.virgo.util.io;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
 
 import org.eclipse.virgo.util.io.FileCopyUtils;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit tests for the FileCopyUtils class.
  *
  */
-public class FileCopyUtilsTests extends TestCase {
-
-	public void testCopyFromInputStream() throws IOException {
+public class FileCopyUtilsTests {
+    
+    private final static File testDir = new File(new File("target"), "testFileCopyUtils");
+    
+    @Before
+    @After
+    public void resetTestDir() {
+        FileSystemUtils.deleteRecursively(testDir);
+        testDir.mkdirs();
+    }
+    
+    @Test
+    public void testCopyByteArrayToAndFromFile() throws Exception {
+        byte[] content = "content".getBytes();
+        File out = new File(testDir, "testByteArrayOut");
+        FileCopyUtils.copy(content, out);
+        
+        assertTrue("File not the same length ("+content.length+") as content ("+out.length()+")", content.length == out.length());
+        
+        byte[] inBytes = FileCopyUtils.copyToByteArray(out);
+        
+        assertArrayEquals("Copy out and copy in not the same!", content, inBytes);
+    }
+    
+	@Test
+    public void testCopyFromInputStream() throws IOException {
 		byte[] content = "content".getBytes();
 		ByteArrayInputStream in = new ByteArrayInputStream(content);
 		ByteArrayOutputStream out = new ByteArrayOutputStream(content.length);
@@ -37,6 +66,7 @@ public class FileCopyUtilsTests extends TestCase {
 		assertTrue(Arrays.equals(content, out.toByteArray()));
 	}
 
+    @Test
 	public void testCopyFromByteArray() throws IOException {
 		byte[] content = "content".getBytes();
 		ByteArrayOutputStream out = new ByteArrayOutputStream(content.length);
@@ -44,6 +74,7 @@ public class FileCopyUtilsTests extends TestCase {
 		assertTrue(Arrays.equals(content, out.toByteArray()));
 	}
 
+    @Test
 	public void testCopyToByteArray() throws IOException {
 		byte[] content = "content".getBytes();
 		ByteArrayInputStream in = new ByteArrayInputStream(content);
@@ -51,6 +82,7 @@ public class FileCopyUtilsTests extends TestCase {
 		assertTrue(Arrays.equals(content, result));
 	}
 
+    @Test
 	public void testCopyFromReader() throws IOException {
 		String content = "content";
 		StringReader in = new StringReader(content);
@@ -60,6 +92,7 @@ public class FileCopyUtilsTests extends TestCase {
 		assertEquals(content, out.toString());
 	}
 
+    @Test
 	public void testCopyFromString() throws IOException {
 		String content = "content";
 		StringWriter out = new StringWriter();
@@ -67,6 +100,7 @@ public class FileCopyUtilsTests extends TestCase {
 		assertEquals(content, out.toString());
 	}
 
+    @Test
 	public void testCopyToString() throws IOException {
 		String content = "content";
 		StringReader in = new StringReader(content);
