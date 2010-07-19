@@ -31,15 +31,18 @@ public class StubLogger implements Logger {
 
     public class StubLogEntry {
         private final String string;
-        private final Object[] arg1;
+        private final List<Object> arg1;
         private final Throwable throwable;
 
         StubLogEntry(String string, Object[] arg1, Throwable throwable) {
             this.string = string;
-            this.arg1 = arg1;
+            List<Object> list = new ArrayList<Object>();
+            if (arg1 != null) 
+                for(Object o : arg1) { list.add(o); }
+            this.arg1 = list;
             this.throwable = throwable;
         }
-        public Object[] getArg1() {
+        public List<Object> getArg1() {
             return this.arg1;
         }
         public Throwable getThrowable() {
@@ -50,33 +53,41 @@ public class StubLogger implements Logger {
         }
         public String toString() {
             StringBuilder sb = new StringBuilder(this.string).append(" [");
-            if (this.arg1 != null) {
-                for (int i=0; i<this.arg1.length; ++i) {
-                    if (i>0) sb.append(", ");
-                    sb.append(this.arg1[i]);
-                }
+            for (int i = 0; i < this.arg1.size(); ++i) {
+                if (i > 0)
+                    sb.append(", ");
+                sb.append(this.arg1.get(i));
             }
             sb.append("] ").append(throwable);
             return sb.toString();
         }
     }
     
+    private final Object monitor = new Object();
     private List<StubLogEntry> entries;
+    
+    private void addDebug(String string, Object[] args, Throwable t) {
+        synchronized (monitor) {
+            this.entries.add(new StubLogEntry(string, args, t));
+        }
+    }
     
     public StubLogger() {
         this.entries = new ArrayList<StubLogEntry>();
     }
     
     public List<StubLogEntry> getEntries() {
-        List<StubLogEntry> list = new ArrayList<StubLogEntry>(this.entries);
-        return list;
+        synchronized (this.monitor) {
+            List<StubLogEntry> list = new ArrayList<StubLogEntry>(this.entries);
+            return list;
+        }
     }
     
     /** 
      * {@inheritDoc}
      */
     public void debug(String arg0) {
-        this.entries.add(new StubLogEntry(arg0, null, null));
+        addDebug(arg0, null, null);
     }
 
     /** 
@@ -85,28 +96,28 @@ public class StubLogger implements Logger {
     public void debug(String arg0, Object arg1) {
         Object[] args = new Object[1];
         args[0] = arg1;
-        this.entries.add(new StubLogEntry(arg0, args, null));
+        addDebug(arg0, args, null);
     }
 
     /** 
      * {@inheritDoc}
      */
     public void debug(String arg0, Object[] arg1) {
-        this.entries.add(new StubLogEntry(arg0, arg1, null));
+        addDebug(arg0, arg1, null);
     }
 
     /** 
      * {@inheritDoc}
      */
     public void debug(String arg0, Throwable arg1) {
-        this.entries.add(new StubLogEntry(arg0, null, arg1));
+        addDebug(arg0, null, arg1);
     }
 
     /** 
      * {@inheritDoc}
      */
     public void debug(Marker arg0, String arg1) {
-        this.entries.add(new StubLogEntry(arg1, null, null));
+        addDebug(arg1, null, null);
     }
 
     /** 
@@ -116,7 +127,7 @@ public class StubLogger implements Logger {
         Object[] args = new Object[2];
         args[0] = arg1;
         args[1] = arg2;
-        this.entries.add(new StubLogEntry(arg0, args, null));
+        addDebug(arg0, args, null);
     }
 
     /** 
@@ -125,21 +136,21 @@ public class StubLogger implements Logger {
     public void debug(Marker arg0, String arg1, Object arg2) {
         Object[] args = new Object[1];
         args[0] = arg2;
-        this.entries.add(new StubLogEntry(arg1, args, null));
+        addDebug(arg1, args, null);
     }
 
     /** 
      * {@inheritDoc}
      */
     public void debug(Marker arg0, String arg1, Object[] arg2) {
-        this.entries.add(new StubLogEntry(arg1, arg2, null));
+        addDebug(arg1, arg2, null);
     }
 
     /** 
      * {@inheritDoc}
      */
     public void debug(Marker arg0, String arg1, Throwable arg2) {
-        this.entries.add(new StubLogEntry(arg1, null, arg2));
+        addDebug(arg1, null, arg2);
     }
 
     /** 
@@ -149,7 +160,7 @@ public class StubLogger implements Logger {
         Object[] args = new Object[2];
         args[0] = arg2;
         args[1] = arg3;
-        this.entries.add(new StubLogEntry(arg1, args, null));
+        addDebug(arg1, args, null);
     }
 
     /** 
