@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 import java.io.File;
 
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 
 
 /**

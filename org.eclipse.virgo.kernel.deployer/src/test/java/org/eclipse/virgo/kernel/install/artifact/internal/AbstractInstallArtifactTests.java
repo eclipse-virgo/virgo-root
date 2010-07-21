@@ -28,8 +28,8 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStorage;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 
 /**

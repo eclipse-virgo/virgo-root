@@ -15,7 +15,6 @@ import java.util.Map;
 
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStorage;
 import org.eclipse.virgo.util.common.Tree;
 
 /**
