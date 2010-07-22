@@ -14,5 +14,17 @@ Import-Template:
  javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
  org.osgi.framework.*;version="0"
+Import-Package: 
+ org.apache.catalina.ha;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.ha.tcp;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.ha.session;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.ha.deploy;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.io;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.group;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.membership;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.transport.nio;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.transport;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.group.interceptors;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional
 Excluded-Exports: 
  *
