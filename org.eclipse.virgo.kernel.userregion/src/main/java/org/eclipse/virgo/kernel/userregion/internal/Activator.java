@@ -61,64 +61,65 @@ import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 /**
  * {@link BundleActivator} for the Equinox-specific OSGi integration
  * <p />
- *
+ * 
  * <strong>Concurrent Semantics</strong><br />
- *
+ * 
  * Thread-safe.
- *
+ * 
  */
 public class Activator implements BundleActivator {
-    
+
     private static final long MAX_SECONDS_WAIT_FOR_SERVICE = 30;
+
     private static final long MAX_MILLIS_WAIT_FOR_SERVICE = TimeUnit.SECONDS.toMillis(MAX_SECONDS_WAIT_FOR_SERVICE);
-    
+
     private static final long SYSTEM_BUNDLE_ID = 0;
-    
+
     private static final String PROPERTY_USER_REGION_ARTIFACTS = "initialArtifacts";
-    
+
     private static final String PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS = "commandLineArtifacts";
-    
+
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
-    
+
     private volatile EquinoxHookRegistrar hookRegistrar;
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void start(BundleContext context) throws Exception {
         ResolutionFailureDetective rfd = createResolutionFailureDetective(context);
         Repository repository = OsgiFrameworkUtils.getService(context, Repository.class).getService();
         PackageAdmin packageAdmin = OsgiFrameworkUtils.getService(context, PackageAdmin.class).getService();
-        
+
         EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLogger.class).getService();
-        
+
         ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));
-        
+
         TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler = createBundleTransformationHandler(importExpansionHandler);
-        
+
         OsgiFramework osgiFramework = createOsgiFramework(context, packageAdmin, bundleTransformerHandler);
         this.registrationTracker.track(context.registerService(OsgiFramework.class.getName(), osgiFramework, null));
-        
+
         DumpContributor dumpContributor = createResolutionDumpContributor(context);
         this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), dumpContributor, null));
-        
+
         QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler);
         this.registrationTracker.track(context.registerService(QuasiFrameworkFactory.class.getName(), quasiFrameworkFactory, null));
-        
+
         EquinoxHookRegistrar hookRegistrar = createHookRegistrar(context, packageAdmin, bundleTransformerHandler);
         hookRegistrar.init();
         this.hookRegistrar = hookRegistrar;
-        
+
         PackageAdminUtil packageAdminUtil = createPackageAdminUtil(context);
         this.registrationTracker.track(context.registerService(PackageAdminUtil.class.getName(), packageAdminUtil, null));
-        
+
         scheduleRegistrationOfServiceScopingRegistryHooks(context, eventLogger);
-        
+
         Properties properties = new Properties();
         properties.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
         this.registrationTracker.track(context.registerService(ModuleContextAccessor.class.getName(), new EmptyModuleContextAccessor(), properties));
-        
+
         scheduleInitialArtifactDeployerCreation(context, eventLogger);
     }
 
@@ -126,102 +127,106 @@ public class Activator implements BundleActivator {
         PlatformAdmin platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class).getService();
         return new StandardResolutionFailureDetective(platformAdmin);
     }
-    
-    private OsgiFramework createOsgiFramework(BundleContext context, PackageAdmin packageAdmin, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
+
+    private OsgiFramework createOsgiFramework(BundleContext context, PackageAdmin packageAdmin,
+        TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
         return new EquinoxOsgiFramework(context, packageAdmin, bundleTransformerHandler);
     }
-    
+
     private DumpContributor createResolutionDumpContributor(BundleContext bundleContext) {
-        return new ResolutionDumpContributor(bundleContext); 
+        return new ResolutionDumpContributor(bundleContext);
     }
-    
-    private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective, Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
+
+    private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
         return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler);
     }
-    
+
     private TransformedManifestProvidingBundleFileWrapper createBundleTransformationHandler(ImportExpansionHandler importExpander) {
         return new TransformedManifestProvidingBundleFileWrapper(importExpander);
     }
-    
-    private ImportExpansionHandler createImportExpansionHandler(BundleContext context, PackageAdmin packageAdmin, Repository repository, EventLogger eventLogger) {
-        
+
+    private ImportExpansionHandler createImportExpansionHandler(BundleContext context, PackageAdmin packageAdmin, Repository repository,
+        EventLogger eventLogger) {
+
         Set<String> packagesExportedBySystemBundle = new HashSet<String>(30);
         ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(context.getBundle(SYSTEM_BUNDLE_ID));
-        
+
         for (ExportedPackage exportedPackage : exportedPackages) {
-             packagesExportedBySystemBundle.add(exportedPackage.getName());
+            packagesExportedBySystemBundle.add(exportedPackage.getName());
         }
-        
+
         return new ImportExpansionHandler(repository, context, packagesExportedBySystemBundle, eventLogger);
     }
-    
-    private EquinoxHookRegistrar createHookRegistrar(BundleContext context, PackageAdmin packageAdmin, TransformedManifestProvidingBundleFileWrapper bundleFileWrapper) {
+
+    private EquinoxHookRegistrar createHookRegistrar(BundleContext context, PackageAdmin packageAdmin,
+        TransformedManifestProvidingBundleFileWrapper bundleFileWrapper) {
         MetaInfResourceClassLoaderDelegateHook hook = new MetaInfResourceClassLoaderDelegateHook(context, packageAdmin);
         return new EquinoxHookRegistrar(bundleFileWrapper, hook);
     }
-    
+
     private PackageAdminUtil createPackageAdminUtil(BundleContext context) {
         return new StandardPackageAdminUtil(context);
     }
-    
+
     private void scheduleRegistrationOfServiceScopingRegistryHooks(final BundleContext context, EventLogger eventLogger) {
-    	Runnable runnable = new ServiceScopingHookRegisteringRunnable(context, this.registrationTracker, eventLogger);
-    	Thread thread = new Thread(runnable);
-    	thread.setDaemon(true);
-    	thread.start();
+        Runnable runnable = new ServiceScopingHookRegisteringRunnable(context, this.registrationTracker, eventLogger);
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        thread.start();
     }
-    
+
     private void scheduleInitialArtifactDeployerCreation(BundleContext context, EventLogger eventLogger) {
         KernelStartedAwaiter startedAwaiter = new KernelStartedAwaiter();
-        
+
         Properties properties = new Properties();
         properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
         this.registrationTracker.track(context.registerService(EventHandler.class.getName(), startedAwaiter, properties));
-        
+
         Runnable runnable = new InitialArtifactDeployerCreatingRunnable(context, eventLogger, this.registrationTracker, startedAwaiter);
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
         thread.start();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void stop(BundleContext context) throws Exception {
         this.registrationTracker.unregisterAll();
         EquinoxHookRegistrar hookRegistrar = this.hookRegistrar;
-        
+
         if (hookRegistrar != null) {
             hookRegistrar.destroy();
             this.hookRegistrar = null;
         }
     }
-    
-    private static final class ServiceScopingHookRegisteringRunnable implements Runnable {
-    	
-        private final EventLogger eventLogger;
-        
-    	private final BundleContext context;
-    	
-    	private final ServiceRegistrationTracker registrationTracker;
-    	
-		public ServiceScopingHookRegisteringRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker, EventLogger eventLogger) {		
-			this.context = context;
-			this.registrationTracker = registrationTracker;
-			this.eventLogger = eventLogger;
-		}
 
-		public void run() {
-			ScopeFactory scopeFactory = OsgiFrameworkUtils.getService(context, ScopeFactory.class).getService();
+    private static final class ServiceScopingHookRegisteringRunnable implements Runnable {
+
+        private final EventLogger eventLogger;
+
+        private final BundleContext context;
+
+        private final ServiceRegistrationTracker registrationTracker;
+
+        public ServiceScopingHookRegisteringRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker, EventLogger eventLogger) {
+            this.context = context;
+            this.registrationTracker = registrationTracker;
+            this.eventLogger = eventLogger;
+        }
+
+        public void run() {
+            ScopeFactory scopeFactory = OsgiFrameworkUtils.getService(context, ScopeFactory.class).getService();
             Shutdown shutdown = OsgiFrameworkUtils.getService(context, Shutdown.class).getService();
 
-	        try {
+            try {
                 ScopeServiceRepository scopeServiceRepository = getPotentiallyDelayedService(context, ScopeServiceRepository.class);
-                
+
                 ServiceScopingStrategy serviceScopingStrategy = new ServiceScopingStrategy(scopeFactory, scopeServiceRepository);
-                
+
                 ServiceScopingRegistryHook serviceScopingRegistryHook = new ServiceScopingRegistryHook(serviceScopingStrategy);
-                
+
                 this.registrationTracker.track(context.registerService(new String[] { "org.osgi.framework.hooks.service.FindHook",
                     "org.osgi.framework.hooks.service.EventHook" }, serviceScopingRegistryHook, null));
             } catch (TimeoutException te) {
@@ -230,22 +235,22 @@ public class Activator implements BundleActivator {
             } catch (InterruptedException ie) {
                 this.eventLogger.log(UserRegionLogEvents.USERREGION_START_INTERRUPTED, ie);
                 shutdown.immediateShutdown();
-            }	
-		}
+            }
+        }
     }
-    
+
     private static final class InitialArtifactDeployerCreatingRunnable implements Runnable {
-        
+
         private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
         private final BundleContext context;
-        
+
         private final EventLogger eventLogger;
-        
+
         private final KernelStartedAwaiter startAwaiter;
-        
+
         private final ServiceRegistrationTracker registrationTracker;
-        
+
         public InitialArtifactDeployerCreatingRunnable(BundleContext context, EventLogger eventLogger,
             ServiceRegistrationTracker registrationTracker, KernelStartedAwaiter startAwaiter) {
             this.context = context;
@@ -254,7 +259,7 @@ public class Activator implements BundleActivator {
             this.registrationTracker = registrationTracker;
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         public void run() {
@@ -264,14 +269,16 @@ public class Activator implements BundleActivator {
             try {
                 DeployUriNormaliser uriNormaliser = getPotentiallyDelayedService(context, DeployUriNormaliser.class);
                 ApplicationDeployer deployer = getPotentiallyDelayedService(context, ApplicationDeployer.class);
-                
+
                 Dictionary<String, String> artifactConfiguration = getRegionArtifactConfiguration();
-                
-                InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer, artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS), uriNormaliser, eventAdmin, eventLogger, shutdown);
+
+                InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer,
+                    artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS),
+                    uriNormaliser, eventAdmin, eventLogger, shutdown);
                 Properties properties = new Properties();
                 properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
-                this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));     
-                
+                this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));
+
                 initialArtifactDeployer.deployArtifacts();
             } catch (TimeoutException te) {
                 this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, MAX_SECONDS_WAIT_FOR_SERVICE);
@@ -281,7 +288,7 @@ public class Activator implements BundleActivator {
                 shutdown.immediateShutdown();
             }
         }
-        
+
         @SuppressWarnings("unchecked")
         private Dictionary<String, String> getRegionArtifactConfiguration() {
             ConfigurationAdmin configAdmin = OsgiFrameworkUtils.getService(this.context, ConfigurationAdmin.class).getService();
@@ -294,7 +301,7 @@ public class Activator implements BundleActivator {
             }
         }
     }
-    
+
     private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass) throws TimeoutException, InterruptedException {
         T service = null;
         OsgiServiceHolder<T> serviceHolder;
@@ -304,12 +311,13 @@ public class Activator implements BundleActivator {
                 serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
                 if (serviceHolder != null) {
                     service = serviceHolder.getService();
+                } else {
+                    millisWaited += sleepABitMore();
                 }
             } catch (IllegalStateException e) {
             }
-            millisWaited += sleepABitMore();
         }
-        if (service==null) {
+        if (service == null) {
             throw new TimeoutException(serviceClass.getName());
         }
         return service;
