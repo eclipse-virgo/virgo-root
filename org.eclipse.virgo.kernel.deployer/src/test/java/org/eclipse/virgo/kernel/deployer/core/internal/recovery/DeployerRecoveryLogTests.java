@@ -29,53 +29,78 @@ import org.eclipse.virgo.kernel.deployer.core.internal.recovery.DeployerRecovery
 import org.eclipse.virgo.util.io.PathReference;
 
 public class DeployerRecoveryLogTests {
-        
+
     private PathReference deployArea = new PathReference("target/deployArea");
-    
+
     @Before
     public void cleanup() {
         deployArea.delete(true);
         deployArea.createDirectory();
     }
-    
+
     @Test
     public void emptyLog() {
         DeployerRecoveryLog log = new DeployerRecoveryLog(deployArea);
-        assertEquals(0, log.getRecoveryState().size());
-    } 
-    
+        assertTrue(log.getRecoveryState().isEmpty());
+    }
+
     @Test
     public void recovery() {
         DeployerRecoveryLog log = new DeployerRecoveryLog(deployArea);
+
+        // all true
         URI app1 = new File("app/one").toURI();
         log.add(app1, new ApplicationDeployer.DeploymentOptions(true, true, true));
+
+        // all false
         URI app2 = new File("app/two").toURI();
-        log.add(app2, new ApplicationDeployer.DeploymentOptions(true, false, true));
-        
+        log.add(app2, new ApplicationDeployer.DeploymentOptions(false, false, false));
+
+        URI app3 = new File("app/three").toURI();
+        log.add(app3, new ApplicationDeployer.DeploymentOptions(false, false, true));
+
+        URI app4 = new File("app/four").toURI();
+        log.add(app4, new ApplicationDeployer.DeploymentOptions(false, true, true));
+
         log = new DeployerRecoveryLog(deployArea);
-             
+
         Map<URI, DeploymentOptions> recoveryState = log.getRecoveryState();
-        assertEquals(2, recoveryState.size());
-        
-        DeploymentOptions app1Options = recoveryState.remove(app1);       
-        assertNotNull(app1Options);
-        assertTrue(app1Options.getDeployerOwned());
-        assertTrue(app1Options.getRecoverable());
-        
-        DeploymentOptions app2Options = recoveryState.remove(app2);       
-        assertNotNull(app2Options);
-        assertFalse(app2Options.getDeployerOwned());
-        assertTrue(app2Options.getRecoverable());
-        
-        assertEquals(0, recoveryState.size());
+        assertEquals(4, recoveryState.size());
+
+        // boolean recoverable, boolean deployerOwned, boolean synchronous
+        DeploymentOptions deploymentOptions = recoveryState.remove(app1);
+        assertNotNull(deploymentOptions);
+        assertTrue(deploymentOptions.getRecoverable());
+        assertTrue(deploymentOptions.getDeployerOwned());
+        assertTrue(deploymentOptions.getSynchronous());
+
+        deploymentOptions = recoveryState.remove(app2);
+        assertNotNull(deploymentOptions);
+        assertFalse(deploymentOptions.getRecoverable());
+        assertFalse(deploymentOptions.getDeployerOwned());
+        assertFalse(deploymentOptions.getSynchronous());
+
+        deploymentOptions = recoveryState.remove(app3);
+        assertNotNull(deploymentOptions);
+        assertFalse(deploymentOptions.getRecoverable());
+        assertFalse(deploymentOptions.getDeployerOwned());
+        assertTrue(deploymentOptions.getSynchronous());
+
+        deploymentOptions = recoveryState.remove(app4);
+        assertNotNull(deploymentOptions);
+        assertFalse(deploymentOptions.getRecoverable());
+        assertTrue(deploymentOptions.getDeployerOwned());
+        assertTrue(deploymentOptions.getSynchronous());
+
+        assertTrue(recoveryState.isEmpty());
     }
-    
+
     @Test
     public void rewrite() {
         DeployerRecoveryLog log = new DeployerRecoveryLog(deployArea);
         URI app1 = new File("app/one").toURI();
-        for (int i = 0; i < 100; i++) {           
-            log.add(app1, new  ApplicationDeployer.DeploymentOptions(true, true, true));
+        for (int i = 0; i < 100; i++) {
+            log.add(app1, new ApplicationDeployer.DeploymentOptions(true, true, true));
             if (i < 99) {
                 log.remove(app1);
             }

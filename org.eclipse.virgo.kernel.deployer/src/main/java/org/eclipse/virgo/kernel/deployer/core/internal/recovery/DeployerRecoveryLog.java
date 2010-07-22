@@ -41,8 +41,7 @@ import org.eclipse.virgo.util.io.PathReference;
  * This class is thread safe.
  * 
  */
-// TODO Make package private
-public final class DeployerRecoveryLog {
+final class DeployerRecoveryLog {
 
     private static final String REDEPLOY_FILE_NAME = "deployed";
 
@@ -52,25 +51,13 @@ public final class DeployerRecoveryLog {
 
     private static final int COMPRESSION_THRESHOLD = 10;
 
-    private static final int COMMAND_LENGTH = 1;
+    private static final int COMMAND_LENGTH = 3;
 
-    private static final String DEPLOY_UNOWNED_URI_COMMAND = "+";
-
-    private static final String DEPLOY_OWNED_URI_COMMAND = ">";
-
-    private static final String DEPLOY_NON_RECOVERABLE_URI_COMMAND = "!";
-
-    private static final String UNDEPLOY_URI_COMMAND = "-";
+    private static final String UNDEPLOY_URI_COMMAND = "---";
 
     private static final String URI_SEPARATOR = ";";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private static final DeploymentOptions UNOWNED = new DeploymentOptions(true, false, true);
-
-    private static final DeploymentOptions OWNED = new DeploymentOptions(true, true, true);
-
-    private static final DeploymentOptions NON_RECOVERABLE = new DeploymentOptions(false, false, true);
 
     private final PathReference redeployDataset;
 
@@ -81,7 +68,7 @@ public final class DeployerRecoveryLog {
     DeployerRecoveryLog(PathReference workArea) {
         PathReference recoveryArea = workArea.newChild("recovery");
         recoveryArea.createDirectory();
-        
+
         this.redeployDataset = recoveryArea.newChild(REDEPLOY_FILE_NAME);
         this.redeployFileLastModified = this.redeployDataset.toFile().lastModified();
         this.redeployCompressionDataset = recoveryArea.newChild(REDEPLOY_COMPRESSION_FILE_NAME);
@@ -110,28 +97,25 @@ public final class DeployerRecoveryLog {
 
         for (String uriCommandString : redeployData.split(URI_SEPARATOR)) {
             recordCount++;
-            // Skip zero length command strings as there will typically be one
+            // Skip short command strings as there will typically be one
             // at the end of the dataset.
             if (uriCommandString.length() >= COMMAND_LENGTH) {
                 String uriCommand = uriCommandString.substring(0, COMMAND_LENGTH);
-                String uriString = uriCommandString.substring(1);
+                String uriString = uriCommandString.substring(COMMAND_LENGTH);
                 try {
                     URI uri = new URI(uriString);
-                    if (DEPLOY_UNOWNED_URI_COMMAND.equals(uriCommand)) {
-                        redeploySet.put(uri, UNOWNED);
-                    } else if (DEPLOY_OWNED_URI_COMMAND.equals(uriCommand)) {
-                        redeploySet.put(uri, OWNED);
-                    } else if (DEPLOY_NON_RECOVERABLE_URI_COMMAND.equals(uriCommand)) {
-                        redeploySet.put(uri, NON_RECOVERABLE);
-                    } else if (UNDEPLOY_URI_COMMAND.equals(uriCommand)) {
+                    if (UNDEPLOY_URI_COMMAND.equals(uriCommand)) {
                         undeployCount++;
                         redeploySet.remove(uri);
                     } else {
-                        logger.error("Invalid URI command string '%s' read from redeploy dataset", uriCommandString);
-                        // skip and carry on
+                        char[] commands = uriCommand.toCharArray();
+                        DeploymentOptions options = new DeploymentOptions(fromCommandOption(commands[0]), fromCommandOption(commands[1]),
+                            fromCommandOption(commands[2]));
+
+                        redeploySet.put(uri, options);
                     }
                 } catch (URISyntaxException e) {
-                    logger.error("Invalid URI command string '%s' read from redeploy dataset", e, uriCommandString);
+                    logger.error("Invalid URI in command string '%s' read from redeploy dataset", e, uriCommandString);
                     // skip and carry on
                 }
             }
@@ -203,8 +187,7 @@ public final class DeployerRecoveryLog {
      * @param location
      * @param deploymentOptions
      */
-    // TODO Make package private
-    public void add(URI location, DeploymentOptions deploymentOptions) {
+    void add(URI location, DeploymentOptions deploymentOptions) {
         recordUriCommand(location, getCommandString(deploymentOptions));
     }
 
@@ -215,8 +198,10 @@ public final class DeployerRecoveryLog {
      * @return the command string
      */
     private String getCommandString(DeploymentOptions deploymentOptions) {
-        return deploymentOptions.getRecoverable() ? (deploymentOptions.getDeployerOwned() ? DEPLOY_OWNED_URI_COMMAND : DEPLOY_UNOWNED_URI_COMMAND)
-            : DEPLOY_NON_RECOVERABLE_URI_COMMAND;
+        //boolean recoverable, boolean deployerOwned, boolean synchronous
+        StringBuilder command = new StringBuilder().append(toCommandOption(deploymentOptions.getRecoverable())).append(
+            toCommandOption(deploymentOptions.getDeployerOwned())).append(toCommandOption(deploymentOptions.getSynchronous()));
+        return command.toString();
     }
 
     /**
@@ -224,8 +209,7 @@ public final class DeployerRecoveryLog {
      * 
      * @param location
      */
-    // TODO Make package private
-    public void remove(URI location) {
+    void remove(URI location) {
         recordUriCommand(location, UNDEPLOY_URI_COMMAND);
     }
 
@@ -248,6 +232,26 @@ public final class DeployerRecoveryLog {
     }
 
     /**
+     * Converts boolean deployment option flag to a string representation for the logged command option
+     * 
+     * @param deploymentOption
+     * @return
+     */
+    private static char toCommandOption(boolean deploymentOption) {
+        return deploymentOption ? 'Y' : 'N';
+    }
+
+    /**
+     * Converts from a String command option to a boolean deployment option flag
+     * 
+     * @param commandOption
+     * @return
+     */
+    private static boolean fromCommandOption(char commandOption) {
+        return 'Y' == commandOption ? true : false;
+    }
+
+    /**
      * Get the last modified time of the deployer's recovery file. Any applications in the pickup directory with a later
      * last modified time will need to be redeployed.
      * 
@@ -259,6 +263,7 @@ public final class DeployerRecoveryLog {
 
     /**
      * Update the last modified time of the deployer's recovery file.
+     * 
      * @return <code>true</code> iff the operation succeeded
      */
     // TODO Make package private
