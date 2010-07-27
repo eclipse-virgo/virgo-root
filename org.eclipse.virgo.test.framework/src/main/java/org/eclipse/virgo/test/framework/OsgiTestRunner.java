@@ -26,6 +26,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 
+import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
 import org.eclipse.virgo.osgi.launcher.FrameworkBuilder;
 import org.eclipse.virgo.osgi.launcher.FrameworkBuilder.FrameworkCustomizer;
 import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
@@ -85,6 +86,7 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                     e.printStackTrace();
                 }
             }            
+            BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
         }
     }
 
