@@ -33,7 +33,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.D-20100727180244/org.eclipse.virgo.medic-2.1.0.D-20100727180244.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.D-20100727180244/org.eclipse.virgo.medic-sources-2.1.0.D-20100727180244.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.D-20100730083557/org.eclipse.virgo.medic-2.1.0.D-20100730083557.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.D-20100730083557/org.eclipse.virgo.medic-sources-2.1.0.D-20100730083557.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
@@ -41,7 +41,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.5.10/com.springsource.slf4j.api-1.5.10.jar" sourcepath="/KERNEL_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.5.10/com.springsource.slf4j.api-sources-1.5.10.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/2.1.0.D-20100727180244/org.eclipse.virgo.medic.test-2.1.0.D-20100727180244.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/2.1.0.D-20100730083557/org.eclipse.virgo.medic.test-2.1.0.D-20100730083557.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.eventadmin/1.0.0/org.apache.felix.eventadmin-1.0.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.eventadmin/1.0.0/org.apache.felix.eventadmin-sources-1.0.0.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.1.0.D-20100727175207/org.eclipse.virgo.teststubs.osgi-2.1.0.D-20100727175207.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.teststubs.osgi/1.0.0.CI-B38/org.eclipse.virgo.teststubs.osgi-sources-1.0.0.CI-B38.jar"/>
