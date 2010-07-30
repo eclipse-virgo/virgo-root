@@ -42,29 +42,9 @@ public aspect EntryExitTrace pertypewithin(*) {
 
 	pointcut getter() : execution(* get*(..));
 
-	pointcut infoCandidate() : execution(public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
+	pointcut debugCandidate() : execution(public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
 
-	pointcut debugCandidate() : execution(!public !private * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
-
-	pointcut traceCandidate() : execution(private * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
-
-	before() : infoCandidate() {
-		getLogger(thisJoinPointStaticPart).info("{} {}", ">",
-				getSignature(thisJoinPointStaticPart));
-	}
-
-	after() returning : infoCandidate()  {
-		getLogger(thisJoinPointStaticPart).info("{} {}", "<",
-				getSignature(thisJoinPointStaticPart));
-	}
-
-	after() throwing(Throwable t) : infoCandidate()  {
-		Logger logger = getLogger(thisJoinPointStaticPart);
-		if (logger.isInfoEnabled()) {
-			logger.info(String.format("< %s",
-					getSignature(thisJoinPointStaticPart)), t);
-		}
-	}
+	pointcut traceCandidate() : execution(!public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
 
 	before() : debugCandidate() {
 		getLogger(thisJoinPointStaticPart).debug("{} {}", ">",

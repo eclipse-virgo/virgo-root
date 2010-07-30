@@ -31,27 +31,10 @@ public aspect EntryExitTrace pertypewithin(*) {
     
     pointcut logback() : within(ch.qos.logback..*) || within(org.slf4j.impl..*);
     
-    pointcut infoCandidate() : execution(public * *(..)) && !medic() && !logback();
+    pointcut debugCandidate() : execution(public * *(..)) && !medic() && !logback();
     
-    pointcut debugCandidate() : execution(!public !private * *(..)) && !medic() && !logback();
+    pointcut traceCandidate() : execution(!public * *(..)) && !medic() && !logback();
     
-    pointcut traceCandidate() : execution(private * *(..)) && !medic() && !logback();
-    
-    before() : infoCandidate() {
-        getLogger(thisJoinPointStaticPart).info("{} {}", ">", getSignature(thisJoinPointStaticPart));
-    }
-
-    after() returning : infoCandidate()  {
-        getLogger(thisJoinPointStaticPart).info("{} {}", "<", getSignature(thisJoinPointStaticPart));
-    }
-
-    after() throwing(Throwable t) : infoCandidate()  {
-        Logger logger = getLogger(thisJoinPointStaticPart);
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("< %s", getSignature(thisJoinPointStaticPart)), t);
-        }
-    }
-
     before() : debugCandidate() {
         getLogger(thisJoinPointStaticPart).debug("{} {}", ">", getSignature(thisJoinPointStaticPart));
     }

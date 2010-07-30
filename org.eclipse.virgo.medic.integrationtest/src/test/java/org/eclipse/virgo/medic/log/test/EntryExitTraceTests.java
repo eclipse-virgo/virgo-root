@@ -40,7 +40,7 @@ public class EntryExitTraceTests {
         List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents(null);
         assertEquals(2, loggingEvents.size());
         LoggingEvent event = loggingEvents.get(0);
-        assertEquals(Level.INFO, event.getLevel());
+        assertEquals(Level.DEBUG, event.getLevel());
         assertEquals("> public void test.TestClass.publicTest(boolean)", event.getFormattedMessage());
         assertEquals("public void test.TestClass.publicTest(boolean)", event.getArgumentArray()[1]);
     }
@@ -51,7 +51,7 @@ public class EntryExitTraceTests {
         List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents(null);
         assertEquals(2, loggingEvents.size());
         LoggingEvent event = loggingEvents.get(1);
-        assertEquals(Level.INFO, event.getLevel());
+        assertEquals(Level.DEBUG, event.getLevel());
         assertEquals("< public void test.TestClass.publicTest(boolean)", event.getFormattedMessage());
         assertEquals("public void test.TestClass.publicTest(boolean)", event.getArgumentArray()[1]);
     }
@@ -64,7 +64,7 @@ public class EntryExitTraceTests {
             List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents(null);
             assertEquals(2, loggingEvents.size());
             LoggingEvent event = loggingEvents.get(1);
-            assertEquals(Level.INFO, event.getLevel());
+            assertEquals(Level.DEBUG, event.getLevel());
             assertEquals("< public void test.TestClass.publicTest(boolean)", event.getFormattedMessage());
             assertEquals(RuntimeException.class.getName(), event.getThrowableProxy().getClassName());
         }
@@ -78,7 +78,7 @@ public class EntryExitTraceTests {
         List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents(null);
         assertEquals(2, loggingEvents.size());
         LoggingEvent event = loggingEvents.get(0);
-        assertEquals(Level.DEBUG, event.getLevel());
+        assertEquals(Level.TRACE, event.getLevel());
         assertEquals("> void test.TestClass.packagePrivateTest(boolean)", event.getFormattedMessage());
         assertEquals("void test.TestClass.packagePrivateTest(boolean)", event.getArgumentArray()[1]);
     }
@@ -91,7 +91,7 @@ public class EntryExitTraceTests {
         List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents(null);
         assertEquals(2, loggingEvents.size());
         LoggingEvent event = loggingEvents.get(1);
-        assertEquals(Level.DEBUG, event.getLevel());
+        assertEquals(Level.TRACE, event.getLevel());
         assertEquals("< void test.TestClass.packagePrivateTest(boolean)", event.getFormattedMessage());
         assertEquals("void test.TestClass.packagePrivateTest(boolean)", event.getArgumentArray()[1]);
     }
@@ -106,7 +106,7 @@ public class EntryExitTraceTests {
             List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents(null);
             assertEquals(2, loggingEvents.size());
             LoggingEvent event = loggingEvents.get(1);
-            assertEquals(Level.DEBUG, event.getLevel());
+            assertEquals(Level.TRACE, event.getLevel());
             assertEquals("< void test.TestClass.packagePrivateTest(boolean)", event.getFormattedMessage());
             assertEquals(RuntimeException.class.getName(), event.getThrowableProxy().getClassName());
         }
