@@ -22,9 +22,11 @@ Import-Template:
  org.slf4j.*;version="${org.slf4j:[=.=.=, +1.0.0)}",
  org.xml.sax.*;version="0"
 Excluded-Imports: 
- org.codehaus.janino.*
+ org.codehaus.janino.*,
+ org.codehaus.groovy.*,
+ groovy.lang
 Export-Template: 
- org.slf4j.impl;version="1.5.10",
+ org.slf4j.impl;version="1.6.1",
  ch.qos.logback.*;version="${ch.qos.logback}"
 Excluded-Exports: 
  org.eclipse.virgo.medic.*

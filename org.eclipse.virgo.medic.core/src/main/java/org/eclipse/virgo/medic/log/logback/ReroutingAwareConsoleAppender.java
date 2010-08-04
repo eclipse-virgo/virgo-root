@@ -12,7 +12,6 @@
 package org.eclipse.virgo.medic.log.logback;
 
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import org.eclipse.virgo.medic.log.impl.LoggingPrintStreamWrapper;
 
@@ -32,11 +31,16 @@ import ch.qos.logback.core.ConsoleAppender;
  */
 public class ReroutingAwareConsoleAppender<E> extends ConsoleAppender<E> {
 
-    protected OutputStreamWriter createWriter(OutputStream os) {
-        if (os instanceof LoggingPrintStreamWrapper) {
-            return super.createWriter(((LoggingPrintStreamWrapper)os).getOriginalPrintStream());
+    /**
+     * This is responsible for ensuring the Appender is using the right output stream as it may have been wrapped.
+     */
+    @Override
+    public void setOutputStream(OutputStream outputStream) {
+        if (outputStream instanceof LoggingPrintStreamWrapper) {
+            super.setOutputStream(((LoggingPrintStreamWrapper)outputStream).getOriginalPrintStream());
         } else {
-            return super.createWriter(os);
+            super.setOutputStream(outputStream);
         }
     }
+
 }

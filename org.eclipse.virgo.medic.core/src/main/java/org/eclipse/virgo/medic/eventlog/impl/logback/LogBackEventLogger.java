@@ -83,7 +83,7 @@ class LogBackEventLogger implements EventLogger {
     private void logMessage(Logger logger, String message, Level level, String eventCode, Throwable throwable, Object... inserts) {
         try {
             MDC.put(MDC_KEY_MEDIC_EVENT_CODE, eventCode);
-            String formattedMessage = MessageFormatter.arrayFormat(message, (Object[]) inserts);
+            String formattedMessage = MessageFormatter.arrayFormat(message, (Object[]) inserts).getMessage();
             switch (level) {
                 case ERROR:
                     logger.error(formattedMessage, throwable);
