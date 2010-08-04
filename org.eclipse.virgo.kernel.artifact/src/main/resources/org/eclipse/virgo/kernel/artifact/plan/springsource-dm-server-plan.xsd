@@ -76,16 +76,18 @@ This version or version number must meet the OSGi version specification. This at
 		</sequence>
 		<attribute name="name" type="string" use="required">
 			<annotation>
-				<documentation><![CDATA[The name of this plan.This is one component of the unique identifier for this plan along with a type of 'plan' and a specified version.]]></documentation>
+				<documentation><![CDATA[The name of this plan.
+This is one component of the unique identifier for this plan along with a type of 'plan' and a specified version.]]></documentation>
 			</annotation>
 		</attribute>
 		<attribute name="version" use="required">
             <annotation>
-            	<documentation><![CDATA[The version of this plan.This version must meet the OSGi version specification. This is one component of the unique identifier for this plan along with a type of 'plan' and a specified name.]]></documentation>
+            	<documentation><![CDATA[The version of this plan.
+This version must meet the OSGi version specification. This is one component of the unique identifier for this plan along with a type of 'plan' and a specified name.]]></documentation>
             </annotation>
             <simpleType>
 				<restriction base="string">
-					<pattern value="\d(.\d(.\d(.([\w_-])+)?)?)?"/>
+					<pattern value="\d+(\.\d+(\.\d+(\.([\w_-])+)?)?)?"/>
 				</restriction>
 			</simpleType>
 		</attribute>
