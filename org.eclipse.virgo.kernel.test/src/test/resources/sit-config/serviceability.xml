@@ -1,9 +1,9 @@
 <configuration>
 
 	<appender name="LOG_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</Pattern>
-		</layout>
+		</encoder>
 	</appender>
 
 	<appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -16,15 +16,15 @@
 		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
 			<MaxFileSize>10MB</MaxFileSize>
 		</triggeringPolicy>
-		<layout class="ch.qos.logback.classic.PatternLayout">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</Pattern>
-		</layout>
+		</encoder>
 	</appender>
 
 	<appender name="EVENT_LOG_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
-		</layout>
+		</encoder>
 	</appender>
 
 	<appender name="EVENT_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -37,9 +37,9 @@
 		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
 			<MaxFileSize>10MB</MaxFileSize>
 		</triggeringPolicy>
-		<layout class="ch.qos.logback.classic.PatternLayout">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
-		</layout>
+		</encoder>
 	</appender>
 
 	<logger name="org.eclipse.virgo.medic.eventlog.localized">
