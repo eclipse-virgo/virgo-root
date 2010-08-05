@@ -31,7 +31,7 @@ package org.eclipse.virgo.util.osgi.manifest.parse.standard;
 
  * <li>alphanum ::= alpha | digit
 
- * <li>token ::= ( alphanum | ’_’ | ’-’ )+
+ * <li>token ::= ( alphanum | ’_’ | ’-’ | ’.’)+
 
  * <li>number ::= digit+
 
@@ -307,9 +307,50 @@ public class StandardHeaderLexer {
 
 	}
 
-
-
 	private void processDot() {
+
+		if (lastEmittedToken != null && lastEmittedToken.getKind() == HeaderTokenKind.SEMICOLON) {
+
+			if (state == UNKNOWN) {
+ 
+				processDotOrigin();
+
+			} else if (state == DIGITS || state == ALPHABETIC || state == ALPHANUMERIC || state == TOKEN) {
+	
+				state = TOKEN;
+	
+				do {
+
+					// is ".*" ?
+
+					if (data[datapos + 1] == '*' && data[datapos] == '.') {
+
+						datapos++;
+
+					}
+
+					datapos++;
+	
+				} while (isToken(data[datapos]));
+	
+			} else {
+	
+				assert state == QUOTEDSTRING;
+	
+				emitToken(datapos);
+	
+				state = UNKNOWN;
+	
+			}
+		} else {
+
+			processDotOrigin();
+
+		}
+
+	}
+
+	private void processDotOrigin() {
 
 		emitToken(datapos); // emit what we have so far
 
@@ -814,6 +855,20 @@ public class StandardHeaderLexer {
 		if (ch > 255) {
 
 			return false;
+
+		}
+
+		if (state == TOKEN) {
+
+			if ((ch == '.' || ch == '*') && lastEmittedToken != null && lastEmittedToken.getKind() == HeaderTokenKind.SEMICOLON) {
+
+				if (extensionStart != null) {
+
+					return true;
+
+				}
+
+			}
 
 		}
 

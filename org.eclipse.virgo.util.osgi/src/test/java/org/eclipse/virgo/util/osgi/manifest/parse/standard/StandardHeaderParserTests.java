@@ -49,7 +49,29 @@ public class StandardHeaderParserTests extends TestCase {
 
     private static final char aeDipthong = '\u00c6';
 
-    public void testValidPackageAttributeName() throws Exception {
+    public void testPackageAttributeNameNastySplit() throws Exception {
+        String test = "a.split.pkg;nasty.split=\"split\"";
+        List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
+        assertNotNull(packageDeclarations);
+        assertEquals(1, packageDeclarations.size());
+
+        HeaderDeclaration decl = packageDeclarations.get(0);
+        assertEquals("a.split.pkg", decl.getNames().get(0));
+        assertEquals("split", decl.getAttributes().get("nasty.split"));
+	}
+
+    public void testPackageAttributeNameWithDotsAndUnderscores() throws Exception {
+        String test = "a.long.package.name;test.split_mixed_with.underscore=split";
+        List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
+        assertNotNull(packageDeclarations);
+        assertEquals(1, packageDeclarations.size());
+
+        HeaderDeclaration decl = packageDeclarations.get(0);
+        assertEquals("a.long.package.name", decl.getNames().get(0));
+        assertEquals("split", decl.getAttributes().get("test.split_mixed_with.underscore"));
+	}
+
+    public void testPackageAttributeNameWithUnderscore() throws Exception {
         String test = "package;test_split=split";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
         assertNotNull(packageDeclarations);
@@ -60,7 +82,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals("split", decl.getAttributes().get("test_split"));
 	}
 
-    public void testInvalidPackageAttributeName() throws Exception {
+    public void testPackageAttributeNameWithDot() throws Exception {
         String test = "package;test.split=split";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
         assertNotNull(packageDeclarations);
