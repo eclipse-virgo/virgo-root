@@ -37,7 +37,7 @@ public class PackageAdminUtilTests extends AbstractEquinoxLaunchingTests {
     
     @Override
     protected String getSystemPackages() {
-        return "org.slf4j;version=1.5.10," + "org.eclipse.virgo.util.common;version=2.0.0," + "org.eclipse.virgo.util.math;version=2.0.0";
+        return "org.slf4j;version=1.6.1," + "org.eclipse.virgo.util.common;version=2.0.0," + "org.eclipse.virgo.util.math;version=2.0.0";
     }
 
     @Test
