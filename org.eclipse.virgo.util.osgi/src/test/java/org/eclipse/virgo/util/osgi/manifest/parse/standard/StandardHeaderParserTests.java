@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2008, 2010 VMware Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
- *******************************************************************************/
+ */
 
 package org.eclipse.virgo.util.osgi.manifest.parse.standard;
 
@@ -48,6 +48,28 @@ public class StandardHeaderParserTests extends TestCase {
     private static final char oUmlaut = '\u00f6';
 
     private static final char aeDipthong = '\u00c6';
+
+    public void testValidPackageAttributeName() throws Exception {
+        String test = "package;test_split=split";
+        List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
+        assertNotNull(packageDeclarations);
+        assertEquals(1, packageDeclarations.size());
+
+        HeaderDeclaration decl = packageDeclarations.get(0);
+        assertEquals("package", decl.getNames().get(0));
+        assertEquals("split", decl.getAttributes().get("test_split"));
+	}
+
+    public void testInvalidPackageAttributeName() throws Exception {
+        String test = "package;test.split=split";
+        List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
+        assertNotNull(packageDeclarations);
+        assertEquals(1, packageDeclarations.size());
+
+        HeaderDeclaration decl = packageDeclarations.get(0);
+        assertEquals("package", decl.getNames().get(0));
+        assertEquals("split", decl.getAttributes().get("test.split"));
+	}
 
     public void testParseGeneralHeaderError() {
         checkGeneralHeaderFailure("a\"wibble\"", HeaderProblemKind.EXPECTED_SEMICOLON_OR_COMMA);
