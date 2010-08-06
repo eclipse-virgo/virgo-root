@@ -36,7 +36,6 @@ import org.eclipse.virgo.util.osgi.manifest.parse.standard.StandardHeaderVisitor
 import junit.framework.TestCase;
 
 
-///CLOVER:OFF
 /**
  * Test header parsing - normal and error scenarios.
  * 

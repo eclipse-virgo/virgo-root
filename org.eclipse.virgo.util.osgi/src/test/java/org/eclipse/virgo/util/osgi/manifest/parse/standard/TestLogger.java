@@ -17,8 +17,6 @@ import org.eclipse.virgo.util.osgi.manifest.parse.ParserLogger;
 
 
 
-///CLOVER:OFF
-
 /**
 
  * Simple test logger for use in the other tests.
