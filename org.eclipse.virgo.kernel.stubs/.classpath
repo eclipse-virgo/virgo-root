@@ -24,8 +24,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-3.5.1.R35x_v20091005.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-sources-3.5.1.R35x_v20091005.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.D-20100805111740/org.eclipse.virgo.util.osgi-2.1.0.D-20100805111740.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.D-20100805111740/org.eclipse.virgo.util.osgi-sources-2.1.0.D-20100805111740.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100805111740/org.eclipse.virgo.util.common-2.1.0.D-20100805111740.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100805111740/org.eclipse.virgo.util.common-sources-2.1.0.D-20100805111740.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.M03-incubation/org.eclipse.virgo.util.osgi-2.1.0.M03-incubation.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.M03-incubation/org.eclipse.virgo.util.osgi-sources-2.1.0.M03-incubation.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.M03-incubation/org.eclipse.virgo.util.common-2.1.0.M03-incubation.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.M03-incubation/org.eclipse.virgo.util.common-sources-2.1.0.M03-incubation.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.artifact"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
 	<classpathentry kind="output" path="target/classes"/>
