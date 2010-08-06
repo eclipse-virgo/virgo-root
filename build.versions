@@ -10,6 +10,7 @@ org.eclipse.virgo.osgi=2.1.0.D-20100805111523
 org.eclipse.virgo.repository=2.1.0.D-20100805112903
 org.eclipse.virgo.util=2.1.0.D-20100805111740
 org.slf4j=1.6.1
+org.slf4j.spi=1.6.1
 org.springframework.osgi=1.2.1
 org.springframework=3.0.0.RELEASE
 
