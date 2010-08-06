@@ -31,8 +31,6 @@ import junit.framework.TestCase;
 
 
 
-///CLOVER:OFF
-
 /**
 
  * Test the lexing of input data into appropriate tokens.
