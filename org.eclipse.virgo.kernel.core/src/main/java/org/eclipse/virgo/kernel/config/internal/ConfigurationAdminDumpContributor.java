@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.config.internal;
 
+import static org.eclipse.virgo.util.io.IOUtils.closeQuietly;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Dictionary;
@@ -57,13 +59,7 @@ public class ConfigurationAdminDumpContributor implements DumpContributor {
         } catch (IOException e) {
             logger.warn("Could not write configurationAdmin dump");
         } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    // Nothing to do
-                }
-            }
+            closeQuietly(out);
         }
     }
 
