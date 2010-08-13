@@ -19,7 +19,7 @@ import org.osgi.service.cm.Configuration;
 
 public class StubConfiguration implements Configuration {
 
-    private Hashtable properties = new Hashtable();
+    private Hashtable properties = null;
 
     public void delete() throws IOException {
         throw new UnsupportedOperationException();
@@ -39,6 +39,7 @@ public class StubConfiguration implements Configuration {
 
     @SuppressWarnings("unchecked")
     public Dictionary getProperties() {
+        if (this.properties == null) return null;
         Hashtable propertiesCopy = new Hashtable();
         propertiesCopy.putAll(this.properties);
         return propertiesCopy;

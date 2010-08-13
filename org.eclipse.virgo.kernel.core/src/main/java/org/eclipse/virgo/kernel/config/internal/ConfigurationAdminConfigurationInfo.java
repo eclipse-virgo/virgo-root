@@ -17,6 +17,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class ConfigurationAdminConfigurationInfo implements ConfigurationInfo {
 
     private final String pid;
 
-    public ConfigurationAdminConfigurationInfo(ConfigurationAdmin configurationAdmin, String pid) {
+    public ConfigurationAdminConfigurationInfo(@NonNull ConfigurationAdmin configurationAdmin, String pid) {
         this.configurationAdmin = configurationAdmin;
         this.pid = pid;
     }
@@ -40,18 +41,21 @@ public class ConfigurationAdminConfigurationInfo implements ConfigurationInfo {
         return this.pid;
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, String> getProperties() {
         try {
             Configuration configuration = configurationAdmin.getConfiguration(this.pid, null);
+            Map<String, String> properties = new HashMap<String, String>();
+
+            @SuppressWarnings("unchecked")
             Dictionary<String, String> dictionary = configuration.getProperties();
 
-            Map<String, String> properties = new HashMap<String, String>(dictionary.size());
-            Enumeration<String> keys = dictionary.keys();
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement();
-                String value = dictionary.get(key);
-                properties.put(key, value);
+            if (dictionary != null) {
+                Enumeration<String> keys = dictionary.keys();
+                while (keys.hasMoreElements()) {
+                    String key = keys.nextElement();
+                    String value = dictionary.get(key);
+                    properties.put(key, value);
+                }
             }
             return properties;
         } catch (IOException e) {
