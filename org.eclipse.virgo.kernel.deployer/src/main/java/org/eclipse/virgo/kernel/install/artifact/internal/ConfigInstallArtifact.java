@@ -37,6 +37,9 @@ final class ConfigInstallArtifact extends AbstractInstallArtifact {
 
     private final StopEngine stopEngine;
 
+    /**
+     * @throws DeploymentException  
+     */
     ConfigInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage, @NonNull StartEngine startEngine,
         @NonNull RefreshEngine refreshEngine, @NonNull StopEngine stopEngine, @NonNull ArtifactStateMonitor artifactStateMonitor,
         String repositoryName, EventLogger eventLogger) throws DeploymentException {

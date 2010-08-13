@@ -439,8 +439,8 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     }
 
     /**
-     * @param tree
-     * @throws DeploymentException
+     * @param tree to set
+     * @throws DeploymentException possible from overriding methods
      */
     public void setTree(Tree<InstallArtifact> tree) throws DeploymentException {
         synchronized (this.monitor) {

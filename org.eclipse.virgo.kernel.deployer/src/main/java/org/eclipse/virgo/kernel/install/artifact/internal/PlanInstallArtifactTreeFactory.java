@@ -100,6 +100,9 @@ final class PlanInstallArtifactTreeFactory implements InstallArtifactTreeFactory
         return tree;
     }
 
+    /**
+     * @throws DeploymentException  
+     */
     private PlanDescriptor getPlanDescriptor(ArtifactStorage artifactStorage) throws DeploymentException {
         InputStream in = null;
         try {

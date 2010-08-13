@@ -60,7 +60,7 @@ public abstract class AbstractPipelineStage implements PipelineStage {
      * @param installTree the tree to be processed
      * @param installEnvironment the <code>InstallEnvironment</code> in the context of which to do the processing
      * @throws {@link UnableToSatisfyBundleDependenciesException} if a bundle's dependencies cannot be satisfied
-     * @throws {@link DeploymentException} if a failure occurs
+     * @throws DeploymentException if a failure occurs
      */
     protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
