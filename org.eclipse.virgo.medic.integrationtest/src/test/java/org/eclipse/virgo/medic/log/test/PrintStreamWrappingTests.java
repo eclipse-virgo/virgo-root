@@ -29,7 +29,7 @@ import org.eclipse.virgo.test.framework.OsgiTestRunner;
 public class PrintStreamWrappingTests {
 	
 	@Test
-	@Ignore("Test fails on the CI server as it wraps System.out")
+	@Ignore("[DMS-2879] Test fails on the CI server as it wraps System.out")
 	public void sysOutWrapping() {
 		System.out.println("Hello world!");
 		List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents("root-stub");
@@ -38,7 +38,7 @@ public class PrintStreamWrappingTests {
 	}
 	
 	@Test
-	@Ignore("Test fails on the CI server as it wraps System.err")
+	@Ignore("[DMS-2879] Test fails on the CI server as it wraps System.err")
 	public void sysErrWrapping() {
 		System.err.println("Hello world!");
 		List<LoggingEvent> loggingEvents = StubAppender.getAndResetLoggingEvents("root-stub");
