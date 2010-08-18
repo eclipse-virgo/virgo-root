@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  */
-@Ignore("[DMS-2496] comment this out until the failure can be debugged")
+@Ignore("[DMS-2876] comment this out until the failure can be debugged")
 public class ServiceBundleRedeploymentTests extends AbstractWebIntegrationTests {
 
     private static final DeploymentOptions DEPLOYMENT_OPTIONS = new DeploymentOptions(false, false, true);

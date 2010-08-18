@@ -29,7 +29,7 @@ import org.eclipse.virgo.util.io.FileSystemUtils;
 
 /**
  */
-@Ignore("Fails on the build server, possibly due to Linux's scheduling")
+@Ignore("[DMS-2877] Fails on the build server, possibly due to Linux's scheduling")
 public class PerAppTraceRoutingTests extends AbstractWebIntegrationTests {
 
     @Before
