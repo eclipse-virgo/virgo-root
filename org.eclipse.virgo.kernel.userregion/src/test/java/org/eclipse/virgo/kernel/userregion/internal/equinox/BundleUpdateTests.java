@@ -48,7 +48,7 @@ public class BundleUpdateTests extends AbstractOsgiFrameworkLaunchingTests {
      * class.
      */
     @Test
-    @Ignore("See DMS-284")
+    @Ignore("See DMS-2886")
     public void testUpdate() throws Exception {
         PathReference bBeforeSrc = new PathReference("src/test/resources/but/but.B.before.jar");
         PathReference b = new PathReference("target/but.B.jar");

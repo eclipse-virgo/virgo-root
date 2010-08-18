@@ -24,7 +24,7 @@ import org.junit.Test;
  */
 public class FFDCServiceAspectTests extends AbstractKernelIntegrationTest {
 
-    @Ignore("Cannot weave test projects in Ant yet")
+    @Ignore("[DMS-2884] Cannot weave test projects in Ant yet")
     @Test
     //
     public void ffdcAspectTriggersDump() {

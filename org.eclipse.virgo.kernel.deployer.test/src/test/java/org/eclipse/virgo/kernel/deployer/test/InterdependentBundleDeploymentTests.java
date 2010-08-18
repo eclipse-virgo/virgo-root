@@ -55,7 +55,7 @@ public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegra
     }
     
     @Test
-//    @Ignore("Fails intermittently due to problem described in ENGINE-1755")
+//    @Ignore("[DMS-2883] Fails intermittently due to problem described in ENGINE-1755")
     public void testUndeploymentOrder() throws Exception {
         DeploymentIdentity deploymentIdentity = this.appDeployer.deploy(new File("src/test/resources/osgi_test.jar").toURI());
         DeploymentIdentity deploymentIdentity2 = this.appDeployer.deploy(new File("src/test/resources/osgi_test2.jar").toURI());

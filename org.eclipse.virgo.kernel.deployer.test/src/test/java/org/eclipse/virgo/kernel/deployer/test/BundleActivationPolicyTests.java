@@ -22,7 +22,7 @@ import org.osgi.framework.Bundle;
 
 /**
  */
-@Ignore("Bundle activation policy is current ignored by the pipelined deployer")
+@Ignore("[DMS-2882] Bundle activation policy is current ignored by the pipelined deployer")
 public class BundleActivationPolicyTests extends AbstractParTests {
     
     private static final String MODULE_A_BUNDLE_SYMBOLIC_NAME = "bundle.activation.policy.module.a";

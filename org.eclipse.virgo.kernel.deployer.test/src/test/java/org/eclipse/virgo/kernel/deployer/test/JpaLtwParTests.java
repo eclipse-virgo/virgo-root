@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  */
-@Ignore("Uses TopLink Essentials which leaks a file handle and breaks the build on Windows")
+@Ignore("[DMS-2881] Uses TopLink Essentials which leaks a file handle and breaks the build on Windows")
 public class JpaLtwParTests extends AbstractParTests {
 
     @Test public void testDeployApp() throws Throwable {        
