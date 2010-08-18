@@ -93,7 +93,7 @@ public class StandardRequireBundleTests {
     }
 
     @Test
-    @Ignore("[DMS-548]")
+    @Ignore("[DMS-2887]")
     public void requiredBundleDuplicateListAddition() {
         StubHeaderParser parser = new StubHeaderParser();
         List<HeaderDeclaration> headers = new ArrayList<HeaderDeclaration>();
