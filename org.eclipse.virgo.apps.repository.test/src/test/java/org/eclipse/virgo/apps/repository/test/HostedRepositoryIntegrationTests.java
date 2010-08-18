@@ -39,7 +39,7 @@ import org.eclipse.virgo.util.io.PathReference;
 import org.eclipse.virgo.util.io.ZipUtils;
 
 @RunWith(OsgiTestRunner.class)
-@Ignore
+@Ignore("[DMS-2878]")
 public class HostedRepositoryIntegrationTests {
 
     private final static File INDEX_LOCATION = new File("target/work/org.eclipse.virgo.apps.repository.core_2.0.0/integration-test.index");
