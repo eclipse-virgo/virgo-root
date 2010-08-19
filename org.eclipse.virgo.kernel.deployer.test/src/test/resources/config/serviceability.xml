@@ -45,7 +45,7 @@
 		<appender-ref ref="LOG_FILE" />
 	</logger>
 
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="LOG_FILE" />
 	</root>
 
