@@ -47,7 +47,7 @@
 		<appender-ref ref="EVENT_LOG_FILE" />
 	</logger>
 
-	<root level="DEBUG">
+	<root level="INFO">
 		<!-- appender-ref ref="LOG_STDOUT" /-->
 		<appender-ref ref="LOG_FILE" />
 	</root>
