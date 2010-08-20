@@ -17,7 +17,6 @@ import java.io.File;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.ServiceRegistration;
 
@@ -26,6 +25,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
+import org.eclipse.virgo.test.framework.ConfigLocation;
 
 
 /**
@@ -39,6 +39,7 @@ import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
  * Thread-safe.
  *
  */
+@ConfigLocation("META-INF/no.heap.dump.test.config.properties")
 public class OnStartedFailureTests extends AbstractRAMIntegrationTests {
     
     private final OnStartedFailureLifecycleListener lifecycleListener = new OnStartedFailureLifecycleListener();
@@ -67,7 +68,6 @@ public class OnStartedFailureTests extends AbstractRAMIntegrationTests {
         }
     }
     
-    @Ignore("DMS-2714, DMS-2719")
     @Test
     public void standaloneBundleFailsWhenStartedUsingTheRAM() throws DeploymentException {
         DeploymentIdentity deployed = this.deployer.deploy(new File("src/test/resources/onstarted-failure-tests/bundle.jar").toURI());

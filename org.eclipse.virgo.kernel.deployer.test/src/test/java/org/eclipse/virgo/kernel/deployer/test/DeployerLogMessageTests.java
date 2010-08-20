@@ -23,13 +23,14 @@ import java.util.List;
 
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.test.framework.ConfigLocation;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
 /**
  */
+@ConfigLocation("META-INF/no.heap.dump.test.config.properties")
 public class DeployerLogMessageTests extends AbstractParTests {
 
     private static final File LOG_FILE = new File("target/serviceability/eventlog/eventlog.log");
@@ -70,7 +71,6 @@ public class DeployerLogMessageTests extends AbstractParTests {
         return logMessages;
     }
 
-    @Ignore("DMS-2719, DMS-2714")
     @Test(expected = DeploymentException.class)
     public void unsatisfiablePackageImport() throws Throwable {
         try {
