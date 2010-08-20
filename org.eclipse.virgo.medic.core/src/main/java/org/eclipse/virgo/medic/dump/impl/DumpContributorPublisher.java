@@ -26,6 +26,8 @@ import org.osgi.framework.ServiceRegistration;
 
 public final class DumpContributorPublisher {
 
+    private static final String SUPPRESS_HEAP_DUMPS = "org.eclipse.virgo.suppress.heap.dumps";
+
     private final List<ServiceRegistration> contributorRegistrations = new ArrayList<ServiceRegistration>();
 
     private final BundleContext bundleContext;
@@ -42,7 +44,9 @@ public final class DumpContributorPublisher {
 
     public void publishDumpContributors() {
         publishDumpContributor(new SummaryDumpContributor());
-        publishDumpContributor(new HeapDumpContributor());
+        if("false".equalsIgnoreCase(this.bundleContext.getProperty(SUPPRESS_HEAP_DUMPS))){
+            publishDumpContributor(new HeapDumpContributor());
+        }
         publishDumpContributor(new ThreadDumpContributor());
 		publishDumpContributor(this.logDumpContributor);
     }

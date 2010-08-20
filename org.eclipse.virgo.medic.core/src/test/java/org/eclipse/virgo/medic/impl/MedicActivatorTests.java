@@ -44,6 +44,7 @@ public class MedicActivatorTests {
     public void startAndStop() throws Exception {
         BundleActivator bundleActivator = new MedicActivator();
         StubBundleContext bundleContext = new StubBundleContext().addFilter(new ObjectClassFilter(DumpContributor.class));
+        bundleContext.addProperty("org.eclipse.virgo.suppress.heap.dumps", "false");
         
         PackageAdmin packageAdmin = createNiceMock(PackageAdmin.class);
         replay(packageAdmin);
