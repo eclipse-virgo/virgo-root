@@ -1,10 +1,10 @@
-org.eclipse.virgo.util=2.1.0.D-20100823153235
+org.eclipse.virgo.util=2.1.0.M04-incubation
 org.aspectj=1.6.6.RELEASE
 org.slf4j=1.6.1
 org.eclipse.osgi=3.5.1.R35x_v20091005
 org.apache.commons.httpclient=3.1.0
-org.eclipse.virgo.medic=2.1.0.D-20100902121239
+org.eclipse.virgo.medic=2.1.0.M04-incubation
 
 org.junit=4.7.0
 org.easymock=2.3.0
-org.eclipse.virgo.teststubs=2.1.0.M03-incubation
+org.eclipse.virgo.teststubs=2.1.0.M04-incubation
