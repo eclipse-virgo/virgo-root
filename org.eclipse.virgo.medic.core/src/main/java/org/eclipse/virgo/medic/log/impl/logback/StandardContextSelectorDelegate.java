@@ -131,6 +131,11 @@ public class StandardContextSelectorDelegate implements ContextSelectorDelegate,
             defaultContext.reset();
             try {
                 this.configurer.applyConfiguration(configuration, defaultContext);
+
+                // Remember the default context.
+                synchronized (this.monitor) {
+                    this.loggerContexts.put(configuration.getName(), defaultContext);
+                }
             } catch (LoggerContextConfigurationFailedException lccfe) {
                 lccfe.printStackTrace(System.err);
             }
