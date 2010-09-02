@@ -1,8 +1,8 @@
 # Compile
-org.eclipse.virgo.kernel=2.1.0.D-20100823154718
-org.eclipse.virgo.repository=2.1.0.D-20100823154348
+org.eclipse.virgo.kernel=2.1.0.D-20100902122230
+org.eclipse.virgo.repository=2.1.0.D-20100902121803
 org.eclipse.virgo.util=2.1.0.D-20100823153235
-org.eclipse.virgo.medic=2.1.0.D-20100823153917
+org.eclipse.virgo.medic=2.1.0.D-20100902121239
 javax.servlet=2.5.0
 org.eclipse.osgi=3.5.1.R35x_v20091005
 org.springframework=3.0.0.RELEASE
