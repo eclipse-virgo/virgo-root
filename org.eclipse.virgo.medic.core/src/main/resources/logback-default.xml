@@ -1,30 +1,30 @@
 <configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</Pattern>
-		</layout>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-28.28thread %msg %ex%n</Pattern>
+        </encoder>
 	</appender>
 
 	<appender name="EVENT_LOG_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
-		</layout>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-28.28thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
+        </encoder>
 	</appender>
 
 	<appender name="EVENT_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>serviceability/eventlog/eventlog.log</file>
+		<file>serviceability/eventlogs/defaulteventlog.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<FileNamePattern>serviceability/eventlog/eventlog_%i.log</FileNamePattern>
+			<FileNamePattern>serviceability/eventlogs/defaulteventlog_%i.log</FileNamePattern>
 			<MinIndex>1</MinIndex>
 			<MaxIndex>4</MaxIndex>
 		</rollingPolicy>
 		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
 			<MaxFileSize>10MB</MaxFileSize>
 		</triggeringPolicy>
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
-		</layout>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-28.28thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
+        </encoder>
 	</appender>
 
 	<logger name="org.eclipse.virgo.medic.eventlog.localized">
@@ -32,7 +32,7 @@
 		<appender-ref ref="EVENT_LOG_FILE" />
 	</logger>
 
-	<root level="debug">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />
 	</root>
 
