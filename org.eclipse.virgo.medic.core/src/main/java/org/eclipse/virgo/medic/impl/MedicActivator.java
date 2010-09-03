@@ -219,6 +219,13 @@ public final class MedicActivator implements BundleActivator {
         return new StandardContextSelectorDelegate(loggingCallerLocator, configurationLocator, bundleContext.getBundle(), loggerContextConfigurer);
     }
 
+    /**
+     * Logging configuration is located by searching up to two sources, depending on the bundle doing the logging.
+     * <p>
+     * Firstly, if and only if the bundle has a specific Medic manifest header, the service registry is searched in
+     * a location specified in the manifest header. Secondly, if the configuration has not already been found, the
+     * the bundle's resources are checked for a Logback configuration file.
+     */
     private static ConfigurationLocator createConfigurationLocator(BundleContext bundleContext) {
         return new CompositeConfigurationLocator(new ServiceRegistryConfigurationLocator(bundleContext), new BundleResourceConfigurationLocator());
     }
