@@ -21,12 +21,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.apache.catalina.springsource/com.springsource.org.apache.catalina.springsource/6.0.20.S2-r5956/com.springsource.org.apache.catalina.springsource-6.0.20.S2-r5956.jar" sourcepath="/WEB_IVY_CACHE/org.apache.catalina.springsource/com.springsource.org.apache.catalina.springsource/6.0.20.S2-r5956/com.springsource.org.apache.catalina.springsource-sources-6.0.20.S2-r5956.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.apache.catalina.springsource/com.springsource.org.apache.catalina.springsource/6.0.29.S2-r1559/com.springsource.org.apache.catalina.springsource-6.0.29.S2-r1559.jar" sourcepath="/WEB_IVY_CACHE/org.apache.catalina.springsource/com.springsource.org.apache.catalina.springsource/6.0.29.S2-r1559/com.springsource.org.apache.catalina.springsource-sources-6.0.29.S2-r1559.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-2.5.0.jar" sourcepath="/WEB_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-sources-2.5.0.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-3.5.1.R35x_v20091005.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-sources-3.5.1.R35x_v20091005.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.web.core"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/2.1.0.M04-incubation/org.eclipse.virgo.util.math-2.1.0.M04-incubation.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-40/org.eclipse.gemini.web.tomcat-1.1.0.CI-40.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-40/org.eclipse.gemini.web.tomcat-sources-1.1.0.CI-40.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-46/org.eclipse.gemini.web.tomcat-1.1.0.CI-46.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-46/org.eclipse.gemini.web.tomcat-sources-1.1.0.CI-46.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/2.1.0.M04-incubation/org.eclipse.virgo.kernel.osgi-2.1.0.M04-incubation.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/2.1.0.M04-incubation/org.eclipse.virgo.kernel.osgi-sources-2.1.0.M04-incubation.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
