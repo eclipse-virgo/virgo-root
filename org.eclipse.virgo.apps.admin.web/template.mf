@@ -32,7 +32,6 @@ Import-Package:
  org.springframework.web.context.support;version="${org.springframework:[2.5.6, +1)}",
  org.springframework.context.support;version="${org.springframework:[2.5.6, +1)}",
  org.springframework.context.config;version="${org.springframework:[2.5.6, +1)}",
- org.springframework.beans.factory.xml;version="${org.springframework:[2.5.6, +1)}",
- org.apache.juli.logging.impl;version="${org.apache.catalina:[=.=.=, +1)}"
+ org.springframework.beans.factory.xml;version="${org.springframework:[2.5.6, +1)}"
 Excluded-Exports: *
 Web-ContextPath: admin
