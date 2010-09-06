@@ -33,7 +33,7 @@
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.slf4j/com.springsource.slf4j.nop/1.6.1/com.springsource.slf4j.nop-1.6.1.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/2.1.0.M04-incubation/org.eclipse.virgo.util.math-2.1.0.M04-incubation.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/APPS_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
-	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.core/1.1.0.CI-40/org.eclipse.gemini.web.core-1.1.0.CI-40.jar"/>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.core/1.1.0.CI-46/org.eclipse.gemini.web.core-1.1.0.CI-46.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/2.1.0.M04-incubation/org.eclipse.virgo.medic.test-2.1.0.M04-incubation.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/1.0.1.CI-59/org.eclipse.virgo.medic.test-sources-1.0.1.CI-59.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.1.0.M04-incubation/org.eclipse.virgo.medic-2.1.0.M04-incubation.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.1.CI-59/org.eclipse.virgo.medic-sources-1.0.1.CI-59.jar">
