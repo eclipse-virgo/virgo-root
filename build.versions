@@ -1,10 +1,10 @@
 # Compile
-org.eclipse.virgo.kernel=2.1.0.M04-incubation
-org.eclipse.virgo.medic=2.1.0.M04-incubation
-org.eclipse.virgo.osgi=2.1.0.M04-incubation
-org.eclipse.virgo.repository=2.1.0.M04-incubation
-org.eclipse.virgo.util=2.1.0.M04-incubation
-org.eclipse.virgo.web=2.1.0.D-20100906090418
+org.eclipse.virgo.kernel=2.1.0.D-20100907111348
+org.eclipse.virgo.medic=2.1.0.D-20100907110508
+org.eclipse.virgo.osgi=2.1.0.D-20100907105528
+org.eclipse.virgo.repository=2.1.0.D-20100907111018
+org.eclipse.virgo.util=2.1.0.D-20100907105749
+org.eclipse.virgo.web=2.1.0.D-20100907114551
 org.eclipse.gemini.web=1.1.0.CI-46
 javax.jms=1.1.0
 javax.annotation=1.0.0
@@ -22,7 +22,7 @@ org.apache.tiles.osgi=2.1.2.osgi
 org.apache.tiles=2.1.2
 org.apache.xmlcommons=1.3.3
 org.aspectj=1.6.6.RELEASE
-org.eclipse.osgi=3.5.1.R35x_v20091005
+org.eclipse.osgi=3.6.0.v20100517
 org.slf4j=1.6.1
 org.springframework.js=2.0.8.RELEASE
 org.springframework.osgi=1.2.1
@@ -32,6 +32,6 @@ org.springframework=3.0.0.RELEASE
 org.eclipse.virgo.teststubs=2.1.0.M04-incubation
 org.junit=4.7.0
 org.easymock=2.3.0
-org.eclipse.virgo.test=2.1.0.M04-incubation
+org.eclipse.virgo.test=2.1.0.D-20100907110255
 
 
