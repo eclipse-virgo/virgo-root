@@ -21,7 +21,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/MEDIC_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
-	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-3.5.1.R35x_v20091005.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.1.R35x_v20091005/org.eclipse.osgi-sources-3.5.1.R35x_v20091005.jar"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.0.v20100517/org.eclipse.osgi-3.6.0.v20100517.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.0.v20100517/org.eclipse.osgi-sources-3.6.0.v20100517.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/MEDIC_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.medic"/>
@@ -31,7 +31,7 @@
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-1.6.1.jar" sourcepath="/MEDIC_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.classic/0.9.24/com.springsource.ch.qos.logback.classic-0.9.24.jar" sourcepath="/MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.classic/0.9.24/com.springsource.ch.qos.logback.classic-sources-0.9.24.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.core/0.9.24/com.springsource.ch.qos.logback.core-0.9.24.jar" sourcepath="/MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.core/0.9.24/com.springsource.ch.qos.logback.core-sources-0.9.24.jar"/>
-	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.M04-incubation/org.eclipse.virgo.util.osgi-2.1.0.M04-incubation.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.M04-incubation/org.eclipse.virgo.util.osgi-sources-2.1.0.M04-incubation.jar"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.D-20100907105749/org.eclipse.virgo.util.osgi-2.1.0.D-20100907105749.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.1.0.D-20100907105749/org.eclipse.virgo.util.osgi-sources-2.1.0.D-20100907105749.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.medic.weaving"/>
 	<classpathentry kind="output" path="target/classes"/>
