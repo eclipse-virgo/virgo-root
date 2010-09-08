@@ -25,11 +25,13 @@
 		<exclude org="org.eclipse.osgi"/>
 		<exclude org="org.eclipse.virgo.util" conf="repository-ext"/>
 		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.extensions.equinox"/>
+		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.launcher"/>
 		<exclude org="org.aspectj" module="com.springsource.org.aspectj.runtime"/>
 		<exclude org="org.jboss.logging"/>
 		<exclude org="org.jboss.util"/>
 		<exclude org="org.jboss.vfs"/>
 		<exclude org="org.apache.commons" module="com.springsource.org.apache.commons.logging"/>
+		<exclude org="org.springframework" module="org.springframework.context.support"/>
 				
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		<override org="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}"/>
