@@ -10,10 +10,10 @@ fi
 CLASSPATH=
 
 #  Create the classpath for bootstrapping the Server from all the JARs in lib
-for file in $KERNEL_HOME/lib/*
+for file in $KERNEL_HOME/lib/launcher/*
 do
 	if [[ $file == *.jar ]]
 	then
-        CLASSPATH=$CLASSPATH:$KERNEL_HOME/lib/${file##*/}
+        CLASSPATH=$CLASSPATH:$KERNEL_HOME/lib/launcher/${file##*/}
 	fi
 done
