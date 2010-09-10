@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="build-test-framework-test">
+<project name="build-test-framework">
 
 	<path id="unit.test.bundles">
 		<pathelement location="../org.eclipse.virgo.test.framework"/>
@@ -17,7 +17,7 @@
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, clover"
 		description="Performs a CI server-like build, should be run prior to performing a git push"/>
 		
-		<target name="setproxy">  
+		<target name="testproxy">  
 		                    <property name="proxy.host" value="206.191.52.34"/>  
 		                    <property name="proxy.port" value="9898"/>  
 		                   <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>  
