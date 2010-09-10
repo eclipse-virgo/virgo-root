@@ -16,5 +16,11 @@
 
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, clover"
 		description="Performs a CI server-like build, should be run prior to performing a git push"/>
+		
+		<target name="setproxy">  
+		                    <property name="proxy.host" value="206.191.52.34"/>  
+		                    <property name="proxy.port" value="9898"/>  
+		                   <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>  
+		                </target>
 
 </project>
