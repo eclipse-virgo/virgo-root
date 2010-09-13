@@ -129,10 +129,6 @@
 			</fileset>
 		</chmod>
 
-		<copy todir="${package.output.dir}" failonerror="false">
-			<fileset dir="${basedir}/resources"/>
-		</copy>
-
 		<mkdir dir="${artifacts.dir}"/>
 		<zip destfile="${package.output.file}">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
