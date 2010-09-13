@@ -51,6 +51,7 @@
 
 		<mkdir dir="${package.output.dir}/config"/>
 		<mkdir dir="${package.output.dir}/work"/>
+		<mkdir dir="${package.output.dir}/pickup"/>
 
 		<echo file="${package.output.dir}/lib/.version"
 				message="virgo.kernel.version=${bundle.version}&#xa;"/>
