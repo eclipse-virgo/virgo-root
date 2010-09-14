@@ -16,13 +16,5 @@
 
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, clover"
 		description="Performs a CI server-like build, should be run prior to performing a git push"/>
-		
-	<target name="setproxy">
-		<echo file="../virgo-build/lib/ivy/jets3t.properties"># Hudson Generated Proxy Configuration
-httpclient.proxy-autodetect=false
-httpclient.proxy-host=${http.proxyHost}
-httpclient.proxy-port=${http.proxyPort}
-</echo>
-	</target>
 
 </project>
