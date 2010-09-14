@@ -20,8 +20,8 @@
 	<target name="setproxy">
 		<echo file="../virgo-build/lib/ivy/jets3t.properties"># Hudson Generated Proxy Configuration
 httpclient.proxy-autodetect=false
-httpclient.proxy-host=206.191.52.34
-httpclient.proxy-port=9898
+httpclient.proxy-host=${http.proxyHost}
+httpclient.proxy-port=${http.proxyPort}
 </echo>
 	</target>
 
