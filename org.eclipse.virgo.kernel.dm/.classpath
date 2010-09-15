@@ -44,7 +44,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/2.1.0.D-20100907110508/org.eclipse.virgo.medic.test-2.1.0.D-20100907110508.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.eventadmin/1.0.0/org.apache.felix.eventadmin-1.0.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.eventadmin/1.0.0/org.apache.felix.eventadmin-sources-1.0.0.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.1.0.D-20100907110255/org.eclipse.virgo.teststubs.osgi-2.1.0.D-20100907110255.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.teststubs.osgi/1.0.0.CI-B38/org.eclipse.virgo.teststubs.osgi-sources-1.0.0.CI-B38.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.1.0.M04-incubation/org.eclipse.virgo.teststubs.osgi-2.1.0.M04-incubation.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.teststubs.osgi/1.0.0.CI-B38/org.eclipse.virgo.teststubs.osgi-sources-1.0.0.CI-B38.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
