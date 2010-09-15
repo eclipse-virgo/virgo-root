@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.foo.fragment.three
+Fragment-Host: com.foo.host
+Export-Package: com.foo.fragment.three;version="1.0"

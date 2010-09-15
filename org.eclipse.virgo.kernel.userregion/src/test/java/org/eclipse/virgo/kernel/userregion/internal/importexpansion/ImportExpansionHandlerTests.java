@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
@@ -80,6 +81,7 @@ public class ImportExpansionHandlerTests {
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("../ivy-cache/repository/org.springframework/org.springframework.beans/2.5.6.SEC01/org.springframework.beans-2.5.6.SEC01.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/noexports")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentwithnoexports")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/host")));
@@ -184,6 +186,57 @@ public class ImportExpansionHandlerTests {
         assertEquals(new VersionRange("[1.0, 2.0)"), new VersionRange(attributes.get("bundle-version")));
         assertEquals("com.foo.host", packageImport.getPackageName());
     }
+    
+    @Test
+    public void basicImportFragmentBundleSpecifyingExactBundleVersionRange() throws UnableToSatisfyDependenciesException {
+        List<Object> mocks = new ArrayList<Object>();
+
+        ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
+        expect(bundleImport.getBundleSymbolicName()).andReturn("com.foo.fragment.two").atLeastOnce();
+        expect(bundleImport.getVersion()).andReturn(new VersionRange("[3,3]")).atLeastOnce();
+        expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
+        expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).anyTimes();
+
+        ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());
+
+        replayMocks(mocks);
+
+        BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
+
+        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+
+        verifyMocks(mocks);
+    }
+
+    @Test
+    @Ignore("bug 325334")
+    public void basicImportFragmentBundleWithNoFragmentHostBundleVersion() throws UnableToSatisfyDependenciesException {
+        List<Object> mocks = new ArrayList<Object>();
+
+        ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
+        expect(bundleImport.getBundleSymbolicName()).andReturn("com.foo.fragment.three").atLeastOnce();
+        expect(bundleImport.getVersion()).andReturn(new VersionRange("[0,3]")).atLeastOnce();
+        expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
+        expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).anyTimes();
+
+        ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());
+
+        replayMocks(mocks);
+
+        BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
+
+        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+
+        verifyMocks(mocks);
+
+        assertEquals(1, bundleManifest.getImportPackage().getImportedPackages().size());
+
+        ImportedPackage packageImport = bundleManifest.getImportPackage().getImportedPackages().get(0);
+        Map<String, String> attributes = packageImport.getAttributes();
+        assertEquals("com.foo.host", attributes.get("bundle-symbolic-name"));
+        assertEquals(new VersionRange("0"), new VersionRange(attributes.get("bundle-version")));
+        assertEquals("com.foo.host", packageImport.getPackageName());
+    }
 
     @Test(expected = UnableToSatisfyBundleDependenciesException.class)
     public void importLibraryReferringToNonExistentBundle() throws UnableToSatisfyDependenciesException, IOException {
@@ -277,7 +330,7 @@ public class ImportExpansionHandlerTests {
     /**
      * Test the expansion of the following import:
      * 
-     * Import-Library: com.foo;version="[1.0,2.0)"
+     * Import-Library: com.foo;bundle-version="[1.0,2.0)"
      * 
      * @throws UnableToSatisfyDependenciesException
      */
