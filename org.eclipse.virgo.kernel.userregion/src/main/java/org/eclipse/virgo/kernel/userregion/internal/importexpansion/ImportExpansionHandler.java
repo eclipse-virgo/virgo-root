@@ -106,9 +106,9 @@ public final class ImportExpansionHandler implements ImportExpander {
 
         for (BundleManifest bundleManifest : bundleManifests) {
             TrackedPackageImports bundlePackageImportsToBePromoted = this.trackedPackageImportsFactory.createCollector();
-            
+
             detectPromotedPackageImports(bundleManifest, bundlePackageImportsToBePromoted);
-            
+
             expandImportsIfNecessary(bundleManifest, bundlePackageImportsToBePromoted, bundleManifests);
             if (!bundlePackageImportsToBePromoted.isEmpty()) {
                 packageImportsToBePromoted.merge(bundlePackageImportsToBePromoted);
@@ -133,8 +133,9 @@ public final class ImportExpansionHandler implements ImportExpander {
                 importedPackagesToPromote.add(importedPackage);
             }
         }
-        TrackedPackageImports trackedPackageImportsToPromote = this.trackedPackageImportsFactory.create(importedPackagesToPromote, "Import-Package in '" + bundleManifest.getBundleSymbolicName().getSymbolicName()
-            + "' version '" + bundleManifest.getBundleVersion() + "'");
+        TrackedPackageImports trackedPackageImportsToPromote = this.trackedPackageImportsFactory.create(importedPackagesToPromote,
+            "Import-Package in '" + bundleManifest.getBundleSymbolicName().getSymbolicName() + "' version '" + bundleManifest.getBundleVersion()
+                + "'");
         bundlePackageImportsToBePromoted.merge(trackedPackageImportsToPromote);
     }
 
@@ -193,18 +194,17 @@ public final class ImportExpansionHandler implements ImportExpander {
 
     void expandImports(List<ImportedLibrary> libraryImports, List<ImportedBundle> directlyImportedBundles, BundleManifest bundleManifest,
         List<BundleManifest> bundleManifests) throws UnableToSatisfyDependenciesException {
-        expandImports(libraryImports, directlyImportedBundles, bundleManifest, this.trackedPackageImportsFactory.createCollector(),
-            bundleManifests);
+        expandImports(libraryImports, directlyImportedBundles, bundleManifest, this.trackedPackageImportsFactory.createCollector(), bundleManifests);
     }
 
     private void expandImports(List<ImportedLibrary> libraryImports, List<ImportedBundle> directlyImportedBundles, BundleManifest bundleManifest,
-        TrackedPackageImports packageImportsToBePromoted, List<BundleManifest> bundleManifests)
-        throws UnableToSatisfyDependenciesException {
+        TrackedPackageImports packageImportsToBePromoted, List<BundleManifest> bundleManifests) throws UnableToSatisfyDependenciesException {
         Assert.notNull(libraryImports, "Library imports must be non-null");
         Assert.notNull(directlyImportedBundles, "Direct bundle imports must be non-null");
 
-        mergeImports(getAdditionalPackageImports(libraryImports, directlyImportedBundles, bundleManifest, packageImportsToBePromoted,
-            bundleManifests), bundleManifest);
+        mergeImports(
+            getAdditionalPackageImports(libraryImports, directlyImportedBundles, bundleManifest, packageImportsToBePromoted, bundleManifests),
+            bundleManifest);
 
         bundleManifest.getImportBundle().getImportedBundles().clear();
         bundleManifest.getImportLibrary().getImportedLibraries().clear();
@@ -318,14 +318,15 @@ public final class ImportExpansionHandler implements ImportExpander {
         String bundleVersion = bundleManifest.getBundleVersion().toString();
         String bundleSymbolicName = bundleManifest.getBundleSymbolicName().getSymbolicName();
 
+        List<ImportedPackage> packageImports;
+
         if (bundleManifest.getFragmentHost().getBundleSymbolicName() != null) {
             bundleSymbolicName = bundleManifest.getFragmentHost().getBundleSymbolicName();
-            bundleVersion = bundleManifest.getFragmentHost().getBundleVersion().toParseString();
+            packageImports = BundleManifestProcessor.createImportedPackageForEachExportedPackageOfFragment(exportedPackages, bundleSymbolicName, bundleManifest.getFragmentHost().getBundleVersion());
+        } else {
+            packageImports = BundleManifestProcessor.createImportedPackageForEachExportedPackage(exportedPackages, bundleSymbolicName, bundleVersion);
         }
 
-        List<ImportedPackage> packageImports = BundleManifestProcessor.createImportedPackageForEachExportedPackage(exportedPackages,
-            bundleSymbolicName, bundleVersion);
-        
         if (promoteExports) {
             tagImportsAsPromoted(packageImports);
         }
@@ -420,8 +421,7 @@ public final class ImportExpansionHandler implements ImportExpander {
                     } else {
                         bundleVersionRange = VersionRange.NATURAL_NUMBER_RANGE;
                     }
-                    OrderedPair<BundleManifest, Boolean> bundleManifest = findBundle(bundleSymbolicName, bundleVersionRange,
-                        additionalManifests);
+                    OrderedPair<BundleManifest, Boolean> bundleManifest = findBundle(bundleSymbolicName, bundleVersionRange, additionalManifests);
                     if (bundleManifest.getFirst() != null) {
                         boolean applicationImportScope = false;
                         Set<String> importScopeSet = properties.get(IMPORT_SCOPE_DIRECTIVE);
@@ -478,7 +478,7 @@ public final class ImportExpansionHandler implements ImportExpander {
      * @return
      */
     private OrderedPair<BundleManifest, Boolean> findBundle(String bundleSymbolicName, VersionRange versionRange,
-        List<BundleManifest> additionalManifests) {        
+        List<BundleManifest> additionalManifests) {
 
         boolean diagnose = false;
 

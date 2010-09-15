@@ -29,20 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.osgi.framework.Version;
-
+import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
+import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StubHashGenerator;
-import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
-
-
-import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
-import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.ArtifactGenerationException;
@@ -57,6 +48,10 @@ import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
 import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.Version;
 
 /**
  */
@@ -209,7 +204,6 @@ public class ImportExpansionHandlerTests {
     }
 
     @Test
-    @Ignore("bug 325334")
     public void basicImportFragmentBundleWithNoFragmentHostBundleVersion() throws UnableToSatisfyDependenciesException {
         List<Object> mocks = new ArrayList<Object>();
 
@@ -235,7 +229,8 @@ public class ImportExpansionHandlerTests {
         Map<String, String> attributes = packageImport.getAttributes();
         assertEquals("com.foo.host", attributes.get("bundle-symbolic-name"));
         assertEquals(new VersionRange("0"), new VersionRange(attributes.get("bundle-version")));
-        assertEquals("com.foo.host", packageImport.getPackageName());
+        assertEquals("com.foo.fragment.three", packageImport.getPackageName());
+        assertEquals(VersionRange.createExactRange(new Version("1")), packageImport.getVersion());
     }
 
     @Test(expected = UnableToSatisfyBundleDependenciesException.class)

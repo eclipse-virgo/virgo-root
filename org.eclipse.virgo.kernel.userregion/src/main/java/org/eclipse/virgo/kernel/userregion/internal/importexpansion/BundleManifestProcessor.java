@@ -39,12 +39,12 @@ class BundleManifestProcessor {
 
     private static final String BUNDLE_VERSION_ATTRIBUTE_NAME = "bundle-version";
 
+    private static final String VERSION_ATTRIBUTE_NAME = "version";
+
     /**
      * Creates a {@link ImportedPackage} for each of the supplied {@link ExportedPackage ExportedPackages} and returns a
-     * {@link Result} containing them. The <code>ImportedPackages</code> will be versioned with a range that matches the
-     * corresponding <code>ExportedPackage</code>'s version and above. I.e an export with version x will result in an
-     * import with ;version="x". The result also contains any warnings that were generated during the processing of the
-     * manifests.
+     * {@link Result} containing them. The result also contains any warnings that were generated during the processing
+     * of the manifests.
      * 
      * @param packageExports the <code>ExportedPackages</code> to process
      * @return a Result containing the package imports and any warnings
@@ -54,17 +54,33 @@ class BundleManifestProcessor {
 
         BundleManifest manifest = BundleManifestFactory.createBundleManifest();
 
-        doCreateImportedPackageForEachExportedPackage(packageExports, bundleSymbolicName, bundleVersion, manifest);
+        doCreateImportedPackageForEachExportedPackage(packageExports, bundleSymbolicName, bundleVersion, null, manifest);
+
+        return manifest.getImportPackage().getImportedPackages();
+    }
+
+    /**
+     * Creates a {@link ImportedPackage} for each of the supplied {@link ExportedPackage ExportedPackages} and returns a
+     * {@link Result} containing them. The result also contains any warnings that were generated during the processing
+     * of the manifests.
+     * 
+     * @param packageExports the <code>ExportedPackages</code> to process
+     * @return a Result containing the package imports and any warnings
+     */
+    static List<ImportedPackage> createImportedPackageForEachExportedPackageOfFragment(List<ExportedPackage> packageExports,
+        String bundleSymbolicName, VersionRange bundleVersionRange) {
+
+        BundleManifest manifest = BundleManifestFactory.createBundleManifest();
+
+        doCreateImportedPackageForEachExportedPackage(packageExports, bundleSymbolicName, null, bundleVersionRange, manifest);
 
         return manifest.getImportPackage().getImportedPackages();
     }
 
     /**
      * Creates a {@link ImportedPackage} for each package export found in the given {@link BundleManifest
-     * BundleManifests} and returns a {@link Result} containing the package imports. The package imports will be
-     * versioned with a range that matches the corresponding package export's version and above. I.e an export with
-     * version x will result in an import with ;version="x". The result also contains any warnings that were generated
-     * during the processing of the manifests.
+     * BundleManifests} and returns a {@link Result} containing the package imports. The result also contains any
+     * warnings that were generated during the processing of the manifests.
      * 
      * @param bundleManifests the bundle manifests to process
      * @return a Result containing the package imports and any warnings
@@ -77,7 +93,7 @@ class BundleManifestProcessor {
         for (BundleManifest bundleManifest : bundleManifests) {
             List<ExportedPackage> packageExports = bundleManifest.getExportPackage().getExportedPackages();
             BundleManifest resultManifest = BundleManifestFactory.createBundleManifest();
-            doCreateImportedPackageForEachExportedPackage(packageExports, null, null, resultManifest);
+            doCreateImportedPackageForEachExportedPackage(packageExports, null, null, null, resultManifest);
 
             List<ImportedPackage> packageImports = resultManifest.getImportPackage().getImportedPackages();
 
@@ -95,8 +111,8 @@ class BundleManifestProcessor {
             warnings.toArray(new Warning[warnings.size()]));
     }
 
-    private static void doCreateImportedPackageForEachExportedPackage(List<ExportedPackage> packageExports, String bundleSymbolicName, String version,
-        BundleManifest bundleManifest) {
+    private static void doCreateImportedPackageForEachExportedPackage(List<ExportedPackage> packageExports, String bundleSymbolicName,
+        String version, VersionRange versionRange, BundleManifest bundleManifest) {
         for (ExportedPackage packageExport : packageExports) {
             String name = packageExport.getPackageName();
             List<ImportedPackage> packageImports = bundleManifest.getImportPackage().getImportedPackages();
@@ -126,7 +142,22 @@ class BundleManifestProcessor {
                 } catch (IllegalArgumentException e) {
                     vr = new VersionRange(version);
                 }
-                attributes.put(BUNDLE_VERSION_ATTRIBUTE_NAME, vr.toString());
+                attributes.put(BUNDLE_VERSION_ATTRIBUTE_NAME, vr.toParseString());
+            }
+
+            /*
+             * If we are importing a fragment, use the supplied bundle version range and if this range is not exact, add
+             * an exact package version.
+             */
+            if (versionRange != null) {
+                // If the bundle version range is not all possible versions, add it as an attribute.
+                if (!(versionRange.isFloorInclusive() && !versionRange.isCeilingInclusive() && versionRange.getFloor().equals(Version.emptyVersion))) {
+                    attributes.put(BUNDLE_VERSION_ATTRIBUTE_NAME, versionRange.toParseString());
+                }
+                if (!versionRange.isExact()) {
+                    VersionRange packageVersionRange = VersionRange.createExactRange(packageExport.getVersion());
+                    attributes.put(VERSION_ATTRIBUTE_NAME, packageVersionRange.toParseString());
+                }
             }
 
             packageImport.getAttributes().putAll(attributes);
