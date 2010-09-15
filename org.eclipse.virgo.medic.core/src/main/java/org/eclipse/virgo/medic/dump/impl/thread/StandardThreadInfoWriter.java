@@ -18,28 +18,7 @@ import java.lang.management.ThreadInfo;
 class StandardThreadInfoWriter implements ThreadInfoWriter {
 
     public void write(ThreadInfo threadInfo, PrintWriter writer) {
-        writer.print(String.format("\"%s\" Id=%s %s", threadInfo.getThreadName(), threadInfo.getThreadId(), threadInfo.getThreadState()));
-        if (threadInfo.getLockName() != null) {
-            writer.print(String.format(" on %s", threadInfo.getLockName()));
-            if (threadInfo.getLockOwnerName() != null) {
-                writer.print(String.format(" owned by \"%s\" Id=%s", threadInfo.getLockOwnerName(), threadInfo.getLockOwnerId()));
-            }
-        }
-        if (threadInfo.isInNative()) {
-            writer.println(" (in native)");
-        } else {
-            writer.println();
-        }
-        MonitorInfo[] lockedMonitors = threadInfo.getLockedMonitors();
-
-        StackTraceElement[] stackTraceElements = threadInfo.getStackTrace();
-        for (StackTraceElement stackTraceElement : stackTraceElements) {
-            writer.println("    at " + stackTraceElement);
-            MonitorInfo lockedMonitor = findLockedMonitor(stackTraceElement, lockedMonitors);
-            if (lockedMonitor != null) {
-                writer.println("    - locked " + lockedMonitor.getClassName() + "@" + lockedMonitor.getIdentityHashCode());
-            }
-        }
+        writer.print(threadInfo.toString().replaceAll("\n",  System.getProperty("line.separator")));
     }
 
     private static MonitorInfo findLockedMonitor(StackTraceElement stackTraceElement, MonitorInfo[] lockedMonitors) {
