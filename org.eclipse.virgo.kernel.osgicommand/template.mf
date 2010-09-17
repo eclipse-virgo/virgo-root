@@ -3,13 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: (incubation) Virgo Kernel osgi console command extension
 Bundle-SymbolicName: org.eclipse.virgo.kernel.osgicommand
 Bundle-Version: 2.1.0
-Excluded-Exports: 
- *
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
  org.eclipse.osgi.framework.*;version="0",
+ org.eclipse.osgi.service.resolver.*;version="0",
  org.osgi.framework.*;version="0",
  org.osgi.service.*;version="0"
+Export-Template:
+ org.eclipse.virgo.kernel.osgicommand.helper.*;version="${version}"
 Bundle-Activator: org.eclipse.virgo.kernel.osgicommand.Activator
 

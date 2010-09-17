@@ -44,7 +44,7 @@ class ServiceReferenceTracker {
     
     /**
      * Tracks the supplied {@link ServiceReference}. This <code>ServiceReference</code> will be
-     * {@link ServiceReference#unget ungotten} during {@link #ungetAll()}.
+     * {@link BundleContext#ungetService ungotten} during {@link #ungetAll()}.
      * 
      * @param reference the <code>ServiceReference</code> to track.
      * @return the reference itself

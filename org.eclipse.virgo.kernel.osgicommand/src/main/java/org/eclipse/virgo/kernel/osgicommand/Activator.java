@@ -18,9 +18,11 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgicommand.internal.OsgiKernelShellCommand;
 import org.eclipse.virgo.kernel.shell.CommandExecutor;
+import org.eclipse.virgo.kernel.osgicommand.internal.commands.classloading.ClassLoadingCommandProvider;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * {@link BundleActivator} for the osgi.console command extension bundle
@@ -28,16 +30,29 @@ import org.osgi.framework.BundleContext;
  *
  * <strong>Concurrent Semantics</strong><br />
  * thread-safe
- *
- * @author Steve Powell
  */
 public class Activator implements BundleActivator {
 
     private static final int COMMAND_EXECUTOR_SERVICE_WAIT = 20*1000; // 20 seconds
+    private static final int SERVICE_WAIT_PAUSE = 100; // 100 milliseconds
+    private static final String PROVIDER_NAME = "org.eclipse.osgi.framework.console.CommandProvider"; //$NON-NLS-1$
     
+    private ServiceRegistration providerRegistration = null;
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
     
     public void start(BundleContext context) throws Exception {
+        boolean registerCommands = true;
+        try {
+            Class.forName(PROVIDER_NAME);
+        } catch (ClassNotFoundException e) {
+            registerCommands = false;
+        }
+
+        if (registerCommands) {
+            ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(context);
+            providerRegistration = context.registerService(PROVIDER_NAME, provider, null);
+        }
+
         Runnable runnable = new PostStartInitialisationRunnable(context, this.registrationTracker);
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
@@ -45,10 +60,13 @@ public class Activator implements BundleActivator {
     }
 
     public void stop(BundleContext context) throws Exception {
+        if (providerRegistration != null)
+            providerRegistration.unregister();
+        providerRegistration = null;
+
         this.registrationTracker.unregisterAll();
     }
 
-    private static final int SERVICE_WAIT_PAUSE = 100;
     /**
      * Get a service which might not be immediately available
      * @param <T> type of service to get
