@@ -13,7 +13,6 @@
 		<pathelement location="../org.eclipse.virgo.kernel.agent.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.kerneldmfragment"/>
 		<pathelement location="../org.eclipse.virgo.kernel.dmfragment"/>
-		<pathelement location="../org.eclipse.virgo.kernel.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.deployer.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.model"/>
 		<pathelement location="../org.eclipse.virgo.kernel.shell"/>
