@@ -31,7 +31,7 @@
 	
 	<service id="publishIntoGlobal" interface="java.lang.CharSequence">
 		<service-properties>
-			<beans:entry key="com.springsource.service.scope" value="global" />
+			<beans:entry key="org.eclipse.virgo.service.scope" value="global" />
 		</service-properties>
 		<beans:bean class="java.lang.String">
 			<beans:constructor-arg value="foo"/>
