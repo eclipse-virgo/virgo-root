@@ -60,7 +60,7 @@ public class CoreBundleActivator implements BundleActivator {
 
     private static final String START_SIGNALLING_THREAD_NAME_PREFIX = "start-signalling-";
 
-    private static final String PROPERTY_NAME_SERVICE_SCOPE = "com.springsource.service.scope";
+    private static final String PROPERTY_NAME_SERVICE_SCOPE = "org.eclipse.virgo.service.scope";
     
     private static final String SERVICE_SCOPE_GLOBAL = "global";
 

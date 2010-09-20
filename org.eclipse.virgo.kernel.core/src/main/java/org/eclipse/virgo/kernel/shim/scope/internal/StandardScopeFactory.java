@@ -20,8 +20,6 @@ import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
-
-
 /**
  * Creates {@link Scope} instances for {@link ServiceReference ServiceReferences} and for lookups.
  * <p />
@@ -93,14 +91,21 @@ public final class StandardScopeFactory implements ScopeFactory {
     private static String getScopeIdentifier(ServiceReference ref) {
         String serviceScope = (String) ref.getProperty(Scope.PROPERTY_SERVICE_SCOPE);
         if (serviceScope == null) {
-            String beanName = (String) ref.getProperty(PROPERTY_BEAN_NAME);
-            if (beanName == null) {
-                serviceScope = Scope.SCOPE_ID_GLOBAL;
-            } else {
-                if (isBundleScoped(ref.getBundle())) {
-                    serviceScope = Scope.SCOPE_ID_APP;
-                } else {
+            /*
+             * Tolerate the former property name to avoid breaking dm Server 2.0.x users. Post 2.1.0 the former property
+             * name need not be supported.
+             */
+            serviceScope = (String) ref.getProperty("com.springsource.service.scope");
+            if (serviceScope == null) {
+                String beanName = (String) ref.getProperty(PROPERTY_BEAN_NAME);
+                if (beanName == null) {
                     serviceScope = Scope.SCOPE_ID_GLOBAL;
+                } else {
+                    if (isBundleScoped(ref.getBundle())) {
+                        serviceScope = Scope.SCOPE_ID_APP;
+                    } else {
+                        serviceScope = Scope.SCOPE_ID_GLOBAL;
+                    }
                 }
             }
         }
@@ -111,9 +116,9 @@ public final class StandardScopeFactory implements ScopeFactory {
         // TODO: reinstate return OsgiFrameworkUtils.getScopeName(bundle) != null;
         return getScopeName(bundle) != null;
     }
-    
+
     private static String getScopeName(Bundle bundle) {
-        //  TODO: use OFUtils instead when in proper location
+        // TODO: use OFUtils instead when in proper location
         return (String) bundle.getHeaders().get("Module-Scope");
     }
 
@@ -144,7 +149,7 @@ public final class StandardScopeFactory implements ScopeFactory {
          * {@inheritDoc}
          */
         public final Object getProperty(String propertyName) {
-         // TODO: reinstate Assert.isTrue(this.properties != null, "properties not set");
+            // TODO: reinstate Assert.isTrue(this.properties != null, "properties not set");
             return this.properties.get(propertyName);
         }
 
@@ -152,7 +157,7 @@ public final class StandardScopeFactory implements ScopeFactory {
          * {@inheritDoc}
          */
         public final void setProperty(String propertyName, Object propertyValue) {
-         // TODO: reinstate Assert.isTrue(this.properties != null, "properties not set");
+            // TODO: reinstate Assert.isTrue(this.properties != null, "properties not set");
             this.properties.put(propertyName, propertyValue);
         }
 

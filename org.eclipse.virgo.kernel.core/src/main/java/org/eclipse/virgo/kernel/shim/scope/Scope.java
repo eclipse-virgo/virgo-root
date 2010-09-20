@@ -23,7 +23,7 @@ package org.eclipse.virgo.kernel.shim.scope;
  */
 public interface Scope {
     
-    public static final String PROPERTY_SERVICE_SCOPE = "com.springsource.service.scope";
+    public static final String PROPERTY_SERVICE_SCOPE = "org.eclipse.virgo.service.scope";
     
     public static final String SCOPE_ID_GLOBAL = "global";
     
