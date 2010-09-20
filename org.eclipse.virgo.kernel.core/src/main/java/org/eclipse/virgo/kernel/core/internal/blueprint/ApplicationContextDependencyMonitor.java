@@ -206,8 +206,12 @@ public final class ApplicationContextDependencyMonitor implements EventHandler {
 
                     public Void call() throws Exception {
                         synchronized (ApplicationContextDependencyMonitor.this.monitor) {
-                            eventLogger.log(KernelLogEvents.APPLICATION_CONTEXT_DEPENDENCY_DELAYED, serviceDependency.getBeanName(),
-                                bundle.getSymbolicName(), bundle.getVersion(), serviceDependency.getFilter());
+                            if (bundle.getState() == Bundle.UNINSTALLED) {
+                                ApplicationContextDependencyMonitor.this.containerCreationFailed(bundle);
+                            } else {
+                                eventLogger.log(KernelLogEvents.APPLICATION_CONTEXT_DEPENDENCY_DELAYED, serviceDependency.getBeanName(),
+                                    bundle.getSymbolicName(), bundle.getVersion(), serviceDependency.getFilter());
+                            }
                             return null;
                         }
                     }
@@ -293,7 +297,7 @@ public final class ApplicationContextDependencyMonitor implements EventHandler {
 
             if (!filter.equals(other.filter))
                 return false;
-            
+
             return true;
         }
 
