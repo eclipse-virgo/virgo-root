@@ -1,4 +1,4 @@
-<%@taglib prefix="test" uri="/WEB-INF/lib/substr.tld"%>
+<%@taglib prefix="test" uri="/WEB-INF/tlds/substr.tld"%>
 <html>
 <head>
 <title>JSP Custom Taglib example: Substr function</title>
