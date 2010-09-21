@@ -38,7 +38,9 @@ public enum KernelLogEvents implements LogEvent {
     APPLICATION_CONTEXT_DEPENDENCY_TIMED_OUT(102, Level.ERROR), //
     
     OVF_CONFIGURATION_FILE_DOES_NOT_EXIST(200, Level.WARNING), //
-    OVF_READ_ERROR(201, Level.ERROR);
+    OVF_READ_ERROR(201, Level.ERROR), //
+    
+    OLD_SCOPING_PROPERTY_USED(300, Level.WARNING);
 
     private static final String PREFIX = "KE";
 

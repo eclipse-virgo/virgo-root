@@ -105,7 +105,7 @@ public class CoreBundleActivator implements BundleActivator {
         this.startupTracker = new StartupTracker(context, configuration, STARTUP_WAIT_LIMIT, bundleStartTracker, shutdown, dumpGenerator);
         this.startupTracker.start();
         
-        initShimServices(context);
+        initShimServices(context, eventLogger);
     }
     
     private ApplicationContextDependencyMonitor createAndRegisterApplicationContextDependencyMonitor(BundleContext context, EventLogger eventLogger) {
@@ -215,8 +215,8 @@ public class CoreBundleActivator implements BundleActivator {
         return manager;
     }
 
-    private void initShimServices(BundleContext context) {
-        ScopeFactory scopeFactory = new StandardScopeFactory();
+    private void initShimServices(BundleContext context, EventLogger eventLogger) {
+        ScopeFactory scopeFactory = new StandardScopeFactory(eventLogger);
         TracingService tracingService = new Slf4jTracingService();
         this.tracker.track(context.registerService(ScopeFactory.class.getName(), scopeFactory, null));
         this.tracker.track(context.registerService(TracingService.class.getName(), tracingService, null));

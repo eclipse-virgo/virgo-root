@@ -15,8 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.kernel.shim.scope.Scope;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
@@ -33,12 +35,15 @@ public final class StandardScopeFactory implements ScopeFactory {
 
     private static final String PROPERTY_BEAN_NAME = "org.springframework.osgi.bean.name";
 
+    private final EventLogger eventLogger;
+
     /*
      * Share application scope properties between equivalent application scope instances
      */
     private final Map<AppScope, ConcurrentHashMap<String, Object>> properties = new HashMap<AppScope, ConcurrentHashMap<String, Object>>();
 
-    public StandardScopeFactory() {
+    public StandardScopeFactory(EventLogger eventLogger) {
+        this.eventLogger = eventLogger;
     }
 
     /**
@@ -88,12 +93,12 @@ public final class StandardScopeFactory implements ScopeFactory {
         }
     }
 
-    private static String getScopeIdentifier(ServiceReference ref) {
+    private String getScopeIdentifier(ServiceReference ref) {
         String serviceScope = (String) ref.getProperty(Scope.PROPERTY_SERVICE_SCOPE);
         if (serviceScope == null) {
             /*
              * Tolerate the former property name to avoid breaking dm Server 2.0.x users. Post 2.1.0 the former property
-             * name need not be supported.
+             * name need not be supported. Issue a warning message to prompt users to change the name.
              */
             serviceScope = (String) ref.getProperty("com.springsource.service.scope");
             if (serviceScope == null) {
@@ -107,6 +112,9 @@ public final class StandardScopeFactory implements ScopeFactory {
                         serviceScope = Scope.SCOPE_ID_GLOBAL;
                     }
                 }
+            } else {
+                this.eventLogger.log(KernelLogEvents.OLD_SCOPING_PROPERTY_USED, ref.getBundle().getSymbolicName(), ref.getBundle().getVersion(),
+                    ref.getProperty(PROPERTY_BEAN_NAME));
             }
         }
         return serviceScope;
