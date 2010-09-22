@@ -206,38 +206,39 @@ public final class BlueprintEventPostingOsgiBundleApplicationContextListener imp
     }
 
     private void sendCreatedEvent(Dictionary<String, Object> properties) {
-        logger.info("Sending created event with properties '{}'", properties);
-        properties.put(PROPERTY_TYPE, TYPE_CREATED);
-        this.eventAdmin.sendEvent(new Event(EVENT_CREATED, properties));
+        sendEvent(EVENT_CREATED, properties, TYPE_CREATED);
     }
 
-    private void sendFailureEvent(Dictionary<String, Object> properties) {
-        logger.info("Sending failure event with properties '{}'", properties);
-        properties.put(PROPERTY_TYPE, TYPE_FAILURE);
+    private void sendEvent(String topic, Dictionary<String, Object> properties, int type) {
+        properties.put(PROPERTY_TYPE, type);
+        logger.info("Sending event to topic '{}' with properties '{}'", topic, properties);
         try {
-            this.eventAdmin.sendEvent(new Event(EVENT_FAILURE, properties));
-        } catch (Throwable t) {
-            t.printStackTrace();
-            System.out.println(t.getMessage());
+            this.eventAdmin.sendEvent(new Event(topic, properties));
+        } catch (Exception ex) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Failed to send event to topic '" + topic + "'. This may be expected during shutdown.", ex);
+            } else {
+                logger.error(
+                    "Failed to send event to topic '{}'. Exception message: '{}'. This may be expected during shutdown. Turn on debug logging for more details.",
+                    topic, ex.getMessage());
+            }
         }
     }
 
+    private void sendFailureEvent(Dictionary<String, Object> properties) {
+        sendEvent(EVENT_FAILURE, properties, TYPE_FAILURE);
+    }
+
     private void sendDestroyedEvent(Dictionary<String, Object> properties) {
-        logger.info("Sending destroyed event with properties '{}'", properties);
-        properties.put(PROPERTY_TYPE, TYPE_DESTROYED);
-        this.eventAdmin.sendEvent(new Event(EVENT_DESTROYED, properties));
+        sendEvent(EVENT_DESTROYED, properties, TYPE_DESTROYED);
     }
 
     private void sendWaitingEvent(Dictionary<String, Object> properties) {
-        logger.info("Sending waiting event with properties '{}'", properties);
-        properties.put(PROPERTY_TYPE, TYPE_WAITING);
-        this.eventAdmin.sendEvent(new Event(EVENT_WAITING, properties));
+        sendEvent(EVENT_WAITING, properties, TYPE_WAITING);
     }
 
     private void sendGracePeriodEvent(Dictionary<String, Object> properties) {
-        logger.info("Sending grace period event with properties '{}'", properties);
-        properties.put(PROPERTY_TYPE, TYPE_GRACE_PERIOD);
-        this.eventAdmin.sendEvent(new Event(EVENT_GRACE_PERIOD, properties));
+        sendEvent(EVENT_GRACE_PERIOD, properties, TYPE_GRACE_PERIOD);
     }
 
     private Dictionary<String, Object> createEventProperties(OsgiBundleApplicationContextEvent event) {
