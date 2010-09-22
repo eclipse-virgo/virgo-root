@@ -6,6 +6,6 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.0.v20100517/org.eclipse.osgi-3.6.0.v20100517.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.0.v20100517/org.eclipse.osgi-3.6.0.v20100517.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-3.6.1.R36x_v20100806.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-3.6.1.R36x_v20100806.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
