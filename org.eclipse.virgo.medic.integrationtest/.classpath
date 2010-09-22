@@ -21,12 +21,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/MEDIC_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
-	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.0.v20100517/org.eclipse.osgi-3.6.0.v20100517.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.0.v20100517/org.eclipse.osgi-sources-3.6.0.v20100517.jar"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-3.6.1.R36x_v20100806.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-sources-3.6.1.R36x_v20100806.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-1.6.1.jar" sourcepath="/MEDIC_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.classic/0.9.24/com.springsource.ch.qos.logback.classic-0.9.24.jar" sourcepath="/MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.classic/0.9.24/com.springsource.ch.qos.logback.classic-sources-0.9.24.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.core/0.9.24/com.springsource.ch.qos.logback.core-0.9.24.jar" sourcepath="/MEDIC_IVY_CACHE/ch.qos.logback/com.springsource.ch.qos.logback.core/0.9.24/com.springsource.ch.qos.logback.core-sources-0.9.24.jar"/>
-	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.framework/2.1.0.D-20100907110255/org.eclipse.virgo.test.framework-2.1.0.D-20100907110255.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.framework/2.1.0.D-20100907110255/org.eclipse.virgo.test.framework-sources-2.1.0.D-20100907110255.jar"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.framework/2.1.0.D-20100922101038/org.eclipse.virgo.test.framework-2.1.0.D-20100922101038.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.framework/2.1.0.D-20100922101038/org.eclipse.virgo.test.framework-sources-2.1.0.D-20100922101038.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.apache.felix/org.apache.felix.configadmin/1.2.4/org.apache.felix.configadmin-1.2.4.jar" sourcepath="/MEDIC_IVY_CACHE/org.apache.felix/org.apache.felix.configadmin/1.2.4/org.apache.felix.configadmin-sources-1.2.4.jar"/>
 	<classpathentry kind="src" path="/org.eclipse.virgo.medic">
@@ -34,6 +34,6 @@
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100907105749/org.eclipse.virgo.util.common-2.1.0.D-20100907105749.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100907105749/org.eclipse.virgo.util.common-sources-2.1.0.D-20100907105749.jar"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100922100602/org.eclipse.virgo.util.common-2.1.0.D-20100922100602.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.1.0.D-20100922100602/org.eclipse.virgo.util.common-sources-2.1.0.D-20100922100602.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
