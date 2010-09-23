@@ -52,19 +52,30 @@ Sub updatePermissions(file)
     objFileSecSetting.GetSecurityDescriptor objSecurityDescriptor
 
 	Set WshNetwork = WScript.CreateObject("WScript.Network")
+	
+	Dim foundAce
+	foundAce = "false"
+	
+	'Search for an ACE for the current user as there is no robust, portable way of creating such an ACE from scratch in VBScript.
 	Dim specificAce(0)
 	For Each ace in objSecurityDescriptor.DACL
 		If ace.Trustee.Name = WshNetwork.UserName Then
 			Set specificAce(0) = ace
+			foundAce = "true"
 		End If
 	Next
 	
-	objSecurityDescriptor.DACL = specificAce
+	If foundAce = "true" Then
+		objSecurityDescriptor.DACL = specificAce
 
-	Set objMethod = objFileSecSetting.Methods_("SetSecurityDescriptor")
-	Set objInParam = objMethod.inParameters.SpawnInstance_()
-	objInParam.Properties_.item("Descriptor") = objSecurityDescriptor
-	objFileSecSetting.ExecMethod_ "SetSecurityDescriptor", objInParam
+		Set objMethod = objFileSecSetting.Methods_("SetSecurityDescriptor")
+		Set objInParam = objMethod.inParameters.SpawnInstance_()
+		objInParam.Properties_.item("Descriptor") = objSecurityDescriptor
+		objFileSecSetting.ExecMethod_ "SetSecurityDescriptor", objInParam
+		
+		'WScript.Echo "Updated permissions of " & file
+	Else
+		WScript.Echo "WARNING: jmxPermissions.vbs did not update the permissions of " & file & ". Check the file has the correct permissions."
+	End If
 	
-	'WScript.Echo "Updated permissions of " & file
 End Sub
