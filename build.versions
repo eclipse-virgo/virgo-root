@@ -1,8 +1,8 @@
 # Compile
-org.eclipse.virgo.kernel=2.1.0.D-20100922103336
-org.eclipse.virgo.repository=2.1.0.D-20100922102913
-org.eclipse.virgo.util=2.1.0.D-20100922100602
-org.eclipse.virgo.medic=2.1.0.D-20100922102008
+org.eclipse.virgo.kernel=2.1.0.D-20100923141841
+org.eclipse.virgo.repository=2.1.0.D-20100923141349
+org.eclipse.virgo.util=2.1.0.D-20100923140026
+org.eclipse.virgo.medic=2.1.0.D-20100923140741
 javax.servlet=2.5.0
 org.eclipse.osgi=3.6.1.R36x_v20100806
 org.springframework=3.0.0.RELEASE
@@ -16,9 +16,9 @@ org.slf4j.spi=1.6.1
 
 # Test
 com.dumbster=1.6.0
-org.eclipse.virgo.osgi=2.1.0.D-20100907105528
-org.eclipse.virgo.teststubs=2.1.0.M04-incubation
-org.eclipse.virgo.test=2.1.0.D-20100922101038
+org.eclipse.virgo.osgi=2.1.0.D-20100923135732
+org.eclipse.virgo.teststubs=2.1.0.D-20100923135457
+org.eclipse.virgo.test=2.1.0.D-20100923140514
 javax.activation=1.1.0
 javax.jms=1.1.0
 javax.mail=1.4.1
