@@ -23,7 +23,6 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
 
-
 public final class JoranLoggerContextConfigurer implements LoggerContextConfigurer {
 
     public void applyConfiguration(LoggingConfiguration configuration, LoggerContext loggerContext) throws LoggerContextConfigurationFailedException {
@@ -36,7 +35,12 @@ public final class JoranLoggerContextConfigurer implements LoggerContextConfigur
             List<String> failureMessages = new ArrayList<String>();
             for (Status status : statusList) {
                 if (Status.INFO != status.getLevel()) {
-                    failureMessages.add(status.getMessage());
+                    Throwable cause = null;
+                    Throwable t = status.getThrowable();
+                    if (t != null) {
+                        cause = t.getCause();
+                    }
+                    failureMessages.add(status.getMessage() + (cause != null ? " Caused by " + cause + "." : ""));
                 }
             }
             reportFailureIfNecessary(failureMessages);
