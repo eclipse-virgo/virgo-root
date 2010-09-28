@@ -31,6 +31,8 @@ import org.eclipse.virgo.kernel.shell.LinePrinter;
  */
 public final class OsgiKernelShellCommand implements CommandProvider {
     
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
+
     CommandExecutor commandExecutor;
     
     public OsgiKernelShellCommand(CommandExecutor commandExecutor) {
@@ -65,7 +67,7 @@ public final class OsgiKernelShellCommand implements CommandProvider {
      * {@inheritDoc}
      */
     public String getHelp() {
-        return "\tvsh - Virgo shell commands; 'vsh help' to list available commands\n";
+        return "\tvsh - Virgo shell commands; 'vsh help' to list available commands" + LINE_SEPARATOR;
     }
 
     /**
