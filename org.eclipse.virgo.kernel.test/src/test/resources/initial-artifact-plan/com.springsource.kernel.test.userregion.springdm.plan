@@ -5,6 +5,6 @@
                         http://www.springsource.org/schema/dm-server/plan 
                         http://www.springsource.org/schema/dm-server/plan/springsource-dm-server-plan.xsd">
 
-        <artifact type="bundle" name="com.springsource.kernel.agent.dm" version="[2.1, 2.2)"/>
-        <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[2.1, 2.2)"/>
+        <artifact type="bundle" name="com.springsource.kernel.agent.dm" version="[2.2, 3.0)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[2.2, 3.0)"/>
 </plan>
