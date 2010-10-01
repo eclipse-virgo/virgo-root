@@ -1,4 +1,4 @@
-<plan name="org.eclipse.virgo.kernel.userregion.springdm" version="2.1.0" scoped="false" atomic="false"
+<plan name="org.eclipse.virgo.kernel.userregion.springdm" version="2.2.0" scoped="false" atomic="false"
                 xmlns="http://www.springsource.org/schema/dm-server/plan"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="
