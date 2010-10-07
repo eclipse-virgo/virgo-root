@@ -39,8 +39,8 @@
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
 
-		<ivy:resolve resolveId="copy.path" file="${basedir}/launcher-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/lib/launcher/[artifact]-[revision].[ext]" conf="launcher" type="jar"/>
+		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/lib/[artifact]-[revision].[ext]" conf="lib" type="jar"/>
 
 		<ivy:resolve resolveId="copy.path" file="${basedir}/kernel-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/lib/kernel/[artifact]-[revision].[ext]" conf="lib-kernel" type="jar"/>

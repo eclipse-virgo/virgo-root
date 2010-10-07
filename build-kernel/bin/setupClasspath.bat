@@ -10,7 +10,7 @@ if "%KERNEL_HOME%" == "" (
   exit /B 1
 )
 
-for %%G in ("%KERNEL_HOME%\lib\launcher\*.jar") do call :AppendToClasspath "%%G"
+for %%G in ("%KERNEL_HOME%\lib\*.jar") do call :AppendToClasspath "%%G"
 rem Remove leading semi-colon if present
 if "%CLASSPATH:~0,1%"==";" set CLASSPATH=%CLASSPATH:~1%
 exit /B 0
