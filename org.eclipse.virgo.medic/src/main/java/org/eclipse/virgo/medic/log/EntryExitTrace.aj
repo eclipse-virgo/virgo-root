@@ -35,6 +35,7 @@ public aspect EntryExitTrace pertypewithin(*) {
 
 	// avoid class loading recursion
 	pointcut kernelUserRegion() : within(org.eclipse.virgo.kernel.userregion..*);
+	pointcut webClassLoading() : within(org.eclipse.virgo.web.core.internal..*);
 
 	pointcut logback() : within(ch.qos.logback..*) || within(org.slf4j.impl..*);
 
@@ -42,9 +43,9 @@ public aspect EntryExitTrace pertypewithin(*) {
 
 	pointcut getter() : execution(* get*(..));
 
-	pointcut debugCandidate() : execution(public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
+	pointcut debugCandidate() : execution(public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !webClassLoading() && !logback();
 
-	pointcut traceCandidate() : execution(!public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !logback();
+	pointcut traceCandidate() : execution(!public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !webClassLoading() && !logback();
 
 	before() : debugCandidate() {
 		getLogger(thisJoinPointStaticPart).debug("{} {}", ">",

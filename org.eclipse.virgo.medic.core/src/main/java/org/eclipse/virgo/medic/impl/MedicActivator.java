@@ -214,7 +214,7 @@ public final class MedicActivator implements BundleActivator {
 
     private static StandardContextSelectorDelegate createContextSelectorDelegate(BundleContext bundleContext, PackageAdmin packageAdmin) {
         ConfigurationLocator configurationLocator = createConfigurationLocator(bundleContext);
-        CallingBundleResolver loggingCallerLocator = createLoggingCallerLocator(packageAdmin);
+        CallingBundleResolver loggingCallerLocator = createLoggingCallerLocator();
         LoggerContextConfigurer loggerContextConfigurer = new JoranLoggerContextConfigurer();
         return new StandardContextSelectorDelegate(loggingCallerLocator, configurationLocator, bundleContext.getBundle(), loggerContextConfigurer);
     }
@@ -230,11 +230,11 @@ public final class MedicActivator implements BundleActivator {
         return new CompositeConfigurationLocator(new ServiceRegistryConfigurationLocator(bundleContext), new BundleResourceConfigurationLocator());
     }
 
-    private static CallingBundleResolver createLoggingCallerLocator(PackageAdmin packageAdmin) {
+    private static CallingBundleResolver createLoggingCallerLocator() {
         ClassSelector classSelector = createClassSelector();
         ExecutionStackAccessor executionStackAccessor = createExecutionStackAccessor();
 
-        return new StandardCallingBundleResolver(executionStackAccessor, classSelector, packageAdmin);
+        return new StandardCallingBundleResolver(executionStackAccessor, classSelector);
     }
 
     private static ClassSelector createClassSelector() {

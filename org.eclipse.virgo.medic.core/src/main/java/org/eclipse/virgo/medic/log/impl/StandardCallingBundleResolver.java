@@ -12,7 +12,7 @@
 package org.eclipse.virgo.medic.log.impl;
 
 import org.osgi.framework.Bundle;
-import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.framework.FrameworkUtil;
 
 public final class StandardCallingBundleResolver implements CallingBundleResolver {
 
@@ -20,17 +20,14 @@ public final class StandardCallingBundleResolver implements CallingBundleResolve
 
     private final ClassSelector classSelector;
 
-    private final PackageAdmin packageAdmin;
-
-    public StandardCallingBundleResolver(ExecutionStackAccessor stackAccessor, ClassSelector classSelector, PackageAdmin packageAdmin) {
+    public StandardCallingBundleResolver(ExecutionStackAccessor stackAccessor, ClassSelector classSelector) {
         this.stackAccessor = stackAccessor;
         this.classSelector = classSelector;
-        this.packageAdmin = packageAdmin;
     }
 
     public Bundle getCallingBundle() {
         Class<?>[] executionStack = this.stackAccessor.getExecutionStack();
         Class<?> loggingCallersClass = classSelector.select(executionStack);
-        return this.packageAdmin.getBundle(loggingCallersClass);
+        return FrameworkUtil.getBundle(loggingCallersClass);
     }
 }
