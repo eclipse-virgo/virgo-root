@@ -84,7 +84,7 @@ final class CommandRegistryCommandInvoker implements CommandInvoker {
             throw lastException;
         }
 
-        throw new ParametersMismatchException("Command '" + command.getCommand() + "' expecting subcommand; try tab completion");
+        throw new ParametersMismatchException("Command '" + command.getCommand() + "' expects a subcommand; try vsh help " + command.getCommand());
     }
 
     private static boolean isSubcommandMatch(String commandSubcommandName, String subcommandName) {
