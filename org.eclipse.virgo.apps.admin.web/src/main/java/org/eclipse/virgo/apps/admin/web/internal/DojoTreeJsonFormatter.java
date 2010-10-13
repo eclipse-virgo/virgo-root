@@ -188,7 +188,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
         StringBuilder sb = fd.stringBuilder;
         sb.append("{");
         sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append("',");
-        sb.append("label: '").append(fd.name).append(" ").append(fd.version).append("',");
+        sb.append("label: '").append(fd.name).append("-").append(fd.version).append("',");
         sb.append("type: '").append(fd.type).append("',");
         sb.append("name: '").append(fd.name).append("',");
         sb.append("version: '").append(fd.version).append("',");

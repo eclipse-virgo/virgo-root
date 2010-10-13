@@ -125,6 +125,11 @@
 	background-image: transparent url(../images/loader-white-small.gif);
 }
 
+.tundra .dijitTreeLabel em {
+	color: #002E62;
+	font-style: normal;
+}
+
 /* Tree Icons */
 
 .tundra .dijitTreeIcon {

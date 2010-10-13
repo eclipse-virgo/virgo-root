@@ -104,6 +104,12 @@
 							if(treeStore.hasAttribute(this.item, "state")) {					
 								var newNode = getNewImageNode(treeStore.getValue(this.item, "state"));
 								dojo.place(newNode, goal, "after");
+							}	
+						}
+						var labelNode = this.domNode.firstElementChild.lastElementChild.lastElementChild;
+						if(labelNode != null){
+							if(treeStore.hasAttribute(this.item, "label") && treeStore.hasAttribute(this.item, "name") && treeStore.hasAttribute(this.item, "version")) {
+								labelNode.innerHTML = treeStore.getValue(this.item, "name") + ": <em>" + treeStore.getValue(this.item, "version") + "</em>";
 							} 
 						}
 						
