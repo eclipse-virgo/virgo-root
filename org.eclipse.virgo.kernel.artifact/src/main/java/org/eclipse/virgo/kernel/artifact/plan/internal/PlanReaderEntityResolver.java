@@ -21,11 +21,16 @@ import org.xml.sax.SAXException;
 
 public final class PlanReaderEntityResolver implements EntityResolver {
 
-    private static final String SCHEMA_LOCATION = "org/eclipse/virgo/kernel/artifact/plan/springsource-dm-server-plan.xsd";
+    private static final String DMS_INDICATOR = "springsource-dm-server";
+
+    private static final String SCHEMA_LOCATION = "org/eclipse/virgo/kernel/artifact/plan/eclipse-virgo-plan.xsd";
+    
+    private static final String DMS_SCHEMA_LOCATION = "org/eclipse/virgo/kernel/artifact/plan/springsource-dm-server-plan.xsd";
 
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        InputStream xsdResource = classLoader.getResourceAsStream(SCHEMA_LOCATION);
+        boolean dmsSystemId = systemId != null && systemId.contains(DMS_INDICATOR);
+        InputStream xsdResource = classLoader.getResourceAsStream(dmsSystemId ? DMS_SCHEMA_LOCATION : SCHEMA_LOCATION);
         if (xsdResource != null) {
             InputSource source = new InputSource(xsdResource);
             source.setPublicId(publicId);

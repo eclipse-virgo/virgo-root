@@ -88,7 +88,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
-    private static final String NAMESPACES = "    xmlns=\"http://www.springsource.org/schema/dm-server/plan\" \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n    xsi:schemaLocation=\" http://www.springsource.org/schema/dm-server/plan http://www.springsource.org/schema/dm-server/plan/springsource-dm-server-plan.xsd\"";
+    private static final String NAMESPACES = "    xmlns=\"http://www.eclipse.org/virgo/schema/plan\" \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n    xsi:schemaLocation=\" http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd\"";
 
     private static final Version DEFAULT_VERSION = new Version("0");
 
