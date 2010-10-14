@@ -1,9 +1,9 @@
 <plan name="org.eclipse.virgo.web" version="2.1.0" scoped="false" atomic="false"
-                xmlns="http://www.springsource.org/schema/dm-server/plan"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="
-                        http://www.springsource.org/schema/dm-server/plan 
-                        http://www.springsource.org/schema/dm-server/plan/springsource-dm-server-plan.xsd">
+                xmlns="http://www.eclipse.org/virgo/schema/plan"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="
+				        http://www.eclipse.org/virgo/schema/plan 
+				        http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
 
         <artifact type="bundle" name="org.eclipse.gemini.web.core" version="[1, 2)"/>
         <artifact type="bundle" name="org.eclipse.gemini.web.tomcat" version="[1, 2)"/>
