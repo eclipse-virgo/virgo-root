@@ -152,6 +152,9 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
             } catch (DeploymentException de) {
                 this.ram.delete(deploymentIdentity);
                 throw de;
+            } catch (RuntimeException re) {
+                this.ram.delete(deploymentIdentity);
+                throw re;
             }
 
             return deploymentIdentity;
