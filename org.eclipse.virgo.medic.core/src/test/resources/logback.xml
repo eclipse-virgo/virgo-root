@@ -1,8 +1,8 @@
 <configuration>
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>Bundle1 [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</Pattern>
-    	</layout>
+    	</encoder>
   	</appender>
   	
   	<root level="debug">
