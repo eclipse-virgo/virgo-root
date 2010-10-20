@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: (incubation) Virgo Kernel Admin Shell
 Bundle-SymbolicName: org.eclipse.virgo.kernel.shell
-Bundle-Version: 2.1.0
+Bundle-Version: 2.2.0
 Import-Template: 
  org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, =.+1)}",
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",

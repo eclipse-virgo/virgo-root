@@ -37,7 +37,7 @@
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.D-20101005104351/org.eclipse.virgo.teststubs.osgi-2.2.0.D-20101005104351.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.teststubs.osgi/2.2.0.D-20101005104351/org.eclipse.virgo.teststubs.osgi-sources-2.2.0.D-20101005104351.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.D-20101005104351/org.eclipse.virgo.teststubs.osgi-2.2.0.D-20101005104351.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.D-20101005104351/org.eclipse.virgo.teststubs.osgi-sources-2.2.0.D-20101005104351.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.core"/>
