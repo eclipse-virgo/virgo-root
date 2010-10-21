@@ -1,5 +1,5 @@
 Bundle-ManifestVersion: 2
-Bundle-Name: (incubation) OSGi Utility Code
+Bundle-Name: OSGi Utility Code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.osgi
 Bundle-Version: 0
