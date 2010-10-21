@@ -4,7 +4,7 @@ Export-Package: org.eclipse.virgo.web.test;version="2.0.0";uses:="org.
  eclipse.virgo.util.io,org.junit,org.junit.runner"
 Bundle-Version: 2.0.0
 Tool: Bundlor 1.0.0.M6
-Bundle-Name: (incubation) Virgo Web Test Bundle
+Bundle-Name: Virgo Web Test Bundle
 Bundle-ManifestVersion: 2
 Import-Package: javax.management;version="0",org.apache.commons.httpcl
  ient;version="[3.1.0,4)",org.apache.commons.httpclient.methods;versio

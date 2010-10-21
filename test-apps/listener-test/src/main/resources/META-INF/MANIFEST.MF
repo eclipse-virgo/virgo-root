@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) Listener Test Bundle
+Bundle-Name: Listener Test Bundle
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: listenertest
 Bundle-Version: 1.0.0

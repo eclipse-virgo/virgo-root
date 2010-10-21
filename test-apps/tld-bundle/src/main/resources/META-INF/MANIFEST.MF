@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) Tld Bundle
+Bundle-Name: Tld Bundle
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: tld.bundle
 Bundle-Version: 1.0.0
