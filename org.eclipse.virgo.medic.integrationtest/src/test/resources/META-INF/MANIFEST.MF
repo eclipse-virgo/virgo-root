@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Excluded-Import: ch.qos.logback.classic
 Tool: Bundlor 1.0.0.M6
-Bundle-Name: (incubation) Medic Logging Integration Tests
+Bundle-Name: Medic Logging Integration Tests
 Bundle-SymbolicName: org.eclipse.virgo.medic.log.test
 Import-Package: ch.qos.logback.classic.spi,
  ch.qos.logback.core,

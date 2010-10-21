@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.medic.core
-Bundle-Name: (incubation) Medic Core Implementation
+Bundle-Name: Medic Core Implementation
 Bundle-Vendor: SpringSource Inc.
 Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.virgo.medic.impl.MedicActivator

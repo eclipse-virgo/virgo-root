@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.medic.eventlog.test
-Bundle-Name: (incubation) Medic Event Log Test Bundle
+Bundle-Name: Medic Event Log Test Bundle
 Bundle-Vendor: SpringSource Inc.
 Bundle-Version: 1.0.0
 Import-Template: 

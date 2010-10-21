@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.medic.log.test
-Bundle-Name: (incubation) Medic Logging Integration Tests
+Bundle-Name: Medic Logging Integration Tests
 Bundle-Version: 1.0.0
 Import-Template: 
  org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",

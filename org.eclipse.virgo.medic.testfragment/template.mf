@@ -8,6 +8,6 @@ Import-Template:
  org.osgi.framework;version="0",
  org.slf4j.*;version="${org.slf4j:[=.=.=, =.+1.0)}"
 Bundle-Version: 1.0.0
-Bundle-Name: (incubation) Medic API
+Bundle-Name: Medic API
 Excluded-Imports: 
  ch.qos.logback.classic.*
