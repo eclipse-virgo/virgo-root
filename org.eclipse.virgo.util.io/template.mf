@@ -1,5 +1,5 @@
 Bundle-ManifestVersion: 2
-Bundle-Name: (incubation) IO Utility Code
+Bundle-Name: IO Utility Code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.io
 Bundle-Version: 0

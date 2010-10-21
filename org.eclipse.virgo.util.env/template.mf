@@ -1,5 +1,5 @@
 Bundle-ManifestVersion: 2
-Bundle-Name: (incubation) Environment Utility Code
+Bundle-Name: Environment Utility Code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.env
 Bundle-Version: 0

@@ -1,5 +1,5 @@
 Bundle-ManifestVersion: 2
-Bundle-Name: (incubation) Mathematical Utility Code
+Bundle-Name: Mathematical Utility Code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.math
 Bundle-Version: 0

@@ -1,5 +1,5 @@
 Bundle-ManifestVersion: 2
-Bundle-Name: (incubation) Jmx utility code
+Bundle-Name: Jmx utility code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.jmx
 Bundle-Version: 0
