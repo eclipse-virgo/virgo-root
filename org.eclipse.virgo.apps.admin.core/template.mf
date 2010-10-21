@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) Admin Console Core Bundle
+Bundle-Name: Admin Console Core Bundle
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.admin.core
 Bundle-Version: 2.0.0

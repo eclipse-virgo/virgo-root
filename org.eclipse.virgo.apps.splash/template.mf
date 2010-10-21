@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) Splash Screen
+Bundle-Name: Splash Screen
 Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.splash
