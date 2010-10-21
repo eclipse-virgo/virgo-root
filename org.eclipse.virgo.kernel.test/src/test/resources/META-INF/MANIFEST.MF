@@ -14,7 +14,7 @@ Bundle-ClassPath: .,quasi/simpleexporter.jar,quasi/simpleimporter.jar,
  leimporter.jar,QuickConsumer.jar,SlowService.jar
 Bundle-Version: 2.2.0
 Tool: Bundlor 1.0.0.RELEASE
-Bundle-Name: (incubation) Virgo Kernel Test
+Bundle-Name: Virgo Kernel Test
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.kernel.test
 Import-Package: javax.management;version="0",org.eclipse.virgo.kernel.

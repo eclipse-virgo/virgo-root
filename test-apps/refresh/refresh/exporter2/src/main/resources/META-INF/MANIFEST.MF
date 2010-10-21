@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) RefreshExporter
+Bundle-Name: RefreshExporter
 Created-By: 1.5.0_13 (Apple Computer, Inc.)
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: RefreshExporter

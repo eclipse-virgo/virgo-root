@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) RefreshImporter
+Bundle-Name: RefreshImporter
 Created-By: 1.5.0_13 (Apple Computer, Inc.)
 Import-Package: org.osgi.framework,
  org.eclipse.virgo.kernel.deployer.test,

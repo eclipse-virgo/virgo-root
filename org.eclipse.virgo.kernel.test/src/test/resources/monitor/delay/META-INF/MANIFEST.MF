@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) DelayBean Bundle
+Bundle-Name: DelayBean Bundle
 Created-By: 1.5.0_13 (Apple Computer, Inc.)
 Bundle-SymbolicName: DelayBean
 Bundle-Version: 1.0.0

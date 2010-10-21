@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: (incubation) Spring 2.5.6.A Sample
+Bundle-Name: Spring 2.5.6.A Sample
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: spring.256A.sample
 Bundle-Version: 1.0.0
