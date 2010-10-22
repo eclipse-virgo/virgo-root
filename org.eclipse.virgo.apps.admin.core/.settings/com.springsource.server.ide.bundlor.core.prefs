@@ -1,5 +1,3 @@
 #Mon Dec 07 16:22:36 GMT 2009
-com.springsource.server.ide.bundlor.core.bundlor.generated.manifest.autoformatting=true
-com.springsource.server.ide.bundlor.core.byte.code.scanning=true
-com.springsource.server.ide.bundlor.core.template.properties.files=
+com.springsource.server.ide.bundlor.core.template.properties.files=../build.properties;../build.versions
 eclipse.preferences.version=1
