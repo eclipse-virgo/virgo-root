@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.apps.admin.core;
 
+import java.util.Map;
+
 /**
  * <p>
  * RequiredBundleHolder represents a requirement from one bundle to another.
@@ -23,6 +25,14 @@ package org.eclipse.virgo.apps.admin.core;
  */
 public interface RequiredBundleHolder {
 
+    /**
+     * If this require bundle is resolved, return any specific {@link BundleHolder} that satisfies it. If this require
+     * bundle is not resolved or if it is resolved but is optional and was not satisfied, return null.
+     * 
+     * @return any <code>BundleHolder</code> that satisfies this <code>RequiredBundleHolder</code>
+     */
+    public BundleHolder getProvider();
+    
     /**
      * @return The symbolic name of the Bundle required.
      */
@@ -43,13 +53,19 @@ public interface RequiredBundleHolder {
     public boolean isResolved();
 
     /**
-     * If this require bundle is resolved, return any specific {@link BundleHolder} that satisfies it. If this require
-     * bundle is not resolved or if it is resolved but is optional and was not satisfied, return null.
+     * Returns the directives for a header.
      * 
-     * @return any <code>BundleHolder</code> that satisfies this <code>RequiredBundleHolder</code>
+     * @return a map containing the directives
      */
-    public BundleHolder getProvider();
+    Map<String, String> getDirectives();
 
+    /**
+     * Returns the attributes for a header.
+     * 
+     * @return a map containing the attributes
+     */
+    Map<String, String> getAttributes();
+    
     /**
      * The {@link BundleHolder} that specifies this <code>RequiredBundleHolder</code> clause.
      * 

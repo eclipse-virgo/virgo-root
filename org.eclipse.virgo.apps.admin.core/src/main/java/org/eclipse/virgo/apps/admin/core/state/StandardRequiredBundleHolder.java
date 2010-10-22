@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.apps.admin.core.state;
 
+import java.util.Map;
+
 import org.eclipse.virgo.apps.admin.core.BundleHolder;
 import org.eclipse.virgo.apps.admin.core.RequiredBundleHolder;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
@@ -70,6 +72,20 @@ final class StandardRequiredBundleHolder implements RequiredBundleHolder {
         }
         return versionConstraint.toString().replace(", oo]", ", &infin;]").replace(", oo)", ", &infin;)");
     }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public Map<String, String> getAttributes() {
+        return ObjectFormatter.formatMapValues(this.quasiRequiredBundle.getAttributes());
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Map<String, String> getDirectives() {
+        return ObjectFormatter.formatMapValues(this.quasiRequiredBundle.getDirectives());
+    } 
 
     /** 
      * {@inheritDoc}

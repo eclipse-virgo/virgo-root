@@ -179,15 +179,6 @@
 					<th>Attributes</th>
 				</tr>
 				<c:forEach var="require" items="${requires}" varStatus="loopStatus">
-		<!-- CREATE THE PROVIDER STRING -->
-					<c:choose>
-						<c:when test="${require eq null}">
-							<c:set var="provider" value=""/>
-						</c:when>
-						<c:otherwise>
-							<c:set var="provider" value="${require.provider.exportingBundle.bundleId} (${require.provider.exportingBundle.symbolicName} - ${require.provider.exportingBundle.version})"/>
-						</c:otherwise>
-					</c:choose>
 		<!-- ROW COLOURING -->
 					<c:set var="rowStyle" value="odd" scope="page" />
 					<c:if test="${(loopStatus.index % 2) eq 0}">
@@ -195,9 +186,13 @@
 					</c:if>
 		<!-- DISPLAY THE NEXT ROW -->
 					<tr class="sublevel1-${rowStyle}">
-						<td><a href="<c:url value="bundle.htm?name=${require.requiredBundleName}&state=${state}" />">${require.requiredBundleName}</a></td>
+						<td>${require.requiredBundleName}</td>
 						<td>${require.versionConstraint}</td>
-						<td>${provider}</td>
+						<td>
+							<c:if test="${require ne null}">
+								<a href="<c:url value="bundle.htm?id=${require.provider.bundleId}&state=${state}" />">${require.provider.bundleId} (${require.provider.symbolicName} - ${require.provider.version})</a>
+							</c:if>
+						</td>
 						<td>
 							<c:forEach var="directive" items="${require.directives}">
 								${directive.key}:=${directive.value}<br/>

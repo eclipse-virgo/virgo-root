@@ -138,7 +138,7 @@ public final class StateController {
 		}
 		
 		if(bundleHolder != null) {
-            model.put("title", String.format("Viewing bundle '%s - %s'", bundleHolder.getSymbolicName(), bundleHolder.getVersion()));
+            model.put("title", String.format("Viewing bundle '%s: %s'", bundleHolder.getSymbolicName(), bundleHolder.getVersion()));
             model.put("bundle", bundleHolder);
 		} else {
 		    model.put("title", "No bundle has been requested");
