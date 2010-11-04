@@ -21,7 +21,6 @@ import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
@@ -103,7 +102,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
             failInstall();
             throw de;
         }
-        
+
     }
 
     public void failInstall() throws DeploymentException {
@@ -223,7 +222,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
                 asyncStartSucceeded();
                 AbstractInstallArtifact.signalSuccessfulCompletion(this.signal);
             } catch (DeploymentException de) {
-               signalFailure(de);
+                signalFailure(de);
             }
         }
 
@@ -390,16 +389,31 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
             if (refreshed) {
                 this.eventLogger.log(DeployerLogEvents.REFRESHED, getType(), getName(), getVersion());
             } else {
-                this.artifactStorage.rollBack();
-                this.eventLogger.log(DeployerLogEvents.REFRESH_FAILED, getType(), getName(), getVersion());
+                failRefresh();
             }
 
             return refreshed;
         } catch (DeploymentException de) {
-            this.eventLogger.log(DeployerLogEvents.REFRESH_FAILED, de, getType(), getName(), getVersion());
+            failRefresh(de);
             throw de;
+        } catch (RuntimeException re) {
+            failRefresh(re);
+            throw re;
         } finally {
             this.isRefreshing = false;
+        }
+    }
+
+    private void failRefresh() {
+        failRefresh(null);
+    }
+
+    private void failRefresh(Exception ex) {
+        this.artifactStorage.rollBack();
+        if (ex == null) {
+            this.eventLogger.log(DeployerLogEvents.REFRESH_FAILED, getType(), getName(), getVersion());
+        } else {
+            this.eventLogger.log(DeployerLogEvents.REFRESH_FAILED, ex, getType(), getName(), getVersion());
         }
     }
 
