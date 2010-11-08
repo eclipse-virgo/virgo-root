@@ -73,7 +73,7 @@ public final class ServerLifecycleLoggingListener implements LifecycleListener {
         } else if (Lifecycle.AFTER_STOP_EVENT.equals(type)) {
             this.eventLogger.log(TomcatLogEvents.TOMCAT_STOPPED);
         }
-        
+
         Service[] services = server.findServices();
         if (Lifecycle.INIT_EVENT.equals(type)) {
             checkConnectorPortsAvailable(services);
@@ -104,9 +104,17 @@ public final class ServerLifecycleLoggingListener implements LifecycleListener {
     }
 
     private void checkPortAvailability(Connector connector) {
-        if (!NetUtils.isPortAvailable(connector.getPort())) {
-            this.eventLogger.log(TomcatLogEvents.PORT_IN_USE, connector.getPort());
-            System.exit(-1);
+        String hostName = (String) connector.getProperty("address");
+        if (hostName == null) {
+            if (!NetUtils.isPortAvailable(connector.getPort())) {
+                this.eventLogger.log(TomcatLogEvents.PORT_IN_USE, connector.getPort());
+                System.exit(-1);
+            }
+        } else {
+            if (!NetUtils.isPortAvailable(hostName, connector.getPort())) {
+                this.eventLogger.log(TomcatLogEvents.PORT_IN_USE, connector.getPort(), hostName);
+                System.exit(-1);
+            }
         }
     }
 

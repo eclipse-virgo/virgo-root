@@ -23,7 +23,8 @@ public enum TomcatLogEvents implements LogEvent {
     TOMCAT_STOPPED(3, Level.INFO), //        
     
     CREATING_CONNECTOR(10, Level.INFO), //
-    PORT_IN_USE(11, Level.ERROR);
+    PORT_IN_USE(11, Level.ERROR), //
+    PORT_IN_USE_AT_ADDRESS(12, Level.ERROR);
 
     private static final String PREFIX = "TC";
 
