@@ -62,6 +62,35 @@ public final class NetUtils {
     }
 
     /**
+     * Checks whether the supplied port is available on the specified address.
+     * 
+     * @param hostname the address to check for.
+     * @param port the port to check for.
+     * @return <code>true</code> if the port is available, otherwise <code>false</code>.
+     */
+    public static boolean isPortAvailable(String hostname, int port) {
+        ServerSocket socket;
+        try {
+            socket = new ServerSocket();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to create ServerSocket.", e);
+        }
+
+        try {
+            InetSocketAddress sa = new InetSocketAddress(hostname, port);
+            socket.bind(sa);
+            return true;
+        } catch (IOException ex) {
+            return false;
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException ex) {
+            }
+        }
+    }
+
+    /**
      * Gets a random free port in the non-privileged range of 1025-65535. After this port has been returned once, it
      * cannot be returned again.
      * 
