@@ -34,6 +34,10 @@
 		
 		<override org="org.springframework" rev="${org.springframework}"/>
 		
+		<!-- Override the version of util so the transitive dependency of Gemini Web is ignored. This avoids the need to update Gemini Web, for example when
+		     rippling a util change to web which does not affect Gemini Web. -->
+		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}" />
+		
 	</dependencies>
 
 </ivy-module>
