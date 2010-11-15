@@ -13,7 +13,9 @@ package org.eclipse.virgo.util.osgi;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -75,22 +77,25 @@ public class StubBundleContext implements BundleContext {
         //System.out.println("5");
         return new Filter(){
 
-            public boolean match(ServiceReference arg0) {
+            public boolean match(ServiceReference<?> arg0) {
                 // TODO Auto-generated method stub
                 return true;
             }
 
-            @SuppressWarnings("unchecked")
-            public boolean match(Dictionary arg0) {
+            public boolean match(Dictionary<String, ?> arg0) {
                 // TODO Auto-generated method stub
                 return true;
             }
 
-            @SuppressWarnings("unchecked")
-            public boolean matchCase(Dictionary arg0) {
+            public boolean matchCase(Dictionary<String, ?> arg0) {
                 // TODO Auto-generated method stub
                 return true;
             }
+
+			public boolean matches(Map<String, ?> map) {
+				// TODO Auto-generated method stub
+				return true;
+			}
             
         };
     }
@@ -98,7 +103,7 @@ public class StubBundleContext implements BundleContext {
     /** 
      * {@inheritDoc}
      */
-    public ServiceReference[] getAllServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
+    public ServiceReference<?>[] getAllServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
         //System.out.println("6");
         return null;
     }
@@ -146,15 +151,16 @@ public class StubBundleContext implements BundleContext {
     /** 
      * {@inheritDoc}
      */
-    public Object getService(ServiceReference arg0) {
+    @SuppressWarnings("unchecked")
+	public <S> S getService(ServiceReference<S> arg0) {
         //System.out.println("12");
-        return new ServiceObject();
+        return (S)new ServiceObject();
     }
 
     /** 
      * {@inheritDoc}
      */
-    public ServiceReference getServiceReference(String arg0) {
+    public ServiceReference<?> getServiceReference(String arg0) {
         //System.out.println("13");
         return null;
     }
@@ -162,10 +168,10 @@ public class StubBundleContext implements BundleContext {
     /** 
      * {@inheritDoc}
      */
-    public ServiceReference[] getServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
+    public ServiceReference<?>[] getServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
         //System.out.println("14");
-        ServiceReference[] refs = new ServiceReference[1];
-        refs[0] = new ServiceReference(){
+        ServiceReference<?>[] refs = new ServiceReference[1];
+        refs[0] = new ServiceReference<ServiceObject>(){
 
             public int compareTo(Object arg0) {
                 // TODO Auto-generated method stub
@@ -259,9 +265,41 @@ public class StubBundleContext implements BundleContext {
     /** 
      * {@inheritDoc}
      */
-    public boolean ungetService(ServiceReference arg0) {
+    public boolean ungetService(ServiceReference<?> arg0) {
         //System.out.println("22");
         return true;
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Bundle getBundle(String location) {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <S> ServiceReference<S> getServiceReference(Class<S> clazz) {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <S> Collection<ServiceReference<S>> getServiceReferences(
+			Class<S> clazz, String filter) throws InvalidSyntaxException {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <S> ServiceRegistration<S> registerService(Class<S> clazz,
+			S service, Dictionary<String, ?> properties) {
+		return null;
+	}
+    
+    
 
 }
