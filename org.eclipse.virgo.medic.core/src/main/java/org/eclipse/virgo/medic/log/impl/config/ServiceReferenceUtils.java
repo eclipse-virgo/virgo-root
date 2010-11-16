@@ -15,10 +15,10 @@ import org.osgi.framework.ServiceReference;
 
 class ServiceReferenceUtils {
 
-    static ServiceReference selectServiceReference(ServiceReference[] serviceReferences) {
-        ServiceReference highest = null;
+    static <S> ServiceReference<S> selectServiceReference(ServiceReference<S>[] serviceReferences) {
+        ServiceReference<S> highest = null;
 
-        for (ServiceReference serviceReference : serviceReferences) {
+        for (ServiceReference<S> serviceReference : serviceReferences) {
             if (highest == null || serviceReference.compareTo(highest) > 0) {
                 highest = serviceReference;
             }

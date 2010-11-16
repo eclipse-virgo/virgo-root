@@ -30,16 +30,20 @@ public final class ServiceRegistryConfigurationLocator implements ConfigurationL
         this.bundleContext = bundleContext;
     }
 
-    public LoggingConfiguration locateConfiguration(Bundle bundle) {
+    @SuppressWarnings("unchecked")
+	public LoggingConfiguration locateConfiguration(Bundle bundle) {
         if (bundle != null) {
             String configurationName = (String) bundle.getHeaders().get(MEDIC_LOGGING_CONFIGURATION_HEADER);
 
             if (configurationName != null) {
                 try {
-                    ServiceReference[] serviceReferences = this.bundleContext.getServiceReferences(LoggingConfiguration.class.getName(), "("
-                        + LOGGING_CONFIGURATION_ID_SERVICE_PROPERTY + "=" + configurationName + ")");
+					ServiceReference<LoggingConfiguration>[] serviceReferences = (ServiceReference<LoggingConfiguration>[]) this.bundleContext
+							.getServiceReferences(LoggingConfiguration.class
+									.getName(), "("
+									+ LOGGING_CONFIGURATION_ID_SERVICE_PROPERTY
+									+ "=" + configurationName + ")");
                     if (serviceReferences != null && serviceReferences.length > 0) {
-                        ServiceReference serviceReference = ServiceReferenceUtils.selectServiceReference(serviceReferences);
+                        ServiceReference<LoggingConfiguration> serviceReference = ServiceReferenceUtils.selectServiceReference(serviceReferences);
                         return (LoggingConfiguration) this.bundleContext.getService(serviceReference);
                     }
                 } catch (InvalidSyntaxException ise) {

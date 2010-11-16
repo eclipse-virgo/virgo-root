@@ -11,13 +11,14 @@
 
 package org.eclipse.virgo.medic.eventlog.impl;
 
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
 
-public final class EventLoggerServiceFactory implements ServiceFactory {
+public final class EventLoggerServiceFactory implements ServiceFactory<EventLogger> {
 
     private final EventLoggerFactory eventLoggerFactory;
 
@@ -25,10 +26,10 @@ public final class EventLoggerServiceFactory implements ServiceFactory {
         this.eventLoggerFactory = factory;
     }
 
-    public Object getService(Bundle bundle, ServiceRegistration registration) {
+    public EventLogger getService(Bundle bundle, ServiceRegistration<EventLogger> registration) {
         return this.eventLoggerFactory.createEventLogger(bundle);
     }
 
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+    public void ungetService(Bundle bundle, ServiceRegistration<EventLogger> registration, EventLogger service) {
     }
 }

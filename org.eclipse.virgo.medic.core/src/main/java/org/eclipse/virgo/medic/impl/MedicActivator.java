@@ -15,9 +15,8 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
@@ -86,7 +85,7 @@ public final class MedicActivator implements BundleActivator {
 
     private volatile DumpContributorPublisher dumpContributorPublisher;
 
-    private volatile ServiceReference packageAdminReference;
+    private volatile ServiceReference<PackageAdmin> packageAdminReference;
         
     private volatile PrintStream sysOut;
     
@@ -140,7 +139,7 @@ public final class MedicActivator implements BundleActivator {
      
     @SuppressWarnings("unchecked")
 	private void logStart(BundleContext context, ConfigurationProvider configurationProvider) throws ConfigurationPublicationFailedException {    	    	
-        this.packageAdminReference = context.getServiceReference(PackageAdmin.class.getName());
+        this.packageAdminReference = (ServiceReference<PackageAdmin>) context.getServiceReference(PackageAdmin.class.getName());
         PackageAdmin packageAdmin = (PackageAdmin) context.getService(this.packageAdminReference);
 
         StandardContextSelectorDelegate delegate = createContextSelectorDelegate(context, packageAdmin);
@@ -187,15 +186,15 @@ public final class MedicActivator implements BundleActivator {
         return wrapper;
     }
     
-    private void publishPrintStream(PrintStream printStream, String name, BundleContext context) {        
-        Properties properties = new Properties();
+    private void publishPrintStream(PrintStream printStream, String name, BundleContext context) {
+    	Hashtable<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
-                                       
+        
         this.registrationTracker.track(context.registerService(PrintStream.class.getName(), printStream, properties));  
     }
     
     private void publishDelegatingPrintStream(PrintStream printStream, String name, BundleContext context) {        
-        Properties properties = new Properties();
+    	Hashtable<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
         
         String[] classes = new String[] {DelegatingPrintStream.class.getName()};                        
@@ -267,7 +266,7 @@ public final class MedicActivator implements BundleActivator {
 
     private void eventLogStart(BundleContext context) {
         this.eventLoggerFactory = createFactory(context);
-        ServiceFactory serviceFactory = new EventLoggerServiceFactory(this.eventLoggerFactory);
+        ServiceFactory<EventLogger> serviceFactory = new EventLoggerServiceFactory(this.eventLoggerFactory);
         this.registrationTracker.track(context.registerService(EventLoggerFactory.class.getName(), this.eventLoggerFactory, null));
         this.registrationTracker.track(context.registerService(EventLogger.class.getName(), serviceFactory, null));
     }

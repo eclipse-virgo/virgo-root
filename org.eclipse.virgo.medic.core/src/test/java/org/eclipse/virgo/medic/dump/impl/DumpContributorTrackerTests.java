@@ -26,11 +26,12 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 
 public class DumpContributorTrackerTests {
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void serviceAdditionAndRemoval() {
         StubBundleContext bundleContext = new StubBundleContext();
         DumpContributor service = createMock(DumpContributor.class);
-        ServiceRegistration serviceRegistration = bundleContext.registerService(DumpContributor.class.getName(), service, null);
+        ServiceRegistration<DumpContributor> serviceRegistration = (ServiceRegistration<DumpContributor>)bundleContext.registerService(DumpContributor.class.getName(), service, null);
 
         DumpContributorTracker tracker = new DumpContributorTracker(bundleContext);
 

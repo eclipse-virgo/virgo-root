@@ -20,7 +20,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 
-final class DumpContributorTracker implements ServiceTrackerCustomizer {
+final class DumpContributorTracker implements ServiceTrackerCustomizer<DumpContributor ,DumpContributor> {
 
     private final List<DumpContributor> contributors = new CopyOnWriteArrayList<DumpContributor>();
 
@@ -30,16 +30,16 @@ final class DumpContributorTracker implements ServiceTrackerCustomizer {
         this.bundleContext = bundleContext;
     }
 
-    public Object addingService(ServiceReference reference) {
-        Object service = bundleContext.getService(reference);
-        contributors.add((DumpContributor) service);
+    public DumpContributor addingService(ServiceReference<DumpContributor> reference) {
+        DumpContributor service = bundleContext.getService(reference);
+        contributors.add(service);
         return service;
     }
 
-    public void modifiedService(ServiceReference reference, Object service) {
+    public void modifiedService(ServiceReference<DumpContributor> reference, DumpContributor service) {
     }
 
-    public void removedService(ServiceReference reference, Object service) {
+    public void removedService(ServiceReference<DumpContributor> reference, DumpContributor service) {
         this.contributors.remove(service);
         this.bundleContext.ungetService(reference);
     }

@@ -45,8 +45,9 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     }
 
     
-    private void initialisePropertiesFromConfigurationAdmin() {
-    	ServiceReference configAdminReference = this.bundleContext.getServiceReference(CONFIG_ADMIN_SERVICE_NAME);
+    @SuppressWarnings("unchecked")
+	private void initialisePropertiesFromConfigurationAdmin() {
+    	ServiceReference<ConfigurationAdmin> configAdminReference = (ServiceReference<ConfigurationAdmin>)this.bundleContext.getServiceReference(CONFIG_ADMIN_SERVICE_NAME);
     	
     	if (configAdminReference != null) {
     		this.bundleContext.registerService(ConfigurationListener.class.getName(), new MedicConfigurationListener(), null);

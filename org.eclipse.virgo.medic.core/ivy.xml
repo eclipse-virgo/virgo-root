@@ -34,7 +34,7 @@
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.teststubs" name="org.eclipse.virgo.teststubs.osgi" rev="${org.eclipse.virgo.teststubs}" conf="test->runtime"/>
 		
-		<!-- Prevent org.eclipse.osgi.services dragging in old Equinox -->
+		<!-- Allow Equinox to be upgraded point-wise before rippling -->
 		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 	</dependencies>
 

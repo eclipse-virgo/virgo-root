@@ -17,25 +17,27 @@ import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
+public final class StandardDumpContributorResolver implements
+		DumpContributorResolver {
 
-public final class StandardDumpContributorResolver implements DumpContributorResolver {
+	private final ServiceTracker<DumpContributor, DumpContributor> serviceTracker;
 
-    private final ServiceTracker serviceTracker;
+	private final DumpContributorTracker dumpContributorTracker;
 
-    private final DumpContributorTracker dumpContributorTracker;
+	public StandardDumpContributorResolver(BundleContext bundleContext) {
+		this.dumpContributorTracker = new DumpContributorTracker(bundleContext);
 
-    public StandardDumpContributorResolver(BundleContext bundleContext) {
-        this.dumpContributorTracker = new DumpContributorTracker(bundleContext);
+		this.serviceTracker = new ServiceTracker<DumpContributor, DumpContributor>(
+				bundleContext, DumpContributor.class.getName(),
+				this.dumpContributorTracker);
+		this.serviceTracker.open();
+	}
 
-        this.serviceTracker = new ServiceTracker(bundleContext, DumpContributor.class.getName(), this.dumpContributorTracker);
-        this.serviceTracker.open();
-    }
+	public List<DumpContributor> getDumpContributors() {
+		return this.dumpContributorTracker.getDumpContributors();
+	}
 
-    public List<DumpContributor> getDumpContributors() {
-        return this.dumpContributorTracker.getDumpContributors();
-    }
-
-    public void close() {
-        this.serviceTracker.close();
-    }
+	public void close() {
+		this.serviceTracker.close();
+	}
 }

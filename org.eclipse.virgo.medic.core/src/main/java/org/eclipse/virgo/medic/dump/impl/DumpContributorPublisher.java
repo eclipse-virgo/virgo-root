@@ -28,7 +28,7 @@ public final class DumpContributorPublisher {
 
     private static final String SUPPRESS_HEAP_DUMPS = "org.eclipse.virgo.suppress.heap.dumps";
 
-    private final List<ServiceRegistration> contributorRegistrations = new ArrayList<ServiceRegistration>();
+    private final List<ServiceRegistration<DumpContributor>> contributorRegistrations = new ArrayList<ServiceRegistration<DumpContributor>>();
 
     private final BundleContext bundleContext;
     
@@ -51,13 +51,14 @@ public final class DumpContributorPublisher {
 		publishDumpContributor(this.logDumpContributor);
     }
 
-    private void publishDumpContributor(DumpContributor dumpContributor) {
-        ServiceRegistration registration = this.bundleContext.registerService(DumpContributor.class.getName(), dumpContributor, null);
+    @SuppressWarnings("unchecked")
+	private void publishDumpContributor(DumpContributor dumpContributor) {
+        ServiceRegistration<DumpContributor> registration = (ServiceRegistration<DumpContributor>)this.bundleContext.registerService(DumpContributor.class.getName(), dumpContributor, null);
         this.contributorRegistrations.add(registration);
     }
 
     public void retractDumpContributors() {        
-        for (ServiceRegistration registration : this.contributorRegistrations) {
+        for (ServiceRegistration<DumpContributor> registration : this.contributorRegistrations) {
             registration.unregister();
         }
         

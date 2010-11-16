@@ -62,9 +62,10 @@ public class DumpIntegrationTests {
 		assertTrue(file.delete());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void dumpGeneratorAvailableFromServiceRegistry() {
-		ServiceReference serviceReference = this.bundleContext.getServiceReference(DumpGenerator.class.getName());
+		ServiceReference<DumpGenerator> serviceReference = (ServiceReference<DumpGenerator>)this.bundleContext.getServiceReference(DumpGenerator.class.getName());
 		assertNotNull(serviceReference);
 	}
 	
@@ -141,6 +142,7 @@ public class DumpIntegrationTests {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void logDumpEnabled() throws IOException, InterruptedException {
 		Configuration configuration = getConfiguration("org.eclipse.virgo.medic");
@@ -156,7 +158,7 @@ public class DumpIntegrationTests {
 		
 		LoggerFactory.getLogger(getClass()).info("Test");
 		
-		ServiceReference serviceReference = this.bundleContext.getServiceReference(DumpGenerator.class.getName());
+		ServiceReference<DumpGenerator> serviceReference = (ServiceReference<DumpGenerator>)this.bundleContext.getServiceReference(DumpGenerator.class.getName());
 		DumpGenerator dumpGenerator = (DumpGenerator)this.bundleContext.getService(serviceReference);
 		dumpGenerator.generateDump("bleurgh");
 		
@@ -177,8 +179,9 @@ public class DumpIntegrationTests {
 		return configurationAdmin.getConfiguration(pid);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private ConfigurationAdmin getConfigurationAdmin() {
-		ServiceReference serviceReference = this.bundleContext.getServiceReference(ConfigurationAdmin.class.getName());
+		ServiceReference<ConfigurationAdmin> serviceReference = (ServiceReference<ConfigurationAdmin>)this.bundleContext.getServiceReference(ConfigurationAdmin.class.getName());
 		assertNotNull(serviceReference);
 		
 		return (ConfigurationAdmin) this.bundleContext.getService(serviceReference);
