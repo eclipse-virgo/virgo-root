@@ -27,11 +27,15 @@
 		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="provided, additional->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->runtime"/>
 		
-		<dependency org="org.apache.felix" name="org.apache.felix.configadmin" rev="${org.apache.felix.configadmin}" conf="optional->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="optional->runtime"/>
+		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="optional->runtime"/>
 
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.teststubs" name="org.eclipse.virgo.teststubs.osgi" rev="${org.eclipse.virgo.teststubs}" conf="test->runtime"/>
+		
+		<!-- Prevent org.eclipse.osgi.services dragging in old Equinox -->
+		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 	</dependencies>
 
 </ivy-module>
