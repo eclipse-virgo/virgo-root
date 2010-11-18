@@ -30,7 +30,8 @@ import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
  */
 public class DynamicDelegationEventLoggerTests {
     
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void dynamicDelegation() {
         StubBundleContext bundleContext = new StubBundleContext();
         bundleContext.addFilter(new ObjectClassFilter(EventLogger.class));
@@ -39,10 +40,12 @@ public class DynamicDelegationEventLoggerTests {
         delegatingEventLogger.start();
         
         MockEventLogger eventLogger1 = new MockEventLogger();
-        ServiceRegistration registration1 = bundleContext.registerService(EventLogger.class.getName(), eventLogger1, null);
+		ServiceRegistration<EventLogger> registration1 = bundleContext
+				.registerService(EventLogger.class.getName(), eventLogger1,
+						null);
         
         MockEventLogger eventLogger2 = new MockEventLogger();
-        ServiceRegistration registration2 = bundleContext.registerService(EventLogger.class.getName(), eventLogger2, null);
+        ServiceRegistration<EventLogger> registration2 = bundleContext.registerService(EventLogger.class.getName(), eventLogger2, null);
         
         delegatingEventLogger.log("code1a", Level.INFO);
         delegatingEventLogger.log("code1b", Level.INFO, new Exception());
