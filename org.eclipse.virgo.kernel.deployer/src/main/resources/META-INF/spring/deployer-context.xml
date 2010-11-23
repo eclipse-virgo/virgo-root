@@ -252,10 +252,6 @@
 	</beans:bean>
 
 	<!--  basic artifact type factories -->
-	<service
-		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory"
-		ref="bundleInstallArtifactTreeFactory" />
-
 	<beans:bean id="refreshHandler"
 		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactRefreshHandler">
 		<beans:constructor-arg ref="installEnvironmentFactory" />
