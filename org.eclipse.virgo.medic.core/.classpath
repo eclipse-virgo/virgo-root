@@ -25,7 +25,6 @@
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/MEDIC_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.medic"/>
-	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.apache.felix/org.apache.felix.configadmin/1.2.4/org.apache.felix.configadmin-1.2.4.jar" sourcepath="/MEDIC_IVY_CACHE/org.apache.felix/org.apache.felix.configadmin/1.2.4/org.apache.felix.configadmin-sources-1.2.4.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.M01/org.eclipse.virgo.teststubs.osgi-2.2.0.M01.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.M01/org.eclipse.virgo.teststubs.osgi-sources-2.2.0.M01.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.runtime/1.6.6.RELEASE/com.springsource.org.aspectj.runtime-1.6.6.RELEASE.jar" sourcepath="/MEDIC_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.runtime/1.6.6.RELEASE/com.springsource.org.aspectj.runtime-sources-1.6.6.RELEASE.jar"/>
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-1.6.1.jar" sourcepath="/MEDIC_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
@@ -34,5 +33,7 @@
 	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101108165433/org.eclipse.virgo.util.osgi-2.2.0.D-20101108165433.jar" sourcepath="/MEDIC_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101108165433/org.eclipse.virgo.util.osgi-sources-2.2.0.D-20101108165433.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.medic.weaving"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.equinox/org.eclipse.equinox.cm/1.0.200.v20100520/org.eclipse.equinox.cm-1.0.200.v20100520.jar"/>
+	<classpathentry kind="var" path="MEDIC_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20101018/org.eclipse.osgi.services-3.3.0.v20101018.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

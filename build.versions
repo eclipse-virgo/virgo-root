@@ -2,7 +2,7 @@
 ch.qos.logback=0.9.24
 org.slf4j=1.6.1
 org.eclipse.osgi=3.7.0.v20101022
-org.eclipse.osgi.services=3.1.200.v20071203
+org.eclipse.osgi.services=3.3.0.v20101018
 org.eclipse.equinox.cm=1.0.200.v20100520
 org.aspectj=1.6.6.RELEASE
 
