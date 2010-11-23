@@ -16,16 +16,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
 import org.eclipse.osgi.internal.loader.BundleLoader;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
-import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
 
 /**
  * Utility methods for working with Equinox internals.
@@ -64,7 +62,7 @@ public final class EquinoxUtils {
                 Method createClassLoaderMethod = BundleLoader.class.getDeclaredMethod("createClassLoader", parmTypes);
                 createClassLoaderMethod.setAccessible(true);
 
-                classLoader = (DefaultClassLoader) createClassLoaderMethod.invoke(bundleLoader, args);
+                classLoader = (ClassLoader) createClassLoaderMethod.invoke(bundleLoader, args);
             } catch (Exception e) {
                 throw new BundleClassLoaderUnavailableException("Failed to get class loader for bundle '" + bundle
                     + "' - possible resolution problem.", e);
