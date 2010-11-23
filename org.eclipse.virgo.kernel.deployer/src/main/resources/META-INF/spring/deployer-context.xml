@@ -251,13 +251,13 @@
 		<beans:constructor-arg ref="bundleContext" />
 	</beans:bean>
 
-	<!--  basic artifact type factories -->
 	<beans:bean id="refreshHandler"
 		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactRefreshHandler">
 		<beans:constructor-arg ref="installEnvironmentFactory" />
 		<beans:constructor-arg ref="refreshSubpipeline" />
 	</beans:bean>
 
+	<!--  basic artifact type factories -->
 	<beans:bean id="bundleInstallArtifactTreeFactory"
 		class="org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactTreeFactory">
 		<beans:constructor-arg ref="osgiFramework" />
