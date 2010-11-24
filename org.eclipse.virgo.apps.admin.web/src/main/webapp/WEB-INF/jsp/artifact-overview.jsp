@@ -3,14 +3,11 @@
 --%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%-- 
 --%><jsp:include page="top.jsp" />
 
-<c:choose>
-		<c:when test="${empty result}">
-			<h1>Artifact Console</h1>
-		</c:when>
-		<c:otherwise>
-			<h1>Artifact Console: '${result}'</h1>
-		</c:otherwise>
-</c:choose>
+<h1>Artifact Console</h1>
+
+<c:if test="${!(empty result)}">
+	<p>The result of the last operation is: <c:out value="${result}" /></p>
+</c:if>
 
 <script language="JavaScript" type="text/javascript">
 /* <![CDATA[ */
