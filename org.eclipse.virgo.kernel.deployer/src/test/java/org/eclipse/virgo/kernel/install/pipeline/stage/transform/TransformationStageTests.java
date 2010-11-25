@@ -84,8 +84,8 @@ public class TransformationStageTests {
         
         this.transformationStage.process(this.installTree, this.installEnvironment);
         
-        ServiceRegistration registration1 = this.bundleContext.registerService(Transformer.class.getName(), this.transformer1, null);
-        ServiceRegistration registration2= this.bundleContext.registerService(Transformer.class.getName(), this.transformer2, null);
+        ServiceRegistration<Transformer> registration1 = this.bundleContext.registerService(Transformer.class, this.transformer1, null);
+        ServiceRegistration<Transformer> registration2= this.bundleContext.registerService(Transformer.class, this.transformer2, null);
         
         this.transformationStage.process(this.installTree, this.installEnvironment);
         

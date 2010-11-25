@@ -13,14 +13,20 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.Hashtable;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
+import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Version;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
@@ -29,13 +35,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-
-import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
-import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**
  * Utility class for parsing Spring config files and populating a {@link StandardScopeServiceRepository}.
@@ -103,7 +102,7 @@ final class SpringConfigServiceModelScanner {
 
     private void parseServiceElement(Element elem) {
         String[] types = extractInterfaces(elem);
-        Properties properties = extractServiceProperties(elem);
+        Dictionary<String, Object> properties = extractServiceProperties(elem);
         this.repository.recordService(this.scopeName, types, properties);
     }
 
@@ -139,11 +138,11 @@ final class SpringConfigServiceModelScanner {
         return exportedInterfaces.toArray(new String[exportedInterfaces.size()]);
     }
 
-    private Properties extractServiceProperties(Element elem) {
+    private Dictionary<String, Object> extractServiceProperties(Element elem) {
         NodeList servicePropertiesElems = elem.getElementsByTagNameNS(SPRING_DM_NAMESPACE, ELEMENT_SERVICE_PROPERTIES);
-        Properties p = null;
+        Dictionary<String, Object> p = null;
         if (servicePropertiesElems.getLength() > 0) {
-            p = new Properties();
+            p = new Hashtable<String, Object>();
             Node item = servicePropertiesElems.item(0);
             readServiceProperties((Element) item, p);
         }
@@ -151,25 +150,25 @@ final class SpringConfigServiceModelScanner {
         return p;
     }
 
-    private Properties addStandardServiceProperties(Element elem, Properties p) {
+    private Dictionary<String, Object> addStandardServiceProperties(Element elem, Dictionary<String, Object> p) {
         // The only standard service property in the Spring DM reference manual is "bean name".
         String beanName = StringUtils.trimWhitespace(elem.getAttribute(ATTRIBUTE_REF));
         if (StringUtils.hasText(beanName)) {
             if (p == null) {
-                p = new Properties();
+                p = new Hashtable<String, Object>();
             }
-            p.setProperty(BEAN_NAME_PROPERTY, beanName);
+            p.put(BEAN_NAME_PROPERTY, beanName);
         }
         return p;
     }
 
-    private void readServiceProperties(Element servicePropertiesElement, Properties serviceProperties) {
+    private void readServiceProperties(Element servicePropertiesElement, Dictionary<String, Object> serviceProperties) {
         NodeList childNodes = servicePropertiesElement.getChildNodes();
         for (int y = 0; y < childNodes.getLength(); y++) {
             Node child = childNodes.item(y);
             if (isEntryElement(child)) {
                 Element entry = (Element) child;
-                serviceProperties.setProperty(entry.getAttribute(ATTRIBUTE_KEY), entry.getAttribute(ATTRIBUTE_VALUE));
+                serviceProperties.put(entry.getAttribute(ATTRIBUTE_KEY), entry.getAttribute(ATTRIBUTE_VALUE));
             }
         }
     }

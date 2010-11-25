@@ -31,13 +31,13 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class DelegatingServiceRegistryBackedArtifactIdentityDeterminer implements ArtifactIdentityDeterminer {
     
-    private final ServiceTracker serviceTracker;
+    private final ServiceTracker<ArtifactIdentityDeterminer, ArtifactIdentityDeterminer> serviceTracker;
 
     /**
      * @param bundleContext
      */
     public DelegatingServiceRegistryBackedArtifactIdentityDeterminer(BundleContext bundleContext) {
-        this.serviceTracker = new ServiceTracker(bundleContext, ArtifactIdentityDeterminer.class.getName(), null);       
+        this.serviceTracker = new ServiceTracker<ArtifactIdentityDeterminer, ArtifactIdentityDeterminer>(bundleContext, ArtifactIdentityDeterminer.class.getName(), null);       
     }
     
     public void init() {

@@ -22,7 +22,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-3.6.1.R36x_v20100806.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-sources-3.6.1.R36x_v20100806.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-3.7.0.v20101022.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-sources-3.7.0.v20101022.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101108165433/org.eclipse.virgo.util.osgi-2.2.0.D-20101108165433.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101108165433/org.eclipse.virgo.util.osgi-sources-2.2.0.D-20101108165433.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.2.0.D-20101108165433/org.eclipse.virgo.util.common-2.2.0.D-20101108165433.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.2.0.D-20101108165433/org.eclipse.virgo.util.common-sources-2.2.0.D-20101108165433.jar"/>

@@ -344,7 +344,7 @@ public final class DependencyCalculator {
     }
 
     private BundleDescription createBundleDescription(ArtifactDescriptor artifact, State state) throws BundleException {
-        Dictionary<?, ?> manifest = BundleBridge.convertToDictionary(artifact);
+        Dictionary<String, String> manifest = BundleBridge.convertToDictionary(artifact);
         try {
             URI uri = artifact.getUri();
             if ("file".equals(uri.getScheme())) {

@@ -34,9 +34,9 @@ public final class ServiceUtils {
     public static <T> T getService(BundleContext bundleContext, Class<T> clazz, String requiredProperty, String requiredPropertyValue) {
         T result = null;
         try {
-            ServiceReference[] serviceReferences = bundleContext.getServiceReferences(null, String.format("(%s=*)", requiredProperty));
+            ServiceReference<?>[] serviceReferences = bundleContext.getServiceReferences((String)null, String.format("(%s=*)", requiredProperty));
             if (serviceReferences != null) {
-                for (ServiceReference serviceReference : serviceReferences) {
+                for (ServiceReference<?> serviceReference : serviceReferences) {
                     Object offeredPropertyValue = serviceReference.getProperty(requiredProperty);
                     if (offeredPropertyValue instanceof String) { // String value
                         String offeredProperty = (String) offeredPropertyValue;

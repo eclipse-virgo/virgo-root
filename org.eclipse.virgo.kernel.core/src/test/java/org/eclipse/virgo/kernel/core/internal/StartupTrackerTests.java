@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.management.ManagementFactory;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -74,11 +75,11 @@ public class StartupTrackerTests {
 		StartupTracker tracker = new StartupTracker(this.bundleContext, new KernelConfiguration(this.bundleContext), 30, bundleStartTracker, this.shutdown, this.dumpGenerator);
         tracker.start();
 
-        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTING", null), 10000));
+        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTING", (Map<String, ?>)null), 10000));
         
         this.bundle.start();
         
-        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTED", null), 10000));
+        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTED", (Map<String, ?>)null), 10000));
 
         tracker.stop();
     }
@@ -99,8 +100,8 @@ public class StartupTrackerTests {
         StartupTracker tracker = new StartupTracker(this.bundleContext, new KernelConfiguration(this.bundleContext), 1, bundleStartTracker, this.shutdown, this.dumpGenerator);
         tracker.start();
 
-        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTING", null), 10000));
-        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/START_TIMED_OUT", null), 10000));
+        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTING", (Map<String, ?>)null), 10000));
+        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/START_TIMED_OUT", (Map<String, ?>)null), 10000));
 
         waitForABit(500);
         
@@ -140,7 +141,7 @@ public class StartupTrackerTests {
 		StartupTracker tracker = new StartupTracker(this.bundleContext, new KernelConfiguration(this.bundleContext), 1, bundleStartTracker, this.shutdown, this.dumpGenerator);
         tracker.start();
 
-        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTING", null), 10000));
+        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/STARTING", (Map<String, ?>)null), 10000));
         
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("bundle", bundle);
@@ -148,7 +149,7 @@ public class StartupTrackerTests {
         
         bundleStartTracker.handleEvent(new Event("org/osgi/service/blueprint/container/FAILURE", properties));
         
-        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/START_FAILED", null), 10000));
+        assertTrue(this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/START_FAILED", (Map<String, ?>)null), 10000));
 
         waitForABit(500);
 

@@ -30,5 +30,5 @@ public interface OsgiServiceHolder<T> extends Comparable<OsgiServiceHolder<?>> {
 
     T getService();
 
-    ServiceReference getServiceReference();
+    ServiceReference<T> getServiceReference();
 }

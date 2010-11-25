@@ -11,9 +11,12 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
+import java.util.Map;
+
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.osgi.framework.Version;
+import org.osgi.framework.wiring.WiredCapability;
 
 /**
  */
@@ -32,6 +35,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription getExporter() {
         return this.exporter;
     }
@@ -39,6 +43,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isRoot() {
         throw new UnsupportedOperationException();
     }
@@ -46,6 +51,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return this.name;
     }
@@ -53,6 +59,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription getSupplier() {
         throw new UnsupportedOperationException();
     }
@@ -60,6 +67,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
     /**
      * {@inheritDoc}
      */
+    @Override
     public Version getVersion() {
         return this.version;
     }
@@ -70,6 +78,30 @@ public class StubExportPackageDescription extends StubParameterised implements E
     
     public void setExporter(BundleDescription exporter) {
         this.exporter = exporter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getDeclaredDirectives() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, Object> getDeclaredAttributes() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WiredCapability getWiredCapability() {
+        throw new UnsupportedOperationException();
     }
 
 }

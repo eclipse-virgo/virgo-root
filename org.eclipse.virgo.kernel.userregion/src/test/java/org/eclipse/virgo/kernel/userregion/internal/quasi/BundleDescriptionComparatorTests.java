@@ -15,6 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
@@ -26,7 +29,11 @@ import org.eclipse.osgi.service.resolver.NativeCodeSpecification;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.BundleDescriptionComparator;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.WiredCapability;
 
 
 public class BundleDescriptionComparatorTests {
@@ -85,124 +92,204 @@ public class BundleDescriptionComparatorTests {
             this.version = version;
         }
 
+        @Override
         public boolean attachFragments() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean dynamicFragments() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public long getBundleId() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public State getContainingState() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BundleDescription[] getDependents() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String[] getExecutionEnvironments() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public ExportPackageDescription[] getExportPackages() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BundleDescription[] getFragments() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public GenericDescription[] getGenericCapabilities() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public GenericSpecification[] getGenericRequires() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public HostSpecification getHost() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public ImportPackageSpecification[] getImportPackages() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String getLocation() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public NativeCodeSpecification getNativeCodeSpecification() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String getPlatformFilter() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BundleSpecification[] getRequiredBundles() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public ExportPackageDescription[] getResolvedImports() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BundleDescription[] getResolvedRequires() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public ExportPackageDescription[] getSelectedExports() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public ExportPackageDescription[] getSubstitutedExports() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String getSymbolicName() {
             return this.symbolicName;
         }
 
+        @Override
         public Object getUserObject() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean hasDynamicImports() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isRemovalPending() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isResolved() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isSingleton() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void setUserObject(Object userObject) {
             throw new UnsupportedOperationException();            
         }
        
+        @Override
         public String getName() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BundleDescription getSupplier() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Version getVersion() {
             return this.version;
+        }
+
+        @Override
+        public Map<String, String> getDeclaredDirectives() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Map<String, Object> getDeclaredAttributes() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public WiredCapability getWiredCapability() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<Capability> getDeclaredCapabilities(String namespace) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getTypes() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Bundle getBundle() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ImportPackageSpecification[] getAddedDynamicImportPackages() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GenericDescription[] getSelectedGenericCapabilities() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GenericDescription[] getResolvedGenericRequires() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public BundleWiring getBundleWiring() {
+            throw new UnsupportedOperationException();
         }
     }
 }

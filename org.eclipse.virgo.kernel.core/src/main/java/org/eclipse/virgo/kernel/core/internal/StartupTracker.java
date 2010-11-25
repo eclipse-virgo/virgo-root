@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.core.internal;
 
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -179,18 +180,20 @@ final class StartupTracker {
             }
         }
 
+        @SuppressWarnings("unchecked")
         private EventLogger getEventLoggerService() {
             EventLogger eventLogger = null;
-            ServiceReference eventLoggerServiceReference = this.context.getServiceReference(EventLogger.class.getName());
+            ServiceReference<EventLogger> eventLoggerServiceReference = (ServiceReference<EventLogger>) this.context.getServiceReference(EventLogger.class.getName());
             if (eventLoggerServiceReference != null) {
                 eventLogger = (EventLogger) this.context.getService(this.serviceReferenceTracker.track(eventLoggerServiceReference));
             }
             return eventLogger;
         }
         
+        @SuppressWarnings("unchecked")
         private EventAdmin getEventAdminService() {
             EventAdmin eventAdmin = null;
-            ServiceReference eventAdminServiceReference = this.context.getServiceReference(EventAdmin.class.getName());
+            ServiceReference<EventAdmin> eventAdminServiceReference = (ServiceReference<EventAdmin>) this.context.getServiceReference(EventAdmin.class.getName());
             if (eventAdminServiceReference != null) {
                 eventAdmin = (EventAdmin) this.context.getService(this.serviceReferenceTracker.track(eventAdminServiceReference));
             }
@@ -246,7 +249,7 @@ final class StartupTracker {
 
         private void postEvent(String topic) {
             if (this.eventAdmin != null) {
-                this.eventAdmin.postEvent(new Event(topic, null));
+                this.eventAdmin.postEvent(new Event(topic, (Map<String, ?>)null));
             }
         }
     }    

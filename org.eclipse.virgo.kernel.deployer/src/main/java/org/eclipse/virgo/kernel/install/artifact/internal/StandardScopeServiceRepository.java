@@ -57,7 +57,7 @@ final class StandardScopeServiceRepository implements ScopeServiceRepository {
     /** 
      * {@inheritDoc}
      */
-    public void recordService(String scopeName, String[] types, Dictionary<Object, Object> properties) {
+    public void recordService(String scopeName, String[] types, Dictionary<String, Object> properties) {
         if (logger.isDebugEnabled()) {
             logger.debug("Adding service to scope '{}' with service types '{}' and properties '{}'", new Object[] { scopeName,
                 StringUtils.arrayToCommaDelimitedString(types), dictionaryToCommaSeparatedString(properties) });
@@ -65,7 +65,7 @@ final class StandardScopeServiceRepository implements ScopeServiceRepository {
 
         synchronized (this.monitor) {
             if (properties == null) {
-                properties = new Hashtable<Object, Object>();
+                properties = new Hashtable<String, Object>();
             }
             setStandardProperties(types, properties);
             List<Service> servicesForScope = this.scopeServices.get(scopeName);
@@ -77,10 +77,10 @@ final class StandardScopeServiceRepository implements ScopeServiceRepository {
         }
     }
 
-    private static String dictionaryToCommaSeparatedString(Dictionary<Object, Object> properties) {
+    private static String dictionaryToCommaSeparatedString(Dictionary<String, Object> properties) {
         StringBuffer propsString = new StringBuffer();
         if (properties != null) {
-            Enumeration<Object> keys = properties.keys();
+            Enumeration<String> keys = properties.keys();
             for (int i = 0; keys.hasMoreElements(); i++) {
                 if (i > 0) {
                     propsString.append(", ");
@@ -92,7 +92,7 @@ final class StandardScopeServiceRepository implements ScopeServiceRepository {
         return propsString.toString();
     }
 
-    private void setStandardProperties(String[] types, Dictionary<Object, Object> properties) {
+    private void setStandardProperties(String[] types, Dictionary<String, Object> properties) {
         if (properties.get(Constants.OBJECTCLASS) == null) {
             properties.put(Constants.OBJECTCLASS, types);
         }
@@ -143,9 +143,9 @@ final class StandardScopeServiceRepository implements ScopeServiceRepository {
 
         private final Set<String> types;
 
-        private final Dictionary<Object, Object> properties;
+        private final Dictionary<String, Object> properties;
 
-        public Service(String[] types, Dictionary<Object, Object> properties) {
+        public Service(String[] types, Dictionary<String, Object> properties) {
             this.types = Sets.asSet(types);
             this.properties = properties;
         }

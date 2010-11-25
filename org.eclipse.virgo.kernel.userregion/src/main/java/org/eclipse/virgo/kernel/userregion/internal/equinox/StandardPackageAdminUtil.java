@@ -40,6 +40,6 @@ public final class StandardPackageAdminUtil implements PackageAdminUtil {
      * {@inheritDoc}
      */
     public void synchronouslyRefreshPackages(Bundle[] bundles) {
-        ((PackageAdminImpl)this.packageAdmin).refreshPackages(bundles, true);        
+        ((PackageAdminImpl)this.packageAdmin).refreshPackages(bundles, true, null);        
     }
 }

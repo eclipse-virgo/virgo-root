@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.userregion.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -116,7 +117,7 @@ public class Activator implements BundleActivator {
 
         scheduleRegistrationOfServiceScopingRegistryHooks(context, eventLogger);
 
-        Properties properties = new Properties();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
         this.registrationTracker.track(context.registerService(ModuleContextAccessor.class.getName(), new EmptyModuleContextAccessor(), properties));
 
@@ -179,7 +180,7 @@ public class Activator implements BundleActivator {
     private void scheduleInitialArtifactDeployerCreation(BundleContext context, EventLogger eventLogger) {
         KernelStartedAwaiter startedAwaiter = new KernelStartedAwaiter();
 
-        Properties properties = new Properties();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
         this.registrationTracker.track(context.registerService(EventHandler.class.getName(), startedAwaiter, properties));
 
@@ -275,7 +276,7 @@ public class Activator implements BundleActivator {
                 InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer,
                     artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS),
                     uriNormaliser, eventAdmin, eventLogger, shutdown);
-                Properties properties = new Properties();
+                Dictionary<String, String> properties = new Hashtable<String, String>();
                 properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
                 this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));
 

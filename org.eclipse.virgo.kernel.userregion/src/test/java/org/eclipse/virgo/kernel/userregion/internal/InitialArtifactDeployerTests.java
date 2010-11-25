@@ -20,6 +20,7 @@ import static org.easymock.EasyMock.verify;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.osgi.service.event.Event;
@@ -37,7 +38,9 @@ import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 
 public class InitialArtifactDeployerTests {
 	
-	private ApplicationDeployer deployer = createMock(ApplicationDeployer.class);
+	private static final Map<String, ?> NULL_PROPERTIES = (Map<String, ?>)null;
+
+    private ApplicationDeployer deployer = createMock(ApplicationDeployer.class);
 	
 	private KernelStartedAwaiter startedAwaiter = new KernelStartedAwaiter();
 	
@@ -52,15 +55,15 @@ public class InitialArtifactDeployerTests {
 		replay(this.deployer);
 		
 		InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startedAwaiter, this.deployer, "", "", new StubDeployUriNormaliser(), this.eventAdmin, this.eventLogger, this.shutdown);
-		this.startedAwaiter.handleEvent(new Event("org/eclipse/virgo/kernel/STARTED", null));
+		this.startedAwaiter.handleEvent(new Event("org/eclipse/virgo/kernel/STARTED", NULL_PROPERTIES));
 		
 		initialArtifactDeployer.deployArtifacts();
 		
-		Event eventSystemArtifactsDeployed = new Event("org/eclipse/virgo/kernel/userregion/systemartifacts/DEPLOYED", null);
+		Event eventSystemArtifactsDeployed = new Event("org/eclipse/virgo/kernel/userregion/systemartifacts/DEPLOYED", NULL_PROPERTIES);
 		this.eventAdmin.awaitPostingOfEvent(eventSystemArtifactsDeployed);
 		
 		initialArtifactDeployer.handleEvent(eventSystemArtifactsDeployed);
-		this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/userregion/userartifacts/DEPLOYED", null));
+		this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/userregion/userartifacts/DEPLOYED", NULL_PROPERTIES));
 		
 		verify(this.deployer);
 	}
@@ -74,10 +77,10 @@ public class InitialArtifactDeployerTests {
 		expect(this.deployer.deploy(URI.create("repository:alpha/bravo/2"), new DeploymentOptions(false, false, true))).andReturn(null);
 		replay(this.deployer);
 		
-		this.startedAwaiter.handleEvent(new Event("org/eclipse/virgo/kernel/STARTED", null));
+		this.startedAwaiter.handleEvent(new Event("org/eclipse/virgo/kernel/STARTED", NULL_PROPERTIES));
 		initialArtifactDeployer.deployArtifacts();
 		
-		Event eventSystemArtifactsDeployed = new Event("org/eclipse/virgo/kernel/userregion/systemartifacts/DEPLOYED", null);
+		Event eventSystemArtifactsDeployed = new Event("org/eclipse/virgo/kernel/userregion/systemartifacts/DEPLOYED", NULL_PROPERTIES);
 		this.eventAdmin.awaitPostingOfEvent(eventSystemArtifactsDeployed);
 
 		verify(this.deployer);
@@ -90,7 +93,7 @@ public class InitialArtifactDeployerTests {
 		replay(this.deployer);
 		
 		initialArtifactDeployer.handleEvent(eventSystemArtifactsDeployed);
-		this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/userregion/userartifacts/DEPLOYED", null));
+		this.eventAdmin.awaitPostingOfEvent(new Event("org/eclipse/virgo/kernel/userregion/userartifacts/DEPLOYED", NULL_PROPERTIES));
 		
 		verify(this.deployer);
 	}
@@ -105,7 +108,7 @@ public class InitialArtifactDeployerTests {
 		this.shutdown.shutdown();
 		replay(this.shutdown);
 		
-		this.startedAwaiter.handleEvent(new Event("org/eclipse/virgo/kernel/STARTED", null));
+		this.startedAwaiter.handleEvent(new Event("org/eclipse/virgo/kernel/STARTED", NULL_PROPERTIES));
 		
 		initialArtifactDeployer.deployArtifacts();
 		
