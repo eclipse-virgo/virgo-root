@@ -8,7 +8,6 @@ org.eclipse.osgi=3.6.1.R36x_v20100806
 org.springframework=3.0.0.RELEASE
 org.springframework.osgi=1.2.1
 org.eclipse.gemini.web=1.2.0.M01
-org.apache.felix=1.2.4
 org.apache.felix.eventadmin=1.0.0
 org.aspectj=1.6.6.RELEASE
 org.slf4j=1.6.1
