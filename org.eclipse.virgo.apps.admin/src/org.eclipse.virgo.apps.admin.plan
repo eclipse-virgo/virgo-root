@@ -7,5 +7,8 @@
 		        http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
 
 	<artifact type="bundle" name="org.eclipse.virgo.apps.admin.core" version="[2.2,3.0)"/>
-    <artifact type="bundle" name="org.eclipse.virgo.apps.admin.web" version="[2.2,3.0)"/>
+    <artifact type="bundle" name="org.eclipse.virgo.apps.admin.web" version="[2.2,3.0)">
+		<property name="header:Web-ContextPath" value="/admin" />
+	</artifact>
+	
 </plan>
