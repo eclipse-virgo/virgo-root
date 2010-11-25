@@ -13,4 +13,5 @@ Import-Template:
 Export-Template: 
  org.eclipse.virgo.kernel.osgicommand.helper.*;version="${version}"
 Bundle-Activator: org.eclipse.virgo.kernel.osgicommand.Activator
+Excluded-Imports: org.easymock
 

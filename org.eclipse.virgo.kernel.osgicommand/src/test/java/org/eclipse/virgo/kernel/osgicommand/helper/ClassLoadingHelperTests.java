@@ -105,11 +105,12 @@ public class ClassLoadingHelperTests {
         verify(bundle);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testTryToLoadExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
 
         replay(bundle);
 
@@ -135,12 +136,13 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetBundlesLoadingExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
         expect(bundleContext.getBundle(0)).andReturn(bundle);
 
@@ -172,6 +174,7 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetBundleLoadingExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
@@ -179,7 +182,7 @@ public class ClassLoadingHelperTests {
         PackageAdmin packageAdmin = createMock(PackageAdmin.class);
         ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
         expect(bundleContext.getBundle(0)).andReturn(bundle);
         expect(bundleContext.getServiceReference(PackageAdmin.class.getName())).andReturn(packageAdminServiceReference);
         expect(bundleContext.getService(packageAdminServiceReference)).andReturn(packageAdmin);

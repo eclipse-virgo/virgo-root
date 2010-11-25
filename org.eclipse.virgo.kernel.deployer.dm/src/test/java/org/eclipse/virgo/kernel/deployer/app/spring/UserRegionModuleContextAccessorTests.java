@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Dictionary;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -56,17 +57,23 @@ public class UserRegionModuleContextAccessorTests {
     
     private static final Filter NEGATIVE_FILTER = new Filter() {
         
-        public boolean match(ServiceReference reference) {
+        @Override
+        public boolean match(ServiceReference<?> reference) {
             return false;
         }
         
-        @SuppressWarnings("unchecked")
-        public boolean match(Dictionary dictionary) {
+        @Override
+        public boolean match(Dictionary<String, ?> dictionary) {
             return false;
         }
         
-        @SuppressWarnings("unchecked")
-        public boolean matchCase(Dictionary dictionary) {
+        @Override
+        public boolean matchCase(Dictionary<String, ?> dictionary) {
+            return false;
+        }
+
+        @Override
+        public boolean matches(Map<String, ?> map) {
             return false;
         }
         
@@ -74,19 +81,25 @@ public class UserRegionModuleContextAccessorTests {
     
 private static final Filter POSITIVE_FILTER = new Filter() {
         
-        public boolean match(ServiceReference reference) {
-            return true;
-        }
-        
-        @SuppressWarnings("unchecked")
-        public boolean match(Dictionary dictionary) {
-            return true;
-        }
-        
-        @SuppressWarnings("unchecked")
-        public boolean matchCase(Dictionary dictionary) {
-            return true;
-        }
+    @Override
+    public boolean match(ServiceReference<?> reference) {
+        return true;
+    }
+    
+    @Override
+    public boolean match(Dictionary<String, ?> dictionary) {
+        return true;
+    }
+    
+    @Override
+    public boolean matchCase(Dictionary<String, ?> dictionary) {
+        return true;
+    }
+
+    @Override
+    public boolean matches(Map<String, ?> map) {
+        return true;
+    }
         
     };
 
