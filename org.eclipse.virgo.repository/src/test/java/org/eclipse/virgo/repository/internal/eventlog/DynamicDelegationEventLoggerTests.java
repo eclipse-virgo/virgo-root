@@ -41,11 +41,11 @@ public class DynamicDelegationEventLoggerTests {
         
         MockEventLogger eventLogger1 = new MockEventLogger();
 		ServiceRegistration<EventLogger> registration1 = bundleContext
-				.registerService(EventLogger.class.getName(), eventLogger1,
+				.registerService(EventLogger.class, eventLogger1,
 						null);
         
         MockEventLogger eventLogger2 = new MockEventLogger();
-        ServiceRegistration<EventLogger> registration2 = bundleContext.registerService(EventLogger.class.getName(), eventLogger2, null);
+        ServiceRegistration<EventLogger> registration2 = bundleContext.registerService(EventLogger.class, eventLogger2, null);
         
         delegatingEventLogger.log("code1a", Level.INFO);
         delegatingEventLogger.log("code1b", Level.INFO, new Exception());
