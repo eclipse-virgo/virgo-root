@@ -14,7 +14,8 @@ package org.eclipse.virgo.test.framework.dmkernel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Properties;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 import org.junit.Before;
@@ -39,14 +40,14 @@ this.testRunner.getTargetBundleContext(this.kernelBundleContext); } finally { as
 
  @Test public void userRegionBundleContextRetrievedFromServiceRegistry() { StubBundleContext userRegionBundleContext = new StubBundleContext();
 
- Properties properties = new Properties(); properties.put("org.eclipse.virgo.kernel.regionContext", true); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext,
+ Dictionary<String, Object> properties = new Hashtable<String, Object>(); properties.put("org.eclipse.virgo.kernel.regionContext", true); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext,
 properties);
 
  assertEquals(userRegionBundleContext, this.testRunner.getTargetBundleContext(this.kernelBundleContext)); }
 
  @Test(expected=IllegalStateException.class) public void failureWhenMultipleUserRegionBundleContextsAreAvailable() { StubBundleContext userRegionBundleContext = new StubBundleContext();
 
- Properties properties = new Properties(); properties.put("org.eclipse.virgo.kernel.regionContext", true); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext,
+ Dictionary<String, Object> properties = new Hashtable<String, Object>(); properties.put("org.eclipse.virgo.kernel.regionContext", true); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext,
 properties); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
 
  assertEquals(userRegionBundleContext, this.testRunner.getTargetBundleContext(this.kernelBundleContext)); } }
