@@ -150,7 +150,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Enumeration<?> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
         return null;
     }
 

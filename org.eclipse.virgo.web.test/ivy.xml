@@ -56,6 +56,9 @@
 		<exclude org="org.apache.xalan"/>
 		
 		<override org="org.eclipse.virgo.osgi" rev="${org.eclipse.virgo.osgi}"/>
+		
+		<!-- Allow Equinox to be upgraded in steps-->
+		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 	</dependencies>
 
 </ivy-module>

@@ -12,17 +12,10 @@
 package org.eclipse.virgo.web.core.internal;
 
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
@@ -34,6 +27,13 @@ import org.eclipse.gemini.web.core.WebApplicationStartFailedException;
 import org.eclipse.gemini.web.core.WebContainer;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.web.core.WebApplicationRegistry;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 
 /**
@@ -60,7 +60,7 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     
     private final BundleContext bundleContext;
     
-    private volatile ServiceRegistration eventHandlerRegistration;
+    private volatile ServiceRegistration<EventHandler> eventHandlerRegistration;
     
     WebBundleLifecycleListener(WebDeploymentEnvironment environment, BundleContext bundleContext) {
         this.environment = environment;
@@ -75,9 +75,9 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     }
 
     private void registerEventHandler() {
-        Properties properties = new Properties();
-        properties.setProperty(EventConstants.EVENT_TOPIC, WebContainer.EVENT_DEPLOYED);
-        this.eventHandlerRegistration = this.bundleContext.registerService(EventHandler.class.getName(), this.webBundleDeployedEventHandler, properties);
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put(EventConstants.EVENT_TOPIC, WebContainer.EVENT_DEPLOYED);
+        this.eventHandlerRegistration = this.bundleContext.registerService(EventHandler.class, this.webBundleDeployedEventHandler, properties);
     }
     
     public void destroy() {
@@ -87,7 +87,7 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     }
 
     private void unregisterEventHandler() {
-        ServiceRegistration localRegistration = this.eventHandlerRegistration;
+        ServiceRegistration<EventHandler> localRegistration = this.eventHandlerRegistration;
         if (localRegistration != null) {
             this.eventHandlerRegistration = null;
             localRegistration.unregister();
