@@ -37,6 +37,8 @@ org.easymock=2.3.0
 org.junit=4.7.0
 org.hsqldb=1.8.0.9
 org.slf4j=1.6.1
+org.eclipse.osgi.services=3.1.200.v20071203
+org.eclipse.equinox.cm=1.0.200.v20100520
 
 version-RANGE=${version:[=.=.=, =.+1)}
 
