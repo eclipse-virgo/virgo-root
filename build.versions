@@ -15,7 +15,6 @@ org.aopalliance=1.0.0
 org.apache.catalina=6.0.29
 org.apache.commons.fileupload=1.2.0
 org.apache.commons.io=1.4.0
-org.apache.felix=1.2.4
 org.apache.felix.eventadmin=1.0.0
 org.apache.taglibs.standard=1.1.2
 org.apache.tiles.osgi=2.1.2.osgi
@@ -27,6 +26,8 @@ org.slf4j=1.6.1
 org.springframework.js=2.0.8.RELEASE
 org.springframework.osgi=1.2.1
 org.springframework=3.0.0.RELEASE
+org.eclipse.osgi.services=3.1.200.v20071203
+org.eclipse.equinox.cm=1.0.200.v20100520
 
 # Test
 org.eclipse.virgo.teststubs=2.2.0.M01
