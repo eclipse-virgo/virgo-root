@@ -1,10 +1,10 @@
 # Compile
 org.eclipse.osgi=3.7.0.v20101022
-org.eclipse.virgo.osgi=2.2.0.D-20101126115852
-org.eclipse.virgo.util=2.2.0.D-20101126120117
+org.eclipse.virgo.osgi=2.2.0.D-20101126160810
+org.eclipse.virgo.util=2.2.0.D-20101126161058
 
 # Test
 org.junit=4.7.0
-org.eclipse.virgo.teststubs=2.2.0.D-20101126115641
+org.eclipse.virgo.teststubs=2.2.0.D-20101126160526
 
 
