@@ -6,11 +6,11 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
-	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-3.6.1.R36x_v20100806.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.6.1.R36x_v20100806/org.eclipse.osgi-sources-3.6.1.R36x_v20100806.jar"/>
-	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.2.0.M01/org.eclipse.virgo.osgi.launcher-2.2.0.M01.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.2.0.M01/org.eclipse.virgo.osgi.launcher-sources-2.2.0.M01.jar"/>
-	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.2.0.D-20101108165433/org.eclipse.virgo.util.common-2.2.0.D-20101108165433.jar"/>
-	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.M01/org.eclipse.virgo.teststubs.osgi-2.2.0.M01.jar"/>
+	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-3.7.0.v20101022.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-sources-3.7.0.v20101022.jar"/>
+	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.2.0.D-20101126094213/org.eclipse.virgo.osgi.launcher-2.2.0.D-20101126094213.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.2.0.D-20101126094213/org.eclipse.virgo.osgi.launcher-sources-2.2.0.D-20101126094213.jar"/>
+	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/2.2.0.D-20101126094451/org.eclipse.virgo.util.common-2.2.0.D-20101126094451.jar"/>
+	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.D-20101126093938/org.eclipse.virgo.teststubs.osgi-2.2.0.D-20101126093938.jar"/>
 	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.runtime/1.6.6.RELEASE/com.springsource.org.aspectj.runtime-1.6.6.RELEASE.jar"/>
-	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.extensions.equinox/2.2.0.M01/org.eclipse.virgo.osgi.extensions.equinox-2.2.0.M01.jar"/>
+	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.extensions.equinox/2.2.0.D-20101126094213/org.eclipse.virgo.osgi.extensions.equinox-2.2.0.D-20101126094213.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
