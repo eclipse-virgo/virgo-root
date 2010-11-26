@@ -16,6 +16,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -62,9 +64,9 @@ public class HostedRepositoryIntegrationTests {
 			}    		
     	};
     	
-    	Properties properties = new Properties();
-    	properties.setProperty(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/deployer/*");
-    	FrameworkUtil.getBundle(HostedRepositoryIntegrationTests.class).getBundleContext().registerService(EventHandler.class.getName(), eventHandler, properties);
+    	Dictionary<String, String> properties = new Hashtable<String, String>();
+    	properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/deployer/*");
+    	FrameworkUtil.getBundle(HostedRepositoryIntegrationTests.class).getBundleContext().registerService(EventHandler.class, eventHandler, properties);
     	
     	if (!latch.await(30, TimeUnit.SECONDS)) {
     		fail("Deployment of system artifacts did not complete within 30 seconds");
