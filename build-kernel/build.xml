@@ -67,7 +67,8 @@
 			<fileset dir="${basedir}/lib"/>
 			<filterset>
 				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
-				<filter token="FELIX.CONFIGADMIN.VERSION" value="${org.apache.felix}"/>
+				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
+				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
 				<filter token="FELIX.EVENTADMIN.VERSION" value="${org.apache.felix.eventadmin}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
@@ -83,7 +84,8 @@
 			<fileset dir="${basedir}/config" excludes="keystore"/>
 			<filterset>
 				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
-				<filter token="FELIX.CONFIGADMIN.VERSION" value="${org.apache.felix}"/>
+				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
+				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
 				<filter token="FELIX.EVENTADMIN.VERSION" value="${org.apache.felix.eventadmin}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
