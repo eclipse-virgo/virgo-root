@@ -52,7 +52,7 @@ public class RegionManagerTests {
         
         Framework user = createMock(Framework.class);
         SurrogateBundle surrogate = createMock(SurrogateBundle.class);
-        ServiceFactory serviceFactory = createMock(ServiceFactory.class);
+        ServiceFactory<EventLogger> serviceFactory = createMock(ServiceFactory.class);
         
         CompositeBundleFactory factory = createMock(CompositeBundleFactory.class);
         CompositeBundle bundle = createMock(CompositeBundle.class);
@@ -81,7 +81,7 @@ public class RegionManagerTests {
         RegionManager manager = new RegionManager(bundleContext, factory, eventAdmin, serviceFactory, configAdmin, eventLogger, shutdown);
         manager.start();
         
-        List<StubServiceRegistration> serviceRegistrations = bundleContext.getServiceRegistrations();
+        List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
         assertEquals("Regions not registered", 2, serviceRegistrations.size());
         
         manager.stop();
