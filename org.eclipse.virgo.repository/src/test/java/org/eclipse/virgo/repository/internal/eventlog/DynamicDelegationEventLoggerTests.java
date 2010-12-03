@@ -30,9 +30,8 @@ import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
  */
 public class DynamicDelegationEventLoggerTests {
     
-    @SuppressWarnings("unchecked")
 	@Test
-    public void dynamicDelegation() {
+    public void dynamicDelegation() throws Exception {
         StubBundleContext bundleContext = new StubBundleContext();
         bundleContext.addFilter(new ObjectClassFilter(EventLogger.class));
         

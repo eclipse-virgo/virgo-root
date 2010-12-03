@@ -117,6 +117,7 @@ public final class AntPathMatchingFileSystemSearcher implements FileSystemSearch
         }        
     }
     
+    @Override
     public String toString() {
     	return this.antPathPattern;
     }

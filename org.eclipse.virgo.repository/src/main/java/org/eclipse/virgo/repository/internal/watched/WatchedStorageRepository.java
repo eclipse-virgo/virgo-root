@@ -97,6 +97,7 @@ public final class WatchedStorageRepository extends LocalRepository  implements 
     /**
      * Start the base repository and periodic checking.
      */
+    @Override
     public void start() {
         super.start();
         LOGGER.info("Starting to watch directory '{}'; period {}s.", this.watchDirectory, this.watchInterval);
@@ -110,6 +111,7 @@ public final class WatchedStorageRepository extends LocalRepository  implements 
     /**
      * Stop watching the repository store and stop the base repository.
      */
+    @Override
     public void stop() {
         LOGGER.info("Stopping watched directory '{}'.", this.watchDirectory);
         this.executorService.shutdown();
