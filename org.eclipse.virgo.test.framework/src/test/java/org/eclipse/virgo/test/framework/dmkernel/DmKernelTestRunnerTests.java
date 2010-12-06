@@ -28,26 +28,46 @@ import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
 
 public class DmKernelTestRunnerTests {
 
- private DmKernelTestRunner testRunner;
+    private DmKernelTestRunner testRunner;
 
- private final StubBundleContext kernelBundleContext = new StubBundleContext();
+    private final StubBundleContext kernelBundleContext = new StubBundleContext();
 
- @Before public void setup() throws InitializationError { this.testRunner = new DmKernelTestRunner(getClass(), 1000); this.kernelBundleContext.addFilter("(org.eclipse.virgo.kernel.regionContext=true)", new
-TrueFilter()); }
+    @Before
+    public void setup() throws InitializationError {
+        this.testRunner = new DmKernelTestRunner(getClass(), 1000);
+        this.kernelBundleContext.addFilter("(org.eclipse.virgo.kernel.regionContext=true)", new TrueFilter());
+    }
 
- @Test(expected=IllegalStateException.class) public void failureWhenUserRegionBundleContextIsNotPresent() { long start = System.currentTimeMillis(); try {
-this.testRunner.getTargetBundleContext(this.kernelBundleContext); } finally { assertTrue(System.currentTimeMillis() - start >= 1000); } }
+    @Test(expected = IllegalStateException.class)
+    public void failureWhenUserRegionBundleContextIsNotPresent() {
+        long start = System.currentTimeMillis();
+        try {
+            this.testRunner.getTargetBundleContext(this.kernelBundleContext);
+        } finally {
+            assertTrue(System.currentTimeMillis() - start >= 1000);
+        }
+    }
 
- @Test public void userRegionBundleContextRetrievedFromServiceRegistry() { StubBundleContext userRegionBundleContext = new StubBundleContext();
+    @Test
+    public void userRegionBundleContextRetrievedFromServiceRegistry() {
+        StubBundleContext userRegionBundleContext = new StubBundleContext();
 
- Dictionary<String, Object> properties = new Hashtable<String, Object>(); properties.put("org.eclipse.virgo.kernel.regionContext", true); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext,
-properties);
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("org.eclipse.virgo.kernel.regionContext", true);
+        this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
 
- assertEquals(userRegionBundleContext, this.testRunner.getTargetBundleContext(this.kernelBundleContext)); }
+        assertEquals(userRegionBundleContext, this.testRunner.getTargetBundleContext(this.kernelBundleContext));
+    }
 
- @Test(expected=IllegalStateException.class) public void failureWhenMultipleUserRegionBundleContextsAreAvailable() { StubBundleContext userRegionBundleContext = new StubBundleContext();
+    @Test(expected = IllegalStateException.class)
+    public void failureWhenMultipleUserRegionBundleContextsAreAvailable() {
+        StubBundleContext userRegionBundleContext = new StubBundleContext();
 
- Dictionary<String, Object> properties = new Hashtable<String, Object>(); properties.put("org.eclipse.virgo.kernel.regionContext", true); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext,
-properties); this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("org.eclipse.virgo.kernel.regionContext", true);
+        this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
+        this.kernelBundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
 
- assertEquals(userRegionBundleContext, this.testRunner.getTargetBundleContext(this.kernelBundleContext)); } }
+        assertEquals(userRegionBundleContext, this.testRunner.getTargetBundleContext(this.kernelBundleContext));
+    }
+}

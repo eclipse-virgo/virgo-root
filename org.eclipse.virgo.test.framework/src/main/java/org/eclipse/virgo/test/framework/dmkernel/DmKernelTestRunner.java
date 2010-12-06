@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.test.framework.dmkernel;
 
+import java.util.Collection;
+
 import org.eclipse.virgo.test.framework.OsgiTestRunner;
 import org.junit.runners.model.InitializationError;
 import org.osgi.framework.BundleContext;
@@ -44,14 +46,14 @@ public class DmKernelTestRunner extends OsgiTestRunner {
 
     @Override
     protected BundleContext getTargetBundleContext(BundleContext bundleContext) {
-        ServiceReference[] serviceReferences = getUserRegionBundleContextServiceReferences(bundleContext);
+        Collection<ServiceReference<BundleContext>> serviceReferences = getUserRegionBundleContextServiceReferences(bundleContext);
 
         if (serviceReferences != null) {
-            if (serviceReferences.length != 1) {
+            if (serviceReferences.size() != 1) {
                 throw new IllegalStateException("There must be exactly one user region bundle context in the service registry. "
-                    + serviceReferences.length + " were found.");
+                    + serviceReferences.size() + " were found.");
             } else {
-                BundleContext targetBundleContext = (BundleContext) bundleContext.getService(serviceReferences[0]);
+                BundleContext targetBundleContext = (BundleContext) bundleContext.getService(serviceReferences.iterator().next());
                 if (targetBundleContext != null) {
                     return targetBundleContext;
                 }
@@ -60,16 +62,17 @@ public class DmKernelTestRunner extends OsgiTestRunner {
         throw new IllegalStateException("User region's bundle context was not available from the service registry within " + (this.userRegionStartWaitTime / 1000) + " seconds.");
     }
 
-    private ServiceReference[] getUserRegionBundleContextServiceReferences(BundleContext bundleContext) {
-               
-        ServiceReference[] serviceReferences = null;
-        
+    private Collection<ServiceReference<BundleContext>> getUserRegionBundleContextServiceReferences(BundleContext bundleContext) {
+                       
         long startTime = System.currentTimeMillis();
         
-        while ((serviceReferences = doGetUserRegionBundleContextServiceReferences(bundleContext)) == null) {
+        Collection<ServiceReference<BundleContext>> serviceReferences = doGetUserRegionBundleContextServiceReferences(bundleContext);
+        
+        while (serviceReferences.size() == 0) {
             if (System.currentTimeMillis() < (this.userRegionStartWaitTime + startTime)) {
                 try {
                     Thread.sleep(500);
+                    serviceReferences = doGetUserRegionBundleContextServiceReferences(bundleContext);
                 } catch (InterruptedException ie) {
                     throw new RuntimeException(ie);
                 }
@@ -80,9 +83,9 @@ public class DmKernelTestRunner extends OsgiTestRunner {
         return serviceReferences;
     }
     
-    private ServiceReference[] doGetUserRegionBundleContextServiceReferences(BundleContext bundleContext) {
+    private Collection<ServiceReference<BundleContext>> doGetUserRegionBundleContextServiceReferences(BundleContext bundleContext) {
         try {            
-            return bundleContext.getServiceReferences(BundleContext.class.getName(), "(org.eclipse.virgo.kernel.regionContext=true)");
+            return bundleContext.getServiceReferences(BundleContext.class, "(org.eclipse.virgo.kernel.regionContext=true)");
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException("Unexpected InvalidSyntaxException when looking up the user region's BundleContext", e);
         }
