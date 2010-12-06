@@ -28,7 +28,7 @@ public interface FragmentHost extends Parameterised {
          * The fragment is a boot classpath extension bundle.
          */
         BOOTCLASSPATH
-    };
+    }
 
     /**
      * Returns the bundle symbolic name specified in the header, or <code>null</code> if no <code>Fragment-Host</code> is specified.

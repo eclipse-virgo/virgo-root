@@ -60,7 +60,7 @@ public class StandardBundleManifest implements BundleManifest {
 
     private static final String MANIFEST_VERSION = "Manifest-Version";
 
-    private final CaseInsensitiveMap<String> contents = new CaseInsensitiveMap<String>();;
+    private final CaseInsensitiveMap<String> contents = new CaseInsensitiveMap<String>();
 
     private final CaseInsensitiveMap<Parseable> headers;
 

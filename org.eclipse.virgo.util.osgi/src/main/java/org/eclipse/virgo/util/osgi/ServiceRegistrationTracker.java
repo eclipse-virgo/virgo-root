@@ -17,7 +17,7 @@ import java.util.Set;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * Utility class that tracks a set of {@link ServiceRegistration ServiceRegistrations} and always for them to be safely
+ * Utility class that tracks a set of {@link ServiceRegistration ServiceRegistrations} and allows for them to be safely
  * unregistered.
  * <p/>
  * <code>ServiceRegistrations</code> are tracked in a threadsafe manner, and importantly are unregistered without
@@ -29,7 +29,7 @@ public final class ServiceRegistrationTracker {
 
     private final Object monitor = new Object();
 
-    private Set<ServiceRegistration> registrations;
+    private Set<ServiceRegistration<?>> registrations;
 
     /**
      * Tracks the supplied {@link ServiceRegistration}. This <code>ServiceRegistration</code> will be
@@ -37,10 +37,10 @@ public final class ServiceRegistrationTracker {
      * 
      * @param registration the <code>ServiceRegistration</code> to track.
      */
-    public void track(ServiceRegistration registration) {
+    public void track(ServiceRegistration<?> registration) {
         synchronized (this.monitor) {
             if (this.registrations == null) {
-                this.registrations = new HashSet<ServiceRegistration>();
+                this.registrations = new HashSet<ServiceRegistration<?>>();
             }
             this.registrations.add(registration);
         }
@@ -50,13 +50,13 @@ public final class ServiceRegistrationTracker {
      * Safely unregisters all the tracked <code>ServiceRegistrations</code>.
      */
     public void unregisterAll() {
-        Set<ServiceRegistration> toUnregister = null;
+        Set<ServiceRegistration<?>> toUnregister = null;
         synchronized (this.monitor) {
             toUnregister = this.registrations;
             this.registrations = null;
         }
         if (toUnregister != null) {
-            for (ServiceRegistration serviceRegistration : toUnregister) {
+            for (ServiceRegistration<?> serviceRegistration : toUnregister) {
                 serviceRegistration.unregister();
             }
         }

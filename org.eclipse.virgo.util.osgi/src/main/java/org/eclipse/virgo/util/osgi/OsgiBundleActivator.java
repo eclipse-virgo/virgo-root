@@ -32,7 +32,7 @@ public class OsgiBundleActivator implements BundleActivator {
 
     private BundleContext bundleContext;
 
-    private ServiceRegistration packageAdminUtilServiceRegistration;
+    private ServiceRegistration<PackageAdminUtil> packageAdminUtilServiceRegistration;
 
     /**
      * {@inheritDoc}
@@ -41,7 +41,7 @@ public class OsgiBundleActivator implements BundleActivator {
         this.bundleContext = bundleContext;
         if (this.standardPackageAdminUtil == null) {
             this.standardPackageAdminUtil = new StandardPackageAdminUtil(bundleContext);
-            this.packageAdminUtilServiceRegistration = this.bundleContext.registerService(PackageAdminUtil.class.getName(),
+            this.packageAdminUtilServiceRegistration = this.bundleContext.registerService(PackageAdminUtil.class,
                 this.standardPackageAdminUtil, null);
         }
     }

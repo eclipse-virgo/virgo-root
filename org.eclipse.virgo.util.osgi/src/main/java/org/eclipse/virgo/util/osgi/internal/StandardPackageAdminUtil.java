@@ -31,9 +31,10 @@ import org.slf4j.LoggerFactory;
  * This class is thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 public final class StandardPackageAdminUtil implements PackageAdminUtil {
 
-    private static final String PACKAGE_ADMIN_CLASS = "org.osgi.service.packageadmin.PackageAdmin";
+    private static final Class<PackageAdmin> PACKAGE_ADMIN_CLASS = PackageAdmin.class;
 
     private static final long SLEEP_INTERVAL_MS = 50;
     
@@ -47,7 +48,7 @@ public final class StandardPackageAdminUtil implements PackageAdminUtil {
 
     private final FrameworkListener frameworkListener;
 
-    private ServiceReference packageAdminServiceReference;
+    private ServiceReference<PackageAdmin> packageAdminServiceReference;
 
     private final BundleContext bundleContext;
 
@@ -56,7 +57,7 @@ public final class StandardPackageAdminUtil implements PackageAdminUtil {
     public StandardPackageAdminUtil(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.packageAdminServiceReference = bundleContext.getServiceReference(PACKAGE_ADMIN_CLASS);
-        this.packageAdmin = (PackageAdmin) bundleContext.getService(this.packageAdminServiceReference);
+        this.packageAdmin = bundleContext.getService(this.packageAdminServiceReference);
         this.frameworkListener = new FrameworkListener() {
 
             public void frameworkEvent(FrameworkEvent event) {

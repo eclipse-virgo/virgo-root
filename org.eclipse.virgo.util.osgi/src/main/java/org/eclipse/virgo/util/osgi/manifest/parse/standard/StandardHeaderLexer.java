@@ -11,1099 +11,1023 @@
 
 package org.eclipse.virgo.util.osgi.manifest.parse.standard;
 
-
-
 /**
-
+ * 
  * Lex an input string into a series of tokens. The possible tokens are defined
-
+ * 
  * in {@link HeaderTokenKind}
-
  * 
-
+ * 
+ * 
  * Basic token descriptions:
-
+ * 
  * <ul>
-
+ * 
  * <li>digit ::= [0..9]
-
+ * 
  * <li>alpha ::= [a..zA..Z]
-
+ * 
  * <li>alphanum ::= alpha | digit
-
+ * 
  * <li>token ::= ( alphanum | ’_’ | ’-’ | ’.’)+
-
+ * 
  * <li>number ::= digit+
-
+ * 
  * <li>jletter ::= <see [5] Lexical Structure Java Language for
-
+ * 
  * JavaLetter>Character.isJavaIdentifierStart()
-
+ * 
  * <li>jletterordigit::= <See [5] Lexical Structure Java Language for
-
+ * 
  * JavaLetterOrDigit > Character.isJavaIdentifierPart()
-
+ * 
  * <li>identifier ::= jletter jletterordigit *
-
+ * 
  * <li>quoted-string ::= ’"’ ( [^"\#x0D#x0A#x00] | ’\"’|’\\’)* ’"’
-
+ * 
  * <li>DOT ::= .
-
+ * 
  * <li>COLON_EQUALS ::= ':='
-
+ * 
  * <li>EQUALS ::= '='
-
+ * 
  * <li>DOTSTAR ::= .*
-
+ * 
  * </ul>
-
  * 
-
+ * 
+ * 
  * header ::= clause ( ’,’ clause ) *
-
+ * 
  * clause ::= path ( ’;’ path ) * ( ’;’ parameter ) *
-
- *
-
+ * 
+ * 
+ * 
  * path ::= path-unquoted | (’"’ path-unquoted ’"’)
-
+ * 
  * path-unquoted ::= path-sep | path-sep? path-element (path-sep path-element)*
-
+ * 
  * path-element ::= [^/"\#x0D#x0A#x00]+
-
+ * 
  * path-sep ::= ’/’
-
  * 
-
+ * 
+ * 
  * <strong>Concurrent Semantics</strong><br />
-
  * 
-
+ * 
+ * 
  * Threadsafe.
-
  * 
-
-
+ * 
  */
 
 public class StandardHeaderLexer {
 
+    private HeaderTokenStream tokenStream;
 
+    private int tokenStart;
 
-	private HeaderTokenStream tokenStream;
+    private boolean tokenStartedWithLetter;
 
+    char[] data; // visible directly to parser
 
+    private int state;
 
-	private int tokenStart;
+    private int datapos; // where are we in the current data being lexed
 
-	private boolean tokenStartedWithLetter;
+    private int datalen; // how long is the data
 
-	char[] data; // visible directly to parser
+    // Attribute/directive values in the header support an extended token - that is a token which also includes Dots.
+    // There is no
 
-	private int state;
+    // notion of an 'extended' token, instead we produce the regular tokens: TOKEN,DOT,TOKEN,DOT,TOKEN but where it is
 
-	private int datapos; // where are we in the current data being lexed
+    // a valid extension we give the first token in the list a special end offset indicating the end of the final token
+    // in the
 
-	private int datalen; // how long is the data
+    // extension.
 
+    private BasicHeaderToken extensionStart = null;
 
+    private BasicHeaderToken lastEmittedToken = null;
 
-	// Attribute/directive values in the header support an extended token - that is a token which also includes Dots. There is no
+    private boolean foundSpace = false;
 
-	// notion of an 'extended' token, instead we produce the regular tokens: TOKEN,DOT,TOKEN,DOT,TOKEN but where it is
+    private boolean allowsPathToken = false; // general headers following OSGI 3.2.4 Common Header Syntax allow paths
 
-	// a valid extension we give the first token in the list a special end offset indicating the end of the final token in the
+    public StandardHeaderLexer() {
 
-	// extension.
+    }
 
-	private BasicHeaderToken extensionStart = null;
+    public StandardHeaderLexer(boolean allowsPathToken) {
 
-	private BasicHeaderToken lastEmittedToken = null;
+        this.allowsPathToken = allowsPathToken;
 
-	private boolean foundSpace = false;
+    }
 
-	private boolean allowsPathToken = false;  // general headers following OSGI 3.2.4 Common Header Syntax allow paths
+    public HeaderTokenStream getTokenStream() {
 
+        return tokenStream;
 
+    }
 
-	public StandardHeaderLexer() {
+    private void initializeLexer(String header) {
 
-	}
+        // Create a NUL (0) terminated character array - by setting such a terminal we don't have to keep checking the
+        // length as we
 
+        // move along the data
 
+        int stringlen = header.length();
 
-	public StandardHeaderLexer(boolean allowsPathToken) {
+        data = new char[stringlen + 1];
 
-		this.allowsPathToken = allowsPathToken;
+        header.getChars(0, stringlen, data, 0);
 
-	}
+        data[stringlen] = 0;
 
+        tokenStream = new HeaderTokenStream(header);
 
+        datapos = 0;
 
-	public HeaderTokenStream getTokenStream() {
+        tokenStart = -1;
 
-		return tokenStream;
+        datalen = data.length;
 
-	}
+    }
 
+    /**
+     * 
+     * Start in the UNKNOWN state where anything may come next, as characters are encountered and consumed the state
+     * will transition
+     * 
+     * amongst other states. It is operating on a maximal munch approach where we eat as much data as we can before
+     * being forced
+     * 
+     * into a new state and onto a new token.
+     * 
+     * @param header string
+     */
 
+    public void process(String header) {
 
-	private void initializeLexer(String header) {
+        initializeLexer(header);
 
-		// Create a NUL (0) terminated character array - by setting such a terminal we don't have to keep checking the length as we
+        state = UNKNOWN;
 
-		// move along the data
+        while (datapos < datalen) {
 
-		int stringlen = header.length();
+            char ch = data[datapos];
 
-		data = new char[stringlen + 1];
+            if (isDigit(ch)) {
 
-		header.getChars(0, stringlen, data, 0);
+                processDigit();
 
-		data[stringlen] = 0;
+            } else if (isAlphabetic(ch)) {
 
-		tokenStream = new HeaderTokenStream(header);
+                processAlphabetic();
 
-		datapos = 0;
+            } else if (isUnderlineMinus(ch)) {
 
-		tokenStart = -1;
+                processUnderlineMinus();
 
-		datalen = data.length;
+            } else if (ch == '"') {
 
-	}
+                processQuote();
 
+            } else if (ch == '/') {
 
+                processSlash();
 
-	/**
+            } else if (ch == 0) {
 
-	 * Start in the UNKNOWN state where anything may come next, as characters are encountered and consumed the state will transition
+                processNul();
 
-	 * amongst other states. It is operating on a maximal munch approach where we eat as much data as we can before being forced
+            } else if (ch == ':') {
 
-	 * into a new state and onto a new token.
-	 * @param header string
+                processColon();
 
-	 */
+            } else if (ch == ';') {
 
-	public void process(String header) {
+                emitToken(datapos);
 
-		initializeLexer(header);
+                emitToken2(HeaderTokenKind.SEMICOLON, datapos++);
 
-		state = UNKNOWN;
+            } else if (ch == '=') {
 
-		while (datapos < datalen) {
+                emitToken(datapos);
 
-			char ch = data[datapos];
+                lastEmittedToken.tagAsAttributeName();
 
-			if (isDigit(ch)) {
+                emitToken2(HeaderTokenKind.EQUALS, datapos++);
 
-				processDigit();
+            } else if (ch == ',') {
 
-			} else if (isAlphabetic(ch)) {
+                emitToken(datapos);
 
-				processAlphabetic();
+                emitToken2(HeaderTokenKind.COMMA, datapos++);
 
-			} else if (isUnderlineMinus(ch)) {
+            } else if (ch == '.') {
 
-				processUnderlineMinus();
+                processDot();
 
-			} else if (ch == '"') {
+            } else if (ch == '*') {
 
-				processQuote();
+                processStar();
 
-			} else if (ch == '/') {
+            } else if (Character.isJavaIdentifierStart((int) ch)) {
 
-				processSlash();
+                processJavaIdentifierStart();
 
-			} else if (ch == 0) {
+            } else if (Character.isJavaIdentifierPart((int) ch)) {
 
-				processNul();
+                processJavaIdentifierPart();
 
-			} else if (ch == ':') {
+            } else {
 
-				processColon();
+                processUnexpected();
 
-			} else if (ch == ';') {
+            }
 
-				emitToken(datapos);
+        }
 
-				emitToken2(HeaderTokenKind.SEMICOLON, datapos++);
+        if (state != UNKNOWN) {
 
-			} else if (ch == '=') {
+            emitToken(datapos);
 
-				emitToken(datapos);
+        }
 
-				lastEmittedToken.tagAsAttributeName();
+        tokenStream.lexComplete();
 
-				emitToken2(HeaderTokenKind.EQUALS, datapos++);
+    }
 
-			} else if (ch == ',') {
+    private void processSpace() {
 
-				emitToken(datapos);
+        // ERROR: hit whitespace outside of a quoted string
 
-				emitToken2(HeaderTokenKind.COMMA, datapos++);
+        // RECOVER: emit what we have, skip the space, log a message
 
-			} else if (ch == '.') {
+        if (state != UNKNOWN) {
 
-				processDot();
+            emitToken(datapos);
 
-			} else if (ch == '*') {
+        }
 
-				processStar();
+        if (lastEmittedToken != null) {
 
-			} else if (Character.isJavaIdentifierStart((int) ch)) {
+            lastEmittedToken.tagAsFollowedBySpace();
 
-				processJavaIdentifierStart();
+        }
 
-			} else if (Character.isJavaIdentifierPart((int) ch)) {
+        char ch = data[datapos];
 
-				processJavaIdentifierPart();
+        recordProblem(HeaderProblemKind.UNEXPECTED_SPACE_WARNING, datapos, datapos, Character.toString(ch), Integer.toString(ch));
 
-			} else {
+        foundSpace = true;
 
-				processUnexpected();
+        datapos++;
 
-			}
+    }
 
-		}
+    private void processDot() {
 
-		if (state != UNKNOWN) {
+        if (lastEmittedToken != null && lastEmittedToken.getKind() == HeaderTokenKind.SEMICOLON) {
 
-			emitToken(datapos);
+            if (state == UNKNOWN) {
 
-		}
+                processDotOrigin();
 
-		tokenStream.lexComplete();
+            } else if (state == DIGITS || state == ALPHABETIC || state == ALPHANUMERIC || state == TOKEN) {
 
-	}
+                state = TOKEN;
 
+                do {
 
+                    // is ".*" ?
 
-	private void processSpace() {
+                    if (data[datapos + 1] == '*' && data[datapos] == '.') {
 
-		// ERROR: hit whitespace outside of a quoted string
+                        datapos++;
 
-		// RECOVER: emit what we have, skip the space, log a message
+                    }
 
-		if (state != UNKNOWN) {
+                    datapos++;
 
-			emitToken(datapos);
+                } while (isToken(data[datapos]));
 
-		}
+            } else {
 
-		if (lastEmittedToken != null) {
+                assert state == QUOTEDSTRING;
 
-			lastEmittedToken.tagAsFollowedBySpace();
+                emitToken(datapos);
 
-		}
+                state = UNKNOWN;
 
-		char ch = data[datapos];
+            }
+        } else {
 
-		recordProblem(HeaderProblemKind.UNEXPECTED_SPACE_WARNING, datapos, datapos, Character.toString(ch), Integer.toString(ch));
+            processDotOrigin();
 
-		foundSpace = true;
+        }
 
-		datapos++;
+    }
 
-	}
+    private void processDotOrigin() {
 
-	private void processDot() {
+        emitToken(datapos); // emit what we have so far
 
-		if (lastEmittedToken != null && lastEmittedToken.getKind() == HeaderTokenKind.SEMICOLON) {
+        boolean isDotStar = (data[datapos + 1] == '*');
 
-			if (state == UNKNOWN) {
- 
-				processDotOrigin();
+        if (isDotStar) {
 
-			} else if (state == DIGITS || state == ALPHABETIC || state == ALPHANUMERIC || state == TOKEN) {
-	
-				state = TOKEN;
-	
-				do {
+            emitDotStar(datapos);
 
-					// is ".*" ?
+            datapos += 2;
 
-					if (data[datapos + 1] == '*' && data[datapos] == '.') {
+        } else {
 
-						datapos++;
+            emitToken(HeaderTokenKind.DOT, datapos);
 
-					}
+            datapos++;
 
-					datapos++;
-	
-				} while (isToken(data[datapos]));
-	
-			} else {
-	
-				assert state == QUOTEDSTRING;
-	
-				emitToken(datapos);
-	
-				state = UNKNOWN;
-	
-			}
-		} else {
+        }
 
-			processDotOrigin();
+    }
 
-		}
+    private void processSlash() {
 
-	}
+        if (!allowsPathToken) {
 
-	private void processDotOrigin() {
+            char ch = data[datapos];
 
-		emitToken(datapos); // emit what we have so far
+            recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
 
-		boolean isDotStar = (data[datapos + 1] == '*');
+            datapos++;
 
-		if (isDotStar) {
+        } else {
 
-			emitDotStar(datapos);
+            emitToken(datapos);
 
-			datapos += 2;
+            emitToken(HeaderTokenKind.SLASH, datapos);
 
-		} else {
+            datapos++;
 
-			emitToken(HeaderTokenKind.DOT, datapos);
+        }
 
-			datapos++;
+    }
 
-		}
+    private void processStar() {
 
-	}
+        emitToken(datapos); // emit what we have so far
 
-	
+        emitToken(HeaderTokenKind.STAR, datapos);
 
-	private void processSlash() {
+        datapos++;
 
-		if (!allowsPathToken) {
+    }
 
-			char ch = data[datapos];
+    private void processUnexpected() {
 
-			recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
+        // TODO [later] perhaps cope with some typical cases here
 
-			datapos++;								
+        // ERROR: encountered something unexpected
 
-		} else {
+        // RECOVERY: could special case in here, for now skip whitespace and record an issue with everything else
 
-			emitToken(datapos);
+        if (data[datapos] == ' ') {
 
-			emitToken(HeaderTokenKind.SLASH, datapos);
+            processSpace();
 
-			datapos++;
+        } else {
 
-		}
+            // If the lexer allows for paths then we have to cope with all the wierd chars and build a pathelement for
+            // them
 
-	}
+            if (allowsPathToken) {
 
+                // path elements can be ANYTHING except: / " \ #x0D #x0A# x00
 
+                state = PATHELEMENT;
 
-	private void processStar() {
+                while (!pathEnd(data[datapos])) {
 
-		emitToken(datapos); // emit what we have so far
+                    datapos++;
 
-		emitToken(HeaderTokenKind.STAR, datapos);
+                }
 
-		datapos++;
+                emitToken(datapos);
 
-	}
+                char ch = data[datapos];
 
+                if (pathEnd(ch) && ch != 0) {
 
+                    recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
 
-	private void processUnexpected() {
+                    datapos++;
 
-		// TODO [later] perhaps cope with some typical cases here
+                }
 
-		// ERROR: encountered something unexpected
+            } else {
 
-		// RECOVERY: could special case in here, for now skip whitespace and record an issue with everything else
+                emitToken(datapos);
 
-		if (data[datapos] == ' ') {
+                char ch = data[datapos];
 
-			processSpace();
+                recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
 
-		} else {
+                datapos++;
 
-			// If the lexer allows for paths then we have to cope with all the wierd chars and build a pathelement for them
+            }
 
-			if (allowsPathToken) {
+        }
 
-				// path elements can be ANYTHING except: / " \ #x0D #x0A# x00
+    }
 
-				state=PATHELEMENT;
+    private boolean pathEnd(char ch) {
 
-				while (!pathEnd(data[datapos])) {
+        return (ch == 0 || ch == '/' || ch == '\"' || ch == '\n' || ch == '\r' || ch == '\\' || ch == ' ');
 
-					datapos++;
+    }
 
-				}
+    private void processNul() {
 
-				emitToken(datapos);
+        if (tokenStart != -1) {
 
-				char ch = data[datapos];
+            emitToken(datapos);
 
-				if (pathEnd(ch) && ch!=0) {
+            // If the stream has ended with an ExtendedToken
 
-					recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
+            if (extensionStart != null && lastEmittedToken != extensionStart) {
 
-					datapos++;					
+                extensionStart.setExtendedOffset(lastEmittedToken.getEndOffset());
 
-				}
+            }
 
-			} else {			
+        }
 
-				emitToken(datapos);
+        datapos = datalen; // end of data reached
 
-				char ch = data[datapos];
+    }
 
-				recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
+    private void processDigit() {
 
-				datapos++;
+        if (state == UNKNOWN) {
 
-			}
+            // start new token, looks like it will be a number
 
-		}
+            state = DIGITS;
 
-	}
+            tokenStart = datapos++;
 
-	
+            while (isDigit(data[datapos])) {
 
-	private boolean pathEnd(char ch) {
+                datapos++;
 
-		return (ch==0 || ch=='/' || ch=='\"' || ch=='\n'|| ch=='\r' || ch=='\\' || ch==' ');
+            }
 
-	}
+        } else if (state == ALPHABETIC || state == ALPHANUMERIC) {
 
+            // Digit encountered here where everything previously was alphabetic or alphanumeric, upgrade what we
+            // currently
 
+            // think it is to ALPHANUMERIC
 
-	private void processNul() {
+            state = ALPHANUMERIC;
 
-		if (tokenStart != -1) {
+            do {
 
-			emitToken(datapos);
+                datapos++;
 
-			// If the stream has ended with an ExtendedToken
+            } while (isAlphanumeric(data[datapos]));
 
-			if (extensionStart != null && lastEmittedToken != extensionStart) {
+        } else {
 
-				extensionStart.setExtendedOffset(lastEmittedToken.getEndOffset());
+            // assert - cannot be in TOKEN or IDENTIFIER state because those states would have continued to consume this
+            // digit
 
-			}
+            assert state == QUOTEDSTRING;
 
-		}
+            emitToken(datapos);
 
-		datapos = datalen; // end of data reached
+            state = UNKNOWN;
 
-	}
+        }
 
+    }
 
+    private void processAlphabetic() {
 
-	private void processDigit() {
+        if (state == UNKNOWN) {
 
-		if (state == UNKNOWN) {
+            // start new token, assuming it will be an alphabetic string
 
-			// start new token, looks like it will be a number
+            tokenStart = datapos;
 
-			state = DIGITS;
+            state = ALPHABETIC;
 
-			tokenStart = datapos++;
+            tokenStartedWithLetter = true;
 
-			while (isDigit(data[datapos])) {
+            while (isAlphabetic(data[++datapos])) {
+            }
 
-				datapos++;
+        } else if (state == DIGITS || state == ALPHANUMERIC) {
 
-			}
+            state = ALPHANUMERIC;
 
-		} else if (state == ALPHABETIC || state == ALPHANUMERIC) {
+            while (isAlphanumeric(data[++datapos])) {
+            }
 
-			// Digit encountered here where everything previously was alphabetic or alphanumeric, upgrade what we currently
+        } else {
 
-			// think it is to ALPHANUMERIC
+            assert state == QUOTEDSTRING;
 
-			state = ALPHANUMERIC;
+            emitToken(datapos);
 
-			do {
+            state = UNKNOWN;
 
-				datapos++;
+        }
 
-			} while (isAlphanumeric(data[datapos]));
+    }
 
-		} else {
+    private void processUnderlineMinus() {
 
-			// assert - cannot be in TOKEN or IDENTIFIER state because those states would have continued to consume this digit
+        if (state == UNKNOWN || state == DIGITS || state == ALPHABETIC || state == ALPHANUMERIC) {
 
-			assert state == QUOTEDSTRING;
+            if (state == UNKNOWN) {
 
-			emitToken(datapos);
+                tokenStart = datapos;
 
-			state = UNKNOWN;
+            }
 
-		}
+            state = TOKEN;
 
-	}
+            do {
 
+                datapos++;
 
+            } while (isToken(data[datapos]));
 
-	private void processAlphabetic() {
+        } else {
 
-		if (state == UNKNOWN) {
+            assert state == QUOTEDSTRING;
 
-			// start new token, assuming it will be an alphabetic string
+            emitToken(datapos);
 
-			tokenStart = datapos;
+            state = UNKNOWN;
 
-			state = ALPHABETIC;
+        }
 
-			tokenStartedWithLetter = true;
+    }
 
-			while (isAlphabetic(data[++datapos]))
+    private void processQuote() {
 
-				;
+        if (state != UNKNOWN) {
 
-		} else if (state == DIGITS || state == ALPHANUMERIC) {
+            // Finish whatever was before and process this quoted string
 
-			state = ALPHANUMERIC;
+            emitToken(datapos);
 
-			while (isAlphanumeric(data[++datapos]))
+            state = UNKNOWN;
 
-				;
+        }
 
-		} else {
+        tokenStart = datapos;
 
-			assert state == QUOTEDSTRING;
+        state = QUOTEDSTRING;
 
-			emitToken(datapos);
+        boolean run = true;
 
-			state = UNKNOWN;
+        boolean escape = false;// encountered a backslash
 
-		}
+        while (run) {
 
-	}
+            char ch = data[++datapos];
 
+            if (ch == '\\') {
 
+                escape = true;
 
-	private void processUnderlineMinus() {
+            } else {
 
-		if (state == UNKNOWN || state == DIGITS || state == ALPHABETIC || state == ALPHANUMERIC) {
+                if (!escape) {
 
-			if (state == UNKNOWN) {
+                    if (ch == '"') {
 
-				tokenStart = datapos;
+                        run = false;
 
-			}
+                    }
 
-			state = TOKEN;
+                    if (ch == '\r' || ch == '\n') {
 
-			do {
+                        recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer
 
-				datapos++;
+                        .toString(ch));
 
-			} while (isToken(data[datapos]));
+                    }
 
-		} else {
+                }
 
-			assert state == QUOTEDSTRING;
+                if (ch == 0) {
 
-			emitToken(datapos);
+                    // hit end of the data before string terminated
 
-			state = UNKNOWN;
+                    recordProblem(HeaderProblemKind.NON_TERMINATING_QUOTED_STRING, tokenStart, datapos);
 
-		}
+                    run = false;
 
-	}
+                }
 
+                escape = false;
 
+            }
 
-	private void processQuote() {
+        }
 
-		if (state != UNKNOWN) {
+        datapos++;
 
-			// Finish whatever was before and process this quoted string
+    }
 
-			emitToken(datapos);
+    private void processJavaIdentifierPart() {
 
-			state = UNKNOWN;
+        if (state == ALPHABETIC || (state == ALPHANUMERIC && tokenStartedWithLetter)
 
-		}
+        || (state == TOKEN && (data[tokenStart] == '_' || isAlphabetic(data[tokenStart])))) {
 
-		tokenStart = datapos;
+            state = IDENTIFIER;
 
-		state = QUOTEDSTRING;
+            char ch = 0;
 
-		boolean run = true;
+            do {
 
-		boolean escape = false;// encountered a backslash
+                ch = data[++datapos];
 
-		while (run) {
+            } while (ch != 0 && Character.isJavaIdentifierPart(ch));
 
-			char ch = data[++datapos];
+        } else {
 
-			if (ch == '\\') {
+            // ERROR: hit a JavaIdentifierPart in an unexpected State
 
-				escape = true;
+            // RECOVERY: emit anything we have been processing and skip over this character
 
-			} else {
+            // Unexpected states will be: UNKNOWN, DIGITS, ALPHANUMERIC (where first tokenchar is a number), TOKEN
+            // (where first
 
-				if (!escape) {
+            // token char is not a letter or underscore), IDENTIFIER (can't happen...), QUOTEDSTRING
 
-					if (ch == '"') {
+            if (state != UNKNOWN) {
 
-						run = false;
+                emitToken(datapos);
 
-					}
+            }
 
-					if (ch == '\r' || ch == '\n') {
+            char ch = data[datapos];
 
-						recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer
+            recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
 
-								.toString(ch));
+            datapos++;
 
-					}
+        }
 
-				}
+    }
 
-				if (ch == 0) {
+    private void processColon() {
 
-					// hit end of the data before string terminated
+        if (state != UNKNOWN) {
 
-					recordProblem(HeaderProblemKind.NON_TERMINATING_QUOTED_STRING, tokenStart, datapos);
+            emitToken(datapos);
 
-					run = false;
+        }
 
-				}
+        boolean isColonEquals = (data[datapos + 1] == '=');
 
-				escape = false;
+        if (isColonEquals) {
 
-			}
+            lastEmittedToken.tagAsDirectiveName();
 
-		}
+            emitColonEquals(datapos);
 
-		datapos++;
+            datapos += 2;
 
-	}
+        } else {
 
+            // ERROR: cannot have colon by itself
 
+            // RECOVERY: record a problem and skip over it
 
-	private void processJavaIdentifierPart() {
+            recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, ":", Integer.toString(':'));
 
-		if (state == ALPHABETIC || (state == ALPHANUMERIC && tokenStartedWithLetter)
+            datapos++;
 
-				|| (state == TOKEN && (data[tokenStart] == '_' || isAlphabetic(data[tokenStart])))) {
+        }
 
-			state = IDENTIFIER;
+    }
 
-			char ch = 0;
+    private void processJavaIdentifierStart() {
 
-			do {
+        if (state == QUOTEDSTRING) {
 
-				ch = data[++datapos];
+            emitToken(datapos);
 
-			} while (ch != 0 && Character.isJavaIdentifierPart(ch));
+            state = UNKNOWN;
 
-		} else {
+        }
 
-			// ERROR: hit a JavaIdentifierPart in an unexpected State
+        if (state == UNKNOWN) {
 
-			// RECOVERY: emit anything we have been processing and skip over this character
+            tokenStart = datapos;
 
-			// Unexpected states will be: UNKNOWN, DIGITS, ALPHANUMERIC (where first tokenchar is a number), TOKEN (where first
+        }
 
-			// token char is not a letter or underscore), IDENTIFIER (can't happen...), QUOTEDSTRING
+        state = IDENTIFIER;
 
-			if (state != UNKNOWN) {
+        char ch = 0;
 
-				emitToken(datapos);
+        do {
 
-			}
+            datapos++;
 
-			char ch = data[datapos];
+            ch = data[datapos];
 
-			recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, Character.toString(ch), Integer.toString(ch));
+        } while (ch != 0 && Character.isJavaIdentifierPart(ch));
 
-			datapos++;
+    }
 
-		}
+    private boolean isDigit(int ch) {
 
-	}
+        if (ch > 255) {
 
+            return false;
 
+        }
 
-	private void processColon() {
+        return (lookup[ch] & IS_DIGIT) != 0;
 
-		if (state != UNKNOWN) {
+    }
 
-			emitToken(datapos);
+    private boolean isAlphabetic(int ch) {
 
-		}
+        if (ch > 255) {
 
-		boolean isColonEquals = (data[datapos + 1] == '=');
+            return false;
 
-		if (isColonEquals) {
+        }
 
-			lastEmittedToken.tagAsDirectiveName();
+        return (lookup[ch] & IS_ALPHA) != 0;
 
-			emitColonEquals(datapos);
+    }
 
-			datapos += 2;
+    private boolean isAlphanumeric(int ch) {
 
-		} else {
+        if (ch > 255) {
 
-			// ERROR: cannot have colon by itself
+            return false;
 
-			// RECOVERY: record a problem and skip over it
+        }
 
-			recordProblem(HeaderProblemKind.UNEXPECTED_CHARACTER, datapos, datapos, ":", Integer.toString(':'));
+        return (lookup[ch] & IS_ALPHANUM) != 0;
 
-			datapos++;
+    }
 
-		}
+    private boolean isUnderlineMinus(int ch) {
 
-	}
+        if (ch > 255) {
 
+            return false;
 
+        }
 
-	private void processJavaIdentifierStart() {
+        return (lookup[ch] & IS_UNDERLINE_OR_MINUS) != 0;
 
-		if (state == QUOTEDSTRING) {
+    }
 
-			emitToken(datapos);
+    private boolean isToken(int ch) {
 
-			state = UNKNOWN;
+        if (ch > 255) {
 
-		}
+            return false;
 
-		if (state == UNKNOWN) {
+        }
 
-			tokenStart = datapos;
+        if (state == TOKEN) {
 
-		}
+            if ((ch == '.' || ch == '*') && lastEmittedToken != null && lastEmittedToken.getKind() == HeaderTokenKind.SEMICOLON) {
 
-		state = IDENTIFIER;
+                if (extensionStart != null) {
 
-		char ch = 0;
+                    return true;
 
-		do {
+                }
 
-			datapos++;
+            }
 
-			ch = data[datapos];
+        }
 
-		} while (ch != 0 && Character.isJavaIdentifierPart(ch));
+        return (lookup[ch] & IS_TOKEN) != 0;
 
-	}
+    }
 
+    private final static int UNKNOWN = 0;
 
+    private final static int DIGITS = 1;
 
-	private boolean isDigit(int ch) {
+    private final static int ALPHABETIC = 2;
 
-		if (ch > 255) {
+    private final static int ALPHANUMERIC = 3;
 
-			return false;
+    private final static int TOKEN = 4;
 
-		}
+    private final static int IDENTIFIER = 5;
 
-		return (lookup[ch] & IS_DIGIT) != 0;
+    private final static int QUOTEDSTRING = 6;
 
-	}
+    private final static int PATHELEMENT = 7;
 
+    private static final HeaderTokenKind[] stateToTokenMap = new HeaderTokenKind[] { null, HeaderTokenKind.NUMBER,
 
+    HeaderTokenKind.ALPHAS, HeaderTokenKind.ALPHANUMERIC, HeaderTokenKind.TOKEN, HeaderTokenKind.IDENTIFIER,
 
-	private boolean isAlphabetic(int ch) {
+    HeaderTokenKind.QUOTEDSTRING, HeaderTokenKind.PATHELEMENT };
 
-		if (ch > 255) {
+    private static final boolean[] tokenExtension = new boolean[] { false, true, true, true, true, false, false, true };
 
-			return false;
+    private void emitToken(HeaderTokenKind kind, int pos) {
 
-		}
+        pushExtensionToken(BasicHeaderToken.makeToken(data, kind, pos, pos + 1));
 
-		return (lookup[ch] & IS_ALPHA) != 0;
+    }
 
-	}
+    private void emitToken2(HeaderTokenKind kind, int pos) {
 
+        pushToken(BasicHeaderToken.makeToken(data, kind, pos, pos + 1));
 
+    }
 
-	private boolean isAlphanumeric(int ch) {
+    private void emitDotStar(int pos) {
 
-		if (ch > 255) {
+        pushToken(BasicHeaderToken.makeToken(data, HeaderTokenKind.DOTSTAR, pos, pos + 2));
 
-			return false;
+    }
 
-		}
+    private void emitColonEquals(int pos) {
 
-		return (lookup[ch] & IS_ALPHANUM) != 0;
+        pushToken(BasicHeaderToken.makeToken(data, HeaderTokenKind.COLONEQUALS, pos, pos + 2));
 
-	}
+    }
 
+    private void emitToken(int tokenEnd) {
 
+        HeaderTokenKind kind = stateToTokenMap[state];
 
-	private boolean isUnderlineMinus(int ch) {
+        if (kind == null) {
 
-		if (ch > 255) {
+            return; // nothing to emit
 
-			return false;
+        } else {
 
-		}
+            if (kind == HeaderTokenKind.QUOTEDSTRING) {
 
-		return (lookup[ch] & IS_UNDERLINE_OR_MINUS) != 0;
+                tokenStart += 1;
 
-	}
+                tokenEnd -= 1;
 
+            }
 
+            BasicHeaderToken newToken = BasicHeaderToken.makeToken(data, kind, tokenStart, tokenEnd);
 
-	private boolean isToken(int ch) {
+            if (tokenStartedWithLetter) {
 
-		if (ch > 255) {
+                newToken.tagAsStartedWithLetter();
 
-			return false;
+            }
 
-		}
+            if (tokenExtension[state]) {
 
-		if (state == TOKEN) {
+                pushExtensionToken(newToken);
 
-			if ((ch == '.' || ch == '*') && lastEmittedToken != null && lastEmittedToken.getKind() == HeaderTokenKind.SEMICOLON) {
+            } else {
 
-				if (extensionStart != null) {
+                pushToken(newToken);
 
-					return true;
+            }
 
-				}
+        }
 
-			}
+        state = UNKNOWN;
 
-		}
+        tokenStartedWithLetter = false;
 
-		return (lookup[ch] & IS_TOKEN) != 0;
+        tokenStart = -1;
 
-	}
+    }
 
+    private void pushExtensionToken(BasicHeaderToken token) {
 
+        if (extensionStart == null) {
 
-	private final static int UNKNOWN = 0;
+            extensionStart = token; // set this as first element of an extended token
 
-	private final static int DIGITS = 1;
+        } else if (foundSpace) {
 
-	private final static int ALPHABETIC = 2;
+            // this extension has a space in it... not good if someone wants to consume it as an extended token eg.
 
-	private final static int ALPHANUMERIC = 3;
+            // "com. foo.bar"
 
-	private final static int TOKEN = 4;
+            extensionStart.tagAsSpaced();
 
-	private final static int IDENTIFIER = 5;
+        }
 
-	private final static int QUOTEDSTRING = 6;
+        foundSpace = false;
 
-	private final static int PATHELEMENT = 7;
+        lastEmittedToken = token;
 
+        tokenStream.addToken(token);
 
+    }
 
-	private static final HeaderTokenKind[] stateToTokenMap = new HeaderTokenKind[] { null, HeaderTokenKind.NUMBER,
+    private void pushToken(BasicHeaderToken token) {
 
-			HeaderTokenKind.ALPHAS, HeaderTokenKind.ALPHANUMERIC, HeaderTokenKind.TOKEN, HeaderTokenKind.IDENTIFIER,
+        if (extensionStart != null) {
 
-			HeaderTokenKind.QUOTEDSTRING, HeaderTokenKind.PATHELEMENT};
+            if (lastEmittedToken != extensionStart) {
 
-	private static final boolean[] tokenExtension = new boolean[] { false, true, true, true, true, false, false, true};
+                extensionStart.setExtendedOffset(lastEmittedToken.getEndOffset());
 
+            }
 
+            extensionStart = null;
 
-	private void emitToken(HeaderTokenKind kind, int pos) {
+        }
 
-		pushExtensionToken(BasicHeaderToken.makeToken(data, kind, pos, pos + 1));
+        foundSpace = false;
 
-	}
+        lastEmittedToken = token;
 
+        tokenStream.addToken(token);
 
+    }
 
-	private void emitToken2(HeaderTokenKind kind, int pos) {
+    // Fast lookup table for determining kind of character
 
-		pushToken(BasicHeaderToken.makeToken(data, kind, pos, pos + 1));
+    private static final byte[] lookup;
 
-	}
+    private static final byte IS_DIGIT = 0x0001;
 
+    private static final byte IS_ALPHA = 0x0002;
 
+    private static final byte IS_UNDERLINE_OR_MINUS = 0x0004;
 
-	private void emitDotStar(int pos) {
+    private static final byte IS_ALPHANUM = IS_DIGIT | IS_ALPHA;
 
-		pushToken(BasicHeaderToken.makeToken(data, HeaderTokenKind.DOTSTAR, pos, pos + 2));
+    private static final byte IS_TOKEN = IS_ALPHANUM | IS_UNDERLINE_OR_MINUS;
 
-	}
+    static {
 
+        lookup = new byte[256];
 
+        for (int ch = '0'; ch <= '9'; ch++) {
 
-	private void emitColonEquals(int pos) {
+            lookup[ch] |= IS_DIGIT;
 
-		pushToken(BasicHeaderToken.makeToken(data, HeaderTokenKind.COLONEQUALS, pos, pos + 2));
+        }
 
-	}
+        for (int ch = 'a'; ch <= 'z'; ch++) {
 
+            lookup[ch] |= IS_ALPHA;
 
+        }
 
-	private void emitToken(int tokenEnd) {
+        for (int ch = 'A'; ch <= 'Z'; ch++) {
 
-		HeaderTokenKind kind = stateToTokenMap[state];
+            lookup[ch] |= IS_ALPHA;
 
-		if (kind == null) {
+        }
 
-			return; // nothing to emit
+        lookup['_'] |= IS_UNDERLINE_OR_MINUS;
 
-		} else {
+        lookup['-'] |= IS_UNDERLINE_OR_MINUS;
 
-			if (kind == HeaderTokenKind.QUOTEDSTRING) {
+    }
 
-				tokenStart += 1;
+    /**
+     * 
+     * Record a problem with lexing.
+     * 
+     * 
+     * 
+     * @param parseProblem the kind of problem that occurred
+     * 
+     * @param startOffset the start offset of the problem
+     * 
+     * @param endOffset the end offset of the problem
+     * 
+     * @param inserts the inserts for the problem message text
+     */
 
-				tokenEnd -= 1;
+    private void recordProblem(HeaderProblemKind parseProblem, int startOffset, int endOffset, String... inserts) {
 
-			}
+        tokenStream.recordProblem(new HeaderProblem(parseProblem, startOffset, endOffset, inserts));
 
-			BasicHeaderToken newToken = BasicHeaderToken.makeToken(data, kind, tokenStart, tokenEnd);
-
-			if (tokenStartedWithLetter) {
-
-				newToken.tagAsStartedWithLetter();
-
-			}
-
-			if (tokenExtension[state]) {
-
-				pushExtensionToken(newToken);
-
-			} else {
-
-				pushToken(newToken);
-
-			}
-
-		}
-
-		state = UNKNOWN;
-
-		tokenStartedWithLetter = false;
-
-		tokenStart = -1;
-
-	}
-
-
-
-	private void pushExtensionToken(BasicHeaderToken token) {
-
-		if (extensionStart == null) {
-
-			extensionStart = token; // set this as first element of an extended token
-
-		} else if (foundSpace) {
-
-			// this extension has a space in it... not good if someone wants to consume it as an extended token eg.
-
-			// "com. foo.bar"
-
-			extensionStart.tagAsSpaced();
-
-		}
-
-		foundSpace = false;
-
-		lastEmittedToken = token;
-
-		tokenStream.addToken(token);
-
-	}
-
-
-
-	private void pushToken(BasicHeaderToken token) {
-
-		if (extensionStart != null) {
-
-			if (lastEmittedToken != extensionStart) {
-
-				extensionStart.setExtendedOffset(lastEmittedToken.getEndOffset());
-
-			}
-
-			extensionStart = null;
-
-		}
-
-		foundSpace = false;
-
-		lastEmittedToken = token;
-
-		tokenStream.addToken(token);
-
-	}
-
-
-
-	// Fast lookup table for determining kind of character
-
-	private static final byte[] lookup;
-
-	private static final byte IS_DIGIT = 0x0001;
-
-	private static final byte IS_ALPHA = 0x0002;
-
-	private static final byte IS_UNDERLINE_OR_MINUS = 0x0004;
-
-	private static final byte IS_ALPHANUM = IS_DIGIT | IS_ALPHA;
-
-	private static final byte IS_TOKEN = IS_ALPHANUM | IS_UNDERLINE_OR_MINUS;
-
-
-
-	static {
-
-		lookup = new byte[256];
-
-		for (int ch = '0'; ch <= '9'; ch++) {
-
-			lookup[ch] |= IS_DIGIT;
-
-		}
-
-		for (int ch = 'a'; ch <= 'z'; ch++) {
-
-			lookup[ch] |= IS_ALPHA;
-
-		}
-
-		for (int ch = 'A'; ch <= 'Z'; ch++) {
-
-			lookup[ch] |= IS_ALPHA;
-
-		}
-
-		lookup['_'] |= IS_UNDERLINE_OR_MINUS;
-
-		lookup['-'] |= IS_UNDERLINE_OR_MINUS;
-
-	}
-
-
-
-	/**
-
-	 * Record a problem with lexing.
-
-	 * 
-
-	 * @param parseProblem the kind of problem that occurred
-
-	 * @param startOffset the start offset of the problem
-
-	 * @param endOffset the end offset of the problem
-
-	 * @param inserts the inserts for the problem message text
-
-	 */
-
-	private void recordProblem(HeaderProblemKind parseProblem, int startOffset, int endOffset, String... inserts) {
-
-		tokenStream.recordProblem(new HeaderProblem(parseProblem, startOffset, endOffset, inserts));
-
-	}
-
-
+    }
 
 }

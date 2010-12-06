@@ -35,7 +35,7 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class ServiceRegistryProvider<T> implements SetProvider<T> {
 
-    private final ServiceTracker serviceTracker;
+    private final ServiceTracker<T, T> serviceTracker;
 
     private final Class<T> typeClazz;
     
@@ -49,7 +49,7 @@ public class ServiceRegistryProvider<T> implements SetProvider<T> {
      */
     public ServiceRegistryProvider(BundleContext bundleContext, Class<T> clazz) {
         this.typeClazz = clazz;
-        this.serviceTracker = new ServiceTracker(bundleContext, this.typeClazz.getName(), null);
+        this.serviceTracker = new ServiceTracker<T, T>(bundleContext, this.typeClazz.getName(), null);
         this.serviceTracker.open();
     }
 

@@ -38,7 +38,7 @@ public class TestLogger implements ParserLogger {
 
 
 
-	public void messageProcessed(@SuppressWarnings("unused") String eventCode, @SuppressWarnings("unused") String message) {
+	public void messageProcessed(String eventCode, String message) {
 
 	}
 
@@ -50,13 +50,13 @@ public class TestLogger implements ParserLogger {
 
 
 
-	public void outputInfoMsg(@SuppressWarnings("unused") Exception re, @SuppressWarnings("unused") String item) {
+	public void outputInfoMsg(Exception re, String item) {
 
 	}
 
 
 
-	public void outputWarnMsg(@SuppressWarnings("unused") Exception re, @SuppressWarnings("unused") String item) {
+	public void outputWarnMsg(Exception re, String item) {
 
 	}
 
