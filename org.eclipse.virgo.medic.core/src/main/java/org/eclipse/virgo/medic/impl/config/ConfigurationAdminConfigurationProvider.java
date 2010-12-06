@@ -28,19 +28,18 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     
     private static final String CONFIG_ADMIN_SERVICE_NAME = "org.osgi.service.cm.ConfigurationAdmin";
 
-    private static final Dictionary<Object, Object> DEFAULT_CONFIG = createDefaultConfiguration();
+    private static final Dictionary<String, String> DEFAULT_CONFIG = createDefaultConfiguration();
 
     private final BundleContext bundleContext;
     
-    @SuppressWarnings("unchecked")
-	private volatile Dictionary configuration = DEFAULT_CONFIG;
+	private volatile Dictionary<String,String> configuration = DEFAULT_CONFIG;
 
     public ConfigurationAdminConfigurationProvider(BundleContext context) {
         this.bundleContext = context;
         initialisePropertiesFromConfigurationAdmin();
     }
 
-    public Dictionary<?, ?> getConfiguration() {
+    public Dictionary<String, String> getConfiguration() {
         return this.configuration;
     }
 
@@ -55,20 +54,20 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     	}
     }
     
-    @SuppressWarnings("unchecked")
-    private void setPropertiesFromConfigurationAdmin(ServiceReference configAdminReference) {        
-    	ConfigurationAdmin configurationAdmin = (ConfigurationAdmin)this.bundleContext.getService(configAdminReference);
+    private void setPropertiesFromConfigurationAdmin(ServiceReference<ConfigurationAdmin> configAdminReference) {        
+    	ConfigurationAdmin configurationAdmin = this.bundleContext.getService(configAdminReference);
         
         if (configurationAdmin != null) {
             try {
 				Configuration configuration = configurationAdmin.getConfiguration(CONFIG_ADMIN_PID, null);
                 
-                Dictionary properties = configuration.getProperties();
+				@SuppressWarnings("unchecked")
+                Dictionary<String,String> properties = configuration.getProperties();
                 
                 if (properties == null) {
                 	properties = DEFAULT_CONFIG; 
                 } else {
-                	DictionaryUtils.merge(properties, DEFAULT_CONFIG);
+                	DictionaryUtils.mergeGeneral(properties, DEFAULT_CONFIG);
                 }
                 
 				this.configuration = properties;
@@ -79,8 +78,8 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         }
     }
 
-    private static Dictionary<Object, Object> createDefaultConfiguration() {
-        Dictionary<Object, Object> configuration = new Hashtable<Object, Object>();
+    private static Dictionary<String, String> createDefaultConfiguration() {
+        Dictionary<String, String> configuration = new Hashtable<String, String>();
         configuration.put(KEY_DUMP_ROOT_DIRECTORY, ".");
         configuration.put(KEY_LOG_WRAP_SYSOUT, Boolean.toString(Boolean.TRUE));
         configuration.put(KEY_LOG_WRAP_SYSERR, Boolean.toString(Boolean.TRUE));
@@ -88,17 +87,18 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     }    
     
     private final class MedicConfigurationListener implements ConfigurationListener {    	    
-    	
-		public void configurationEvent(ConfigurationEvent configEvent) {
+    	@SuppressWarnings("unchecked")
+        public void configurationEvent(ConfigurationEvent configEvent) {
 			if (CONFIG_ADMIN_PID.equals(configEvent.getPid()) && configEvent.getType() == ConfigurationEvent.CM_UPDATED) {
-				setPropertiesFromConfigurationAdmin(configEvent.getReference());
+				setPropertiesFromConfigurationAdmin((ServiceReference<ConfigurationAdmin>)configEvent.getReference());
 			}			
 		}    	
     }
 
-	public void configurationEvent(ConfigurationEvent event) {
+	@SuppressWarnings("unchecked")
+    public void configurationEvent(ConfigurationEvent event) {
 		if (event.getType() == ConfigurationEvent.CM_UPDATED && CONFIG_ADMIN_PID.equals(event.getPid())) {
-			setPropertiesFromConfigurationAdmin(event.getReference());
+			setPropertiesFromConfigurationAdmin((ServiceReference<ConfigurationAdmin>)event.getReference());
 		}
 	}
 }

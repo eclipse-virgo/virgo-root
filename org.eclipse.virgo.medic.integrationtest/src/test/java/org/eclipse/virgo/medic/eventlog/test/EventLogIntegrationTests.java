@@ -52,24 +52,21 @@ public class EventLogIntegrationTests {
 		this.bundleContext.installBundle("file:src/test/resources/message-fragment");        
     }
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void availabilityOfEventLoggerFactory() {
-		ServiceReference<EventLoggerFactory> serviceReference = (ServiceReference<EventLoggerFactory>)this.bundleContext.getServiceReference(EventLoggerFactory.class.getName());
+		ServiceReference<EventLoggerFactory> serviceReference = this.bundleContext.getServiceReference(EventLoggerFactory.class);
 		assertNotNull(serviceReference);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void availabilityOfEventLogger() {
-		ServiceReference<EventLogger> serviceReference = (ServiceReference<EventLogger>)this.bundleContext.getServiceReference(EventLogger.class.getName());
+		ServiceReference<EventLogger> serviceReference = this.bundleContext.getServiceReference(EventLogger.class);
 		assertNotNull(serviceReference);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void eventLoggingWithMessageFromCurrentBundle() {
-		ServiceReference<EventLogger> serviceReference = (ServiceReference<EventLogger>)this.bundleContext.getServiceReference(EventLogger.class.getName());
+		ServiceReference<EventLogger> serviceReference = this.bundleContext.getServiceReference(EventLogger.class);
 		assertNotNull(serviceReference);
 		EventLogger eventLogger = (EventLogger)this.bundleContext.getService(serviceReference);
 		eventLogger.log("1234", Level.WARNING, "orange", "lemon");
@@ -84,10 +81,9 @@ public class EventLogIntegrationTests {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void eventLoggingWithMessageFromFragment() throws Exception {
-		ServiceReference<EventLoggerFactory> serviceReference = (ServiceReference<EventLoggerFactory>)this.bundleContext.getServiceReference(EventLoggerFactory.class.getName());
+		ServiceReference<EventLoggerFactory> serviceReference = this.bundleContext.getServiceReference(EventLoggerFactory.class);
 		assertNotNull(serviceReference);
 		EventLoggerFactory eventLoggerFactory = (EventLoggerFactory)this.bundleContext.getService(serviceReference);		
 		EventLogger eventLogger = eventLoggerFactory.createEventLogger(this.messageBundle);
@@ -102,10 +98,9 @@ public class EventLogIntegrationTests {
 		assertEquals("Shared oak and sycamore", loggingEvent.get(0).getMessage());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void eventLoggingWithMessageFromSpecificBundle() throws Exception {
-		ServiceReference<EventLoggerFactory> serviceReference = (ServiceReference<EventLoggerFactory>)this.bundleContext.getServiceReference(EventLoggerFactory.class.getName());
+		ServiceReference<EventLoggerFactory> serviceReference = this.bundleContext.getServiceReference(EventLoggerFactory.class);
 		assertNotNull(serviceReference);
 		EventLoggerFactory eventLoggerFactory = (EventLoggerFactory)this.bundleContext.getService(serviceReference);		
 		EventLogger eventLogger = eventLoggerFactory.createEventLogger(this.messageBundle);

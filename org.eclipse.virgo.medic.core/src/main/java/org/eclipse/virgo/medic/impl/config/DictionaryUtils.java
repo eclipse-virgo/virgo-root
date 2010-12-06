@@ -25,4 +25,14 @@ final class DictionaryUtils {
             }
         }
     }
+    
+    static <S, T> void mergeGeneral(Dictionary<S, T> primary, Dictionary<S, T> secondary) {
+        Enumeration<S> keys = secondary.keys();
+        while (keys.hasMoreElements()) {
+            S key = keys.nextElement();
+            if (primary.get(key) == null) {
+                primary.put(key, secondary.get(key));
+            }
+        }
+    }
 }

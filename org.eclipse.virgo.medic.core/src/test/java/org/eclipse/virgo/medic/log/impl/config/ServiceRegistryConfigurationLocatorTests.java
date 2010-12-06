@@ -50,7 +50,7 @@ public class ServiceRegistryConfigurationLocatorTests {
         this.bundle.addHeader("Medic-LoggingConfiguration", "foo");
         LoggingConfiguration loggingConfiguration = createMock(LoggingConfiguration.class);
         this.bundleContext.addFilter(new PropertiesFilter(getDefaultMap()));
-        this.bundleContext.registerService(LoggingConfiguration.class.getName(), loggingConfiguration, getDefaultDictionary());
+        this.bundleContext.registerService(LoggingConfiguration.class, loggingConfiguration, getDefaultDictionary());
         LoggingConfiguration configuration = this.locator.locateConfiguration(this.bundle);
         assertEquals(loggingConfiguration, configuration);
     }
@@ -72,9 +72,8 @@ public class ServiceRegistryConfigurationLocatorTests {
         this.locator.locateConfiguration(this.bundle);
     }
 
-    @SuppressWarnings("unchecked")
-    private Dictionary getDefaultDictionary() {
-        Dictionary properties = new Hashtable();
+    private Dictionary<String,String> getDefaultDictionary() {
+        Dictionary<String,String> properties = new Hashtable<String,String>();
         properties.put("org.eclipse.virgo.medic.log.configuration.id", "foo");
         return properties;
     }

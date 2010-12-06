@@ -111,9 +111,8 @@ public class LogDumpContributorTests {
     }
     
     private static final class StaticConfigurationProvider implements ConfigurationProvider {
-		@SuppressWarnings("unchecked")
-		public Dictionary getConfiguration() {
-			Hashtable configuration = new Hashtable();
+		public Dictionary<String,String> getConfiguration() {
+			Hashtable<String,String> configuration = new Hashtable<String,String>();
 			configuration.put(ConfigurationProvider.KEY_LOG_DUMP_LEVEL, "debug");
 			configuration.put(ConfigurationProvider.KEY_LOG_DUMP_BUFFERSIZE, "2");
 			return configuration;

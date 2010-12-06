@@ -38,6 +38,7 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
 
+@SuppressWarnings("deprecation")
 public class MedicActivatorTests {
 
     @Test

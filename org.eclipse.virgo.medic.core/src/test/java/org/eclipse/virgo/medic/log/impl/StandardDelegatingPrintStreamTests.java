@@ -229,6 +229,7 @@ public class StandardDelegatingPrintStreamTests {
     private static final class WriterOutputStream extends OutputStream {        
         private final StringWriter writer = new StringWriter();
 
+        @Override
         public void write(int b) throws IOException {
             writer.write(b);
         }        

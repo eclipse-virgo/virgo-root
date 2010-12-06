@@ -64,7 +64,7 @@ public class StandardDumpGeneratorTests {
         expect(accessor.getDumpContributors()).andReturn(Arrays.asList(dumpContributor1, dumpContributor2));
 
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
-        Dictionary<Object, Object> configuration = new Hashtable<Object, Object>();
+        Dictionary<String, String> configuration = new Hashtable<String, String>();
         configuration.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();
 
@@ -88,7 +88,7 @@ public class StandardDumpGeneratorTests {
         expect(dumpContributor1.getName()).andReturn("dc1").times(2);
 
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
-        Dictionary<Object, Object> configuration = new Hashtable<Object, Object>();
+        Dictionary<String, String> configuration = new Hashtable<String, String>();
         configuration.put("dump.root.directory", "target");
         configuration.put("dump.exclusions.foo", "dc1");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();
@@ -116,7 +116,7 @@ public class StandardDumpGeneratorTests {
         expect(dumpContributor2.getName()).andReturn("dc2").times(2);
 
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
-        Dictionary<Object, Object> configuration = new Hashtable<Object, Object>();
+        Dictionary<String, String> configuration = new Hashtable<String, String>();
         configuration.put("dump.root.directory", "target");
         configuration.put("dump.exclusions.foo", "dc1, dc2");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();

@@ -27,6 +27,5 @@ public interface ConfigurationProvider {
     
     public static final String KEY_LOG_DUMP_PATTERN = "log.dump.pattern";
 
-    @SuppressWarnings("unchecked")
-    Dictionary getConfiguration();
+    Dictionary<String, String> getConfiguration();
 }

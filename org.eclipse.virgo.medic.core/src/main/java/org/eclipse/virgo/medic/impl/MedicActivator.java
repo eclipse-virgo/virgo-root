@@ -21,10 +21,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceFactory;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationListener;
-import org.osgi.service.packageadmin.PackageAdmin;
-
 
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.dump.impl.DumpContributorPublisher;
@@ -61,6 +58,7 @@ import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
+@SuppressWarnings("deprecation")
 public final class MedicActivator implements BundleActivator {
 
     private static final String LOGGER_NAME_SYSERR = "System.err";
@@ -85,8 +83,6 @@ public final class MedicActivator implements BundleActivator {
 
     private volatile DumpContributorPublisher dumpContributorPublisher;
 
-    private volatile ServiceReference<PackageAdmin> packageAdminReference;
-        
     private volatile PrintStream sysOut;
     
     private volatile PrintStream sysErr;
@@ -137,12 +133,9 @@ public final class MedicActivator implements BundleActivator {
         }
     }
      
-    @SuppressWarnings("unchecked")
 	private void logStart(BundleContext context, ConfigurationProvider configurationProvider) throws ConfigurationPublicationFailedException {    	    	
-        this.packageAdminReference = (ServiceReference<PackageAdmin>) context.getServiceReference(PackageAdmin.class.getName());
-        PackageAdmin packageAdmin = (PackageAdmin) context.getService(this.packageAdminReference);
 
-        StandardContextSelectorDelegate delegate = createContextSelectorDelegate(context, packageAdmin);
+        StandardContextSelectorDelegate delegate = createContextSelectorDelegate(context);
         this.registrationTracker.track(context.registerService(BundleListener.class.getName(), delegate, null));
         DelegatingContextSelector.setDelegate(delegate);
         
@@ -155,7 +148,7 @@ public final class MedicActivator implements BundleActivator {
         
         ExecutionStackAccessor stackAccessor = new SecurityManagerExecutionStackAccessor();
         
-        Dictionary configuration = configurationProvider.getConfiguration();
+        Dictionary<String, String> configuration = configurationProvider.getConfiguration();
         
         PrintStream delegatingSysOut = new StandardDelegatingPrintStream(System.out);
         PrintStream delegatingSysErr = new StandardDelegatingPrintStream(System.err);
@@ -166,14 +159,14 @@ public final class MedicActivator implements BundleActivator {
         System.setOut(delegatingSysOut);
         System.setErr(delegatingSysErr);
         
-        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {                	        	
+        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {                	        	
         	publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE, context);
             publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT, context);
         	
         	System.setOut(wrapPrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
         }
         
-        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {            
+        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {            
             publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE, context);
             publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR, context);
             
@@ -211,7 +204,7 @@ public final class MedicActivator implements BundleActivator {
         }        
     }
 
-    private static StandardContextSelectorDelegate createContextSelectorDelegate(BundleContext bundleContext, PackageAdmin packageAdmin) {
+    private static StandardContextSelectorDelegate createContextSelectorDelegate(BundleContext bundleContext) {
         ConfigurationLocator configurationLocator = createConfigurationLocator(bundleContext);
         CallingBundleResolver loggingCallerLocator = createLoggingCallerLocator();
         LoggerContextConfigurer loggerContextConfigurer = new JoranLoggerContextConfigurer();
@@ -244,15 +237,10 @@ public final class MedicActivator implements BundleActivator {
         return new SecurityManagerExecutionStackAccessor();
     }
 
-    private void logStop(BundleContext context) {
+    private void logStop(@SuppressWarnings("unused") BundleContext context) {
     	
     	System.setProperty(PROPERTY_LOGBACK_CONTEXT_SELECTOR, DEFAULT_CONTEXT_SELECTOR);
     	
-        if (this.packageAdminReference != null) {
-            context.ungetService(this.packageAdminReference);
-            this.packageAdminReference = null;
-        }
-
         DelegatingContextSelector.setDelegate(null);        
         
         if (this.sysOut != null) {

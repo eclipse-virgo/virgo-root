@@ -97,7 +97,7 @@ public class LoggingPrintStreamWrapperTests {
         printStream.print(456f);
         printStream.print(7);
         printStream.print(8910l);
-        printStream.print(new Object() {public String toString() { return "toString";}});
+        printStream.print(new Object() {@Override public String toString() { return "toString";}});
         printStream.append('\n');
         printStream.print("abcd");
         printStream.printf("%s %s%n%s%n", "Three", "strings", "last one on a new line.");
@@ -110,7 +110,7 @@ public class LoggingPrintStreamWrapperTests {
         printStream.println(456f);
         printStream.println(789);
         printStream.println(101112l);
-        printStream.println(new Object() {public String toString() { return "toString";}});
+        printStream.println(new Object() {@Override public String toString() { return "toString";}});
         printStream.println("A string with a\nnew line in it.");
 	}
     

@@ -69,6 +69,7 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
         this.executionStackAccessor = executionStackAccessor;
         
         this.entryBuilders = new ThreadLocal<StringBuilder>() {
+            @Override
             public StringBuilder initialValue() {
                 return new StringBuilder();
             }
