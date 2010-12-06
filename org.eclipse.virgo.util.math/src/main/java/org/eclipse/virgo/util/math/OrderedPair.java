@@ -83,7 +83,6 @@ public final class OrderedPair<F, S> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -95,7 +94,10 @@ public final class OrderedPair<F, S> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final OrderedPair other = (OrderedPair) obj;
+		
+		@SuppressWarnings("unchecked")
+        final OrderedPair<F, S> other = (OrderedPair<F, S>) obj;
+		
 		return (this.first==null  ? other.first==null  : this.first.equals(other.first))
 		    && (this.second==null ? other.second==null : this.second.equals(other.second));
 	}

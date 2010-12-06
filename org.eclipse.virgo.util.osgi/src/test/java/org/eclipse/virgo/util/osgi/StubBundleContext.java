@@ -226,8 +226,7 @@ public class StubBundleContext implements BundleContext {
     /** 
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public ServiceRegistration registerService(String[] arg0, Object arg1, Dictionary arg2) {
+    public ServiceRegistration<?> registerService(String[] arg0, Object arg1, Dictionary<String, ?> arg2) {
         //System.out.println("17");
         return null;
     }
@@ -235,8 +234,7 @@ public class StubBundleContext implements BundleContext {
     /** 
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public ServiceRegistration registerService(String arg0, Object arg1, Dictionary arg2) {
+    public ServiceRegistration<?> registerService(String arg0, Object arg1, Dictionary<String, ?> arg2) {
         //System.out.println("18");
         return null;
     }

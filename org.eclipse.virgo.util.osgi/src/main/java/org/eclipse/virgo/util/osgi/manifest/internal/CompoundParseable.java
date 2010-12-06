@@ -33,10 +33,9 @@ abstract class CompoundParseable<T extends Parameterised> implements Parseable {
     
     private static final String EMPTY_STRING = "";
 
-    @SuppressWarnings("unchecked")
     CompoundParseable(HeaderParser parser) {
         this.parser = parser;
-        this.components = new ArrayList();
+        this.components = new ArrayList<T>();
     }
 
     abstract List<HeaderDeclaration> parse(String parseString);

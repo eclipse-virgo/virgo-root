@@ -26,7 +26,7 @@ public class ServiceRegistrationTrackerTests {
     @Test
     public void testTrackAndUnregister() {
         
-        ServiceRegistration registration = createMock(ServiceRegistration.class);
+        ServiceRegistration<?> registration = createMock(ServiceRegistration.class);
         registration.unregister();
         expectLastCall();
         
