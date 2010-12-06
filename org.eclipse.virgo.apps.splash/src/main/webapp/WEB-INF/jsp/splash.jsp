@@ -21,13 +21,13 @@
         <div id="primary-left">
 
         </div>
-        <img id="left-curve" src="images/menu-curve-left.png"/>
+        <div id="left-cap"></div>
         <div id="primary-right">
             <ul>
                 <li><a href="/admin" title="Admin Console">Admin Console</a></li>
             </ul>
         </div>
-        <img id="right-curve" src="images/menu-curve-right.png"/>
+        <div id="right-cap"></div>
     </div><!-- /primary-navigation -->
 
     <div id="container">

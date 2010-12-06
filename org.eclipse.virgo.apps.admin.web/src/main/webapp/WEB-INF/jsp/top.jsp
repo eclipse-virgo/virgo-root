@@ -38,13 +38,13 @@
                 <li><a href="<c:url value="/web/state/bundles.htm"     />" title="OSGi State">OSGi State</a></li>
             </ul>
         </div>
-        <img id="left-curve" src="<c:url value="/images/menu-curve-left.png"/>"/>
+        <div id="left-cap"></div>
         <div id="primary-right">
             <ul>
                 <li><a href="<c:url value="/web/info/overview.htm"     />" title="Information">Information</a></li>
             </ul>
         </div>
-        <img id="right-curve" src="<c:url value="/images/menu-curve-right.png"/>"/>
+        <div id="right-cap"></div>
     </div><!-- /primary-navigation -->
 
     <div id="container">

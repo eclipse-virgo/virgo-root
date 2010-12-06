@@ -158,11 +158,17 @@ a:active, a.active {
 	text-decoration: none;
 }
 
-#left-curve {
+#left-cap {
+	background: transparent url(../images/menu-curve-left.png) no-repeat top left;
+	height: 29px;
+	width: 30px;
 	float: left;
 }
 
-#right-curve {
+#right-cap {
+	background: transparent url(../images/menu-curve-right.png) no-repeat top right;
+	height: 29px;
+	width: 30px;
 	float: right;
 }
 
