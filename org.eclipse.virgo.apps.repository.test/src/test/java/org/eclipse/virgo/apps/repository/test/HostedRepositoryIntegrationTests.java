@@ -18,10 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.test.framework.OsgiTestRunner;
+import org.eclipse.virgo.util.io.PathReference;
+import org.eclipse.virgo.util.io.ZipUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -33,12 +37,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.test.framework.OsgiTestRunner;
-import org.eclipse.virgo.util.io.PathReference;
-import org.eclipse.virgo.util.io.ZipUtils;
 
 @RunWith(OsgiTestRunner.class)
 @Ignore("[DMS-2878]")
@@ -78,8 +76,8 @@ public class HostedRepositoryIntegrationTests {
     	
     	BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
     	
-    	ServiceReference serviceReference = bundleContext.getServiceReference(ApplicationDeployer.class.getName());
-        this.deployer = (ApplicationDeployer) bundleContext.getService(serviceReference);
+    	ServiceReference<ApplicationDeployer> serviceReference = bundleContext.getServiceReference(ApplicationDeployer.class);
+        this.deployer = bundleContext.getService(serviceReference);
     	
         if (!appDeployed) {
             deployHostedRepositoryApp();
