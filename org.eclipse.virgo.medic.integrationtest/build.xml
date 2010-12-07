@@ -3,6 +3,7 @@
 
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
+	<property name="disable.bundlor" value="true" />
 	<import file="${basedir}/../virgo-build/weaving/default.xml"/>
-
+	
 </project>
