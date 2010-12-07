@@ -68,7 +68,7 @@ public class EventLogIntegrationTests {
 	public void eventLoggingWithMessageFromCurrentBundle() {
 		ServiceReference<EventLogger> serviceReference = this.bundleContext.getServiceReference(EventLogger.class);
 		assertNotNull(serviceReference);
-		EventLogger eventLogger = (EventLogger)this.bundleContext.getService(serviceReference);
+		EventLogger eventLogger = this.bundleContext.getService(serviceReference);
 		eventLogger.log("1234", Level.WARNING, "orange", "lemon");
 		
 		List<LoggingEvent> loggingEvent = StubAppender.getAndResetLoggingEvents("default-stub");
@@ -85,7 +85,7 @@ public class EventLogIntegrationTests {
 	public void eventLoggingWithMessageFromFragment() throws Exception {
 		ServiceReference<EventLoggerFactory> serviceReference = this.bundleContext.getServiceReference(EventLoggerFactory.class);
 		assertNotNull(serviceReference);
-		EventLoggerFactory eventLoggerFactory = (EventLoggerFactory)this.bundleContext.getService(serviceReference);		
+		EventLoggerFactory eventLoggerFactory = this.bundleContext.getService(serviceReference);		
 		EventLogger eventLogger = eventLoggerFactory.createEventLogger(this.messageBundle);
 		eventLogger.log("3456", Level.WARNING, "oak", "sycamore");
 		
@@ -102,7 +102,7 @@ public class EventLogIntegrationTests {
 	public void eventLoggingWithMessageFromSpecificBundle() throws Exception {
 		ServiceReference<EventLoggerFactory> serviceReference = this.bundleContext.getServiceReference(EventLoggerFactory.class);
 		assertNotNull(serviceReference);
-		EventLoggerFactory eventLoggerFactory = (EventLoggerFactory)this.bundleContext.getService(serviceReference);		
+		EventLoggerFactory eventLoggerFactory = this.bundleContext.getService(serviceReference);		
 		EventLogger eventLogger = eventLoggerFactory.createEventLogger(this.messageBundle);
 		eventLogger.log("2345", Level.WARNING, "potato", "cauliflower");
 		
