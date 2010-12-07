@@ -52,7 +52,7 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
 
     private final String TEST_IMPORT_BUNDLE_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshTest-Import-Bundle-1-RefreshImporter";
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
@@ -80,8 +80,8 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
         pr.delete(true);
         pr.createDirectory();
 
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
 
         explodedPar = new PathReference("./target/refresh-test/refresh.par");
         explodedPar.delete(true);

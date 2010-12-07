@@ -44,14 +44,14 @@ public class OnStartedFailureTests extends AbstractRAMIntegrationTests {
     
     private final OnStartedFailureLifecycleListener lifecycleListener = new OnStartedFailureLifecycleListener();
     
-    private volatile ServiceRegistration registration;
+    private volatile ServiceRegistration<InstallArtifactLifecycleListener> registration;
     
     private void registerListener() {
-        this.registration = this.context.registerService(InstallArtifactLifecycleListener.class.getName(), this.lifecycleListener, null);
+        this.registration = this.context.registerService(InstallArtifactLifecycleListener.class, this.lifecycleListener, null);
     }
     
     private void unregisterListener() {
-        ServiceRegistration localRegistration = this.registration;
+        ServiceRegistration<InstallArtifactLifecycleListener> localRegistration = this.registration;
         if (localRegistration != null) {
             localRegistration.unregister();
         }

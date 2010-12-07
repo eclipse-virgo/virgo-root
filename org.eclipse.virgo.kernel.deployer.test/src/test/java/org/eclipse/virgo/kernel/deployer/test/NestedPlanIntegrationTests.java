@@ -55,6 +55,7 @@ import org.osgi.service.packageadmin.ExportedPackage;
  * the parent and child plans.
  * 
  */
+@SuppressWarnings("deprecation")
 public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest {
 
     private static final String GLOBAL_PACKAGE = "global";
@@ -118,9 +119,9 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     @Before
     public void setUp() throws Exception {
-        ServiceReference serviceReference = context.getServiceReference(RuntimeArtifactRepository.class.getName());
+        ServiceReference<RuntimeArtifactRepository> serviceReference = context.getServiceReference(RuntimeArtifactRepository.class);
         if (serviceReference != null) {
-            this.ram = (RuntimeArtifactRepository) context.getService(serviceReference);
+            this.ram = context.getService(serviceReference);
         }
 
         globalBundleDeploymentIdentity = deploy(GLOBAL_BUNDLE_INFO);

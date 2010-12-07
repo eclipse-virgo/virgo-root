@@ -39,19 +39,19 @@ import org.eclipse.virgo.util.io.FileCopyUtils;
  */
 public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
-    private ServiceReference configAdminServiceReference;
+    private ServiceReference<ConfigurationAdmin> configAdminServiceReference;
 
     private ConfigurationAdmin configAdmin;
 
     @Before
     public void setUp() throws Exception {
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
-        this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class.getName());
+        this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
         this.configAdmin = (ConfigurationAdmin) this.context.getService(this.configAdminServiceReference);
     }
 

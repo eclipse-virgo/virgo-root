@@ -65,7 +65,7 @@ public final class ContextPropagatingTaskExecutor implements TaskExecutor, Dispo
             return localTracingService;
         }                
                 
-        ServiceReference serviceReference = this.bundleContext.getServiceReference(TracingService.class.getName());
+        ServiceReference<TracingService> serviceReference = this.bundleContext.getServiceReference(TracingService.class);
         if (serviceReference != null) {
             localTracingService = (TracingService) this.bundleContext.getService(serviceReference);
         }

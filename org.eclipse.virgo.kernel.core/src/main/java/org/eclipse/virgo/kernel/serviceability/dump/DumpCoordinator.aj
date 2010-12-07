@@ -55,9 +55,9 @@ public final aspect DumpCoordinator {
     
     // TODO Consider using a ServiceTracker
     public void setBundleContext(BundleContext bundleContext) {
-        ServiceReference serviceReference = bundleContext.getServiceReference(DumpGenerator.class.getName());
+        ServiceReference<DumpGenerator> serviceReference = bundleContext.getServiceReference(DumpGenerator.class);
         if (serviceReference != null) {
-            DumpGenerator dumpGenerator = (DumpGenerator) bundleContext.getService(serviceReference);
+            DumpGenerator dumpGenerator = bundleContext.getService(serviceReference);
             if (dumpGenerator != null) {
                 setDumpGenerator(dumpGenerator);
             } else {

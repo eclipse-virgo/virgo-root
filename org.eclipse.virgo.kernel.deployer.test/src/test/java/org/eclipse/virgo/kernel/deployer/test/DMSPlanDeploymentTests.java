@@ -38,7 +38,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
 
-	private ServiceReference configAdminServiceReference;
+	private ServiceReference<ConfigurationAdmin> configAdminServiceReference;
 
 	private ConfigurationAdmin configAdmin;
 	
@@ -92,8 +92,8 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
     
     @Before
     public void setUp() throws Exception {        
-        this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class.getName());
-        this.configAdmin = (ConfigurationAdmin) this.context.getService(this.configAdminServiceReference);
+        this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
+        this.configAdmin = this.context.getService(this.configAdminServiceReference);
     }
 
     private void testPlanDeployment(File plan, File propertiesFile, String... candidateBsns) throws Exception {

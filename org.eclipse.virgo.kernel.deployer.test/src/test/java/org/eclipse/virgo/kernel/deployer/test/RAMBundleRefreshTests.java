@@ -36,6 +36,7 @@ import org.eclipse.virgo.util.io.PathReference;
  * <p />
  *
  */
+@SuppressWarnings("deprecation")
 public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test

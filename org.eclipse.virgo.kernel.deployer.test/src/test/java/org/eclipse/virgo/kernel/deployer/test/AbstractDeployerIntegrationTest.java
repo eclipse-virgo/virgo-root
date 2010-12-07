@@ -47,72 +47,76 @@ public abstract class AbstractDeployerIntegrationTest {
     protected final BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
     protected volatile OsgiFramework framework;
-    
+
     protected volatile ApplicationDeployer deployer;
-    
+
     protected volatile BundleContext kernelContext;
-    
+
     protected volatile PackageAdmin packageAdmin;
 
     @Before
     public void setup() {
-        ServiceReference serviceReference = context.getServiceReference(OsgiFramework.class.getName());
-        if (serviceReference != null) {
-            this.framework = (OsgiFramework) context.getService(serviceReference);
-        }       
-        
-        serviceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.deployer = (ApplicationDeployer) this.context.getService(serviceReference);
-        
+        ServiceReference<OsgiFramework> osgiFrameworkServiceReference = context.getServiceReference(OsgiFramework.class);
+        if (osgiFrameworkServiceReference != null) {
+            this.framework = context.getService(osgiFrameworkServiceReference);
+        }
+
+        ServiceReference<ApplicationDeployer> applicationDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        if (applicationDeployerServiceReference != null) {
+            this.deployer = this.context.getService(applicationDeployerServiceReference);
+        }
+
         Bundle bundle = this.context.getBundle(1);
         if (bundle instanceof SurrogateBundle) {
-            this.kernelContext = ((SurrogateBundle)bundle).getCompositeBundleContext();
+            this.kernelContext = ((SurrogateBundle) bundle).getCompositeBundleContext();
         }
-        
-        serviceReference = context.getServiceReference(PackageAdmin.class.getName());
-        if (serviceReference != null) {
-            this.packageAdmin = (PackageAdmin) context.getService(serviceReference);
-        }       
-    }
-    
-    @BeforeClass
-    public static void awaitKernelStartup() throws Exception {
-    	MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-    	int sleepCount = 600;
-    	while (!"STARTED".equals(platformMBeanServer.getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"), "Status"))) {
-    		Thread.sleep(50);
-    		if(--sleepCount==0) break;
-    	}
-    	assertFalse("Waited for Kernel too long.", sleepCount==0);
+
+        ServiceReference<PackageAdmin> packageAdminServiceReference = context.getServiceReference(PackageAdmin.class);
+        if (packageAdminServiceReference != null) {
+            this.packageAdmin = context.getService(packageAdminServiceReference);
+        }
     }
 
-    protected static void assertDeploymentIdentityEquals(DeploymentIdentity deploymentIdentity, String name, String type, String symbolicName, String version) {
-        String header = String.format("DeploymentIdentity('%s').", name);
-        
-        assertEquals(header+"type is incorrect", type, deploymentIdentity.getType());
-        assertEquals(header+"symbolicName is incorrect", symbolicName, deploymentIdentity.getSymbolicName());
-        assertEquals(header+"version is incorrect", new Version(version), new Version(deploymentIdentity.getVersion()));
+    @BeforeClass
+    public static void awaitKernelStartup() throws Exception {
+        MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
+        int sleepCount = 600;
+        while (!"STARTED".equals(platformMBeanServer.getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"), "Status"))) {
+            Thread.sleep(50);
+            if (--sleepCount == 0)
+                break;
+        }
+        assertFalse("Waited for Kernel too long.", sleepCount == 0);
     }
-    
+
+    protected static void assertDeploymentIdentityEquals(DeploymentIdentity deploymentIdentity, String name, String type, String symbolicName,
+        String version) {
+        String header = String.format("DeploymentIdentity('%s').", name);
+
+        assertEquals(header + "type is incorrect", type, deploymentIdentity.getType());
+        assertEquals(header + "symbolicName is incorrect", symbolicName, deploymentIdentity.getSymbolicName());
+        assertEquals(header + "version is incorrect", new Version(version), new Version(deploymentIdentity.getVersion()));
+    }
+
     protected Configuration getConfiguration(String pid) throws IOException, InvalidSyntaxException {
-        ServiceReference serviceReference = this.context.getServiceReference(ConfigurationAdmin.class.getName());
+        ServiceReference<?> serviceReference = this.context.getServiceReference(ConfigurationAdmin.class.getName());
         ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) this.context.getService(serviceReference);
         try {
             Configuration[] listConfigurations = configurationAdmin.listConfigurations(null);
-            
+
             Configuration match = null;
-            
+
             for (Configuration configuration : listConfigurations) {
                 if (pid.equals(configuration.getPid())) {
                     match = configuration;
                 }
-            }         
+            }
             return match;
         } finally {
             this.context.ungetService(serviceReference);
         }
     }
-    
+
     protected Bundle getBundle(String symbolicName, Version version) {
         Bundle[] bundles = this.context.getBundles();
         for (Bundle bundle : bundles) {

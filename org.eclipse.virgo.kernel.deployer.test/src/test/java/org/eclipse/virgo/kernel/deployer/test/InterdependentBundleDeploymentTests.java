@@ -28,7 +28,7 @@ import org.eclipse.virgo.util.io.PathReference;
  */
 public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
@@ -37,8 +37,8 @@ public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegra
         pr.delete(true);
         pr.createDirectory();
         
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
     }
 
     @After public void tearDown() throws Exception {

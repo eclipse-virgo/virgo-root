@@ -39,6 +39,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
  * This class is thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 final class Plumber {
 
     private final PackageAdmin packageAdmin;

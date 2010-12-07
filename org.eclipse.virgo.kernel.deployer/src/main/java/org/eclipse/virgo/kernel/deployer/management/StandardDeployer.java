@@ -55,6 +55,7 @@ public class StandardDeployer implements Deployer {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("deprecation")
     public void undeploy(String applicationSymbolicName, String version) throws DeploymentException {
         this.applicationDeployer.undeploy(applicationSymbolicName, version);
     }

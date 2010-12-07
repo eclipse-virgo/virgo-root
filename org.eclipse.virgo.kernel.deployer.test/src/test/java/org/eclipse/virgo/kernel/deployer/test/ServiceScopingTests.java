@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -59,10 +60,10 @@ public class ServiceScopingTests extends AbstractParTests {
         BundleContext context = this.framework.getBundleContext();
 
         // check global is wired to b
-        ServiceReference[] refs = context.getServiceReferences(Appendable.class.getName(), "(provider=global)");
+        Collection<ServiceReference<Appendable>> refs = context.getServiceReferences(Appendable.class, "(provider=global)");
         assertNotNull(refs);
-        assertEquals(1, refs.length);
-        Bundle[] usingBundles = refs[0].getUsingBundles();
+        assertEquals(1, refs.size());
+        Bundle[] usingBundles = refs.iterator().next().getUsingBundles();
         assertEquals(1, usingBundles.length);
         Bundle b = usingBundles[0];
         assertNotNull(b);
@@ -78,11 +79,11 @@ public class ServiceScopingTests extends AbstractParTests {
         }
 
         // check unable to access scoped service from unscoped view
-        refs = context.getServiceReferences(Appendable.class.getName(), "(provider=local)");
-        assertNull("refs should not be null", refs);
+        refs = context.getServiceReferences(Appendable.class, "(provider=local)");
+        assertEquals("refs should be empty", refs.size(), 0);
 
         // check able to publish into global from app
-        ServiceReference serviceReference = context.getServiceReference(CharSequence.class.getName());
+        ServiceReference<CharSequence> serviceReference = context.getServiceReference(CharSequence.class);
         assertNotNull("cannot see service in global scope", serviceReference);
 
         this.deployer.undeploy(parDeploymentIdentity);
@@ -174,19 +175,20 @@ public class ServiceScopingTests extends AbstractParTests {
         assertNotNull(bundle);
         
         // Check that bundle two is wired to the service from bundle one.
-        ServiceReference serviceReference = bundle.getBundleContext().getServiceReference(List.class.getName());
+        @SuppressWarnings("rawtypes")
+        ServiceReference<List> serviceReference = bundle.getBundleContext().getServiceReference(List.class);
         assertEquals("service-scoping-1-service.scoping.one", serviceReference.getBundle().getSymbolicName());
         
         // Check that the service is not visible outside the scope
-        serviceReference = this.context.getServiceReference(List.class.getName());
+        serviceReference = this.context.getServiceReference(List.class);
         assertNull(serviceReference);
         
         this.deployer.undeploy(deployed);
     }
 
-    private void assertContainsServiceReference(ServiceReference[] refs, String filter) throws InvalidSyntaxException {
+    private void assertContainsServiceReference(ServiceReference<?>[] refs, String filter) throws InvalidSyntaxException {
         Filter f = FrameworkUtil.createFilter(filter);
-        for (ServiceReference serviceReference : refs) {
+        for (ServiceReference<?> serviceReference : refs) {
             if (f.match(serviceReference)) {
                 return;
             }
@@ -196,8 +198,8 @@ public class ServiceScopingTests extends AbstractParTests {
     
     private Set<String> knownScopes() throws Exception {
         BundleContext context = this.framework.getBundleContext();
-        ServiceReference reference = context.getServiceReference(ScopeServiceRepository.class.getName());
-        ScopeServiceRepository scopeServiceRepository = (ScopeServiceRepository)context.getService(reference);
+        ServiceReference<ScopeServiceRepository> reference = context.getServiceReference(ScopeServiceRepository.class);
+        ScopeServiceRepository scopeServiceRepository = context.getService(reference);
         Set<String> knownScopes = scopeServiceRepository.knownScopes();
         context.ungetService(reference);
         return knownScopes;

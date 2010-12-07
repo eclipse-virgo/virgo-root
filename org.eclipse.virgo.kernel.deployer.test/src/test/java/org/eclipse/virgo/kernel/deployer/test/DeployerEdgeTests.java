@@ -36,7 +36,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
     private final String TEST_PAR_BUNDLE_SYMBOLIC_NAME = "MyApp-1-com.springsource.kernel.deployer.testbundle";
     
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
@@ -59,8 +59,8 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
         pr = new PathReference("./target/deployer-edge-test/other");
         pr.createDirectory();
 
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
 
         parCopy1 = new PathReference("./target/deployer-edge-test/app0.par");
         parCopy2 = new PathReference("./target/deployer-edge-test/app0copy.par");

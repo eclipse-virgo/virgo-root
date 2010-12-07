@@ -40,7 +40,7 @@ public final class ConfigurationInitialiser {
 
     public KernelConfiguration start(BundleContext context, EventLogger eventLogger) throws IOException {
 
-        ServiceReference configurationAdminReference = context.getServiceReference(ConfigurationAdmin.class.getName());
+        ServiceReference<ConfigurationAdmin> configurationAdminReference = context.getServiceReference(ConfigurationAdmin.class);
 
         ConfigurationAdmin configAdmin = null;
 

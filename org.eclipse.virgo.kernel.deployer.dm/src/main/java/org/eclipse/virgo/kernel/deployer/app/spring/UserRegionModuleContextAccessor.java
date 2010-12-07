@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.deployer.app.spring;
 
+import java.util.Collection;
+
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
@@ -22,7 +24,6 @@ import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext
 
 import org.eclipse.virgo.kernel.module.ModuleContext;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
-
 
 /**
  * {@link UserRegionModuleContextAccessor} accesses {@link ModuleContext ModuleContexts} in the user region.
@@ -44,10 +45,10 @@ final class UserRegionModuleContextAccessor implements ModuleContextAccessor {
         if (bundleContext != null) {
             String symbolicName = bundle.getSymbolicName();
             try {
-                ServiceReference[] refs = bundleContext.getServiceReferences(ApplicationContext.class.getName(), "(Bundle-SymbolicName="
-                    + symbolicName + ")");
-                if (refs != null) {
-                    for (ServiceReference ref : refs) {
+                Collection<ServiceReference<ApplicationContext>> refs = bundleContext.getServiceReferences(ApplicationContext.class,
+                    "(Bundle-SymbolicName=" + symbolicName + ")");
+                if (refs.size() != 0) {
+                    for (ServiceReference<ApplicationContext> ref : refs) {
                         ApplicationContext appCtx = (ApplicationContext) bundleContext.getService(ref);
                         try {
                             if (appCtx instanceof ConfigurableOsgiBundleApplicationContext) {

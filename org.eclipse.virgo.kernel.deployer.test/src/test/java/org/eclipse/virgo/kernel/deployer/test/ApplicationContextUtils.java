@@ -29,7 +29,7 @@ final class ApplicationContextUtils {
     }
     
     static ApplicationContext getApplicationContext(BundleContext bundleContext, String symbolicName) {
-        ServiceReference[] serviceReferences = null;
+        ServiceReference<?>[] serviceReferences = null;
         
         try {
             serviceReferences = bundleContext.getServiceReferences(ApplicationContext.class.getName(), "(Bundle-SymbolicName=" + symbolicName + ")");
