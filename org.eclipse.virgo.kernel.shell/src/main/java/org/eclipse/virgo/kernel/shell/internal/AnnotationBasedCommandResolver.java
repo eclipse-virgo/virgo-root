@@ -33,7 +33,7 @@ import org.osgi.framework.ServiceReference;
  */
 final class AnnotationBasedCommandResolver implements CommandResolver {
 
-    public List<CommandDescriptor> resolveCommands(ServiceReference serviceReference, Object object) {
+    public List<CommandDescriptor> resolveCommands(ServiceReference<?> serviceReference, Object object) {
         List<CommandDescriptor> commandDescriptors = new ArrayList<CommandDescriptor>();
 
         Class<? extends Object> clazz = object.getClass();

@@ -43,6 +43,7 @@ final class ContextClassLoaderPostProcessor implements ModuleBeanFactoryPostProc
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("deprecation")
     public void postProcess(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory) {
         String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
         for (String name : beanDefinitionNames) {

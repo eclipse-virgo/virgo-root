@@ -59,9 +59,9 @@ final class ServiceRegistryCommandCompleterRegistry implements CommandCompleterR
     void initialize() {        
         try {
             this.bundleContext.addServiceListener(this.commandCompleterRegistryServiceListener, "(objectClass=" + CommandCompleter.class.getName() + ")");
-            ServiceReference[] serviceReferences = this.bundleContext.getServiceReferences(CommandCompleter.class.getName(), null);
+            ServiceReference<?>[] serviceReferences = this.bundleContext.getServiceReferences(CommandCompleter.class.getName(), null);
             if (serviceReferences != null) {
-                for (ServiceReference serviceReference : serviceReferences) {
+                for (ServiceReference<?> serviceReference : serviceReferences) {
                     serviceRegistered(serviceReference);
                 }
             }
@@ -70,7 +70,7 @@ final class ServiceRegistryCommandCompleterRegistry implements CommandCompleterR
         }
     }
     
-    private void serviceRegistered(ServiceReference serviceReference) {
+    private void serviceRegistered(ServiceReference<?> serviceReference) {
         CommandCompleter completer = (CommandCompleter)bundleContext.getService(serviceReference);
         if (completer != null) {
             String[] commandNames = getCommandNames(serviceReference);
@@ -80,7 +80,7 @@ final class ServiceRegistryCommandCompleterRegistry implements CommandCompleterR
         }
     }
     
-    private String[] getCommandNames(ServiceReference serviceReference) {
+    private String[] getCommandNames(ServiceReference<?> serviceReference) {
         Object commandNamesProperty = serviceReference.getProperty(CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES);
         String[] commandNames;
         
@@ -94,7 +94,7 @@ final class ServiceRegistryCommandCompleterRegistry implements CommandCompleterR
         return commandNames;
     }
 
-    private void serviceUnregistering(ServiceReference serviceReference) {
+    private void serviceUnregistering(ServiceReference<?> serviceReference) {
         Object converter = this.bundleContext.getService(serviceReference);
         if (converter != null) {
             String[] commandNames = getCommandNames(serviceReference);

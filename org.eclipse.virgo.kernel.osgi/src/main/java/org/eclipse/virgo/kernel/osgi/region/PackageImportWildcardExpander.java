@@ -43,6 +43,7 @@ import org.eclipse.virgo.util.osgi.manifest.DynamicallyImportedPackage;
  * Thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 final class PackageImportWildcardExpander {
 
     private static final String wildcard = "*";

@@ -37,7 +37,7 @@ public class Activator implements BundleActivator {
     private static final int SERVICE_WAIT_PAUSE = 100; // 100 milliseconds
     private static final String PROVIDER_NAME = "org.eclipse.osgi.framework.console.CommandProvider"; //$NON-NLS-1$
     
-    private ServiceRegistration providerRegistration = null;
+    private ServiceRegistration<?> providerRegistration = null;
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
     
     public void start(BundleContext context) throws Exception {

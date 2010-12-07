@@ -40,11 +40,12 @@ public class StubQuasiFramework implements QuasiFramework{
     private final StubBundle stubBundle; 
     private final StubBundleContext stubBundleContext;
     
+    @SuppressWarnings("unchecked")
     public StubQuasiFramework() {
         this.stubBundle = new StubBundle(4L, "test.symbolic.name", new Version("0"), "");
         this.stubBundleContext = new StubBundleContext(stubBundle);
         this.stubBundleContext.addInstalledBundle(stubBundle);
-        this.stubBundle.addRegisteredService(new StubServiceReference(new StubServiceRegistration(this.stubBundleContext)));
+        this.stubBundle.addRegisteredService(new StubServiceReference<Object>(new StubServiceRegistration<Object>(this.stubBundleContext)));
     }
 
     public void commit() throws BundleException {

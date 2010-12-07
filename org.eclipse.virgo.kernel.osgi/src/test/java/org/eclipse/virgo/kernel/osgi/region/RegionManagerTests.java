@@ -52,6 +52,7 @@ public class RegionManagerTests {
         
         Framework user = createMock(Framework.class);
         SurrogateBundle surrogate = createMock(SurrogateBundle.class);
+        @SuppressWarnings("unchecked")
         ServiceFactory<EventLogger> serviceFactory = createMock(ServiceFactory.class);
         
         CompositeBundleFactory factory = createMock(CompositeBundleFactory.class);

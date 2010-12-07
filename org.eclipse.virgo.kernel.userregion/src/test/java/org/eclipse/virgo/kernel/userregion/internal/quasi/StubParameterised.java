@@ -18,14 +18,11 @@ import java.util.Map;
  */
 public abstract class StubParameterised {
 
-    @SuppressWarnings("unchecked")
-    Map attributes = new HashMap();
+    Map<String, Object> attributes = new HashMap<String, Object>();
 
-    @SuppressWarnings("unchecked")
-    Map directives = new HashMap();
+    Map<String, Object> directives = new HashMap<String, Object>();
 
-    @SuppressWarnings("unchecked")
-    public Map getAttributes() {
+    public Map<String, Object> getAttributes() {
         return this.attributes;
     }
 
@@ -33,8 +30,7 @@ public abstract class StubParameterised {
         return this.directives.get(key);
     }
 
-    @SuppressWarnings("unchecked")
-    public Map getDirectives() {
+    public Map<String, Object> getDirectives() {
         return this.directives;
     }
 

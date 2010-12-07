@@ -58,7 +58,7 @@ public class ModuleBeanFactoryPostProcessorTests extends AbstractKernelIntegrati
        
        signal.assertSuccessfulCompletionSignalled(5000);
        
-       ServiceReference[] serviceReferences = this.context.getServiceReferences(ApplicationContext.class.getName(), "(Bundle-SymbolicName=org.eclipse.virgo.kernel.dmfragment.test.inbuilt)");
+       ServiceReference<?>[] serviceReferences = this.context.getServiceReferences(ApplicationContext.class.getName(), "(Bundle-SymbolicName=org.eclipse.virgo.kernel.dmfragment.test.inbuilt)");
        assertNotNull(serviceReferences);
        assertEquals(1, serviceReferences.length);
        

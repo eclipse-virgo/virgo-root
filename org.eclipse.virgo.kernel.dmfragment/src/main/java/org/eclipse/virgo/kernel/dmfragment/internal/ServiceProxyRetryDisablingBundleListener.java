@@ -47,10 +47,10 @@ class ServiceProxyRetryDisablingBundleListener implements SynchronousBundleListe
         if (event.getBundle().getBundleId() == 0 && event.getType() == BundleEvent.STOPPING) {
             BundleContext bundleContext = event.getBundle().getBundleContext();
             try {
-                ServiceReference[] applicationContextServiceReferences = event.getBundle().getBundleContext().getAllServiceReferences(
+                ServiceReference<?>[] applicationContextServiceReferences = event.getBundle().getBundleContext().getAllServiceReferences(
                     ApplicationContext.class.getName(), null);
 
-                for (ServiceReference applicationContextServiceReference : applicationContextServiceReferences) {
+                for (ServiceReference<?> applicationContextServiceReference : applicationContextServiceReferences) {
                     ApplicationContext applicationContext = (ApplicationContext) bundleContext.getService(applicationContextServiceReference);
                     ApplicationContextShutdownBean.disableServiceProxyRetry(applicationContext);
                     bundleContext.ungetService(applicationContextServiceReference);

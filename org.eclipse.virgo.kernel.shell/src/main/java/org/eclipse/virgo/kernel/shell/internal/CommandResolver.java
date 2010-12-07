@@ -33,6 +33,6 @@ interface CommandResolver {
      * @param service The service
      * @return A <code>List</code> of <code>CommandDescriptor</code>s or an empty list if no commands were found
      */
-    List<CommandDescriptor> resolveCommands(ServiceReference serviceReference, Object service);
+    List<CommandDescriptor> resolveCommands(ServiceReference<?> serviceReference, Object service);
 
 }

@@ -33,6 +33,7 @@ import org.eclipse.virgo.kernel.osgi.framework.support.AbstractOsgiFramework;
  * Implementation of <code>OsgiFramework</code> using Equinox.
  * 
  */
+@SuppressWarnings("deprecation")
 public class EquinoxOsgiFramework extends AbstractOsgiFramework {
 
     private final OsgiServiceHolder<PlatformAdmin> platformAdmin;

@@ -55,6 +55,7 @@ import org.eclipse.virgo.repository.RepositoryFactory;
 import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 
+@SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     protected EquinoxOsgiFramework framework;
@@ -67,11 +68,11 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     private BundleContext bundleContext;
 
-    private ServiceRegistration repositoryRegistration;
+    private ServiceRegistration<Repository> repositoryRegistration;
 
-    private ServiceRegistration eventLoggerRegistration;
+    private ServiceRegistration<EventLogger> eventLoggerRegistration;
 
-    private ServiceRegistration dumpGeneratorRegistration;
+    private ServiceRegistration<DumpGenerator> dumpGeneratorRegistration;
 
     private Equinox equinox;
 
@@ -110,14 +111,14 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         final EventLogger mockEventLogger = new MockEventLogger();
 
-        eventLoggerRegistration = bundleContext.registerService(EventLogger.class.getName(), mockEventLogger, null);
-        dumpGeneratorRegistration = bundleContext.registerService(DumpGenerator.class.getName(), dumpGenerator, null);
+        eventLoggerRegistration = bundleContext.registerService(EventLogger.class, mockEventLogger, null);
+        dumpGeneratorRegistration = bundleContext.registerService(DumpGenerator.class, dumpGenerator, null);
 
         this.repositoryBundleActivator = new RepositoryBundleActivator();
         this.repositoryBundleActivator.start(bundleContext);
 
-        ServiceReference serviceReference = bundleContext.getServiceReference(RepositoryFactory.class.getName());
-        RepositoryFactory repositoryFactory = (RepositoryFactory) bundleContext.getService(serviceReference);
+        ServiceReference<RepositoryFactory> repositoryFactoryServiceReference = bundleContext.getServiceReference(RepositoryFactory.class);
+        RepositoryFactory repositoryFactory = bundleContext.getService(repositoryFactoryServiceReference);
 
         Properties repositoryProperties = new Properties();
         repositoryProperties.load(new FileReader(new File(getRepositoryConfigDirectory(), "repository.properties")));
@@ -130,13 +131,13 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
             artifactBridges, null);
         repository = bean.getObject();
 
-        repositoryRegistration = bundleContext.registerService(Repository.class.getName(), repository, null);
+        repositoryRegistration = bundleContext.registerService(Repository.class, repository, null);
 
-        serviceReference = bundleContext.getServiceReference(PlatformAdmin.class.getName());
-        this.platformAdmin = (PlatformAdmin) bundleContext.getService(serviceReference);
+        ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
+        this.platformAdmin = (PlatformAdmin) bundleContext.getService(platformAdminServiceReference);
 
-        serviceReference = bundleContext.getServiceReference(PackageAdmin.class.getName());
-        PackageAdmin packageAdmin = (PackageAdmin) bundleContext.getService(serviceReference);
+        ServiceReference<PackageAdmin> packageAdminServiceReference = bundleContext.getServiceReference(PackageAdmin.class);
+        PackageAdmin packageAdmin = (PackageAdmin) bundleContext.getService(packageAdminServiceReference);
 
         ImportExpander importExpander = createImportExpander(packageAdmin);
         TransformedManifestProvidingBundleFileWrapper bundleFileWrapper = new TransformedManifestProvidingBundleFileWrapper(importExpander);

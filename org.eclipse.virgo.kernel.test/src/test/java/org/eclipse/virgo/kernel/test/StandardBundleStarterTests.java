@@ -30,8 +30,8 @@ public class StandardBundleStarterTests extends AbstractKernelIntegrationTest {
 
     @Before
     public void before() {
-        ServiceReference serviceReference = this.kernelContext.getServiceReference(BundleStarter.class.getName());
-        this.monitor = (BundleStarter) this.kernelContext.getService(serviceReference);
+        ServiceReference<BundleStarter> serviceReference = this.kernelContext.getServiceReference(BundleStarter.class);
+        this.monitor = this.kernelContext.getService(serviceReference);
         assertNotNull(this.monitor);                
     }
 

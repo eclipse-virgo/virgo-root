@@ -40,11 +40,11 @@ import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
  */
 final public class StandardQuasiLiveService implements QuasiLiveService, Comparable<QuasiLiveService> {
 
-    private final ServiceReference serviceReference;
+    private final ServiceReference<?> serviceReference;
     
     private final QuasiFramework quasiFramework;
 
-    public StandardQuasiLiveService(QuasiFramework quasiFramework, ServiceReference serviceReference) {
+    public StandardQuasiLiveService(QuasiFramework quasiFramework, ServiceReference<?> serviceReference) {
         this.serviceReference = serviceReference;
         this.quasiFramework = quasiFramework;
     }

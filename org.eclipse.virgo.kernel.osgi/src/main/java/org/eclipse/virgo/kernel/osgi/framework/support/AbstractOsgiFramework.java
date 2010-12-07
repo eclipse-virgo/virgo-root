@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * Implementation is thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFramework implements OsgiFramework {
 
     public static final String DIRECTIVE_SEPARATOR = ";";

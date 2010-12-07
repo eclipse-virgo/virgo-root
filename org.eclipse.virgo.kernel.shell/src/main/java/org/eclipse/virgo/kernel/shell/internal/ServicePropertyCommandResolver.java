@@ -36,7 +36,7 @@ public class ServicePropertyCommandResolver implements CommandResolver {
     /** 
      * {@inheritDoc}
      */
-    public List<CommandDescriptor> resolveCommands(ServiceReference serviceReference, Object service) {
+    public List<CommandDescriptor> resolveCommands(ServiceReference<?> serviceReference, Object service) {
 
         String[] commands = (String[])serviceReference.getProperty(SERVICE_PROPERTY_COMMAND_FUNCTION);
         

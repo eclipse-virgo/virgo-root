@@ -28,6 +28,7 @@ import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
  * This class is thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 public final class StandardPackageAdminUtil implements PackageAdminUtil {
 
     private final PackageAdmin packageAdmin;

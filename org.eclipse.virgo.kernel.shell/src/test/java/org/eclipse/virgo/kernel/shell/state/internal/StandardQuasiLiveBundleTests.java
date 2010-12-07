@@ -177,8 +177,9 @@ public class StandardQuasiLiveBundleTests {
         assertEquals(this.stubQuasiBundle.isResolved(), this.standardQuasiLiveBundle.isResolved());
     }
 
+    @SuppressWarnings("unchecked")
     private void registerFakeAppContext() {
-        this.stubOsgiBundle.addRegisteredService(new StubServiceReference(new StubServiceRegistration(new StubBundleContext(),
+        this.stubOsgiBundle.addRegisteredService(new StubServiceReference<Object>(new StubServiceRegistration<Object>(new StubBundleContext(),
             ApplicationContext.class.getName())));
     }
 

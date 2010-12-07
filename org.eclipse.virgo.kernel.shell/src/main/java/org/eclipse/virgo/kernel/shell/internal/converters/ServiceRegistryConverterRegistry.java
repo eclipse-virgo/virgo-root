@@ -61,9 +61,9 @@ final class ServiceRegistryConverterRegistry implements ConverterRegistry {
     void initialize() {        
         try {
             this.bundleContext.addServiceListener(this.converterRegistryServiceListener, "(objectClass=" + Converter.class.getName() + ")");
-            ServiceReference[] serviceReferences = this.bundleContext.getServiceReferences(Converter.class.getName(), null);
+            ServiceReference<?>[] serviceReferences = this.bundleContext.getServiceReferences(Converter.class.getName(), null);
             if (serviceReferences != null) {
-                for (ServiceReference serviceReference : serviceReferences) {
+                for (ServiceReference<?> serviceReference : serviceReferences) {
                     serviceRegistered(serviceReference);
                 }
             }
@@ -72,7 +72,7 @@ final class ServiceRegistryConverterRegistry implements ConverterRegistry {
         }
     }
     
-    private void serviceRegistered(ServiceReference serviceReference) {
+    private void serviceRegistered(ServiceReference<?> serviceReference) {
         Converter converter = (Converter)bundleContext.getService(serviceReference);
         if (converter != null) {
             String[] converterClasses = getConverterClasses(serviceReference);
@@ -82,7 +82,7 @@ final class ServiceRegistryConverterRegistry implements ConverterRegistry {
         }
     }
     
-    private String[] getConverterClasses(ServiceReference serviceReference) {
+    private String[] getConverterClasses(ServiceReference<?> serviceReference) {
         Object converterClassesProperty = serviceReference.getProperty(Converter.CONVERTER_CLASSES);
         String[] converterClasses;
         
@@ -96,7 +96,7 @@ final class ServiceRegistryConverterRegistry implements ConverterRegistry {
         return converterClasses;
     }
 
-    private void serviceUnregistering(ServiceReference serviceReference) {
+    private void serviceUnregistering(ServiceReference<?> serviceReference) {
         Object converter = this.bundleContext.getService(serviceReference);
         if (converter != null) {
             synchronized (monitor) {

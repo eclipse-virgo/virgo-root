@@ -27,11 +27,11 @@ public class RegionTests extends AbstractKernelIntegrationTest {
 
     @Test
     public void testGetUserRegion() throws Exception {
-        ServiceReference[] serviceReferences = lookupRegionServices("org.eclipse.virgo.region.user");
+        ServiceReference<?>[] serviceReferences = lookupRegionServices("org.eclipse.virgo.region.user");
         assertRegion(serviceReferences);
     }
 
-    private void assertRegion(ServiceReference[] serviceReferences) {
+    private void assertRegion(ServiceReference<?>[] serviceReferences) {
         assertEquals(1, serviceReferences.length);
         
         Region userRegion = (Region) this.kernelContext.getService(serviceReferences[0]);
@@ -39,7 +39,7 @@ public class RegionTests extends AbstractKernelIntegrationTest {
         assertNotNull(userRegion.getBundleContext());
     }
 
-    private ServiceReference[] lookupRegionServices(String name) throws InvalidSyntaxException {
+    private ServiceReference<?>[] lookupRegionServices(String name) throws InvalidSyntaxException {
         return this.kernelContext.getServiceReferences(Region.class.getName(), String.format("(org.eclipse.virgo.kernel.region.name=%s)",name));
     }
 }
