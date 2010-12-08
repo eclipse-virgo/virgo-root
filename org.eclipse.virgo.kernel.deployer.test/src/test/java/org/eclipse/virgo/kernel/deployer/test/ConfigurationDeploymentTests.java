@@ -25,9 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationEvent;
+import org.osgi.service.cm.ConfigurationListener;
 
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
@@ -37,7 +40,7 @@ import org.eclipse.virgo.util.io.FileCopyUtils;
  * Test deploying a configuration properties file.
  * 
  */
-public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTest {
+public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTest implements ConfigurationListener {
 
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
@@ -47,12 +50,21 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
     private ConfigurationAdmin configAdmin;
 
+    private volatile int cmUpdates;
+
+    private volatile int cmDeletes;
+
+    private ServiceRegistration<ConfigurationListener> configurationListenerServiceRegistration;
+
     @Before
     public void setUp() throws Exception {
         this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
         this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
         this.configAdmin = (ConfigurationAdmin) this.context.getService(this.configAdminServiceReference);
+        this.cmUpdates = 0;
+        this.cmDeletes = 0;
+        this.configurationListenerServiceRegistration = context.registerService(ConfigurationListener.class, this, null);
     }
 
     @After
@@ -62,6 +74,9 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         }
         if (this.configAdminServiceReference != null) {
             this.context.ungetService(this.configAdminServiceReference);
+        }
+        if (this.configurationListenerServiceRegistration != null) {
+            this.configurationListenerServiceRegistration.unregister();
         }
     }
 
@@ -74,24 +89,35 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         assertDeploymentIdentityEquals(deploymentIdentity, "t.properties", "configuration", "t", "0");
         Assert.assertTrue(isInDeploymentIdentities(deploymentIdentity));
         checkConfigAvailable();
+        Assert.assertEquals(1, this.cmUpdates);
+        Assert.assertEquals(0, this.cmDeletes);
 
         this.appDeployer.undeploy(deploymentIdentity);
         Assert.assertFalse(isInDeploymentIdentities(deploymentIdentity));
         checkConfigUnavailable();
+        Assert.assertEquals(1, this.cmUpdates);
+        Assert.assertEquals(1, this.cmDeletes);
 
         // Check that the configuration can be deployed again after being undeployed
         this.appDeployer.deploy(file.toURI());
         Assert.assertTrue(isInDeploymentIdentities(deploymentIdentity));
         checkConfigAvailable();
+        Assert.assertEquals(2, this.cmUpdates);
+        Assert.assertEquals(1, this.cmDeletes);
 
         // And that a deploy while deployed works as well
         this.appDeployer.deploy(file.toURI());
         Assert.assertTrue(isInDeploymentIdentities(deploymentIdentity));
         checkConfigAvailable();
+        Assert.assertEquals(3, this.cmUpdates);
+        Assert.assertEquals(1, this.cmDeletes);
 
         this.appDeployer.undeploy(deploymentIdentity);
         Assert.assertFalse(isInDeploymentIdentities(deploymentIdentity));
         checkConfigUnavailable();
+        Assert.assertEquals(3, this.cmUpdates);
+        Assert.assertEquals(2, this.cmDeletes);
+
     }
 
     @Test
@@ -229,6 +255,22 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
     private void checkConfigUnavailable() throws IOException, InvalidSyntaxException {
         assertFalse(isInConfigurationAdmin());
+    }
+
+    @Override
+    public void configurationEvent(ConfigurationEvent event) {
+        switch (event.getType()) {
+            case ConfigurationEvent.CM_UPDATED:
+                this.cmUpdates++;
+                break;
+            case ConfigurationEvent.CM_DELETED:
+                this.cmDeletes++;
+                break;
+            default:
+                Assert.assertTrue(false);
+                break;
+        }
+
     }
 
 }

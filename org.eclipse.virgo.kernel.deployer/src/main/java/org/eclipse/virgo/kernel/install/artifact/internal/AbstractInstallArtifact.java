@@ -17,10 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
@@ -32,6 +28,9 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.Tree;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link AbstractInstallArtifact} is a base class for implementations of {@link InstallArtifact}.
@@ -186,14 +185,21 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * {@inheritDoc}
      */
     public void start(Signal signal) throws DeploymentException {
-        pushThreadContext();
-        try {
-            boolean stateChanged = this.artifactStateMonitor.onStarting(this);
-            if (stateChanged || signal != null) {
-                driveDoStart(signal);
+        // If ACTIVE, signal successful completion immediately, otherwise proceed with start processing.
+        if (getState().equals(State.ACTIVE)) {
+            if (signal != null) {
+                signal.signalSuccessfulCompletion();
             }
-        } finally {
-            popThreadContext();
+        } else {
+            pushThreadContext();
+            try {
+                boolean stateChanged = this.artifactStateMonitor.onStarting(this);
+                if (stateChanged || signal != null) {
+                    driveDoStart(signal);
+                }
+            } finally {
+                popThreadContext();
+            }
         }
     }
 
@@ -290,18 +296,21 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * {@inheritDoc}
      */
     public void stop() throws DeploymentException {
-        if (this.getState().equals(State.ACTIVE)) {
-            pushThreadContext();
-            try {
-                this.artifactStateMonitor.onStopping(this);
+        // Only stop if ACTIVE or STARTING.
+        if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
+            if (this.getState().equals(State.ACTIVE)) {
+                pushThreadContext();
                 try {
-                    doStop();
-                    this.artifactStateMonitor.onStopped(this);
-                } catch (DeploymentException e) {
-                    this.artifactStateMonitor.onStopFailed(this, e);
+                    this.artifactStateMonitor.onStopping(this);
+                    try {
+                        doStop();
+                        this.artifactStateMonitor.onStopped(this);
+                    } catch (DeploymentException e) {
+                        this.artifactStateMonitor.onStopFailed(this, e);
+                    }
+                } finally {
+                    popThreadContext();
                 }
-            } finally {
-                popThreadContext();
             }
         }
     }
