@@ -45,168 +45,203 @@ import org.osgi.service.event.EventAdmin;
  */
 final class RegionManager {
 
-    private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
+	private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
-    private static final String USER_REGION_BASE_BUNDLES_PROPERTY = "baseBundles";
+	private static final String USER_REGION_BASE_BUNDLES_PROPERTY = "baseBundles";
 
-    private static final String USER_REGION_PACKAGE_IMPORTS_PROPERTY = "packageImports";
+	private static final String USER_REGION_PACKAGE_IMPORTS_PROPERTY = "packageImports";
 
-    private static final String USER_REGION_SERVICE_IMPORTS_PROPERTY = "serviceImports";
+	private static final String USER_REGION_SERVICE_IMPORTS_PROPERTY = "serviceImports";
 
-    private static final String USER_REGION_SERVICE_EXPORTS_PROPERTY = "serviceExports";
+	private static final String USER_REGION_SERVICE_EXPORTS_PROPERTY = "serviceExports";
 
-    private static final String USER_REGION_PROPERTIES_PROPERTY = "inheritedFrameworkProperties";
+	private static final String USER_REGION_PROPERTIES_PROPERTY = "inheritedFrameworkProperties";
 
-    private static final String REGION_USER = "org.eclipse.virgo.region.user";
+	private static final String REGION_USER = "org.eclipse.virgo.region.user";
 
-    private static final String EVENT_REGION_STARTING = "org/eclipse/virgo/kernel/region/STARTING";
+	private static final String EVENT_REGION_STARTING = "org/eclipse/virgo/kernel/region/STARTING";
 
-    private static final String EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
+	private static final String EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
 
-    private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
+	private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
-    private final BundleContext bundleContext;
+	private final BundleContext bundleContext;
 
-    private final ArgumentParser parser = new ArgumentParser();
+	private final ArgumentParser parser = new ArgumentParser();
 
-    private final EventAdmin eventAdmin;
+	private final EventAdmin eventAdmin;
 
-    private String regionBundles;
+	private String regionBundles;
 
-    private String regionImports;
+	private String regionImports;
 
-    private String regionServiceImports;
+	private String regionServiceImports;
 
-    private String regionServiceExports;
+	private String regionServiceExports;
 
-    public RegionManager(BundleContext bundleContext, EventAdmin eventAdmin, ConfigurationAdmin configAdmin, EventLogger eventLogger,
-        Shutdown shutdown) {
-        this.bundleContext = bundleContext;
-        this.eventAdmin = eventAdmin;
-        getRegionConfiguration(configAdmin, eventLogger, shutdown);
-    }
+	public RegionManager(BundleContext bundleContext, EventAdmin eventAdmin,
+			ConfigurationAdmin configAdmin, EventLogger eventLogger,
+			Shutdown shutdown) {
+		this.bundleContext = bundleContext;
+		this.eventAdmin = eventAdmin;
+		getRegionConfiguration(configAdmin, eventLogger, shutdown);
+	}
 
-    private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
-        try {
-            Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID);
+	private void getRegionConfiguration(ConfigurationAdmin configAdmin,
+			EventLogger eventLogger, Shutdown shutdown) {
+		try {
+			Configuration config = configAdmin
+					.getConfiguration(USER_REGION_CONFIGURATION_PID);
 
-            @SuppressWarnings("unchecked")
-            Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();
+			@SuppressWarnings("unchecked")
+			Dictionary<String, String> properties = (Dictionary<String, String>) config
+					.getProperties();
 
-            if (properties != null) {
-                this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY);
-                this.regionImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
-                this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
-                this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
-            } else {
-                eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
-                shutdown.immediateShutdown();
-            }
-        } catch (Exception e) {
-            eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE, e);
-            shutdown.immediateShutdown();
-        }
-    }
+			if (properties != null) {
+				this.regionBundles = properties
+						.get(USER_REGION_BASE_BUNDLES_PROPERTY);
+				this.regionImports = properties
+						.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
+				this.regionServiceImports = properties
+						.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
+				this.regionServiceExports = properties
+						.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
+			} else {
+				eventLogger
+						.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
+				shutdown.immediateShutdown();
+			}
+		} catch (Exception e) {
+			eventLogger
+					.log(
+							OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE,
+							e);
+			shutdown.immediateShutdown();
+		}
+	}
 
-    public void start() throws BundleException {
-        createAndPublishUserRegion();
-    }
+	public void start() throws BundleException {
+		createAndPublishUserRegion();
+	}
 
-    private void createAndPublishUserRegion() throws BundleException {
-        
-        BundleContext userRegionBundleContext = initialiseUserRegionBundles();
+	private void createAndPublishUserRegion() throws BundleException {
 
-        registerRegionService(new ImmutableRegion(REGION_USER, userRegionBundleContext));
+		BundleContext userRegionBundleContext = initialiseUserRegionBundles();
 
-        String userRegionImportsProperty = this.regionImports != null ? this.regionImports
-            : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
-        String expandedUserRegionImportsProperty = null;
-        if (userRegionImportsProperty != null) {
-            expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
-                this.bundleContext);
-        }
+		registerRegionService(new ImmutableRegion(REGION_USER,
+				userRegionBundleContext));
 
-        registerResolverHookFactory(new RegionResolverHookFactory(new RegionMembership() {
+		String userRegionImportsProperty = this.regionImports != null ? this.regionImports
+				: this.bundleContext
+						.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
+		String expandedUserRegionImportsProperty = null;
+		if (userRegionImportsProperty != null) {
+			expandedUserRegionImportsProperty = PackageImportWildcardExpander
+					.expandPackageImportsWildcards(userRegionImportsProperty,
+							this.bundleContext);
+		}
 
-            @Override
-            public boolean isMember(Bundle bundle) {
-                // TODO implement a more robust partitioning of bundles
-                return bundle.getBundleId() > bundleContext.getBundle().getBundleId();
-            }
-        }, expandedUserRegionImportsProperty));
-    }
+		registerResolverHookFactory(new RegionResolverHookFactory(
+				new RegionMembership() {
 
-    private void registerResolverHookFactory(ResolverHookFactory resolverHookFactory) {
-        this.tracker.track(this.bundleContext.registerService(ResolverHookFactory.class.getName(), resolverHookFactory, null));
-    }
+					@Override
+					public boolean isMember(Bundle bundle) {
+						// TODO implement a more robust partitioning of bundles
+						return bundle.getBundleId() > bundleContext.getBundle()
+								.getBundleId();
+					}
+				}, expandedUserRegionImportsProperty));
 
-    private BundleContext initialiseUserRegionBundles() throws BundleException {
+		publishUserRegionsBundleContext(userRegionBundleContext);
+	}
 
-        BundleContext userRegionBundleContext = null;
+	private void publishUserRegionsBundleContext(BundleContext bundleContext) {
+		Dictionary<String, String> properties = new Hashtable<String, String>();
+		properties.put("org.eclipse.virgo.kernel.regionContext", "true");
+		this.bundleContext.registerService(BundleContext.class, bundleContext,
+				properties);
+	}
 
-        String userRegionBundlesProperty = this.regionBundles != null ? this.regionBundles
-            : this.bundleContext.getProperty(USER_REGION_BASE_BUNDLES_PROPERTY);
+	private void registerResolverHookFactory(
+			ResolverHookFactory resolverHookFactory) {
+		this.tracker.track(this.bundleContext.registerService(
+				ResolverHookFactory.class, resolverHookFactory, null));
+	}
 
-        if (userRegionBundlesProperty != null) {
-            List<Bundle> bundlesToStart = new ArrayList<Bundle>();
+	private BundleContext initialiseUserRegionBundles() throws BundleException {
 
-            for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
-                Bundle bundle = this.bundleContext.installBundle(entry.getURI().toString());
+		BundleContext userRegionBundleContext = null;
 
-                if (entry.isAutoStart()) {
-                    bundlesToStart.add(bundle);
-                }
-            }
+		String userRegionBundlesProperty = this.regionBundles != null ? this.regionBundles
+				: this.bundleContext
+						.getProperty(USER_REGION_BASE_BUNDLES_PROPERTY);
 
-            for (Bundle bundle : bundlesToStart) {
-                try {
-                    bundle.start();
-                } catch (BundleException e) {
-                    throw new BundleException("Failed to start bundle " + bundle.getSymbolicName() + " " + bundle.getVersion(), e);
-                }
-                if (userRegionBundleContext == null) {
-                    userRegionBundleContext = bundle.getBundleContext();
-                    notifyUserRegionStarting(userRegionBundleContext);
-                }
-            }
-        }
-        return userRegionBundleContext;
-    }
+		if (userRegionBundlesProperty != null) {
+			List<Bundle> bundlesToStart = new ArrayList<Bundle>();
 
-    private void notifyUserRegionStarting(BundleContext userRegionBundleContext) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(EVENT_PROPERTY_REGION_BUNDLECONTEXT, userRegionBundleContext);
-        this.eventAdmin.sendEvent(new Event(EVENT_REGION_STARTING, properties));
-    }
+			for (BundleEntry entry : this.parser
+					.parseBundleEntries(userRegionBundlesProperty)) {
+				Bundle bundle = this.bundleContext.installBundle(entry.getURI()
+						.toString());
 
-    private void registerRegionService(Region region) {
-        Dictionary<String, String> props = new Hashtable<String, String>();
-        props.put("org.eclipse.virgo.kernel.region.name", region.getName());
-        this.tracker.track(this.bundleContext.registerService(Region.class.getName(), region, props));
-    }
+				if (entry.isAutoStart()) {
+					bundlesToStart.add(bundle);
+				}
+			}
 
-    public void stop() {
-        this.tracker.unregisterAll();
-    }
+			for (Bundle bundle : bundlesToStart) {
+				try {
+					bundle.start();
+				} catch (BundleException e) {
+					throw new BundleException("Failed to start bundle "
+							+ bundle.getSymbolicName() + " "
+							+ bundle.getVersion(), e);
+				}
+				if (userRegionBundleContext == null) {
+					userRegionBundleContext = bundle.getBundleContext();
+					notifyUserRegionStarting(userRegionBundleContext);
+				}
+			}
+		}
+		return userRegionBundleContext;
+	}
 
-    private static class ImmutableRegion implements Region {
+	private void notifyUserRegionStarting(BundleContext userRegionBundleContext) {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(EVENT_PROPERTY_REGION_BUNDLECONTEXT,
+				userRegionBundleContext);
+		this.eventAdmin.sendEvent(new Event(EVENT_REGION_STARTING, properties));
+	}
 
-        private final String name;
+	private void registerRegionService(Region region) {
+		Dictionary<String, String> props = new Hashtable<String, String>();
+		props.put("org.eclipse.virgo.kernel.region.name", region.getName());
+		this.tracker.track(this.bundleContext.registerService(Region.class
+				.getName(), region, props));
+	}
 
-        private final BundleContext bundleContext;
+	public void stop() {
+		this.tracker.unregisterAll();
+	}
 
-        public ImmutableRegion(String name, @NonNull BundleContext bundleContext) {
-            this.name = name;
-            this.bundleContext = bundleContext;
-        }
+	private static class ImmutableRegion implements Region {
 
-        public String getName() {
-            return name;
-        }
+		private final String name;
 
-        public BundleContext getBundleContext() {
-            return this.bundleContext;
-        }
+		private final BundleContext bundleContext;
 
-    }
+		public ImmutableRegion(String name, @NonNull BundleContext bundleContext) {
+			this.name = name;
+			this.bundleContext = bundleContext;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public BundleContext getBundleContext() {
+			return this.bundleContext;
+		}
+
+	}
 }
