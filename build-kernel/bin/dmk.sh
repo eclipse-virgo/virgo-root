@@ -182,6 +182,8 @@ then
 elif [ "$COMMAND" = "stop" ]
 then
 
+	CONFIG_DIR=$KERNEL_HOME/config
+
 	#parse args for the script
 	if [ -z "$TRUSTSTORE_PATH" ]
 	then
@@ -206,6 +208,10 @@ then
 				TRUSTSTORE_PASSWORD=$2
 				shift;
 				;;
+		-configDir)
+				CONFIG_DIR=$2
+				shift;
+				;;
 		*)
 			OTHER_ARGS+=" $1"
 			;;
@@ -221,6 +227,7 @@ then
 	$JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
 		-classpath $CLASSPATH \
 		-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
+		-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
 		org.eclipse.virgo.kernel.shutdown.ShutdownClient $OTHER_ARGS
 	
 else

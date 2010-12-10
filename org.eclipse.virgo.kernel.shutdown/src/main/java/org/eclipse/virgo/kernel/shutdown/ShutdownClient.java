@@ -31,46 +31,47 @@ import javax.naming.ServiceUnavailableException;
  */
 public class ShutdownClient {
 
-	private static final String OPERATION_IMMEDIATE_SHUTDOWN = "immediateShutdown";
+    private static final String OPERATION_IMMEDIATE_SHUTDOWN = "immediateShutdown";
 
-	private static final String OPERATION_SHUTDOWN = "shutdown";
-   
-	private static final String PROPERTY_JMX_REMOTE_CREDENTIALS = "jmx.remote.credentials";
-	
-	private static final String JMX_SERVICE_URL_TEMPLATE = "service:jmx:rmi:///jndi/rmi://127.0.0.1:%d/jmxrmi";
+    private static final String OPERATION_SHUTDOWN = "shutdown";
 
-	public static void main(String[] args) {
-    	new ShutdownClient().performShutdown(args);
+    private static final String PROPERTY_JMX_REMOTE_CREDENTIALS = "jmx.remote.credentials";
+
+    private static final String JMX_SERVICE_URL_TEMPLATE = "service:jmx:rmi:///jndi/rmi://127.0.0.1:%d/jmxrmi";
+
+    public static void main(String[] args) {
+        new ShutdownClient().performShutdown(args);
     }
-    
+
     final void performShutdown(String... args) {
-    	ShutdownCommand command = ShutdownCommandParser.parse(args);
-    	
-    	if (command != null) {
-    		doShutdown(command);
-    	} else {
-    		displayUsageAndExit();
-    	}
+        ShutdownCommand command = ShutdownCommandParser.parse(args);
+
+        if (command != null) {
+            doShutdown(command);
+        } else {
+            displayUsageAndExit();
+        }
     }
-    
+
     protected final void doShutdown(ShutdownCommand command) {
         try {
             JMXServiceURL jmxServiceURL = new JMXServiceURL(String.format(JMX_SERVICE_URL_TEMPLATE, command.getPort()));
-            
+
             Map<String, Object> jmxEnvironment = new HashMap<String, Object>();
-            jmxEnvironment.put(PROPERTY_JMX_REMOTE_CREDENTIALS, new String[] { command.getUsername(), command.getPassword() });
-            
+
+            setRemoteCredentials(command, jmxEnvironment);
+
             JMXConnector connector = JMXConnectorFactory.connect(jmxServiceURL, jmxEnvironment);
             MBeanServerConnection connection = connector.getMBeanServerConnection();
-            
+
             ObjectName shutdownMBeanName = new ObjectName(command.getDomain(), "type", "Shutdown");
-            
+
             if (command.isImmediate()) {
                 connection.invoke(shutdownMBeanName, OPERATION_IMMEDIATE_SHUTDOWN, null, null);
             } else {
                 connection.invoke(shutdownMBeanName, OPERATION_SHUTDOWN, null, null);
             }
-            
+
             connector.close();
         } catch (IOException ioe) {
             Throwable cause = ioe.getCause();
@@ -83,13 +84,33 @@ public class ShutdownClient {
             reportShutdownFailure(e);
         }
     }
-    
-    protected void reportServerUnreachable() {
-    	System.out.println("The Server could not be reached, it may already be stopped.");
+
+    private void setRemoteCredentials(ShutdownCommand command, Map<String, Object> jmxEnvironment) {
+        KernelAuthenticationConfiguration kac = null;
+
+        String userName = command.getUsername();
+        if (userName == null) {
+            kac = new KernelAuthenticationConfiguration();
+            userName = kac.getUserName();
+        }
+
+        String password = command.getPassword();
+        if (password == null) {
+            if (kac == null) {
+                kac = new KernelAuthenticationConfiguration();
+            }
+            password = kac.getPassword();
+        }
+
+        jmxEnvironment.put(PROPERTY_JMX_REMOTE_CREDENTIALS, new String[] { userName, password });
     }
-    
+
+    protected void reportServerUnreachable() {
+        System.out.println("The Server could not be reached, it may already be stopped.");
+    }
+
     protected void reportShutdownFailure(Exception failure) {
-    	failure.printStackTrace();
+        failure.printStackTrace();
     }
 
     private void displayUsageAndExit() {
@@ -107,7 +128,7 @@ public class ShutdownClient {
         System.out.println("                      kernel.");
         exit();
     }
-    
+
     protected void exit() {
         System.exit(1);
     }

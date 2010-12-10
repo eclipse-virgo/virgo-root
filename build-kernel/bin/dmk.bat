@@ -97,9 +97,11 @@ rem ------------------------------
     goto continueStartOptionLoop
   :configDir
     set CONFIG_DIR=%~2
-    rem check it is absolute, relative to the kernel home
-	if not "%CONFIG_DIR:~1,2%"==":\" set CONFIG_DIR=%KERNEL_HOME%\%CONFIG_DIR%
-	if "%CONFIG_DIR:-1%"=="\" set CONFIG_DIR=%CONFIG_DIR:~-1%
+    rem unless absolute, treat as relative to kernel home
+    if "%CONFIG_DIR:~1%"=="\" goto absoluteConfigDir
+	if "%CONFIG_DIR:~1,2%"==":\" goto absoluteConfigDir
+	set CONFIG_DIR=%KERNEL_HOME%\%CONFIG_DIR%
+  :absoluteConfigDir
     shift
     goto continueStartOptionLoop
   :jmxport
@@ -194,29 +196,45 @@ rem ------------------------------
   rem The shift must be here :()
 
   rem Set defaults
-    if not defined TRUSTSTORE_PATH set TRUSTSTORE_PATH=%KERNEL_HOME%\config\keystore
-    if not defined TRUSTSTORE_PASSWORD set TRUSTSTORE_PASSWORD=changeit
-    set OTHER_ARGS=
+  set CONFIG_DIR=%KERNEL_HOME%\config
+  if not defined TRUSTSTORE_PATH set TRUSTSTORE_PATH=%KERNEL_HOME%\config\keystore
+  if not defined TRUSTSTORE_PASSWORD set TRUSTSTORE_PASSWORD=changeit
+  set OTHER_ARGS=
 
   rem Loop through options
-
   :stopOptionLoop
-    if "%~1"=="" goto endStopOptionLoop
+
+  if "%~1"=="" goto endStopOptionLoop  
+  if "%~1"=="-truststore" goto truststoreStop
+  if "%~1"=="-truststorePassword" goto truststorePasswordStop
+  if "%~1"=="-configDir" goto configDirStop 
   
-    if "%~1"=="-truststore" (
-      set TRUSTSTORE_PATH=%~2
-      shift
-    ) else (
-      if "%~1"=="-truststorePassword" (
-        set TRUSTSTORE_PASSWORD=%~2
-        shift
-      ) else (
-        set OTHER_ARGS=%OTHER_ARGS% "%~1"
-      )
-    )
+  set OTHER_ARGS=%OTHER_ARGS% "%~1"
     
+  :continueStopOptionLoop
+  shift
+  goto stopOptionLoop
+
+  :truststoreStop
+  set TRUSTSTORE_PATH=%~2
+  shift
+  goto continueStopOptionLoop
+
+  :truststorePasswordStop
+  set TRUSTSTORE_PASSWORD=%~2
+  shift
+  goto continueStopOptionLoop
+
+  :configDirStop
+    set CONFIG_DIR=%~2
+    rem unless absolute, treat as relative to kernel home
+    if "%CONFIG_DIR:~1%"=="\" goto absoluteConfigDirStop
+	if "%CONFIG_DIR:~1,2%"==":\" goto absoluteConfigDirStop
+	set CONFIG_DIR=%KERNEL_HOME%\%CONFIG_DIR%
+  :absoluteConfigDirStop
     shift
-    goto stopOptionLoop
+    goto continueStopOptionLoop
+
   :endStopOptionLoop
 
   rem Call shutdown client
@@ -229,6 +247,7 @@ rem ------------------------------
     set SHUTDOWN_PARMS= %JAVA_OPTS% %JMX_OPTS%
     set SHUTDOWN_PARMS=%SHUTDOWN_PARMS% -classpath "%CLASSPATH%"
     set SHUTDOWN_PARMS=%SHUTDOWN_PARMS% -Dorg.eclipse.virgo.kernel.home="%KERNEL_HOME%"
+	set SHUTDOWN_PARMS=%SHUTDOWN_PARMS% -Dorg.eclipse.virgo.kernel.authentication.file="%CONFIG_DIR%\org.eclipse.virgo.kernel.users.properties"
     set SHUTDOWN_PARMS=%SHUTDOWN_PARMS% org.eclipse.virgo.kernel.shutdown.ShutdownClient
     set SHUTDOWN_PARMS=%SHUTDOWN_PARMS% %OTHER_ARGS%
 
