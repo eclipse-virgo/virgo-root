@@ -15,11 +15,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +28,11 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
-import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.hooks.bundle.EventHook;
+import org.osgi.framework.hooks.bundle.FindHook;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -134,7 +131,7 @@ final class RegionManager {
                 this.bundleContext);
         }
 
-        registerResolverHookFactory(new RegionResolverHookFactory(new RegionMembership() {
+        RegionMembership regionMembership = new RegionMembership() {
 
             @Override
             public boolean contains(Bundle bundle) {
@@ -142,7 +139,13 @@ final class RegionManager {
                 long bundleId = bundle.getBundleId();
                 return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
             }
-        }, expandedUserRegionImportsProperty));
+        };
+        
+        registerResolverHookFactory(new RegionResolverHookFactory(regionMembership, expandedUserRegionImportsProperty));
+        
+        registerBundleEventHook(new RegionBundleEventHook(regionMembership));
+        
+        registerBundleFindHook(new RegionBundleFindHook(regionMembership));
         
         BundleContext userRegionBundleContext = initialiseUserRegionBundles();
         
@@ -151,14 +154,24 @@ final class RegionManager {
         publishUserRegionBundleContext(userRegionBundleContext);
     }
 
+    private void registerBundleFindHook(FindHook findHook) {
+        this.tracker.track(this.bundleContext.registerService(FindHook.class, findHook, null));
+        
+    }
+
+    private void registerBundleEventHook(EventHook eventHook) {
+        this.tracker.track(this.bundleContext.registerService(EventHook.class, eventHook, null));
+        
+    }
+
     private void publishUserRegionBundleContext(BundleContext userRegionBundleContext) {
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.kernel.regionContext", "true");
-        this.bundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
+        this.bundleContext.registerService(BundleContext.class, userRegionBundleContext, properties);
     }
 
     private void registerResolverHookFactory(ResolverHookFactory resolverHookFactory) {
-        this.tracker.track(this.bundleContext.registerService(ResolverHookFactory.class.getName(), resolverHookFactory, null));
+        this.tracker.track(this.bundleContext.registerService(ResolverHookFactory.class, resolverHookFactory, null));
     }
 
     private BundleContext initialiseUserRegionBundles() throws BundleException {

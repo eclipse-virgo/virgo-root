@@ -52,7 +52,7 @@ public abstract class AbstractKernelIntegrationTest {
     private BundleContext getKernelContext() {
         try {
             Collection<ServiceReference<Region>> references = this.context.getServiceReferences(Region.class,"(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.kernel)");
-            //XXX Assert.assertEquals(1, references.size()); Currently get two services with the same region bundle context because we have no event hook.
+            Assert.assertEquals(1, references.size());
             Iterator<ServiceReference<Region>> i = references.iterator();
             ServiceReference<Region> reference = i.next();
             Region kernelRegion = this.context.getService(reference);
