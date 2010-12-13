@@ -13,7 +13,10 @@ package org.eclipse.virgo.kernel.osgi.region;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -187,6 +190,15 @@ final class RegionManager {
             for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
                 Bundle bundle = null;
                 String bundleUriString = entry.getURI().toString();
+                
+//                try {
+//                    this.bundleContext.installBundle("userregion:" + bundleUriString, new URL("reference://" + bundleUriString).openStream());
+//                } catch (MalformedURLException e) {
+//                    throw new BundleException("Failed to install bundle", e);
+//                } catch (IOException e) {
+//                    throw new BundleException("Failed to install bundle", e);
+//                }
+                
                 InputStream is;
                 try {
                     String filePath = null;
