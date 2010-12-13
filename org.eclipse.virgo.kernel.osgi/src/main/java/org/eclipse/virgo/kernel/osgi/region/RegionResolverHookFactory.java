@@ -54,7 +54,7 @@ final class RegionResolverHookFactory implements ResolverHookFactory {
     private boolean triggerInRegion(Collection<BundleRevision> triggers) {
         Iterator<BundleRevision> i = triggers.iterator();
         while (i.hasNext()) {
-            if (this.regionMembership.isMember(i.next().getBundle())) {
+            if (this.regionMembership.contains(i.next().getBundle())) {
                 return true;
             }
         }

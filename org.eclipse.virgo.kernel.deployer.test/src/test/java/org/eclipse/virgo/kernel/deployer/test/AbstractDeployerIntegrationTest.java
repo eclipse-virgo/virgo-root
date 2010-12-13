@@ -16,10 +16,17 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.Collection;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -31,14 +38,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.framework.SurrogateBundle;
 import org.osgi.service.packageadmin.PackageAdmin;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 
 @RunWith(DmKernelTestRunner.class)
 @SuppressWarnings("deprecation")
@@ -66,14 +66,33 @@ public abstract class AbstractDeployerIntegrationTest {
             this.deployer = this.context.getService(applicationDeployerServiceReference);
         }
 
-        Bundle bundle = this.context.getBundle(1);
-        if (bundle instanceof SurrogateBundle) {
-            this.kernelContext = ((SurrogateBundle) bundle).getCompositeBundleContext();
-        }
+        this.kernelContext = getKernelContext();
 
         ServiceReference<PackageAdmin> packageAdminServiceReference = context.getServiceReference(PackageAdmin.class);
         if (packageAdminServiceReference != null) {
             this.packageAdmin = context.getService(packageAdminServiceReference);
+        }
+    }
+    
+    private BundleContext getKernelContext() {
+        try {
+            Collection<ServiceReference<Region>> references = this.context.getServiceReferences(Region.class,"(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.kernel)");
+            //XXX Assert.assertEquals(1, references.size()); Appear to get two services with the same region bundle context
+            ServiceReference<Region> reference = references.iterator().next();
+            Region kernelRegion = this.context.getService(reference);
+            Assert.assertNotNull("Kernel Region not found", kernelRegion);
+            BundleContext kernelContext = kernelRegion.getBundleContext();
+            
+            //ServiceReference<Region> ref2 = i.next();
+            //BundleContext kc2 = this.context.getService(ref2).getBundleContext();
+            
+            Assert.assertNotNull("Kernel Region bundle context not found", kernelContext);
+            this.context.ungetService(reference);
+            return kernelContext;
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+            return null;
         }
     }
 

@@ -12,24 +12,25 @@
 package org.eclipse.virgo.kernel.test;
 
 import java.lang.management.ManagementFactory;
+import java.util.Collection;
+import java.util.Iterator;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.framework.SurrogateBundle;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 
 @RunWith(DmKernelTestRunner.class)
-@SuppressWarnings("deprecation")
 public abstract class AbstractKernelIntegrationTest {
     
     protected volatile BundleContext kernelContext;
@@ -45,9 +46,25 @@ public abstract class AbstractKernelIntegrationTest {
             this.framework = this.context.getService(serviceReference);
         }
         
-        Bundle bundle = this.context.getBundle(1);
-        if (bundle instanceof SurrogateBundle) {
-            this.kernelContext = ((SurrogateBundle)bundle).getCompositeBundleContext();
+        this.kernelContext = getKernelContext();
+    }
+
+    private BundleContext getKernelContext() {
+        try {
+            Collection<ServiceReference<Region>> references = this.context.getServiceReferences(Region.class,"(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.kernel)");
+            //XXX Assert.assertEquals(1, references.size()); Currently get two services with the same region bundle context because we have no event hook.
+            Iterator<ServiceReference<Region>> i = references.iterator();
+            ServiceReference<Region> reference = i.next();
+            Region kernelRegion = this.context.getService(reference);
+            Assert.assertNotNull("Kernel Region not found", kernelRegion);
+            BundleContext kernelContext = kernelRegion.getBundleContext();
+            Assert.assertNotNull("Kernel Region bundle context not found", kernelContext);
+            this.context.ungetService(reference);
+            return kernelContext;
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+            return null;
         }
     }
 

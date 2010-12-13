@@ -32,6 +32,6 @@ public interface RegionMembership {
      * @param bundle the {@link Bundle} to be checked for membership
      * @return <code>true</code> if and only if the specified bundle belongs to the region
      */
-    boolean isMember(Bundle bundle);
+    boolean contains(Bundle bundle);
 
 }

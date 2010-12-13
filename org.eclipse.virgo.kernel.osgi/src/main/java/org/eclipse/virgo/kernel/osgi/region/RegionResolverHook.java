@@ -55,7 +55,7 @@ final class RegionResolverHook implements ResolverHook {
     }
 
     private boolean isMember(Bundle bundle) {
-        return this.regionMembership.isMember(bundle);
+        return this.regionMembership.contains(bundle);
     }
 
     @Override

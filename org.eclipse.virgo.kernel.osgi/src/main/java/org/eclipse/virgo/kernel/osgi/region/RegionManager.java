@@ -11,10 +11,15 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +30,12 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -56,6 +64,8 @@ final class RegionManager {
     private static final String USER_REGION_SERVICE_EXPORTS_PROPERTY = "serviceExports";
 
     private static final String USER_REGION_PROPERTIES_PROPERTY = "inheritedFrameworkProperties";
+
+    private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
 
     private static final String REGION_USER = "org.eclipse.virgo.region.user";
 
@@ -113,10 +123,8 @@ final class RegionManager {
     }
 
     private void createAndPublishUserRegion() throws BundleException {
-        
-        BundleContext userRegionBundleContext = initialiseUserRegionBundles();
 
-        registerRegionService(new ImmutableRegion(REGION_USER, userRegionBundleContext));
+        registerRegionService(new ImmutableRegion(REGION_KERNEL, this.bundleContext));
 
         String userRegionImportsProperty = this.regionImports != null ? this.regionImports
             : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
@@ -129,11 +137,24 @@ final class RegionManager {
         registerResolverHookFactory(new RegionResolverHookFactory(new RegionMembership() {
 
             @Override
-            public boolean isMember(Bundle bundle) {
-                // TODO implement a more robust partitioning of bundles
-                return bundle.getBundleId() > bundleContext.getBundle().getBundleId();
+            public boolean contains(Bundle bundle) {
+                // TODO implement a more robust membership scheme
+                long bundleId = bundle.getBundleId();
+                return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
             }
         }, expandedUserRegionImportsProperty));
+        
+        BundleContext userRegionBundleContext = initialiseUserRegionBundles();
+        
+        registerRegionService(new ImmutableRegion(REGION_USER, userRegionBundleContext));
+        
+        publishUserRegionBundleContext(userRegionBundleContext);
+    }
+
+    private void publishUserRegionBundleContext(BundleContext userRegionBundleContext) {
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("org.eclipse.virgo.kernel.regionContext", "true");
+        this.bundleContext.registerService(BundleContext.class.getName(), userRegionBundleContext, properties);
     }
 
     private void registerResolverHookFactory(ResolverHookFactory resolverHookFactory) {
@@ -151,7 +172,19 @@ final class RegionManager {
             List<Bundle> bundlesToStart = new ArrayList<Bundle>();
 
             for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
-                Bundle bundle = this.bundleContext.installBundle(entry.getURI().toString());
+                Bundle bundle = null;
+                String bundleUriString = entry.getURI().toString();
+                InputStream is;
+                try {
+                    String filePath = null;
+                    if (bundleUriString.startsWith("file:")) {
+                        filePath = bundleUriString.substring("file:".length());
+                    }
+                    is = new FileInputStream(filePath);
+                    bundle = this.bundleContext.installBundle("userregion:" + filePath, is);
+                } catch (FileNotFoundException e) {
+                    bundle = this.bundleContext.installBundle(bundleUriString);
+                }
 
                 if (entry.isAutoStart()) {
                     bundlesToStart.add(bundle);
@@ -182,7 +215,7 @@ final class RegionManager {
     private void registerRegionService(Region region) {
         Dictionary<String, String> props = new Hashtable<String, String>();
         props.put("org.eclipse.virgo.kernel.region.name", region.getName());
-        this.tracker.track(this.bundleContext.registerService(Region.class.getName(), region, props));
+        this.tracker.track(this.bundleContext.registerService(Region.class, region, props));
     }
 
     public void stop() {
