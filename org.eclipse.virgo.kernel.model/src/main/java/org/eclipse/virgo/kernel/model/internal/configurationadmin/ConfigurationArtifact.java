@@ -82,7 +82,7 @@ final class ConfigurationArtifact extends AbstractArtifact {
      */
     public void uninstall() {
         try {
-            this.configurationAdmin.getConfiguration(this.pid).delete();
+            this.configurationAdmin.getConfiguration(this.pid, null).delete();
         } catch (IOException e) {
             logger.error("Unable to delete configuration for '{}'", this.pid);
             throw new RuntimeException(String.format("Unable to delete configuration for '%s'", this.pid), e);

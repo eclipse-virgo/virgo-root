@@ -293,7 +293,7 @@ public class Activator implements BundleActivator {
         private Dictionary<String, String> getRegionArtifactConfiguration() {
             ConfigurationAdmin configAdmin = OsgiFrameworkUtils.getService(this.context, ConfigurationAdmin.class).getService();
             try {
-                Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID);
+                Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
                 Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();
                 return properties;
             } catch (IOException ioe) {

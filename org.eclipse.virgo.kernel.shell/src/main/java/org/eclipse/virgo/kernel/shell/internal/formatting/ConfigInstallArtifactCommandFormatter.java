@@ -36,7 +36,7 @@ public final class ConfigInstallArtifactCommandFormatter extends AbstractInstall
 
         Configuration configuration;
         try {
-            configuration = this.configurationAdmin.getConfiguration(artifact.getName());
+            configuration = this.configurationAdmin.getConfiguration(artifact.getName(), null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
