@@ -97,6 +97,7 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     /** 
      * {@inheritDoc}
      */
+    @Override
     public void onStarting(InstallArtifact installArtifact) throws DeploymentException {
         if (isWebBundle(installArtifact)) {
             try {
@@ -110,6 +111,7 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     /** 
      * {@inheritDoc}
      */
+    @Override
     public void onStarted(InstallArtifact installArtifact) throws DeploymentException {
         WebApplication webApplication = this.webApplications.get(installArtifact);
         if (webApplication != null) {
@@ -145,6 +147,7 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     /** 
      * {@inheritDoc}
      */
+    @Override
     public void onStopping(InstallArtifact installArtifact) {
         WebApplication webApplication = this.webApplications.remove(installArtifact);
         if (webApplication != null) {

@@ -277,9 +277,9 @@ public class ServerOsgiBundleXmlWebApplicationContext extends OsgiBundleXmlAppli
 	// Drive the kernel's bean factory post processors.
         BundleContext bundleContext = getBundleContext();
         if (bundleContext != null) {
-            ServiceReference sr = bundleContext.getServiceReference("org.springframework.osgi.extender.OsgiBeanFactoryPostProcessor");
+            ServiceReference<OsgiBeanFactoryPostProcessor> sr = bundleContext.getServiceReference(OsgiBeanFactoryPostProcessor.class);
             if (sr != null) {
-                OsgiBeanFactoryPostProcessor kernelPostProcessor = (OsgiBeanFactoryPostProcessor) bundleContext.getService(sr);
+                OsgiBeanFactoryPostProcessor kernelPostProcessor = bundleContext.getService(sr);
                 try {
                     kernelPostProcessor.postProcessBeanFactory(bundleContext, beanFactory);
                 } catch (Exception e) {

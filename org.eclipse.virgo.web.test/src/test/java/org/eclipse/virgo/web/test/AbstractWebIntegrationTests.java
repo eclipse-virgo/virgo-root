@@ -337,9 +337,9 @@ public abstract class AbstractWebIntegrationTests {
 
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
-        ServiceReference appDeployerServiceReference = bundleContext.getServiceReference(ApplicationDeployer.class.getName());
+        ServiceReference<ApplicationDeployer> appDeployerServiceReference = bundleContext.getServiceReference(ApplicationDeployer.class);
         assertNotNull("ApplicationDeployer service reference not found", appDeployerServiceReference);
-        this.appDeployer = (ApplicationDeployer) bundleContext.getService(appDeployerServiceReference);
+        this.appDeployer = bundleContext.getService(appDeployerServiceReference);
         assertNotNull("ApplicationDeployer service not found", this.appDeployer);
     }
 
