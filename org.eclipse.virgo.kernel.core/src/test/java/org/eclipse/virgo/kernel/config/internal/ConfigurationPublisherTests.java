@@ -45,7 +45,7 @@ public class ConfigurationPublisherTests {
         ConfigurationPublisher publisher = new ConfigurationPublisher(configAdmin, source);
         publisher.publishConfigurations();
 
-        Configuration configuration = configAdmin.getConfiguration(pid);
+        Configuration configuration = configAdmin.getConfiguration(pid, null);
         assertConfigurationEquals(configuration, p);
 
     }
@@ -76,10 +76,10 @@ public class ConfigurationPublisherTests {
         ConfigurationPublisher publisher = new ConfigurationPublisher(configAdmin, one, two);
         publisher.publishConfigurations();
 
-        Configuration configuration = configAdmin.getConfiguration(pidOne);
+        Configuration configuration = configAdmin.getConfiguration(pidOne, null);
         assertConfigurationEquals(configuration, propertiesOne);
         
-        configuration = configAdmin.getConfiguration(pidTwo);
+        configuration = configAdmin.getConfiguration(pidTwo, null);
         assertConfigurationEquals(configuration, propertiesTwo);
 
     }
@@ -112,7 +112,7 @@ public class ConfigurationPublisherTests {
         ConfigurationPublisher publisher = new ConfigurationPublisher(configAdmin, one, two);
         publisher.publishConfigurations();
 
-        Configuration configuration = configAdmin.getConfiguration(pidOne);
+        Configuration configuration = configAdmin.getConfiguration(pidOne, null);
 
         assertEquals("bar", configuration.getProperties().get("foo"));
         assertEquals("boo", configuration.getProperties().get("bar"));
