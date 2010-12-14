@@ -11,11 +11,13 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -52,6 +54,10 @@ import org.osgi.service.event.EventAdmin;
  * 
  */
 final class RegionManager {
+
+    private static final String REFERENCE_SCHEME = "reference:";
+
+    private static final String FILE_SCHEME = "file:";
 
     private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
@@ -143,28 +149,28 @@ final class RegionManager {
                 return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
             }
         };
-        
+
         registerResolverHookFactory(new RegionResolverHookFactory(regionMembership, expandedUserRegionImportsProperty));
-        
+
         registerBundleEventHook(new RegionBundleEventHook(regionMembership));
-        
+
         registerBundleFindHook(new RegionBundleFindHook(regionMembership));
-        
+
         BundleContext userRegionBundleContext = initialiseUserRegionBundles();
-        
+
         registerRegionService(new ImmutableRegion(REGION_USER, userRegionBundleContext));
-        
+
         publishUserRegionBundleContext(userRegionBundleContext);
     }
 
     private void registerBundleFindHook(FindHook findHook) {
         this.tracker.track(this.bundleContext.registerService(FindHook.class, findHook, null));
-        
+
     }
 
     private void registerBundleEventHook(EventHook eventHook) {
         this.tracker.track(this.bundleContext.registerService(EventHook.class, eventHook, null));
-        
+
     }
 
     private void publishUserRegionBundleContext(BundleContext userRegionBundleContext) {
@@ -188,29 +194,16 @@ final class RegionManager {
             List<Bundle> bundlesToStart = new ArrayList<Bundle>();
 
             for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
-                Bundle bundle = null;
-                String bundleUriString = entry.getURI().toString();
-                
-                InputStream is;
-                try {
-                    String filePath = null;
-                    if (bundleUriString.startsWith("file:")) {
-                        filePath = bundleUriString.substring("file:".length());
-                    }
-                    is = new FileInputStream(filePath);
-                    bundle = this.bundleContext.installBundle("userregion:" + filePath, is);
-                } catch (FileNotFoundException _) {
-                    // Attempt to install the bundle directly in case the file is a directory.
-                    bundle = this.bundleContext.installBundle(bundleUriString);
-                }
+                URI uri = entry.getURI();
+                Bundle bundle = this.bundleContext.installBundle("userregion@" + uri.toString(), openBundleStream(uri));
 
                 if (entry.isAutoStart()) {
                     bundlesToStart.add(bundle);
                 }
             }
-            
+
             if (bundlesToStart.isEmpty()) {
-                throw new BundleException("baseBundles property did not specify at least one bundle to start");
+                throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property did not specify at least one bundle to start");
             }
 
             for (Bundle bundle : bundlesToStart) {
@@ -226,6 +219,35 @@ final class RegionManager {
             }
         }
         return userRegionBundleContext;
+    }
+
+    private InputStream openBundleStream(URI uri) throws BundleException {
+        String absoluteBundleUriString = getAbsoluteUriString(uri);
+
+        try {
+            // Use the reference: scheme to obtain an InputStream for either a file or a directory.
+            return new URL(REFERENCE_SCHEME + absoluteBundleUriString).openStream();
+
+        } catch (MalformedURLException e) {
+            throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property resulted in an invalid bundle URI '" + absoluteBundleUriString
+                + "'", e);
+        } catch (IOException e) {
+            throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property referred to an invalid bundle at URI '"
+                + absoluteBundleUriString + "'", e);
+        }
+    }
+
+    private String getAbsoluteUriString(URI uri) throws BundleException {
+        String bundleUriString = uri.toString();
+
+        if (!bundleUriString.startsWith(FILE_SCHEME)) {
+            throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property contained an entry '" + bundleUriString
+                + "' which did not start with '" + FILE_SCHEME + "'");
+        }
+
+        String filePath = bundleUriString.substring(FILE_SCHEME.length());
+
+        return FILE_SCHEME + new File(filePath).getAbsolutePath();
     }
 
     private void notifyUserRegionStarting(BundleContext userRegionBundleContext) {
