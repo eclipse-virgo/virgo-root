@@ -191,14 +191,6 @@ final class RegionManager {
                 Bundle bundle = null;
                 String bundleUriString = entry.getURI().toString();
                 
-//                try {
-//                    this.bundleContext.installBundle("userregion:" + bundleUriString, new URL("reference://" + bundleUriString).openStream());
-//                } catch (MalformedURLException e) {
-//                    throw new BundleException("Failed to install bundle", e);
-//                } catch (IOException e) {
-//                    throw new BundleException("Failed to install bundle", e);
-//                }
-                
                 InputStream is;
                 try {
                     String filePath = null;
@@ -207,7 +199,8 @@ final class RegionManager {
                     }
                     is = new FileInputStream(filePath);
                     bundle = this.bundleContext.installBundle("userregion:" + filePath, is);
-                } catch (FileNotFoundException e) {
+                } catch (FileNotFoundException _) {
+                    // Attempt to install the bundle directly in case the file is a directory.
                     bundle = this.bundleContext.installBundle(bundleUriString);
                 }
 
