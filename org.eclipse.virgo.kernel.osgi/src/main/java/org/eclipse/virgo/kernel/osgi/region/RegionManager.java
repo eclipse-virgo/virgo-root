@@ -208,6 +208,10 @@ final class RegionManager {
                     bundlesToStart.add(bundle);
                 }
             }
+            
+            if (bundlesToStart.isEmpty()) {
+                throw new BundleException("baseBundles property did not specify at least one bundle to start");
+            }
 
             for (Bundle bundle : bundlesToStart) {
                 try {

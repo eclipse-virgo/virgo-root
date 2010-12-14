@@ -29,7 +29,6 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 import org.junit.Test;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 public class RegionManagerTests {
@@ -39,7 +38,7 @@ public class RegionManagerTests {
         StubBundleContext bundleContext = new StubBundleContext();
                               
         EventAdmin eventAdmin = createMock(EventAdmin.class);
-        eventAdmin.sendEvent(isA(Event.class));
+        //eventAdmin.sendEvent(isA(Event.class));
         
         Dictionary<String, String> properties = new Hashtable<String, String>();
         Configuration config = createMock(Configuration.class);
@@ -56,7 +55,7 @@ public class RegionManagerTests {
         manager.start();
         
         List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
-        assertEquals("Region not registered", 1, serviceRegistrations.size());
+        assertEquals("Region services not registered", 6, serviceRegistrations.size());
         
         manager.stop();
         verify(eventAdmin, configAdmin, config);
