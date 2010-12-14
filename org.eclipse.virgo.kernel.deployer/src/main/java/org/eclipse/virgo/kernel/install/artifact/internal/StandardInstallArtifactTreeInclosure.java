@@ -115,16 +115,17 @@ public final class StandardInstallArtifactTreeInclosure implements InstallArtifa
             throw new DeploymentException(sourceFile + " does not exist");
         }
 
-        ArtifactIdentity artifactIdentity = determineIdentity(sourceFile);
-
         ArtifactStorage artifactStorage = null;
         try {
+            ArtifactIdentity artifactIdentity = determineIdentity(sourceFile);
             artifactStorage = this.artifactStorageFactory.create(sourceFile, artifactIdentity);
-
             Tree<InstallArtifact> installArtifactTree = constructInstallArtifactTree(artifactIdentity, null, artifactStorage, null);
+
             return installArtifactTree;
         } catch (DeploymentException e) {
-            artifactStorage.delete();
+            if (artifactStorage != null) {
+              artifactStorage.delete();
+            }
             throw e;
         } catch (Exception e) {
             throw new DeploymentException(e.getMessage(), e);
