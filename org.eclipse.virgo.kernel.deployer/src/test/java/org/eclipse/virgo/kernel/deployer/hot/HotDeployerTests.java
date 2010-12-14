@@ -20,19 +20,18 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
+import java.util.Map;
 
+import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
+import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.event.Event;
-
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
-import org.eclipse.virgo.kernel.deployer.hot.HotDeployer;
-import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.util.io.PathReference;
 
 /**
  */
@@ -85,7 +84,7 @@ public class HotDeployerTests {
         replay(deployerConfiguration);
 
         HotDeployer deployer = new HotDeployer(deployerConfiguration, this.deployer, new MockEventLogger());
-        deployer.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", null));
+        deployer.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", (Map<String, ?>)null));
 
         try {
             // Deployer.start() is asynchronous: sleep long

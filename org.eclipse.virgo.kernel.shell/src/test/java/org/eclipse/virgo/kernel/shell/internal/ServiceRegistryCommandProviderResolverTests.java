@@ -14,14 +14,12 @@ package org.eclipse.virgo.kernel.shell.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.Properties;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-import org.junit.Test;
-
-import org.eclipse.virgo.kernel.shell.internal.CommandProviderResolver;
-import org.eclipse.virgo.kernel.shell.internal.ServiceRegistryCommandProviderResolver;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.junit.Test;
 
 
 /**
@@ -41,8 +39,8 @@ public class ServiceRegistryCommandProviderResolverTests {
     @Test
     public void commandProvider() {
         this.bundleContext.addFilter(new TrueFilter("(osgi.command.function=*)"));
-        Properties properties = new Properties();
-        properties.setProperty("osgi.command.function", "command");
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("osgi.command.function", "command");
         
         Object commandProvider = new Object();
         
@@ -53,8 +51,8 @@ public class ServiceRegistryCommandProviderResolverTests {
     @Test
     public void noCommandProviderAsCommandFunctionDoesNotMatch() {
         this.bundleContext.addFilter(new TrueFilter("(osgi.command.function=*)"));
-        Properties properties = new Properties();
-        properties.setProperty("osgi.command.function", "foo");
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("osgi.command.function", "foo");
         
         Object commandProvider = new Object();
         

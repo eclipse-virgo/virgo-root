@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
-
 /**
  * Test deploying an OSGi application containing a simple bundle.
  * 
@@ -47,21 +46,20 @@ public class MultiBundleApplicationDeploymentTests extends AbstractDeployerInteg
 
     private static final String TEST_BUNDLE_Q_SYMBOLIC_NAME = "MultiBundleApp-1-com.springsource.server.apps.app4.q";
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
-    private ServiceRegistration listenerRegistration = null;
+    private ServiceRegistration<DeploymentListener> listenerRegistration = null;
 
     private List<EventInfo> events = null;
 
     @Before
     public void setUp() throws Exception {
-        this.listenerRegistration =
-        this.context.registerService("org.eclipse.virgo.kernel.deployer.core.event.DeploymentListener", this, null);
+        this.listenerRegistration = this.context.registerService(DeploymentListener.class, this, null);
 
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
         this.events = new ArrayList<EventInfo>();
     }
 
@@ -93,7 +91,7 @@ public class MultiBundleApplicationDeploymentTests extends AbstractDeployerInteg
         // Check that the test bundle's application contexts are destroyed.
         assertNull(ApplicationContextUtils.getApplicationContext(this.context, TEST_BUNDLE_P_SYMBOLIC_NAME));
         assertNull(ApplicationContextUtils.getApplicationContext(this.context, TEST_BUNDLE_Q_SYMBOLIC_NAME));
-        
+
         assertFalse("File " + file + " deployed after test!", this.appDeployer.isDeployed(fileURI));
 
         @SuppressWarnings("unused")
@@ -130,7 +128,7 @@ public class MultiBundleApplicationDeploymentTests extends AbstractDeployerInteg
     public void installAParWithInternalRequireBundle() throws Exception {
         File file = new File("src/test/resources/requirebundle/bundles/parWithInternalRequireBundle.par");
         URI fileURI = file.toURI();
-        
+
         assertFalse("File " + file + " deployed before test!", this.appDeployer.isDeployed(fileURI));
         DeploymentIdentity deploymentId = this.appDeployer.deploy(fileURI);
         assertTrue("File " + file + " not deployed.", this.appDeployer.isDeployed(fileURI));
@@ -147,7 +145,7 @@ public class MultiBundleApplicationDeploymentTests extends AbstractDeployerInteg
         this.appDeployer.deploy(file.toURI());
     }
 
-//    @Ignore 
+    // @Ignore
     @Test
     public void installAParWithTwoBundlesThatImportTheSameLibrary() throws DeploymentException {
 
@@ -190,7 +188,7 @@ public class MultiBundleApplicationDeploymentTests extends AbstractDeployerInteg
             "org.eclipse.virgo.kernel.deployer.core.event.ApplicationBundleStopped TwoBundlesThatImportTheSameLibrary 1 TwoBundlesThatImportTheSameLibrary-1-TwoBundlesThatImportTheSameLibrary-synthetic.context",
             "org.eclipse.virgo.kernel.deployer.core.event.ApplicationBundleUndeployed TwoBundlesThatImportTheSameLibrary 1 TwoBundlesThatImportTheSameLibrary-1-TwoBundlesThatImportTheSameLibrary-synthetic.context",
             "org.eclipse.virgo.kernel.deployer.core.event.ApplicationUndeployed TwoBundlesThatImportTheSameLibrary 1" };
-        //FIXME: [DMS-1388] reinstate checkEvents(expectedEvents);
+        // FIXME: [DMS-1388] reinstate checkEvents(expectedEvents);
         // NB: no onEvent() calls are made.
     }
 

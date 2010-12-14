@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.osgi.service.resolver.BaseDescription;
 import org.eclipse.osgi.service.resolver.BundleDescription;
@@ -25,7 +26,11 @@ import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.NativeCodeSpecification;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.VersionRange;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.WiredCapability;
 
 /**
  */
@@ -61,6 +66,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean attachFragments() {
         throw new UnsupportedOperationException();
     }
@@ -68,6 +74,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean dynamicFragments() {
         throw new UnsupportedOperationException();
     }
@@ -75,6 +82,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getBundleId() {
         return this.bid;
     }
@@ -82,6 +90,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public State getContainingState() {
         throw new UnsupportedOperationException();
     }
@@ -89,6 +98,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription[] getDependents() {
         return this.dependents.toArray(new BundleDescription[this.dependents.size()]);
     }
@@ -96,6 +106,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getExecutionEnvironments() {
         throw new UnsupportedOperationException();
     }
@@ -103,6 +114,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExportPackageDescription[] getExportPackages() {
         return this.epds.toArray(new ExportPackageDescription[this.epds.size()]);
     }
@@ -110,6 +122,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription[] getFragments() {
         return this.fragments.toArray(new BundleDescription[this.fragments.size()]);
     }
@@ -117,6 +130,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public GenericDescription[] getGenericCapabilities() {
         throw new UnsupportedOperationException();
     }
@@ -124,6 +138,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public GenericSpecification[] getGenericRequires() {
         throw new UnsupportedOperationException();
     }
@@ -131,6 +146,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public HostSpecification getHost() {
         return StubBundleDescription.this.hosts == null ? null : new HostSpecification() {
 
@@ -172,6 +188,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ImportPackageSpecification[] getImportPackages() {
         return this.ipss.toArray(new ImportPackageSpecification[this.ipss.size()]);
     }
@@ -179,6 +196,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLocation() {
         throw new UnsupportedOperationException();
     }
@@ -186,6 +204,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public NativeCodeSpecification getNativeCodeSpecification() {
         throw new UnsupportedOperationException();
     }
@@ -193,6 +212,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPlatformFilter() {
         throw new UnsupportedOperationException();
     }
@@ -200,6 +220,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleSpecification[] getRequiredBundles() {
         return this.rbs.toArray(new BundleSpecification[this.rbs.size()]);
     }
@@ -207,6 +228,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExportPackageDescription[] getResolvedImports() {
         throw new UnsupportedOperationException();
     }
@@ -214,6 +236,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription[] getResolvedRequires() {
         throw new UnsupportedOperationException();
     }
@@ -221,6 +244,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExportPackageDescription[] getSelectedExports() {
         throw new UnsupportedOperationException();
     }
@@ -228,6 +252,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExportPackageDescription[] getSubstitutedExports() {
         throw new UnsupportedOperationException();
     }
@@ -235,6 +260,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getSymbolicName() {
         return this.bsn;
     }
@@ -242,6 +268,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getUserObject() {
         throw new UnsupportedOperationException();
     }
@@ -249,6 +276,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasDynamicImports() {
         throw new UnsupportedOperationException();
     }
@@ -256,6 +284,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isRemovalPending() {
         throw new UnsupportedOperationException();
     }
@@ -263,6 +292,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isResolved() {
         return this.resolved;
     }
@@ -270,6 +300,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSingleton() {
         throw new UnsupportedOperationException();
     }
@@ -277,6 +308,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setUserObject(Object userObject) {
         throw new UnsupportedOperationException();
     }
@@ -284,6 +316,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         throw new UnsupportedOperationException();
     }
@@ -291,6 +324,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription getSupplier() {
         throw new UnsupportedOperationException();
     }
@@ -298,6 +332,7 @@ public class StubBundleDescription implements BundleDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Version getVersion() {
         return this.bv;
     }
@@ -343,6 +378,86 @@ public class StubBundleDescription implements BundleDescription {
 
     public void addDependent(BundleDescription d) {
         this.dependents.add(d);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getDeclaredDirectives() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, Object> getDeclaredAttributes() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WiredCapability getWiredCapability() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Capability> getDeclaredCapabilities(String namespace) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTypes() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Bundle getBundle() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportPackageSpecification[] getAddedDynamicImportPackages() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GenericDescription[] getSelectedGenericCapabilities() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GenericDescription[] getResolvedGenericRequires() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BundleWiring getBundleWiring() {
+        throw new UnsupportedOperationException();
     }
 
 }

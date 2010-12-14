@@ -63,7 +63,7 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
         this.platformAdmin = getPlatformAdminService(bundleContext);
         this.detective = detective;
         this.repository = repository;
-        ServiceReference platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class.getName());
+        ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
         this.stateManager = (StateManager) bundleContext.getService(platformAdminServiceReference);
         this.bundleTransformationHandler = bundleTransformationHandler;
     }

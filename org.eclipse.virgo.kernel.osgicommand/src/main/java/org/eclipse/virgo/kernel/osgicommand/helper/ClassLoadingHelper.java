@@ -24,6 +24,7 @@ import java.util.HashMap;
 /**
  * Helper for class loading supporting commands
  */
+@SuppressWarnings("deprecation")
 public class ClassLoadingHelper {
 
     /**
@@ -35,8 +36,8 @@ public class ClassLoadingHelper {
      * @return TRUE if the bundle is exported by the package, FALSE if the class is not exported or it does not have a package
      */
     public static boolean isPackageExported(BundleContext bundleContext, String classPackage, Bundle testBundle) {
-        ServiceReference reference = bundleContext.getServiceReference(PlatformAdmin.class.getName());
-        PlatformAdmin platformAdmin = (PlatformAdmin) bundleContext.getService(reference);
+        ServiceReference<PlatformAdmin> reference = bundleContext.getServiceReference(PlatformAdmin.class);
+        PlatformAdmin platformAdmin = bundleContext.getService(reference);
         BundleDescription bundleDescription = platformAdmin.getState(false).getBundle(testBundle.getBundleId());
 
         ExportPackageDescription[] exportDescriptions = bundleDescription.getSelectedExports();
@@ -137,8 +138,8 @@ public class ClassLoadingHelper {
                 result.put(testBundle, originBundle);
             }
         } else {
-            ServiceReference reference = bundleContext.getServiceReference(PackageAdmin.class.getName());
-            PackageAdmin packageAdmin = (PackageAdmin) bundleContext.getService(reference);
+            ServiceReference<PackageAdmin> reference = bundleContext.getServiceReference(PackageAdmin.class);
+            PackageAdmin packageAdmin = bundleContext.getService(reference);
             Bundle[] bundles = packageAdmin.getBundles(bundle, null);
             if (bundles == null)
                 throw new IllegalArgumentException("Bundle with symbolic name [" + bundle + "] not found");

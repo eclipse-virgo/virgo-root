@@ -59,9 +59,9 @@ public class ShutdownCommandParserTests {
 		assertNotNull(command);
 		
 		assertEquals("org.eclipse.virgo.kernel", command.getDomain());
-		assertEquals("springsource", command.getPassword());
+		assertNull(command.getPassword());
 		assertEquals(9875, command.getPort());
-		assertEquals("admin", command.getUsername());
+		assertNull(command.getUsername());
 		assertFalse(command.isImmediate());
 	}
 	

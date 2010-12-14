@@ -26,6 +26,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * <code>OsgiFramework</code> class names.
  * 
  */
+@SuppressWarnings("deprecation")
 public interface OsgiFramework {
 
     /**

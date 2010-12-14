@@ -32,6 +32,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 /**
  * Class for unit testing {@link ClassLoadingHelper}
  */
+@SuppressWarnings("deprecation")
 public class ClassLoadingHelperTests {
 
     private static final long BUNDLE_ID = 1234;
@@ -39,6 +40,7 @@ public class ClassLoadingHelperTests {
     private static final String CLASS_NAME = ClassLoadingHelperTests.class.getName();
     private static final String CLASS_PACKAGE = ClassLoadingHelperTests.class.getPackage().getName();
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testIsMissingPackageExported() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
@@ -49,7 +51,7 @@ public class ClassLoadingHelperTests {
         BundleDescription bundleDescription = createMock(BundleDescription.class);
 
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
-        expect(bundleContext.getServiceReference(PlatformAdmin.class.getName())).andReturn(platformAdminServiceReference);
+        expect(bundleContext.getServiceReference(PlatformAdmin.class)).andReturn(platformAdminServiceReference);
         expect(bundleContext.getService(platformAdminServiceReference)).andReturn(platformAdmin);
         expect(bundleDescription.getSelectedExports()).andReturn(new ExportPackageDescription[0]);
         expect(platformAdmin.getState(false)).andReturn(bundleState);
@@ -63,6 +65,7 @@ public class ClassLoadingHelperTests {
         verify(platformAdmin, platformAdminServiceReference, bundle, bundleContext, bundleState, bundleDescription);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testIsExistingPackageExported() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
@@ -74,7 +77,7 @@ public class ClassLoadingHelperTests {
         ExportPackageDescription exportPackageDescription = createMock(ExportPackageDescription.class);
 
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
-        expect(bundleContext.getServiceReference(PlatformAdmin.class.getName())).andReturn(platformAdminServiceReference);
+        expect(bundleContext.getServiceReference(PlatformAdmin.class)).andReturn(platformAdminServiceReference);
         expect(bundleContext.getService(platformAdminServiceReference)).andReturn(platformAdmin);
         expect(exportPackageDescription.getName()).andReturn(CLASS_PACKAGE);
         expect(bundleDescription.getSelectedExports()).andReturn(new ExportPackageDescription[]{exportPackageDescription});
@@ -105,11 +108,12 @@ public class ClassLoadingHelperTests {
         verify(bundle);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testTryToLoadExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
 
         replay(bundle);
 
@@ -135,12 +139,13 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetBundlesLoadingExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
         expect(bundleContext.getBundle(0)).andReturn(bundle);
 
@@ -152,6 +157,7 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testGetBundleLoadingMissingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
@@ -160,7 +166,7 @@ public class ClassLoadingHelperTests {
         ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
 
         expect(bundle.loadClass(CLASS_NAME)).andReturn(null); // missing class
-        expect(bundleContext.getServiceReference(PackageAdmin.class.getName())).andReturn(packageAdminServiceReference);
+        expect(bundleContext.getServiceReference(PackageAdmin.class)).andReturn(packageAdminServiceReference);
         expect(bundleContext.getService(packageAdminServiceReference)).andReturn(packageAdmin);
         expect(packageAdmin.getBundles(BUNDLE_SYMBOLIC_NAME, null)).andReturn(new Bundle[]{bundle});
 
@@ -172,6 +178,7 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testGetBundleLoadingExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
@@ -179,9 +186,9 @@ public class ClassLoadingHelperTests {
         PackageAdmin packageAdmin = createMock(PackageAdmin.class);
         ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
         expect(bundleContext.getBundle(0)).andReturn(bundle);
-        expect(bundleContext.getServiceReference(PackageAdmin.class.getName())).andReturn(packageAdminServiceReference);
+        expect(bundleContext.getServiceReference(PackageAdmin.class)).andReturn(packageAdminServiceReference);
         expect(bundleContext.getService(packageAdminServiceReference)).andReturn(packageAdmin);
         expect(packageAdmin.getBundles(BUNDLE_SYMBOLIC_NAME, null)).andReturn(new Bundle[]{bundle});
 

@@ -37,7 +37,7 @@ final class CompoundCommandResolver implements CommandResolver {
     /**
      * {@inheritDoc}
      */
-    public List<CommandDescriptor> resolveCommands(ServiceReference serviceReference, Object service) {
+    public List<CommandDescriptor> resolveCommands(ServiceReference<?> serviceReference, Object service) {
         List<CommandDescriptor> commandDescriptors = new ArrayList<CommandDescriptor>();
 
         for (CommandResolver commandResolver : commandResolvers) {

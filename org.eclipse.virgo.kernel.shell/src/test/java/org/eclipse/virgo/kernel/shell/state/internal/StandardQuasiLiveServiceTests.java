@@ -45,12 +45,12 @@ public class StandardQuasiLiveServiceTests {
      */
     @Before
     public void setUp() throws Exception {
-        StubServiceRegistration serviceRegistration = new StubServiceRegistration(new StubBundleContext());
+        StubServiceRegistration<Object> serviceRegistration = new StubServiceRegistration<Object>(new StubBundleContext());
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(Constants.OBJECTCLASS, new String[] { "one", "two" });
         properties.put("Random", "foo");
         serviceRegistration.setProperties(properties);
-        StubServiceReference stubServiceReference = new StubServiceReference(38l, 6, serviceRegistration);
+        StubServiceReference<Object> stubServiceReference = new StubServiceReference<Object>(38l, 6, serviceRegistration);
         stubServiceReference.setBundle(new StubBundle(4l, "Name", new Version("1.2.3"), "Location"));
         stubServiceReference.addUsingBundles(new StubBundle(), new StubBundle());
         StubQuasiFramework stubQuasiFramework = new StubQuasiFramework();

@@ -65,7 +65,7 @@ public abstract class AbstractArtifact implements Artifact {
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException(String.format("Cannot create Service Registry filter for a DependencyDeterminer of type '%s'", type), e);
         }
-        this.dependencyDeterminerTracker = new ServiceTracker(bundleContext, filter, null);
+        this.dependencyDeterminerTracker = new ServiceTracker<DependencyDeterminer, DependencyDeterminer>(bundleContext, filter, null);
         this.dependencyDeterminerTracker.open();
     }
 

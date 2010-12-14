@@ -33,6 +33,7 @@ import org.eclipse.virgo.kernel.osgi.framework.support.AbstractOsgiFramework;
  * Implementation of <code>OsgiFramework</code> using Equinox.
  * 
  */
+@SuppressWarnings("deprecation")
 public class EquinoxOsgiFramework extends AbstractOsgiFramework {
 
     private final OsgiServiceHolder<PlatformAdmin> platformAdmin;
@@ -108,7 +109,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
      */
     public Bundle[] getDirectDependencies(Bundle bundle, boolean includeFragments) {
         BundleContext bundleContext = getBundleContext();
-        ServiceReference serviceRef = bundleContext.getServiceReference(PlatformAdmin.class.getName());
+        ServiceReference<PlatformAdmin> serviceRef = bundleContext.getServiceReference(PlatformAdmin.class);
         try {
             PlatformAdmin serverAdmin = (PlatformAdmin) bundleContext.getService(serviceRef);
             return EquinoxUtils.getDirectDependencies(bundle, bundleContext, serverAdmin, includeFragments);

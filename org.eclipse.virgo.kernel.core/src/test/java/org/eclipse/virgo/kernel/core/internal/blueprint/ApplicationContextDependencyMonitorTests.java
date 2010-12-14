@@ -249,7 +249,7 @@ public class ApplicationContextDependencyMonitorTests {
     }
 
     @SuppressWarnings("unchecked")
-    private Dictionary createProperties(String filter, String beanName, boolean mandatory) {
+    private Dictionary<String, ?> createProperties(String filter, String beanName, boolean mandatory) {
         Dictionary properties = createProperties();
 
         properties.put("dependencies", new String[] { filter });
@@ -260,7 +260,7 @@ public class ApplicationContextDependencyMonitorTests {
     }
 
     @SuppressWarnings("unchecked")
-    private Dictionary createProperties() {
+    private Dictionary<String, ?> createProperties() {
         Dictionary properties = new Hashtable();
         properties.put(EventConstants.BUNDLE, this.bundle);
         return properties;

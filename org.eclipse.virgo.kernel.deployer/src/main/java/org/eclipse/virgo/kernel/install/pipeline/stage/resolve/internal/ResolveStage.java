@@ -41,6 +41,7 @@ import org.eclipse.virgo.util.common.Tree.TreeVisitor;
  * This class is thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 public final class ResolveStage implements PipelineStage {
 
     private final PackageAdmin packageAdmin;

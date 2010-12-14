@@ -24,7 +24,7 @@ import org.eclipse.virgo.util.io.PathReference;
 
 public class ClasspathScanningTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
@@ -32,7 +32,7 @@ public class ClasspathScanningTests extends AbstractDeployerIntegrationTest {
     public void setUp() throws Exception {
         cleanUp();
 
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
     }
 

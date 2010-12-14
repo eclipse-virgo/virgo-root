@@ -85,7 +85,7 @@ public class StandardPipelineTests {
 
     @Before
     public void setUp() {
-        this.installTree = new ThreadSafeArrayListTree<InstallArtifact>(null);;
+        this.installTree = new ThreadSafeArrayListTree<InstallArtifact>(null);
         this.installEnvironment = createMock(InstallEnvironment.class);
         this.installLog = createMock(InstallLog.class);
         this.stageTrace = new ArrayList<PipelineStage>();

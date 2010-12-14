@@ -22,17 +22,13 @@ package org.eclipse.virgo.kernel.shutdown;
  */
 final class ShutdownCommand {
 	
-	private static final String DEFAULT_PASSWORD = "springsource";
-
-    private static final String DEFAULT_USERNAME = "admin";
-
     private static final String DEFAULT_DOMAIN = "org.eclipse.virgo.kernel";
 
     private static final int DEFAULT_PORT = 9875;
     
-    private String password = DEFAULT_PASSWORD;
+    private String password;
     
-    private String username = DEFAULT_USERNAME;
+    private String username;
     
     private String domain = DEFAULT_DOMAIN;
     

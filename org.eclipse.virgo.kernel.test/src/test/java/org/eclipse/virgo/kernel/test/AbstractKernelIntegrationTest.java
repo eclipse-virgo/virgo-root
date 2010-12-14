@@ -40,9 +40,9 @@ public abstract class AbstractKernelIntegrationTest {
 
     @Before
     public void setup() {
-        ServiceReference serviceReference = this.context.getServiceReference(OsgiFramework.class.getName());
+        ServiceReference<OsgiFramework> serviceReference = this.context.getServiceReference(OsgiFramework.class);
         if (serviceReference != null) {
-            this.framework = (OsgiFramework) this.context.getService(serviceReference);
+            this.framework = this.context.getService(serviceReference);
         }
         
         Bundle bundle = this.context.getBundle(1);

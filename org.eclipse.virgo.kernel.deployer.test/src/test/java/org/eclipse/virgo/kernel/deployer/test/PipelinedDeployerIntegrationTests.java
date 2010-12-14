@@ -43,15 +43,13 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
 
     private static final int POLLING_INTERVAL_MILLIS = 100;
 
-    private ServiceRegistration dummyModuleDeployerServiceRegistration;
-
     private final PathReference pickup = new PathReference("./target/pickup");
 
     private final PathReference target = new PathReference("./target");
 
     private StubInstallArtifactLifecycleListener lifecycleListener;
 
-    private ServiceRegistration lifecycleListenerRegistration;
+    private ServiceRegistration<InstallArtifactLifecycleListener> lifecycleListenerRegistration;
 
     private DeploymentIdentity deploymentIdentity;
 
@@ -64,8 +62,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         clearPickup();
 
         this.lifecycleListener = new StubInstallArtifactLifecycleListener();
-        this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class.getName(),
-            this.lifecycleListener, null);
+        this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class, this.lifecycleListener, null);
     }
 
     private void clearPickup() {
@@ -78,9 +75,6 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
     public void tearDown() throws Exception {
         undeploy();
         clearPickup();
-        if (this.dummyModuleDeployerServiceRegistration != null) {
-            this.dummyModuleDeployerServiceRegistration.unregister();
-        }
         if (this.lifecycleListenerRegistration != null) {
             this.lifecycleListenerRegistration.unregister();
         }

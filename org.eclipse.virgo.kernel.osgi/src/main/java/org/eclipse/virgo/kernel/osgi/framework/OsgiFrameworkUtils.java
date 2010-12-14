@@ -84,7 +84,7 @@ public final class OsgiFrameworkUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> OsgiServiceHolder<T> getService(BundleContext bundleContext, Class<T> clazz) {
-        final ServiceReference reference = bundleContext.getServiceReference(clazz.getName());
+        final ServiceReference<T> reference = (ServiceReference<T>) bundleContext.getServiceReference(clazz.getName());
         if (reference != null) {
             final T service = (T) bundleContext.getService(reference);
             return new StandardOsgiServiceHolder<T>(service, reference);
@@ -111,9 +111,9 @@ public final class OsgiFrameworkUtils {
     public static <T> List<OsgiServiceHolder<T>> getServices(BundleContext bundleContext, Class<T> serviceType) {
         List<OsgiServiceHolder<T>> serviceHolders = new ArrayList<OsgiServiceHolder<T>>();
         try {
-            ServiceReference[] serviceReferences = bundleContext.getServiceReferences(serviceType.getName(), null);
+            ServiceReference<T>[] serviceReferences = (ServiceReference<T>[]) bundleContext.getServiceReferences(serviceType.getName(), null);
             if (serviceReferences != null) {
-                for (ServiceReference serviceReference : serviceReferences) {
+                for (ServiceReference<T> serviceReference : serviceReferences) {
                     T service = (T) bundleContext.getService(serviceReference);
                     if (service != null) {
                         serviceHolders.add(new StandardOsgiServiceHolder<T>(service, serviceReference));
@@ -132,9 +132,9 @@ public final class OsgiFrameworkUtils {
 
         private final T service;
 
-        private final ServiceReference serviceReference;
+        private final ServiceReference<T> serviceReference;
 
-        private StandardOsgiServiceHolder(T service, ServiceReference serviceReference) {
+        private StandardOsgiServiceHolder(T service, ServiceReference<T> serviceReference) {
             this.service = service;
             this.serviceReference = serviceReference;
         }
@@ -149,7 +149,7 @@ public final class OsgiFrameworkUtils {
         /**
          * {@inheritDoc}
          */
-        public ServiceReference getServiceReference() {
+        public ServiceReference<T> getServiceReference() {
             return this.serviceReference;
         }
 

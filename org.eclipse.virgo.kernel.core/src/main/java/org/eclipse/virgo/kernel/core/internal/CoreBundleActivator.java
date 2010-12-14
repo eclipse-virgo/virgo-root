@@ -14,7 +14,6 @@ package org.eclipse.virgo.kernel.core.internal;
 import java.lang.management.ManagementFactory;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -26,15 +25,6 @@ import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.launch.Framework;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
 
 import org.eclipse.virgo.kernel.config.internal.ConfigurationInitialiser;
 import org.eclipse.virgo.kernel.config.internal.KernelConfiguration;
@@ -48,6 +38,13 @@ import org.eclipse.virgo.kernel.shim.serviceability.internal.Slf4jTracingService
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.launch.Framework;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * {@link BundleActivator} that initialises the core of the Kernel.
@@ -120,7 +117,7 @@ public class CoreBundleActivator implements BundleActivator {
         
         ApplicationContextDependencyMonitor dependencyMonitor = new ApplicationContextDependencyMonitor(scheduledExecutor, eventLogger);
         
-        Properties properties = new Properties();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(EventConstants.EVENT_TOPIC, EVENT_TOPIC_BLUEPRINT_CONTAINER);
         
         this.tracker.track(context.registerService(EventHandler.class.getName(), dependencyMonitor, properties));

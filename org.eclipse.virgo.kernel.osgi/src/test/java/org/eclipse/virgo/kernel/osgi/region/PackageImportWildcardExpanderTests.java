@@ -28,6 +28,7 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 
 /**
  */
+@SuppressWarnings("deprecation")
 public class PackageImportWildcardExpanderTests {
 
     private StubBundleContext stubBundleContext;

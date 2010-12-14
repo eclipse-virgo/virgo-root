@@ -24,7 +24,7 @@ public class StandardKernelIntegrationTests extends AbstractKernelIntegrationTes
 
     @Test
     public void testRunKernelBundle() throws Exception {
-        ServiceReference serviceReference = context.getServiceReference(ApplicationDeployer.class.getName());
+        ServiceReference<ApplicationDeployer> serviceReference = context.getServiceReference(ApplicationDeployer.class);
         assertNotNull("Application deployer service was not present", serviceReference);
     }
 }

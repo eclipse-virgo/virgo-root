@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.management.MBeanServer;
@@ -23,7 +24,6 @@ import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.deployer.management.StandardRecoveryMonitor;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.event.Event;
@@ -58,7 +58,7 @@ public class RecoveryMonitorTests {
             }
 
         }, null, null);
-        mbean.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", null));
+        mbean.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", (Map<String, ?>)null));
         assertTrue(queryRecoveryComplete());
         assertEquals(1, counter.get());
     }

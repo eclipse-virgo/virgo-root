@@ -45,13 +45,14 @@ final class StandardModuleContextEventPublisher implements ModuleContextEventPub
 
     private final BundleContext bundleContext;
     
+    @SuppressWarnings("unchecked")
     StandardModuleContextEventPublisher(BundleContext bundleContext) {
         synchronized (this.monitor) {
             this.bundleContext = bundleContext;
             try {
-                ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(ModuleContextEventListener.class.getName(), null);
+                ServiceReference<ModuleContextEventListener>[] allServiceReferences = (ServiceReference<ModuleContextEventListener>[]) bundleContext.getAllServiceReferences(ModuleContextEventListener.class.getName(), null);
                 if (allServiceReferences != null) {
-                    for (ServiceReference serviceReference : allServiceReferences) {
+                    for (ServiceReference<ModuleContextEventListener> serviceReference : allServiceReferences) {
                         registerListener(serviceReference);
                     }
                 }
@@ -67,7 +68,7 @@ final class StandardModuleContextEventPublisher implements ModuleContextEventPub
      * 
      * @param serviceReference the listener service
      */
-    private void registerListener(ServiceReference serviceReference) {
+    private void registerListener(ServiceReference<ModuleContextEventListener> serviceReference) {
         synchronized (this.monitor) {
             this.listeners.add((ModuleContextEventListener)this.bundleContext.getService(serviceReference));
         }
@@ -78,7 +79,7 @@ final class StandardModuleContextEventPublisher implements ModuleContextEventPub
      * 
      * @param serviceReference the listener service
      */
-    public void deregisterListener(ServiceReference serviceReference) {
+    public void deregisterListener(ServiceReference<ModuleContextEventListener> serviceReference) {
         synchronized (this.monitor) {
             this.listeners.remove((ModuleContextEventListener)this.bundleContext.getService(serviceReference));
             this.bundleContext.ungetService(serviceReference);
@@ -108,14 +109,15 @@ final class StandardModuleContextEventPublisher implements ModuleContextEventPub
      */
     private class ListenerListener implements ServiceListener {
 
+        @SuppressWarnings("unchecked")
         public void serviceChanged(ServiceEvent event) {
             synchronized (StandardModuleContextEventPublisher.this.monitor) {
                 switch (event.getType()) {
                     case ServiceEvent.REGISTERED:
-                        registerListener(event.getServiceReference());
+                        registerListener((ServiceReference<ModuleContextEventListener>) event.getServiceReference());
                         break;
                     case ServiceEvent.UNREGISTERING:
-                        deregisterListener(event.getServiceReference());
+                        deregisterListener((ServiceReference<ModuleContextEventListener>) event.getServiceReference());
                         break;
                     default:
                         break;

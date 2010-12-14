@@ -44,7 +44,7 @@ public class BundleRefreshTests extends AbstractDeployerIntegrationTest {
     @Test
     public void testBundleRefresh() throws DeploymentException, InterruptedException {
         UninstallTrackingInstallArtifactLifecycleListener listener = new UninstallTrackingInstallArtifactLifecycleListener();
-        ServiceRegistration listenerRegistration = this.context.registerService(InstallArtifactLifecycleListener.class.getName(), listener, null);
+        ServiceRegistration<InstallArtifactLifecycleListener> listenerRegistration = this.context.registerService(InstallArtifactLifecycleListener.class, listener, null);
         
         new PathReference("./target/bundle-refresh").createDirectory();
 

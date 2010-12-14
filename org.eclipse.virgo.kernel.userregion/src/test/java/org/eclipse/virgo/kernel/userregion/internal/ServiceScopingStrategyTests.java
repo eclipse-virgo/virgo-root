@@ -53,13 +53,13 @@ public class ServiceScopingStrategyTests {
 
     private Scope globalScope;
 
-    private ServiceReference unscopedServiceReference;
+    private ServiceReference<?> unscopedServiceReference;
 
     private StubBundleContext unscopedBundleContext;
 
     private Scope appScope;
 
-    private ServiceReference scopedServiceReference;
+    private ServiceReference<?> scopedServiceReference;
 
     private StubBundleContext scopedBundleContext;
 
@@ -235,22 +235,22 @@ public class ServiceScopingStrategyTests {
      * This test uses a collection that does not support addition in order to place the
      * same constraints on the implementation as the service registry find hook.
      */
-    private final class ShrinkableSet extends HashSet<ServiceReference> {
+    private final class ShrinkableSet extends HashSet<ServiceReference<?>> {
 
         private static final long serialVersionUID = 1L;
 
-        public ShrinkableSet(ServiceReference e) {
+        public ShrinkableSet(ServiceReference<?> e) {
             super();
             super.add(e);
         }
 
         @Override
-        public boolean add(ServiceReference e) {
+        public boolean add(ServiceReference<?> e) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public boolean addAll(Collection<? extends ServiceReference> c) {
+        public boolean addAll(Collection<? extends ServiceReference<?>> c) {
             throw new UnsupportedOperationException();
         }
         

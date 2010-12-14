@@ -43,13 +43,14 @@ import org.eclipse.virgo.util.osgi.manifest.DynamicallyImportedPackage;
  * Thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 final class PackageImportWildcardExpander {
 
     private static final String wildcard = "*";
 
     static String expandPackageImportsWildcards(String userRegionImportsProperty, BundleContext bundleContext) {
-        ServiceReference eventLoggerServiceReference = bundleContext.getServiceReference(EventLogger.class.getName());
-        EventLogger eventLogger = (EventLogger) bundleContext.getService(eventLoggerServiceReference);
+        ServiceReference<EventLogger> eventLoggerServiceReference = bundleContext.getServiceReference(EventLogger.class);
+        EventLogger eventLogger = bundleContext.getService(eventLoggerServiceReference);
 
         String[] exportedPackageNames = getExportedPackageNames(bundleContext);
 
@@ -69,8 +70,8 @@ final class PackageImportWildcardExpander {
     }
 
     private static ExportedPackage[] getExportedPackages(BundleContext bundleContext) {
-        ServiceReference paServiceReference = bundleContext.getServiceReference(PackageAdmin.class.getName());
-        PackageAdmin pa = (PackageAdmin) bundleContext.getService(paServiceReference);
+        ServiceReference<PackageAdmin> paServiceReference = bundleContext.getServiceReference(PackageAdmin.class);
+        PackageAdmin pa = bundleContext.getService(paServiceReference);
 
         ExportedPackage[] exportedPackages = pa.getExportedPackages((Bundle) null);
         Assert.notNull(exportedPackages, "Expected at least one exported package");

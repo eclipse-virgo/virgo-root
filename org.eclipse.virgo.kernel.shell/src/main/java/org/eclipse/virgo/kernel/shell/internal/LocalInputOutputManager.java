@@ -108,7 +108,7 @@ public final class LocalInputOutputManager {
     }
     
     private static Object getService(Class<?> clazz, BundleContext bundleContext, String filter) {
-        ServiceReference[] serviceReferences;
+        ServiceReference<?>[] serviceReferences;
         try {
             serviceReferences = bundleContext.getServiceReferences(clazz.getName(), filter);
         } catch (InvalidSyntaxException e) {

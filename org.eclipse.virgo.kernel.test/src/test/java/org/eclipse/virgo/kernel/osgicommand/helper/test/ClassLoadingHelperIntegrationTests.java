@@ -32,6 +32,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 /**
  * Class for integration testing {@link org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper}
  */
+@SuppressWarnings("deprecation")
 @RunWith(DmKernelTestRunner.class)
 public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegrationTest {
     private static final String SHELL_COMMANDS_BUNDLE_NAME = "org.eclipse.virgo.kernel.osgicommand";
@@ -56,8 +57,8 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
         super.setup();
 
         // get osgicommand bundle
-        ServiceReference reference = context.getServiceReference(PackageAdmin.class.getName());
-        PackageAdmin packageAdmin = (PackageAdmin) context.getService(reference);
+        ServiceReference<PackageAdmin> reference = context.getServiceReference(PackageAdmin.class);
+        PackageAdmin packageAdmin = context.getService(reference);
         Bundle[] bundles = packageAdmin.getBundles(SHELL_COMMANDS_BUNDLE_NAME, null);
         assertNotNull("No bundles with symbolic name [" + SHELL_COMMANDS_BUNDLE_NAME + "] found in bundles set " + Arrays.toString(context.getBundles()),
                       bundles);

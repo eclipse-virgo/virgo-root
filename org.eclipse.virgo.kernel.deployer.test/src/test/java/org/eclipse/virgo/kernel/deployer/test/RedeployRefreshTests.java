@@ -36,7 +36,7 @@ public class RedeployRefreshTests extends AbstractDeployerIntegrationTest {
 
     private static final DeploymentOptions OPTIONS_OWNED = new DeploymentOptions(false, true, true);
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
@@ -52,8 +52,8 @@ public class RedeployRefreshTests extends AbstractDeployerIntegrationTest {
         pr.createDirectory();
         simpleModule = pr.newChild("simple.module.jar");
 
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
     }
 
     @After

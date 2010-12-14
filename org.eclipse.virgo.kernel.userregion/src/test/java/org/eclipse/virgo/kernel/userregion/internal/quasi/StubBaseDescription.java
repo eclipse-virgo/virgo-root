@@ -11,9 +11,12 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
+import java.util.Map;
+
 import org.eclipse.osgi.service.resolver.BaseDescription;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Version;
+import org.osgi.framework.wiring.WiredCapability;
 
 
 /**
@@ -32,6 +35,7 @@ public class StubBaseDescription implements BaseDescription {
     /** 
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         throw new UnsupportedOperationException();
     }
@@ -39,6 +43,7 @@ public class StubBaseDescription implements BaseDescription {
     /** 
      * {@inheritDoc}
      */
+    @Override
     public BundleDescription getSupplier() {
         return this.supplier;
     }
@@ -46,12 +51,37 @@ public class StubBaseDescription implements BaseDescription {
     /** 
      * {@inheritDoc}
      */
+    @Override
     public Version getVersion() {
         throw new UnsupportedOperationException();
     }
     
     public void setSupplier(BundleDescription supplier) {
         this.supplier = supplier;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getDeclaredDirectives() {
+        throw new UnsupportedOperationException();
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, Object> getDeclaredAttributes() {
+        throw new UnsupportedOperationException();
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public WiredCapability getWiredCapability() {
+        throw new UnsupportedOperationException();
     }
 
 }

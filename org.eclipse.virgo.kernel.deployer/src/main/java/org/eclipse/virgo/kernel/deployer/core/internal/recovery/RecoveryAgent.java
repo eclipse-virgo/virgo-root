@@ -88,7 +88,7 @@ final class RecoveryAgent implements EventHandler {
 
 	private void recoveryComplete() {
 		this.recoveryState.clear();
-		eventAdmin.postEvent(new Event(TOPIC_RECOVERY_COMPLETED, null));
+		eventAdmin.postEvent(new Event(TOPIC_RECOVERY_COMPLETED, (Map<String, ?>)null));
 	}
     
     private boolean isRecoveryEnabled() {

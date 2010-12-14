@@ -26,12 +26,12 @@ import org.eclipse.virgo.kernel.module.ModuleContextFailedEvent;
 /**
  */
 public abstract class AbstractParTests extends AbstractDeployerIntegrationTest {
-    
+
     protected DeploymentIdentity deploy(File file) throws Throwable {
         String appSymbolicName = getApplicationSymbolicName(file);
 
         FailureTrackingListener listener = new FailureTrackingListener(appSymbolicName);
-        ServiceRegistration registration = this.context.registerService(ModuleContextEventListener.class.getName(), listener, null);
+        ServiceRegistration<ModuleContextEventListener> registration = this.context.registerService(ModuleContextEventListener.class, listener, null);
 
         try {
             DeploymentIdentity deploymentIdentity = this.deployer.deploy(file.toURI());
@@ -62,7 +62,7 @@ public abstract class AbstractParTests extends AbstractDeployerIntegrationTest {
                 jar.close();
             }
         }
-    }    
+    }
 
     private final class FailureTrackingListener implements ModuleContextEventListener {
 

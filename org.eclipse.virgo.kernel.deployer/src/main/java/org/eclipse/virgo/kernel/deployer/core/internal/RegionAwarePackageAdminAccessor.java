@@ -17,6 +17,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 
+@SuppressWarnings("deprecation")
 final class RegionAwarePackageAdminAccessor {
     public static PackageAdmin getPackageAdmin(Region region) {
         BundleContext bundleContext = region.getBundleContext();

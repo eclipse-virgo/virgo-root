@@ -34,33 +34,27 @@ import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
  */
 public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceRegistration dummyModuleDeployerServiceRegistration;
-
     private StubInstallArtifactLifecycleListener lifecycleListener;
 
-    private ServiceRegistration lifecycleListenerRegistration;
+    private ServiceRegistration<InstallArtifactLifecycleListener> lifecycleListenerRegistration;
 
     private DeploymentIdentity deploymentIdentity;
 
-    private ServiceReference ramReference;
+    private ServiceReference<RuntimeArtifactRepository> ramReference;
 
     private RuntimeArtifactRepository ram;
 
     @Before
-    public void setUp() throws Exception {        
+    public void setUp() throws Exception {
         this.lifecycleListener = new StubInstallArtifactLifecycleListener();
-        this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class.getName(),
-            this.lifecycleListener, null);
+        this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class, this.lifecycleListener, null);
 
-        this.ramReference = this.kernelContext.getServiceReference(RuntimeArtifactRepository.class.getName());
-        this.ram = (RuntimeArtifactRepository) this.kernelContext.getService(ramReference);
+        this.ramReference = this.kernelContext.getServiceReference(RuntimeArtifactRepository.class);
+        this.ram = this.kernelContext.getService(ramReference);
     }
 
     @After
     public void tearDown() throws Exception {
-        if (this.dummyModuleDeployerServiceRegistration != null) {
-            this.dummyModuleDeployerServiceRegistration.unregister();
-        }
         if (this.lifecycleListenerRegistration != null) {
             this.lifecycleListenerRegistration.unregister();
         }
@@ -77,21 +71,23 @@ public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTe
         this.lifecycleListener.assertLifecycleCounts(0, 0, 0, 0);
         this.deploymentIdentity = this.deployer.deploy(file.toURI());
         this.lifecycleListener.assertLifecycleCounts(1, 1, 0, 0);
-        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(this.deploymentIdentity.getVersion()));
+        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(
+            this.deploymentIdentity.getVersion()));
         assertNotNull(artifact);
         artifact.uninstall();
         this.lifecycleListener.assertLifecycleCounts(1, 1, 1, 1);
     }
-    
-    @Test(expected=DeploymentException.class)
+
+    @Test(expected = DeploymentException.class)
     public void testRAMUndeploymentFollowedByDeployerUndeployment() throws Exception {
         File file = new File("src/test/resources/dummy.jar");
         this.deploymentIdentity = this.deployer.deploy(file.toURI());
-        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(this.deploymentIdentity.getVersion()));
+        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(
+            this.deploymentIdentity.getVersion()));
         artifact.uninstall();
-        
+
         // The following deployer operation should throw DeploymentException.
-        this.deployer.undeploy(this.deploymentIdentity);       
+        this.deployer.undeploy(this.deploymentIdentity);
     }
 
 }

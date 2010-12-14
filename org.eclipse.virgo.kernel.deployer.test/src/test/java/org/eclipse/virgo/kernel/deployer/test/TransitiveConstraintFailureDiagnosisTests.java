@@ -36,14 +36,14 @@ import org.eclipse.virgo.kernel.deployer.test.modules.TesterModuleImport;
  */
 public class TransitiveConstraintFailureDiagnosisTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
     @Before
     public void setUp() throws Exception {
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
     }
     
     @After

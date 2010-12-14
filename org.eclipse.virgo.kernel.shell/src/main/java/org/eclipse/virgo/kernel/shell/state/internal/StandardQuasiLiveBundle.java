@@ -59,11 +59,11 @@ final class StandardQuasiLiveBundle implements QuasiLiveBundle {
      */
     public List<QuasiLiveService> getExportedServices() {
         List<QuasiLiveService> quasiLiveServices = new ArrayList<QuasiLiveService>();
-        ServiceReference[] registeredServices = this.osgiBundle.getRegisteredServices();
+        ServiceReference<?>[] registeredServices = this.osgiBundle.getRegisteredServices();
         if(registeredServices == null){
             return quasiLiveServices;
         }
-        for(ServiceReference serviceReference : registeredServices){
+        for(ServiceReference<?> serviceReference : registeredServices){
             quasiLiveServices.add(new StandardQuasiLiveService(this.quasiFramework, serviceReference));
         }
         return quasiLiveServices;
@@ -74,11 +74,11 @@ final class StandardQuasiLiveBundle implements QuasiLiveBundle {
      */
     public List<QuasiLiveService> getImportedServices() {
         List<QuasiLiveService> quasiLiveServices = new ArrayList<QuasiLiveService>();
-        ServiceReference[] registeredServices = this.osgiBundle.getServicesInUse();
+        ServiceReference<?>[] registeredServices = this.osgiBundle.getServicesInUse();
         if(registeredServices == null){
             return quasiLiveServices;
         }
-        for(ServiceReference serviceReference : registeredServices){
+        for(ServiceReference<?> serviceReference : registeredServices){
             quasiLiveServices.add(new StandardQuasiLiveService(this.quasiFramework, serviceReference));
         }
         return quasiLiveServices;

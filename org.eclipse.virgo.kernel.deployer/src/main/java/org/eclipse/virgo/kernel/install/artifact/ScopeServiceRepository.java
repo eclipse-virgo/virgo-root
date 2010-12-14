@@ -18,7 +18,7 @@ import org.osgi.framework.InvalidSyntaxException;
 
 public interface ScopeServiceRepository {
 
-    void recordService(String scopeName, String[] types, Dictionary<Object, Object> properties);
+    void recordService(String scopeName, String[] types, Dictionary<String, Object> properties);
 
     boolean scopeHasMatchingService(String scopeName, String type, String filter) throws InvalidSyntaxException;
 

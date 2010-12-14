@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.userregion.internal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -143,7 +144,7 @@ final class InitialArtifactDeployer implements EventHandler {
 			try {
 				validateArtifacts();      
 				deployArtifacts();
-				eventAdmin.postEvent(new Event(this.completionEventTopic, null));
+				eventAdmin.postEvent(new Event(this.completionEventTopic, (Map<String, ?>)null));
 			} catch (DeploymentException de) {
 				eventLogger.log(UserRegionLogEvents.INITIAL_ARTIFACT_DEPLOYMENT_FAILED);
 				shutdown.shutdown();

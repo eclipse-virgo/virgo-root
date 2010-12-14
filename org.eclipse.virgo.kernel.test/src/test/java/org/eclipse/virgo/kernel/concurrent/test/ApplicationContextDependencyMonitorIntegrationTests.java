@@ -55,8 +55,8 @@ public class ApplicationContextDependencyMonitorIntegrationTests extends Abstrac
         
         Bundle quickConsumer = quasiQuickConsumer.getBundle();
         
-        ServiceReference serviceReference = this.kernelContext.getServiceReference(BundleStarter.class.getName());
-        BundleStarter bundleStarter = (BundleStarter) this.kernelContext.getService(serviceReference);
+        ServiceReference<BundleStarter> serviceReference = this.kernelContext.getServiceReference(BundleStarter.class);
+        BundleStarter bundleStarter = this.kernelContext.getService(serviceReference);
         
         final CountDownLatch latch = new CountDownLatch(1);
         

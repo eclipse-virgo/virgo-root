@@ -35,7 +35,7 @@ import org.eclipse.virgo.util.io.PathReference;
 // TODO This test is not robust: it passes without the change to the configured timeout value
 public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceReference appDeployerServiceReference;
+    private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
 
@@ -43,7 +43,7 @@ public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTe
 
     private StubInstallArtifactLifecycleListener lifecycleListener;
 
-    private ServiceRegistration lifecycleListenerRegistration;
+    private ServiceRegistration<InstallArtifactLifecycleListener> lifecycleListenerRegistration;
 
     @Before
     public void setUp() throws Exception {
@@ -53,11 +53,10 @@ public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTe
 
         clearPickup();
 
-        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class.getName());
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
         this.lifecycleListener = new StubInstallArtifactLifecycleListener();
-        this.lifecycleListenerRegistration = this.context.registerService(InstallArtifactLifecycleListener.class.getName(), this.lifecycleListener,
-            null);
+        this.lifecycleListenerRegistration = this.context.registerService(InstallArtifactLifecycleListener.class, this.lifecycleListener, null);
     }
 
     private void clearPickup() {

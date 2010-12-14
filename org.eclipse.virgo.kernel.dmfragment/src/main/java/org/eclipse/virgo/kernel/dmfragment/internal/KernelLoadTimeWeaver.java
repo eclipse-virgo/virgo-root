@@ -85,9 +85,9 @@ final class KernelLoadTimeWeaver implements LoadTimeWeaver, BeanClassLoaderAware
      */
     private ClassLoader getBundleClassLoader(Bundle bundle) {
         BundleContext bundleContext = bundle.getBundleContext();
-        ServiceReference serviceReference = bundleContext.getServiceReference(OsgiFramework.class.getName());
+        ServiceReference<OsgiFramework> serviceReference = bundleContext.getServiceReference(OsgiFramework.class);
         try {
-            OsgiFramework framework = (OsgiFramework) bundleContext.getService(serviceReference);
+            OsgiFramework framework = bundleContext.getService(serviceReference);
             return framework.getBundleClassLoader(bundle);
         } finally {
             bundleContext.ungetService(serviceReference);

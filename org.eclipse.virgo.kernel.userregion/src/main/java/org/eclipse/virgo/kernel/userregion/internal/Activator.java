@@ -14,23 +14,15 @@ package org.eclipse.virgo.kernel.userregion.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.Hashtable;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.event.EventAdmin;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
-import org.osgi.service.packageadmin.ExportedPackage;
-import org.osgi.service.packageadmin.PackageAdmin;
-
+import org.eclipse.virgo.kernel.core.Shutdown;
+import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
@@ -39,10 +31,6 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.MetaInfResourceClassLoaderDelegateHook;
-import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxHookRegistrar;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
@@ -55,8 +43,19 @@ import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFramework
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.osgi.extensions.equinox.hooks.MetaInfResourceClassLoaderDelegateHook;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
+import org.osgi.service.packageadmin.ExportedPackage;
+import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * {@link BundleActivator} for the Equinox-specific OSGi integration
@@ -67,6 +66,7 @@ import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
  * Thread-safe.
  * 
  */
+@SuppressWarnings("deprecation")
 public class Activator implements BundleActivator {
 
     private static final long MAX_SECONDS_WAIT_FOR_SERVICE = 30;
@@ -116,7 +116,7 @@ public class Activator implements BundleActivator {
 
         scheduleRegistrationOfServiceScopingRegistryHooks(context, eventLogger);
 
-        Properties properties = new Properties();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
         this.registrationTracker.track(context.registerService(ModuleContextAccessor.class.getName(), new EmptyModuleContextAccessor(), properties));
 
@@ -179,7 +179,7 @@ public class Activator implements BundleActivator {
     private void scheduleInitialArtifactDeployerCreation(BundleContext context, EventLogger eventLogger) {
         KernelStartedAwaiter startedAwaiter = new KernelStartedAwaiter();
 
-        Properties properties = new Properties();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
         this.registrationTracker.track(context.registerService(EventHandler.class.getName(), startedAwaiter, properties));
 
@@ -275,7 +275,7 @@ public class Activator implements BundleActivator {
                 InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer,
                     artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS),
                     uriNormaliser, eventAdmin, eventLogger, shutdown);
-                Properties properties = new Properties();
+                Dictionary<String, String> properties = new Hashtable<String, String>();
                 properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
                 this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));
 

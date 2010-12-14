@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -72,7 +72,7 @@ final class RegionManager {
 
     private static final String EVENT_REGION_STARTING = "org/eclipse/virgo/kernel/region/STARTING";
 
-    private static final Object EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
+    private static final String EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
 
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
@@ -84,7 +84,7 @@ final class RegionManager {
 
     private final EventAdmin eventAdmin;
 
-    private final ServiceFactory eventLoggerServiceFactory;
+    private final ServiceFactory<EventLogger> eventLoggerServiceFactory;
 
     private volatile Framework childFramework;
 
@@ -101,7 +101,7 @@ final class RegionManager {
     private String regionInheritedProperties;
 
     public RegionManager(BundleContext bundleContext, CompositeBundleFactory compositeBundleFactory, EventAdmin eventAdmin,
-        ServiceFactory eventLoggerServiceFactory, ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
+        ServiceFactory<EventLogger> eventLoggerServiceFactory, ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
         this.bundleContext = bundleContext;
         this.compositeBundleFactory = compositeBundleFactory;
         this.eventAdmin = eventAdmin;
@@ -149,7 +149,7 @@ final class RegionManager {
         SurrogateBundle surrogateBundle = compositeBundle.getSurrogateBundle();
         BundleContext surrogateBundleContext = surrogateBundle.getBundleContext();
 
-        Properties properties = new Properties();
+        Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(EVENT_PROPERTY_REGION_BUNDLECONTEXT, surrogateBundleContext);
         this.eventAdmin.sendEvent(new Event(EVENT_REGION_STARTING, properties));
 
@@ -171,7 +171,7 @@ final class RegionManager {
      * @param surrogateBundleContext
      */
     private void publishUserRegionsBundleContext(BundleContext surrogateBundleContext) {
-        Properties properties = new Properties();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.kernel.regionContext", "true");
         this.bundleContext.registerService(BundleContext.class.getName(), surrogateBundleContext, properties);
     }
@@ -332,8 +332,8 @@ final class RegionManager {
     }
 
     private void registerRegionService(Region region) {
-        Properties props = new Properties();
-        props.setProperty("org.eclipse.virgo.kernel.region.name", region.getName());
+        Dictionary<String, String> props = new Hashtable<String, String>();
+        props.put("org.eclipse.virgo.kernel.region.name", region.getName());
         this.tracker.track(this.bundleContext.registerService(Region.class.getName(), region, props));
     }
 

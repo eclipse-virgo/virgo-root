@@ -28,6 +28,7 @@ import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
  * This class is thread safe.
  * 
  */
+@SuppressWarnings("deprecation")
 public final class StandardPackageAdminUtil implements PackageAdminUtil {
 
     private final PackageAdmin packageAdmin;
@@ -40,6 +41,6 @@ public final class StandardPackageAdminUtil implements PackageAdminUtil {
      * {@inheritDoc}
      */
     public void synchronouslyRefreshPackages(Bundle[] bundles) {
-        ((PackageAdminImpl)this.packageAdmin).refreshPackages(bundles, true);        
+        ((PackageAdminImpl)this.packageAdmin).refreshPackages(bundles, true, null);        
     }
 }

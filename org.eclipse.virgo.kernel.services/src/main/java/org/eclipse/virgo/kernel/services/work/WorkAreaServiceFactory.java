@@ -29,7 +29,7 @@ import org.osgi.framework.ServiceRegistration;
  * Threadsafe.
  * 
  */
-public final class WorkAreaServiceFactory implements ServiceFactory {
+public final class WorkAreaServiceFactory implements ServiceFactory<WorkArea> {
 
     private final File workDirectory;
 
@@ -37,10 +37,10 @@ public final class WorkAreaServiceFactory implements ServiceFactory {
         this.workDirectory = workDirectory;
     }
 
-    public Object getService(Bundle bundle, ServiceRegistration registration) {
+    public WorkArea getService(Bundle bundle, ServiceRegistration<WorkArea> registration) {
         return new StandardWorkArea(this.workDirectory, bundle);
     }
 
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+    public void ungetService(Bundle bundle, ServiceRegistration<WorkArea> registration, WorkArea service) {
     }
 }

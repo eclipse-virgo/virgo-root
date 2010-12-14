@@ -40,7 +40,7 @@ public final class CommandRegistry {
 
     private final List<CommandDescriptor> commandDescriptors = new ArrayList<CommandDescriptor>();
 
-    private final Map<ServiceReference, List<CommandDescriptor>> commandDescriptorsByService = new HashMap<ServiceReference, List<CommandDescriptor>>();
+    private final Map<ServiceReference<?>, List<CommandDescriptor>> commandDescriptorsByService = new HashMap<ServiceReference<?>, List<CommandDescriptor>>();
 
     private final Object monitor = new Object();
 
@@ -60,9 +60,9 @@ public final class CommandRegistry {
         this.bundleContext.addServiceListener(this.commandRegistryServiceListener);
         try {
             // TODO Limit with a filter
-            ServiceReference[] serviceReferences = this.bundleContext.getServiceReferences(null, null);
+            ServiceReference<?>[] serviceReferences = this.bundleContext.getServiceReferences((String)null, null);
             if (serviceReferences != null) {
-                for (ServiceReference serviceReference : serviceReferences) {
+                for (ServiceReference<?> serviceReference : serviceReferences) {
                     serviceRegistered(serviceReference);
                 }
             }
@@ -78,7 +78,7 @@ public final class CommandRegistry {
     }
     
 
-    private void serviceRegistered(ServiceReference serviceReference) {
+    private void serviceRegistered(ServiceReference<?> serviceReference) {
         Object service = bundleContext.getService(serviceReference);
         if (service != null) {
             List<CommandDescriptor> commands = commandResolver.resolveCommands(serviceReference, service);
@@ -91,7 +91,7 @@ public final class CommandRegistry {
         }
     }
 
-    private void serviceUnregistering(ServiceReference serviceReference) {
+    private void serviceUnregistering(ServiceReference<?> serviceReference) {
         synchronized (this.monitor) {
             List<CommandDescriptor> commandDescriptorsForService = this.commandDescriptorsByService.remove(serviceReference);
             this.commandDescriptors.removeAll(commandDescriptorsForService);
