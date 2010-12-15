@@ -164,8 +164,8 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
         while (!isInDeploymentIdentities(type, name, version)) {
             long delta = System.currentTimeMillis() - start;
-            if (delta > 30000) {
-                fail("Deployment identity was not available within 30 seconds");
+            if (delta > 60000) {
+                fail("Deployment identity was not available within 60 seconds");
             }
             Thread.sleep(100);
         }
@@ -176,8 +176,8 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
         while (isInDeploymentIdentities(type, name, version)) {
             long delta = System.currentTimeMillis() - start;
-            if (delta > 30000) {
-                fail("Deployment identity was still available after 30 seconds");
+            if (delta > 60000) {
+                fail("Deployment identity was still available after 60 seconds");
             }
             Thread.sleep(100);
         }
@@ -241,8 +241,8 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
         while (!isInConfigurationAdmin()) {
             long delta = System.currentTimeMillis() - start;
-            if (delta > 30000) {
-                fail("Configuration was not available in ConfigAdmin within 30 seconds");
+            if (delta > 60000) {
+                fail("Configuration was not available in ConfigAdmin within 60 seconds");
             }
             Thread.sleep(100);
         }
