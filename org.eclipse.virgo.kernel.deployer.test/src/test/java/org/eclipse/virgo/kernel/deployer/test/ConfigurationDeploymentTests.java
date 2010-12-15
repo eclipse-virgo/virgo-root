@@ -237,6 +237,9 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
     @SuppressWarnings("unchecked")
     private void checkConfigAvailable() throws IOException, InvalidSyntaxException, InterruptedException {
+	// Allow asynchronous delivery of configuration events to complete
+	Thread.sleep(100);
+	
         long start = System.currentTimeMillis();
 
         while (!isInConfigurationAdmin()) {
@@ -253,7 +256,10 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         Assert.assertEquals("b", dictionary.get("a"));
     }
 
-    private void checkConfigUnavailable() throws IOException, InvalidSyntaxException {
+    private void checkConfigUnavailable() throws IOException, InvalidSyntaxException, InterruptedException {
+	// Allow asynchronous delivery of configuration events to complete
+	Thread.sleep(100);
+	
         assertFalse(isInConfigurationAdmin());
     }
 
