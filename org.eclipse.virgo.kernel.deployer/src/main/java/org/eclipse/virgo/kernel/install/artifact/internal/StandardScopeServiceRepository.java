@@ -85,7 +85,7 @@ final class StandardScopeServiceRepository implements ScopeServiceRepository {
                 if (i > 0) {
                     propsString.append(", ");
                 }
-                String key = keys.nextElement().toString();
+                String key = keys.nextElement();
                 propsString.append(key + "=" + properties.get(key).toString());
             }
         }

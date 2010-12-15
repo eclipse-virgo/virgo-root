@@ -164,8 +164,8 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
         while (!isInDeploymentIdentities(type, name, version)) {
             long delta = System.currentTimeMillis() - start;
-            if (delta > 30000) {
-                fail("Deployment identity was not available within 30 seconds");
+            if (delta > 60000) {
+                fail("Deployment identity was not available within 60 seconds");
             }
             Thread.sleep(100);
         }
@@ -176,8 +176,8 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
         while (isInDeploymentIdentities(type, name, version)) {
             long delta = System.currentTimeMillis() - start;
-            if (delta > 30000) {
-                fail("Deployment identity was still available after 30 seconds");
+            if (delta > 60000) {
+                fail("Deployment identity was still available after 60 seconds");
             }
             Thread.sleep(100);
         }
@@ -237,12 +237,15 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
     @SuppressWarnings("unchecked")
     private void checkConfigAvailable() throws IOException, InvalidSyntaxException, InterruptedException {
+	// Allow asynchronous delivery of configuration events to complete
+	Thread.sleep(100);
+	
         long start = System.currentTimeMillis();
 
         while (!isInConfigurationAdmin()) {
             long delta = System.currentTimeMillis() - start;
-            if (delta > 30000) {
-                fail("Configuration was not available in ConfigAdmin within 30 seconds");
+            if (delta > 60000) {
+                fail("Configuration was not available in ConfigAdmin within 60 seconds");
             }
             Thread.sleep(100);
         }
@@ -253,7 +256,10 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         Assert.assertEquals("b", dictionary.get("a"));
     }
 
-    private void checkConfigUnavailable() throws IOException, InvalidSyntaxException {
+    private void checkConfigUnavailable() throws IOException, InvalidSyntaxException, InterruptedException {
+	// Allow asynchronous delivery of configuration events to complete
+	Thread.sleep(100);
+	
         assertFalse(isInConfigurationAdmin());
     }
 

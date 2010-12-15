@@ -67,7 +67,7 @@ public class ConfigurationAdminConfigurationInfoTests {
     @Test
     public void testGetPropertiesWithFilledConfiguration() throws IOException {
         ConfigurationAdmin stubAdmin = new StubConfigurationAdmin();
-        Configuration config = stubAdmin.getConfiguration(CONFIG_INFO_TEST_PID);
+        Configuration config = stubAdmin.getConfiguration(CONFIG_INFO_TEST_PID, null);
 
         Dictionary<String, String> dict = new Hashtable<String, String>();
         dict.put("key", "value");

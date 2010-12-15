@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.osgi.region;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +46,7 @@ public class RegionManagerTests {
         expect(config.getProperties()).andReturn(properties);
         
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
-        expect(configAdmin.getConfiguration(isA(String.class))).andReturn(config);
+        expect(configAdmin.getConfiguration(isA(String.class), (String) isNull())).andReturn(config);
         
         EventLogger eventLogger = createMock(EventLogger.class);       
         Shutdown shutdown = createMock(Shutdown.class);

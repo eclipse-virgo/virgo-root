@@ -104,7 +104,7 @@ final class RegionManager {
 
     private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
         try {
-            Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID);
+            Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
 
             @SuppressWarnings("unchecked")
             Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();

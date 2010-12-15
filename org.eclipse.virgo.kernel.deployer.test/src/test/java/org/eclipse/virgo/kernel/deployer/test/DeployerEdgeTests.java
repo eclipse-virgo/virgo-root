@@ -30,12 +30,12 @@ import org.eclipse.virgo.util.io.PathReference;
 /**
  * Test various usages of the deployer interface for edge cases.
  * <p />
- * 
+ *
  */
 public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
     private final String TEST_PAR_BUNDLE_SYMBOLIC_NAME = "MyApp-1-com.springsource.kernel.deployer.testbundle";
-    
+
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
     private ApplicationDeployer appDeployer;
@@ -66,7 +66,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
         parCopy2 = new PathReference("./target/deployer-edge-test/app0copy.par");
         parCopy3 = new PathReference("./target/deployer-edge-test/other/app0.par");
         par = new PathReference("src/test/resources/app0.par");
-        
+
         jarCopy1 = new PathReference("./target/deployer-edge-test/dummy.jar");
         jarCopy2 = new PathReference("./target/deployer-edge-test/dummycopy.jar");
         jarCopy3 = new PathReference("./target/deployer-edge-test/other/dummy.jar");
@@ -90,7 +90,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
         this.appDeployer.deploy(noPar.toURI());
     }
-    
+
     @Test(expected = DeploymentException.class)
     public void testNonExistentJar() throws DeploymentException {
         PathReference noJar = new PathReference("./blah.jar");
@@ -112,7 +112,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
         this.appDeployer.deploy(parCopy2.toURI());
     }
-    
+
     @Test(expected = DeploymentException.class)
     public void testDuplicateJarFromDifferentLocation() throws DeploymentException {
         jarCopy1.delete(true);
@@ -140,7 +140,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
         this.appDeployer.deploy(parCopy3.toURI());
     }
-    
+
     @Test(expected = DeploymentException.class)
     public void testDuplicateJarSameFileNameDifferentLocation() throws DeploymentException {
         jarCopy1.delete(true);
@@ -168,7 +168,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
         this.appDeployer.deploy(parCopy1.toURI());
     }
-    
+
     @Test
     public void testDifferentJarSameLocation() throws Exception {
         jarCopy1.delete(true);
@@ -214,7 +214,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
     public void testParWithoutManifest() throws Exception {
         File f = new File("src/test/resources/nomanifest.par");
         DeploymentIdentity deployed = this.appDeployer.deploy(f.toURI());
-        
+
         assertEquals("par", deployed.getType());
         assertEquals("nomanifest", deployed.getSymbolicName());
         assertEquals("0.0.0", deployed.getVersion());
@@ -231,7 +231,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
     public void testParWithoutMetaInf() throws Exception {
         File f = new File("src/test/resources/nometainf.par");
         DeploymentIdentity deployed = this.appDeployer.deploy(f.toURI());
-        
+
         assertEquals("par", deployed.getType());
         assertEquals("nometainf", deployed.getSymbolicName());
         assertEquals("0.0.0", deployed.getVersion());
@@ -266,6 +266,13 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
     @Test(expected = DeploymentException.class)
     public void testWar() throws Exception {
         URI warURI = new File("src/test/resources/waralientokernel.war").toURI();
+
+        this.appDeployer.deploy(warURI);
+    }
+
+    @Test(expected = DeploymentException.class)
+    public void testInvalidDigest() throws Exception {
+        URI warURI = new File("src/test/resources/invalidDigest.jar").toURI();
 
         this.appDeployer.deploy(warURI);
     }

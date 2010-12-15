@@ -47,8 +47,9 @@ public final class BundleManifestUtils {
      * @param archiveSuffixes The suffixes with which an archive's file name must end
      * @return The <code>BundleManifest</code> from the file or <code>null</code> if one was not found.
      * @throws IOException Thrown if a manifest is detected but the reading of it fails.
+     * @throws SecurityException Thrown if a manifest is detected but the reading of it fails because of signature checks (invalid signature file digest...)
      */
-    public static BundleManifest readBundleManifest(File file, String... archiveSuffixes) throws IOException {
+    public static BundleManifest readBundleManifest(File file, String... archiveSuffixes) throws IOException, SecurityException {
         String fileName = file.getName();
         
         Reader reader = null;
@@ -73,7 +74,7 @@ public final class BundleManifestUtils {
         }
     }
 
-    private static Reader manifestReaderFromJar(File file) throws IOException {
+    private static Reader manifestReaderFromJar(File file) throws IOException, SecurityException {
         JarFile jar = null;
         try {
             jar = new JarFile(file);
@@ -85,6 +86,8 @@ public final class BundleManifestUtils {
             StringWriter writer = new StringWriter();
             FileCopyUtils.copy(new InputStreamReader(jar.getInputStream(entry)), writer);
             return new StringReader(writer.toString());
+        } catch (SecurityException se) {
+            throw new SecurityException(String.format("Failed to read manifest from file '%s'.", file.getName()), se);
         } catch (Exception e) {
             throw new IOException(String.format("Failed to read manifest from file '%s'.", file.getName()), e);
         } finally {

@@ -73,6 +73,8 @@ public final class BundleBridge implements ArtifactBridge {
 
         try {
             bundleManifest = BundleManifestUtils.readBundleManifest(artifactFile, JAR_SUFFIX, WAR_SUFFIX);            
+        } catch (RuntimeException re) {
+            throw new RuntimeException(String.format("Error occurred while parsing the manifest of file '%s'.", artifactFile.getPath()),  re);
         } catch (Exception e) {
             throw new ArtifactGenerationException("Error occurred while parsing the manifest.", BRIDGE_TYPE, e);
         }

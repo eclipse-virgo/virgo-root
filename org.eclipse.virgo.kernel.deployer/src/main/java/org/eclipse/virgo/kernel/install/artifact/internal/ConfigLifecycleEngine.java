@@ -85,7 +85,7 @@ public final class ConfigLifecycleEngine implements StartEngine, RefreshEngine, 
     }
 
     private Configuration getConfiguration(ArtifactIdentity artifactIdentity) throws IOException {
-        return this.configurationAdmin.getConfiguration(artifactIdentity.getName());
+        return this.configurationAdmin.getConfiguration(artifactIdentity.getName(), null);
     }
 
 }
