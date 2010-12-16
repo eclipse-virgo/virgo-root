@@ -66,6 +66,8 @@ import org.eclipse.virgo.repository.Repository;
  */
 public final class DependencyCalculator {
 
+    private static final String USER_REGION_TAG = "userregion@";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ResolutionFailureDetective detective;
@@ -110,8 +112,8 @@ public final class DependencyCalculator {
      * @param state the <code>State</code> to satisfy against.
      * @param bundles the bundles to calculate dependencies for.
      * @return an array of descriptions of bundles that need to be added to the state to satisfy constraints.
-     * @throws BundleException 
-     * @throws UnableToSatisfyDependenciesException 
+     * @throws BundleException
+     * @throws UnableToSatisfyDependenciesException
      */
     public BundleDescription[] calculateDependencies(State state, BundleDescription[] bundles) throws BundleException,
         UnableToSatisfyDependenciesException {
@@ -347,16 +349,12 @@ public final class DependencyCalculator {
         Dictionary<String, String> manifest = BundleBridge.convertToDictionary(artifact);
         try {
             URI uri = artifact.getUri();
-            if ("file".equals(uri.getScheme())) {
-                return this.stateObjectFactory.createBundleDescription(state, manifest, new File(uri).getAbsolutePath(),
-                    this.bundleId.getAndIncrement());
-            } else {
-                return this.stateObjectFactory.createBundleDescription(state, manifest, uri.toString(), this.bundleId.getAndIncrement());
-            }
+            String installLocation = "file".equals(uri.getScheme()) ? new File(uri).getAbsolutePath() : uri.toString();
+            return this.stateObjectFactory.createBundleDescription(state, manifest, USER_REGION_TAG + installLocation, this.bundleId.getAndIncrement());
         } catch (RuntimeException e) {
             throw new BundleException("Unable to read bundle at '" + artifact.getUri() + "'", e);
         } catch (BundleException be) {
-        	throw new BundleException("Failed to create BundleDescriptor for artifact at '" + artifact.getUri() + "'", be);
+            throw new BundleException("Failed to create BundleDescriptor for artifact at '" + artifact.getUri() + "'", be);
         }
     }
 

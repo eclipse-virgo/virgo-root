@@ -63,11 +63,13 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  */
 final class StandardQuasiFramework implements QuasiFramework {
 
+    private static final String USER_REGION_TAG = "userregion@";
+
     private static final String REFERENCE_SCHEME = "reference:";
 
     private static final String FILE_SCHEME = "file:";
 
-    private static final String USER_REGION_LOCATION_TAG = "userregion@";
+    private static final String USER_REGION_LOCATION_TAG = USER_REGION_TAG;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -120,8 +122,8 @@ final class StandardQuasiFramework implements QuasiFramework {
         try {
             Dictionary<String, String> manifest = bundleManifest.toDictionary();
             String installLocation = "file".equals(location.getScheme()) ? new File(location).getAbsolutePath() : location.toString();
-            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(this.state, manifest, installLocation,
-                nextBundleId());
+            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(this.state, manifest, USER_REGION_TAG
+                + installLocation, nextBundleId());
             this.state.addBundle(bundleDescription);
             return new StandardQuasiBundle(bundleDescription, bundleManifest, this.stateHelper);
         } catch (RuntimeException e) {

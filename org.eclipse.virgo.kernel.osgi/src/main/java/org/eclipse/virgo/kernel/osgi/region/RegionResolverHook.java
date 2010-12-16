@@ -36,6 +36,7 @@ import org.osgi.framework.wiring.Capability;
 final class RegionResolverHook implements ResolverHook {
 
     private final RegionMembership regionMembership;
+
     private final List<ImportedPackage> importedPackages;
 
     RegionResolverHook(RegionMembership regionMembership, List<ImportedPackage> importedPackages) {
@@ -66,6 +67,7 @@ final class RegionResolverHook implements ResolverHook {
     @Override
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
         if (isMember(requirer.getBundle())) {
+            // User region bundles can wire only to user region bundles and imported packages from the kernel region.
             Iterator<Capability> i = candidates.iterator();
             while (i.hasNext()) {
                 Capability c = i.next();
@@ -77,10 +79,20 @@ final class RegionResolverHook implements ResolverHook {
                         i.remove();
                     }
                     if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                        if (!imported((String)c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(), c.getDirectives())) {
+                        if (!imported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(), c.getDirectives())) {
                             i.remove();
                         }
                     }
+                }
+            }
+        } else {
+            // Kernel region bundles can wire only to kernel region bundles.
+            Iterator<Capability> i = candidates.iterator();
+            while (i.hasNext()) {
+                Capability c = i.next();
+                Bundle providerBundle = c.getProviderRevision().getBundle();
+                if (!isMember(providerBundle)) {
+                    i.remove();
                 }
             }
         }
