@@ -12,7 +12,11 @@
 package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -59,6 +63,12 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  */
 final class StandardQuasiFramework implements QuasiFramework {
 
+    private static final String REFERENCE_SCHEME = "reference:";
+
+    private static final String FILE_SCHEME = "file:";
+
+    private static final String USER_REGION_LOCATION_TAG = "userregion@";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Object monitor = new Object();
@@ -71,7 +81,7 @@ final class StandardQuasiFramework implements QuasiFramework {
      * Track the bundles which are explicitly installed. These are input to the resolve method.
      */
     private final List<StandardQuasiBundle> installedQuasiBundles = new ArrayList<StandardQuasiBundle>();
-    
+
     private volatile BundleDescription[] otherBundles;
 
     private final ResolutionFailureDetective detective;
@@ -81,10 +91,11 @@ final class StandardQuasiFramework implements QuasiFramework {
     private final DependencyCalculator dependencyCalculator;
 
     private final StateHelper stateHelper;
-    
+
     private final TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler;
 
-    StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective, Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
+    StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
         this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
@@ -145,7 +156,7 @@ final class StandardQuasiFramework implements QuasiFramework {
     public QuasiBundle getBundle(long bundleId) {
         QuasiBundle quasiBundle = null;
         BundleDescription bundleDescription = this.state.getBundle(bundleId);
-        if (bundleDescription!= null) {
+        if (bundleDescription != null) {
             quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.stateHelper);
         }
         return quasiBundle;
@@ -157,7 +168,7 @@ final class StandardQuasiFramework implements QuasiFramework {
     public QuasiBundle getBundle(String name, Version version) {
         QuasiBundle quasiBundle = null;
         BundleDescription bundleDescription = this.state.getBundle(name, version);
-        if (bundleDescription!= null) {
+        if (bundleDescription != null) {
             quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.stateHelper);
         }
         return quasiBundle;
@@ -169,8 +180,8 @@ final class StandardQuasiFramework implements QuasiFramework {
     public List<QuasiResolutionFailure> resolve() {
         synchronized (this.monitor) {
             BundleDescription[] bundles = getBundleDescriptionArray();
-            BundleDescription[] dependencies = getDependencies(bundles);            
-            
+            BundleDescription[] dependencies = getDependencies(bundles);
+
             this.otherBundles = dependencies;
 
             List<QuasiResolutionFailure> failures = getFailures();
@@ -189,7 +200,8 @@ final class StandardQuasiFramework implements QuasiFramework {
         BundleDescription bundleDescription = this.state.getBundle(bundleId);
         ResolverErrorsHolder reh = new ResolverErrorsHolder();
         String failureDescription = this.detective.generateFailureDescription(this.state, bundleDescription, reh);
-        return this.processResolverErrors(reh.getResolverErrors(), new StandardQuasiBundle(bundleDescription, null, this.stateHelper), failureDescription);
+        return this.processResolverErrors(reh.getResolverErrors(), new StandardQuasiBundle(bundleDescription, null, this.stateHelper),
+            failureDescription);
     }
 
     private BundleDescription[] getDependencies(BundleDescription[] bundles) {
@@ -215,8 +227,8 @@ final class StandardQuasiFramework implements QuasiFramework {
         }
         return failures;
     }
-    
-    private List<QuasiResolutionFailure> processResolverErrors(ResolverError[] resolverErrors, QuasiBundle quasiBundle, String failureDescription){
+
+    private List<QuasiResolutionFailure> processResolverErrors(ResolverError[] resolverErrors, QuasiBundle quasiBundle, String failureDescription) {
         List<QuasiResolutionFailure> processedResolverErrors = new ArrayList<QuasiResolutionFailure>();
         boolean added = false;
         if (resolverErrors != null) {
@@ -242,7 +254,8 @@ final class StandardQuasiFramework implements QuasiFramework {
         return processedResolverErrors;
     }
 
-    private PackageQuasiResolutionFailure createPackageResolutionFailure(QuasiBundle quasiBundle, String failureDescription, VersionConstraint unsatisfiedConstraint) {
+    private PackageQuasiResolutionFailure createPackageResolutionFailure(QuasiBundle quasiBundle, String failureDescription,
+        VersionConstraint unsatisfiedConstraint) {
         ImportPackageSpecification importPackageSpecification = (ImportPackageSpecification) unsatisfiedConstraint;
         String pkgName = importPackageSpecification.getName();
         VersionRange pkgVersionRange = convertVersionRange(importPackageSpecification.getVersionRange());
@@ -250,8 +263,7 @@ final class StandardQuasiFramework implements QuasiFramework {
         VersionRange bundleVersionRange = convertVersionRange(importPackageSpecification.getBundleVersionRange());
         this.logger.debug("Missing import: package '{}' version '{}' bundle '{}' version '{}'", new Object[] { pkgName, pkgVersionRange,
             bundleSymbolicName, bundleVersionRange });
-        return new PackageQuasiResolutionFailure(failureDescription, quasiBundle, pkgName, pkgVersionRange,
-            bundleSymbolicName, bundleVersionRange);
+        return new PackageQuasiResolutionFailure(failureDescription, quasiBundle, pkgName, pkgVersionRange, bundleSymbolicName, bundleVersionRange);
     }
 
     private PackageUsesQuasiResolutionFailure createPackagesUsesResolutionFailure(QuasiBundle quasiBundle, String failureDescription,
@@ -263,8 +275,8 @@ final class StandardQuasiFramework implements QuasiFramework {
         VersionRange bundleVersionRange = convertVersionRange(importPackageSpecification.getBundleVersionRange());
         this.logger.debug("Uses conflict: package '{}' version '{}' bundle '{}' version '{}'", new Object[] { pkgName, pkgVersionRange,
             bundleSymbolicName, bundleVersionRange });
-        return new PackageUsesQuasiResolutionFailure(failureDescription, quasiBundle, pkgName,
-            pkgVersionRange, bundleSymbolicName, bundleVersionRange);
+        return new PackageUsesQuasiResolutionFailure(failureDescription, quasiBundle, pkgName, pkgVersionRange, bundleSymbolicName,
+            bundleVersionRange);
     }
 
     private static VersionRange convertVersionRange(org.eclipse.osgi.service.resolver.VersionRange versionRange) {
@@ -291,7 +303,7 @@ final class StandardQuasiFramework implements QuasiFramework {
                 if (!failures.isEmpty()) {
                     throw new BundleException("Commit resolution failed: '" + failures.toString() + "'");
                 }
-            } else {            
+            } else {
                 try {
                     Set<Long> installedQuasiBundles = installQuasiBundles();
                     List<Bundle> installedDependencies = installOtherBundles(installedQuasiBundles);
@@ -322,8 +334,7 @@ final class StandardQuasiFramework implements QuasiFramework {
             }
         }
     }
-    
-    
+
     // TODO Move this method into utils project
     private static boolean isFragmentBundle(Bundle bundle) {
         String fragmentHostHeader = (String) bundle.getHeaders().get(Constants.FRAGMENT_HOST);
@@ -336,7 +347,7 @@ final class StandardQuasiFramework implements QuasiFramework {
             if (!installedQuasiBundles.contains(otherBundle.getBundleId())) {
                 try {
                     Bundle bundle = installBundleDescription(otherBundle);
-                    installedBundles.add(bundle);                       
+                    installedBundles.add(bundle);
                 } catch (BundleException e) {
                     for (Bundle bundle : installedBundles) {
                         try {
@@ -359,16 +370,16 @@ final class StandardQuasiFramework implements QuasiFramework {
             String location = description.getLocation();
             ManifestTransformer manifestTransformer = new QuasiManifestTransformer(quasiBundle.getBundleManifest());
             this.bundleTransformationHandler.pushManifestTransformer(manifestTransformer);
-            
+
             try {
                 URI locationUri = new File(location).toURI();
-                Bundle bundle = this.bundleContext.installBundle(locationUri.toString());                
+                Bundle bundle = doInstallBundleInternal(locationUri.toString());
                 quasiBundle.setBundle(bundle);
                 installed.add(description.getBundleId());
             } finally {
                 this.bundleTransformationHandler.popManifestTransformer();
             }
-            
+
         }
         return installed;
     }
@@ -396,7 +407,32 @@ final class StandardQuasiFramework implements QuasiFramework {
     }
 
     private Bundle doInstallBundleInternal(String location) throws BundleException {
-        return this.bundleContext.installBundle(location);
+        return this.bundleContext.installBundle(USER_REGION_LOCATION_TAG + location, openBundleStream(location));
+    }
+
+    private InputStream openBundleStream(String location) throws BundleException {
+        String absoluteBundleUriString = getAbsoluteUriString(location);
+
+        try {
+            // Use the reference: scheme to obtain an InputStream for either a file or a directory.
+            return new URL(REFERENCE_SCHEME + absoluteBundleUriString).openStream();
+
+        } catch (MalformedURLException e) {
+            throw new BundleException("Invalid bundle URI '" + absoluteBundleUriString + "'", e);
+        } catch (IOException e) {
+            throw new BundleException("Invalid bundle at URI '" + absoluteBundleUriString + "'", e);
+        }
+    }
+
+    private String getAbsoluteUriString(String bundleUriString) throws BundleException {
+
+        if (!bundleUriString.startsWith(FILE_SCHEME)) {
+            throw new BundleException("'" + bundleUriString + "' which did not start with '" + FILE_SCHEME + "'");
+        }
+
+        String filePath = bundleUriString.substring(FILE_SCHEME.length());
+
+        return FILE_SCHEME + new File(filePath).getAbsolutePath();
     }
 
     private void uninstallQuasiBundles() {

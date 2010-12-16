@@ -59,6 +59,8 @@ final class RegionManager {
 
     private static final String FILE_SCHEME = "file:";
 
+    private static final String USER_REGION_LOCATION_TAG = "userregion@";
+
     private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
     private static final String USER_REGION_BASE_BUNDLES_PROPERTY = "baseBundles";
@@ -195,7 +197,7 @@ final class RegionManager {
 
             for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
                 URI uri = entry.getURI();
-                Bundle bundle = this.bundleContext.installBundle("userregion@" + uri.toString(), openBundleStream(uri));
+                Bundle bundle = this.bundleContext.installBundle(USER_REGION_LOCATION_TAG + uri.toString(), openBundleStream(uri));
 
                 if (entry.isAutoStart()) {
                     bundlesToStart.add(bundle);
