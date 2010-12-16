@@ -70,19 +70,18 @@ public class DumpIntegrationTests {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
 	public void dumpDirectoryConfiguration() throws IOException, InterruptedException {
 		Configuration configuration = getConfiguration("org.eclipse.virgo.medic");
 		assertNotNull(configuration);
 		
-		Dictionary properties = new Hashtable<String, String>();		
+		Dictionary<String, String> properties = new Hashtable<String, String>();		
 		properties.put("dump.root.directory", "target/dumps/1");
 		
 		configuration.update(properties);
 		
 		Thread.sleep(2000);
 		
-		ServiceReference serviceReference = this.bundleContext.getServiceReference(DumpGenerator.class.getName());
+		ServiceReference<?> serviceReference = this.bundleContext.getServiceReference(DumpGenerator.class.getName());
 		DumpGenerator dumpGenerator = (DumpGenerator)this.bundleContext.getService(serviceReference);
 		dumpGenerator.generateDump("bleurgh");
 		
@@ -115,12 +114,11 @@ public class DumpIntegrationTests {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
 	public void exclusionConfiguration() throws IOException, InterruptedException {
 		Configuration configuration = getConfiguration("org.eclipse.virgo.medic");
 		assertNotNull(configuration);
 		
-		Dictionary properties = new Hashtable<String, String>();		
+		Dictionary<String, String> properties = new Hashtable<String, String>();		
 		properties.put("dump.root.directory", "target/dumps/1");
 		properties.put("dump.exclusions.bleurgh", "heap");
 		
@@ -128,7 +126,7 @@ public class DumpIntegrationTests {
 		
 		Thread.sleep(2000);
 		
-		ServiceReference serviceReference = this.bundleContext.getServiceReference(DumpGenerator.class.getName());
+		ServiceReference<?> serviceReference = this.bundleContext.getServiceReference(DumpGenerator.class.getName());
 		DumpGenerator dumpGenerator = (DumpGenerator)this.bundleContext.getService(serviceReference);
 		dumpGenerator.generateDump("bleurgh");
 		
@@ -142,8 +140,8 @@ public class DumpIntegrationTests {
 
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
+	@SuppressWarnings("unchecked")
 	public void logDumpEnabled() throws IOException, InterruptedException {
 		Configuration configuration = getConfiguration("org.eclipse.virgo.medic");
 		assertNotNull(configuration);
@@ -167,9 +165,9 @@ public class DumpIntegrationTests {
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
 
-		assertDumpContributionsNumberOf(file.listFiles()[0], 4);               
-        assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt", "log.log");               
-        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt", "log.log");               
+		assertDumpContributionsNumberOf(file.listFiles()[0], 3);               
+        assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
+        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
 	}
 	
 	private Configuration getConfiguration(String pid) throws IOException {

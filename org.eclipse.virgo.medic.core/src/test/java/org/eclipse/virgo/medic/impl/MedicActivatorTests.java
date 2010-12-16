@@ -55,7 +55,7 @@ public class MedicActivatorTests {
         bundleActivator.start(bundleContext);
         assertServiceListenerCount(bundleContext, 1);
         assertServiceRegistrationCount(bundleContext, DumpGenerator.class, 1);
-        assertServiceRegistrationCount(bundleContext, DumpContributor.class, 4);
+        assertServiceRegistrationCount(bundleContext, DumpContributor.class, 3);
         assertServiceRegistrationCount(bundleContext, EventLoggerFactory.class, 1);
         assertServiceRegistrationCount(bundleContext, EventLogger.class, 1);
         assertServiceRegistrationCount(bundleContext, LoggingConfigurationPublisher.class, 1);

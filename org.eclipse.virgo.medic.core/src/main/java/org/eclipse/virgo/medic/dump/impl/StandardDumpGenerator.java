@@ -90,9 +90,8 @@ public final class StandardDumpGenerator implements DumpGenerator {
         return new StandardDump(cause, timestamp, context, throwables, dumpDirectory);
     }
 
-    @SuppressWarnings("unchecked")
     private List<DumpContributor> getDumpContributors(String cause) {
-        Dictionary configuration = this.configurationProvider.getConfiguration();
+        Dictionary<?, ?> configuration = this.configurationProvider.getConfiguration();
         String excludedContributorsProperty = (String) configuration.get("dump.exclusions." + cause);
         List<String> excludedContributors = toList(excludedContributorsProperty);
         excludedContributorsProperty = (String) configuration.get("dump.exclusions.*");
@@ -153,9 +152,8 @@ public final class StandardDumpGenerator implements DumpGenerator {
         return dumpDirectory;                        
     }
 
-    @SuppressWarnings("unchecked")
     private String getRootDumpDirectory() {
-        Dictionary configuration = this.configurationProvider.getConfiguration();
+        Dictionary<?, ?> configuration = this.configurationProvider.getConfiguration();
         return (String) configuration.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
     }
 

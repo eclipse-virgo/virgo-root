@@ -16,13 +16,10 @@ import java.util.List;
 
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.impl.heap.HeapDumpContributor;
-import org.eclipse.virgo.medic.dump.impl.logback.LogDumpContributor;
 import org.eclipse.virgo.medic.dump.impl.summary.SummaryDumpContributor;
 import org.eclipse.virgo.medic.dump.impl.thread.ThreadDumpContributor;
-import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
 
 public final class DumpContributorPublisher {
 
@@ -31,15 +28,9 @@ public final class DumpContributorPublisher {
     private final List<ServiceRegistration<DumpContributor>> contributorRegistrations = new ArrayList<ServiceRegistration<DumpContributor>>();
 
     private final BundleContext bundleContext;
-    
-    private final ConfigurationProvider configurationProvider;
-    
-    private final LogDumpContributor logDumpContributor;
 
-    public DumpContributorPublisher(BundleContext bundleContext, ConfigurationProvider configurationProvider) {
+    public DumpContributorPublisher(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
-        this.configurationProvider = configurationProvider;
-        this.logDumpContributor = new LogDumpContributor(this.configurationProvider);
     }
 
     public void publishDumpContributors() {
@@ -48,7 +39,6 @@ public final class DumpContributorPublisher {
             publishDumpContributor(new HeapDumpContributor());
         }
         publishDumpContributor(new ThreadDumpContributor());
-		publishDumpContributor(this.logDumpContributor);
     }
 
     @SuppressWarnings("unchecked")
@@ -61,8 +51,6 @@ public final class DumpContributorPublisher {
         for (ServiceRegistration<DumpContributor> registration : this.contributorRegistrations) {
             registration.unregister();
         }
-        
-        this.logDumpContributor.clear();
         
         this.contributorRegistrations.clear();
     }

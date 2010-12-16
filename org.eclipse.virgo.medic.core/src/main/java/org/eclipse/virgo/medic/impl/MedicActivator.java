@@ -115,11 +115,10 @@ public final class MedicActivator implements BundleActivator {
 
     private void dumpStart(BundleContext context, ConfigurationProvider configurationProvider) {
         
-        this.dumpGenerator = new StandardDumpGenerator(new StandardDumpContributorResolver(context), configurationProvider,
-            this.eventLoggerFactory.createEventLogger(context.getBundle()));
+        this.dumpGenerator = new StandardDumpGenerator(new StandardDumpContributorResolver(context), configurationProvider, this.eventLoggerFactory.createEventLogger(context.getBundle()));
         this.registrationTracker.track(context.registerService(DumpGenerator.class.getName(), this.dumpGenerator, null));
 
-        this.dumpContributorPublisher = new DumpContributorPublisher(context, configurationProvider);
+        this.dumpContributorPublisher = new DumpContributorPublisher(context);
         this.dumpContributorPublisher.publishDumpContributors();               
     }
 
