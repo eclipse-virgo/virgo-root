@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.osgi.internal.module.ResolverBundle;
+import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.resolver.ResolverHook;
@@ -39,25 +41,58 @@ final class RegionResolverHook implements ResolverHook {
 
     private final List<ImportedPackage> importedPackages;
 
-    RegionResolverHook(RegionMembership regionMembership, List<ImportedPackage> importedPackages) {
+    private final boolean triggerInRegion;
+
+    RegionResolverHook(RegionMembership regionMembership, List<ImportedPackage> importedPackages, Collection<BundleRevision> triggers) {
         this.regionMembership = regionMembership;
         this.importedPackages = importedPackages;
+        this.triggerInRegion = triggerInRegion(triggers);
+    }
+
+    private boolean triggerInRegion(Collection<BundleRevision> triggers) {
+        // If there are no triggers, assume the resolution is occurring in the user region.
+        if (triggers.isEmpty()) {
+            return true;
+        }
+        Iterator<BundleRevision> i = triggers.iterator();
+        while (i.hasNext()) {
+            if (isMember(i.next())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void filterResolvable(Collection<BundleRevision> candidates) {
-        // Remove all candidates not in the region. May be too limiting, but let's see.
-        Iterator<BundleRevision> i = candidates.iterator();
-        while (i.hasNext()) {
-            if (!isMember(i.next().getBundle())) {
-                i.remove();
+        if (!this.triggerInRegion) {
+            // The trigger is in the kernel regions, so remove all candidates in the user region.
+            Iterator<BundleRevision> i = candidates.iterator();
+            while (i.hasNext()) {
+                if (isMember(i.next())) {
+                    i.remove();
+                }
             }
         }
     }
 
-    private boolean isMember(Bundle bundle) {
-        return this.regionMembership.contains(bundle);
+    private boolean isMember(BundleRevision bundleRevision) {
+        Bundle bundle = bundleRevision.getBundle();
+        if (bundle != null) {
+            return this.regionMembership.contains(bundle);
+        }
+        if (bundleRevision instanceof ResolverBundle) {
+            ResolverBundle resolverBundle = (ResolverBundle)bundleRevision;
+            return this.regionMembership.contains(resolverBundle.getBundleDescription().getBundleId());
+        }
+        Assert.isTrue(false, "Cannot determine region membership of BundleRevision '%s'", bundleRevision);
+        // Assume that bundle revisions with no bundles belong to the user region.
+        return true;
     }
+
+    // private boolean isMember(Bundle bundle) {
+    // return this.regionMembership.contains(bundle);
+    // }
 
     @Override
     public void filterSingletonCollisions(Capability singleton, Collection<Capability> collisionCandidates) {
@@ -66,13 +101,23 @@ final class RegionResolverHook implements ResolverHook {
 
     @Override
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
-        if (isMember(requirer.getBundle())) {
+        if (isMember(requirer)) {
+            // XXX DEBUG
+            // if ("org.springframework.web.portlet".equals(requirer.getSymbolicName())) {
+            // Iterator<Capability> i = candidates.iterator();
+            // while (i.hasNext()) {
+            // Capability c = i.next();
+            // if ("org.springframework.beans".equals(c.getProviderRevision().getSymbolicName())) {
+            // System.out.println("here");
+            // }
+            // }
+            // }
+
             // User region bundles can wire only to user region bundles and imported packages from the kernel region.
             Iterator<Capability> i = candidates.iterator();
             while (i.hasNext()) {
                 Capability c = i.next();
-                Bundle providerBundle = c.getProviderRevision().getBundle();
-                if (!isMember(providerBundle)) {
+                if (!isMember(c.getProviderRevision())) {
                     String namespace = c.getNamespace();
                     // Filter out bundles that are not members of the region
                     if (Capability.BUNDLE_CAPABILITY.equals(namespace)) {
@@ -90,8 +135,7 @@ final class RegionResolverHook implements ResolverHook {
             Iterator<Capability> i = candidates.iterator();
             while (i.hasNext()) {
                 Capability c = i.next();
-                Bundle providerBundle = c.getProviderRevision().getBundle();
-                if (!isMember(providerBundle)) {
+                if (!isMember(c.getProviderRevision())) {
                     i.remove();
                 }
             }

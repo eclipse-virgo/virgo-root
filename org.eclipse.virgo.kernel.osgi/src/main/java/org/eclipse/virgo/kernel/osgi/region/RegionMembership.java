@@ -27,11 +27,21 @@ import org.osgi.framework.Bundle;
 public interface RegionMembership {
 
     /**
-     * Determines whether or not the specified bundle belongs to the region represented by this {@link RegionMembership}.
+     * Determines whether or not the specified bundle belongs to the region represented by this {@link RegionMembership}
+     * .
      * 
      * @param bundle the {@link Bundle} to be checked for membership
      * @return <code>true</code> if and only if the specified bundle belongs to the region
      */
     boolean contains(Bundle bundle);
+
+    /**
+     * Determines whether or not the bundle with the specified bundle id belongs to the region represented by this
+     * {@link RegionMembership}.
+     * 
+     * @param bundleId the id of the {@link Bundle} to be checked for membership
+     * @return <code>true</code> if and only if the specified bundle belongs to the region
+     */
+    boolean contains(Long bundleId);
 
 }

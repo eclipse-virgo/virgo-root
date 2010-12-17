@@ -47,18 +47,7 @@ final class RegionResolverHookFactory implements ResolverHookFactory {
 
     @Override
     public ResolverHook begin(Collection<BundleRevision> triggers) {
-        boolean triggerInRegion = triggerInRegion(triggers);
-        return triggerInRegion ? new RegionResolverHook(this.regionMembership, this.importedPackages) : null;
-    }
-
-    private boolean triggerInRegion(Collection<BundleRevision> triggers) {
-        Iterator<BundleRevision> i = triggers.iterator();
-        while (i.hasNext()) {
-            if (this.regionMembership.contains(i.next().getBundle())) {
-                return true;
-            }
-        }
-        return false;
+        return new RegionResolverHook(this.regionMembership, this.importedPackages, triggers);
     }
 
 }

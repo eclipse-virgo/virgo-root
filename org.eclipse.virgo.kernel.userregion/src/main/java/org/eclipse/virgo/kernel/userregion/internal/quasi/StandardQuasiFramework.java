@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.osgi.framework.internal.core.CoreResolverHookFactory;
+import org.eclipse.osgi.internal.resolver.StateImpl;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
@@ -36,7 +38,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +109,23 @@ final class StandardQuasiFramework implements QuasiFramework {
         this.dependencyCalculator = new DependencyCalculator(platformAdmin.getFactory(), this.detective, repository, this.bundleContext);
         this.stateHelper = platformAdmin.getStateHelper();
         this.bundleTransformationHandler = bundleTransformationHandler;
+        setResolverHookFactory();
+    }
+
+    private void setResolverHookFactory() {
+        // XXX Bug 332771: Temporary workaround since the resolver hook is not driven by default for State resolutions
+        if (this.state instanceof StateImpl) {
+            // Following not used as ServiceRegistry is a bit fiddly to get
+            // ResolverHookFactory resolverHookFactory = new CoreResolverHookFactory(xx,yy);
+            // ((StateImpl) this.state).setResolverHookFactory(resolverHookFactory);
+
+            ServiceReference<ResolverHookFactory> ref = this.bundleContext.getServiceReference(ResolverHookFactory.class);
+            if (ref != null) {
+                ResolverHookFactory resolverHookFactory = this.bundleContext.getService(ref);
+                ((StateImpl) this.state).setResolverHookFactory(resolverHookFactory);
+                this.bundleContext.ungetService(ref);
+            }
+        }
     }
 
     /**
@@ -374,7 +395,7 @@ final class StandardQuasiFramework implements QuasiFramework {
             this.bundleTransformationHandler.pushManifestTransformer(manifestTransformer);
 
             try {
-                URI locationUri = new File(location).toURI();
+                URI locationUri = new File(stripRegionTag(location)).toURI();
                 Bundle bundle = doInstallBundleInternal(locationUri.toString());
                 quasiBundle.setBundle(bundle);
                 installed.add(description.getBundleId());
@@ -384,6 +405,13 @@ final class StandardQuasiFramework implements QuasiFramework {
 
         }
         return installed;
+    }
+
+    private String stripRegionTag(String location) {
+        if (location.startsWith(USER_REGION_TAG)) {
+            return location.substring(USER_REGION_TAG.length());
+        }
+        return location;
     }
 
     private static final class QuasiManifestTransformer implements ManifestTransformer {
@@ -403,7 +431,7 @@ final class StandardQuasiFramework implements QuasiFramework {
     }
 
     private Bundle installBundleDescription(BundleDescription description) throws BundleException {
-        String location = description.getLocation();
+        String location = stripRegionTag(description.getLocation());
         String installLocation = location.startsWith("http:") ? location : new File(location).toURI().toString();
         return doInstallBundleInternal(installLocation);
     }

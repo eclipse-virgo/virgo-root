@@ -146,8 +146,13 @@ final class RegionManager {
 
             @Override
             public boolean contains(Bundle bundle) {
-                // TODO implement a more robust membership scheme
                 long bundleId = bundle.getBundleId();
+                return contains(bundleId);
+            }
+
+            @Override
+            public boolean contains(Long bundleId) {
+                // TODO implement a more robust membership scheme
                 return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
             }
         };
