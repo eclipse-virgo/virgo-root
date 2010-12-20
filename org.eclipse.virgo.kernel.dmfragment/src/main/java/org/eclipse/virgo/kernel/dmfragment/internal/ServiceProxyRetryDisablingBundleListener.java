@@ -51,12 +51,8 @@ class ServiceProxyRetryDisablingBundleListener implements SynchronousBundleListe
                     ApplicationContext.class.getName(), null);
 
                 for (ServiceReference<?> applicationContextServiceReference : applicationContextServiceReferences) {
-                    Object applicationContextService = bundleContext.getService(applicationContextServiceReference);
-                    // Process application contexts in the current region.
-                    if (applicationContextService instanceof ApplicationContext) {
-                        ApplicationContext applicationContext = (ApplicationContext) applicationContextService;
-                        ApplicationContextShutdownBean.disableServiceProxyRetry(applicationContext);
-                    }
+                    ApplicationContext applicationContext = (ApplicationContext) bundleContext.getService(applicationContextServiceReference);
+                    ApplicationContextShutdownBean.disableServiceProxyRetry(applicationContext);
                     bundleContext.ungetService(applicationContextServiceReference);
                 }
             } catch (InvalidSyntaxException ise) {
