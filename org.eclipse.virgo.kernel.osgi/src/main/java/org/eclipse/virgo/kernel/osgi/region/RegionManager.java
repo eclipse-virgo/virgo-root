@@ -12,8 +12,6 @@
 package org.eclipse.virgo.kernel.osgi.region;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -70,8 +68,6 @@ final class RegionManager {
     private static final String USER_REGION_SERVICE_IMPORTS_PROPERTY = "serviceImports";
 
     private static final String USER_REGION_SERVICE_EXPORTS_PROPERTY = "serviceExports";
-
-    private static final String USER_REGION_PROPERTIES_PROPERTY = "inheritedFrameworkProperties";
 
     private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
 
@@ -162,6 +158,10 @@ final class RegionManager {
         registerBundleEventHook(new RegionBundleEventHook(regionMembership));
 
         registerBundleFindHook(new RegionBundleFindHook(regionMembership));
+        
+        registerServiceEventHook(new RegionServiceEventHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
+        
+        registerServiceFindHook(new RegionServiceFindHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
 
         BundleContext userRegionBundleContext = initialiseUserRegionBundles();
 
@@ -170,9 +170,16 @@ final class RegionManager {
         publishUserRegionBundleContext(userRegionBundleContext);
     }
 
+    private void registerServiceFindHook(org.osgi.framework.hooks.service.FindHook serviceFindHook) {
+        this.tracker.track(this.bundleContext.registerService(org.osgi.framework.hooks.service.FindHook.class, serviceFindHook, null));
+    }
+
+    private void registerServiceEventHook(org.osgi.framework.hooks.service.EventHook serviceEventHook) {
+        this.tracker.track(this.bundleContext.registerService(org.osgi.framework.hooks.service.EventHook.class, serviceEventHook, null));
+    }
+
     private void registerBundleFindHook(FindHook findHook) {
         this.tracker.track(this.bundleContext.registerService(FindHook.class, findHook, null));
-
     }
 
     private void registerBundleEventHook(EventHook eventHook) {
