@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema
 		xmlns="http://www.w3.org/2001/XMLSchema"
-		xmlns:index="http://www.springsource.org/schema/dm-server/index"
-		targetNamespace="http://www.springsource.org/schema/dm-server/index"
+		xmlns:index="http://www.eclipse.org/virgo/schema/index"
+		targetNamespace="http://www.eclipse.org/virgo/schema/index"
 		elementFormDefault="qualified">
 
 <!-- Types -->
@@ -95,7 +95,7 @@ This version must meet the OSGi version specification. This is one component of 
 <!-- Elements -->
 	<element name="index" type="index:indexType">
 		<annotation>
-			<documentation><![CDATA[An index is a representation of all of the artifact metadata contained in a dm Server repository.]]></documentation>
+			<documentation><![CDATA[An index is a representation of all of the artifact metadata contained in a Virgo Server repository.]]></documentation>
 		</annotation>
 	</element>
 
