@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.osgi.framework.internal.core.CoreResolverHookFactory;
 import org.eclipse.osgi.internal.resolver.StateImpl;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
@@ -34,16 +33,6 @@ import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.StateHelper;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.osgi.service.resolver.VersionConstraint;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
-import org.osgi.framework.hooks.resolver.ResolverHookFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
@@ -55,6 +44,15 @@ import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.common.StringUtils;
 import org.eclipse.virgo.util.osgi.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
+import org.osgi.framework.hooks.resolver.ResolverHookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardQuasiFramework} is the default implementation of {@link QuasiFramework}.
@@ -284,8 +282,9 @@ final class StandardQuasiFramework implements QuasiFramework {
         VersionRange pkgVersionRange = convertVersionRange(importPackageSpecification.getVersionRange());
         String bundleSymbolicName = importPackageSpecification.getBundleSymbolicName();
         VersionRange bundleVersionRange = convertVersionRange(importPackageSpecification.getBundleVersionRange());
-        this.logger.debug("Missing import: package '{}' version '{}' bundle '{}' version '{}'", new Object[] { pkgName, pkgVersionRange,
-            bundleSymbolicName, bundleVersionRange });
+        long bundleId = importPackageSpecification.getBundle().getBundleId();
+        this.logger.debug("Missing import: package '{}' version '{}' bundle '{}' version '{}' id '{}'", new Object[] { pkgName, pkgVersionRange,
+            bundleSymbolicName, bundleVersionRange, bundleId});
         return new PackageQuasiResolutionFailure(failureDescription, quasiBundle, pkgName, pkgVersionRange, bundleSymbolicName, bundleVersionRange);
     }
 
@@ -296,8 +295,9 @@ final class StandardQuasiFramework implements QuasiFramework {
         VersionRange pkgVersionRange = convertVersionRange(importPackageSpecification.getVersionRange());
         String bundleSymbolicName = importPackageSpecification.getBundleSymbolicName();
         VersionRange bundleVersionRange = convertVersionRange(importPackageSpecification.getBundleVersionRange());
-        this.logger.debug("Uses conflict: package '{}' version '{}' bundle '{}' version '{}'", new Object[] { pkgName, pkgVersionRange,
-            bundleSymbolicName, bundleVersionRange });
+        long bundleId = importPackageSpecification.getBundle().getBundleId();
+        this.logger.debug("Uses conflict: package '{}' version '{}' bundle '{}' version '{}' id '{}'", new Object[] { pkgName, pkgVersionRange,
+            bundleSymbolicName, bundleVersionRange, bundleId});
         return new PackageUsesQuasiResolutionFailure(failureDescription, quasiBundle, pkgName, pkgVersionRange, bundleSymbolicName,
             bundleVersionRange);
     }

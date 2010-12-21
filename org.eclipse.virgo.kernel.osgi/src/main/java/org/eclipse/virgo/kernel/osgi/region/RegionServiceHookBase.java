@@ -51,8 +51,9 @@ abstract class RegionServiceHookBase {
         this.serviceExports = serviceListStringToSet(regionServiceExports);
     }
 
-    private HashSet<String> serviceListStringToSet(String serviceListString) {
-        return new HashSet<String>(Arrays.asList(serviceListString.split(SERVICE_CLASS_SEPARATOR)));
+    private Set<String> serviceListStringToSet(String serviceListString) {
+        return serviceListString != null ? new HashSet<String>(Arrays.asList(serviceListString.split(SERVICE_CLASS_SEPARATOR)))
+            : new HashSet<String>();
     }
 
     protected final boolean isUserRegionBundle(BundleContext bundleContext) {
@@ -62,7 +63,7 @@ abstract class RegionServiceHookBase {
     protected final boolean isUserRegionBundle(Bundle bundle) {
         return this.regionMembership.contains(bundle);
     }
-    
+
     protected static boolean isSystemBundle(BundleContext bundleContext) {
         return isSystemBundle(bundleContext.getBundle());
     }
@@ -75,7 +76,7 @@ abstract class RegionServiceHookBase {
         Bundle serviceSource = serviceReference.getBundle();
         return isUserRegionBundle(serviceSource);
     }
-    
+
     protected static boolean isSystemBundleService(ServiceReference<?> serviceReference) {
         return isSystemBundle(serviceReference.getBundle());
     }

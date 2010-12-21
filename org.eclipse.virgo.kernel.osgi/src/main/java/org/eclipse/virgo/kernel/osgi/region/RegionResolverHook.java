@@ -103,15 +103,15 @@ final class RegionResolverHook implements ResolverHook {
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
         if (isMember(requirer)) {
             // XXX DEBUG
-            // if ("org.springframework.web.portlet".equals(requirer.getSymbolicName())) {
-            // Iterator<Capability> i = candidates.iterator();
-            // while (i.hasNext()) {
-            // Capability c = i.next();
-            // if ("org.springframework.beans".equals(c.getProviderRevision().getSymbolicName())) {
-            // System.out.println("here");
-            // }
-            // }
-            // }
+            if ("org.springframework.web.servlet".equals(requirer.getSymbolicName())) {
+                Iterator<Capability> i = candidates.iterator();
+                while (i.hasNext()) {
+                    Capability c = i.next();
+                    if ("com.springsource.org.aopalliance".equals(c.getProviderRevision().getSymbolicName())) {
+                        System.out.println("here");
+                    }
+                }
+            }
 
             // User region bundles can wire only to user region bundles and imported packages from the kernel region.
             Iterator<Capability> i = candidates.iterator();

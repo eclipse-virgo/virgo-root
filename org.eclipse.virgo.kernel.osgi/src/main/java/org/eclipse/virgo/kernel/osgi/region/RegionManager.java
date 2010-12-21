@@ -152,16 +152,15 @@ final class RegionManager {
                 return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
             }
         };
-        
 
         registerResolverHookFactory(new RegionResolverHookFactory(regionMembership, expandedUserRegionImportsProperty));
 
         registerBundleEventHook(new RegionBundleEventHook(regionMembership));
 
         registerBundleFindHook(new RegionBundleFindHook(regionMembership));
-        
+
         registerServiceEventHook(new RegionServiceEventHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
-        
+
         registerServiceFindHook(new RegionServiceFindHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
 
         BundleContext userRegionBundleContext = initialiseUserRegionBundles();
@@ -175,7 +174,9 @@ final class RegionManager {
 
     private void registerRegionMembership(RegionMembership regionMembership, BundleContext userRegionBundleContext) {
         this.tracker.track(this.bundleContext.registerService(RegionMembership.class, regionMembership, null));
-        this.tracker.track(userRegionBundleContext.registerService(RegionMembership.class, regionMembership, null));
+        if (userRegionBundleContext != null) {
+            this.tracker.track(userRegionBundleContext.registerService(RegionMembership.class, regionMembership, null));
+        }
     }
 
     private void registerServiceFindHook(org.osgi.framework.hooks.service.FindHook serviceFindHook) {
