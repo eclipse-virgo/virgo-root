@@ -12,10 +12,13 @@
 package org.eclipse.virgo.kernel.agent.dm.internal;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
+import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**
@@ -36,6 +39,10 @@ final class DeployerFailureListener implements EventHandler {
     private static final String FAILURE_TOPIC = "org/osgi/service/blueprint/container/FAILURE";
 
     private final EventLogger eventLogger;
+    
+    private volatile RegionMembership regionMembership;
+
+    private volatile boolean agentInRegion;
 
     public DeployerFailureListener(EventLogger eventLogger) {
         this.eventLogger = eventLogger;
@@ -55,8 +62,16 @@ final class DeployerFailureListener implements EventHandler {
     }
 
     private boolean inThisRegion(Bundle bundle) {
-        Bundle agentBundle = FrameworkUtil.getBundle(getClass());
-        return agentBundle.getBundleContext().getBundle(bundle.getBundleId()) == bundle;
+        if (regionMembership == null) {
+            Bundle agentBundle = FrameworkUtil.getBundle(getClass());
+            BundleContext bundleContext = agentBundle.getBundleContext();
+            ServiceReference<RegionMembership> regionMembershipServiceReference = bundleContext.getServiceReference(RegionMembership.class);
+            if (regionMembershipServiceReference != null) {
+                this.regionMembership = bundleContext.getService(regionMembershipServiceReference);
+                this.agentInRegion = this.regionMembership.contains(agentBundle);
+            }
+        }
+        return this.regionMembership != null ? this.regionMembership.contains(bundle) == this.agentInRegion : true;
     }
 
 }
