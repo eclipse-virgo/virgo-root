@@ -53,6 +53,8 @@ import org.osgi.service.event.EventAdmin;
  */
 final class RegionManager {
 
+    private static final String USER_REGION_BUNDLE_CONTEXT_SERVICE_PROPERTY = "org.eclipse.virgo.kernel.regionContext";
+
     private static final String REFERENCE_SCHEME = "reference:";
 
     private static final String FILE_SCHEME = "file:";
@@ -198,7 +200,7 @@ final class RegionManager {
 
     private void publishUserRegionBundleContext(BundleContext userRegionBundleContext) {
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("org.eclipse.virgo.kernel.regionContext", "true");
+        properties.put(USER_REGION_BUNDLE_CONTEXT_SERVICE_PROPERTY, "true");
         this.bundleContext.registerService(BundleContext.class, userRegionBundleContext, properties);
     }
 
