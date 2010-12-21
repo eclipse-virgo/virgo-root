@@ -32,6 +32,15 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
 
+    <!--P2 publishing properties-->
+    <property name="publishing.dir" value="${basedir}/target/repository"/>
+    <property name="distro.res" value="${basedir}/distro_resources"/>
+    <property name="p2.repo.url" value="file:///${publishing.dir}"/>
+    <property name="product.file" value="${basedir}/org.eclipse.virgo.kernel.product"/>
+    <property name="lib.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.product"/>
+    <property name="lib.kernel.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.kernel.product"/>
+    <property name="repository.ext.product.file" value="${basedir}/org.eclipse.virgo.kernel.repository.ext.product"/>
+
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, package, smoke-test"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
 
@@ -152,5 +161,92 @@
 		</all-bundles>
 		<antcall target="test.post"/>
 	</target>
+
+    <target name="package.resources" depends="package"
+            description="Creates a special bundle containing Virgo entities that are not bundles">
+        <property name="meta.inf" value="${distro.res}/META-INF"/>
+        <property name="content" value="${distro.res}/root_content"/>
+        <property name="resources.jar" value="${package.output.dir}/lib/org.eclipse.virgo.kernel.resources.jar"/>
+        <zip destfile="${resources.jar}">
+            <zipfileset dir="${distro.res}"/>
+            <zipfileset dir="${package.dir}/${package.basename}"
+                        includes="bin/*.sh" filemode="755"/>
+            <zipfileset dir="${package.dir}/${package.basename}"
+                        includes="config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+            <zipfileset dir="${package.dir}/${package.basename}">
+                <exclude name="bin/*.sh"/>
+                <exclude name="config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+                <exclude name="**/*.jar"/>
+            </zipfileset>
+        </zip>
+    </target>
+
+    <target name="p2.publish" depends="package.resources, p2.extract-publisher"
+            description="Publishes bundles, features and product">
+        <java jar="${p2.launcher.jar}" fork="true" taskname="p2bundles" failonerror="true" maxmemory="256m">
+            <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher"/>
+            <arg line="-metadataRepository ${p2.repo.url}"/>
+            <arg line="-artifactRepository ${p2.repo.url}"/>
+            <arg line="-bundles ${package.output.dir}/lib,${package.output.dir}/repository/ext"/>
+            <arg line="-publishArtifacts"/>
+            <arg line="-configs all"/>
+        </java>
+
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.buildId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
+
+        <scp todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}/" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}">
+            <fileset dir="${publishing.dir}"/>
+        </scp>
+        
+        
+        
+        <!-- <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java>
+             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${lib.product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java>
+             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${lib.kernel.product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java>
+             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${repository.ext.product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java> -->
+             <delete dir="${p2.publishing.dir}" excludes="p2agent.zip" includeemptydirs="true" quiet="true"/>
+    </target>
 
 </project>
