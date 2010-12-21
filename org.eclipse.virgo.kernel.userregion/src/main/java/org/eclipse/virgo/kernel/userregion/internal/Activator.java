@@ -43,6 +43,7 @@ import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFramework
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
 import org.eclipse.virgo.osgi.extensions.equinox.hooks.MetaInfResourceClassLoaderDelegateHook;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
@@ -91,7 +92,7 @@ public class Activator implements BundleActivator {
         Repository repository = OsgiFrameworkUtils.getService(context, Repository.class).getService();
         PackageAdmin packageAdmin = OsgiFrameworkUtils.getService(context, PackageAdmin.class).getService();
 
-        EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLogger.class).getService();
+        EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLoggerFactory.class).getService().createEventLogger(context.getBundle());
 
         ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));

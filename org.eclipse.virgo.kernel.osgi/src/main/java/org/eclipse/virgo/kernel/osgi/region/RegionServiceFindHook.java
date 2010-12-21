@@ -54,15 +54,18 @@ final class RegionServiceFindHook extends RegionServiceHookBase implements FindH
     @Override
     public void find(BundleContext bundleContext, String name, String filter, boolean allServices, Collection<ServiceReference<?>> references) {
         if (!isSystemBundle(bundleContext)) {
-            if (bundleContext.getBundle().getSymbolicName().startsWith("org.springframework.osgi") && name != null && name.contains("PackageAdminUtil") ) {
+            if (bundleContext.getBundle().getSymbolicName().startsWith("org.springframework.osgi") && name != null
+                && name.contains("PackageAdminUtil")) {
                 System.out.println("DEBUG 3");
             }
             if (isUserRegionBundle(bundleContext)) {
                 Iterator<ServiceReference<?>> i = references.iterator();
                 while (i.hasNext()) {
                     ServiceReference<?> serviceReference = i.next();
-                    // Prevent kernel region services which are not imported from being found by user region bundles.
+                    // Prevent kernel region services which are not imported
+                    // from being found by user region bundles.
                     if (!isUserRegionService(serviceReference) && !serviceImported(serviceReference) && !isSystemBundleService(serviceReference)) {
+                        System.out.println("RSFH removing " + serviceReference);
                         i.remove();
                     }
                 }
@@ -70,7 +73,8 @@ final class RegionServiceFindHook extends RegionServiceHookBase implements FindH
                 Iterator<ServiceReference<?>> i = references.iterator();
                 while (i.hasNext()) {
                     ServiceReference<?> serviceReference = i.next();
-                    // Prevent user region services which are not exported from being found by kernel region bundles.
+                    // Prevent user region services which are not exported from
+                    // being found by kernel region bundles.
                     if (isUserRegionService(serviceReference) && !serviceExported(serviceReference) && !isSystemBundleService(serviceReference)) {
                         i.remove();
                     }

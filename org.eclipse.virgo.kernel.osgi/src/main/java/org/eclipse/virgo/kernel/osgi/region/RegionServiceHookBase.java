@@ -37,7 +37,7 @@ abstract class RegionServiceHookBase {
 
     private static final String SERVICE_CLASS_NAME_PROPERTY = "objectClass";
 
-    private static final String SERVICE_CLASS_SEPARATOR = "'";
+    private static final String SERVICE_CLASS_SEPARATOR = ",";
 
     private final RegionMembership regionMembership;
 
