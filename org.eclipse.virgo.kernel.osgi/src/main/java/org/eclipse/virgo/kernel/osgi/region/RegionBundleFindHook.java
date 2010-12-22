@@ -29,20 +29,18 @@ import org.osgi.framework.hooks.bundle.FindHook;
  * Thread safe.
  * 
  */
-final class RegionBundleFindHook implements FindHook {
-
-    private final RegionMembership regionMembership;
+final class RegionBundleFindHook extends RegionHookBase implements FindHook {
 
     public RegionBundleFindHook(RegionMembership regionMembership) {
-        this.regionMembership = regionMembership;
+        super(regionMembership);
     }
 
     @Override
     public void find(BundleContext context, Collection<Bundle> bundles) {
-        boolean finderInRegion = this.regionMembership.contains(context.getBundle());
+        boolean finderInRegion = isUserRegionBundle(context);
         Iterator<Bundle> i = bundles.iterator();
         while (i.hasNext()) {
-            if (this.regionMembership.contains(i.next()) != finderInRegion) {
+            if (isUserRegionBundle(i.next()) != finderInRegion) {
                 i.remove();
             }
         }

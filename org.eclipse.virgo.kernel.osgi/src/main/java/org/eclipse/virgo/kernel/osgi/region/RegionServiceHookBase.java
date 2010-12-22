@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -31,22 +30,18 @@ import org.osgi.framework.ServiceReference;
  * This class is thread safe.
  * 
  */
-abstract class RegionServiceHookBase {
-
-    private static final long SYSTEM_BUNDLE_ID = 0L;
+abstract class RegionServiceHookBase extends RegionHookBase {
 
     private static final String SERVICE_CLASS_NAME_PROPERTY = "objectClass";
 
     private static final String SERVICE_CLASS_SEPARATOR = ",";
-
-    private final RegionMembership regionMembership;
 
     private final Set<String> serviceImports;
 
     private final Set<String> serviceExports;
 
     RegionServiceHookBase(RegionMembership regionMembership, String regionServiceImports, String regionServiceExports) {
-        this.regionMembership = regionMembership;
+        super(regionMembership);
         this.serviceImports = serviceListStringToSet(regionServiceImports);
         this.serviceExports = serviceListStringToSet(regionServiceExports);
     }
@@ -54,22 +49,6 @@ abstract class RegionServiceHookBase {
     private Set<String> serviceListStringToSet(String serviceListString) {
         return serviceListString != null ? new HashSet<String>(Arrays.asList(serviceListString.split(SERVICE_CLASS_SEPARATOR)))
             : new HashSet<String>();
-    }
-
-    protected final boolean isUserRegionBundle(BundleContext bundleContext) {
-        return isUserRegionBundle(bundleContext.getBundle());
-    }
-
-    protected final boolean isUserRegionBundle(Bundle bundle) {
-        return this.regionMembership.contains(bundle);
-    }
-
-    protected static boolean isSystemBundle(BundleContext bundleContext) {
-        return isSystemBundle(bundleContext.getBundle());
-    }
-
-    protected static boolean isSystemBundle(Bundle bundle) {
-        return bundle.getBundleId() == SYSTEM_BUNDLE_ID;
     }
 
     protected final boolean isUserRegionService(ServiceReference<?> serviceReference) {

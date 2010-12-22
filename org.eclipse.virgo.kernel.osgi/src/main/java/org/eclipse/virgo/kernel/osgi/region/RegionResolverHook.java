@@ -35,16 +35,14 @@ import org.osgi.framework.wiring.Capability;
  * Thread safe.
  * 
  */
-final class RegionResolverHook implements ResolverHook {
-
-    private final RegionMembership regionMembership;
+final class RegionResolverHook extends RegionHookBase implements ResolverHook {
 
     private final List<ImportedPackage> importedPackages;
 
     private final boolean triggerInRegion;
 
     RegionResolverHook(RegionMembership regionMembership, List<ImportedPackage> importedPackages, Collection<BundleRevision> triggers) {
-        this.regionMembership = regionMembership;
+        super(regionMembership);
         this.importedPackages = importedPackages;
         this.triggerInRegion = triggerInRegion(triggers);
     }
@@ -79,20 +77,16 @@ final class RegionResolverHook implements ResolverHook {
     private boolean isMember(BundleRevision bundleRevision) {
         Bundle bundle = bundleRevision.getBundle();
         if (bundle != null) {
-            return this.regionMembership.contains(bundle);
+            return isUserRegionBundle(bundle);
         }
         if (bundleRevision instanceof ResolverBundle) {
             ResolverBundle resolverBundle = (ResolverBundle)bundleRevision;
-            return this.regionMembership.contains(resolverBundle.getBundleDescription().getBundleId());
+            return isUserRegionBundle(resolverBundle.getBundleDescription().getBundleId());
         }
         Assert.isTrue(false, "Cannot determine region membership of BundleRevision '%s'", bundleRevision);
         // Assume that bundle revisions with no bundles belong to the user region.
         return true;
     }
-
-    // private boolean isMember(Bundle bundle) {
-    // return this.regionMembership.contains(bundle);
-    // }
 
     @Override
     public void filterSingletonCollisions(Capability singleton, Collection<Capability> collisionCandidates) {
@@ -102,17 +96,6 @@ final class RegionResolverHook implements ResolverHook {
     @Override
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
         if (isMember(requirer)) {
-            // XXX DEBUG
-            if ("org.springframework.web.servlet".equals(requirer.getSymbolicName())) {
-                Iterator<Capability> i = candidates.iterator();
-                while (i.hasNext()) {
-                    Capability c = i.next();
-                    if ("com.springsource.org.aopalliance".equals(c.getProviderRevision().getSymbolicName())) {
-                        System.out.println("here");
-                    }
-                }
-            }
-
             // User region bundles can wire only to user region bundles and imported packages from the kernel region.
             Iterator<Capability> i = candidates.iterator();
             while (i.hasNext()) {

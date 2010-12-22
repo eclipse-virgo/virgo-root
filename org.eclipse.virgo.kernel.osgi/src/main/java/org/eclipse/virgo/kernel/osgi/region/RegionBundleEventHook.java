@@ -28,23 +28,21 @@ import org.osgi.framework.hooks.bundle.EventHook;
  * Thread safe.
  * 
  */
-final class RegionBundleEventHook implements EventHook {
-
-    private final RegionMembership regionMembership;
+final class RegionBundleEventHook extends RegionHookBase implements EventHook {
 
     public RegionBundleEventHook(RegionMembership regionMembership) {
-        this.regionMembership = regionMembership;
+        super(regionMembership);
     }
 
     @Override
     public void event(BundleEvent event, Collection<BundleContext> contexts) {
         Bundle sourceBundle = event.getBundle();
-        if (sourceBundle.getBundleId() != 0L) {
-            boolean eventInRegion = this.regionMembership.contains(sourceBundle);
+        if (!isSystemBundle(sourceBundle)) {
+            boolean eventInRegion = isUserRegionBundle(sourceBundle);
             Iterator<BundleContext> i = contexts.iterator();
             while (i.hasNext()) {
                 Bundle targetBundle = i.next().getBundle();
-                if (this.regionMembership.contains(targetBundle) != eventInRegion && targetBundle.getBundleId() != 0L) {
+                if (isUserRegionBundle(targetBundle) != eventInRegion && !isSystemBundle(targetBundle)) {
                     i.remove();
                 }
             }
