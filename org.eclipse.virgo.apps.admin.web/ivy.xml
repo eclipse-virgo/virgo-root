@@ -12,7 +12,7 @@
 	</configurations>
 
 	<publications>
-		<artifact name="${ant.project.name}" type="war" ext="war"/>
+		<artifact name="${ant.project.name}" type="wab" ext="jar"/>
 		<artifact name="${ant.project.name}-sources" type="src" ext="jar"/>
 	</publications>
 

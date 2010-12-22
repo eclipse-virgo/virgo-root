@@ -3,10 +3,10 @@
 
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
-	<import file="${basedir}/../virgo-build/war/default.xml"/>
-	<import file="${basedir}/../virgo-build/war/quality.xml"/>
+	<import file="${basedir}/../virgo-build/wab/default.xml"/>
+	<import file="${basedir}/../virgo-build/wab/quality.xml"/>
 	
-	<target name="test" depends="jsTest, quality-war.test.do" />
+	<target name="test" depends="jsTest, quality-wab.test.do" />
 	
 	<target name="jsTest" depends="jsTestRunner" />
 	

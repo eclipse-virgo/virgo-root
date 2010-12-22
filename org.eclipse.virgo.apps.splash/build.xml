@@ -3,6 +3,6 @@
 
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
-	<import file="${basedir}/../virgo-build/war/default.xml"/>
+	<import file="${basedir}/../virgo-build/wab/default.xml"/>
 	
 </project>
