@@ -52,11 +52,17 @@ abstract public class AbstractRegionHookTest {
     
     void assertContextPresent(Collection<BundleContext> bundleContexts, int... bundleIindices) {
         for (int bundleIndex : bundleIindices) {
-            Assert.assertTrue(bundleContexts.contains(getBundle(bundleIndex).getBundleContext()));
+            Assert.assertTrue(bundleContexts.contains(getBundleContext(bundleIndex)));
         }
 
     }
 
+    void assertBundlePresent(Collection<Bundle> bundles, int... bundleIindices) {
+        for (int bundleIndex : bundleIindices) {
+            Assert.assertTrue(bundles.contains(getBundle(bundleIndex)));
+        }
+
+    }
     RegionMembership getRegionMembership() {
         return this.regionMembership;
     }

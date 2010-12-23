@@ -36,12 +36,15 @@ final class RegionBundleFindHook extends RegionHookBase implements FindHook {
     }
 
     @Override
-    public void find(BundleContext context, Collection<Bundle> bundles) {
-        boolean finderInRegion = isUserRegionBundle(context);
-        Iterator<Bundle> i = bundles.iterator();
-        while (i.hasNext()) {
-            if (isUserRegionBundle(i.next()) != finderInRegion) {
-                i.remove();
+    public void find(BundleContext bundleContext, Collection<Bundle> bundles) {
+        if (!isSystemBundle(bundleContext)) {
+            boolean finderInRegion = isUserRegionBundle(bundleContext);
+            Iterator<Bundle> i = bundles.iterator();
+            while (i.hasNext()) {
+                Bundle foundBundle = i.next();
+                if (isUserRegionBundle(foundBundle) != finderInRegion && !isSystemBundle(foundBundle)) {
+                    i.remove();
+                }
             }
         }
     }
