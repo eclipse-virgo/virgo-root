@@ -110,6 +110,26 @@ public class ClassLoadingHelperTests {
 
     @SuppressWarnings("rawtypes")
     @Test
+    public void testTryToLoadMissingBundle() throws Exception {
+        assertNull("Class [" + CLASS_NAME + "] found, while no bundle is specified",
+                   ClassLoadingHelper.tryToLoadClass(CLASS_NAME, null));
+    }
+
+    @Test
+    public void testTryToLoadMissingClassWithException() throws Exception {
+        Bundle bundle = createMock(Bundle.class);
+
+        expect(bundle.loadClass(CLASS_NAME)).andThrow(new ClassNotFoundException("not found")); // missing class
+
+        replay(bundle);
+
+        assertNull("Class [" + CLASS_NAME + "] found, while it is not existing",
+                   ClassLoadingHelper.tryToLoadClass(CLASS_NAME, bundle));
+
+        verify(bundle);
+    }
+
+    @Test
     public void testTryToLoadExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
 
@@ -180,13 +200,13 @@ public class ClassLoadingHelperTests {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void testGetBundleLoadingExistingClass() throws Exception {
+    public void testGetBundleByNameLoadingExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
         PackageAdmin packageAdmin = createMock(PackageAdmin.class);
         ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class) bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
         expect(bundleContext.getBundle(0)).andReturn(bundle);
         expect(bundleContext.getServiceReference(PackageAdmin.class)).andReturn(packageAdminServiceReference);
         expect(bundleContext.getService(packageAdminServiceReference)).andReturn(packageAdmin);
@@ -198,6 +218,24 @@ public class ClassLoadingHelperTests {
                    ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME, BUNDLE_SYMBOLIC_NAME).size() != 0);
 
         verify(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void testGetBundleByIdLoadingExistingClass() throws Exception {
+        Bundle bundle = createMock(Bundle.class);
+        BundleContext bundleContext = createMock(BundleContext.class);
+
+        expect((Class) bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect(bundleContext.getBundle(BUNDLE_ID)).andReturn(bundle);
+        expect(bundleContext.getBundle(0)).andReturn(bundle);
+
+        replay(bundle, bundleContext);
+
+        assertTrue("The class [" + CLASS_NAME + "] should be successfully loaded",
+                   ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME, "" + BUNDLE_ID).size() != 0);
+
+        verify(bundle, bundleContext);
     }
 
 }
