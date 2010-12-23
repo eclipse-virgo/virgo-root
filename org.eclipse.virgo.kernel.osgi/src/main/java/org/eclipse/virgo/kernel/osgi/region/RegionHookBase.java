@@ -35,8 +35,12 @@ abstract class RegionHookBase {
         this.regionMembership = regionMembership;
     }
 
+    protected static boolean isSystemBundle(long bundleId) {
+        return bundleId == SYSTEM_BUNDLE_ID;
+    }
+    
     protected static boolean isSystemBundle(Bundle bundle) {
-        return bundle.getBundleId() == SYSTEM_BUNDLE_ID;
+        return isSystemBundle(bundle.getBundleId());
     }
     
     protected static boolean isSystemBundle(BundleContext bundleContext) {

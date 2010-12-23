@@ -37,6 +37,8 @@ import org.osgi.framework.wiring.Capability;
  */
 final class RegionResolverHook extends RegionHookBase implements ResolverHook {
 
+    private static final long INVALID_BUNDLE_ID = -1L;
+
     private final List<ImportedPackage> importedPackages;
 
     private final boolean triggerInRegion;
@@ -67,7 +69,8 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
             // The trigger is in the kernel regions, so remove all candidates in the user region.
             Iterator<BundleRevision> i = candidates.iterator();
             while (i.hasNext()) {
-                if (isMember(i.next())) {
+                BundleRevision nextCandidate = i.next();
+                if (isMember(nextCandidate) && !isSystemBundle(nextCandidate)) {
                     i.remove();
                 }
             }
@@ -79,13 +82,25 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
         if (bundle != null) {
             return isUserRegionBundle(bundle);
         }
+        Long bundleId = getBundleId(bundleRevision);
+        return isUserRegionBundle(bundleId);
+    }
+
+    private Long getBundleId(BundleRevision bundleRevision) {
         if (bundleRevision instanceof ResolverBundle) {
             ResolverBundle resolverBundle = (ResolverBundle)bundleRevision;
-            return isUserRegionBundle(resolverBundle.getBundleDescription().getBundleId());
+            return resolverBundle.getBundleDescription().getBundleId();
         }
-        Assert.isTrue(false, "Cannot determine region membership of BundleRevision '%s'", bundleRevision);
-        // Assume that bundle revisions with no bundles belong to the user region.
-        return true;
+        Assert.isTrue(false, "Cannot determine bundle id of BundleRevision '%s'", bundleRevision);
+        return INVALID_BUNDLE_ID;
+    }
+    
+    private boolean isSystemBundle(BundleRevision bundleRevision) {
+        Bundle bundle = bundleRevision.getBundle();
+        if (bundle != null) {
+            return isSystemBundle(bundle);
+        }
+        return isSystemBundle(getBundleId(bundleRevision));
     }
 
     @Override
