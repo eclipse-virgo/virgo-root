@@ -35,24 +35,24 @@ abstract class RegionHookBase {
         this.regionMembership = regionMembership;
     }
 
+    protected static boolean isSystemBundle(Bundle bundle) {
+        return bundle.getBundleId() == SYSTEM_BUNDLE_ID;
+    }
+    
     protected static boolean isSystemBundle(BundleContext bundleContext) {
         return isSystemBundle(bundleContext.getBundle());
     }
 
-    protected final boolean isUserRegionBundle(BundleContext bundleContext) {
-        return isUserRegionBundle(bundleContext.getBundle());
+    protected final boolean isUserRegionBundle(long bundleId) {
+        return this.regionMembership.contains(bundleId);
     }
-
+    
     protected final boolean isUserRegionBundle(Bundle bundle) {
         return this.regionMembership.contains(bundle);
     }
     
-    protected final boolean isUserRegionBundle(long bundleId) {
-        return this.regionMembership.contains(bundleId);
+    protected final boolean isUserRegionBundle(BundleContext bundleContext) {
+        return isUserRegionBundle(bundleContext.getBundle());
     }
-
-    protected static boolean isSystemBundle(Bundle bundle) {
-        return bundle.getBundleId() == SYSTEM_BUNDLE_ID;
-    }
-
+    
 }
