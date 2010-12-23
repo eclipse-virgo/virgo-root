@@ -20,7 +20,7 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.hooks.bundle.EventHook;
 
 /**
- * TODO Document RegionBundleEventHook
+ * {@link RegionBundleEventHook} filters bundle events so that they do not cross region boundaries.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -30,7 +30,7 @@ import org.osgi.framework.hooks.bundle.EventHook;
  */
 final class RegionBundleEventHook extends RegionHookBase implements EventHook {
 
-    public RegionBundleEventHook(RegionMembership regionMembership) {
+    RegionBundleEventHook(RegionMembership regionMembership) {
         super(regionMembership);
     }
 

@@ -13,68 +13,54 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import static org.junit.Assert.*;
 import junit.framework.Assert;
-
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.Version;
 
-public class RegionHookBaseTests {
+public class RegionHookBaseTests extends AbstractRegionHookTest {
 
-    private StubBundle b0;
-
-    private StubBundle b1;
-
-    private StubBundle b2;
-
-    private TestRegionHook testRegionHook;
-
+    TestRegionHook testRegionHook;
+    
     @Before
     public void setUp() {
-        // Bundle id 1 is not in the region membership and bundle ids 0, 2, 3, ... are in the region.
-        this.testRegionHook = new TestRegionHook(new StubRegionMembership(2L));
-        this.b0 = new StubBundle(0L, "system", new Version("0"), "system@0");
-        this.b1 = new StubBundle(1L, "one", new Version("1"), "kernel@1");
-        this.b2 = new StubBundle(2L, "two", new Version("2"), "kernel@2");
+        this.testRegionHook = new TestRegionHook(getRegionMembership());
     }
 
     @Test
     public void testIsSystemBundleBundleContext() {
-        Assert.assertTrue(RegionHookBase.isSystemBundle(this.b0.getBundleContext()));
-        Assert.assertFalse(RegionHookBase.isSystemBundle(this.b1.getBundleContext()));
+        Assert.assertTrue(RegionHookBase.isSystemBundle(getBundle(0).getBundleContext()));
+        Assert.assertFalse(RegionHookBase.isSystemBundle(getBundle(1).getBundleContext()));
     }
 
     @Test
     public void testIsSystemBundleBundle() {
-        Assert.assertTrue(RegionHookBase.isSystemBundle(this.b0));
-        Assert.assertFalse(RegionHookBase.isSystemBundle(this.b1));
+        Assert.assertTrue(RegionHookBase.isSystemBundle(getBundle(0)));
+        Assert.assertFalse(RegionHookBase.isSystemBundle(getBundle(1)));
     }
 
     @Test
     public void testIsUserRegionBundleBundleContext() {
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(this.b0.getBundleContext()));
-        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(this.b1.getBundleContext()));
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(this.b2.getBundleContext()));
+        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(0).getBundleContext()));
+        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(getBundle(1).getBundleContext()));
+        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(2).getBundleContext()));
     }
 
     @Test
     public void testIsUserRegionBundleBundle() {
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(this.b0));
-        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(this.b1));
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(this.b2));
+        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(0)));
+        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(getBundle(1)));
+        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(2)));
     }
 
     @Test
     public void testIsUserRegionBundleLong() {
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(this.b0.getBundleId()));
-        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(this.b1.getBundleId()));
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(this.b2.getBundleId()));
+        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(0).getBundleId()));
+        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(getBundle(1).getBundleId()));
+        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(2).getBundleId()));
     }
 
-    private class TestRegionHook extends RegionHookBase {
+    class TestRegionHook extends RegionHookBase {
 
         private TestRegionHook(RegionMembership regionMembership) {
             super(regionMembership);
