@@ -30,6 +30,10 @@ abstract public class AbstractRegionHookTest {
         return this.bundle[i];
     }
 
+    BundleContext getBundleContext(int i) {
+        return this.bundle[i].getBundleContext();
+    }
+
     List<Bundle> getBundles() {
         List<Bundle> l = new ArrayList<Bundle>();
         for (Bundle b : this.bundle) {

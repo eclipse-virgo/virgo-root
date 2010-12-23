@@ -1,7 +1,10 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
@@ -34,13 +37,19 @@ public abstract class AbstractRegionServiceHookTest extends AbstractRegionHookTe
     ServiceReference<String> getServiceReference(int index) {
         return this.serviceReference[index];
     }
-    
-    List<ServiceReference<String>> getServiceReferences() {
-        List<ServiceReference<String>> l = new ArrayList<ServiceReference<String>>();
+
+    List<ServiceReference<?>> getServiceReferences() {
+        List<ServiceReference<?>> l = new ArrayList<ServiceReference<?>>();
         for (ServiceReference<String> sr : this.serviceReference) {
             l.add(sr);
         }
         return l;
+    }
+
+    void assertServiceReferencePresent(Collection<ServiceReference<?>> serviceReferences, int[] indices) {
+        for (int i : indices) {
+            assertTrue(serviceReferences.contains(getServiceReference(i)));
+        }
     }
 
 }
