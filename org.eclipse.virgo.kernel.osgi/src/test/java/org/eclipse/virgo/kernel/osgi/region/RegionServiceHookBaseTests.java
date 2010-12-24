@@ -30,41 +30,41 @@ public class RegionServiceHookBaseTests extends AbstractRegionServiceHookTest {
 
     @Test
     public void testIsUserRegionService() {
-        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(0)));
-        assertFalse(this.regionServiceHook.isUserRegionService(getServiceReference(1)));
-        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(2)));
+        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertFalse(this.regionServiceHook.isUserRegionService(getServiceReference(KERNEL_BUNDLE_INDEX)));
+        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(USER_REGION_BUNDLE_INDEX)));
     }
 
     @Test
     public void testIsSystemBundleService() {
-        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(0)));
-        assertFalse(this.regionServiceHook.isUserRegionService(getServiceReference(1)));
+        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertFalse(this.regionServiceHook.isUserRegionService(getServiceReference(KERNEL_BUNDLE_INDEX)));
     }
 
     @Test
     public void testServiceExported() {
-        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(0)));
-        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(2)));
+        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(USER_REGION_BUNDLE_INDEX)));
     }
 
     @Test
     public void testServiceExportedWithExport() {
         this.regionServiceHook = new TestRegionServiceHook(getRegionMembership(), "", "java.lang.String");
-        assertTrue(this.regionServiceHook.serviceExported(getServiceReference(0)));
-        assertTrue(this.regionServiceHook.serviceExported(getServiceReference(2)));
+        assertTrue(this.regionServiceHook.serviceExported(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertTrue(this.regionServiceHook.serviceExported(getServiceReference(USER_REGION_BUNDLE_INDEX)));
     }
 
     @Test
     public void testServiceImported() {
-        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(0)));
-        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(1)));
+        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertFalse(this.regionServiceHook.serviceExported(getServiceReference(KERNEL_BUNDLE_INDEX)));
     }
 
     @Test
     public void testServiceImportedWithImports() {
         this.regionServiceHook = new TestRegionServiceHook(getRegionMembership(), "java.lang.String", "");
-        assertTrue(this.regionServiceHook.serviceImported(getServiceReference(0)));
-        assertTrue(this.regionServiceHook.serviceImported(getServiceReference(1)));
+        assertTrue(this.regionServiceHook.serviceImported(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertTrue(this.regionServiceHook.serviceImported(getServiceReference(KERNEL_BUNDLE_INDEX)));
     }
 
     private class TestRegionServiceHook extends RegionServiceHookBase {

@@ -34,43 +34,43 @@ public class RegionServiceEventHookTests extends AbstractRegionServiceHookTest {
 
     @Test
     public void testEventFromSystemBundle() {
-        ServiceEvent serviceEvent = getServiceEvent(0);
+        ServiceEvent serviceEvent = getServiceEvent(SYSTEM_BUNDLE_INDEX);
         this.regionServiceEventHook.event(serviceEvent, this.bundleContexts);
-        assertContextPresent(0, 1, 2);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
 
     }
 
     @Test
     public void testEventFromKernel() {
-        ServiceEvent serviceEvent = getServiceEvent(1);
+        ServiceEvent serviceEvent = getServiceEvent(KERNEL_BUNDLE_INDEX);
         this.regionServiceEventHook.event(serviceEvent, this.bundleContexts);
-        assertContextPresent(0, 1);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX);
 
     }
 
     @Test
     public void testEventFromKernelWithImport() {
         this.regionServiceEventHook = new RegionServiceEventHook(getRegionMembership(), "java.lang.String", "");
-        ServiceEvent serviceEvent = getServiceEvent(1);
+        ServiceEvent serviceEvent = getServiceEvent(KERNEL_BUNDLE_INDEX);
         this.regionServiceEventHook.event(serviceEvent, this.bundleContexts);
-        assertContextPresent(0, 1, 2);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
 
     }
 
     @Test
     public void testEventFromUserRegion() {
-        ServiceEvent serviceEvent = getServiceEvent(2);
+        ServiceEvent serviceEvent = getServiceEvent(USER_REGION_BUNDLE_INDEX);
         this.regionServiceEventHook.event(serviceEvent, this.bundleContexts);
-        assertContextPresent(0, 2);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
 
     }
 
     @Test
     public void testEventFromUserRegionWithExport() {
         this.regionServiceEventHook = new RegionServiceEventHook(getRegionMembership(), "", "java.lang.String");
-        ServiceEvent serviceEvent = getServiceEvent(2);
+        ServiceEvent serviceEvent = getServiceEvent(USER_REGION_BUNDLE_INDEX);
         this.regionServiceEventHook.event(serviceEvent, this.bundleContexts);
-        assertContextPresent(0, 1, 2);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
 
     }
 

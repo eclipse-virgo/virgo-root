@@ -34,23 +34,23 @@ public class RegionBundleEventHookTests extends AbstractRegionHookTest {
 
     @Test
     public void testEventFromSystemBundle() {
-        BundleEvent event = getBundleEvent(0);
+        BundleEvent event = getBundleEvent(SYSTEM_BUNDLE_INDEX);
         this.regionBundleEventHook.event(event, this.bundleContexts);
-        assertContextPresent(0, 1, 2);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     @Test
     public void testEventFromKernelRegion() {
-        BundleEvent event = getBundleEvent(1);
+        BundleEvent event = getBundleEvent(KERNEL_BUNDLE_INDEX);
         this.regionBundleEventHook.event(event, this.bundleContexts);
-        assertContextPresent(0, 1);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX);
     }
 
     @Test
     public void testEventFromUserRegion() {
-        BundleEvent event = getBundleEvent(2);
+        BundleEvent event = getBundleEvent(USER_REGION_BUNDLE_INDEX);
         this.regionBundleEventHook.event(event, this.bundleContexts);
-        assertContextPresent(0, 2);
+        assertContextPresent(SYSTEM_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     private BundleEvent getBundleEvent(int bundleIndex) {

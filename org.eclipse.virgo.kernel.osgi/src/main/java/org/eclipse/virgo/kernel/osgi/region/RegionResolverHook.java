@@ -133,7 +133,8 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
             Iterator<Capability> i = candidates.iterator();
             while (i.hasNext()) {
                 Capability c = i.next();
-                if (!isMember(c.getProviderRevision())) {
+                BundleRevision providerRevision = c.getProviderRevision();
+                if (isMember(providerRevision) && !isSystemBundle(providerRevision)) {
                     i.remove();
                 }
             }

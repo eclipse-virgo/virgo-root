@@ -33,22 +33,22 @@ public class RegionBundleFindHookTests extends AbstractRegionHookTest {
     @Test
     public void testFindBySystemBundle() {
         this.bundles = getBundles();
-        this.regionBundleFindHook.find(getBundleContext(0), this.bundles);
-        assertBundlePresent(0, 1, 2);
+        this.regionBundleFindHook.find(getBundleContext(SYSTEM_BUNDLE_INDEX), this.bundles);
+        assertBundlePresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     @Test
     public void testFindByKernelBundle() {
         this.bundles = getBundles();
-        this.regionBundleFindHook.find(getBundleContext(1), this.bundles);
-        assertBundlePresent(0, 1);
+        this.regionBundleFindHook.find(getBundleContext(KERNEL_BUNDLE_INDEX), this.bundles);
+        assertBundlePresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX);
     }
 
     @Test
     public void testFindByUserRegionBundle() {
         this.bundles = getBundles();
-        this.regionBundleFindHook.find(getBundleContext(2), this.bundles);
-        assertBundlePresent(0, 2);
+        this.regionBundleFindHook.find(getBundleContext(USER_REGION_BUNDLE_INDEX), this.bundles);
+        assertBundlePresent(SYSTEM_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     private void assertBundlePresent(int... indices) {

@@ -27,7 +27,7 @@ public abstract class AbstractRegionServiceHookTest extends AbstractRegionHookTe
      */
     @Before
     public void basicServiceSetUp() throws Exception {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NUM_BUNDLES; i++) {
             StubServiceRegistration<String> reg = new StubServiceRegistration<String>((StubBundleContext) getBundle(i).getBundleContext(),
                 "java.lang.String");
             serviceReference[i] = new StubServiceReference<String>(reg);
@@ -46,7 +46,7 @@ public abstract class AbstractRegionServiceHookTest extends AbstractRegionHookTe
         return l;
     }
 
-    void assertServiceReferencePresent(Collection<ServiceReference<?>> serviceReferences, int[] indices) {
+    void assertServiceReferencePresent(Collection<ServiceReference<?>> serviceReferences, int... indices) {
         for (int i : indices) {
             assertTrue(serviceReferences.contains(getServiceReference(i)));
         }

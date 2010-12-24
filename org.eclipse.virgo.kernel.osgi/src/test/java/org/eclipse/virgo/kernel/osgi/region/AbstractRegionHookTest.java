@@ -13,6 +13,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 abstract public class AbstractRegionHookTest {
+    
+    protected static final int SYSTEM_BUNDLE_INDEX = 0;
+    
+    protected static final int KERNEL_BUNDLE_INDEX = 1;
+    
+    protected static final int USER_REGION_BUNDLE_INDEX = 2;
+    
+    protected static final int NUM_BUNDLES = 3;
 
     private StubBundle[] bundle = new StubBundle[3];
 
@@ -20,9 +28,9 @@ abstract public class AbstractRegionHookTest {
 
     @Before
     public void basicSetUp() {
-        this.bundle[0] = new StubBundle(0L, "system", new Version("0"), "system@0");
-        this.bundle[1] = new StubBundle(1L, "one", new Version("1"), "kernel@1");
-        this.bundle[2] = new StubBundle(2L, "two", new Version("2"), "kernel@2");
+        this.bundle[SYSTEM_BUNDLE_INDEX] = new StubBundle(0L, "system", new Version("0"), "system@0");
+        this.bundle[KERNEL_BUNDLE_INDEX] = new StubBundle(1L, "one", new Version("1"), "kernel@1");
+        this.bundle[USER_REGION_BUNDLE_INDEX] = new StubBundle(2L, "two", new Version("2"), "kernel@2");
         regionMembership = new StubRegionMembership(2L);
     }
 
@@ -32,6 +40,10 @@ abstract public class AbstractRegionHookTest {
 
     BundleContext getBundleContext(int i) {
         return this.bundle[i].getBundleContext();
+    }
+    
+    Long getBundleId(int i) {
+        return this.bundle[i].getBundleId();
     }
 
     List<Bundle> getBundles() {

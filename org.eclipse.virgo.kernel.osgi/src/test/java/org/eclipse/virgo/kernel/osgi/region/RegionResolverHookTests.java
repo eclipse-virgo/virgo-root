@@ -13,13 +13,20 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
+import org.eclipse.virgo.util.osgi.manifest.Resolution;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -39,7 +46,7 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
     @Test
     public void testFilterResolvable() {
         Collection<BundleRevision> candidates = new ArrayList<BundleRevision>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NUM_BUNDLES; i++) {
             candidates.add(new TestBundleRevision(i));
         }
         this.regionResolverHook.filterResolvable(candidates);
@@ -51,29 +58,37 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         triggerFromKernel();
 
         List<BundleRevision> candidates = new ArrayList<BundleRevision>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NUM_BUNDLES; i++) {
             candidates.add(new TestBundleRevision(i));
         }
-        BundleRevision systemBundleCandidate = candidates.get(0);
-        BundleRevision kernelCandidate = candidates.get(1);
+        BundleRevision systemBundleCandidate = candidates.get(SYSTEM_BUNDLE_INDEX);
+        BundleRevision kernelCandidate = candidates.get(KERNEL_BUNDLE_INDEX);
         this.regionResolverHook.filterResolvable(candidates);
         assertEquals(2, candidates.size());
         assertTrue(candidates.contains(systemBundleCandidate));
         assertTrue(candidates.contains(kernelCandidate));
     }
 
-    private void triggerFromUserRegion() {
-        BundleRevision bundleRevision = new TestBundleRevision(2);
+    private void triggerFromUserRegion(String... importedPackages) {
+        BundleRevision bundleRevision = new TestBundleRevision(USER_REGION_BUNDLE_INDEX);
         Collection<BundleRevision> triggers = new ArrayList<BundleRevision>();
         triggers.add(bundleRevision);
-        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), new ArrayList<ImportedPackage>(), triggers);
+        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), createImportedPackages(importedPackages), triggers);
+    }
+
+    private ArrayList<ImportedPackage> createImportedPackages(String... importedPackages) {
+        ArrayList<ImportedPackage> importedPackageList = new ArrayList<ImportedPackage>();
+        for (String importedPackage : importedPackages) {
+            importedPackageList.add(new TestImportedPackage(importedPackage));
+        }
+        return importedPackageList;
     }
 
     private void triggerFromKernel() {
-        BundleRevision bundleRevision = new TestBundleRevision(1);
+        BundleRevision bundleRevision = new TestBundleRevision(KERNEL_BUNDLE_INDEX);
         Collection<BundleRevision> triggers = new ArrayList<BundleRevision>();
         triggers.add(bundleRevision);
-        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), new ArrayList<ImportedPackage>(), triggers);
+        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), createImportedPackages(), triggers);
     }
 
     @Test
@@ -81,23 +96,319 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         this.regionResolverHook.filterResolvable(null);
     }
 
-    /**
-     * Test method for
-     * {@link org.eclipse.virgo.kernel.osgi.region.RegionResolverHook#filterMatches(org.osgi.framework.wiring.BundleRevision, java.util.Collection)}
-     * .
-     */
     @Test
-    public void testFilterMatches() {
-        fail("Not yet implemented");
+    public void testFilterMatchesUserRegionRequirer() {
+        Collection<Capability> candidates = createCandidates("p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+        this.regionResolverHook.filterMatches(new TestBundleRevision(USER_REGION_BUNDLE_INDEX), candidates);
+        assertCandidates(candidates, "p", SYSTEM_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
+    @Test
+    public void testFilterMatchesUserRegionRequirerWithImport() {
+        triggerFromUserRegion("p");
+        Collection<Capability> candidates = createCandidates("p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+        this.regionResolverHook.filterMatches(new TestBundleRevision(USER_REGION_BUNDLE_INDEX), candidates);
+        assertCandidates(candidates, "p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+    }
+
+    @Test
+    public void testFilterMatchesUserRegionRequirerWithImports() {
+        triggerFromUserRegion("p", "q");
+        Collection<Capability> candidates = createCandidates("p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+        candidates.addAll(createCandidates("q", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX));
+        this.regionResolverHook.filterMatches(new TestBundleRevision(USER_REGION_BUNDLE_INDEX), candidates);
+        assertEquals(6, candidates.size());
+    }
+    
+    @Test
+    public void testFilterMatchesUserRegionRequirerWithImportsSomeFiltered() {
+        triggerFromUserRegion("p");
+        Collection<Capability> candidates = createCandidates("p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+        candidates.addAll(createCandidates("q", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX));
+        this.regionResolverHook.filterMatches(new TestBundleRevision(USER_REGION_BUNDLE_INDEX), candidates);
+        assertEquals(5, candidates.size());
+        assertFalse(candidates.contains(createCapability(KERNEL_BUNDLE_INDEX, "q")));
+    }
+
+    @Test
+    public void testFilterMatchesKernelRequirer() {
+        triggerFromKernel();
+        Collection<Capability> candidates = createCandidates("p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+        this.regionResolverHook.filterMatches(new TestBundleRevision(KERNEL_BUNDLE_INDEX), candidates);
+        assertCandidates(candidates, "p", SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX);
+    }
+    
+    @Test
+    public void testFilterMatchesUserRegionRequirerBundleCapabilities() {
+        Collection<Capability> candidates = createBundleCandidates(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+        this.regionResolverHook.filterMatches(new TestBundleRevision(USER_REGION_BUNDLE_INDEX), candidates);
+        assertBundleCandidates(candidates, SYSTEM_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
+    }
+
+
+    
     @Test
     public void testEnd() {
         this.regionResolverHook.end();
     }
 
-    private final class TestBundleRevision implements BundleRevision {
+    private void assertCandidates(Collection<Capability> candidates, String packageName, int... indices) {
+        assertEquals(indices.length, candidates.size());
+        for (int index : indices) {
+            assertTrue(candidates.contains(createCapability(index, packageName)));
+        }
+    }
+    
+    private Collection<Capability> createCandidates(String packageName, int... indices) {
+        Collection<Capability> candidates = new ArrayList<Capability>();
+        for (int index : indices) {
+            candidates.add(createCapability(index, packageName));
+        }
+        return candidates;
+    }
+    
+    private TestPackageCapability createCapability(int index, String packageName) {
+        return new TestPackageCapability(index, packageName);
+    }
+    
+    private void assertBundleCandidates(Collection<Capability> candidates, int... indices) {
+        assertEquals(indices.length, candidates.size());
+        for (int index : indices) {
+            assertTrue(candidates.contains(createBundleCapability(index)));
+        }
+    }
+    
+    private Collection<Capability> createBundleCandidates(int... indices) {
+        Collection<Capability> candidates = new ArrayList<Capability>();
+        for (int index : indices) {
+            candidates.add(createBundleCapability(index));
+        }
+        return candidates;
+    }
+    
+    private TestBundleCapability createBundleCapability(int index) {
+        return new TestBundleCapability(index);
+    }
+
+    
+    private final class TestImportedPackage implements ImportedPackage {
         
+        private final String packageName;
+
+        private TestImportedPackage(String packageName) {
+            this.packageName = packageName;
+        }
+
+        @Override
+        public VersionRange getVersion() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void setVersion(VersionRange versionRange) {
+            fail("Not implemented");
+        }
+
+        @Override
+        public Resolution getResolution() {
+            fail("Not implemented");
+            return null;
+        }
+
+        @Override
+        public void setResolution(Resolution resolution) {
+            fail("Not implemented");
+        }
+
+        @Override
+        public Map<String, String> getAttributes() {
+            fail("Not implemented");
+            return null;
+        }
+
+        @Override
+        public Map<String, String> getDirectives() {
+            fail("Not implemented");
+            return null;
+        }
+
+        @Override
+        public String toParseString() {
+            fail("Not implemented");
+            return null;
+        }
+
+        @Override
+        public void resetFromParseString(String string) {
+            fail("Not implemented");
+        }
+
+        @Override
+        public String getPackageName() {
+            return this.packageName;
+        }
+
+        @Override
+        public void setPackageName(String packageName) {
+            fail("Not implemented");
+        }
+
+        @Override
+        public VersionRange getBundleVersion() {
+            fail("Not implemented");
+            return null;
+        }
+
+        @Override
+        public void setBundleVersion(VersionRange versionRange) {
+            fail("Not implemented");
+        }
+
+        @Override
+        public String getBundleSymbolicName() {
+            fail("Not implemented");
+            return null;
+        }
+
+        @Override
+        public void setBundleSymbolicName(String bundleSymbolicName) {
+            fail("Not implemented");
+        }
+    }
+
+    private final class TestPackageCapability implements Capability {
+
+        private final int index;
+
+        private final String packageName;
+        
+        private final Map<String, Object> attributes = new HashMap<String, Object>();
+
+        private TestPackageCapability(int index, String packageName) {
+            this.index = index;
+            this.packageName = packageName;
+            this.attributes.put(Capability.PACKAGE_CAPABILITY, packageName);
+        }
+
+        @Override
+        public String getNamespace() {
+            return PACKAGE_CAPABILITY;
+        }
+
+        @Override
+        public Map<String, String> getDirectives() {
+            return null;
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            return this.attributes;
+        }
+
+        @Override
+        public BundleRevision getProviderRevision() {
+            return new TestBundleRevision(this.index);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + index;
+            result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TestPackageCapability other = (TestPackageCapability) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (index != other.index)
+                return false;
+            if (packageName == null) {
+                if (other.packageName != null)
+                    return false;
+            } else if (!packageName.equals(other.packageName))
+                return false;
+            return true;
+        }
+
+        private RegionResolverHookTests getOuterType() {
+            return RegionResolverHookTests.this;
+        }
+
+    }
+    
+    private final class TestBundleCapability implements Capability {
+
+        private final int index;
+
+        private TestBundleCapability(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String getNamespace() {
+            return BUNDLE_CAPABILITY;
+        }
+
+        @Override
+        public Map<String, String> getDirectives() {
+            return null;
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            return null;
+        }
+
+        @Override
+        public BundleRevision getProviderRevision() {
+            return new TestBundleRevision(this.index);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + index;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TestBundleCapability other = (TestBundleCapability) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (index != other.index)
+                return false;
+            return true;
+        }
+
+        private RegionResolverHookTests getOuterType() {
+            return RegionResolverHookTests.this;
+        }
+        
+    }
+
+    private final class TestBundleRevision implements BundleRevision {
+
         private int index;
 
         private Bundle bundle;
@@ -160,7 +471,7 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         private RegionResolverHookTests getOuterType() {
             return RegionResolverHookTests.this;
         }
-        
+
     }
 
 }

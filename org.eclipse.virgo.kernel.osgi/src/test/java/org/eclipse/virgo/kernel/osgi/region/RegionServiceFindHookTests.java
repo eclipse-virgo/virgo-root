@@ -36,34 +36,34 @@ public class RegionServiceFindHookTests extends AbstractRegionServiceHookTest {
 
     @Test
     public void testFindBySystemBundle() {
-        this.regionServiceFindHook.find(getBundleContext(0), null, null, true, this.serviceReferences);
-        assertServiceReferencePresent(0, 1, 2);
+        this.regionServiceFindHook.find(getBundleContext(SYSTEM_BUNDLE_INDEX), null, null, true, this.serviceReferences);
+        assertServiceReferencePresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     @Test
     public void testFindByKernelBundle() {
-        this.regionServiceFindHook.find(getBundleContext(1), null, null, true, this.serviceReferences);
-        assertServiceReferencePresent(0, 1);
+        this.regionServiceFindHook.find(getBundleContext(KERNEL_BUNDLE_INDEX), null, null, true, this.serviceReferences);
+        assertServiceReferencePresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX);
     }
 
     @Test
     public void testFindByKernelBundleWithExport() {
         this.regionServiceFindHook = new RegionServiceFindHook(getRegionMembership(), "", "java.lang.String");
-        this.regionServiceFindHook.find(getBundleContext(1), null, null, true, this.serviceReferences);
-        assertServiceReferencePresent(0, 1, 2);
+        this.regionServiceFindHook.find(getBundleContext(KERNEL_BUNDLE_INDEX), null, null, true, this.serviceReferences);
+        assertServiceReferencePresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     @Test
     public void testFindByUserRegionBundle() {
-        this.regionServiceFindHook.find(getBundleContext(2), null, null, true, this.serviceReferences);
-        assertServiceReferencePresent(0, 2);
+        this.regionServiceFindHook.find(getBundleContext(USER_REGION_BUNDLE_INDEX), null, null, true, this.serviceReferences);
+        assertServiceReferencePresent(SYSTEM_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
     @Test
     public void testFindByUserRegionBundleWithImport() {
         this.regionServiceFindHook = new RegionServiceFindHook(getRegionMembership(), "java.lang.String", "");
-        this.regionServiceFindHook.find(getBundleContext(2), null, null, true, this.serviceReferences);
-        assertServiceReferencePresent(0, 1, 2);
+        this.regionServiceFindHook.find(getBundleContext(USER_REGION_BUNDLE_INDEX), null, null, true, this.serviceReferences);
+        assertServiceReferencePresent(SYSTEM_BUNDLE_INDEX, KERNEL_BUNDLE_INDEX, USER_REGION_BUNDLE_INDEX);
     }
 
 
