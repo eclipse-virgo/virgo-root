@@ -150,7 +150,7 @@ final class RegionManager {
 
             @Override
             public boolean contains(Long bundleId) {
-                // TODO implement a more robust membership scheme
+                // TODO implement a more robust membership scheme. See bug 333193.
                 return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
             }
         };
