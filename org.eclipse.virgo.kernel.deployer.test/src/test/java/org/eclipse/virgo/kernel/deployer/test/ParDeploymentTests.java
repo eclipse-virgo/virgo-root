@@ -33,9 +33,12 @@ import org.osgi.service.cm.Configuration;
 public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
     
     private static final File PAR_FILE = new File("src/test/resources/BundlesAndConfig.par");
+    private static final File PAR_FOR_BUG331767 = new File("src/test/resources/bug331767.par");
     
     private static final String BUNDLE_SYMBOLIC_NAME = "appA-1-bundleA";
-    private static final Version BUNDLE_VERSION = new Version(1,0,0);
+    private static final String BUNDLE_SYMBOLIC_NAME_BUG331767 = "PARbug331767-1-BUNDLEbug331767";
+    private static final Version BUNDLE_VERSION = new Version(1,0,0);    
+
 
     @Test
     public void deployParContainingBundlesAndProperties() throws DeploymentException, IOException, InvalidSyntaxException {
@@ -53,6 +56,14 @@ public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
         assertNull(configuration);
         
         assertBundleNotPresent(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
+    }
+    
+    @Test
+    public void deployParContainingDynamicImportStar() throws DeploymentException {
+        DeploymentIdentity deploymentIdentity = this.deployer.deploy(PAR_FOR_BUG331767.toURI());
+        assertBundlePresent(BUNDLE_SYMBOLIC_NAME_BUG331767, BUNDLE_VERSION);
+        this.deployer.undeploy(deploymentIdentity);
+        assertBundleNotPresent(BUNDLE_SYMBOLIC_NAME_BUG331767, BUNDLE_VERSION);
     }
    
     private void assertBundlePresent(String symbolicName, Version version) {

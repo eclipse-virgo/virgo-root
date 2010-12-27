@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.util.osgi.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.BundleSymbolicName;
+import org.eclipse.virgo.util.osgi.manifest.DynamicImportPackage;
 import org.eclipse.virgo.util.osgi.manifest.DynamicallyImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.ExportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.FragmentHost;
@@ -247,16 +249,32 @@ public class Scoper {
         for (ImportedPackage importedPackage : bundleManifest.getImportPackage().getImportedPackages()) {
             scopeImportedPackage(importedPackage);
         }
-        for (DynamicallyImportedPackage dynamicallyImportedPackage : bundleManifest.getDynamicImportPackage().getDynamicallyImportedPackages()) {
-            scopeDynamicallyImportedPackage(dynamicallyImportedPackage);
-        }
-        
+        scopeDynamicImports(bundleManifest);        
         scopeImportBundle(bundleManifest);
         scopeRequireBundle(bundleManifest);
         scopeFragmentHost(bundleManifest);
 
         logger.debug("Bundle manifest after scoping:\n{}", bundleManifest);
     }
+
+	private void scopeDynamicImports(BundleManifest bundleManifest) {
+		DynamicImportPackage unscopedList = BundleManifestFactory.createBundleManifest().getDynamicImportPackage();        
+        List<DynamicallyImportedPackage> dynamicallyImportedPackages = bundleManifest.getDynamicImportPackage().getDynamicallyImportedPackages();
+        for (DynamicallyImportedPackage dynamicallyImportedPackage : dynamicallyImportedPackages) {
+            scopeDynamicallyImportedPackage(dynamicallyImportedPackage);            
+            addUnscopedDynamicallyImportedPackage(unscopedList, dynamicallyImportedPackage);
+        }		
+		dynamicallyImportedPackages.addAll(unscopedList.getDynamicallyImportedPackages());
+	}
+	
+	private void addUnscopedDynamicallyImportedPackage(DynamicImportPackage unscopedList, DynamicallyImportedPackage dynamicallyImportedPackage) {
+		unscopedList.addDynamicallyImportedPackage(dynamicallyImportedPackage.getPackageName());
+        List<DynamicallyImportedPackage> unscopedDynamicallyImportedPackages = unscopedList.getDynamicallyImportedPackages();
+        DynamicallyImportedPackage unscopedDIP = unscopedDynamicallyImportedPackages.get(unscopedDynamicallyImportedPackages.size()-1);
+        Map<String, String> attributes = unscopedDIP.getAttributes();
+        attributes.putAll(dynamicallyImportedPackage.getAttributes());
+        attributes.remove(SCOPING_ATTRIBUTE_NAME);          
+	}
 
     /**
      * Scope the given package import.
