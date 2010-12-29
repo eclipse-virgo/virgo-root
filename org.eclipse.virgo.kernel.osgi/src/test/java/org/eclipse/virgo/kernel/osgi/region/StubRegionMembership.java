@@ -28,26 +28,21 @@ public class StubRegionMembership implements RegionMembership {
     }
 
     @Override
-    public boolean contains(Bundle bundle) {
-        return contains(bundle.getBundleId());
-    }
-
-    @Override
-    public boolean contains(Long bundleId) {
-        return bundleId >= this.minimumUserRegionBundleId || bundleId == 0L;
-    }
-
-    @Override
     public Region getRegion(Bundle bundle) throws IndeterminateRegionException {
         return getRegion(bundle.getBundleId());
     }
 
     @Override
-    public Region getRegion(Long bundleId) throws IndeterminateRegionException {
+    public Region getRegion(long bundleId) throws IndeterminateRegionException {
         if (bundleId == 0L) {
             throw new RegionSpanningException(bundleId);
         }
-        return bundleId >= this.minimumUserRegionBundleId ? this.kernelRegion : this.userRegion;
+        return bundleId >= this.minimumUserRegionBundleId ? this.userRegion : this.kernelRegion;
+    }
+
+    @Override
+    public Region getKernelRegion() {
+        return this.kernelRegion;
     }
 
 }

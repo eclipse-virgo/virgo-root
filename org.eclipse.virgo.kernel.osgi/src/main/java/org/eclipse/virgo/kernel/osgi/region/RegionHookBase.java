@@ -13,6 +13,7 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -31,32 +32,42 @@ abstract class RegionHookBase {
 
     private final RegionMembership regionMembership;
 
+    private final Region kernelRegion;
+
     RegionHookBase(RegionMembership regionMembership) {
         this.regionMembership = regionMembership;
+        this.kernelRegion = regionMembership.getKernelRegion();
     }
 
     protected static boolean isSystemBundle(long bundleId) {
         return bundleId == SYSTEM_BUNDLE_ID;
     }
-    
+
     protected static boolean isSystemBundle(Bundle bundle) {
         return isSystemBundle(bundle.getBundleId());
     }
-    
+
     protected static boolean isSystemBundle(BundleContext bundleContext) {
         return isSystemBundle(bundleContext.getBundle());
     }
 
     protected final boolean isUserRegionBundle(long bundleId) {
-        return this.regionMembership.contains(bundleId);
+        try {
+            return isSystemBundle(bundleId) || !this.regionMembership.getRegion(bundleId).equals(this.kernelRegion);
+        } catch (UserRegionNotInitialisedException _) {
+            return true;
+        } catch (IndeterminateRegionException e) {
+            Assert.isTrue(false, "Unexpected exception " + e);
+            return true;
+        }
     }
-    
+
     protected final boolean isUserRegionBundle(Bundle bundle) {
-        return this.regionMembership.contains(bundle);
+        return isUserRegionBundle(bundle.getBundleId());
     }
-    
+
     protected final boolean isUserRegionBundle(BundleContext bundleContext) {
         return isUserRegionBundle(bundleContext.getBundle());
     }
-    
+
 }

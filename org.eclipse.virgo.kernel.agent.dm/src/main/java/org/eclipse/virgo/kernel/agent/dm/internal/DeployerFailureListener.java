@@ -11,15 +11,17 @@
 
 package org.eclipse.virgo.kernel.agent.dm.internal;
 
+import org.eclipse.virgo.kernel.osgi.region.IndeterminateRegionException;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
+import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-
-import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**
  * A {@link EventHandler} implementation that listens for and handles Blueprint container failure events.
@@ -39,10 +41,10 @@ final class DeployerFailureListener implements EventHandler {
     private static final String FAILURE_TOPIC = "org/osgi/service/blueprint/container/FAILURE";
 
     private final EventLogger eventLogger;
-    
+
     private volatile RegionMembership regionMembership;
 
-    private volatile boolean agentInRegion;
+    private volatile Region agentRegion;
 
     public DeployerFailureListener(EventLogger eventLogger) {
         this.eventLogger = eventLogger;
@@ -68,10 +70,18 @@ final class DeployerFailureListener implements EventHandler {
             ServiceReference<RegionMembership> regionMembershipServiceReference = bundleContext.getServiceReference(RegionMembership.class);
             if (regionMembershipServiceReference != null) {
                 this.regionMembership = bundleContext.getService(regionMembershipServiceReference);
-                this.agentInRegion = this.regionMembership.contains(agentBundle);
+                try {
+                    this.agentRegion = this.regionMembership.getRegion(agentBundle);
+                } catch (IndeterminateRegionException e) {
+                    Assert.isTrue(false, "Indeterminate agent region");
+                }
             }
         }
-        return this.regionMembership != null ? this.regionMembership.contains(bundle) == this.agentInRegion : true;
+        try {
+            return this.regionMembership != null ? this.regionMembership.getRegion(bundle).equals(this.agentRegion) : true;
+        } catch (IndeterminateRegionException e) {
+            return true;
+        }
     }
 
 }

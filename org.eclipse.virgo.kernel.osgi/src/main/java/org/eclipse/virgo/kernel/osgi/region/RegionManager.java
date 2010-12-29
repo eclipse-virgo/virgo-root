@@ -297,14 +297,7 @@ final class RegionManager {
             this.kernelRegion = kernelRegion;
         }
 
-        @Override
-        public boolean contains(Bundle bundle) {
-            long bundleId = bundle.getBundleId();
-            return contains(bundleId);
-        }
-
-        @Override
-        public boolean contains(Long bundleId) {
+        private boolean contains(Long bundleId) {
             // TODO implement a more robust membership scheme. See bug 333193.
             return bundleId > this.highestKernelBundleId || bundleId == 0L;
         }
@@ -335,7 +328,7 @@ final class RegionManager {
          * {@inheritDoc}
          */
         @Override
-        public Region getRegion(Long bundleId) throws IndeterminateRegionException {
+        public Region getRegion(long bundleId) throws IndeterminateRegionException {
             if (bundleId == 0L) {
                 throw new RegionSpanningException(bundleId);
             }
@@ -350,6 +343,14 @@ final class RegionManager {
             } else {
                 return this.kernelRegion;
             }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Region getKernelRegion() {
+            return this.kernelRegion;
         }
     }
 
@@ -372,6 +373,37 @@ final class RegionManager {
         @Override
         public BundleContext getBundleContext() {
             return this.bundleContext;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((bundleContext == null) ? 0 : bundleContext.hashCode());
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ImmutableRegion other = (ImmutableRegion) obj;
+            if (bundleContext == null) {
+                if (other.bundleContext != null)
+                    return false;
+            } else if (!bundleContext.equals(other.bundleContext))
+                return false;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+            return true;
         }
 
     }

@@ -27,24 +27,6 @@ import org.osgi.framework.Bundle;
 public interface RegionMembership {
 
     /**
-     * Determines whether or not the specified bundle belongs to the region represented by this {@link RegionMembership}
-     * .
-     * 
-     * @param bundle the {@link Bundle} to be checked for membership
-     * @return <code>true</code> if and only if the specified bundle belongs to the region
-     */
-    boolean contains(Bundle bundle);
-
-    /**
-     * Determines whether or not the bundle with the specified bundle id belongs to the region represented by this
-     * {@link RegionMembership}.
-     * 
-     * @param bundleId the id of the {@link Bundle} to be checked for membership
-     * @return <code>true</code> if and only if the specified bundle belongs to the region
-     */
-    boolean contains(Long bundleId);
-
-    /**
      * Gets the region to which the specified bundle belongs. If there is no such unique regions, throws
      * {@link RegionSpanningException}.
      * 
@@ -53,15 +35,22 @@ public interface RegionMembership {
      * @throws IndeterminateRegionException if the region of the bundle cannot be determined
      */
     Region getRegion(Bundle bundle) throws IndeterminateRegionException;
-    
+
     /**
-     * Gets the region to which the bundle with the specified bundle id belongs. If there is no such unique regions, throws
-     * {@link RegionSpanningException}.
+     * Gets the region to which the bundle with the specified bundle id belongs. If there is no such unique regions,
+     * throws {@link RegionSpanningException}.
      * 
      * @param bundleId the if of the bundle whose region is to be gotten
      * @return the {@link Region} to which the bundle with the specified id belongs
      * @throws IndeterminateRegionException if the region of the bundle with the specified id cannot be determined
      */
-    Region getRegion(Long bundleId) throws IndeterminateRegionException;
+    Region getRegion(long bundleId) throws IndeterminateRegionException;
+
+    /**
+     * Gets the kernel {@link Region}.
+     * 
+     * @return the kernel {@link Region}
+     */
+    Region getKernelRegion();
 
 }
