@@ -15,13 +15,16 @@ package org.eclipse.virgo.kernel.osgi.region;
 
 import org.osgi.framework.Bundle;
 
-
 public class StubRegionMembership implements RegionMembership {
-    
-    private final long minimumBundleId;
 
-    public StubRegionMembership(long minimumBundleId) {
-        this.minimumBundleId = minimumBundleId;
+    private final Region kernelRegion = new StubRegion("stubKernelRegion");
+
+    private final Region userRegion = new StubRegion("stubUserRegion");
+
+    private final long minimumUserRegionBundleId;
+
+    public StubRegionMembership(long minimumUserRegionBundleId) {
+        this.minimumUserRegionBundleId = minimumUserRegionBundleId;
     }
 
     @Override
@@ -31,7 +34,20 @@ public class StubRegionMembership implements RegionMembership {
 
     @Override
     public boolean contains(Long bundleId) {
-        return bundleId >= this.minimumBundleId || bundleId == 0L;
+        return bundleId >= this.minimumUserRegionBundleId || bundleId == 0L;
+    }
+
+    @Override
+    public Region getRegion(Bundle bundle) throws IndeterminateRegionException {
+        return getRegion(bundle.getBundleId());
+    }
+
+    @Override
+    public Region getRegion(Long bundleId) throws IndeterminateRegionException {
+        if (bundleId == 0L) {
+            throw new RegionSpanningException(bundleId);
+        }
+        return bundleId >= this.minimumUserRegionBundleId ? this.kernelRegion : this.userRegion;
     }
 
 }

@@ -16,12 +16,12 @@ package org.eclipse.virgo.kernel.osgi.region;
 import org.osgi.framework.Bundle;
 
 /**
- * TODO Document RegionMembership
+ * {@link RegionMembership} provides a way of determining which region a bundle belongs to.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
- * TODO Document concurrent semantics of RegionMembership
+ * Implementations of this interface must be thread safe.
  * 
  */
 public interface RegionMembership {
@@ -43,5 +43,25 @@ public interface RegionMembership {
      * @return <code>true</code> if and only if the specified bundle belongs to the region
      */
     boolean contains(Long bundleId);
+
+    /**
+     * Gets the region to which the specified bundle belongs. If there is no such unique regions, throws
+     * {@link RegionSpanningException}.
+     * 
+     * @param bundle the bundle whose region is to be gotten
+     * @return the {@link Region} to which the bundle belongs
+     * @throws IndeterminateRegionException if the region of the bundle cannot be determined
+     */
+    Region getRegion(Bundle bundle) throws IndeterminateRegionException;
+    
+    /**
+     * Gets the region to which the bundle with the specified bundle id belongs. If there is no such unique regions, throws
+     * {@link RegionSpanningException}.
+     * 
+     * @param bundleId the if of the bundle whose region is to be gotten
+     * @return the {@link Region} to which the bundle with the specified id belongs
+     * @throws IndeterminateRegionException if the region of the bundle with the specified id cannot be determined
+     */
+    Region getRegion(Long bundleId) throws IndeterminateRegionException;
 
 }

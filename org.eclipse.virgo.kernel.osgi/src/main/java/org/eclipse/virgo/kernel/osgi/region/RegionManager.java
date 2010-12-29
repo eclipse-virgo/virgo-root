@@ -31,6 +31,7 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -107,7 +108,7 @@ final class RegionManager {
             Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
 
             @SuppressWarnings("unchecked")
-            Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();
+            Dictionary<String, String> properties = config.getProperties();
 
             if (properties != null) {
                 this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY);
@@ -130,7 +131,8 @@ final class RegionManager {
 
     private void createAndPublishUserRegion() throws BundleException {
 
-        registerRegionService(new ImmutableRegion(REGION_KERNEL, this.bundleContext));
+        ImmutableRegion kernelRegion = new ImmutableRegion(REGION_KERNEL, this.bundleContext);
+        registerRegionService(kernelRegion);
 
         String userRegionImportsProperty = this.regionImports != null ? this.regionImports
             : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
@@ -140,20 +142,7 @@ final class RegionManager {
                 this.bundleContext);
         }
 
-        RegionMembership regionMembership = new RegionMembership() {
-
-            @Override
-            public boolean contains(Bundle bundle) {
-                long bundleId = bundle.getBundleId();
-                return contains(bundleId);
-            }
-
-            @Override
-            public boolean contains(Long bundleId) {
-                // TODO implement a more robust membership scheme. See bug 333193.
-                return bundleId > bundleContext.getBundle().getBundleId() || bundleId == 0L;
-            }
-        };
+        StandardRegionMembership regionMembership = new StandardRegionMembership(this.bundleContext.getBundle(), kernelRegion);
 
         registerResolverHookFactory(new RegionResolverHookFactory(regionMembership, expandedUserRegionImportsProperty));
 
@@ -167,9 +156,11 @@ final class RegionManager {
 
         BundleContext userRegionBundleContext = initialiseUserRegionBundles();
 
-        registerRegionMembership(regionMembership, userRegionBundleContext);
+        ImmutableRegion userRegion = new ImmutableRegion(REGION_USER, userRegionBundleContext);
+        registerRegionService(userRegion);
+        regionMembership.setUserRegion(userRegion);
 
-        registerRegionService(new ImmutableRegion(REGION_USER, userRegionBundleContext));
+        registerRegionMembership(regionMembership, userRegionBundleContext);
 
         publishUserRegionBundleContext(userRegionBundleContext);
     }
@@ -291,6 +282,77 @@ final class RegionManager {
         this.tracker.unregisterAll();
     }
 
+    private final class StandardRegionMembership implements RegionMembership {
+
+        private final long highestKernelBundleId;
+
+        private final Region kernelRegion;
+
+        private Region userRegion;
+
+        private final Object monitor = new Object();
+
+        public StandardRegionMembership(Bundle lastBundleInKernel, Region kernelRegion) {
+            this.highestKernelBundleId = lastBundleInKernel.getBundleId();
+            this.kernelRegion = kernelRegion;
+        }
+
+        @Override
+        public boolean contains(Bundle bundle) {
+            long bundleId = bundle.getBundleId();
+            return contains(bundleId);
+        }
+
+        @Override
+        public boolean contains(Long bundleId) {
+            // TODO implement a more robust membership scheme. See bug 333193.
+            return bundleId > this.highestKernelBundleId || bundleId == 0L;
+        }
+        
+        void setUserRegion(Region userRegion) {
+            synchronized (this.monitor) {
+                if (this.userRegion == null) {
+                    this.userRegion = userRegion;
+                } else {
+                    Assert.isTrue(this.userRegion == userRegion, "User region already set");
+                }
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Region getRegion(Bundle bundle) throws IndeterminateRegionException {
+            try {
+                return getRegion(bundle.getBundleId());
+            } catch (IndeterminateRegionException _) {
+                throw new UserRegionNotInitialisedException(bundle);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Region getRegion(Long bundleId) throws IndeterminateRegionException {
+            if (bundleId == 0L) {
+                throw new RegionSpanningException(bundleId);
+            }
+            if (contains(bundleId)) {
+                synchronized (this.monitor) {
+                    if (this.userRegion != null) {
+                        return this.userRegion;
+                    } else {
+                        throw new UserRegionNotInitialisedException(bundleId);
+                    }
+                }
+            } else {
+                return this.kernelRegion;
+            }
+        }
+    }
+
     private static class ImmutableRegion implements Region {
 
         private final String name;
@@ -302,10 +364,12 @@ final class RegionManager {
             this.bundleContext = bundleContext;
         }
 
+        @Override
         public String getName() {
-            return name;
+            return this.name;
         }
 
+        @Override
         public BundleContext getBundleContext() {
             return this.bundleContext;
         }
