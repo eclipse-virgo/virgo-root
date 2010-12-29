@@ -88,13 +88,13 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
 
     private Long getBundleId(BundleRevision bundleRevision) {
         if (bundleRevision instanceof ResolverBundle) {
-            ResolverBundle resolverBundle = (ResolverBundle)bundleRevision;
+            ResolverBundle resolverBundle = (ResolverBundle) bundleRevision;
             return resolverBundle.getBundleDescription().getBundleId();
         }
         Assert.isTrue(false, "Cannot determine bundle id of BundleRevision '%s'", bundleRevision);
         return INVALID_BUNDLE_ID;
     }
-    
+
     private boolean isSystemBundle(BundleRevision bundleRevision) {
         Bundle bundle = bundleRevision.getBundle();
         if (bundle != null) {
@@ -117,14 +117,13 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
                 Capability c = i.next();
                 if (!isMember(c.getProviderRevision())) {
                     String namespace = c.getNamespace();
-                    // Filter out bundles that are not members of the region
-                    if (Capability.BUNDLE_CAPABILITY.equals(namespace)) {
-                        i.remove();
-                    }
                     if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
                         if (!imported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(), c.getDirectives())) {
                             i.remove();
                         }
+                    } else {
+                        // Filter out other capabilities such as osgi.bundle and osgi.host.
+                        i.remove();
                     }
                 }
             }
