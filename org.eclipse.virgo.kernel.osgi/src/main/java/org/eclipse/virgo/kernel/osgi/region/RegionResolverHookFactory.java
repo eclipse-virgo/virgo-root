@@ -14,11 +14,7 @@
 package org.eclipse.virgo.kernel.osgi.region;
 
 import java.util.Collection;
-import java.util.List;
 
-import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
-import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
-import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.osgi.framework.hooks.resolver.ResolverHook;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.framework.wiring.BundleRevision;
@@ -35,18 +31,18 @@ final class RegionResolverHookFactory implements ResolverHookFactory {
 
     private final RegionMembership regionMembership;
 
-    private final List<ImportedPackage> importedPackages;
+    private final RegionPackageImportPolicy regionPackageImportPolicy;
 
     RegionResolverHookFactory(RegionMembership regionMembership, String regionImports) {
         this.regionMembership = regionMembership;
-        BundleManifest manifest = BundleManifestFactory.createBundleManifest();
-        manifest.setHeader("Import-Package", regionImports);
-        this.importedPackages = manifest.getImportPackage().getImportedPackages();
+        this.regionPackageImportPolicy = new UserRegionPackageImportPolicy(regionImports);
     }
+
+    
 
     @Override
     public ResolverHook begin(Collection<BundleRevision> triggers) {
-        return new RegionResolverHook(this.regionMembership, this.importedPackages, triggers);
+        return new RegionResolverHook(this.regionMembership, this.regionPackageImportPolicy, triggers);
     }
 
 }

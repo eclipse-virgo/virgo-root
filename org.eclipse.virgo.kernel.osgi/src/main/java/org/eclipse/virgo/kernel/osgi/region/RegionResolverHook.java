@@ -15,12 +15,9 @@ package org.eclipse.virgo.kernel.osgi.region;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.osgi.internal.module.ResolverBundle;
 import org.eclipse.virgo.kernel.serviceability.Assert;
-import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.resolver.ResolverHook;
 import org.osgi.framework.wiring.BundleRevision;
@@ -39,11 +36,11 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
 
     private static final long INVALID_BUNDLE_ID = -1L;
 
-    private final List<ImportedPackage> importedPackages;
+    private final RegionPackageImportPolicy importedPackages;
 
     private final boolean triggerInRegion;
 
-    RegionResolverHook(RegionMembership regionMembership, List<ImportedPackage> importedPackages, Collection<BundleRevision> triggers) {
+    RegionResolverHook(RegionMembership regionMembership, RegionPackageImportPolicy importedPackages, Collection<BundleRevision> triggers) {
         super(regionMembership);
         this.importedPackages = importedPackages;
         this.triggerInRegion = triggerInRegion(triggers);
@@ -118,7 +115,7 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
                 if (!isMember(c.getProviderRevision())) {
                     String namespace = c.getNamespace();
                     if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                        if (!imported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(), c.getDirectives())) {
+                        if (!this.importedPackages.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY))) {
                             i.remove();
                         }
                     } else {
@@ -138,16 +135,6 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
                 }
             }
         }
-    }
-
-    private boolean imported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
-        // TODO: prototype implementation - needs expanding to do complete match
-        for (ImportedPackage importedPackage : this.importedPackages) {
-            if (importedPackage.getPackageName().equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

@@ -16,7 +16,6 @@ package org.eclipse.virgo.kernel.osgi.region;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.util.osgi.VersionRange;
-import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
-import org.eclipse.virgo.util.osgi.manifest.Resolution;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -76,12 +72,18 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         this.regionResolverHook = new RegionResolverHook(getRegionMembership(), createImportedPackages(importedPackages), triggers);
     }
 
-    private ArrayList<ImportedPackage> createImportedPackages(String... importedPackages) {
-        ArrayList<ImportedPackage> importedPackageList = new ArrayList<ImportedPackage>();
-        for (String importedPackage : importedPackages) {
-            importedPackageList.add(new TestImportedPackage(importedPackage));
-        }
-        return importedPackageList;
+    private RegionPackageImportPolicy createImportedPackages(final String... importedPackages) {
+        return new RegionPackageImportPolicy() {
+
+            @Override
+            public boolean isImported(String packageName) {
+                for (String importedPackage : importedPackages) {
+                    if (packageName.equals(importedPackage)) {
+                        return true;
+                    }
+                }
+                return false;
+            }};
     }
 
     private void triggerFromKernel() {
@@ -191,92 +193,6 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
     }
 
     
-    private final class TestImportedPackage implements ImportedPackage {
-        
-        private final String packageName;
-
-        private TestImportedPackage(String packageName) {
-            this.packageName = packageName;
-        }
-
-        @Override
-        public VersionRange getVersion() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setVersion(VersionRange versionRange) {
-            fail("Not implemented");
-        }
-
-        @Override
-        public Resolution getResolution() {
-            fail("Not implemented");
-            return null;
-        }
-
-        @Override
-        public void setResolution(Resolution resolution) {
-            fail("Not implemented");
-        }
-
-        @Override
-        public Map<String, String> getAttributes() {
-            fail("Not implemented");
-            return null;
-        }
-
-        @Override
-        public Map<String, String> getDirectives() {
-            fail("Not implemented");
-            return null;
-        }
-
-        @Override
-        public String toParseString() {
-            fail("Not implemented");
-            return null;
-        }
-
-        @Override
-        public void resetFromParseString(String string) {
-            fail("Not implemented");
-        }
-
-        @Override
-        public String getPackageName() {
-            return this.packageName;
-        }
-
-        @Override
-        public void setPackageName(String packageName) {
-            fail("Not implemented");
-        }
-
-        @Override
-        public VersionRange getBundleVersion() {
-            fail("Not implemented");
-            return null;
-        }
-
-        @Override
-        public void setBundleVersion(VersionRange versionRange) {
-            fail("Not implemented");
-        }
-
-        @Override
-        public String getBundleSymbolicName() {
-            fail("Not implemented");
-            return null;
-        }
-
-        @Override
-        public void setBundleSymbolicName(String bundleSymbolicName) {
-            fail("Not implemented");
-        }
-    }
-
     private final class TestPackageCapability implements Capability {
 
         private final int index;
