@@ -35,6 +35,10 @@ import org.osgi.framework.Version;
  */
 class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
 
+    private static final String MANDATORY_ATTRIBUTE_NAME_SEPARATOR = ",";
+
+    private static final String MANDATORY_DIRECTIVE_NAME = "mandatory";
+
     private static final String VERSION_ATTRIBUTE_NAME = "version";
 
     private static final String WILDCARD = "*";
@@ -71,6 +75,8 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
         if (importedPackage != null) {
             Map<String, String> importAttributes = importedPackage.getAttributes();
             Set<String> importAttributeNames = importAttributes.keySet();
+            
+            // Check any attribute values match.
             for (String importAttributeName : importAttributeNames) {
                 if (exportAttributes == null) {
                     return false;
@@ -96,6 +102,19 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
                         }
                     } else {
                         return false;
+                    }
+                }
+
+            }
+            
+            // Check mandatory attributes are present.
+            if (exportDirectives != null) {
+                String mandatoryDirectiveValue = exportDirectives.get(MANDATORY_DIRECTIVE_NAME);
+                if (mandatoryDirectiveValue != null) {
+                    for (String mandatoryAttribute : mandatoryDirectiveValue.split(MANDATORY_ATTRIBUTE_NAME_SEPARATOR)) {
+                        if (!importAttributeNames.contains(mandatoryAttribute)) {
+                            return false;
+                        }
                     }
                 }
             }

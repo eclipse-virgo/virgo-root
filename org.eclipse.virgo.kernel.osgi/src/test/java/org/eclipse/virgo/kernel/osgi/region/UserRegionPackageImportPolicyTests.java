@@ -50,11 +50,50 @@ public class UserRegionPackageImportPolicyTests {
     public void testPackageStringWithArbitraryAttribute() {
         RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p;pa=pv,q");
         Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
-        attributes.put(Capability.PACKAGE_CAPABILITY, "p");
         Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
        
+    }
+
+    @Test
+    public void testPackageStringWithoutArbitraryAttribute() {
+        RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p,q");
+        Map<String, Object> attributes = createAttributes("p");
+        attributes.put("pa", "pv");
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
+       
+    }
+
+    private Map<String, Object> createAttributes(String packageName) {
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put(Capability.PACKAGE_CAPABILITY, packageName);
+        return attributes;
+    }
+
+    @Test
+    public void testPackageStringWithMandatoryAttribute() {
+        RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p;pa=pv");
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
+        Map<String, Object> attributes = createAttributes("p");
+        attributes.put("pa", "pv");
+        Map<String, String> directives = createMandatoryDirective("pa");
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, directives));
+    }
+
+    @Test
+    public void testPackageStringWithoutMandatoryAttribute() {
+        RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p");
+        Map<String, Object> attributes = createAttributes("p");
+        attributes.put("pa", "pv");
+        Map<String, String> directives = createMandatoryDirective("pa");
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", attributes, directives));
+    }
+
+    private Map<String, String> createMandatoryDirective(String attributes) {
+        Map<String, String> directives = new HashMap<String, String>();
+        directives.put("mandatory", attributes);
+        return directives;
     }
 
     @Test
