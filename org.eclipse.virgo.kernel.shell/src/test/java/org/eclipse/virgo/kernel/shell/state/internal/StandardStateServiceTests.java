@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
@@ -56,6 +57,8 @@ public class StandardStateServiceTests {
 
     private RegionMembership mockRegionMembership;
 
+    private Region mockKernelRegion;
+
     /**
      * @throws java.lang.Exception
      */
@@ -64,10 +67,12 @@ public class StandardStateServiceTests {
         this.stubBundleContext = new StubBundleContext();
         this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
         this.mockUserRegion = EasyMock.createMock(Region.class);
+        this.mockKernelRegion = EasyMock.createMock(Region.class);
         this.mockRegionMembership = EasyMock.createMock(RegionMembership.class);
-        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext, this.mockRegionMembership);
         EasyMock.expect(this.mockRegionMembership.getRegion(EasyMock.anyLong())).andReturn(this.mockUserRegion).anyTimes();
-        EasyMock.replay(this.mockUserRegion, this.mockRegionMembership);
+        EasyMock.expect(this.mockRegionMembership.getKernelRegion()).andReturn(this.mockKernelRegion).anyTimes();
+        EasyMock.replay(this.mockUserRegion, this.mockKernelRegion, this.mockRegionMembership);
+        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext, this.mockRegionMembership);
     }
 
     @Test

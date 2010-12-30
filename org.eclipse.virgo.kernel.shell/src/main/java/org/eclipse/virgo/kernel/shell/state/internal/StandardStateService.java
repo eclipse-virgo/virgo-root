@@ -14,15 +14,9 @@ package org.eclipse.virgo.kernel.shell.state.internal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkUtil;
-import org.springframework.util.AntPathMatcher;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
@@ -37,6 +31,10 @@ import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
 import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.springframework.util.AntPathMatcher;
 
 /**
  * 
@@ -47,19 +45,15 @@ final public class StandardStateService implements StateService {
 
     private final BundleContext bundleContext;
 
-    private final Region kernelRegion;
-
     private final RegionMembership regionMembership;
 
+    private final Region kernelRegion;
+    
     public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionMembership regionMembership) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.bundleContext = bundleContext;
         this.regionMembership = regionMembership;
-        try {
-            this.kernelRegion = regionMembership.getRegion(FrameworkUtil.getBundle(this.getClass()));
-        } catch (IndeterminateRegionException e) {
-            throw new RuntimeException("Cannot determine the region of the shell", e);
-        }
+        this.kernelRegion = regionMembership.getKernelRegion();
     }
 
     /**
