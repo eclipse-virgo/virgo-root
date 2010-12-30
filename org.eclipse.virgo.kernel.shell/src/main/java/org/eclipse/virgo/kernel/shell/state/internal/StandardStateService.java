@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.springframework.util.AntPathMatcher;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
@@ -29,6 +30,9 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
+import org.eclipse.virgo.kernel.osgi.region.IndeterminateRegionException;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
@@ -43,16 +47,42 @@ final public class StandardStateService implements StateService {
 
     private final BundleContext bundleContext;
 
-    public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext) {
+    private final Region kernelRegion;
+
+    private final RegionMembership regionMembership;
+
+    public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionMembership regionMembership) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.bundleContext = bundleContext;
+        this.regionMembership = regionMembership;
+        try {
+            this.kernelRegion = regionMembership.getRegion(FrameworkUtil.getBundle(this.getClass()));
+        } catch (IndeterminateRegionException e) {
+            throw new RuntimeException("Cannot determine the region of the shell", e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public List<QuasiBundle> getAllBundles(File source) {
-        return this.getQuasiFramework(source).getBundles();
+        List<QuasiBundle> bundles = this.getQuasiFramework(source).getBundles();
+        if (source == null) {
+            List<QuasiBundle> userRegionBundles = new ArrayList<QuasiBundle>();
+            for (QuasiBundle bundle : bundles) {
+                long bundleId = bundle.getBundleId();
+                try {
+                    if (bundleId == 0L || !this.kernelRegion.equals(this.regionMembership.getRegion(bundleId))) {
+                        userRegionBundles.add(bundle);
+                    }
+                } catch (IndeterminateRegionException _) {
+                    // Ignore.
+                }
+            }
+            return userRegionBundles;
+        } else {
+            return bundles;
+        }
     }
 
     /**

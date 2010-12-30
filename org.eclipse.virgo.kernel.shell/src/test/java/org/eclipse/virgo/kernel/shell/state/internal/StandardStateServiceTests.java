@@ -21,8 +21,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.internal.StandardStateService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFrameworkFactory;
@@ -48,25 +51,33 @@ public class StandardStateServiceTests {
     private StubBundleContext stubBundleContext;
 
     private QuasiFrameworkFactory stubQuasiFrameworkFactory;
-    
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	    this.stubBundleContext = new StubBundleContext();
-	    this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
-	    this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext);
-	}
 
-	@Test	
-	public void getAllBundlesNullDump() {
-	    List<QuasiBundle> result = this.standardStateService.getAllBundles(null);
-	    assertNotNull(result);
-	    assertEquals(1, result.size());
-	}
-    
-    @Test      
+    private Region mockUserRegion;
+
+    private RegionMembership mockRegionMembership;
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        this.stubBundleContext = new StubBundleContext();
+        this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
+        this.mockUserRegion = EasyMock.createMock(Region.class);
+        this.mockRegionMembership = EasyMock.createMock(RegionMembership.class);
+        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext, this.mockRegionMembership);
+        EasyMock.expect(this.mockRegionMembership.getRegion(EasyMock.anyLong())).andReturn(this.mockUserRegion).anyTimes();
+        EasyMock.replay(this.mockUserRegion, this.mockRegionMembership);
+    }
+
+    @Test
+    public void getAllBundlesNullDump() {
+        List<QuasiBundle> result = this.standardStateService.getAllBundles(null);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
     public void getAllBundlesFromDump() {
         List<QuasiBundle> result = this.standardStateService.getAllBundles(TEST_DUMP_FILE);
         assertNotNull(result);

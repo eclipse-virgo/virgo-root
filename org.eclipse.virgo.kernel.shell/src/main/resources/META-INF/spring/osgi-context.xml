@@ -28,6 +28,8 @@
 	<osgi:reference id="deployer" interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer"/>
 
     <osgi:service ref="modelAccessorHelper" interface="org.eclipse.virgo.kernel.shell.model.helper.RamAccessorHelper" />
+    
+	<osgi:reference id="regionMembership" interface="org.eclipse.virgo.kernel.osgi.region.RegionMembership"/>
 
 <!-- SERVICES FOR THE TYPE CONVERTERS -->
 
