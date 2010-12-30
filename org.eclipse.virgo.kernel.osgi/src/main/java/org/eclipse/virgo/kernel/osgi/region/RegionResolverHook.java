@@ -115,7 +115,8 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
                 if (!isMember(c.getProviderRevision())) {
                     String namespace = c.getNamespace();
                     if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                        if (!this.importedPackages.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY))) {
+                        if (!this.importedPackages.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(),
+                            c.getDirectives())) {
                             i.remove();
                         }
                     } else {

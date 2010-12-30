@@ -1,0 +1,79 @@
+/*******************************************************************************
+ * This file is part of the Virgo Web Server.
+ *
+ * Copyright (c) 2010 Eclipse Foundation.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+
+package org.eclipse.virgo.kernel.osgi.region;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.Version;
+import org.osgi.framework.wiring.Capability;
+
+public class UserRegionPackageImportPolicyTests {
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+    }
+    
+    @Test
+    public void testNullPackageString() {
+        new UserRegionPackageImportPolicy(null);
+    }
+
+    @Test
+    public void testEmptyPackageString() {
+        new UserRegionPackageImportPolicy("");
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testWildcard() {
+        new UserRegionPackageImportPolicy("*");
+    }
+
+    @Test
+    public void testPackageStringWithArbitraryAttribute() {
+        RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p;pa=pv,q");
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("pa", "pv");
+        attributes.put(Capability.PACKAGE_CAPABILITY, "p");
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
+       
+    }
+
+    @Test
+    public void testPackageStringWithVersion() {
+        RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p;version=2,q");
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("version", new Version("2.0.0"));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
+       
+    }
+
+    
+    @Test
+    public void testPackages() {
+        RegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy("p,q");
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", null, null));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("q", null, null));
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("r", null, null));
+    }
+    
+}

@@ -39,7 +39,6 @@ public class RegionManagerTests {
         StubBundleContext bundleContext = new StubBundleContext();
                               
         EventAdmin eventAdmin = createMock(EventAdmin.class);
-        //eventAdmin.sendEvent(isA(Event.class));
         
         Dictionary<String, String> properties = new Hashtable<String, String>();
         Configuration config = createMock(Configuration.class);

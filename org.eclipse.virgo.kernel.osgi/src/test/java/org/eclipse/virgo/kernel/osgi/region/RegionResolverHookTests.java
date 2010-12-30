@@ -76,7 +76,7 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         return new RegionPackageImportPolicy() {
 
             @Override
-            public boolean isImported(String packageName) {
+            public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
                 for (String importedPackage : importedPackages) {
                     if (packageName.equals(importedPackage)) {
                         return true;
