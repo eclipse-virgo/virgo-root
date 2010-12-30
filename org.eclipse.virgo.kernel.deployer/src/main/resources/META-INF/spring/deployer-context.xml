@@ -156,14 +156,7 @@
 
 	<beans:bean id="plumber"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.Plumber">
-		<beans:constructor-arg>
-			<beans:bean factory-method="getPackageAdmin"
-				class="org.eclipse.virgo.kernel.deployer.core.internal.RegionAwarePackageAdminAccessor">
-				<beans:constructor-arg>
-					<reference interface="org.eclipse.virgo.kernel.osgi.region.Region" />
-				</beans:constructor-arg>
-			</beans:bean>
-		</beans:constructor-arg>
+		<beans:constructor-arg ref="packageAdmin" />
 		<beans:constructor-arg ref="bundleContext" />
 		<beans:constructor-arg ref="pipelineFactory" />
 		<beans:constructor-arg ref="quasiFrameworkFactory" />
