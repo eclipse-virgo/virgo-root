@@ -46,9 +46,7 @@ public class RegionManagerTests {
         bundleContext.addInstalledBundle(stubUserRegionFactoryBundle);
                               
         EventAdmin eventAdmin = createMock(EventAdmin.class);
-        eventAdmin.sendEvent(isA(Event.class));
-        expectLastCall();
-        
+               
         Dictionary<String, String> properties = new Hashtable<String, String>();
         Configuration config = createMock(Configuration.class);
         expect(config.getProperties()).andReturn(properties);
@@ -64,7 +62,7 @@ public class RegionManagerTests {
         manager.start();
         
         List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
-        assertEquals("Region services not registered", 10, serviceRegistrations.size());
+        assertEquals("Region services not registered", 8, serviceRegistrations.size());
         
         manager.stop();
         verify(eventAdmin, configAdmin, config);

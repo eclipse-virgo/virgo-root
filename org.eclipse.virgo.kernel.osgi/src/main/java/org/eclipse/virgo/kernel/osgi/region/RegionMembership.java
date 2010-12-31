@@ -53,4 +53,6 @@ public interface RegionMembership {
      */
     Region getKernelRegion();
 
+    void setUserRegion(Region userRegion);
+
 }

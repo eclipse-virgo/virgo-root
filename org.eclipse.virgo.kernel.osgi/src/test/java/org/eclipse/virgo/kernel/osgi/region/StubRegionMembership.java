@@ -45,4 +45,8 @@ public class StubRegionMembership implements RegionMembership {
         return this.kernelRegion;
     }
 
+    @Override
+    public void setUserRegion(Region userRegion) {
+    }
+
 }

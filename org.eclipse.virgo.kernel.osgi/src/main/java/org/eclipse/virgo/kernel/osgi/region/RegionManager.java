@@ -11,27 +11,14 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
-import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
-import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -40,7 +27,6 @@ import org.osgi.framework.hooks.bundle.FindHook;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 /**
@@ -54,17 +40,7 @@ import org.osgi.service.event.EventAdmin;
  */
 final class RegionManager {
 
-    private static final String USER_REGION_BUNDLE_CONTEXT_SERVICE_PROPERTY = "org.eclipse.virgo.kernel.regionContext";
-
-    private static final String REFERENCE_SCHEME = "reference:";
-
-    private static final String FILE_SCHEME = "file:";
-
-    private static final String USER_REGION_LOCATION_TAG = "userregion@";
-
-    private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
-
-    private static final String USER_REGION_BASE_BUNDLES_PROPERTY = "baseBundles";
+     private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
     private static final String USER_REGION_PACKAGE_IMPORTS_PROPERTY = "packageImports";
 
@@ -74,21 +50,9 @@ final class RegionManager {
 
     private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
 
-    private static final String REGION_USER = "org.eclipse.virgo.region.user";
-
-    private static final String EVENT_REGION_STARTING = "org/eclipse/virgo/kernel/region/STARTING";
-
-    private static final String EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
-
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
     private final BundleContext bundleContext;
-
-    private final ArgumentParser parser = new ArgumentParser();
-
-    private final EventAdmin eventAdmin;
-
-    private String regionBundles;
 
     private String regionImports;
 
@@ -99,7 +63,6 @@ final class RegionManager {
     public RegionManager(BundleContext bundleContext, EventAdmin eventAdmin, ConfigurationAdmin configAdmin, EventLogger eventLogger,
         Shutdown shutdown) {
         this.bundleContext = bundleContext;
-        this.eventAdmin = eventAdmin;
         getRegionConfiguration(configAdmin, eventLogger, shutdown);
     }
 
@@ -111,7 +74,6 @@ final class RegionManager {
             Dictionary<String, String> properties = config.getProperties();
 
             if (properties != null) {
-                this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY);
                 this.regionImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
                 this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
                 this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
@@ -154,35 +116,6 @@ final class RegionManager {
         registerServiceEventHook(new RegionServiceEventHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
 
         registerServiceFindHook(new RegionServiceFindHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
-
-        createUserRegion(regionMembership);
-    }
-
-    private void createUserRegion(StandardRegionMembership regionMembership) throws BundleException {
-        BundleContext userRegionBundleContext = null;
-        while (userRegionBundleContext == null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            Bundle[] bundles = this.bundleContext.getBundles();
-            for (Bundle bundle : bundles) {
-                if ("org.eclipse.virgo.kernel.userregionfactory".equals(bundle.getSymbolicName())) {
-                    userRegionBundleContext = bundle.getBundleContext();
-                }
-            }
-        }
-
-        ImmutableRegion userRegion = new ImmutableRegion(REGION_USER, userRegionBundleContext);
-        regionMembership.setUserRegion(userRegion);
-        notifyUserRegionStarting(userRegionBundleContext);
-
-        initialiseUserRegionBundles();
-
-        registerRegionService(userRegion);
-        publishUserRegionBundleContext(userRegionBundleContext);
     }
 
     private void registerRegionMembership(RegionMembership regionMembership, BundleContext userRegionBundleContext) {
@@ -209,76 +142,8 @@ final class RegionManager {
 
     }
 
-    private void publishUserRegionBundleContext(BundleContext userRegionBundleContext) {
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(USER_REGION_BUNDLE_CONTEXT_SERVICE_PROPERTY, "true");
-        this.bundleContext.registerService(BundleContext.class, userRegionBundleContext, properties);
-    }
-
     private void registerResolverHookFactory(ResolverHookFactory resolverHookFactory) {
         this.tracker.track(this.bundleContext.registerService(ResolverHookFactory.class, resolverHookFactory, null));
-    }
-
-    private void initialiseUserRegionBundles() throws BundleException {
-
-        String userRegionBundlesProperty = this.regionBundles != null ? this.regionBundles
-            : this.bundleContext.getProperty(USER_REGION_BASE_BUNDLES_PROPERTY);
-
-        if (userRegionBundlesProperty != null) {
-            List<Bundle> bundlesToStart = new ArrayList<Bundle>();
-
-            for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
-                URI uri = entry.getURI();
-                Bundle bundle = this.bundleContext.installBundle(USER_REGION_LOCATION_TAG + uri.toString(), openBundleStream(uri));
-
-                if (entry.isAutoStart()) {
-                    bundlesToStart.add(bundle);
-                }
-            }
-
-            for (Bundle bundle : bundlesToStart) {
-                try {
-                    bundle.start();
-                } catch (BundleException e) {
-                    throw new BundleException("Failed to start bundle " + bundle.getSymbolicName() + " " + bundle.getVersion(), e);
-                }
-            }
-        }
-    }
-
-    private InputStream openBundleStream(URI uri) throws BundleException {
-        String absoluteBundleUriString = getAbsoluteUriString(uri);
-
-        try {
-            // Use the reference: scheme to obtain an InputStream for either a file or a directory.
-            return new URL(REFERENCE_SCHEME + absoluteBundleUriString).openStream();
-
-        } catch (MalformedURLException e) {
-            throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property resulted in an invalid bundle URI '" + absoluteBundleUriString
-                + "'", e);
-        } catch (IOException e) {
-            throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property referred to an invalid bundle at URI '"
-                + absoluteBundleUriString + "'", e);
-        }
-    }
-
-    private String getAbsoluteUriString(URI uri) throws BundleException {
-        String bundleUriString = uri.toString();
-
-        if (!bundleUriString.startsWith(FILE_SCHEME)) {
-            throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property contained an entry '" + bundleUriString
-                + "' which did not start with '" + FILE_SCHEME + "'");
-        }
-
-        String filePath = bundleUriString.substring(FILE_SCHEME.length());
-
-        return FILE_SCHEME + new File(filePath).getAbsolutePath();
-    }
-
-    private void notifyUserRegionStarting(BundleContext userRegionBundleContext) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(EVENT_PROPERTY_REGION_BUNDLECONTEXT, userRegionBundleContext);
-        this.eventAdmin.sendEvent(new Event(EVENT_REGION_STARTING, properties));
     }
 
     private void registerRegionService(Region region) {
@@ -311,7 +176,7 @@ final class RegionManager {
             return bundleId > this.highestKernelBundleId || bundleId == 0L;
         }
 
-        void setUserRegion(Region userRegion) {
+        public void setUserRegion(Region userRegion) {
             synchronized (this.monitor) {
                 if (this.userRegion == null) {
                     this.userRegion = userRegion;
@@ -361,59 +226,5 @@ final class RegionManager {
         public Region getKernelRegion() {
             return this.kernelRegion;
         }
-    }
-
-    private static class ImmutableRegion implements Region {
-
-        private final String name;
-
-        private final BundleContext bundleContext;
-
-        public ImmutableRegion(String name, @NonNull BundleContext bundleContext) {
-            this.name = name;
-            this.bundleContext = bundleContext;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public BundleContext getBundleContext() {
-            return this.bundleContext;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((bundleContext == null) ? 0 : bundleContext.hashCode());
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            ImmutableRegion other = (ImmutableRegion) obj;
-            if (bundleContext == null) {
-                if (other.bundleContext != null)
-                    return false;
-            } else if (!bundleContext.equals(other.bundleContext))
-                return false;
-            if (name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!name.equals(other.name))
-                return false;
-            return true;
-        }
-
     }
 }
