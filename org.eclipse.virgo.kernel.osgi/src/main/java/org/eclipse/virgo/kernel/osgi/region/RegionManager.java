@@ -159,12 +159,29 @@ final class RegionManager {
     }
 
     private void createUserRegion(StandardRegionMembership regionMembership) throws BundleException {
-        BundleContext userRegionBundleContext = initialiseUserRegionBundles();
+        BundleContext userRegionBundleContext = null;
+        while (userRegionBundleContext == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            Bundle[] bundles = this.bundleContext.getBundles();
+            for (Bundle bundle : bundles) {
+                if ("org.eclipse.virgo.kernel.userregionfactory".equals(bundle.getSymbolicName())) {
+                    userRegionBundleContext = bundle.getBundleContext();
+                }
+            }
+        }
 
         ImmutableRegion userRegion = new ImmutableRegion(REGION_USER, userRegionBundleContext);
-        registerRegionService(userRegion);
         regionMembership.setUserRegion(userRegion);
+        notifyUserRegionStarting(userRegionBundleContext);
 
+        initialiseUserRegionBundles();
+
+        registerRegionService(userRegion);
         publishUserRegionBundleContext(userRegionBundleContext);
     }
 
@@ -202,9 +219,7 @@ final class RegionManager {
         this.tracker.track(this.bundleContext.registerService(ResolverHookFactory.class, resolverHookFactory, null));
     }
 
-    private BundleContext initialiseUserRegionBundles() throws BundleException {
-
-        BundleContext userRegionBundleContext = null;
+    private void initialiseUserRegionBundles() throws BundleException {
 
         String userRegionBundlesProperty = this.regionBundles != null ? this.regionBundles
             : this.bundleContext.getProperty(USER_REGION_BASE_BUNDLES_PROPERTY);
@@ -221,23 +236,14 @@ final class RegionManager {
                 }
             }
 
-            if (bundlesToStart.isEmpty()) {
-                throw new BundleException(USER_REGION_BASE_BUNDLES_PROPERTY + " property did not specify at least one bundle to start");
-            }
-
             for (Bundle bundle : bundlesToStart) {
                 try {
                     bundle.start();
                 } catch (BundleException e) {
                     throw new BundleException("Failed to start bundle " + bundle.getSymbolicName() + " " + bundle.getVersion(), e);
                 }
-                if (userRegionBundleContext == null) {
-                    userRegionBundleContext = bundle.getBundleContext();
-                    notifyUserRegionStarting(userRegionBundleContext);
-                }
             }
         }
-        return userRegionBundleContext;
     }
 
     private InputStream openBundleStream(URI uri) throws BundleException {
@@ -304,7 +310,7 @@ final class RegionManager {
             // TODO implement a more robust membership scheme. See bug 333193.
             return bundleId > this.highestKernelBundleId || bundleId == 0L;
         }
-        
+
         void setUserRegion(Region userRegion) {
             synchronized (this.monitor) {
                 if (this.userRegion == null) {

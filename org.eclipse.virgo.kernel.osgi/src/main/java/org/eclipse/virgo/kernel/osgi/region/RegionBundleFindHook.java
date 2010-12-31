@@ -42,7 +42,9 @@ final class RegionBundleFindHook extends RegionHookBase implements FindHook {
             Iterator<Bundle> i = bundles.iterator();
             while (i.hasNext()) {
                 Bundle foundBundle = i.next();
-                if (isUserRegionBundle(foundBundle) != finderInRegion && !isSystemBundle(foundBundle)) {
+                //XXX temp hack until user region factory is used to create the user region
+                if (!"org.eclipse.virgo.kernel.userregionfactory".equals(foundBundle.getSymbolicName())
+                    && isUserRegionBundle(foundBundle) != finderInRegion && !isSystemBundle(foundBundle)) {
                     i.remove();
                 }
             }
