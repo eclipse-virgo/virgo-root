@@ -6,8 +6,10 @@ import org.osgi.framework.BundleContext;
 final class StubRegion implements Region {
     
     private final String regionName;
+    
+    private RegionPackageImportPolicy regionPackageImportPolicy;
 
-    public StubRegion(String regionName) {
+    StubRegion(String regionName) {
         this.regionName = regionName;
     }
 
@@ -22,6 +24,15 @@ final class StubRegion implements Region {
         return null;
     }
 
+    void setRegionPackageImportPolicy(RegionPackageImportPolicy regionPackageImportPolicy) {
+        this.regionPackageImportPolicy = regionPackageImportPolicy;
+    }
+    
+    @Override
+    public RegionPackageImportPolicy getRegionPackageImportPolicy() {
+        return this.regionPackageImportPolicy;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -46,5 +57,5 @@ final class StubRegion implements Region {
             return false;
         return true;
     }
-    
+
 }

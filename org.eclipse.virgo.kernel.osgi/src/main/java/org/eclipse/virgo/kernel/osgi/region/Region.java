@@ -37,5 +37,12 @@ public interface Region {
      * @return a <code>BundleContext</code>
      */
     BundleContext getBundleContext();
+    
+    /**
+     * Returns the {@link RegionPackageImportPolicy} associated with this region.
+     * 
+     * @return the {@link RegionPackageImportPolicy} of this region
+     */
+    RegionPackageImportPolicy getRegionPackageImportPolicy();
 
 }

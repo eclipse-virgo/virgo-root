@@ -31,18 +31,15 @@ final class RegionResolverHookFactory implements ResolverHookFactory {
 
     private final RegionMembership regionMembership;
 
-    private final RegionPackageImportPolicy regionPackageImportPolicy;
-
-    RegionResolverHookFactory(RegionMembership regionMembership, String regionImports) {
+    RegionResolverHookFactory(RegionMembership regionMembership) {
         this.regionMembership = regionMembership;
-        this.regionPackageImportPolicy = new UserRegionPackageImportPolicy(regionImports);
     }
 
     
 
     @Override
     public ResolverHook begin(Collection<BundleRevision> triggers) {
-        return new RegionResolverHook(this.regionMembership, this.regionPackageImportPolicy, triggers);
+        return new RegionResolverHook(this.regionMembership, triggers);
     }
 
 }

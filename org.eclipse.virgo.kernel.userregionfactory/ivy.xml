@@ -26,7 +26,7 @@
         <dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
         <dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.test" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
-		
+        <dependency org='org.eclipse.virgo.teststubs' name='org.eclipse.virgo.teststubs.osgi' rev='${org.eclipse.virgo.teststubs}' conf='test->runtime'/>	
         
         <override org="org.slf4j" rev="${org.slf4j}"/>
     </dependencies>

@@ -144,7 +144,17 @@ public final class Activator implements BundleActivator {
     
     private void createUserRegion(BundleContext userRegionBundleContext, RegionMembership regionMembership) throws BundleException {
         
-        ImmutableRegion userRegion = new ImmutableRegion(REGION_USER, userRegionBundleContext);
+        String userRegionImportsProperty = this.regionImports != null ? this.regionImports
+            : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
+        String expandedUserRegionImportsProperty = null;
+        if (userRegionImportsProperty != null) {
+            expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
+                this.bundleContext);
+        }
+        
+        UserRegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy(expandedUserRegionImportsProperty);
+        ImmutableRegion userRegion = new ImmutableRegion(REGION_USER, userRegionBundleContext, userRegionPackageImportPolicy);
+        userRegionPackageImportPolicy.setUserRegion(userRegion);
         regionMembership.setUserRegion(userRegion);
         notifyUserRegionStarting(userRegionBundleContext);
 

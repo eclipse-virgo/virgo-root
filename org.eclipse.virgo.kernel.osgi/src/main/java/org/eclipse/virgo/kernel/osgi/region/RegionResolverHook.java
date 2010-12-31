@@ -36,13 +36,10 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
 
     private static final long INVALID_BUNDLE_ID = -1L;
 
-    private final RegionPackageImportPolicy importedPackages;
-    
     private final Region kernelRegion;
 
-    RegionResolverHook(RegionMembership regionMembership, RegionPackageImportPolicy importedPackages, Collection<BundleRevision> triggers) {
+    RegionResolverHook(RegionMembership regionMembership, Collection<BundleRevision> triggers) {
         super(regionMembership);
-        this.importedPackages = importedPackages;
         this.kernelRegion = getKernelRegion();
     }
 
@@ -85,7 +82,8 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
         Region requirerRegion = getRegion(requirer);
         if (requirerRegion != null) {
-            if (!kernelRegion.equals(requirerRegion)) {
+            RegionPackageImportPolicy requirerRegionPackageImportPolicy = requirerRegion.getRegionPackageImportPolicy();
+            if (!this.kernelRegion.equals(requirerRegion)) {
                 // User region bundles can wire only to user region bundles and imported packages from the kernel
                 // region. Note: the following code currently assumes there is only a single user region.
                 Iterator<Capability> i = candidates.iterator();
@@ -94,8 +92,8 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
                     if (this.kernelRegion.equals(getRegion(c.getProviderRevision()))) {
                         String namespace = c.getNamespace();
                         if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                            if (!this.importedPackages.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(),
-                                c.getDirectives())) {
+                            if (!requirerRegionPackageImportPolicy.isImported(this.kernelRegion, (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY),
+                                c.getAttributes(), c.getDirectives())) {
                                 i.remove();
                             }
                         } else {

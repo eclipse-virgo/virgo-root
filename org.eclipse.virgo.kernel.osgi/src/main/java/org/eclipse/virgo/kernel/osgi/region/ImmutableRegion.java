@@ -31,9 +31,12 @@ public class ImmutableRegion implements Region {
 
     private final BundleContext bundleContext;
 
-    public ImmutableRegion(String name, @NonNull BundleContext bundleContext) {
+    private final RegionPackageImportPolicy regionPackageImportPolicy;
+
+    public ImmutableRegion(String name, @NonNull BundleContext bundleContext, @NonNull RegionPackageImportPolicy regionPackageImportPolicy) {
         this.name = name;
         this.bundleContext = bundleContext;
+        this.regionPackageImportPolicy = regionPackageImportPolicy;
     }
 
     @Override
@@ -46,6 +49,11 @@ public class ImmutableRegion implements Region {
         return this.bundleContext;
     }
 
+    @Override
+    public RegionPackageImportPolicy getRegionPackageImportPolicy() {
+        return this.regionPackageImportPolicy;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;

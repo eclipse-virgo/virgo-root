@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -53,14 +54,21 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         BundleRevision bundleRevision = new TestBundleRevision(USER_REGION_BUNDLE_INDEX);
         Collection<BundleRevision> triggers = new ArrayList<BundleRevision>();
         triggers.add(bundleRevision);
-        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), createImportedPackages(importedPackages), triggers);
+        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), triggers);
+        try {
+            StubRegion userRegion = (StubRegion)getRegionMembership().getRegion(getBundleId(USER_REGION_BUNDLE_INDEX));
+            RegionPackageImportPolicy userRegionPackageImportPolicy = createImportedPackages(importedPackages);
+            userRegion.setRegionPackageImportPolicy(userRegionPackageImportPolicy);
+        } catch (IndeterminateRegionException e) {
+            Assert.fail("Unexpected exception" + e);
+        }
     }
 
     private RegionPackageImportPolicy createImportedPackages(final String... importedPackages) {
         return new RegionPackageImportPolicy() {
 
             @Override
-            public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
+            public boolean isImported(Region providerRegion, String packageName, Map<String, Object> attributes, Map<String, String> directives) {
                 for (String importedPackage : importedPackages) {
                     if (packageName.equals(importedPackage)) {
                         return true;
@@ -74,7 +82,7 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         BundleRevision bundleRevision = new TestBundleRevision(KERNEL_BUNDLE_INDEX);
         Collection<BundleRevision> triggers = new ArrayList<BundleRevision>();
         triggers.add(bundleRevision);
-        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), createImportedPackages(), triggers);
+        this.regionResolverHook = new RegionResolverHook(getRegionMembership(), triggers);
     }
 
     @Test

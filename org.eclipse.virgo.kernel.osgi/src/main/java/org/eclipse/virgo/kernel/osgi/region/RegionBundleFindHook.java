@@ -21,7 +21,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.hooks.bundle.FindHook;
 
 /**
- * TODO Document RegionBundleFindHook
+ * {@link RegionBundleFindHook} prevents bundles being found by bundles in other regions.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />

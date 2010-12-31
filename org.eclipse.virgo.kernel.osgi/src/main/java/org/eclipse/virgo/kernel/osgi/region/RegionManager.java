@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.osgi.region;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
@@ -40,9 +41,7 @@ import org.osgi.service.event.EventAdmin;
  */
 final class RegionManager {
 
-     private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
-
-    private static final String USER_REGION_PACKAGE_IMPORTS_PROPERTY = "packageImports";
+    private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
     private static final String USER_REGION_SERVICE_IMPORTS_PROPERTY = "serviceImports";
 
@@ -53,8 +52,6 @@ final class RegionManager {
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
     private final BundleContext bundleContext;
-
-    private String regionImports;
 
     private String regionServiceImports;
 
@@ -74,7 +71,6 @@ final class RegionManager {
             Dictionary<String, String> properties = config.getProperties();
 
             if (properties != null) {
-                this.regionImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
                 this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
                 this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
             } else {
@@ -93,21 +89,19 @@ final class RegionManager {
 
     private void createAndPublishUserRegion() throws BundleException {
 
-        ImmutableRegion kernelRegion = new ImmutableRegion(REGION_KERNEL, this.bundleContext);
-        registerRegionService(kernelRegion);
+        ImmutableRegion kernelRegion = new ImmutableRegion(REGION_KERNEL, this.bundleContext, new RegionPackageImportPolicy() {
 
-        String userRegionImportsProperty = this.regionImports != null ? this.regionImports
-            : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
-        String expandedUserRegionImportsProperty = null;
-        if (userRegionImportsProperty != null) {
-            expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
-                this.bundleContext);
-        }
+            @Override
+            public boolean isImported(Region providerRegion, String packageName, Map<String, Object> attributes, Map<String, String> directives) {
+                return providerRegion == null || this.equals(providerRegion);
+            }
+        });
+        registerRegionService(kernelRegion);
 
         StandardRegionMembership regionMembership = new StandardRegionMembership(this.bundleContext.getBundle(), kernelRegion);
         registerRegionMembership(regionMembership, this.bundleContext);
 
-        registerResolverHookFactory(new RegionResolverHookFactory(regionMembership, expandedUserRegionImportsProperty));
+        registerResolverHookFactory(new RegionResolverHookFactory(regionMembership));
 
         registerBundleEventHook(new RegionBundleEventHook(regionMembership));
 
@@ -211,7 +205,8 @@ final class RegionManager {
                     if (this.userRegion != null) {
                         return this.userRegion;
                     } else {
-                        // Allow the user region factory bundle to start off in the kernel until it creates the user region
+                        // Allow the user region factory bundle to start off in the kernel until it creates the user
+                        // region
                         return this.kernelRegion;
                     }
                 }

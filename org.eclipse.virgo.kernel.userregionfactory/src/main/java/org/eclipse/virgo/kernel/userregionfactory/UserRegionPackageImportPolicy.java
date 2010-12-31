@@ -11,7 +11,7 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.userregionfactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.osgi.service.resolver.VersionRange;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
@@ -45,6 +47,10 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
 
     private final Map<String, ImportedPackage> importedPackages = new HashMap<String, ImportedPackage>();
 
+    private Region userRegion;
+
+    private final Object monitor = new Object();
+
     /**
      * Construct a {@link UserRegionPackageImportPolicy} for the specified import package list which must not contain
      * wildcards.
@@ -66,16 +72,31 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
         }
     }
 
+    void setUserRegion(Region userRegion) {
+        synchronized (this.monitor) {
+            this.userRegion = userRegion;
+        }
+    }
+
+    private Region getUserRegion() {
+        synchronized (this.monitor) {
+            return this.userRegion;
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isImported(String packageName, Map<String, Object> exportAttributes, Map<String, String> exportDirectives) {
+    public boolean isImported(Region providerRegion, String packageName, Map<String, Object> exportAttributes, Map<String, String> exportDirectives) {
+        if (providerRegion == null || getUserRegion().equals(providerRegion)) {
+            return true;
+        }
         ImportedPackage importedPackage = this.importedPackages.get(packageName);
         if (importedPackage != null) {
             Map<String, String> importAttributes = importedPackage.getAttributes();
             Set<String> importAttributeNames = importAttributes.keySet();
-            
+
             // Check any attribute values match.
             for (String importAttributeName : importAttributeNames) {
                 if (exportAttributes == null) {
@@ -106,7 +127,7 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
                 }
 
             }
-            
+
             // Check mandatory attributes are present.
             if (exportDirectives != null) {
                 String mandatoryDirectiveValue = exportDirectives.get(MANDATORY_DIRECTIVE_NAME);
