@@ -55,7 +55,7 @@ public class RegionManagerTests {
         manager.start();
         
         List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
-        assertEquals("Region services not registered", 9, serviceRegistrations.size());
+        assertEquals("Region services not registered", 10, serviceRegistrations.size());
         
         manager.stop();
         verify(eventAdmin, configAdmin, config);

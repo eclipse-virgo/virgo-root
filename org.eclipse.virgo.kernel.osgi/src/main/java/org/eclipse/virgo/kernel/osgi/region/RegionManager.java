@@ -143,6 +143,7 @@ final class RegionManager {
         }
 
         StandardRegionMembership regionMembership = new StandardRegionMembership(this.bundleContext.getBundle(), kernelRegion);
+        registerRegionMembership(regionMembership, this.bundleContext);
 
         registerResolverHookFactory(new RegionResolverHookFactory(regionMembership, expandedUserRegionImportsProperty));
 
@@ -154,13 +155,15 @@ final class RegionManager {
 
         registerServiceFindHook(new RegionServiceFindHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
 
+        createUserRegion(regionMembership);
+    }
+
+    private void createUserRegion(StandardRegionMembership regionMembership) throws BundleException {
         BundleContext userRegionBundleContext = initialiseUserRegionBundles();
 
         ImmutableRegion userRegion = new ImmutableRegion(REGION_USER, userRegionBundleContext);
         registerRegionService(userRegion);
         regionMembership.setUserRegion(userRegion);
-
-        registerRegionMembership(regionMembership, userRegionBundleContext);
 
         publishUserRegionBundleContext(userRegionBundleContext);
     }
