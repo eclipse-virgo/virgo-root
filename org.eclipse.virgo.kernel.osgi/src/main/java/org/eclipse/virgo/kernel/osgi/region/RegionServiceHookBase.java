@@ -51,9 +51,9 @@ abstract class RegionServiceHookBase extends RegionHookBase {
             : new HashSet<String>();
     }
 
-    protected final boolean isUserRegionService(ServiceReference<?> serviceReference) {
+    protected final Region getRegion(ServiceReference<?> serviceReference) {
         Bundle serviceSource = serviceReference.getBundle();
-        return isUserRegionBundle(serviceSource);
+        return getRegion(serviceSource);
     }
 
     protected static boolean isSystemBundleService(ServiceReference<?> serviceReference) {

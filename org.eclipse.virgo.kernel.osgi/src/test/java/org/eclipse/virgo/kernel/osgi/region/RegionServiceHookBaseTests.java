@@ -13,7 +13,9 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -22,23 +24,26 @@ import org.junit.Test;
 public class RegionServiceHookBaseTests extends AbstractRegionServiceHookTest {
 
     private TestRegionServiceHook regionServiceHook;
+    
+    private Region kernelRegion;
 
     @Before
     public void setUp() {
         this.regionServiceHook = new TestRegionServiceHook(getRegionMembership(), "", "");
+        this.kernelRegion = getKernelRegion();
     }
 
     @Test
     public void testIsUserRegionService() {
-        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(SYSTEM_BUNDLE_INDEX)));
-        assertFalse(this.regionServiceHook.isUserRegionService(getServiceReference(KERNEL_BUNDLE_INDEX)));
-        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(USER_REGION_BUNDLE_INDEX)));
+        assertNull(this.regionServiceHook.getRegion(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertEquals(this.kernelRegion, this.regionServiceHook.getRegion(getServiceReference(KERNEL_BUNDLE_INDEX)));
+        assertFalse(this.kernelRegion.equals(this.regionServiceHook.getRegion(getServiceReference(USER_REGION_BUNDLE_INDEX))));
     }
 
     @Test
     public void testIsSystemBundleService() {
-        assertTrue(this.regionServiceHook.isUserRegionService(getServiceReference(SYSTEM_BUNDLE_INDEX)));
-        assertFalse(this.regionServiceHook.isUserRegionService(getServiceReference(KERNEL_BUNDLE_INDEX)));
+        assertTrue(RegionServiceHookBase.isSystemBundleService(getServiceReference(SYSTEM_BUNDLE_INDEX)));
+        assertFalse(RegionServiceHookBase.isSystemBundleService(getServiceReference(KERNEL_BUNDLE_INDEX)));
     }
 
     @Test

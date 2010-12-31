@@ -33,6 +33,8 @@ import org.osgi.framework.hooks.service.EventHook;
  */
 final class RegionServiceEventHook extends RegionServiceHookBase implements EventHook {
 
+    private final Region kernelRegion;
+
     /**
      * Constructs a {@link RegionServiceEventHook} which prevents service events for kernel region services which are
      * not imported from being delivered to bundles in the user region and prevents service events for user region
@@ -47,6 +49,7 @@ final class RegionServiceEventHook extends RegionServiceHookBase implements Even
      */
     RegionServiceEventHook(RegionMembership regionMembership, String regionServiceImports, String regionServiceExports) {
         super(regionMembership, regionServiceImports, regionServiceExports);
+        this.kernelRegion = getKernelRegion();
     }
 
     /**
@@ -58,13 +61,14 @@ final class RegionServiceEventHook extends RegionServiceHookBase implements Even
         ServiceReference<?> serviceReference = event.getServiceReference();
 
         if (!isSystemBundleService(serviceReference)) {
-            if (isUserRegionService(serviceReference)) {
+            Region serviceReferenceRegion = getRegion(serviceReference);
+            if (!this.kernelRegion.equals(serviceReferenceRegion)) {
                 if (!serviceExported(serviceReference)) {
                     Iterator<BundleContext> i = contexts.iterator();
                     while (i.hasNext()) {
                         BundleContext targetBundleContext = i.next();
-                        // Do not deliver user region services which are not exported to bundles in the kernel region.
-                        if (!isUserRegionBundle(targetBundleContext) && !isSystemBundle(targetBundleContext)) {
+                        // Do not deliver unexported user region services to bundles in the kernel region.
+                        if (!isSystemBundle(targetBundleContext) && this.kernelRegion.equals(getRegion(targetBundleContext))) {
                             i.remove();
                         }
                     }
@@ -74,8 +78,8 @@ final class RegionServiceEventHook extends RegionServiceHookBase implements Even
                     Iterator<BundleContext> i = contexts.iterator();
                     while (i.hasNext()) {
                         BundleContext targetBundleContext = i.next();
-                        // Do not deliver kernel region services which are not imported to bundles in the user region.
-                        if (isUserRegionBundle(targetBundleContext) &&  !isSystemBundle(targetBundleContext)) {
+                        // Do not deliver unimported kernel region services to bundles in the user region.
+                        if (!isSystemBundle(targetBundleContext) && !this.kernelRegion.equals(getRegion(targetBundleContext))) {
                             i.remove();
                         }
                     }

@@ -37,50 +37,26 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
     private static final long INVALID_BUNDLE_ID = -1L;
 
     private final RegionPackageImportPolicy importedPackages;
-
-    private final boolean triggerInRegion;
+    
+    private final Region kernelRegion;
 
     RegionResolverHook(RegionMembership regionMembership, RegionPackageImportPolicy importedPackages, Collection<BundleRevision> triggers) {
         super(regionMembership);
         this.importedPackages = importedPackages;
-        this.triggerInRegion = triggerInRegion(triggers);
-    }
-
-    private boolean triggerInRegion(Collection<BundleRevision> triggers) {
-        // If there are no triggers, assume the resolution is occurring in the user region.
-        if (triggers.isEmpty()) {
-            return true;
-        }
-        Iterator<BundleRevision> i = triggers.iterator();
-        while (i.hasNext()) {
-            if (isMember(i.next())) {
-                return true;
-            }
-        }
-        return false;
+        this.kernelRegion = getKernelRegion();
     }
 
     @Override
     public void filterResolvable(Collection<BundleRevision> candidates) {
-        if (!this.triggerInRegion) {
-            // The trigger is in the kernel regions, so remove all candidates in the user region.
-            Iterator<BundleRevision> i = candidates.iterator();
-            while (i.hasNext()) {
-                BundleRevision nextCandidate = i.next();
-                if (isMember(nextCandidate) && !isSystemBundle(nextCandidate)) {
-                    i.remove();
-                }
-            }
-        }
     }
 
-    private boolean isMember(BundleRevision bundleRevision) {
+    private Region getRegion(BundleRevision bundleRevision) {
         Bundle bundle = bundleRevision.getBundle();
         if (bundle != null) {
-            return isUserRegionBundle(bundle);
+            return getRegion(bundle);
         }
         Long bundleId = getBundleId(bundleRevision);
-        return isUserRegionBundle(bundleId);
+        return getRegion(bundleId);
     }
 
     private Long getBundleId(BundleRevision bundleRevision) {
@@ -107,32 +83,36 @@ final class RegionResolverHook extends RegionHookBase implements ResolverHook {
 
     @Override
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
-        if (isMember(requirer)) {
-            // User region bundles can wire only to user region bundles and imported packages from the kernel region.
-            Iterator<Capability> i = candidates.iterator();
-            while (i.hasNext()) {
-                Capability c = i.next();
-                if (!isMember(c.getProviderRevision())) {
-                    String namespace = c.getNamespace();
-                    if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                        if (!this.importedPackages.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(),
-                            c.getDirectives())) {
+        Region requirerRegion = getRegion(requirer);
+        if (requirerRegion != null) {
+            if (!kernelRegion.equals(requirerRegion)) {
+                // User region bundles can wire only to user region bundles and imported packages from the kernel
+                // region. Note: the following code currently assumes there is only a single user region.
+                Iterator<Capability> i = candidates.iterator();
+                while (i.hasNext()) {
+                    Capability c = i.next();
+                    if (this.kernelRegion.equals(getRegion(c.getProviderRevision()))) {
+                        String namespace = c.getNamespace();
+                        if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
+                            if (!this.importedPackages.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(),
+                                c.getDirectives())) {
+                                i.remove();
+                            }
+                        } else {
+                            // Filter out other capabilities such as osgi.bundle and osgi.host.
                             i.remove();
                         }
-                    } else {
-                        // Filter out other capabilities such as osgi.bundle and osgi.host.
-                        i.remove();
                     }
                 }
-            }
-        } else {
-            // Kernel region bundles can wire only to kernel region bundles.
-            Iterator<Capability> i = candidates.iterator();
-            while (i.hasNext()) {
-                Capability c = i.next();
-                BundleRevision providerRevision = c.getProviderRevision();
-                if (isMember(providerRevision) && !isSystemBundle(providerRevision)) {
-                    i.remove();
+            } else {
+                // Kernel region bundles can wire only to kernel region bundles.
+                Iterator<Capability> i = candidates.iterator();
+                while (i.hasNext()) {
+                    Capability c = i.next();
+                    BundleRevision providerRevision = c.getProviderRevision();
+                    if (!isSystemBundle(providerRevision) && !this.kernelRegion.equals(getRegion(providerRevision))) {
+                        i.remove();
+                    }
                 }
             }
         }

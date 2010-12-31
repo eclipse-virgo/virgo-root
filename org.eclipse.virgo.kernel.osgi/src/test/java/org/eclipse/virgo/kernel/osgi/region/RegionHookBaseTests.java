@@ -40,24 +40,25 @@ public class RegionHookBaseTests extends AbstractRegionHookTest {
     }
 
     @Test
-    public void testIsUserRegionBundleBundleContext() {
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundleContext(SYSTEM_BUNDLE_INDEX)));
-        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(getBundleContext(KERNEL_BUNDLE_INDEX)));
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundleContext(USER_REGION_BUNDLE_INDEX)));
+    public void testgetRegionBundleContext() {
+        Assert.assertNull(this.testRegionHook.getRegion(getBundleContext(SYSTEM_BUNDLE_INDEX)));
+        Assert.assertEquals(getKernelRegion(), this.testRegionHook.getRegion(getBundleContext(KERNEL_BUNDLE_INDEX)));
+        Assert.assertFalse(getKernelRegion().equals(this.testRegionHook.getRegion(getBundleContext(USER_REGION_BUNDLE_INDEX))));
     }
 
     @Test
-    public void testIsUserRegionBundleBundle() {
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(SYSTEM_BUNDLE_INDEX)));
-        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(getBundle(KERNEL_BUNDLE_INDEX)));
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundle(USER_REGION_BUNDLE_INDEX)));
+    public void testgetRegionBundle() {
+        Assert.assertNull(this.testRegionHook.getRegion(getBundle(SYSTEM_BUNDLE_INDEX)));
+        Assert.assertEquals(getKernelRegion(), this.testRegionHook.getRegion(getBundle(KERNEL_BUNDLE_INDEX)));
+        Assert.assertFalse(getKernelRegion().equals(this.testRegionHook.getRegion(getBundle(USER_REGION_BUNDLE_INDEX))));
     }
 
+    
     @Test
-    public void testIsUserRegionBundleLong() {
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundleId(SYSTEM_BUNDLE_INDEX)));
-        Assert.assertFalse(this.testRegionHook.isUserRegionBundle(getBundleId(KERNEL_BUNDLE_INDEX)));
-        Assert.assertTrue(this.testRegionHook.isUserRegionBundle(getBundleId(USER_REGION_BUNDLE_INDEX)));
+    public void testgetRegionLong() {
+        Assert.assertNull(this.testRegionHook.getRegion(getBundleId(SYSTEM_BUNDLE_INDEX)));
+        Assert.assertEquals(getKernelRegion(), this.testRegionHook.getRegion(getBundleId(KERNEL_BUNDLE_INDEX)));
+        Assert.assertFalse(getKernelRegion().equals(this.testRegionHook.getRegion(getBundleId(USER_REGION_BUNDLE_INDEX))));
     }
 
     class TestRegionHook extends RegionHookBase {

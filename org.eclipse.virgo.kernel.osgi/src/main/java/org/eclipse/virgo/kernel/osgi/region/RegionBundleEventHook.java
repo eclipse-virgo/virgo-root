@@ -38,11 +38,11 @@ final class RegionBundleEventHook extends RegionHookBase implements EventHook {
     public void event(BundleEvent event, Collection<BundleContext> contexts) {
         Bundle sourceBundle = event.getBundle();
         if (!isSystemBundle(sourceBundle)) {
-            boolean eventInRegion = isUserRegionBundle(sourceBundle);
+            Region sourceRegion = getRegion(sourceBundle);
             Iterator<BundleContext> i = contexts.iterator();
             while (i.hasNext()) {
                 Bundle targetBundle = i.next().getBundle();
-                if (isUserRegionBundle(targetBundle) != eventInRegion && !isSystemBundle(targetBundle)) {
+                if (!isSystemBundle(targetBundle) && !sourceRegion.equals(getRegion(targetBundle))) {
                     i.remove();
                 }
             }

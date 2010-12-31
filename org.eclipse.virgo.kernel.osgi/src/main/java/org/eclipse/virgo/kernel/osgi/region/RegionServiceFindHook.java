@@ -32,6 +32,8 @@ import org.osgi.framework.hooks.service.FindHook;
  */
 final class RegionServiceFindHook extends RegionServiceHookBase implements FindHook {
 
+    private final Region kernelRegion;
+
     /**
      * Constructs a {@link RegionServiceFindHook} which prevents kernel region services which are not imported being
      * found by bundles in the user region and prevents user region services which are not exported from being found by
@@ -46,36 +48,35 @@ final class RegionServiceFindHook extends RegionServiceHookBase implements FindH
      */
     RegionServiceFindHook(RegionMembership regionMembership, String regionServiceImports, String regionServiceExports) {
         super(regionMembership, regionServiceImports, regionServiceExports);
+        this.kernelRegion = getKernelRegion();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void find(BundleContext bundleContext, String name, String filter, boolean allServices, Collection<ServiceReference<?>> references) {
-        if (!isSystemBundle(bundleContext)) {
-            if (bundleContext.getBundle().getSymbolicName().startsWith("org.springframework.osgi") && name != null
-                && name.contains("PackageAdminUtil")) {
-                System.out.println("DEBUG 3");
-            }
-            if (isUserRegionBundle(bundleContext)) {
-                Iterator<ServiceReference<?>> i = references.iterator();
+    public void find(BundleContext finderBundleContext, String name, String filter, boolean allServices,
+        Collection<ServiceReference<?>> foundReferences) {
+        if (!isSystemBundle(finderBundleContext)) {
+            Region finderRegion = getRegion(finderBundleContext);
+            if (!this.kernelRegion.equals(finderRegion)) {
+                Iterator<ServiceReference<?>> i = foundReferences.iterator();
                 while (i.hasNext()) {
-                    ServiceReference<?> serviceReference = i.next();
-                    // Prevent kernel region services which are not imported
-                    // from being found by user region bundles.
-                    if (!isUserRegionService(serviceReference) && !serviceImported(serviceReference) && !isSystemBundleService(serviceReference)) {
-                        System.out.println("RSFH removing " + serviceReference);
+                    ServiceReference<?> foundServiceReference = i.next();
+                    // Prevent kernel region services which are not imported from being found by user region bundles.
+                    if (!isSystemBundleService(foundServiceReference) && this.kernelRegion.equals(getRegion(foundServiceReference))
+                        && !serviceImported(foundServiceReference)) {
+                        System.out.println("RSFH removing " + foundServiceReference);
                         i.remove();
                     }
                 }
             } else {
-                Iterator<ServiceReference<?>> i = references.iterator();
+                Iterator<ServiceReference<?>> i = foundReferences.iterator();
                 while (i.hasNext()) {
-                    ServiceReference<?> serviceReference = i.next();
-                    // Prevent user region services which are not exported from
-                    // being found by kernel region bundles.
-                    if (isUserRegionService(serviceReference) && !serviceExported(serviceReference) && !isSystemBundleService(serviceReference)) {
+                    ServiceReference<?> foundServiceReference = i.next();
+                    // Prevent user region services which are not exported from being found by kernel region bundles.
+                    if (!isSystemBundleService(foundServiceReference) && !this.kernelRegion.equals(getRegion(foundServiceReference))
+                        && !serviceExported(foundServiceReference)) {
                         i.remove();
                     }
                 }

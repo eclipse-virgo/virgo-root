@@ -75,8 +75,13 @@ abstract public class AbstractRegionHookTest {
         }
 
     }
+    
     RegionMembership getRegionMembership() {
         return this.regionMembership;
+    }
+    
+    Region getKernelRegion() {
+        return this.regionMembership.getKernelRegion();
     }
 
 }

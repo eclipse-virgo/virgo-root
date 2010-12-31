@@ -49,22 +49,6 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         assertEquals(3, candidates.size());
     }
 
-    @Test
-    public void testFilterResolvableWhenTriggeredFromKernel() {
-        triggerFromKernel();
-
-        List<BundleRevision> candidates = new ArrayList<BundleRevision>();
-        for (int i = 0; i < NUM_BUNDLES; i++) {
-            candidates.add(new TestBundleRevision(i));
-        }
-        BundleRevision systemBundleCandidate = candidates.get(SYSTEM_BUNDLE_INDEX);
-        BundleRevision kernelCandidate = candidates.get(KERNEL_BUNDLE_INDEX);
-        this.regionResolverHook.filterResolvable(candidates);
-        assertEquals(2, candidates.size());
-        assertTrue(candidates.contains(systemBundleCandidate));
-        assertTrue(candidates.contains(kernelCandidate));
-    }
-
     private void triggerFromUserRegion(String... importedPackages) {
         BundleRevision bundleRevision = new TestBundleRevision(USER_REGION_BUNDLE_INDEX);
         Collection<BundleRevision> triggers = new ArrayList<BundleRevision>();

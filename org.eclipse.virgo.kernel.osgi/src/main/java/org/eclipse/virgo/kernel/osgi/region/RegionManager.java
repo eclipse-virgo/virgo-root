@@ -193,8 +193,8 @@ final class RegionManager {
         public Region getRegion(Bundle bundle) throws IndeterminateRegionException {
             try {
                 return getRegion(bundle.getBundleId());
-            } catch (IndeterminateRegionException _) {
-                throw new UserRegionNotInitialisedException(bundle);
+            } catch (RegionSpanningException _) {
+                throw new RegionSpanningException(bundle);
             }
         }
 
@@ -211,7 +211,8 @@ final class RegionManager {
                     if (this.userRegion != null) {
                         return this.userRegion;
                     } else {
-                        throw new UserRegionNotInitialisedException(bundleId);
+                        // Allow the user region factory bundle to start off in the kernel until it creates the user region
+                        return this.kernelRegion;
                     }
                 }
             } else {
