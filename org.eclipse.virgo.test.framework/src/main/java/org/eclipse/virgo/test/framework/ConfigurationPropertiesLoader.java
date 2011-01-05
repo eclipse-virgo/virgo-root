@@ -53,7 +53,7 @@ public class ConfigurationPropertiesLoader {
 
     private void loadConfiguredProperties(Properties config) throws IOException {
         String includeProperties = config.getProperty(PROP_PROPERTIES_INCLUDE);
-        if (includeProperties != null) {
+        if (includeProperties != null && includeProperties.trim().length() > 0) {
             String[] includes = includeProperties.split(",");
             for (String include : includes) {
                 URL url = new URL(include.trim());

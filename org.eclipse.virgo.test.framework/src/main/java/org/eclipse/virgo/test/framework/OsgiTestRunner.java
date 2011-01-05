@@ -13,10 +13,17 @@ package org.eclipse.virgo.test.framework;
 
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
+import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
+import org.eclipse.virgo.osgi.launcher.FrameworkBuilder;
+import org.eclipse.virgo.osgi.launcher.FrameworkBuilder.FrameworkCustomizer;
 import org.eclipse.virgo.test.framework.plugin.PluginManager;
+import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -26,11 +33,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
-import org.eclipse.virgo.osgi.launcher.FrameworkBuilder;
-import org.eclipse.virgo.osgi.launcher.FrameworkBuilder.FrameworkCustomizer;
-import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
-
+/**
+ * 
+ * JUnit TestRunner for running OSGi integration tests on the Equinox framework.
+ * <p />
+ * 
+ * <strong>Concurrent Semantics</strong><br />
+ * TODO Document concurrent semantics of OsgiTestRunner
+ */
 public class OsgiTestRunner extends BlockJUnit4ClassRunner {
 
     private final ConfigurationPropertiesLoader loader = new ConfigurationPropertiesLoader();
@@ -65,8 +75,10 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
             // Preserve and re-instate the context classloader since tests can sometimes leave it in a strange state.
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             try {
-                framework = launchOsgi();
+                final Properties configurationProperties = createConfigurationProperties();
+                framework = launchOsgi(configurationProperties);
                 BundleContext targetBundleContext = getTargetBundleContext(framework.getBundleContext());
+                postProcessTargetBundleContext(targetBundleContext, configurationProperties);
                 Bundle testBundle = installAndStartTestBundle(targetBundleContext);
                 Class<?> osgiTestClass = createOsgiTestClass(testBundle);
                 // create the real runner, dispatch it against the class loaded from OSGi
@@ -85,7 +97,7 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-            }            
+            }
             BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
         }
     }
@@ -105,6 +117,10 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
         return bundleContext;
     }
 
+    protected void postProcessTargetBundleContext(BundleContext bundleContext, Properties frameworkProperties) throws Exception {
+        // nothing for this implementation...
+    }
+
     // load the test class from within OSGi
     private Class<?> createOsgiTestClass(Bundle testBundle) throws ClassNotFoundException {
         Class<?> osgiJavaTestClass = testBundle.loadClass(getTestClass().getName());
@@ -113,8 +129,8 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
     }
 
     // launch the OSGi framework. will also install the test bundle
-    private Framework launchOsgi() throws Exception {
-        final Properties configurationProperties = createConfigurationProperties();
+    private Framework launchOsgi(Properties frameworkProperties) throws Exception {
+        final Properties configurationProperties = new Properties(frameworkProperties);
         FrameworkBuilder builder = new FrameworkBuilder(configurationProperties, new FrameworkCustomizer() {
 
             public void beforeInstallBundles(Framework framework) {
@@ -130,16 +146,31 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
     }
 
     private void addUserConfiguredBundles(FrameworkBuilder builder, Properties configurationProperties) throws Exception {
-        BundleDependencies bundleDependencies = getTestClass().getJavaClass().getAnnotation(BundleDependencies.class);
+        Class<BundleDependencies> annotationType = BundleDependencies.class;
+        Class<?> annotationDeclaringClazz = TestFrameworkUtils.findAnnotationDeclaringClass(annotationType, getTestClass().getJavaClass());
 
-        if (bundleDependencies != null) {
-            String[] paths = bundleDependencies.value();
-
-            for (String path : paths) {
-                String formattedPath = new PropertyPlaceholderResolver().resolve(path, configurationProperties);
-                builder.addBundle(new URI(formattedPath));
-            }
+        if (annotationDeclaringClazz == null) {
+            // could not find an 'annotation declaring class' for annotation + annotationType + and targetType +
+            // startFromClazz
+            return;
         }
+
+        List<BundleEntry> bundleEntries = new ArrayList<BundleEntry>();
+
+        while (annotationDeclaringClazz != null) {
+            BundleDependencies dependencies = annotationDeclaringClazz.getAnnotation(annotationType);
+            BundleEntry[] entries = dependencies.entries();
+
+            bundleEntries.addAll(0, Arrays.<BundleEntry> asList(entries));
+            annotationDeclaringClazz = dependencies.inheritDependencies() ? TestFrameworkUtils.findAnnotationDeclaringClass(annotationType,
+                annotationDeclaringClazz.getSuperclass()) : null;
+        }
+        PropertyPlaceholderResolver resolver = new PropertyPlaceholderResolver();
+        for (BundleEntry entry : bundleEntries) {
+            final String formattedPath = resolver.resolve(entry.value(), configurationProperties);
+            builder.addBundle(new URI(formattedPath), entry.autoStart());
+        }
+
     }
 
     private String getTestBundleLocation() {

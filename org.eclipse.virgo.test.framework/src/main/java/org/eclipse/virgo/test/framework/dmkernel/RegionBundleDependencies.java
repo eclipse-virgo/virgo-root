@@ -1,15 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+/*
+ * This file is part of the Eclipse Virgo project.
+ *
+ * Copyright (c) 2010 Chariot Solutions, LLC
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   VMware Inc. - initial contribution
- *******************************************************************************/
+ *    dsklyut - initial contribution
+ */
 
-package org.eclipse.virgo.test.framework;
+package org.eclipse.virgo.test.framework.dmkernel;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -18,19 +20,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.eclipse.virgo.test.framework.BundleEntry;
+
+
 /**
- * BundleDependencies defines class-level metadata which can be used to instruct test framework with extra bundles to
- * append to framework (system bundle) during start up.
+ * UserRegionBundleDependencies defines class-level metadata which can be used to instruct test framework with extra bundles to
+ * append to <a href="http://wiki.eclipse.org/Virgo/Concepts#Regions"> UserRegion</a> during start up.
  * <p />
- * This set of bundles is considered to be <em>transitively complete</em>, that is all dependencies must be provided.
- * 
+ * This set of bundles is considered to be "transitively complete", that is all dependencies must be provided.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
-public @interface BundleDependencies {
-
+public @interface RegionBundleDependencies {
     
     /**
      * Bundle entries to load as part of the test framework.

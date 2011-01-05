@@ -14,6 +14,7 @@ package org.eclipse.virgo.test.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.virgo.test.framework.BundleDependencies;
+import org.eclipse.virgo.test.framework.BundleEntry;
 import org.eclipse.virgo.test.framework.OsgiTestRunner;
 import org.eclipse.virgo.test.framework.TestFrameworkUtils;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 
-@BundleDependencies({"file:./src/test/resources/test-bundle"})
+@BundleDependencies(entries = {@BundleEntry("file:./src/test/resources/test-bundle")})
 @RunWith(OsgiTestRunner.class)
 public class BundleDependenciesTests {
 

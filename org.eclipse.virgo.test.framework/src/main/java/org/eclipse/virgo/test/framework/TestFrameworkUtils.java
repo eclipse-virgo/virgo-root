@@ -11,17 +11,47 @@
 
 package org.eclipse.virgo.test.framework;
 
+import java.lang.annotation.Annotation;
+
+import org.eclipse.virgo.util.common.Assert;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
+import org.osgi.framework.Constants;
 
-public class TestFrameworkUtils {
+public final class TestFrameworkUtils {
 
-	public static BundleContext getBundleContextForTestClass(Class<?> testClass) {
-		ClassLoader classLoader = testClass.getClassLoader();
-		if(classLoader instanceof BundleReference) {
-			return ((BundleReference)classLoader).getBundle().getBundleContext();
-		} else {
-			throw new IllegalArgumentException("Class '" + testClass.getName() + "' does not appear to be a valid test class.");
-		}
-	}
+    private TestFrameworkUtils() {
+        // do not new me
+    }
+
+    public static BundleContext getBundleContextForTestClass(Class<?> testClass) {
+        ClassLoader classLoader = testClass.getClassLoader();
+        if (classLoader instanceof BundleReference) {
+            return ((BundleReference) classLoader).getBundle().getBundleContext();
+        } else {
+            throw new IllegalArgumentException("Class '" + testClass.getName() + "' does not appear to be a valid test class.");
+        }
+    }
+
+    /**
+     * Checks {@link Constants#FRAGMENT_HOST} header to determine if bundle is a fragment
+     * 
+     * @param bundle
+     * @return
+     */
+    public static boolean isFragment(Bundle bundle) {
+        Assert.notNull(bundle, "bundle is required");
+        return bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null;
+    }
+
+    public static Class<?> findAnnotationDeclaringClass(Class<? extends Annotation> annotation, Class<?> clazzToStart) {
+        Assert.notNull(annotation, "Annotation is required");
+        // stop on object
+        if (clazzToStart == null || clazzToStart.equals(Object.class)) {
+            return null;
+        }
+
+        return clazzToStart.getAnnotation(annotation) != null ? clazzToStart : findAnnotationDeclaringClass(annotation, clazzToStart.getSuperclass());
+    }
 }
