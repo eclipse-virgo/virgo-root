@@ -17,3 +17,10 @@ do
         CLASSPATH=$CLASSPATH:$KERNEL_HOME/lib/${file##*/}
 	fi
 done
+
+# make sure we have CLASSPATH set
+if [ -z "$CLASSPATH" ]
+then
+    echo No JAR files found in $KERNEL_HOME/lib
+    exit 1
+fi
