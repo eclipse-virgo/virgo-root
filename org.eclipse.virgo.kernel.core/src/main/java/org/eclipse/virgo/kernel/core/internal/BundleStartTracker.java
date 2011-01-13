@@ -224,6 +224,8 @@ final class BundleStartTracker implements EventHandler {
 
     private final class StartupTrackerBundleListener implements SynchronousBundleListener {
 
+    	private Boolean isLazyBundle = false;
+
         /**
          * {@inheritDoc}
          */
@@ -241,9 +243,13 @@ final class BundleStartTracker implements EventHandler {
                     }
                 }
             }
+        	if(event.getType() == BundleEvent.LAZY_ACTIVATION){
+        		this.isLazyBundle = true;
+                LOGGER.info("Bundle '{}' has lazy activation and is in the starting state.", bundle);
+        	}
             if (event.getType() == BundleEvent.STOPPED) {
                 LOGGER.info("Bundle '{}' has stopped. Removing its related tracking state.", bundle);
-                BundleStartTracker.this.cleanup(bundle, new RuntimeException("bundle stopped"));
+                BundleStartTracker.this.cleanup(bundle, this.isLazyBundle ? null : new RuntimeException("bundle stopped"));
             }
         }
     }

@@ -21,7 +21,9 @@ import java.util.List;
 
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
 import org.osgi.service.event.Event;
 import org.springframework.core.task.SyncTaskExecutor;
 
@@ -77,6 +79,31 @@ public class BundleStartTrackerTests {
         properties.put("bundle", bundle);
         
         bundleStartTracker.handleEvent(new Event("org/osgi/service/blueprint/container/CREATED", properties));
+        
+        assertEquals(1, signal.successCount);
+        assertEquals(0, signal.failures.size());
+    }
+    
+    @Test
+    public void startOfLazyActivationBundle() throws BundleException {
+        StubBundleContext bundleContext = new StubBundleContext();
+        StubBundle bundle = new StubBundle();
+        bundle.addHeader("Bundle-ActivationPolicy", "lazy");
+        bundle.setBundleContext(bundleContext);
+        
+        BundleStartTracker bundleStartTracker = new BundleStartTracker(new SyncTaskExecutor());
+        bundleStartTracker.initialize(bundleContext);
+        
+        UnitTestSignal signal = new UnitTestSignal();
+        bundleStartTracker.trackStart(bundle, signal);
+        
+        List<BundleListener> bundleListeners = bundleContext.getBundleListeners();
+        for(BundleListener listener : bundleListeners){
+        	listener.bundleChanged(new BundleEvent(BundleEvent.LAZY_ACTIVATION, bundle));
+        }
+        for(BundleListener listener : bundleListeners){
+        	listener.bundleChanged(new BundleEvent(BundleEvent.STOPPED, bundle));
+        }
         
         assertEquals(1, signal.successCount);
         assertEquals(0, signal.failures.size());
