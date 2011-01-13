@@ -200,23 +200,6 @@ final class StandardBundleDriver implements BundleDriver {
         }
     }
 
-    public boolean asyncStart(Signal signal) {
-        Bundle bundle = obtainLocalBundle();
-
-        if (!BundleUtils.isFragmentBundle(bundle)) {
-            pushThreadContext();
-            try {
-                this.bundleStarter.start(obtainLocalBundle(), signal);
-            } catch (BundleException be) {
-                // ignore - the bundle starter will have already notified the signal
-            } finally {
-                popThreadContext();
-            }
-        } else
-            signalSuccessfulCompletion(signal);
-        return true;
-    }
-
     private Bundle obtainLocalBundle() {
         synchronized (this.monitor) {
             if (this.bundle == null) {
