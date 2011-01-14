@@ -12,7 +12,7 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -78,7 +78,7 @@ final class ConfigInstallArtifact extends AbstractInstallArtifact {
      * {@inheritDoc}
      */
     @Override
-    protected final void doStart(Signal signal) throws DeploymentException {
+    protected final void doStart(AbortableSignal signal) throws DeploymentException {
         try {
             this.startEngine.start(getIdentity(), getArtifactFS());
             signalSuccessfulCompletion(signal);

@@ -92,6 +92,12 @@ final class StubInstallArtifactLifecycleListener implements InstallArtifactLifec
     /**
      * {@inheritDoc}
      */
+    public void onStartAborted(InstallArtifact installArtifact) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void onStarted(InstallArtifact installArtifact) {
         this.startedCount.incrementAndGet();
     }

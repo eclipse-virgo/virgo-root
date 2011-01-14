@@ -12,25 +12,16 @@
 package org.eclipse.virgo.kernel.core.internal;
 
 import java.lang.management.ManagementFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 import org.eclipse.virgo.kernel.config.internal.KernelConfiguration;
-import org.eclipse.virgo.kernel.core.BlockingSignal;
+import org.eclipse.virgo.kernel.core.BlockingAbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleUtils;
 import org.eclipse.virgo.kernel.core.FailureSignalledException;
 import org.eclipse.virgo.kernel.core.FatalKernelException;
@@ -38,6 +29,13 @@ import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>StartupTracker</code> tracks the startup of the Kernel and produces event log entries, and
@@ -60,8 +58,10 @@ final class StartupTracker {
     private static final String KERNEL_EVENT_STARTING = KERNEL_EVENT_TOPIC + "STARTING";
 
     private static final String KERNEL_EVENT_STARTED = KERNEL_EVENT_TOPIC + "STARTED";
-    
+
     private static final String KERNEL_EVENT_START_TIMED_OUT = KERNEL_EVENT_TOPIC + "START_TIMED_OUT";
+    
+    private static final String KERNEL_EVENT_START_ABORTED = KERNEL_EVENT_TOPIC + "START_ABORTED";
     
     private static final String KERNEL_EVENT_START_FAILED = KERNEL_EVENT_TOPIC + "START_FAILED";
     
@@ -153,15 +153,20 @@ final class StartupTracker {
                 try {
                     for (Bundle bundle : bundles) {
                     	if (!BundleUtils.isFragmentBundle(bundle) && isKernelBundle(bundle)) {
-                            BlockingSignal signal = new BlockingSignal();
+                            BlockingAbortableSignal signal = new BlockingAbortableSignal();
                             
                             this.asyncBundleStartTracker.trackStart(bundle, signal);
                             
                             LOGGER.debug("Awaiting signal {} for up to {} seconds", signal, this.startupWaitTime);
                             
                             if (!signal.awaitCompletion(this.startupWaitTime, TimeUnit.SECONDS)) {
-                            	LOGGER.error("Bundle {} did not start within {} seconds.", bundle, this.startupWaitTime);
-                                kernelStartTimedOut();
+                            	if(signal.isAborted()){
+                                	LOGGER.error("Bundle {} aborted before the timeout of {} seconds.", bundle, this.startupWaitTime);
+                                    kernelStartAborted(bundle);
+                            	} else {
+                                	LOGGER.error("Bundle {} did not start within {} seconds.", bundle, this.startupWaitTime);
+                                    kernelStartTimedOut();
+                            	}
                                 return;
                             }
                     	}
@@ -214,6 +219,12 @@ final class StartupTracker {
             this.kernelStatus.setStarted();
             postEvent(KERNEL_EVENT_STARTED);
             logEvent(KernelLogEvents.KERNEL_STARTED);
+        }
+        
+        private void kernelStartAborted(Bundle bundle) {
+            postEvent(KERNEL_EVENT_START_ABORTED);
+            logEvent(KernelLogEvents.KERNEL_EVENT_START_ABORTED, bundle.getSymbolicName(), bundle.getVersion());
+            generateDumpAndShutdown("startupTimedOut", null);
         }
         
         private void kernelStartTimedOut() {

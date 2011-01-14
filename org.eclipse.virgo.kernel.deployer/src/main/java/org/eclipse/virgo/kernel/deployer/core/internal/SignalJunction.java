@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +38,15 @@ public final class SignalJunction {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SignalJunction.class);
 
-    private final Signal signal;
+    private final AbortableSignal signal;
 
-    private final List<Signal> subSignals;
+    private final List<AbortableSignal> subSignals;
 
     private final AtomicInteger incompleteCount;
-    
+
     private final AtomicBoolean failureSignalled = new AtomicBoolean(false);
+    
+    private final AtomicBoolean abortionSignalled = new AtomicBoolean(false);
 
     /**
      * Constructs a {@link SignalJunction} of the given size for the given signal.
@@ -52,9 +54,9 @@ public final class SignalJunction {
      * @param signal the signal to be controlled
      * @param size the number of signals in the collection
      */
-    public SignalJunction(Signal signal, int size) {
+    public SignalJunction(AbortableSignal signal, int size) {
         this.signal = signal;
-        List<Signal> s = new ArrayList<Signal>();
+        List<AbortableSignal> s = new ArrayList<AbortableSignal>();
         for (int i = 0; i < size; i++) {
             s.add(new SubSignal());
         }
@@ -72,10 +74,18 @@ public final class SignalJunction {
      * 
      * @return an unmodifiable {@link Set} of signals in the collection
      */
-    public List<Signal> getSignals() {
+    public List<AbortableSignal> getSignals() {
         return this.subSignals;
     }
-
+    
+    public boolean failed() {
+        return this.failureSignalled.get();
+    }
+    
+    public boolean aborted() {
+        return this.abortionSignalled.get();
+    }
+    
     private void subSignalFailed(Throwable cause) {
         // Ensure the incomplete count is zero.
         int i = SignalJunction.this.incompleteCount.get();
@@ -95,9 +105,25 @@ public final class SignalJunction {
             }
         }
     }
-    
-    public boolean failed() {
-        return this.failureSignalled.get();
+
+    private void subSignalAborted() {
+        // Ensure the incomplete count is zero.
+        int i = SignalJunction.this.incompleteCount.get();
+        
+        LOGGER.debug("SubSignal aborted. {} has {} incomplete signals", this, i);
+        
+        while (i > 0 && !SignalJunction.this.incompleteCount.compareAndSet(i, 0)) {
+            i = SignalJunction.this.incompleteCount.get();
+        }
+
+        // If this invocation took the count to zero, drive failure.
+        if (i > 0) {
+            if (SignalJunction.this.signal != null) {
+            	LOGGER.debug("{} signalling aborted", this);
+                SignalJunction.this.signal.signalAborted();
+                this.abortionSignalled.set(true);
+            }
+        }
     }
 
     private void subSignalSucceeded() {
@@ -119,7 +145,7 @@ public final class SignalJunction {
      * {@link SubSignal} is a signal that reports completion to its {@link SignalJunction} once and only once.
      * 
      */
-    private class SubSignal implements Signal {
+    private class SubSignal implements AbortableSignal {
 
         private final AtomicBoolean complete = new AtomicBoolean(false);
 
@@ -136,5 +162,12 @@ public final class SignalJunction {
                 subSignalSucceeded();
             }
         }
+
+		public void signalAborted() {
+            if (this.complete.compareAndSet(false, true)) {
+            	LOGGER.debug("SubSignal {} signalling abortion", this);
+                subSignalAborted();
+            }
+		}
     }
 }

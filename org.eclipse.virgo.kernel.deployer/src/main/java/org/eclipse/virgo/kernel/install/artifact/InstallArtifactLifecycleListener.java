@@ -111,6 +111,14 @@ public interface InstallArtifactLifecycleListener {
     void onStartFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException;
 
     /**
+     * Notification that the given {@link InstallArtifact} aborted while starting.
+     * 
+     * @param installArtifact the <code>InstallArtifact</code> that aborted
+     * @throws DeploymentException if the listener failed to handle the event
+     */
+    void onStartAborted(InstallArtifact installArtifact) throws DeploymentException;
+
+    /**
      * Notification that the given {@link InstallArtifact} has started.
      * 
      * <p/>

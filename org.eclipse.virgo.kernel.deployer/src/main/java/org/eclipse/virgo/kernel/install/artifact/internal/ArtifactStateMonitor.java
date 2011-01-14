@@ -197,6 +197,17 @@ public class ArtifactStateMonitor {
         }
     }
 
+    public void onStartAborted(InstallArtifact installArtifact) throws DeploymentException {
+        List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+        try {
+            for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                listener.onStartAborted(installArtifact);
+            }
+        } finally {
+            ungetListeners(listenerHolders);
+        }
+    }
+
     public void onStarted(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setActive()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
