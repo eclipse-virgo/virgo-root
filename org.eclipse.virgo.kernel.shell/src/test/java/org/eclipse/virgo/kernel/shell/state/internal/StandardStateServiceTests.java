@@ -18,20 +18,16 @@ import static org.junit.Assert.assertNull;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Bundle;
-
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
-import org.eclipse.virgo.kernel.shell.state.internal.StandardStateService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFrameworkFactory;
-
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>
