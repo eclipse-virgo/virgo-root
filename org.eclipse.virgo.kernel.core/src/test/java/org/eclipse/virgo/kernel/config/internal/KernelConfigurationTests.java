@@ -18,7 +18,6 @@ import java.io.File;
 
 import org.junit.Test;
 
-import org.eclipse.virgo.kernel.config.internal.KernelConfiguration;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 
 
@@ -37,6 +36,7 @@ public class KernelConfigurationTests {
         assertNotNull(configuration.getConfigDirectories());
         assertEquals(1, configuration.getConfigDirectories().length);
         assertNotNull(configuration.getDomain());
+        assertNotNull(configuration.getStartupWaitLimit());
     }
     
     @Test
@@ -45,6 +45,7 @@ public class KernelConfigurationTests {
         context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "target");
         context.addProperty(KernelConfiguration.PROPERTY_KERNEL_DOMAIN, "my.domain");
         context.addProperty(KernelConfiguration.PROPERTY_KERNEL_CONFIG, "foo,bar");
+        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_STARTUP_WAIT_LIMIT, "60");
         
         KernelConfiguration configuration = new KernelConfiguration(context);
         assertEquals(new File("target"), configuration.getHomeDirectory());
@@ -52,6 +53,7 @@ public class KernelConfigurationTests {
         assertNotNull(configuration.getConfigDirectories());
         assertEquals(2, configuration.getConfigDirectories().length);
         assertEquals("my.domain", configuration.getDomain());
+        assertEquals(60, configuration.getStartupWaitLimit());
     }
     
     @Test(expected=IllegalStateException.class)

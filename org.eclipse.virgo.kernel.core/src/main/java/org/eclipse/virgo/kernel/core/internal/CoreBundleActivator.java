@@ -69,8 +69,6 @@ public class CoreBundleActivator implements BundleActivator {
 
     private static final String MBEAN_KEY_TYPE = "type";
     
-    private static final int STARTUP_WAIT_LIMIT = 3600; // one hour
-
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
     private final ConfigurationInitialiser configurationInitialiser = new ConfigurationInitialiser();
@@ -99,7 +97,7 @@ public class CoreBundleActivator implements BundleActivator {
         
         DumpGenerator dumpGenerator = getRequiredService(context, DumpGenerator.class);
         
-        this.startupTracker = new StartupTracker(context, configuration, STARTUP_WAIT_LIMIT, bundleStartTracker, shutdown, dumpGenerator);
+        this.startupTracker = new StartupTracker(context, configuration, configuration.getStartupWaitLimit(), bundleStartTracker, shutdown, dumpGenerator);
         this.startupTracker.start();
         
         initShimServices(context, eventLogger);
