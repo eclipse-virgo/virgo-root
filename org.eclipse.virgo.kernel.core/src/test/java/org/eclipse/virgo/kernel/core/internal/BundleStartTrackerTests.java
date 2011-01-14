@@ -27,7 +27,7 @@ import org.osgi.framework.BundleListener;
 import org.osgi.service.event.Event;
 import org.springframework.core.task.SyncTaskExecutor;
 
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.internal.BundleStartTracker;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
@@ -52,6 +52,7 @@ public class BundleStartTrackerTests {
         bundle.start();
         
         assertEquals(1, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
         
         assertEquals(Bundle.ACTIVE, bundle.getState());
@@ -81,6 +82,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.handleEvent(new Event("org/osgi/service/blueprint/container/CREATED", properties));
         
         assertEquals(1, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
     }
     
@@ -101,11 +103,17 @@ public class BundleStartTrackerTests {
         for(BundleListener listener : bundleListeners){
         	listener.bundleChanged(new BundleEvent(BundleEvent.LAZY_ACTIVATION, bundle));
         }
+        
+        assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
+        assertEquals(0, signal.failures.size());
+        
         for(BundleListener listener : bundleListeners){
         	listener.bundleChanged(new BundleEvent(BundleEvent.STOPPED, bundle));
         }
-        
-        assertEquals(1, signal.successCount);
+
+        assertEquals(0, signal.successCount);
+        assertEquals(1, signal.abortCount);
         assertEquals(0, signal.failures.size());
     }
     
@@ -123,6 +131,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
         
         bundle.start();
@@ -135,6 +144,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.handleEvent(new Event("org/osgi/service/blueprint/container/FAILURE", properties));
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(1, signal.failures.size());
         
         assertTrue(signal.failures.contains(failure));
@@ -159,6 +169,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(1, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
     }
     
@@ -183,6 +194,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(1, signal.failures.size());
         assertTrue(signal.failures.contains(failure));       
     }
@@ -201,6 +213,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
         
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
@@ -211,6 +224,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.handleEvent(new Event("org/osgi/service/blueprint/container/CREATED", properties));
         
         assertEquals(1, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
     }
     
@@ -228,6 +242,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
         
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
@@ -240,6 +255,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.handleEvent(new Event("org/osgi/service/blueprint/container/FAILURE", properties));
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(1, signal.failures.size());
         
         assertTrue(signal.failures.contains(failure));
@@ -267,6 +283,7 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
     }
     
@@ -293,14 +310,16 @@ public class BundleStartTrackerTests {
         bundleStartTracker.trackStart(bundle, signal);
         
         assertEquals(0, signal.successCount);
+        assertEquals(0, signal.abortCount);
         assertEquals(0, signal.failures.size());
     }
     
-    private static final class UnitTestSignal implements Signal {
+    private static final class UnitTestSignal implements AbortableSignal {
         
         private final List<Throwable> failures = new ArrayList<Throwable>();
-        
+
         private int successCount = 0;
+        private int abortCount = 0;
                 
         /** 
          * {@inheritDoc}
@@ -314,6 +333,13 @@ public class BundleStartTrackerTests {
          */
         public void signalSuccessfulCompletion() {
             successCount++;            
-        }        
+        }
+
+        /** 
+         * {@inheritDoc}
+         */
+		public void signalAborted() {
+			abortCount++;
+		}        
     }
 }

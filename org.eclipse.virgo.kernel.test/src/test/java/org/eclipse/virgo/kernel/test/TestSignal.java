@@ -19,10 +19,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 
-
-public final class TestSignal implements Signal {
+public final class TestSignal implements AbortableSignal {
     
     private final AtomicReference<Throwable> causeReference = new AtomicReference<Throwable>(null);
     
@@ -34,7 +33,6 @@ public final class TestSignal implements Signal {
     public void signalFailure(Throwable cause) {
         causeReference.set(cause);
         completionLatch.countDown();
-        
     }
 
     /** 
@@ -43,6 +41,10 @@ public final class TestSignal implements Signal {
     public void signalSuccessfulCompletion() {
         completionLatch.countDown();
     }
+
+	public void signalAborted() {
+        completionLatch.countDown();
+	}  
     
     public void assertSuccessfulCompletionSignalled(long msTimeout) throws InterruptedException {
         assertTrue(completionLatch.await(msTimeout, TimeUnit.MILLISECONDS));
@@ -52,5 +54,10 @@ public final class TestSignal implements Signal {
     public void assertFailureSignalled(long msTimeout) throws InterruptedException {
         assertTrue(completionLatch.await(msTimeout, TimeUnit.MILLISECONDS));
         assertNotNull(causeReference.get());
-    }        
+    }
+
+	public void assertsignalAborted(long msTimeout) throws InterruptedException {
+        assertTrue(completionLatch.await(msTimeout, TimeUnit.MILLISECONDS));
+        assertNull(causeReference.get());
+	}      
 }

@@ -70,6 +70,12 @@ public abstract class InstallArtifactLifecycleListenerSupport implements Install
     /**
      * {@inheritDoc}
      */
+    public void onStartAborted(InstallArtifact installArtifact) throws DeploymentException {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void onStarted(InstallArtifact installArtifact) throws DeploymentException {
     }
 

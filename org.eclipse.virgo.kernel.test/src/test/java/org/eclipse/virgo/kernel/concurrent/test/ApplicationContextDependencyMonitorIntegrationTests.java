@@ -22,22 +22,20 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
-
+import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
 import org.eclipse.virgo.kernel.test.ManifestUtils;
-
-import org.eclipse.virgo.kernel.core.BundleStarter;
-import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.junit.Assert;
+import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
 
 /**
  */
@@ -60,7 +58,7 @@ public class ApplicationContextDependencyMonitorIntegrationTests extends Abstrac
         
         final CountDownLatch latch = new CountDownLatch(1);
         
-        bundleStarter.start(quickConsumer, new Signal() {
+        bundleStarter.start(quickConsumer, new AbortableSignal() {
             public void signalFailure(Throwable cause) {
                 cause.printStackTrace();
             }
@@ -68,6 +66,10 @@ public class ApplicationContextDependencyMonitorIntegrationTests extends Abstrac
             public void signalSuccessfulCompletion() {
                 latch.countDown();
             }
+
+			public void signalAborted() {
+				new RuntimeException("Start aborted").printStackTrace();
+			}
         });
                        
         assertTrue(latch.await(20, TimeUnit.SECONDS));

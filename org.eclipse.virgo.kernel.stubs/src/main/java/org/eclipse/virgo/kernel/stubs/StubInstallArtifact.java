@@ -17,16 +17,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
 import org.eclipse.virgo.util.common.Tree;
+import org.osgi.framework.Version;
 
 public class StubInstallArtifact implements InstallArtifact {
 
@@ -142,7 +140,7 @@ public class StubInstallArtifact implements InstallArtifact {
         start(null);
     }
 
-    public void start(Signal signal) throws DeploymentException {
+    public void start(AbortableSignal signal) throws DeploymentException {
         if (signal != null) {
             signal.signalSuccessfulCompletion();
         }

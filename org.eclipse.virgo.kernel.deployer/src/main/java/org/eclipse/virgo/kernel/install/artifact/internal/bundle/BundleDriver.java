@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 import org.osgi.framework.Bundle;
 
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactState;
@@ -52,10 +53,10 @@ public interface BundleDriver {
      * Note: this method behaves as specified above when called multiple times on the same <code>InstallArtifact</code>
      * with any combination of the same or distinct or <code>null</code> <code>Signals</code>.
      * 
-     * @param signal a <code>Signal</code> that is ready to be driven or <code>null</code> if no signalling is required
+     * @param signal an <code>AbortableSignal</code> that is ready to be driven or <code>null</code> if no signalling is required
      * @throws DeploymentException 
      */
-    void start(Signal signal) throws DeploymentException;
+    void start(AbortableSignal signal) throws DeploymentException;
     
     /**
      * Updates the bundle associated with this {@link BundleDriver} using the given {@link BundleManifest} which
@@ -100,6 +101,6 @@ public interface BundleDriver {
      */
     void popThreadContext();
 
-    void trackStart(Signal signal);
+    void trackStart(AbortableSignal signal);
 
 }

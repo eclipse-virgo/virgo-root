@@ -18,19 +18,16 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
-
-
-import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.core.Signal;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
-import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
-import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
-import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 
 /**
  */
@@ -94,7 +91,7 @@ public class AbstractInstallArtifactTests {
         }
 
         @Override
-        protected void doStart(Signal signal) throws DeploymentException {
+        protected void doStart(AbortableSignal signal) throws DeploymentException {
             throw new UnsupportedOperationException();
         }
 

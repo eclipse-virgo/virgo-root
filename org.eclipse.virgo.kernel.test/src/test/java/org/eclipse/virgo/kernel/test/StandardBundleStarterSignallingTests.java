@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
-import org.eclipse.virgo.kernel.core.Signal;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -269,15 +269,16 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         return this.context.installBundle(bundleFile.toURI().toString());               
     }
     
-    private static class TestSignal implements Signal {
-        
+    private static class TestSignal implements AbortableSignal {
+
         private volatile boolean complete = false;
+        
+        private volatile boolean aborted = false;
         
         private volatile Throwable cause = null;
 
         public void signalSuccessfulCompletion() {
             this.complete = true;
-            
         }
 
         public void signalFailure(Throwable t) {
@@ -285,8 +286,17 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
             this.cause = t;
         }
         
+		public void signalAborted() {
+            this.complete = true;
+            this.aborted = true;
+		}
+        
         public boolean isComplete() {
             return this.complete;
+        }
+        
+        public boolean isAborted() {
+            return this.aborted;
         }
         
         public Throwable getCause() {

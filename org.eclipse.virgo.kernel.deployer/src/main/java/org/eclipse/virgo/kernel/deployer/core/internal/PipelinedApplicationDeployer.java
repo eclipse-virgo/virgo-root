@@ -281,13 +281,14 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     }
 
     private void start(InstallArtifact installArtifact, boolean synchronous) throws DeploymentException {
-        BlockingSignal blockingSignal = new BlockingSignal(synchronous);
+        BlockingAbortableSignal blockingSignal = new BlockingAbortableSignal(synchronous);
         installArtifact.start(blockingSignal);
         if (synchronous && this.deployerConfiguredTimeoutInSeconds > 0) {
             boolean complete = blockingSignal.awaitCompletion(this.deployerConfiguredTimeoutInSeconds);
-            if (!complete) {
-                this.eventLogger.log(DeployerLogEvents.START_TIMED_OUT, installArtifact.getType(), installArtifact.getName(),
-                    installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
+            if(blockingSignal.isAborted()){
+                this.eventLogger.log(DeployerLogEvents.START_ABORTED, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
+            } else if (!complete) {
+                this.eventLogger.log(DeployerLogEvents.START_TIMED_OUT, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion());
             }
         } else {
             // Completion messages will have been issued if complete, so ignore return value.

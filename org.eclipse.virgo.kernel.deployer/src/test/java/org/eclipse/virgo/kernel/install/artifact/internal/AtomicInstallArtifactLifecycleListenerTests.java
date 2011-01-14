@@ -18,19 +18,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-import org.osgi.framework.Version;
-
-
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.internal.AtomicInstallArtifactLifecycleListener;
 import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
 import org.eclipse.virgo.util.common.Tree;
+import org.junit.Test;
+import org.osgi.framework.Version;
 
 public class AtomicInstallArtifactLifecycleListenerTests {
 
@@ -305,7 +302,7 @@ public class AtomicInstallArtifactLifecycleListenerTests {
             start(null);
         }
 
-        public void start(Signal signal) throws DeploymentException {
+        public void start(AbortableSignal signal) throws DeploymentException {
             this.startCalled = true;
         }
 

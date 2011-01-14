@@ -17,17 +17,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.kernel.core.BlockingSignal;
+import org.eclipse.virgo.kernel.core.BlockingAbortableSignal;
 import org.eclipse.virgo.kernel.core.FailureSignalledException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.osgi.framework.BundleContext;
-
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.osgi.framework.BundleContext;
 
 /**
  * Implementation of {@link Artifact} that delegates to a Kernel {@link InstallArtifact}
@@ -59,11 +58,15 @@ class DeployerArtifact extends AbstractArtifact {
      */
     public final void start() {
         try {
-            BlockingSignal signal = new BlockingSignal();
+            BlockingAbortableSignal signal = new BlockingAbortableSignal();
             this.installArtifact.start(signal);
             try {
                 if (!signal.awaitCompletion(5, TimeUnit.MINUTES)) {
-                    throw new RuntimeException("Started failed");
+                	if(signal.isAborted()){
+                		throw new RuntimeException("Started aborted");
+                	} else {
+                		throw new RuntimeException("Started failed");
+                	}
                 }
             } catch (FailureSignalledException fse) {
                 throw new RuntimeException(fse.getCause());
