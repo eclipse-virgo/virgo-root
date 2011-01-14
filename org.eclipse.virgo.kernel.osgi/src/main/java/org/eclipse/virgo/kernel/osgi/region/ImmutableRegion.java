@@ -13,8 +13,12 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import java.io.InputStream;
+
 import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * TODO Document ImmutableRegion
@@ -83,6 +87,26 @@ public class ImmutableRegion implements Region {
         } else if (!name.equals(other.name))
             return false;
         return true;
+    }
+
+    @Override
+    public void addBundle(Bundle bundle) throws BundleException {
+       throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Bundle installBundle(String location, InputStream input) throws BundleException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Bundle installBundle(String location) throws BundleException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void connectRegion(Region targetRegion, RegionFilter filter) throws BundleException {
+        throw new UnsupportedOperationException();
     }
 
 }

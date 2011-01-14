@@ -13,7 +13,6 @@ package org.eclipse.virgo.kernel.osgi.region;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
@@ -33,7 +32,6 @@ import org.junit.Test;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 public class RegionManagerTests {

@@ -27,7 +27,7 @@ import org.osgi.framework.Bundle;
 public interface RegionMembership {
 
     /**
-     * Gets the region to which the specified bundle belongs. If there is no such unique regions, throws
+     * Gets the region to which the specified bundle belongs. If there is no such unique region, throws
      * {@link RegionSpanningException}.
      * 
      * @param bundle the bundle whose region is to be gotten
@@ -37,7 +37,7 @@ public interface RegionMembership {
     Region getRegion(Bundle bundle) throws IndeterminateRegionException;
 
     /**
-     * Gets the region to which the bundle with the specified bundle id belongs. If there is no such unique regions,
+     * Gets the region to which the bundle with the specified bundle id belongs. If there is no such unique region,
      * throws {@link RegionSpanningException}.
      * 
      * @param bundleId the if of the bundle whose region is to be gotten

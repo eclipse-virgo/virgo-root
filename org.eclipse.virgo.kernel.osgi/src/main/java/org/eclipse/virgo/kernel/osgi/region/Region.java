@@ -11,12 +11,18 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import java.io.InputStream;
+
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
- * A region is a subset of an OSGi framework. Regions are isolated from each other from the perspective of package and
- * service wiring except by explicitly shared packages and services that are defined when the region is created. However
- * a bundle running in a region is not protected from discovering bundles in other regions, e.g. by following wires.
+ * A <i>region</i> is a subset of the bundles of an OSGi framework. A regions is "weakly" isolated from other regions
+ * except that is has full visibility of certain (subject to a {@link RegionFilter}) bundles, packages, and services
+ * from other regions to which it is connected. However a bundle running in a region is not protected from discovering
+ * bundles in other regions, e.g. by following wires using Wire Admin or similar services, so this is why regions are
+ * only weakly isolated from each other.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -27,21 +33,92 @@ import org.osgi.framework.BundleContext;
 public interface Region {
 
     /**
-     * @return the name of the region
+     * Returns the name of the region.
+     * 
+     * @return the region name
      */
     String getName();
 
     /**
-     * Returns a {@link BundleContext} that can be used to access the encapsulated OSGi framework.
+     * Associates a given bundle, which has therefore already been installed, with this region.
+     * <p>
+     * This method is typically used to associate the system bundle with a region. Note that the system bundle is not
+     * treated specially and in order to be fully visible in a region, it must either be associated with the region or
+     * imported from another region via a connection.
+     * <p>
+     * If the bundle is already associated with another region, throws BundleException with exception type
+     * INVALID_OPERATION.
+     * <p>
+     * If the bundle has the same bundle symbolic name and version as a bundle already present in the region or as a
+     * bundle import specified on a connection to another region, then BundleException with exception type
+     * DUPLICATE_BUNDLE_ERROR is thrown.
+     * 
+     * @param bundle the bundle to be associated with this region
+     * @throws BundleException if the bundle cannot be associated with the region
+     */
+    void addBundle(Bundle bundle) throws BundleException;
+
+    /**
+     * Installs a bundle and associates the bundle with this region. The bundle's location will have the region name
+     * prepended to the given location to ensure the location is unique across regions.
+     * <p>
+     * If the bundle has the same bundle symbolic name and version as a bundle already present in the region or as a
+     * bundle import specified on a connection to another region, then BundleException with exception type
+     * DUPLICATE_BUNDLE_ERROR is thrown.
+     * 
+     * @param location the bundle location string
+     * @param input a stream of the bundle's contents or <code>null</code>
+     * @return the installed Bundle
+     * @throws BundleException if the install fails
+     * @see BundleContext#installBundle(String, InputStream)
+     */
+    Bundle installBundle(String location, InputStream input) throws BundleException;
+
+    /**
+     * Installs a bundle and associates the bundle with this region. The bundle's location will have the region name
+     * prepended to the given location to ensure the location is unique across regions.
+     * <p>
+     * If the bundle has the same bundle symbolic name and version as a bundle already present in the region or as a
+     * bundle import specified on a connection to another region, then BundleException with exception type
+     * DUPLICATE_BUNDLE_ERROR is thrown.
+     * 
+     * 
+     * @param location the bundle location string
+     * @return the installed Bundle
+     * @throws BundleException if the install fails
+     * @see BundleContext#installBundle(String)
+     */
+    Bundle installBundle(String location) throws BundleException;
+
+    /**
+     * Connects this region to the given target region and associates the given {@link RegionFilter} with the
+     * connection. This region may then see bundles, packages, and services from the target region under the control of
+     * the region filter.
+     * <p>
+     * If the filter allows the same bundle symbolic name and version as a bundle already present in this region or a
+     * filter connecting this region to a region other than the target region, then BundleException with exception type
+     * DUPLICATE_BUNDLE_ERROR is thrown.
+     * 
+     * @param targetRegion the region to connect this region to
+     * @param filter a {@link RegionFilter} which controls what is visible across the connection
+     * @throws BundleException
+     */
+    void connectRegion(Region targetRegion, RegionFilter filter) throws BundleException;
+
+    /**
+     * Returns a {@link BundleContext} that can be used to access the contents of the region.
      * 
      * @return a <code>BundleContext</code>
+     * @deprecated This method should not appear on the API as it is hard to guarantee the availability of a suitable
+     *             bundle context
      */
     BundleContext getBundleContext();
-    
+
     /**
      * Returns the {@link RegionPackageImportPolicy} associated with this region.
      * 
      * @return the {@link RegionPackageImportPolicy} of this region
+     * @deprecated This method should not appear on the API as filters are attributes of connections between regions
      */
     RegionPackageImportPolicy getRegionPackageImportPolicy();
 
