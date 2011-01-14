@@ -19,6 +19,7 @@
 	<dependencies>
 <!-- RUNTIME -->
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.virgo.repository" name="org.eclipse.virgo.repository" rev="${org.eclipse.virgo.repository}" conf="compile->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="compile->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="latest.integration" conf="compile->compile"/>
