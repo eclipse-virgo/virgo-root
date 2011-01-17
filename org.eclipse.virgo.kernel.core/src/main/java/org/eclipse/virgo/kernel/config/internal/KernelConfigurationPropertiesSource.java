@@ -36,6 +36,8 @@ final class KernelConfigurationPropertiesSource implements PropertiesSource {
 
     static final String KERNEL_CONFIGURATION_PID = "org.eclipse.virgo.kernel";
 
+    static final String PROPERTY_KERNEL_STARTUP_WAIT_LIMIT = "org.eclipse.virgo.kernel.startup.wait.limit";
+
     private final KernelConfiguration kernelConfiguration;
 
     public KernelConfigurationPropertiesSource(KernelConfiguration kernelConfiguration) {
@@ -54,6 +56,7 @@ final class KernelConfigurationPropertiesSource implements PropertiesSource {
         properties.put(PROPERTY_DOMAIN, this.kernelConfiguration.getDomain());
         properties.put(PROPERTY_HOME_DIRECTORY, this.kernelConfiguration.getHomeDirectory().getAbsolutePath());
         properties.put(PROPERTY_WORK_DIRECTORY, this.kernelConfiguration.getWorkDirectory().getAbsolutePath());
+        properties.put(PROPERTY_KERNEL_STARTUP_WAIT_LIMIT, Integer.toString(this.kernelConfiguration.getStartupWaitLimit()));
         return properties;
     }
 
