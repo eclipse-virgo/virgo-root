@@ -160,9 +160,7 @@ final class StartupTracker {
 
                             this.asyncBundleStartTracker.trackStart(bundle, signal);
 
-                            if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("Awaiting startup of bundle {} for up to {} milliseconds with signal {}.", new Object[]{bundle, waitTime, signal});
-                            }
+                            LOGGER.debug("Awaiting startup of bundle {} for up to {} milliseconds with signal {}.", new Object[]{bundle, waitTime, signal});
 
                             long startTime = System.currentTimeMillis();
                             boolean bundleStarted = signal.awaitCompletion(waitTime, TimeUnit.MILLISECONDS);
@@ -170,7 +168,7 @@ final class StartupTracker {
 
                             if (!bundleStarted) {
                                 if(signal.isAborted()){
-                                    LOGGER.error("Bundle {} aborted before the Kernel timeout of {} seconds with {} seconds remaining.", bundle, this.startupWaitTime, TimeUnit.MILLISECONDS.toSeconds(waitTime));
+                                    LOGGER.error("Bundle {} aborted before the Kernel timeout of {} seconds with {} seconds remaining.", new Object[]{bundle, this.startupWaitTime, TimeUnit.MILLISECONDS.toSeconds(waitTime)});
                                     kernelStartAborted(bundle);
                                 } else if (waitTime <= 0) {
                                     LOGGER.error("Kernel has failed to start before the timeout of {} seconds.", this.startupWaitTime);
