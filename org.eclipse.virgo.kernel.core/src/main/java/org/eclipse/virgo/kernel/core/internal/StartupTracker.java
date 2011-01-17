@@ -151,20 +151,27 @@ final class StartupTracker {
                 Bundle[] bundles = this.context.getBundles();
                 
                 try {
+                    long waitTime = TimeUnit.SECONDS.toMillis(this.startupWaitTime);
+
                     for (Bundle bundle : bundles) {
-                    	if (!BundleUtils.isFragmentBundle(bundle) && isKernelBundle(bundle)) {
+                        if (!BundleUtils.isFragmentBundle(bundle) && isKernelBundle(bundle)) {
                             BlockingSignal signal = new BlockingSignal();
-                            
+
                             this.asyncBundleStartTracker.trackStart(bundle, signal);
-                            
-                            LOGGER.debug("Awaiting signal {} for up to {} seconds", signal, this.startupWaitTime);
-                            
-                            if (!signal.awaitCompletion(this.startupWaitTime, TimeUnit.SECONDS)) {
-                            	LOGGER.error("Bundle {} did not start within {} seconds.", bundle, this.startupWaitTime);
+
+                            if (LOGGER.isDebugEnabled()) {
+                                LOGGER.debug("Awaiting startup of bundle {} for up to {} milliseconds with signal {}.", new Object[]{bundle, waitTime, signal});
+                            }
+
+                            long startTime = System.currentTimeMillis();
+                            boolean bundleStarted = signal.awaitCompletion(waitTime, TimeUnit.MILLISECONDS);
+                            waitTime -= System.currentTimeMillis() - startTime;
+
+                            if (!bundleStarted || waitTime <= 0) {
                                 kernelStartTimedOut();
                                 return;
                             }
-                    	}
+                        }
                     }
                 } catch (FailureSignalledException fse) {
                     kernelStartFailed(fse.getCause());

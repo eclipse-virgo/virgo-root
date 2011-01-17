@@ -16,8 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class KernelConfiguration {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     static final String PROPERTY_KERNEL_CONFIG = "org.eclipse.virgo.kernel.config";
 
@@ -25,11 +29,15 @@ public final class KernelConfiguration {
 
     static final String PROPERTY_KERNEL_DOMAIN = "org.eclipse.virgo.kernel.domain";
 
+    static final String PROPERTY_KERNEL_STARTUP_WAIT_LIMIT = "org.eclipse.virgo.kernel.startup.wait.limit";
+
     private static final String DEFAULT_WORK_DIRECTORY_NAME = "work";
 
     private static final String DEFAULT_CONFIG_DIRECTORY_NAME = "config";
 
     private static final String DEFAULT_KERNEL_DOMAIN = "org.eclipse.virgo.kernel";
+
+    private static final int DEFAULT_STARTUP_WAIT_LIMIT = 180; // 3 minutes
 
     private final File homeDirectory;
 
@@ -39,11 +47,14 @@ public final class KernelConfiguration {
 
     private final String domain;
 
+    private final int startupWaitLimit;
+
     public KernelConfiguration(BundleContext context) {
         this.homeDirectory = readHomeDirectory(context);
         this.configDirectories = readConfigDirectories(context);
         this.workDirectory = new File(this.homeDirectory, DEFAULT_WORK_DIRECTORY_NAME);
         this.domain = readDomain(context);
+        this.startupWaitLimit = readBundleStartupWaitLimit(context);
     }
 
     public File getHomeDirectory() {
@@ -60,6 +71,10 @@ public final class KernelConfiguration {
 
     public String getDomain() {
         return domain;
+    }
+
+    public int getStartupWaitLimit() {
+        return startupWaitLimit;
     }
 
     private static File readHomeDirectory(BundleContext context) {
@@ -105,6 +120,21 @@ public final class KernelConfiguration {
         return kernelDomainProperty;
     }
 
+    private int readBundleStartupWaitLimit(BundleContext context) {
+        String waitLimitProperty = readFrameworkProperty(PROPERTY_KERNEL_STARTUP_WAIT_LIMIT, context);
+        if (!hasText(waitLimitProperty)) {
+          return DEFAULT_STARTUP_WAIT_LIMIT;
+        }
+
+        try {
+            return Integer.parseInt(waitLimitProperty);
+        } catch (NumberFormatException e) {
+            LOGGER.warn("Could not parse property {} with value '{}'. Using default limit {} seconds",
+                        new Object[]{PROPERTY_KERNEL_STARTUP_WAIT_LIMIT, waitLimitProperty, DEFAULT_STARTUP_WAIT_LIMIT});
+            return DEFAULT_STARTUP_WAIT_LIMIT;
+        }
+    }
+
     private static String readFrameworkProperty(String propertyKey, BundleContext context) {
         return context.getProperty(propertyKey);
     }
@@ -112,5 +142,4 @@ public final class KernelConfiguration {
     private static boolean hasText(String string) {
         return (string != null && !string.trim().isEmpty());
     }
-
 }
