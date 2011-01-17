@@ -67,11 +67,6 @@ abstract class RegionServiceHookBase extends RegionHookBase {
     private static boolean servicePresent(Set<String> serviceClasses, ServiceReference<?> serviceReference) {
         String[] serviceClassNames = (String[]) serviceReference.getProperty(SERVICE_CLASS_NAME_PROPERTY);
         for (String serviceClassName : serviceClassNames) {
-            if ("org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil".equals(serviceClassName)) {
-                System.out.println("DEBUG 1");
-            } else if ("org.springframework.osgi.context.event.OsgiBundleApplicationContextListener".equals(serviceClassName)) {
-                System.out.println("DEBUG 2");
-            }
             if (serviceClasses.contains(serviceClassName)) {
                 return true;
             }
