@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.StubInstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
-import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
+import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateMonitor;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 
 /**
@@ -35,7 +35,7 @@ public class ArtifactStateMonitorTests {
     @Before
     public void setUp() {
         this.bundleContext = new StubBundleContext();
-        this.asm = new ArtifactStateMonitor(this.bundleContext);
+        this.asm = new StandardArtifactStateMonitor(this.bundleContext);
         this.listener = new StubInstallArtifactLifecycleListener();
         this.bundleContext.registerService(InstallArtifactLifecycleListener.class.getName(), this.listener, null);
     }

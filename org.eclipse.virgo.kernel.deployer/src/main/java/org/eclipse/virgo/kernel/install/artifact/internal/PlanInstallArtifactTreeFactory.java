@@ -120,7 +120,7 @@ final class PlanInstallArtifactTreeFactory implements InstallArtifactTreeFactory
         StandardPlanInstallArtifact planInstallArtifact;
 
         planInstallArtifact = new StandardPlanInstallArtifact(artifactIdentity, planDescriptor.getAtomic(), planDescriptor.getScoped(),
-            artifactStorage, new ArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository, this.scopeFactory,
+            artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository, this.scopeFactory,
             this.eventLogger, this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
 
         Tree<InstallArtifact> tree = constructInstallTree(planInstallArtifact);

@@ -18,7 +18,7 @@ import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.SignalJunction;
+import org.eclipse.virgo.kernel.deployer.core.internal.AbortableSignalJunction;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -105,7 +105,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         int numChildren = children.size();
 
         // The SignalJunction constructor will drive the signal if numChildren == 0.
-        SignalJunction signalJunction = new SignalJunction(signal, numChildren);
+        AbortableSignalJunction signalJunction = new AbortableSignalJunction(signal, numChildren);
         
         LOGGER.debug("Created {} that will notify {} to track start of {}", new Object[] {signalJunction, signal, this});
         

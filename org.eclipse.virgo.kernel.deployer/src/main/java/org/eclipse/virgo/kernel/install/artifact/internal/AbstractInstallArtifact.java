@@ -77,8 +77,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * @param repositoryName the name of the source repository, or <code>null</code> if the artifact is not from a
      *        repository
      */
-    protected AbstractInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage,
-        @NonNull ArtifactStateMonitor artifactStateMonitor, String repositoryName, EventLogger eventLogger) {
+    protected AbstractInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage, @NonNull ArtifactStateMonitor artifactStateMonitor, String repositoryName, EventLogger eventLogger) {
         this.identity = identity;
         this.artifactStorage = artifactStorage;
         this.artifactStateMonitor = artifactStateMonitor;

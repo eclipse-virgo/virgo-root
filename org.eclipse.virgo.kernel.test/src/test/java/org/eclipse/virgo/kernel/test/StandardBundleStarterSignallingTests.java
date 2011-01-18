@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +25,6 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
-
 
 /**
  */
@@ -48,6 +48,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         while (!ts.isComplete()) {
             Thread.sleep(100);
         }
+        assertFalse(ts.isAborted());
         assertNull(ts.getCause());
     }
 
@@ -61,6 +62,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         while (!ts.isComplete()) {
             Thread.sleep(100);
         }
+        assertFalse(ts.isAborted());
         assertNull(ts.getCause());
     }
 
@@ -73,7 +75,25 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         while (!ts.isComplete()) {
             Thread.sleep(100);
         }
+        assertFalse(ts.isAborted());
         assertNotNull(ts.getCause());
+    }
+
+    @Test
+    public void signalAbort() throws Exception {
+        Bundle bundle = installBundle(new File("src/test/resources/monitor/lazy"));
+        assertNotNull(bundle);        
+        TestSignal ts = new TestSignal();
+        this.monitor.start(bundle, ts);
+        while (bundle.getState() != Bundle.STARTING) {
+            Thread.sleep(100);
+        }
+        bundle.stop();
+        while (!ts.isComplete()) {
+            Thread.sleep(100);
+        }
+        assertNull(ts.getCause());
+        assertTrue(ts.isAborted());
     }
 
     @Test
@@ -84,6 +104,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         this.monitor.start(bundle, ts);
         waitForComplete(ts, 1000);
         assertTrue(ts.isComplete());
+        assertFalse(ts.isAborted());
         assertNull(ts.getCause());
     }
 

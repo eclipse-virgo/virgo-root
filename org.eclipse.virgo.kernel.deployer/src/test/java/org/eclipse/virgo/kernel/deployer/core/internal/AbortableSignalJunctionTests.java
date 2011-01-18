@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  */
-public class SignalJunctionTests {
+public class AbortableSignalJunctionTests {
 
     private AbortableSignal signal;
     
@@ -55,34 +55,55 @@ public class SignalJunctionTests {
 
     @Test
     public void testEmptyJunction() {
-        new SignalJunction(this.signal, 0);
+        new AbortableSignalJunction(this.signal, 0);
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testUnaryJunction() {
-        SignalJunction sj = new SignalJunction(this.signal, 1);
+        AbortableSignalJunction sj = new AbortableSignalJunction(this.signal, 1);
         sj.getSignals().get(0).signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testBinaryJunction() {
-        SignalJunction sj = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction sj = new AbortableSignalJunction(this.signal, 2);
         sj.getSignals().get(0).signalSuccessfulCompletion();
         sj.getSignals().get(1).signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
+    }
+    
+    @Test
+    public void testBinaryJunctionFail() {
+        AbortableSignalJunction sj = new AbortableSignalJunction(this.signal, 2);
+        sj.getSignals().get(0).signalFailure(new RuntimeException());
+        assertFalse(this.signalCompleted);
+        assertTrue(this.signalFailed);
+        assertFalse(this.signalAborted);
+    }
+    
+    @Test
+    public void testBinaryJunctionAbort() {
+        AbortableSignalJunction sj = new AbortableSignalJunction(this.signal, 2);
+        sj.getSignals().get(0).signalAborted();
+        assertFalse(this.signalCompleted);
+        assertFalse(this.signalFailed);
+        assertTrue(this.signalAborted);
     }
     
     @Test
     public void testNestedBinaryJunctionOrder1() {
-        SignalJunction top = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
         AbortableSignal top1 = top.getSignals().get(0);
         AbortableSignal top2 = top.getSignals().get(1);
-        SignalJunction bottom = new SignalJunction(top2, 2);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
         AbortableSignal bottom1 = bottom.getSignals().get(0);
         AbortableSignal bottom2 = bottom.getSignals().get(1);
         top1.signalSuccessfulCompletion();
@@ -90,14 +111,15 @@ public class SignalJunctionTests {
         bottom2.signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testNestedBinaryJunctionOrder2() {
-        SignalJunction top = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
         AbortableSignal top1 = top.getSignals().get(0);
         AbortableSignal top2 = top.getSignals().get(1);
-        SignalJunction bottom = new SignalJunction(top2, 2);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
         AbortableSignal bottom1 = bottom.getSignals().get(0);
         AbortableSignal bottom2 = bottom.getSignals().get(1);
         bottom1.signalSuccessfulCompletion();
@@ -105,14 +127,15 @@ public class SignalJunctionTests {
         bottom2.signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testNestedBinaryJunctionOrder3() {
-        SignalJunction top = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
         AbortableSignal top1 = top.getSignals().get(0);
         AbortableSignal top2 = top.getSignals().get(1);
-        SignalJunction bottom = new SignalJunction(top2, 2);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
         AbortableSignal bottom1 = bottom.getSignals().get(0);
         AbortableSignal bottom2 = bottom.getSignals().get(1);
         bottom1.signalSuccessfulCompletion();
@@ -120,14 +143,15 @@ public class SignalJunctionTests {
         top1.signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testNestedBinaryJunctionOrder4() {
-        SignalJunction top = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
         AbortableSignal top1 = top.getSignals().get(0);
         AbortableSignal top2 = top.getSignals().get(1);
-        SignalJunction bottom = new SignalJunction(top2, 2);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
         AbortableSignal bottom1 = bottom.getSignals().get(0);
         AbortableSignal bottom2 = bottom.getSignals().get(1);
         top1.signalSuccessfulCompletion();
@@ -135,14 +159,15 @@ public class SignalJunctionTests {
         bottom1.signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testNestedBinaryJunctionOrder5() {
-        SignalJunction top = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
         AbortableSignal top1 = top.getSignals().get(0);
         AbortableSignal top2 = top.getSignals().get(1);
-        SignalJunction bottom = new SignalJunction(top2, 2);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
         AbortableSignal bottom1 = bottom.getSignals().get(0);
         AbortableSignal bottom2 = bottom.getSignals().get(1);
         bottom2.signalSuccessfulCompletion();
@@ -150,14 +175,15 @@ public class SignalJunctionTests {
         bottom1.signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
     }
     
     @Test
     public void testNestedBinaryJunctionOrder6() {
-        SignalJunction top = new SignalJunction(this.signal, 2);
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
         AbortableSignal top1 = top.getSignals().get(0);
         AbortableSignal top2 = top.getSignals().get(1);
-        SignalJunction bottom = new SignalJunction(top2, 2);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
         AbortableSignal bottom1 = bottom.getSignals().get(0);
         AbortableSignal bottom2 = bottom.getSignals().get(1);
         bottom2.signalSuccessfulCompletion();
@@ -165,6 +191,39 @@ public class SignalJunctionTests {
         top1.signalSuccessfulCompletion();
         assertTrue(this.signalCompleted);
         assertFalse(this.signalFailed);
+        assertFalse(this.signalAborted);
+    }
+    
+    @Test
+    public void testNestedBinaryJunctionOrderFail() {
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
+        AbortableSignal top1 = top.getSignals().get(0);
+        AbortableSignal top2 = top.getSignals().get(1);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
+        AbortableSignal bottom1 = bottom.getSignals().get(0);
+        AbortableSignal bottom2 = bottom.getSignals().get(1);
+        top1.signalSuccessfulCompletion();
+        bottom1.signalFailure(new RuntimeException());
+        bottom2.signalSuccessfulCompletion();
+        assertFalse(this.signalCompleted);
+        assertTrue(this.signalFailed);
+        assertFalse(this.signalAborted);
+    }
+    
+    @Test
+    public void testNestedBinaryJunctionOrderAbort() {
+        AbortableSignalJunction top = new AbortableSignalJunction(this.signal, 2);
+        AbortableSignal top1 = top.getSignals().get(0);
+        AbortableSignal top2 = top.getSignals().get(1);
+        AbortableSignalJunction bottom = new AbortableSignalJunction(top2, 2);
+        AbortableSignal bottom1 = bottom.getSignals().get(0);
+        AbortableSignal bottom2 = bottom.getSignals().get(1);
+        top1.signalSuccessfulCompletion();
+        bottom1.signalAborted();
+        bottom2.signalSuccessfulCompletion();
+        assertFalse(this.signalCompleted);
+        assertFalse(this.signalFailed);
+        assertTrue(this.signalAborted);
     }
 
 }
