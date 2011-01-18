@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
 
 final class StubRegion implements Region {
 
@@ -80,6 +81,11 @@ final class StubRegion implements Region {
 
     @Override
     public void connectRegion(Region targetRegion, RegionFilter filter) throws BundleException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Bundle getBundle(String symbolicName, Version version) {
         throw new UnsupportedOperationException();
     }
 

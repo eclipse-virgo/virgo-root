@@ -19,6 +19,7 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
 
 /**
  * TODO Document ImmutableRegion
@@ -36,7 +37,7 @@ public class ImmutableRegion implements Region {
     private final BundleContext bundleContext;
 
     private final RegionPackageImportPolicy regionPackageImportPolicy;
-
+    
     public ImmutableRegion(String name, @NonNull BundleContext bundleContext, @NonNull RegionPackageImportPolicy regionPackageImportPolicy) {
         this.name = name;
         this.bundleContext = bundleContext;
@@ -106,6 +107,11 @@ public class ImmutableRegion implements Region {
 
     @Override
     public void connectRegion(Region targetRegion, RegionFilter filter) throws BundleException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Bundle getBundle(String symbolicName, Version version) {
         throw new UnsupportedOperationException();
     }
 

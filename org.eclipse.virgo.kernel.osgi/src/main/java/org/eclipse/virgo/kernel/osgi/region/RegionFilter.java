@@ -13,7 +13,12 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import org.eclipse.virgo.kernel.osgi.common.Version;
+import java.util.Collection;
+import java.util.Set;
+
+import org.eclipse.virgo.util.math.OrderedPair;
+import org.osgi.framework.Filter;
+import org.osgi.framework.Version;
 
 /**
  * A {@link RegionFilter} is associated with a connection from one region to another and determines the bundles,
@@ -28,31 +33,46 @@ import org.eclipse.virgo.kernel.osgi.common.Version;
 public interface RegionFilter {
     
     /**
+     * Allows a bundle with the given bundle symbolic name and version to be imported.
+     * 
      * Note that the system bundle has the OSGi defined symbolic name "system.bundle".
      * 
      * @param bundleSymbolicName
      * @param bundleVersion
      * @return
      */
-    RegionFilter importBundle(String bundleSymbolicName, Version bundleVersion);
+    RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion);
+    
+    /**
+     * Gets the bundles allowed by this filter.
+     * 
+     * @return a collection of (bundle symbolic name, bundle version) pairs
+     */
+    Set<OrderedPair<String, Version>> getAllowedBundles();
     
     /**
      * @param packageName
      * @return
      */
-    RegionFilter importPackage(String packageName);
+    RegionFilter allowPackage(String packageName);
+    
+    Collection<String> getAllowedPackages();
     
     /**
      * @param packageStem
      * @return
      */
-    RegionFilter importWildcardedPackage(String packageStem);
+    RegionFilter allowPackageStems(String packageStem);
+    
+    Collection<String> getAllowedPackageStems();
     
     /**
      * @param serviceFilter
      * @return
      * @see org.osgi.framework.Filter more information about service filters
      */
-    RegionFilter importService(String serviceFilter);
+    RegionFilter setServiceFilter(String serviceFilter);
+    
+    Filter getServiceFilter();
 
 }

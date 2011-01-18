@@ -16,6 +16,7 @@ import java.io.InputStream;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
 
 /**
  * A <i>region</i> is a subset of the bundles of an OSGi framework. A regions is "weakly" isolated from other regions
@@ -45,6 +46,8 @@ public interface Region {
      * This method is typically used to associate the system bundle with a region. Note that the system bundle is not
      * treated specially and in order to be fully visible in a region, it must either be associated with the region or
      * imported from another region via a connection.
+     * <p>
+     * If the bundle is already associated with this region, takes no action and returns normally.
      * <p>
      * If the bundle is already associated with another region, throws BundleException with exception type
      * INVALID_OPERATION.
@@ -89,15 +92,27 @@ public interface Region {
      * @see BundleContext#installBundle(String)
      */
     Bundle installBundle(String location) throws BundleException;
+    
+    /**
+     * Get the bundle in this region with the given symbolic name and version.
+     * 
+     * @param symbolicName
+     * @param version
+     * @return the bundle or <code>null</code> if there is no such bundle
+     */
+    Bundle getBundle(String symbolicName, Version version);
 
     /**
      * Connects this region to the given target region and associates the given {@link RegionFilter} with the
-     * connection. This region may then see bundles, packages, and services from the target region under the control of
-     * the region filter.
+     * connection. This region may then, subject to the region filter, see bundles, packages, and services visible in
+     * the target region.
      * <p>
      * If the filter allows the same bundle symbolic name and version as a bundle already present in this region or a
      * filter connecting this region to a region other than the target region, then BundleException with exception type
      * DUPLICATE_BUNDLE_ERROR is thrown.
+     * <p>
+     * If the given source region is already connected to the given target region, then BundleException with exception
+     * type UNSUPPORTED_OPERATION is thrown.
      * 
      * @param targetRegion the region to connect this region to
      * @param filter a {@link RegionFilter} which controls what is visible across the connection
