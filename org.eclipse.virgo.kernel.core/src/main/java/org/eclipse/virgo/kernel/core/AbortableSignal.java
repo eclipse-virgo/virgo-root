@@ -22,7 +22,6 @@ package org.eclipse.virgo.kernel.core;
  */
 public interface AbortableSignal extends Signal {
 
-	
 	/**
 	 * Notifies the abortion of this Signal, there has been no error but the signal will not complete. 
 	 * If signalFailure or signalCompletion has already been called, the behaviour is undefined.
