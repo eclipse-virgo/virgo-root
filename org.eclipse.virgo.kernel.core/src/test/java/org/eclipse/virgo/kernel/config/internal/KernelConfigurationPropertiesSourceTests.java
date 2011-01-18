@@ -14,7 +14,6 @@ package org.eclipse.virgo.kernel.config.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
