@@ -94,6 +94,14 @@ public interface Region {
     Bundle installBundle(String location) throws BundleException;
     
     /**
+     * Returns <code>true</code> if and only if the given bundle belongs to this region.
+     * 
+     * @param bundle a {@link Bundle}
+     * @return <code>true</code> if the given bundle belongs to this region and <code>false</code> otherwise
+     */
+    boolean contains(Bundle bundle);
+    
+    /**
      * Get the bundle in this region with the given symbolic name and version.
      * 
      * @param symbolicName
@@ -103,22 +111,22 @@ public interface Region {
     Bundle getBundle(String symbolicName, Version version);
 
     /**
-     * Connects this region to the given target region and associates the given {@link RegionFilter} with the
+     * Connects this region to the given tail region and associates the given {@link RegionFilter} with the
      * connection. This region may then, subject to the region filter, see bundles, packages, and services visible in
-     * the target region.
+     * the tail region.
      * <p>
      * If the filter allows the same bundle symbolic name and version as a bundle already present in this region or a
-     * filter connecting this region to a region other than the target region, then BundleException with exception type
+     * filter connecting this region to a region other than the tail region, then BundleException with exception type
      * DUPLICATE_BUNDLE_ERROR is thrown.
      * <p>
-     * If the given source region is already connected to the given target region, then BundleException with exception
+     * If the given source region is already connected to the given tail region, then BundleException with exception
      * type UNSUPPORTED_OPERATION is thrown.
      * 
-     * @param targetRegion the region to connect this region to
+     * @param tailRegion the region to connect this region to
      * @param filter a {@link RegionFilter} which controls what is visible across the connection
-     * @throws BundleException
+     * @throws BundleException if the connection was not created
      */
-    void connectRegion(Region targetRegion, RegionFilter filter) throws BundleException;
+    void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException;
 
     /**
      * Returns a {@link BundleContext} that can be used to access the contents of the region.

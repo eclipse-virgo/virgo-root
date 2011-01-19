@@ -89,4 +89,9 @@ final class StubRegion implements Region {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean contains(Bundle bundle) {
+        throw new UnsupportedOperationException();
+    }
+
 }

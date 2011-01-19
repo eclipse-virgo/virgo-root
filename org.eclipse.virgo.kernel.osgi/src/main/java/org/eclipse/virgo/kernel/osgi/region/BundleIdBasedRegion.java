@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
@@ -36,14 +37,14 @@ final class BundleIdBasedRegion implements Region {
 
     private final String regionName;
 
-    private final RegionMembership regionMembership;
-
     private final RegionDigraph regionDigraph;
 
-    BundleIdBasedRegion(String regionName, RegionMembership regionMembership, RegionDigraph regionDigraph) {
+    private final BundleContext systemBundleContext;
+
+    BundleIdBasedRegion(String regionName, RegionDigraph regionDigraph, BundleContext systemBundleContext) {
         this.regionName = regionName;
-        this.regionMembership = regionMembership;
         this.regionDigraph = regionDigraph;
+        this.systemBundleContext = systemBundleContext;
     }
 
     /**
@@ -73,19 +74,15 @@ final class BundleIdBasedRegion implements Region {
     }
 
     private void checkBundleNotAssociatedWithAnotherRegion(Bundle bundle) throws BundleException {
-        try {
-            Region region = this.regionMembership.getRegion(bundle);
-            if (!this.equals(region)) {
-                throw new BundleException("Bundle '" + bundle + "' is already associated with region '" + region + "'",
-                    BundleException.INVALID_OPERATION);
+        for (Region r : this.regionDigraph) {
+            if (!this.equals(r) && r.contains(bundle)) {
+                throw new BundleException("Bundle '" + bundle + "' is already associated with region '" + r + "'", BundleException.INVALID_OPERATION);
             }
-        } catch (IndeterminateRegionException _) {
-            // Normal case
         }
     }
 
     private void checkDuplicateBundleInRegion(Bundle bundle, String symbolicName, Version version) throws BundleException {
-        Bundle existingBundle = this.getBundle(symbolicName, version);
+        Bundle existingBundle = getBundle(symbolicName, version);
         if (existingBundle != null) {
             throw new BundleException("Cannot add bundle '" + bundle + "' to region '" + this
                 + "' as its symbolic name and version conflict with those of bundle '" + existingBundle + "' which is already present in the region",
@@ -125,8 +122,15 @@ final class BundleIdBasedRegion implements Region {
      * {@inheritDoc}
      */
     @Override
-    public Bundle getBundle(String symbolicName, Version version) {
-        // TODO Auto-generated method stub
+    public Bundle getBundle(@NonNull String symbolicName, @NonNull Version version) {
+
+        // The following iteration is weakly consistent and will never throw ConcurrentModificationException.
+        for (long bundleId : this.bundleIds) {
+            Bundle bundle = this.systemBundleContext.getBundle(bundleId);
+            if (bundle != null && symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
+                return bundle;
+            }
+        }
         return null;
     }
 
@@ -134,9 +138,8 @@ final class BundleIdBasedRegion implements Region {
      * {@inheritDoc}
      */
     @Override
-    public void connectRegion(Region targetRegion, RegionFilter filter) throws BundleException {
-        // TODO Auto-generated method stub
-
+    public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
+        this.regionDigraph.connect(this, tailRegion, filter);
     }
 
     /**
@@ -155,6 +158,44 @@ final class BundleIdBasedRegion implements Region {
     public RegionPackageImportPolicy getRegionPackageImportPolicy() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean contains(Bundle bundle) {
+        return this.bundleIds.contains(bundle.getBundleId());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.regionName == null ? 0 : this.regionName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof BundleIdBasedRegion)) {
+            return false;
+        }
+        BundleIdBasedRegion other = (BundleIdBasedRegion) obj;
+        if (this.regionName == null) {
+            if (other.regionName != null) {
+                return false;
+            }
+        } else if (!this.regionName.equals(other.regionName)) {
+            return false;
+        }
+        return true;
     }
 
 }
