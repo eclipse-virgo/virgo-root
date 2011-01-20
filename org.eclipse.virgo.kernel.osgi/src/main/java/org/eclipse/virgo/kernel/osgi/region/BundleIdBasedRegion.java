@@ -33,7 +33,11 @@ import org.osgi.framework.Version;
  */
 final class BundleIdBasedRegion implements Region {
 
+    // A concurrent data structure ensures the contains method does not need synchronisation.
     private final Set<Long> bundleIds = new ConcurrentHashSet<Long>();
+
+    // Updates do need synchronising to avoid races.
+    private final Object updateMonitor = new Object();
 
     private final String regionName;
 
@@ -60,17 +64,18 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public void addBundle(Bundle bundle) throws BundleException {
-        checkBundleNotAssociatedWithAnotherRegion(bundle);
+        synchronized (this.updateMonitor) {
+            checkBundleNotAssociatedWithAnotherRegion(bundle);
 
-        String symbolicName = bundle.getSymbolicName();
-        Version version = bundle.getVersion();
+            String symbolicName = bundle.getSymbolicName();
+            Version version = bundle.getVersion();
 
-        checkDuplicateBundleInRegion(bundle, symbolicName, version);
+            checkDuplicateBundleInRegion(bundle, symbolicName, version);
 
-        checkDuplicateBundleViaFilter(bundle, symbolicName, version);
+            checkDuplicateBundleViaFilter(bundle, symbolicName, version);
 
-        this.bundleIds.add(bundle.getBundleId());
-
+            this.bundleIds.add(bundle.getBundleId());
+        }
     }
 
     private void checkBundleNotAssociatedWithAnotherRegion(Bundle bundle) throws BundleException {
@@ -105,8 +110,10 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
-        // TODO Auto-generated method stub
-        return null;
+        synchronized (this.updateMonitor) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     /**
@@ -114,8 +121,10 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location) throws BundleException {
-        // TODO Auto-generated method stub
-        return null;
+        synchronized (this.updateMonitor) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     /**
@@ -139,7 +148,9 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
-        this.regionDigraph.connect(this, tailRegion, filter);
+        synchronized (this.updateMonitor) {
+            this.regionDigraph.connect(this, tailRegion, filter);
+        }
     }
 
     /**
