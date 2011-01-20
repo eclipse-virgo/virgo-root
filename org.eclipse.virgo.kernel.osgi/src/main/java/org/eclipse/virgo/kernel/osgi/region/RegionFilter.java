@@ -62,7 +62,7 @@ public interface RegionFilter {
      * @param packageStem
      * @return
      */
-    RegionFilter allowPackageStems(String packageStem);
+    RegionFilter allowPackageStem(String packageStem);
     
     Collection<String> getAllowedPackageStems();
     
@@ -71,7 +71,7 @@ public interface RegionFilter {
      * @return
      * @see org.osgi.framework.Filter more information about service filters
      */
-    RegionFilter setServiceFilter(String serviceFilter);
+    RegionFilter setServiceFilter(Filter serviceFilter);
     
     Filter getServiceFilter();
 
