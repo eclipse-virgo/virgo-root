@@ -41,7 +41,7 @@ final class BundleIdBasedRegion implements Region {
 
     private final BundleContext systemBundleContext;
 
-    BundleIdBasedRegion(String regionName, RegionDigraph regionDigraph, BundleContext systemBundleContext) {
+    BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext systemBundleContext) {
         this.regionName = regionName;
         this.regionDigraph = regionDigraph;
         this.systemBundleContext = systemBundleContext;
@@ -172,7 +172,7 @@ final class BundleIdBasedRegion implements Region {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (this.regionName == null ? 0 : this.regionName.hashCode());
+        result = prime * result + this.regionName.hashCode();
         return result;
     }
 
@@ -188,14 +188,7 @@ final class BundleIdBasedRegion implements Region {
             return false;
         }
         BundleIdBasedRegion other = (BundleIdBasedRegion) obj;
-        if (this.regionName == null) {
-            if (other.regionName != null) {
-                return false;
-            }
-        } else if (!this.regionName.equals(other.regionName)) {
-            return false;
-        }
-        return true;
+        return this.regionName.equals(other.regionName);
     }
 
 }
