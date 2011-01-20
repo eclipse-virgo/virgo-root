@@ -88,7 +88,7 @@ public class BundleIdBasedRegionTests {
             }
         };
         this.mockGraph = EasyMock.createMock(RegionDigraph.class);
-        this.mockGraph.connect(EasyMock.isA(Region.class), EasyMock.eq(this.mockRegion), EasyMock.eq(this.mockRegionFilter));
+        this.mockGraph.connect(EasyMock.isA(Region.class), EasyMock.eq(this.mockRegionFilter), EasyMock.eq(this.mockRegion));
         EasyMock.expectLastCall().anyTimes();
     }
 

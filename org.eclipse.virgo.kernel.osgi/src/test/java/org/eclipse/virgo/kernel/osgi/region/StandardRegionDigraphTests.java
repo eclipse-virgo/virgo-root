@@ -79,7 +79,7 @@ public class StandardRegionDigraphTests {
         setDefaultMockFilters();
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter1);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
     }
 
     @SuppressWarnings("unchecked")
@@ -95,8 +95,8 @@ public class StandardRegionDigraphTests {
 
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter1);
-        this.digraph.connect(this.mockRegion1, this.mockRegion3, this.regionFilter2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter2, this.mockRegion3);
     }
 
     
@@ -105,7 +105,7 @@ public class StandardRegionDigraphTests {
         setDefaultMockFilters();
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion1, this.regionFilter1);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion1);
     }
 
     @Test(expected = BundleException.class)
@@ -113,8 +113,8 @@ public class StandardRegionDigraphTests {
         setDefaultMockFilters();
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter1);
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter2, this.mockRegion2);
     }
 
     @SuppressWarnings("unchecked")
@@ -126,8 +126,8 @@ public class StandardRegionDigraphTests {
         EasyMock.expect(this.mockRegion1.getBundle(bundle.getFirst(), bundle.getSecond())).andReturn(null).anyTimes();
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter1);
-        this.digraph.connect(this.mockRegion1, this.mockRegion3, this.regionFilter2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter2, this.mockRegion3);
     }
 
     @SuppressWarnings("unchecked")
@@ -138,7 +138,7 @@ public class StandardRegionDigraphTests {
         EasyMock.expect(this.mockRegion1.getBundle(bundle.getFirst(), bundle.getSecond())).andReturn(this.mockBundle);
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter1);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
     }
 
  
@@ -162,9 +162,9 @@ public class StandardRegionDigraphTests {
         setDefaultMockFilters();
         replayMocks();
         
-        this.digraph.connect(this.mockRegion1, this.mockRegion2, this.regionFilter1);
-        this.digraph.connect(this.mockRegion1, this.mockRegion3, this.regionFilter2);
-        this.digraph.connect(this.mockRegion2, this.mockRegion1, this.regionFilter2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
+        this.digraph.connect(this.mockRegion1, this.regionFilter2, this.mockRegion3);
+        this.digraph.connect(this.mockRegion2, this.regionFilter2, this.mockRegion1);
 
         Set<FilteredRegion> edges = this.digraph.getEdges(this.mockRegion1);
 

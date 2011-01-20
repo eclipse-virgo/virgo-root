@@ -46,7 +46,7 @@ final class StandardRegionDigraph implements RegionDigraph {
      * {@inheritDoc}
      */
     @Override
-    public void connect(@NonNull Region tailRegion, @NonNull Region headRegion, @NonNull RegionFilter filter) throws BundleException {
+    public void connect(@NonNull Region tailRegion, @NonNull RegionFilter filter, @NonNull Region headRegion) throws BundleException {
         if (headRegion.equals(tailRegion)) {
             throw new BundleException("Cannot connect region '" + headRegion + "' to itself", BundleException.UNSUPPORTED_OPERATION);
         }

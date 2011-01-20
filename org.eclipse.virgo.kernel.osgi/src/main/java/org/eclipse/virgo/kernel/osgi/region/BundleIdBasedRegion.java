@@ -149,7 +149,7 @@ final class BundleIdBasedRegion implements Region {
     @Override
     public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
         synchronized (this.updateMonitor) {
-            this.regionDigraph.connect(this, tailRegion, filter);
+            this.regionDigraph.connect(this, filter, tailRegion);
         }
     }
 

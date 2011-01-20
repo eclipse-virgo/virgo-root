@@ -80,11 +80,11 @@ public interface RegionDigraph extends Iterable<Region> {
      * UNSUPPORTED_OPERATION is thrown.
      * 
      * @param tailRegion the region at the tail of the new edge
-     * @param headRegion the region at the head of the new edge
      * @param filter a {@link RegionFilter} which labels the new edge
+     * @param headRegion the region at the head of the new edge
      * @throws BundleException if the edge was not created
      */
-    void connect(Region tailRegion, Region headRegion, RegionFilter filter) throws BundleException;
+    void connect(Region tailRegion, RegionFilter filter, Region headRegion) throws BundleException;
 
     /**
      * Gets a {@link Set} containing a snapshot of the {@link FilteredRegion FilteredRegions} attached to the given tail
