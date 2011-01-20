@@ -11,7 +11,7 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.osgi.region.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +20,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.BundleException;
@@ -34,7 +38,7 @@ import org.osgi.framework.Version;
  * Thread safe.
  * 
  */
-final class StandardRegionDigraph implements RegionDigraph {
+public final class StandardRegionDigraph implements RegionDigraph {
 
     private final Object monitor = new Object();
 

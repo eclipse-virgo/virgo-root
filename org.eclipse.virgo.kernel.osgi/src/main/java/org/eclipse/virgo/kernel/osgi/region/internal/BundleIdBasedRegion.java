@@ -9,11 +9,15 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.osgi.region.internal;
 
 import java.io.InputStream;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
@@ -31,7 +35,7 @@ import org.osgi.framework.Version;
  * <strong>Concurrent Semantics</strong><br />
  * Thread safe.
  */
-final class BundleIdBasedRegion implements Region {
+public final class BundleIdBasedRegion implements Region {
 
     // A concurrent data structure ensures the contains method does not need synchronisation.
     private final Set<Long> bundleIds = new ConcurrentHashSet<Long>();
@@ -45,7 +49,7 @@ final class BundleIdBasedRegion implements Region {
 
     private final BundleContext systemBundleContext;
 
-    BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext systemBundleContext) {
+    public BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext systemBundleContext) {
         this.regionName = regionName;
         this.regionDigraph = regionDigraph;
         this.systemBundleContext = systemBundleContext;
