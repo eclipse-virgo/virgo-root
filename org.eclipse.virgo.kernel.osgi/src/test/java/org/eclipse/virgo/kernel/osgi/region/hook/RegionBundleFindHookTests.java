@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +19,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
@@ -27,18 +27,18 @@ import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Filter;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.FindHook;
 
 public class RegionBundleFindHookTests {
+
+    private static final String BUNDLE_X = "X";
 
     private static final Version BUNDLE_VERSION = new Version("0");
 
@@ -87,6 +87,8 @@ public class RegionBundleFindHookTests {
         createRegion(REGION_B, BUNDLE_B);
         createRegion(REGION_C, BUNDLE_C);
         createRegion(REGION_D, BUNDLE_D);
+        
+        createBundle(BUNDLE_X);
 
     }
 
@@ -121,7 +123,7 @@ public class RegionBundleFindHookTests {
     @Test
     public void testFindConnectedRegionFiltering() throws BundleException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_B));
-        Bundle x = createBundle("X");
+        Bundle x = createBundle(BUNDLE_X);
         region(REGION_B).addBundle(x);
 
         this.candidates.add(bundle(BUNDLE_B));
@@ -135,17 +137,82 @@ public class RegionBundleFindHookTests {
     public void testFindTransitive() throws BundleException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_C));
         region(REGION_B).connectRegion(region(REGION_C), createFilter(BUNDLE_C));
-        Bundle x = createBundle("X");
-        region(REGION_C).addBundle(x);
+        region(REGION_C).addBundle(bundle(BUNDLE_X));
 
         this.candidates.add(bundle(BUNDLE_B));
         this.candidates.add(bundle(BUNDLE_C));
         this.bundleFindHook.find(bundleContext(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(bundle(BUNDLE_C)));
         assertFalse(this.candidates.contains(bundle(BUNDLE_B)));
-        assertFalse(this.candidates.contains(x));
+        assertFalse(this.candidates.contains(bundle(BUNDLE_X)));
 
     }
+
+    @Test
+    public void testFindInCyclicGraph() throws BundleException {
+        region(REGION_D).addBundle(bundle(BUNDLE_X));
+        
+        region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_D, BUNDLE_X));
+        region(REGION_B).connectRegion(region(REGION_A), createFilter());
+        
+        region(REGION_B).connectRegion(region(REGION_D), createFilter(BUNDLE_D));
+        region(REGION_D).connectRegion(region(REGION_B), createFilter());
+        
+        region(REGION_B).connectRegion(region(REGION_C), createFilter(BUNDLE_X));
+        region(REGION_C).connectRegion(region(REGION_B), createFilter());
+        
+        region(REGION_C).connectRegion(region(REGION_D), createFilter(BUNDLE_X));
+        region(REGION_D).connectRegion(region(REGION_C), createFilter());
+
+        region(REGION_A).connectRegion(region(REGION_C), createFilter());
+        region(REGION_C).connectRegion(region(REGION_A), createFilter());
+
+        region(REGION_D).connectRegion(region(REGION_A), createFilter());
+        region(REGION_A).connectRegion(region(REGION_D), createFilter());
+
+        // Find from region A.
+        this.candidates.add(bundle(BUNDLE_B));
+        this.candidates.add(bundle(BUNDLE_C));
+        this.candidates.add(bundle(BUNDLE_D));
+        this.candidates.add(bundle(BUNDLE_X));
+
+        this.bundleFindHook.find(bundleContext(BUNDLE_A), this.candidates);
+        assertEquals(2, this.candidates.size());
+        assertTrue(this.candidates.contains(bundle(BUNDLE_D)));
+        assertTrue(this.candidates.contains(bundle(BUNDLE_X)));
+        
+        // Find from region B
+        this.candidates.add(bundle(BUNDLE_B));
+        this.candidates.add(bundle(BUNDLE_C));
+        this.candidates.add(bundle(BUNDLE_D));
+        this.candidates.add(bundle(BUNDLE_X));
+        
+        this.bundleFindHook.find(bundleContext(BUNDLE_B), this.candidates);
+        assertEquals(3, this.candidates.size());
+        assertTrue(this.candidates.contains(bundle(BUNDLE_B)));
+        assertTrue(this.candidates.contains(bundle(BUNDLE_D)));
+        assertTrue(this.candidates.contains(bundle(BUNDLE_X)));
+    }
+    
+    @Test
+    public void testFindFromSystemBundle() {
+        this.candidates.add(bundle(BUNDLE_A));
+        
+        Bundle stubBundle = new StubBundle(0L, "sys", BUNDLE_VERSION, "");
+        this.bundleFindHook.find(stubBundle.getBundleContext(), this.candidates);
+        assertEquals(1, this.candidates.size());
+        assertTrue(this.candidates.contains(bundle(BUNDLE_A)));
+    }
+
+    @Test
+    public void testFindFromBundleInNoRegion() {
+        this.candidates.add(bundle(BUNDLE_A));
+        
+        Bundle stranger = createBundle("stranger");
+        this.bundleFindHook.find(stranger.getBundleContext(), this.candidates);
+        assertEquals(0, this.candidates.size());
+    }
+
 
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
         Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext);
