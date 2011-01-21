@@ -25,17 +25,21 @@ import java.util.Map;
  * 
  */
 public interface RegionPackageImportPolicy {
+    
+    /**
+     * @deprecated Temporary method to ease transition to digraph
+     */
+    Region getUserRegion();
 
     /**
      * Returns <code>true</code> if and only if the package with the specified name exported with the specified
      * attributes and directives is imported into the region.
      * 
-     * @param providerRegion the region containing the bundle that exports the package
      * @param packageName the name of the package
      * @param attributes the package's export attributes
      * @param directives the package's export directives
      * @return <code>true</code> if and only if the package is imported
      */
-    boolean isImported(Region providerRegion, String packageName, Map<String, Object> attributes, Map<String, String> directives);
+    boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives);
 
 }

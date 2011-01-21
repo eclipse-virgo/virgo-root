@@ -27,8 +27,6 @@ import org.osgi.framework.wiring.Capability;
 
 public class UserRegionPackageImportPolicyTests {
 
-    private Region mockKernelRegion;
-    
     private Region mockUserRegion;
 
     /**
@@ -36,7 +34,6 @@ public class UserRegionPackageImportPolicyTests {
      */
     @Before
     public void setUp() throws Exception {
-        mockKernelRegion = EasyMock.createMock(Region.class);
         mockUserRegion = EasyMock.createMock(Region.class);
     }
     
@@ -58,10 +55,10 @@ public class UserRegionPackageImportPolicyTests {
     @Test
     public void testPackageStringWithArbitraryAttribute() {
         UserRegionPackageImportPolicy userRegionPackageImportPolicy = createUserRegionPackageImportPolicy("p;pa=pv,q");
-        Assert.assertFalse(userRegionPackageImportPolicy.isImported(this.mockKernelRegion, "p", null, null));
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
         Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
-        Assert.assertTrue(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", attributes, null));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
        
     }
 
@@ -76,7 +73,7 @@ public class UserRegionPackageImportPolicyTests {
         RegionPackageImportPolicy userRegionPackageImportPolicy = createUserRegionPackageImportPolicy("p,q");
         Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
-        Assert.assertTrue(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", attributes, null));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
        
     }
 
@@ -89,11 +86,11 @@ public class UserRegionPackageImportPolicyTests {
     @Test
     public void testPackageStringWithMandatoryAttribute() {
         RegionPackageImportPolicy userRegionPackageImportPolicy = createUserRegionPackageImportPolicy("p;pa=pv");
-        Assert.assertFalse(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", null, null));
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
         Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
         Map<String, String> directives = createMandatoryDirective("pa");
-        Assert.assertTrue(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", attributes, directives));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, directives));
     }
 
     @Test
@@ -102,7 +99,7 @@ public class UserRegionPackageImportPolicyTests {
         Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
         Map<String, String> directives = createMandatoryDirective("pa");
-        Assert.assertFalse(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", attributes, directives));
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", attributes, directives));
     }
 
     private Map<String, String> createMandatoryDirective(String attributes) {
@@ -114,10 +111,10 @@ public class UserRegionPackageImportPolicyTests {
     @Test
     public void testPackageStringWithVersion() {
         RegionPackageImportPolicy userRegionPackageImportPolicy = createUserRegionPackageImportPolicy("p;version=2,q");
-        Assert.assertFalse(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", null, null));
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("p", null, null));
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("version", new Version("2.0.0"));
-        Assert.assertTrue(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", attributes, null));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
        
     }
 
@@ -125,9 +122,9 @@ public class UserRegionPackageImportPolicyTests {
     @Test
     public void testPackages() {
         RegionPackageImportPolicy userRegionPackageImportPolicy = createUserRegionPackageImportPolicy("p,q");
-        Assert.assertTrue(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"p", null, null));
-        Assert.assertTrue(userRegionPackageImportPolicy.isImported(this.mockKernelRegion,"q", null, null));
-        Assert.assertFalse(userRegionPackageImportPolicy.isImported(this.mockKernelRegion, "r", null, null));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", null, null));
+        Assert.assertTrue(userRegionPackageImportPolicy.isImported("q", null, null));
+        Assert.assertFalse(userRegionPackageImportPolicy.isImported("r", null, null));
     }
     
 }

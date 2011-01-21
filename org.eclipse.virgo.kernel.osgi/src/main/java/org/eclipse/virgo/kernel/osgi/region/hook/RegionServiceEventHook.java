@@ -19,9 +19,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.hooks.service.EventHook;

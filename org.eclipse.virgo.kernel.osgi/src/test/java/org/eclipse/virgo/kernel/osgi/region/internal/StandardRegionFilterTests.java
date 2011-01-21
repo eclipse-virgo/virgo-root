@@ -13,13 +13,14 @@
 
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
 import java.util.Set;
 
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;
@@ -29,8 +30,6 @@ import org.osgi.framework.Version;
 
 public class StandardRegionFilterTests {
 
-    private static final String PACKAGE = "p";
-
     private static final String BUNDLE_SYMBOLIC_NAME = "A";
 
     private static final Version BUNDLE_VERSION = new Version("0");
@@ -39,10 +38,13 @@ public class StandardRegionFilterTests {
 
     private Filter mockFilter;
 
+    private RegionPackageImportPolicy packageImportPolicy;
+
     @Before
     public void setUp() throws Exception {
         this.regionFilter = new StandardRegionFilter();
-        mockFilter = EasyMock.createMock(Filter.class);
+        this.mockFilter = EasyMock.createMock(Filter.class);
+        this.packageImportPolicy = EasyMock.createMock(RegionPackageImportPolicy.class);
     }
 
     @After
@@ -58,19 +60,9 @@ public class StandardRegionFilterTests {
     }
 
     @Test
-    public void testAllowPackage() {
-        this.regionFilter.allowPackage(PACKAGE);
-        Collection<String> allowedPackages = this.regionFilter.getAllowedPackages();
-        assertEquals(1, allowedPackages.size());
-        assertTrue(allowedPackages.contains(PACKAGE));
-    }
-
-    @Test
-    public void testAllowPackageStem() {
-        this.regionFilter.allowPackageStem(PACKAGE);
-        Collection<String> allowedPackageStems = this.regionFilter.getAllowedPackageStems();
-        assertEquals(1, allowedPackageStems.size());
-        assertTrue(allowedPackageStems.contains(PACKAGE));
+    public void testSetPackageImportPolicy() {
+        this.regionFilter.setPackageImportPolicy(this.packageImportPolicy);
+        assertEquals(this.packageImportPolicy, this.regionFilter.getPackageImportPolicy());
     }
 
     @Test

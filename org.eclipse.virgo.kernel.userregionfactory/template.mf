@@ -13,5 +13,6 @@ Import-Template:
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}"
 Bundle-Activator: org.eclipse.virgo.kernel.userregionfactory.Activator
 Excluded-Imports: org.easymock,
- org.eclipse.virgo.osgi.launcher.*
+ org.eclipse.virgo.osgi.launcher.*,
+ org.eclipse.virgo.teststubs.*
 Excluded-Exports: *

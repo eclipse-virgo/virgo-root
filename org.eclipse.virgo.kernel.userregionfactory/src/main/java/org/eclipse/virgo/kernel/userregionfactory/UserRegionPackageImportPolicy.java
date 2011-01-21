@@ -78,7 +78,7 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
         }
     }
 
-    private Region getUserRegion() {
+    public Region getUserRegion() {
         synchronized (this.monitor) {
             return this.userRegion;
         }
@@ -88,10 +88,7 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
      * {@inheritDoc}
      */
     @Override
-    public boolean isImported(Region providerRegion, String packageName, Map<String, Object> exportAttributes, Map<String, String> exportDirectives) {
-        if (providerRegion == null || getUserRegion().equals(providerRegion)) {
-            return true;
-        }
+    public boolean isImported(String packageName, Map<String, Object> exportAttributes, Map<String, String> exportDirectives) {
         ImportedPackage importedPackage = this.importedPackages.get(packageName);
         if (importedPackage != null) {
             Map<String, String> importAttributes = importedPackage.getAttributes();

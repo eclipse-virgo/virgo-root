@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.Capability;
@@ -68,13 +71,74 @@ public class RegionResolverHookTests extends AbstractRegionHookTest {
         return new RegionPackageImportPolicy() {
 
             @Override
-            public boolean isImported(Region providerRegion, String packageName, Map<String, Object> attributes, Map<String, String> directives) {
+            public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
                 for (String importedPackage : importedPackages) {
                     if (packageName.equals(importedPackage)) {
                         return true;
                     }
                 }
                 return false;
+            }
+
+            @Override
+            public Region getUserRegion() {
+              //XXX Temporary hack: return any region object that is not the kernel region.
+                return new Region(){
+
+                    @Override
+                    public void addBundle(Bundle bundle) throws BundleException {
+                        // TODO Auto-generated method stub
+                        
+                    }
+
+                    @Override
+                    public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
+                        // TODO Auto-generated method stub
+                        
+                    }
+
+                    @Override
+                    public boolean contains(Bundle bundle) {
+                        // TODO Auto-generated method stub
+                        return false;
+                    }
+
+                    @Override
+                    public Bundle getBundle(String symbolicName, Version version) {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
+
+                    @Override
+                    public BundleContext getBundleContext() {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
+
+                    @Override
+                    public String getName() {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
+
+                    @Override
+                    public RegionPackageImportPolicy getRegionPackageImportPolicy() {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
+
+                    @Override
+                    public Bundle installBundle(String location, InputStream input) throws BundleException {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
+
+                    @Override
+                    public Bundle installBundle(String location) throws BundleException {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }};
+
             }};
     }
 
