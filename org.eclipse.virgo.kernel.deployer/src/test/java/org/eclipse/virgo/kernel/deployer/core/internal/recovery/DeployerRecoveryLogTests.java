@@ -23,8 +23,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.deployer.core.internal.recovery.DeployerRecoveryLog;
 import org.eclipse.virgo.util.io.PathReference;
 
@@ -50,17 +49,17 @@ public class DeployerRecoveryLogTests {
 
         // all true
         URI app1 = new File("app/one").toURI();
-        log.add(app1, new ApplicationDeployer.DeploymentOptions(true, true, true));
+        log.add(app1, new DeploymentOptions(true, true, true));
 
         // all false
         URI app2 = new File("app/two").toURI();
-        log.add(app2, new ApplicationDeployer.DeploymentOptions(false, false, false));
+        log.add(app2, new DeploymentOptions(false, false, false));
 
         URI app3 = new File("app/three").toURI();
-        log.add(app3, new ApplicationDeployer.DeploymentOptions(false, false, true));
+        log.add(app3, new DeploymentOptions(false, false, true));
 
         URI app4 = new File("app/four").toURI();
-        log.add(app4, new ApplicationDeployer.DeploymentOptions(false, true, true));
+        log.add(app4, new DeploymentOptions(false, true, true));
 
         log = new DeployerRecoveryLog(deployArea);
 
@@ -100,7 +99,7 @@ public class DeployerRecoveryLogTests {
         DeployerRecoveryLog log = new DeployerRecoveryLog(deployArea);
         URI app1 = new File("app/one").toURI();
         for (int i = 0; i < 100; i++) {
-            log.add(app1, new ApplicationDeployer.DeploymentOptions(true, true, true));
+            log.add(app1, new DeploymentOptions(true, true, true));
             if (i < 99) {
                 log.remove(app1);
             }

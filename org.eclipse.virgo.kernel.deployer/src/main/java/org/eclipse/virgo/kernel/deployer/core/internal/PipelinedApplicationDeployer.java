@@ -28,6 +28,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.deployer.core.internal.event.DeploymentListener;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateDeploymentIdentityException;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateFileNameException;
@@ -79,9 +80,14 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private final int deployerConfiguredTimeoutInSeconds;
 
-    public PipelinedApplicationDeployer(Pipeline pipeline, InstallArtifactTreeInclosure installArtifactTreeInclosure,
-        InstallEnvironmentFactory installEnvironmentFactory, RuntimeArtifactModel ram, DeploymentListener deploymentListener,
-        EventLogger eventLogger, DeployUriNormaliser normaliser, DeployerConfiguration deployerConfiguration) {
+    public PipelinedApplicationDeployer(Pipeline pipeline, 
+                                        InstallArtifactTreeInclosure installArtifactTreeInclosure,
+                                        InstallEnvironmentFactory installEnvironmentFactory, 
+                                        RuntimeArtifactModel ram, 
+                                        DeploymentListener deploymentListener,
+                                        EventLogger eventLogger, 
+                                        DeployUriNormaliser normaliser, 
+                                        DeployerConfiguration deployerConfiguration) {
         this.eventLogger = eventLogger;
         this.installArtifactTreeInclosure = installArtifactTreeInclosure;
         this.installEnvironmentFactory = installEnvironmentFactory;

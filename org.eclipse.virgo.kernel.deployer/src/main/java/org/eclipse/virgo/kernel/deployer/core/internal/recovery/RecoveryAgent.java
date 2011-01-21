@@ -22,8 +22,8 @@ import org.osgi.service.event.EventHandler;
 
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
 import org.eclipse.virgo.kernel.deployer.core.internal.ApplicationRecoverer;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 

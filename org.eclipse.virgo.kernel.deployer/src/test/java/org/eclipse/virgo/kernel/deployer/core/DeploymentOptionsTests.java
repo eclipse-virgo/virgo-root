@@ -13,7 +13,6 @@ package org.eclipse.virgo.kernel.deployer.core;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
 import org.junit.Test;
 
 
