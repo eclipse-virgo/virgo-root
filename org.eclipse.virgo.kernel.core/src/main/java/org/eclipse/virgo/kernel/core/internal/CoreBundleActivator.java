@@ -38,22 +38,22 @@ import org.eclipse.virgo.kernel.shim.serviceability.internal.Slf4jTracingService
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
- * {@link BundleActivator} that initialises the core of the Kernel.
+ * ComponentContext activator that initialises the core of the Kernel.
  * 
  * <strong>Concurrent Semantics</strong><br />
  * Threadsafe.
  * 
  */
-public class CoreBundleActivator implements BundleActivator {
+public class CoreBundleActivator {
 
     private static final String START_SIGNALLING_THREAD_NAME_PREFIX = "start-signalling-";
 
@@ -84,7 +84,9 @@ public class CoreBundleActivator implements BundleActivator {
     /**
      * {@inheritDoc}
      */
-    public void start(BundleContext context) throws Exception {
+    public void activate(ComponentContext componentContext) throws Exception {
+        BundleContext context = componentContext.getBundleContext();
+        
         EventLogger eventLogger = getRequiredService(context, EventLogger.class);
 
         KernelConfiguration configuration = this.configurationInitialiser.start(context, eventLogger);
@@ -156,7 +158,7 @@ public class CoreBundleActivator implements BundleActivator {
     /**
      * {@inheritDoc}
      */
-    public void stop(BundleContext context) throws Exception {
+    public void deactivate(ComponentContext context) throws Exception {
         this.tracker.unregisterAll();
         this.startupTracker.stop();
         this.configurationInitialiser.stop();

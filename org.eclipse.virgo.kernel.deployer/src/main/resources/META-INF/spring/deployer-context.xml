@@ -203,10 +203,12 @@
 		<beans:constructor-arg ref="eventLogger" />
 	</beans:bean>
 
+	<reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	
 	<beans:bean id="deployerConfig"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.StandardDeployerConfiguration">
-		<beans:constructor-arg value="${deployer.timeout}" />
-		<beans:constructor-arg value="${deployer.pickupDirectory}" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.timeout')}" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.pickupDirectory')}" />
 	</beans:bean>
 
 	<service ref="deployerConfig"

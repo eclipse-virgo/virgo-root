@@ -8,13 +8,16 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<beans:bean id="workAreaFactory" class="org.eclipse.virgo.kernel.services.work.WorkAreaServiceFactory">
-		<beans:constructor-arg value="${work.directory}"/>
+		<beans:constructor-arg value="#{kernelConfig.getProperty('work.directory')}"/>
 	</beans:bean>
 	
 	<beans:bean id="kernelWorkArea" class="org.eclipse.virgo.kernel.services.work.StandardWorkArea">
-		<beans:constructor-arg value="${work.directory}"/>
+		<beans:constructor-arg value="#{kernelConfig.getProperty('work.directory')}"/>
 		<beans:constructor-arg value="#{bundleContext.bundle}"/>
 	</beans:bean>
 	
 	<service interface="org.eclipse.virgo.kernel.services.work.WorkArea" ref="workAreaFactory"/>
+	
+	<reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	
 </beans:beans>

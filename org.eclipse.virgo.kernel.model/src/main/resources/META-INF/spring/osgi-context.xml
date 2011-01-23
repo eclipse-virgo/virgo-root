@@ -43,6 +43,4 @@
 	
 	<reference id="applicationDeployer" interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer"/>
 
-	<osgi-compendium:cm-properties id="config-admin" persistent-id="org.eclipse.virgo.kernel"/>
-
 </beans:beans>

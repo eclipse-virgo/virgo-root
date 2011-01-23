@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="agentDM" immediate="true" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
+	<implementation class="org.eclipse.virgo.kernel.agent.dm.internal.AgentActivator"/>
+	<reference name="EventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLoggerFactory"
+		policy="dynamic"/>	
+	<reference name="EventAdmin"
+		interface="org.osgi.service.event.EventAdmin"
+		policy="dynamic"/>
+</component>

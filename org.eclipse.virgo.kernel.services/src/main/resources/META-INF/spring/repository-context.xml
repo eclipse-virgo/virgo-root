@@ -13,7 +13,7 @@
 		</constructor-arg>
 		<constructor-arg ref="eventLogger"/>
 		<constructor-arg ref="repositoryFactory"/>
-		<constructor-arg value="${work.directory}"/>
+		<constructor-arg value="#{kernelConfig.getProperty('work.directory')}"/>
 		<constructor-arg >
 		<set>
 			<ref bean="bundleBridge"/>
@@ -23,7 +23,7 @@
 			<ref bean="propertiesBridge"/>
 		</set>
 		</constructor-arg>		
-		<constructor-arg value="${domain}"/>
+		<constructor-arg value="#{kernelConfig.getProperty('domain')}"/>
 	</bean>
 	
 	<bean id="bundleBridge" class="org.eclipse.virgo.kernel.artifact.bundle.BundleBridge">
@@ -58,5 +58,7 @@
 	<osgi:service ref="repository" interface="org.eclipse.virgo.repository.Repository"/>
 
 	<osgi:reference id="hashGenerator" interface="org.eclipse.virgo.repository.HashGenerator"/>
+	
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
 
 </beans>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="kernelcore" immediate="true" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
+	<implementation class="org.eclipse.virgo.kernel.core.internal.CoreBundleActivator"/>
+	<reference name="EventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLogger"
+		policy="dynamic"/>
+	<reference name="DumpGenerator"
+		interface="org.eclipse.virgo.medic.dump.DumpGenerator"
+		policy="dynamic"/>	
+	<reference name="ConfigAdmin"
+		interface="org.osgi.service.cm.ConfigurationAdmin"
+		policy="dynamic"/>
+  	<reference name="EventAdmin"
+		interface="org.osgi.service.event.EventAdmin"
+		policy="dynamic"/>
+</component>

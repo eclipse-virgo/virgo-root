@@ -14,20 +14,19 @@ package org.eclipse.virgo.kernel.agent.dm.internal;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.osgi.framework.BundleActivator;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
+import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
 
-import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
-import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
-
 /**
- * {@link BundleActivator} for the Kernel's Agent bundle
+ * ComponentContext activator for the Kernel's Agent bundle
  * 
  * <p />
  * 
@@ -36,15 +35,15 @@ import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
  * Thread-safe.
  * 
  */
-public final class AgentActivator implements BundleActivator {
+public final class AgentActivator {
 
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
     /**
      * {@inheritDoc}
      */
-    public void start(BundleContext context) {
-        registerSpringDmToBlueprintEventAdapter(context);
+    public void activate(ComponentContext context) {
+        registerSpringDmToBlueprintEventAdapter(context.getBundleContext());
     }
 
     private void registerSpringDmToBlueprintEventAdapter(BundleContext context) {
@@ -66,11 +65,11 @@ public final class AgentActivator implements BundleActivator {
         props.put(EventConstants.EVENT_TOPIC, new String[] { "org/osgi/service/blueprint/container/*" });
         this.registrationTracker.track(context.registerService(EventHandler.class.getName(), failureListener, props));
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public void stop(BundleContext context) throws Exception {
+    public void deactivate(ComponentContext context) throws Exception {
         this.registrationTracker.unregisterAll();
     }
 
@@ -82,10 +81,11 @@ public final class AgentActivator implements BundleActivator {
             result = (T) context.getService(ref);
         }
         if (result == null) {
-//TODO: is consuming service references reasonable if failures are retried many times? May need the following code.
-//            if (ref != null) {
-//                context.ungetService(ref); 
-//            }
+            // TODO: is consuming service references reasonable if failures are retried many times? May need the
+            // following code.
+            // if (ref != null) {
+            // context.ungetService(ref);
+            // }
             throw new IllegalStateException("Unable to access required service of type '" + clazz.getName() + "' from bundle '"
                 + context.getBundle().getSymbolicName() + "'");
         }

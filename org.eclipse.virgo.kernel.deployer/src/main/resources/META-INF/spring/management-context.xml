@@ -13,13 +13,15 @@
 			</bean>
 		</constructor-arg>
 		<constructor-arg
-			value="${domain}:category=Control,type=Deployer" />
+			value="#{kernelConfig.getProperty('domain')}:category=Control,type=Deployer" />
 	</bean>
 
 	<!-- RecoveryMonitor -->
 	<bean class="org.eclipse.virgo.kernel.management.ManagementExporter">
 		<constructor-arg ref="recoveryMonitor" />
 		<constructor-arg
-			value="${domain}:category=Control,type=RecoveryMonitor" />
+			value="#{kernelConfig.getProperty('domain')}:category=Control,type=RecoveryMonitor" />
 	</bean>
+	
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
 </beans>
