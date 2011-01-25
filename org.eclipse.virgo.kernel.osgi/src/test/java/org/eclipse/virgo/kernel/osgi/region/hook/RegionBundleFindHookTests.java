@@ -141,6 +141,7 @@ public class RegionBundleFindHookTests {
 
         this.candidates.add(bundle(BUNDLE_B));
         this.candidates.add(bundle(BUNDLE_C));
+        this.candidates.add(bundle(BUNDLE_X));
         this.bundleFindHook.find(bundleContext(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(bundle(BUNDLE_C)));
         assertFalse(this.candidates.contains(bundle(BUNDLE_B)));

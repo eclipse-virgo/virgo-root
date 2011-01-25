@@ -79,6 +79,11 @@ final class RegionResolverHook implements ResolverHook {
     }
 
     private Long getBundleId(BundleRevision bundleRevision) {
+        // For testability, use the bundle revision's bundle before casting to ResolverBundle.
+        Bundle bundle = bundleRevision.getBundle();
+        if (bundle != null) {
+            return bundle.getBundleId();
+        }
         if (bundleRevision instanceof ResolverBundle) {
             ResolverBundle resolverBundle = (ResolverBundle) bundleRevision;
             return resolverBundle.getBundleDescription().getBundleId();
