@@ -11,14 +11,18 @@
 
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
 import org.eclipse.virgo.util.math.OrderedPair;
@@ -36,6 +40,12 @@ import org.osgi.framework.Version;
  * Thread safe.
  */
 public final class BundleIdBasedRegion implements Region {
+
+    private static final String REGION_LOCATION_DELIMITER = "@";
+
+    private static final String REFERENCE_SCHEME = "reference:";
+
+    private static final String FILE_SCHEME = "file:";
 
     // A concurrent data structure ensures the contains method does not need synchronisation.
     private final Set<Long> bundleIds = new ConcurrentHashSet<Long>();
@@ -114,10 +124,13 @@ public final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
-        synchronized (this.updateMonitor) {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        /*
+         * TODO: use bundle install hook to close the window between the bundle being installed and it belonging to the region.
+         * See bug 333189.
+         */
+        Bundle bundle = this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, input);
+        addBundle(bundle);
+        return bundle;
     }
 
     /**
@@ -125,10 +138,37 @@ public final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location) throws BundleException {
-        synchronized (this.updateMonitor) {
-            // TODO Auto-generated method stub
-            return null;
+        /*
+         * TODO: use bundle install hook to close the window between the bundle being installed and it belonging to the region.
+         * See bug 333189.
+         */
+        Bundle bundle = this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, openBundleStream(location));
+        addBundle(bundle);
+        return bundle;
+    }
+
+    private InputStream openBundleStream(String location) throws BundleException {
+        String absoluteBundleUriString = getAbsoluteUriString(location);
+
+        try {
+            // Use the reference: scheme to obtain an InputStream for either a file or a directory.
+            return new URL(REFERENCE_SCHEME + absoluteBundleUriString).openStream();
+
+        } catch (MalformedURLException e) {
+            throw new BundleException("Location '" + location + "' resulted in an invalid bundle URI '" + absoluteBundleUriString + "'", e);
+        } catch (IOException e) {
+            throw new BundleException("Location '" + location + "' referred to an invalid bundle at URI '" + absoluteBundleUriString + "'", e);
         }
+    }
+
+    private String getAbsoluteUriString(String location) throws BundleException {
+        if (!location.startsWith(FILE_SCHEME)) {
+            throw new BundleException("Cannot install from location '" + location + "' which did not start with '" + FILE_SCHEME + "'");
+        }
+
+        String filePath = location.substring(FILE_SCHEME.length());
+
+        return FILE_SCHEME + new File(filePath).getAbsolutePath();
     }
 
     /**
