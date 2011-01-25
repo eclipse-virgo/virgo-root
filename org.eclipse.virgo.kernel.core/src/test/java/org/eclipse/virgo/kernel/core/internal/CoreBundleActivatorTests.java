@@ -30,6 +30,7 @@ import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.teststubs.osgi.service.component.StubComponentContext;
 import org.eclipse.virgo.teststubs.osgi.service.event.StubEventAdmin;
 
 /**
@@ -41,14 +42,16 @@ public class CoreBundleActivatorTests {
     @Test(expected = IllegalStateException.class)
     public void noConfigService() throws Exception {
         StubBundleContext bundleContext = new StubBundleContext();
+        StubComponentContext componentContext = new StubComponentContext(bundleContext);
         bundleContext.addFilter(StartupTracker.APPLICATION_CONTEXT_FILTER, FrameworkUtil.createFilter(StartupTracker.APPLICATION_CONTEXT_FILTER));
         CoreBundleActivator activator = new TestCoreBundleActivator();
-        activator.start(bundleContext);
+        activator.activate(componentContext);
     }
 
     @Test
     public void startAndStop() throws Exception {
         StubBundleContext bundleContext = new StubBundleContext();
+        StubComponentContext componentContext = new StubComponentContext(bundleContext);
         DumpGenerator dumpGenerator = createNiceMock(DumpGenerator.class);
         bundleContext.addFilter(StartupTracker.APPLICATION_CONTEXT_FILTER, FrameworkUtil.createFilter(StartupTracker.APPLICATION_CONTEXT_FILTER));
         bundleContext.registerService(ConfigurationAdmin.class.getName(), new StubConfigurationAdmin(), null);
@@ -59,8 +62,8 @@ public class CoreBundleActivatorTests {
         bundleContext.addProperty("org.eclipse.virgo.kernel.home", new File(".").getAbsolutePath());
 
         CoreBundleActivator activator = new TestCoreBundleActivator();
-        activator.start(bundleContext);
-        activator.stop(bundleContext);
+        activator.activate(componentContext);
+        activator.deactivate(componentContext);
     }
     
     private static final class TestCoreBundleActivator extends CoreBundleActivator {
