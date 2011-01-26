@@ -9,14 +9,12 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region.internal;
+package org.eclipse.virgo.kernel.osgi.region;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Filter;
 import org.osgi.framework.Version;

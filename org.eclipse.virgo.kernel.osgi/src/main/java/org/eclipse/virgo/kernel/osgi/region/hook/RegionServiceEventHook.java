@@ -37,11 +37,11 @@ import org.osgi.framework.hooks.service.FindHook;
  * <strong>Concurrent Semantics</strong><br />
  * Thread safe.
  */
-final class RegionServiceEventHook implements EventHook {
+public final class RegionServiceEventHook implements EventHook {
 
     private final FindHook serviceFindHook;
 
-    RegionServiceEventHook(FindHook bundleFindBook) {
+    public RegionServiceEventHook(FindHook bundleFindBook) {
         this.serviceFindHook = bundleFindBook;
     }
 

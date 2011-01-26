@@ -11,35 +11,35 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.osgi.region.hook;
 
 import java.util.Collection;
 
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.osgi.framework.hooks.resolver.ResolverHook;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.framework.wiring.BundleRevision;
 
 /**
- * TODO Document RegionResolverHook
+ * {@link RegionResolverHook} constructs an instance of {@link RegionResolverHook} for a particular resolution
+ * operation.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
  * Thread safe.
  */
-final class RegionResolverHookFactory implements ResolverHookFactory {
+public final class RegionResolverHookFactory implements ResolverHookFactory {
 
-    private final RegionMembership regionMembership;
+    private final RegionDigraph regionDigraph;
 
-    RegionResolverHookFactory(RegionMembership regionMembership) {
-        this.regionMembership = regionMembership;
+    public RegionResolverHookFactory(RegionDigraph regionDigraph) {
+        this.regionDigraph = regionDigraph;
     }
-
-    
 
     @Override
     public ResolverHook begin(Collection<BundleRevision> triggers) {
-        return new RegionResolverHook(this.regionMembership, triggers);
+        return new RegionResolverHook(this.regionDigraph);
     }
 
 }

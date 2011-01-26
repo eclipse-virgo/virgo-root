@@ -11,10 +11,8 @@
 
 package org.eclipse.virgo.kernel.agent.dm.internal;
 
-import org.eclipse.virgo.kernel.osgi.region.IndeterminateRegionException;
 import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
-import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -42,7 +40,7 @@ final class DeployerFailureListener implements EventHandler {
 
     private final EventLogger eventLogger;
 
-    private volatile RegionMembership regionMembership;
+    private volatile RegionDigraph regionDigraph;
 
     private volatile Region agentRegion;
 
@@ -64,24 +62,25 @@ final class DeployerFailureListener implements EventHandler {
     }
 
     private boolean inThisRegion(Bundle bundle) {
-        if (regionMembership == null) {
+        if (regionDigraph == null) {
             Bundle agentBundle = FrameworkUtil.getBundle(getClass());
             BundleContext bundleContext = agentBundle.getBundleContext();
-            ServiceReference<RegionMembership> regionMembershipServiceReference = bundleContext.getServiceReference(RegionMembership.class);
+            ServiceReference<RegionDigraph> regionMembershipServiceReference = bundleContext.getServiceReference(RegionDigraph.class);
             if (regionMembershipServiceReference != null) {
-                this.regionMembership = bundleContext.getService(regionMembershipServiceReference);
-                try {
-                    this.agentRegion = this.regionMembership.getRegion(agentBundle);
-                } catch (IndeterminateRegionException e) {
-                    Assert.isTrue(false, "Indeterminate agent region");
-                }
+                this.regionDigraph = bundleContext.getService(regionMembershipServiceReference);
+                this.agentRegion = getRegion(agentBundle);
             }
         }
-        try {
-            return this.regionMembership != null ? this.regionMembership.getRegion(bundle).equals(this.agentRegion) : true;
-        } catch (IndeterminateRegionException e) {
-            return true;
+        return this.regionDigraph != null ? getRegion(bundle).equals(this.agentRegion) : true;
+    }
+
+    private Region getRegion(Bundle bundle) {
+        for (Region region : this.regionDigraph) {
+            if (region.contains(bundle)) {
+                return region;
+            }
         }
+        return null;
     }
 
 }

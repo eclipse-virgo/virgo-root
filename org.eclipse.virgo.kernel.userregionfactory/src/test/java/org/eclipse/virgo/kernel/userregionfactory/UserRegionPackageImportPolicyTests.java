@@ -16,27 +16,14 @@ package org.eclipse.virgo.kernel.userregionfactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.easymock.EasyMock;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
 import org.osgi.framework.wiring.Capability;
 
 public class UserRegionPackageImportPolicyTests {
 
-    private Region mockUserRegion;
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        mockUserRegion = EasyMock.createMock(Region.class);
-    }
-    
     @Test
     public void testNullPackageString() {
         new UserRegionPackageImportPolicy(null);
@@ -46,8 +33,8 @@ public class UserRegionPackageImportPolicyTests {
     public void testEmptyPackageString() {
         new UserRegionPackageImportPolicy("");
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testWildcard() {
         new UserRegionPackageImportPolicy("*");
     }
@@ -59,12 +46,11 @@ public class UserRegionPackageImportPolicyTests {
         Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
         Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
-       
+
     }
 
     private UserRegionPackageImportPolicy createUserRegionPackageImportPolicy(String regionImports) {
         UserRegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy(regionImports);
-        userRegionPackageImportPolicy.setUserRegion(this.mockUserRegion);
         return userRegionPackageImportPolicy;
     }
 
@@ -74,7 +60,7 @@ public class UserRegionPackageImportPolicyTests {
         Map<String, Object> attributes = createAttributes("p");
         attributes.put("pa", "pv");
         Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
-       
+
     }
 
     private Map<String, Object> createAttributes(String packageName) {
@@ -115,10 +101,9 @@ public class UserRegionPackageImportPolicyTests {
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("version", new Version("2.0.0"));
         Assert.assertTrue(userRegionPackageImportPolicy.isImported("p", attributes, null));
-       
+
     }
 
-    
     @Test
     public void testPackages() {
         RegionPackageImportPolicy userRegionPackageImportPolicy = createUserRegionPackageImportPolicy("p,q");
@@ -126,5 +111,5 @@ public class UserRegionPackageImportPolicyTests {
         Assert.assertTrue(userRegionPackageImportPolicy.isImported("q", null, null));
         Assert.assertFalse(userRegionPackageImportPolicy.isImported("r", null, null));
     }
-    
+
 }

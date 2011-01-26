@@ -25,6 +25,7 @@ import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 
@@ -160,6 +161,42 @@ public final class StandardRegionDigraph implements RegionDigraph {
             return this.regionFilter;
         }
 
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Region getRegion(@NonNull String regionName) {
+        for (Region region : this) {
+            if (regionName.equals(region.getName())) {
+                return region;
+            }
+        }
+        return null;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Region getRegion(Bundle bundle) {
+        for (Region region : this) {
+            if (region.contains(bundle)) {
+                return region;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Region getRegion(long bundleId) {
+        for (Region region : this) {
+            if (region.contains(bundleId)) {
+                return region;
+            }
+        }
+        return null;
     }
 
 }

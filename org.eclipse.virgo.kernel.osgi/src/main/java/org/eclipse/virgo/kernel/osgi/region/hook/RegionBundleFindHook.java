@@ -33,11 +33,11 @@ import org.osgi.framework.hooks.bundle.FindHook;
  * <strong>Concurrent Semantics</strong><br />
  * Thread safe.
  */
-final class RegionBundleFindHook implements FindHook {
+public final class RegionBundleFindHook implements FindHook {
 
     private final RegionDigraph regionDigraph;
 
-    RegionBundleFindHook(RegionDigraph regionDigraph) {
+    public RegionBundleFindHook(RegionDigraph regionDigraph) {
         this.regionDigraph = regionDigraph;
     }
 

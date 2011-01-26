@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region.internal;
+package org.eclipse.virgo.kernel.osgi.region;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
 import org.eclipse.virgo.util.math.OrderedPair;
@@ -210,15 +206,6 @@ public final class BundleIdBasedRegion implements Region {
      * {@inheritDoc}
      */
     @Override
-    public RegionPackageImportPolicy getRegionPackageImportPolicy() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean contains(Bundle bundle) {
         return this.bundleIds.contains(bundle.getBundleId());
     }
@@ -244,6 +231,14 @@ public final class BundleIdBasedRegion implements Region {
         }
         BundleIdBasedRegion other = (BundleIdBasedRegion) obj;
         return this.regionName.equals(other.regionName);
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean contains(long bundleId) {
+        return this.bundleIds.contains(bundleId);
     }
 
 }

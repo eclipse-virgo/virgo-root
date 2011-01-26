@@ -18,11 +18,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.easymock.EasyMock;
+import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
-import org.eclipse.virgo.kernel.osgi.region.internal.BundleIdBasedRegion;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;

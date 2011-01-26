@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
-import org.eclipse.virgo.kernel.osgi.region.internal.BundleIdBasedRegion;
+import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.After;
@@ -132,7 +132,7 @@ public class RegionResolverHookTests {
         this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
     }
-    
+
     @Test
     public void testResolveBundleCapabilityConnectedRegionAllowed() throws BundleException {
         RegionFilter filter = createBundleFilter(BUNDLE_B, BUNDLE_VERSION);
@@ -155,7 +155,7 @@ public class RegionResolverHookTests {
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
         assertFalse(this.candidates.contains(packageCapability(BUNDLE_X, PACKAGE_X)));
     }
-    
+
     @Test
     public void testResolveBundleConnectedRegionFiltering() throws BundleException {
         RegionFilter filter = createBundleFilter(BUNDLE_B, BUNDLE_VERSION);
@@ -169,8 +169,6 @@ public class RegionResolverHookTests {
         assertTrue(this.candidates.contains(bundleCapability(BUNDLE_B)));
         assertFalse(this.candidates.contains(bundleCapability(BUNDLE_X)));
     }
-
-
 
     @Test
     public void testResolveTransitive() throws BundleException {
@@ -252,7 +250,7 @@ public class RegionResolverHookTests {
         this.resolverHook.filterMatches(new StubBundleRevision(stranger), this.candidates);
         assertEquals(0, this.candidates.size());
     }
-    
+
     @Test
     public void testUnimplementedMethods() {
         this.resolverHook.filterResolvable(null);
@@ -263,7 +261,7 @@ public class RegionResolverHookTests {
     private Capability packageCapability(final String bundleSymbolicName, String packageName) {
         return new StubPackageCapability(bundleSymbolicName, packageName);
     }
-    
+
     private Capability bundleCapability(String bundleSymbolicName) {
         return new StubBundleCapability(bundleSymbolicName);
     }
@@ -288,11 +286,6 @@ public class RegionResolverHookTests {
         filter.setPackageImportPolicy(new RegionPackageImportPolicy() {
 
             @Override
-            public Region getUserRegion() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
             public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
                 for (String pkg : packageNames) {
                     if (packageName.equals(pkg)) {
@@ -304,7 +297,7 @@ public class RegionResolverHookTests {
         });
         return filter;
     }
-    
+
     private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) {
         RegionFilter filter = new StandardRegionFilter();
         filter.allowBundle(bundleSymbolicName, bundleVersion);

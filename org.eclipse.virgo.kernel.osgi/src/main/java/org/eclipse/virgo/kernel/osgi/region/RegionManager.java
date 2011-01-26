@@ -11,24 +11,24 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
-import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.kernel.osgi.region.hook.RegionBundleEventHook;
+import org.eclipse.virgo.kernel.osgi.region.hook.RegionBundleFindHook;
+import org.eclipse.virgo.kernel.osgi.region.hook.RegionResolverHookFactory;
+import org.eclipse.virgo.kernel.osgi.region.hook.RegionServiceEventHook;
+import org.eclipse.virgo.kernel.osgi.region.hook.RegionServiceFindHook;
+import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.EventHook;
 import org.osgi.framework.hooks.bundle.FindHook;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
-import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.EventAdmin;
 
@@ -43,141 +43,67 @@ import org.osgi.service.event.EventAdmin;
  */
 final class RegionManager {
 
-    private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
-
-    private static final String USER_REGION_SERVICE_IMPORTS_PROPERTY = "serviceImports";
-
-    private static final String USER_REGION_SERVICE_EXPORTS_PROPERTY = "serviceExports";
-
     private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
 
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
     private final BundleContext bundleContext;
 
-    private String regionServiceImports;
-
-    private String regionServiceExports;
-
     public RegionManager(BundleContext bundleContext, EventAdmin eventAdmin, ConfigurationAdmin configAdmin, EventLogger eventLogger,
         Shutdown shutdown) {
         this.bundleContext = bundleContext;
-        getRegionConfiguration(configAdmin, eventLogger, shutdown);
     }
 
-    private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
-        try {
-            Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
-
-            @SuppressWarnings("unchecked")
-            Dictionary<String, String> properties = config.getProperties();
-
-            if (properties != null) {
-                this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
-                this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
-            } else {
-                eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
-                shutdown.immediateShutdown();
-            }
-        } catch (Exception e) {
-            eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE, e);
-            shutdown.immediateShutdown();
-        }
-    }
-
+   
     public void start() throws BundleException {
-        createAndPublishUserRegion();
+        RegionDigraph regionDigraph = createRegionDigraph();
+        registerRegionHooks(regionDigraph);
     }
 
-    private void createAndPublishUserRegion() throws BundleException {
+    private RegionDigraph createRegionDigraph() throws BundleException {
+        RegionDigraph regionDigraph = new StandardRegionDigraph();
+        createKernelRegion(regionDigraph);
+        registerRegionDigraph(regionDigraph, this.bundleContext);
+        return regionDigraph;
+    }
 
-        ImmutableRegion kernelRegion = new ImmutableRegion(REGION_KERNEL, this.bundleContext, new RegionPackageImportPolicy() {
 
-            @Override
-            public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
-                return false;
-            }
+    private void createKernelRegion(RegionDigraph regionDigraph) throws BundleException {
+        Region kernelRegion = new BundleIdBasedRegion(REGION_KERNEL, regionDigraph, getSystemBundleContext());
+        regionDigraph.addRegion(kernelRegion);
 
-            @Override
-            public Region getUserRegion() {
-                //XXX Temporary hack: return any region object that is not the kernel region.
-                return new Region(){
-
-                    @Override
-                    public void addBundle(Bundle bundle) throws BundleException {
-                        // TODO Auto-generated method stub
-                        
-                    }
-
-                    @Override
-                    public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
-                        // TODO Auto-generated method stub
-                        
-                    }
-
-                    @Override
-                    public boolean contains(Bundle bundle) {
-                        // TODO Auto-generated method stub
-                        return false;
-                    }
-
-                    @Override
-                    public Bundle getBundle(String symbolicName, Version version) {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }
-
-                    @Override
-                    public BundleContext getBundleContext() {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }
-
-                    @Override
-                    public String getName() {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }
-
-                    @Override
-                    public RegionPackageImportPolicy getRegionPackageImportPolicy() {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }
-
-                    @Override
-                    public Bundle installBundle(String location, InputStream input) throws BundleException {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }
-
-                    @Override
-                    public Bundle installBundle(String location) throws BundleException {
-                        // TODO Auto-generated method stub
-                        return null;
-                    }};
-            }
-        });
+        for (Bundle bundle : this.bundleContext.getBundles()) {
+            kernelRegion.addBundle(bundle);
+        }
+        
         registerRegionService(kernelRegion);
-
-        StandardRegionMembership regionMembership = new StandardRegionMembership(this.bundleContext.getBundle(), kernelRegion);
-        registerRegionMembership(regionMembership, this.bundleContext);
-
-        registerResolverHookFactory(new RegionResolverHookFactory(regionMembership));
-
-        registerBundleEventHook(new RegionBundleEventHook(regionMembership));
-
-        registerBundleFindHook(new RegionBundleFindHook(regionMembership));
-
-        registerServiceEventHook(new RegionServiceEventHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
-
-        registerServiceFindHook(new RegionServiceFindHook(regionMembership, this.regionServiceImports, this.regionServiceExports));
     }
 
-    private void registerRegionMembership(RegionMembership regionMembership, BundleContext userRegionBundleContext) {
-        this.tracker.track(this.bundleContext.registerService(RegionMembership.class, regionMembership, null));
+
+    private void registerRegionHooks(RegionDigraph regionDigraph) {
+        registerResolverHookFactory(new RegionResolverHookFactory(regionDigraph));
+     
+        RegionBundleFindHook bundleFindHook = new RegionBundleFindHook(regionDigraph);
+        
+        registerBundleFindHook(bundleFindHook);
+
+        registerBundleEventHook(new RegionBundleEventHook(bundleFindHook));
+
+        RegionServiceFindHook serviceFindHook = new RegionServiceFindHook(regionDigraph);
+        
+        registerServiceFindHook(serviceFindHook);
+
+        registerServiceEventHook(new RegionServiceEventHook(serviceFindHook));
+    }
+
+    private BundleContext getSystemBundleContext() {
+        return this.bundleContext.getBundle(0L).getBundleContext();
+    }
+    
+    private void registerRegionDigraph(RegionDigraph regionDigraph, BundleContext userRegionBundleContext) {
+        this.tracker.track(this.bundleContext.registerService(RegionDigraph.class, regionDigraph, null));
         if (userRegionBundleContext != null) {
-            this.tracker.track(userRegionBundleContext.registerService(RegionMembership.class, regionMembership, null));
+            this.tracker.track(userRegionBundleContext.registerService(RegionDigraph.class, regionDigraph, null));
         }
     }
 
@@ -212,77 +138,4 @@ final class RegionManager {
         this.tracker.unregisterAll();
     }
 
-    private final class StandardRegionMembership implements RegionMembership {
-
-        private final long highestKernelBundleId;
-
-        private final Region kernelRegion;
-
-        private Region userRegion;
-
-        private final Object monitor = new Object();
-
-        public StandardRegionMembership(Bundle lastBundleInKernel, Region kernelRegion) {
-            this.highestKernelBundleId = lastBundleInKernel.getBundleId();
-            this.kernelRegion = kernelRegion;
-        }
-
-        private boolean contains(Long bundleId) {
-            // TODO implement a more robust membership scheme. See bug 333193.
-            return bundleId > this.highestKernelBundleId || bundleId == 0L;
-        }
-
-        public void setUserRegion(Region userRegion) {
-            synchronized (this.monitor) {
-                if (this.userRegion == null) {
-                    this.userRegion = userRegion;
-                } else {
-                    Assert.isTrue(this.userRegion == userRegion, "User region already set");
-                }
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Region getRegion(Bundle bundle) throws IndeterminateRegionException {
-            try {
-                return getRegion(bundle.getBundleId());
-            } catch (RegionSpanningException _) {
-                throw new RegionSpanningException(bundle);
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Region getRegion(long bundleId) throws IndeterminateRegionException {
-            if (bundleId == 0L) {
-                throw new RegionSpanningException(bundleId);
-            }
-            if (contains(bundleId)) {
-                synchronized (this.monitor) {
-                    if (this.userRegion != null) {
-                        return this.userRegion;
-                    } else {
-                        // Allow the user region factory bundle to start off in the kernel until it creates the user
-                        // region
-                        return this.kernelRegion;
-                    }
-                }
-            } else {
-                return this.kernelRegion;
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Region getKernelRegion() {
-            return this.kernelRegion;
-        }
-    }
 }

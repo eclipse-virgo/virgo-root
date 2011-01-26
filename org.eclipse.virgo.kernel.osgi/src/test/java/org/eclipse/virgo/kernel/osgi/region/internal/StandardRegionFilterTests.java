@@ -21,6 +21,7 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
+import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;

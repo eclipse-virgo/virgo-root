@@ -24,9 +24,8 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.osgi.region.IndeterminateRegionException;
 import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionMembership;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
@@ -40,20 +39,26 @@ import org.springframework.util.AntPathMatcher;
  * 
  */
 final public class StandardStateService implements StateService {
+    
+    private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
 
     private final QuasiFrameworkFactory quasiFrameworkFactory;
 
     private final BundleContext bundleContext;
 
-    private final RegionMembership regionMembership;
+    private final RegionDigraph regionDigraph;
 
     private final Region kernelRegion;
     
-    public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionMembership regionMembership) {
+    public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionDigraph regionMembership) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.bundleContext = bundleContext;
-        this.regionMembership = regionMembership;
-        this.kernelRegion = regionMembership.getKernelRegion();
+        this.regionDigraph = regionMembership;
+        this.kernelRegion = getKernelRegion(regionMembership);
+    }
+
+    private Region getKernelRegion(RegionDigraph regionDigraph) {
+        return regionDigraph.getRegion(REGION_KERNEL);
     }
 
     /**
@@ -65,18 +70,18 @@ final public class StandardStateService implements StateService {
             List<QuasiBundle> userRegionBundles = new ArrayList<QuasiBundle>();
             for (QuasiBundle bundle : bundles) {
                 long bundleId = bundle.getBundleId();
-                try {
-                    if (bundleId == 0L || !this.kernelRegion.equals(this.regionMembership.getRegion(bundleId))) {
-                        userRegionBundles.add(bundle);
-                    }
-                } catch (IndeterminateRegionException _) {
-                    // Ignore.
+                if (bundleId == 0L || !this.kernelRegion.equals(getRegion(bundleId))) {
+                    userRegionBundles.add(bundle);
                 }
             }
             return userRegionBundles;
         } else {
             return bundles;
         }
+    }
+
+    private Region getRegion(long bundleId) {
+        return this.regionDigraph.getRegion(bundleId);
     }
 
     /**

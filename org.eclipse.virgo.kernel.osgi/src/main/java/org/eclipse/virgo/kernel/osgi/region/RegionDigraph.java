@@ -15,6 +15,7 @@ package org.eclipse.virgo.kernel.osgi.region;
 
 import java.util.Set;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 /**
@@ -60,6 +61,31 @@ public interface RegionDigraph extends Iterable<Region> {
      * @param region the region to be added
      */
     void addRegion(Region region);
+
+    /**
+     * Gets the {@link Region} in the digraph with the given name.
+     * 
+     * @param regionName the name of the region
+     * @return the {@link Region} or <code>null</code> if no such region is present in the digraph
+     */
+    Region getRegion(String regionName);
+
+    /**
+     * Gets the {@link Region} in the digraph containing the given bundle.
+     * 
+     * @param bundle the bundle to search for
+     * @return the {@link Region} which contains the given bundle or <code>null</code> if there is no such region
+     */
+    Region getRegion(Bundle bundle);
+
+    /**
+     * Gets the {@link Region} in the digraph containing a bundle with the given bundle id.
+     * 
+     * @param bundleId the bundleId of the bundle to search for
+     * @return the {@link Region} which contains a bundle with the given bundle or <code>null</code> if there is no such
+     *         region
+     */
+    Region getRegion(long bundleId);
 
     /**
      * Connects a given tail region to a given head region via an edge labelled with the given {@link RegionFilter}. The

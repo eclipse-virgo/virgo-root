@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.osgi.service.resolver.VersionRange;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
@@ -47,10 +46,6 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
 
     private final Map<String, ImportedPackage> importedPackages = new HashMap<String, ImportedPackage>();
 
-    private Region userRegion;
-
-    private final Object monitor = new Object();
-
     /**
      * Construct a {@link UserRegionPackageImportPolicy} for the specified import package list which must not contain
      * wildcards.
@@ -69,18 +64,6 @@ class UserRegionPackageImportPolicy implements RegionPackageImportPolicy {
                 String packageName = importedPackage.getPackageName();
                 this.importedPackages.put(packageName, importedPackage);
             }
-        }
-    }
-
-    void setUserRegion(Region userRegion) {
-        synchronized (this.monitor) {
-            this.userRegion = userRegion;
-        }
-    }
-
-    public Region getUserRegion() {
-        synchronized (this.monitor) {
-            return this.userRegion;
         }
     }
 

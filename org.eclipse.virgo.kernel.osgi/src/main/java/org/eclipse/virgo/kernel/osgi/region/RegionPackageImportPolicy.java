@@ -27,11 +27,6 @@ import java.util.Map;
 public interface RegionPackageImportPolicy {
     
     /**
-     * @deprecated Temporary method to ease transition to digraph
-     */
-    Region getUserRegion();
-
-    /**
      * Returns <code>true</code> if and only if the package with the specified name exported with the specified
      * attributes and directives is imported into the region.
      * 

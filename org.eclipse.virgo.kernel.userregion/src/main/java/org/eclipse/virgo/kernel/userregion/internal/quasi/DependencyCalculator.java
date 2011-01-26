@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.ResolutionDumpContributor;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
 
@@ -82,12 +84,18 @@ public final class DependencyCalculator {
 
     private final DumpGenerator dumpGenerator;
 
+    private RegionDigraph regionDigraph;
+
+    private Region userRegion;
+
     public DependencyCalculator(StateObjectFactory stateObjectFactory, ResolutionFailureDetective detective, Repository repository,
         BundleContext bundleContext) {
         this.repository = repository;
         this.detective = detective;
         this.stateObjectFactory = stateObjectFactory;
-        this.dumpGenerator = (DumpGenerator) bundleContext.getService(bundleContext.getServiceReference(DumpGenerator.class.getName()));
+        this.dumpGenerator = bundleContext.getService(bundleContext.getServiceReference(DumpGenerator.class));
+        this.regionDigraph = bundleContext.getService(bundleContext.getServiceReference(RegionDigraph.class));
+        userRegion = this.regionDigraph.getRegion(bundleContext.getBundle());
     }
 
     /**
@@ -350,7 +358,10 @@ public final class DependencyCalculator {
         try {
             URI uri = artifact.getUri();
             String installLocation = "file".equals(uri.getScheme()) ? new File(uri).getAbsolutePath() : uri.toString();
-            return this.stateObjectFactory.createBundleDescription(state, manifest, USER_REGION_TAG + installLocation, this.bundleId.getAndIncrement());
+            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(state, manifest, this.userRegion.getName() + "@" + installLocation,
+                this.bundleId.getAndIncrement());
+            //TODO: need to add bundle id to user region and then clean it up at the end
+            return bundleDescription;
         } catch (RuntimeException e) {
             throw new BundleException("Unable to read bundle at '" + artifact.getUri() + "'", e);
         } catch (BundleException be) {

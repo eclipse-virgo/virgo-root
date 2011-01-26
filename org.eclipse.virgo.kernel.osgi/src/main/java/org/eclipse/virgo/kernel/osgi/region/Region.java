@@ -100,6 +100,14 @@ public interface Region {
      * @return <code>true</code> if the given bundle belongs to this region and <code>false</code> otherwise
      */
     boolean contains(Bundle bundle);
+
+    /**
+     * Returns <code>true</code> if and only if a bundle with the given bundle id belongs to this region.
+     * 
+     * @param bundleId a bundle id
+     * @return <code>true</code> if a bundle with the given bundle id belongs to this region and <code>false</code> otherwise
+     */
+    boolean contains(long bundleId);
     
     /**
      * Get the bundle in this region with the given symbolic name and version.
@@ -136,13 +144,5 @@ public interface Region {
      *             bundle context
      */
     BundleContext getBundleContext();
-
-    /**
-     * Returns the {@link RegionPackageImportPolicy} associated with this region.
-     * 
-     * @return the {@link RegionPackageImportPolicy} of this region
-     * @deprecated This method should not appear on the API as filters are attributes of connections between regions
-     */
-    RegionPackageImportPolicy getRegionPackageImportPolicy();
 
 }
