@@ -21,6 +21,7 @@
 
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
+		<dependency org="org.eclipse" name="equinox-event" rev="${org.eclipse.equinox.event}"/>
 
         <dependency name='org.eclipse.virgo.util.io' rev='${org.eclipse.virgo.util}' org='org.eclipse.virgo.util' conf='compile->compile'/>
         <dependency name='org.eclipse.virgo.util.jmx' rev='${org.eclipse.virgo.util}' org='org.eclipse.virgo.util' conf='aspects->runtime'/>
@@ -30,7 +31,6 @@
         <dependency name='org.eclipse.virgo.medic' rev='${org.eclipse.virgo.medic}' org='org.eclipse.virgo.medic' conf='aspects, compile->runtime'/>
         <dependency name='org.eclipse.virgo.medic.core' rev='${org.eclipse.virgo.medic}' org='org.eclipse.virgo.medic' conf='runtime->runtime'/>
         <dependency name='org.eclipse.virgo.medic.test' rev='${org.eclipse.virgo.medic}' org='org.eclipse.virgo.medic' conf='test->runtime'/>
-        <dependency name='org.apache.felix.eventadmin' rev='${org.apache.felix.eventadmin}' conf='compile->compile' org='org.apache.felix'/>
         <dependency org="org.springframework.osgi" name="org.springframework.osgi.extender" rev="${org.springframework.osgi}" conf="compile->compile"/>
         <dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="compile->compile"/>
         <override org="org.springframework" rev="${org.springframework}"/>

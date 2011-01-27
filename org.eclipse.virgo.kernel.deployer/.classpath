@@ -49,10 +49,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/2.2.0.D-20110113044904/org.eclipse.virgo.medic.test-2.2.0.D-20110113044904.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/2.2.0.D-20110113044904/org.eclipse.virgo.medic.test-sources-2.2.0.D-20110113044904.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.eventadmin/1.0.0/org.apache.felix.eventadmin-1.0.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.eventadmin/1.0.0/org.apache.felix.eventadmin-sources-1.0.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.artifact"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/2.2.0.D-20101207145338/org.eclipse.virgo.teststubs.osgi-2.2.0.D-20101207145338.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/1.0.0.CI-B39/org.eclipse.virgo.teststubs.osgi-sources-1.0.0.CI-B39.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse/equinox-event/1.2.100.v20101208/equinox-event-1.2.100.v20101208.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
