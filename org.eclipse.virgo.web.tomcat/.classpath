@@ -26,7 +26,7 @@
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-3.7.0.v20101022.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-sources-3.7.0.v20101022.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.web.core"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/2.2.0.D-20101207150035/org.eclipse.virgo.util.math-2.2.0.D-20101207150035.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.2.0.M01/org.eclipse.gemini.web.tomcat-1.2.0.M01.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-46/org.eclipse.gemini.web.tomcat-sources-1.1.0.CI-46.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.2.0.BUILD-20110127170325/org.eclipse.gemini.web.tomcat-1.2.0.BUILD-20110127170325.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-46/org.eclipse.gemini.web.tomcat-sources-1.1.0.CI-46.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/2.2.0.D-20110113045305/org.eclipse.virgo.kernel.osgi-2.2.0.D-20110113045305.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/2.2.0.D-20110113045305/org.eclipse.virgo.kernel.osgi-sources-2.2.0.D-20110113045305.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
