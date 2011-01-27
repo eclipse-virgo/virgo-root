@@ -18,7 +18,6 @@
 
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
-	<!-- <import file="${basedir}/js.xml"/> -->
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
 
 	<target name="precommit" depends="clean, clean-integration, test, findbugs" description="Performs a CI server-like build, should be run prior to performing a Git push"/>
