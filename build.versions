@@ -1,11 +1,11 @@
 # Compile
-org.eclipse.virgo.kernel=2.2.0.D-20110113045305
-org.eclipse.virgo.medic=2.2.0.D-20110113044904
-org.eclipse.virgo.osgi=2.2.0.D-20101207145732
-org.eclipse.virgo.repository=2.2.0.D-20110113045118
-org.eclipse.virgo.util=2.2.0.D-20101207150035
-org.eclipse.virgo.web=2.2.0.D-20110113051308
-org.eclipse.gemini.web=1.2.0.M01
+org.eclipse.virgo.kernel=2.2.0.D-20110128120003
+org.eclipse.virgo.medic=2.2.0.D-20110128105114
+org.eclipse.virgo.osgi=2.2.0.D-20110128104245
+org.eclipse.virgo.repository=2.2.0.D-20110128105537
+org.eclipse.virgo.util=2.2.0.D-20110128104505
+org.eclipse.virgo.web=2.2.0.D-20110128122731
+org.eclipse.gemini.web=1.2.0.BUILD-20110127170325
 javax.jms=1.1.0
 javax.annotation=1.0.0
 javax.servlet.jsp=2.1.0
@@ -27,9 +27,9 @@ org.eclipse.osgi.services=3.3.0.v20101018
 org.eclipse.equinox.cm=1.0.200.v20100520
 
 # Test
-org.eclipse.virgo.teststubs=2.2.0.D-20101207145338
+org.eclipse.virgo.teststubs=2.2.0.D-20110128104019
 org.junit=4.7.0
 org.easymock=2.3.0
-org.eclipse.virgo.test=2.2.0.D-20110113044811
+org.eclipse.virgo.test=2.2.0.D-20110128104922
 
 
