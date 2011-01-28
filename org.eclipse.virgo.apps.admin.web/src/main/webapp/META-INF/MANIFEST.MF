@@ -7,6 +7,7 @@ Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Admin Console Web Bundle
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.admin.web
+Web-ContextPath: /admin
 Import-Package: javax.management;version="0",javax.servlet;version="[2
  .5.0,3)",javax.servlet.http;version="[2.5.0,3)",javax.servlet.jsp.jst
  l.core;version="[1.1.2,2)",org.eclipse.virgo.apps.admin.core;version=
@@ -18,15 +19,17 @@ Import-Package: javax.management;version="0",javax.servlet;version="[2
  y.annotation;version="[2.5.6,4)",org.springframework.beans.factory.xm
  l;version="[2.5.6,4)",org.springframework.context.config;version="[2.
  5.6,4)",org.springframework.context.support;version="[2.5.6,4)",org.s
- pringframework.mock.web;version="[2.5.6,4)",org.springframework.stere
- otype;version="[2.5.6,4)",org.springframework.web.bind;version="[2.5.
- 6,4)",org.springframework.web.bind.annotation;version="[2.5.6,4)",org
- .springframework.web.context.support;version="[2.5.6,4)",org.springfr
- amework.web.multipart;version="[2.5.6,4)",org.springframework.web.mul
- tipart.commons;version="[2.5.6,4)",org.springframework.web.servlet;ve
- rsion="[2.5.6,4)",org.springframework.web.servlet.handler;version="[2
- .5.6,4)",org.springframework.web.servlet.mvc;version="[2.5.6,4)",org.
- springframework.web.servlet.mvc.annotation;version="[2.5.6,4)",org.sp
- ringframework.web.servlet.support;version="[2.5.6,4)",org.springframe
- work.web.servlet.view;version="[2.5.6,4)"
+ pringframework.js.resource;version="[2.0.8,3)",org.springframework.mo
+ ck.web;version="[2.5.6,4)",org.springframework.stereotype;version="[2
+ .5.6,4)",org.springframework.web.bind;version="[2.5.6,4)",org.springf
+ ramework.web.bind.annotation;version="[2.5.6,4)",org.springframework.
+ web.context;version="[2.5.6,4)",org.springframework.web.context.suppo
+ rt;version="[2.5.6,4)",org.springframework.web.multipart;version="[2.
+ 5.6,4)",org.springframework.web.multipart.commons;version="[2.5.6,4)"
+ ,org.springframework.web.servlet;version="[2.5.6,4)",org.springframew
+ ork.web.servlet.handler;version="[2.5.6,4)",org.springframework.web.s
+ ervlet.mvc;version="[2.5.6,4)",org.springframework.web.servlet.mvc.an
+ notation;version="[2.5.6,4)",org.springframework.web.servlet.support;
+ version="[2.5.6,4)",org.springframework.web.servlet.view;version="[2.
+ 5.6,4)"
 

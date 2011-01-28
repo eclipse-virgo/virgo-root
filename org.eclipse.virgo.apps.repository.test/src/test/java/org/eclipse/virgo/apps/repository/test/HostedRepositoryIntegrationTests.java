@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.test.framework.OsgiTestRunner;
 import org.eclipse.virgo.util.io.PathReference;
 import org.eclipse.virgo.util.io.ZipUtils;
@@ -93,7 +94,7 @@ public class HostedRepositoryIntegrationTests {
 		    assertTrue(W_INDEX_LOCATION.delete());
 		}		
 		
-		ApplicationDeployer.DeploymentOptions deploymentOptions = new ApplicationDeployer.DeploymentOptions(false, false, true);
+		DeploymentOptions deploymentOptions = new DeploymentOptions(false, false, true);
 		deployer.deploy(new File("../org.eclipse.virgo.apps.repository.core/target/classes").toURI(), deploymentOptions);
 		deployer.deploy(packageWebModule().toURI(), deploymentOptions);                        
 
