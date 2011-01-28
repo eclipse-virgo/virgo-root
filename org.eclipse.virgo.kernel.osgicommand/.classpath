@@ -10,7 +10,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.shell"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-3.7.0.v20101022.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20101022/org.eclipse.osgi-sources-3.7.0.v20101022.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101207150035/org.eclipse.virgo.util.osgi-2.2.0.D-20101207150035.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101207150035/org.eclipse.virgo.util.osgi-sources-2.2.0.D-20101207150035.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20110128104505/org.eclipse.virgo.util.osgi-2.2.0.D-20110128104505.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20110128104505/org.eclipse.virgo.util.osgi-sources-2.2.0.D-20110128104505.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
