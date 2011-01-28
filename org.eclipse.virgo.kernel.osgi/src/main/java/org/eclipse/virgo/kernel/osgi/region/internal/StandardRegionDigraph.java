@@ -13,7 +13,6 @@
 
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,7 +26,6 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
 
 /**
  * {@link StandardRegionDigraph} is the default implementation of {@link RegionDigraph}.
@@ -60,7 +58,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
                 throw new BundleException("Region '" + tailRegion + "' is already connected to region '" + headRegion,
                     BundleException.UNSUPPORTED_OPERATION);
             } else {
-                checkDuplicateBundle(tailRegion, filter);
+                checkFilterDoesNotAllowExistingBundle(tailRegion, filter);
                 this.regions.add(tailRegion);
                 this.regions.add(headRegion);
                 this.filter.put(nodePair, filter);
@@ -69,36 +67,8 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     }
 
-    private void checkDuplicateBundle(Region tailRegion, RegionFilter filter) throws BundleException {
-        checkFilterDoesNotAllowExistingBundle(tailRegion, filter);
-        checkFilterDoesNotAllowSameBundleAsExistingFilter(tailRegion, filter);
-    }
-
     private void checkFilterDoesNotAllowExistingBundle(Region tailRegion, RegionFilter filter) throws BundleException {
-        for (OrderedPair<String, Version> filterBundle : filter.getAllowedBundles()) {
-            String symbolicName = filterBundle.getFirst();
-            Version version = filterBundle.getSecond();
-            if (tailRegion.getBundle(symbolicName, version) != null) {
-                throw new BundleException("RegionFilter '" + filter + "' allows bundle '" + symbolicName + "_" + version
-                    + "' which is present in region '" + tailRegion + "'", BundleException.DUPLICATE_BUNDLE_ERROR);
-            }
-        }
-    }
-
-    private void checkFilterDoesNotAllowSameBundleAsExistingFilter(Region tailRegion, RegionFilter f) throws BundleException {
-        Collection<OrderedPair<String, Version>> fAllowed = f.getAllowedBundles();
-        for (FilteredRegion edge : getEdges(tailRegion)) {
-            RegionFilter g = edge.getFilter();
-            Collection<OrderedPair<String, Version>> gAllowed = g.getAllowedBundles();
-            for (OrderedPair<String, Version> bundle : gAllowed) {
-                if (fAllowed.contains(bundle)) {
-                    String symbolicName = bundle.getFirst();
-                    Version version = bundle.getSecond();
-                    throw new BundleException("RegionFilter '" + f + "' allows bundle '" + symbolicName + "_" + version
-                        + "' which is allowed into region '" + tailRegion + "' by filter '" + g + "'", BundleException.DUPLICATE_BUNDLE_ERROR);
-                }
-            }
-        }
+        // TODO: enumerate the bundles in the region and check the filter does not allow any of them
     }
 
     /**
@@ -163,40 +133,97 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
     public Region getRegion(@NonNull String regionName) {
-        for (Region region : this) {
-            if (regionName.equals(region.getName())) {
-                return region;
+        synchronized (this.monitor) {
+            for (Region region : this) {
+                if (regionName.equals(region.getName())) {
+                    return region;
+                }
             }
+            return null;
         }
-        return null;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
     public Region getRegion(Bundle bundle) {
-        for (Region region : this) {
-            if (region.contains(bundle)) {
-                return region;
+        synchronized (this.monitor) {
+            for (Region region : this) {
+                if (region.contains(bundle)) {
+                    return region;
+                }
             }
+            return null;
         }
-        return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Region getRegion(long bundleId) {
-        for (Region region : this) {
-            if (region.contains(bundleId)) {
-                return region;
+        synchronized (this.monitor) {
+            for (Region region : this) {
+                if (region.contains(bundleId)) {
+                    return region;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeRegion(@NonNull Region coregion) {
+        synchronized (this.monitor) {
+            this.regions.remove(coregion);
+            Iterator<OrderedPair<Region, Region>> i = this.filter.keySet().iterator();
+            while (i.hasNext()) {
+                OrderedPair<Region, Region> regionPair = i.next();
+                if (coregion.equals(regionPair.getFirst()) || coregion.equals(regionPair.getSecond())) {
+                    i.remove();
+                }
             }
         }
-        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        synchronized (this.monitor) {
+            StringBuffer s = new StringBuffer();
+            boolean first = true;
+            s.append("RegionDigraph{");
+            for (Region r : this) {
+                if (!first) {
+                    s.append(", ");
+                }
+                s.append(r);
+                first = false;
+            }
+            s.append("}");
+            s.append("[");
+            first = true;
+            for (OrderedPair<Region, Region> regionPair : this.filter.keySet()) {
+                if (!first) {
+                    s.append(", ");
+                }
+                s.append(regionPair.getFirst() + "->" + regionPair.getSecond());
+                first = false;
+            }
+            s.append("]");
+            return s.toString();
+        }
     }
 
 }

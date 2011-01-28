@@ -11,28 +11,15 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.isNull;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
-import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 import org.junit.Test;
 import org.osgi.framework.Version;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.event.EventAdmin;
 
 public class RegionManagerTests {
 
@@ -42,28 +29,18 @@ public class RegionManagerTests {
         
         StubBundle stubUserRegionFactoryBundle = new StubBundle("org.eclipse.virgo.kernel.userregionfactory", new Version("2.2.0"));
         bundleContext.addInstalledBundle(stubUserRegionFactoryBundle);
+        
+        StubBundle stubSystemBundle = new StubBundle(0L, "org.osgi.framework", new Version("0"), "");
+        bundleContext.addInstalledBundle(stubSystemBundle);
                               
-        EventAdmin eventAdmin = createMock(EventAdmin.class);
-               
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        Configuration config = createMock(Configuration.class);
-        expect(config.getProperties()).andReturn(properties);
-        
-        ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
-        expect(configAdmin.getConfiguration(isA(String.class), (String) isNull())).andReturn(config);
-        
-        EventLogger eventLogger = createMock(EventLogger.class);       
-        Shutdown shutdown = createMock(Shutdown.class);
-        
-        replay(eventAdmin, configAdmin, config);
-        RegionManager manager = new RegionManager(bundleContext, eventAdmin, configAdmin, eventLogger, shutdown);
+       
+        RegionManager manager = new RegionManager(bundleContext);
         manager.start();
         
         List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
         assertEquals("Region services not registered", 8, serviceRegistrations.size());
         
         manager.stop();
-        verify(eventAdmin, configAdmin, config);
         
     }
 }

@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,19 +41,13 @@ public final class StandardRegionFilter implements RegionFilter {
     @Override
     public RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion) {
         synchronized (this.monitor) {
-            this.allowedBundles.add(new OrderedPair<String, Version>(bundleSymbolicName, bundleVersion));
+            this.allowedBundles.add(createPair(bundleSymbolicName, bundleVersion));
         }
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<OrderedPair<String, Version>> getAllowedBundles() {
-        synchronized (this.monitor) {
-            return Collections.unmodifiableSet(this.allowedBundles);
-        }
+    private OrderedPair<String, Version> createPair(String bundleSymbolicName, Version bundleVersion) {
+        return new OrderedPair<String, Version>(bundleSymbolicName, bundleVersion);
     }
 
     /**
@@ -91,6 +84,13 @@ public final class StandardRegionFilter implements RegionFilter {
             this.packageImportPolicy = packageImportPolicy;
         }
         return this;
+    }
+
+    @Override
+    public boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion) {
+        synchronized (this.monitor) {
+            return this.allowedBundles.contains(createPair(bundleSymbolicName, bundleVersion));
+        }
     }
 
 }

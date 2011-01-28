@@ -259,10 +259,12 @@
 		<beans:constructor-arg ref="bundleStarter" />
 		<beans:constructor-arg ref="tracingService" />
 		<beans:constructor-arg ref="packageAdminUtil" />
-		<beans:constructor-arg value="#{region.getBundleContext()}" />
+		<beans:constructor-arg ref="userBundleContext" />
 		<beans:constructor-arg ref="eventLogger" />
 		<beans:constructor-arg ref="artifactIdentityDeterminer" />
 	</beans:bean>
+	
+	<reference id="userBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
 
 	<service ref="bundleInstallArtifactTreeFactory"
 		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory" />

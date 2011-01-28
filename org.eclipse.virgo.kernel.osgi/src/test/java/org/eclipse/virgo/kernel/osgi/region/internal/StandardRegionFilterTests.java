@@ -16,13 +16,10 @@ package org.eclipse.virgo.kernel.osgi.region.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
-
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,9 +52,7 @@ public class StandardRegionFilterTests {
     @Test
     public void testAllowBundle() {
         this.regionFilter.allowBundle(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
-        Set<OrderedPair<String, Version>> allowedBundles = this.regionFilter.getAllowedBundles();
-        assertEquals(1, allowedBundles.size());
-        assertTrue(allowedBundles.contains(new OrderedPair<String, Version>(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION)));
+        assertTrue(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
     }
 
     @Test

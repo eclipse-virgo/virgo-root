@@ -29,6 +29,8 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.io.FileSystemUtils;
@@ -58,7 +60,9 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
     
     private final TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler;
 
-    public StandardQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective, Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
+    private final Region userRegion;
+
+    public StandardQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective, Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, Region userRegion) {
         this.bundleContext = bundleContext;
         this.platformAdmin = getPlatformAdminService(bundleContext);
         this.detective = detective;
@@ -66,20 +70,21 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
         ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
         this.stateManager = (StateManager) bundleContext.getService(platformAdminServiceReference);
         this.bundleTransformationHandler = bundleTransformationHandler;
+        this.userRegion = userRegion;
     }
 
     /**
      * {@inheritDoc}
      */
     public QuasiFramework create() {
-        return new StandardQuasiFramework(this.bundleContext, createState(), this.platformAdmin, this.detective, this.repository, this.bundleTransformationHandler);
+        return new StandardQuasiFramework(this.bundleContext, createState(), this.platformAdmin, this.detective, this.repository, this.bundleTransformationHandler, this.userRegion);
     }
     
     /** 
      * {@inheritDoc}
      */
     public QuasiFramework create(File stateDump) {
-        return new StandardQuasiFramework(this.bundleContext, readStateDump(stateDump), this.platformAdmin, this.detective, this.repository, this.bundleTransformationHandler);
+        return new StandardQuasiFramework(this.bundleContext, readStateDump(stateDump), this.platformAdmin, this.detective, this.repository, this.bundleTransformationHandler, this.userRegion);
     }
 
     @SuppressWarnings("deprecation")

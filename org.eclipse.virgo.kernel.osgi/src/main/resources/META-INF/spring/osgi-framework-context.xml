@@ -5,10 +5,6 @@
 	
 	<bean class="org.eclipse.virgo.kernel.osgi.region.RegionManager" init-method="start" destroy-method="stop">
 		<constructor-arg ref="bundleContext"/>
-		<constructor-arg ref="eventAdmin"/>
-		<constructor-arg ref="configAdmin"/>
-		<constructor-arg ref="eventLogger"/>
-		<constructor-arg ref="shutdown"/>
 	</bean>
 
 </beans>

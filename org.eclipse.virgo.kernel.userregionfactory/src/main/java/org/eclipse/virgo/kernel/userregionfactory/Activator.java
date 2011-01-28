@@ -139,10 +139,14 @@ public final class Activator implements BundleActivator {
     private void createUserRegion(BundleContext userRegionBundleContext, RegionDigraph regionDigraph) throws BundleException {
 
         BundleContext systemBundleContext = getSystemBundleContext();
+        Bundle userRegionFactoryBundle = userRegionBundleContext.getBundle();
+        
+        Region kernelRegion = getKernelRegion(regionDigraph);
+        kernelRegion.removeBundle(userRegionFactoryBundle);
 
         Region userRegion = new BundleIdBasedRegion(REGION_USER, regionDigraph, systemBundleContext);
-
-        Region kernelRegion = getKernelRegion(regionDigraph);
+        regionDigraph.addRegion(userRegion);
+        userRegion.addBundle(userRegionFactoryBundle);
 
         RegionFilter kernelFilter = createKernelFilter(systemBundleContext);
         userRegion.connectRegion(kernelRegion, kernelFilter);
@@ -215,19 +219,11 @@ public final class Activator implements BundleActivator {
         String expandedUserRegionImportsProperty = null;
         if (userRegionImportsProperty != null) {
             expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
-                this.bundleContext);
+                systemBundleContext);
         }
         
-        //expandedUserRegionImportsProperty += getSystemBundleExports(systemBundleContext);
-
         UserRegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy(expandedUserRegionImportsProperty);
         return userRegionPackageImportPolicy;
-    }
-
-    private String getSystemBundleExports(BundleContext systemBundleContext) {
-        //systemBundleContext.getBundle().get
-        // TODO Auto-generated method stub
-        return ",org.osgi.framework,org.osgi.service.packageadmin,org.eclipse.osgi.baseadaptor,org.eclipse.osgi.baseadaptor.bundlefile";
     }
 
     private BundleContext getSystemBundleContext() {

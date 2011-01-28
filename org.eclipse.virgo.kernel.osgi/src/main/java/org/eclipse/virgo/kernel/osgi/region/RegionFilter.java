@@ -13,10 +13,11 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.util.Set;
+import java.util.Dictionary;
+import java.util.Map;
 
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 /**
@@ -31,6 +32,70 @@ import org.osgi.framework.Version;
  */
 public interface RegionFilter {
 
+    public static final RegionPackageImportPolicy ALL_PACKAGES = new RegionPackageImportPolicy() {
+
+        @Override
+        public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
+            return true;
+        }
+    };
+
+    public static final Filter ALL_SERVICES = new Filter() {
+
+        @Override
+        public boolean match(ServiceReference<?> reference) {
+            return true;
+        }
+
+        @Override
+        public boolean match(Dictionary<String, ?> dictionary) {
+            return true;
+        }
+
+        @Override
+        public boolean matchCase(Dictionary<String, ?> dictionary) {
+            return true;
+        }
+
+        @Override
+        public boolean matches(Map<String, ?> map) {
+            return true;
+        }
+    };
+
+    public static final RegionFilter TOP = new RegionFilter() {
+
+        @Override
+        public RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion) {
+            return this;
+        }
+
+        @Override
+        public boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion) {
+            return true;
+        }
+
+        @Override
+        public RegionFilter setPackageImportPolicy(RegionPackageImportPolicy packageImportPolicy) {
+            return this;
+        }
+
+        @Override
+        public RegionPackageImportPolicy getPackageImportPolicy() {
+            return ALL_PACKAGES;
+        }
+
+        @Override
+        public RegionFilter setServiceFilter(Filter serviceFilter) {
+            return this;
+        }
+
+        @Override
+        public Filter getServiceFilter() {
+            return ALL_SERVICES;
+        }
+    };
+
     /**
      * Allows a bundle with the given bundle symbolic name and version to be imported.
      * 
@@ -38,16 +103,26 @@ public interface RegionFilter {
      * 
      * @param bundleSymbolicName
      * @param bundleVersion
-     * @return
+     * @return this {@link RegionFilter} for chaining purposes
      */
     RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion);
 
     /**
-     * Gets the bundles allowed by this filter.
+     * Determines whether this filter allows the bundle with the given symbolic name and version
      * 
-     * @return a collection of (bundle symbolic name, bundle version) pairs
+     * @param bundleSymbolicName the symbolic name of the bundle
+     * @param bundleVersion the {@link Version} of the bundle
+     * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    Set<OrderedPair<String, Version>> getAllowedBundles();
+    boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion);
+
+    /**
+     * Sets the package import policy of this filter.
+     * 
+     * @param packageImportPolicy
+     * @return this {@link RegionFilter} for chaining purposes
+     */
+    RegionFilter setPackageImportPolicy(RegionPackageImportPolicy packageImportPolicy);
 
     /**
      * Gets the package import policy of this filter.
@@ -57,16 +132,8 @@ public interface RegionFilter {
     RegionPackageImportPolicy getPackageImportPolicy();
 
     /**
-     * Sets the package import policy of this filter.
-     * 
-     * @param packageImportPolicy
-     * @return
-     */
-    RegionFilter setPackageImportPolicy(RegionPackageImportPolicy packageImportPolicy);
-
-    /**
      * @param serviceFilter
-     * @return
+     * @return this {@link RegionFilter} for chaining purposes
      * @see org.osgi.framework.Filter more information about service filters
      */
     RegionFilter setServiceFilter(Filter serviceFilter);

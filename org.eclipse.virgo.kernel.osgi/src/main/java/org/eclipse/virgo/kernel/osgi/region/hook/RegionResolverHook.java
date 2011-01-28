@@ -19,13 +19,11 @@ import java.util.Set;
 import org.eclipse.osgi.internal.module.ResolverBundle;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.serviceability.Assert;
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Version;
 import org.osgi.framework.hooks.resolver.ResolverHook;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.Capability;
@@ -41,6 +39,8 @@ final class RegionResolverHook implements ResolverHook {
 
     private static final long INVALID_BUNDLE_ID = -1L;
 
+    private static final Boolean DEBUG = true;
+
     private final RegionDigraph regionDigraph;
 
     RegionResolverHook(RegionDigraph regionDigraph) {
@@ -49,19 +49,29 @@ final class RegionResolverHook implements ResolverHook {
 
     @Override
     public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
-        if (getBundleId(requirer) == 0L) {
-            return;
+        try {
+            if (DEBUG) {
+                debugEntry(requirer, candidates);
+            }
+
+            if (getBundleId(requirer) == 0L) {
+                return;
+            }
+
+            Region requirerRegion = getRegion(requirer);
+            if (requirerRegion == null) {
+                candidates.clear();
+                return;
+            }
+
+            Set<Capability> allowed = getAllowed(requirerRegion, candidates, new HashSet<Region>());
+
+            candidates.retainAll(allowed);
+        } finally {
+            if (DEBUG) {
+                debugExit(requirer, candidates);
+            }
         }
-
-        Region requirerRegion = getRegion(requirer);
-        if (requirerRegion == null) {
-            candidates.clear();
-            return;
-        }
-
-        Set<Capability> allowed = getAllowed(requirerRegion, candidates, new HashSet<Region>());
-
-        candidates.retainAll(allowed);
     }
 
     private Region getRegion(BundleRevision bundleRevision) {
@@ -127,7 +137,6 @@ final class RegionResolverHook implements ResolverHook {
 
     private void filter(Set<Capability> capabilities, RegionFilter filter) {
         RegionPackageImportPolicy packageImportPolicy = filter.getPackageImportPolicy();
-        Set<OrderedPair<String, Version>> allowedBundles = filter.getAllowedBundles();
         Iterator<Capability> i = capabilities.iterator();
         while (i.hasNext()) {
             Capability c = i.next();
@@ -138,22 +147,13 @@ final class RegionResolverHook implements ResolverHook {
                     i.remove();
                 }
             } else {
-                if (!allowedBundle(c.getProviderRevision(), allowedBundles)) {
+                BundleRevision providerRevision = c.getProviderRevision();
+                if (!filter.isBundleAllowed(providerRevision.getSymbolicName(), providerRevision.getVersion())) {
                     i.remove();
                 }
-            }
-        }
-    }
 
-    private boolean allowedBundle(BundleRevision bundleRevision, Set<OrderedPair<String, Version>> allowedBundles) {
-        String symbolicName = bundleRevision.getSymbolicName();
-        Version version = bundleRevision.getVersion();
-        for (OrderedPair<String, Version> allowedBundle : allowedBundles) {
-            if (symbolicName.equals(allowedBundle.getFirst()) && version.equals(allowedBundle.getSecond())) {
-                return true;
             }
         }
-        return false;
     }
 
     private Region getRegion(Bundle bundle) {
@@ -167,8 +167,6 @@ final class RegionResolverHook implements ResolverHook {
 
     @Override
     public void end() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -179,4 +177,48 @@ final class RegionResolverHook implements ResolverHook {
     public void filterSingletonCollisions(Capability singleton, Collection<Capability> collisionCandidates) {
     }
 
+    private void debugEntry(BundleRevision requirer, Collection<Capability> candidates) {
+        System.out.println("Requirer: " + requirer.getSymbolicName() + "_" + requirer.getVersion() + "[" + getBundleId(requirer) + "]");
+        System.out.println("  Candidates: ");
+        Iterator<Capability> i = candidates.iterator();
+        while (i.hasNext()) {
+            Capability c = i.next();
+            String namespace = c.getNamespace();
+            if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
+                BundleRevision providerRevision = c.getProviderRevision();
+                String pkg = (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY);
+                System.out.println("    Package " + pkg + " from provider " + providerRevision.getSymbolicName() + "_"
+                    + providerRevision.getVersion() + "[" + getBundleId(providerRevision) + "]");
+                if (pkg.equals("javax.portlet")) {
+                    System.out.println(">>> put breakpoint here <<<");
+                }
+            } else {
+                BundleRevision providerRevision = c.getProviderRevision();
+                System.out.println("    Bundle from provider " + providerRevision.getSymbolicName() + "_" + providerRevision.getVersion() + "["
+                    + getBundleId(providerRevision) + "]");
+            }
+        }
+    }
+
+    private void debugExit(BundleRevision requirer, Collection<Capability> candidates) {
+        System.out.println("  Filtered candidates: ");
+        Iterator<Capability> i = candidates.iterator();
+        while (i.hasNext()) {
+            Capability c = i.next();
+            String namespace = c.getNamespace();
+            if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
+                BundleRevision providerRevision = c.getProviderRevision();
+                String pkg = (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY);
+                System.out.println("    Package " + pkg + " from provider " + providerRevision.getSymbolicName() + "_"
+                    + providerRevision.getVersion() + "[" + getBundleId(providerRevision) + "]");
+                if (pkg.equals("org.springframework.jdbc")) {
+                    System.out.println(">>> put breakpoint here <<<");
+                }
+            } else {
+                BundleRevision providerRevision = c.getProviderRevision();
+                System.out.println("    Bundle from provider " + providerRevision.getSymbolicName() + "_" + providerRevision.getVersion() + "["
+                    + getBundleId(providerRevision) + "]");
+            }
+        }
+    }
 }

@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.util.Collection;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -24,9 +23,7 @@ import javax.management.ObjectName;
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -75,25 +72,7 @@ public abstract class AbstractDeployerIntegrationTest {
     }
     
     private BundleContext getKernelContext() {
-        try {
-            Collection<ServiceReference<Region>> references = this.context.getServiceReferences(Region.class,"(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.kernel)");
-            //XXX Assert.assertEquals(1, references.size()); Appear to get two services with the same region bundle context
-            ServiceReference<Region> reference = references.iterator().next();
-            Region kernelRegion = this.context.getService(reference);
-            Assert.assertNotNull("Kernel Region not found", kernelRegion);
-            BundleContext kernelContext = kernelRegion.getBundleContext();
-            
-            //ServiceReference<Region> ref2 = i.next();
-            //BundleContext kc2 = this.context.getService(ref2).getBundleContext();
-            
-            Assert.assertNotNull("Kernel Region bundle context not found", kernelContext);
-            this.context.ungetService(reference);
-            return kernelContext;
-        } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
-            Assert.assertTrue(false);
-            return null;
-        }
+        return this.context.getBundle(0L).getBundleContext();
     }
 
     @BeforeClass

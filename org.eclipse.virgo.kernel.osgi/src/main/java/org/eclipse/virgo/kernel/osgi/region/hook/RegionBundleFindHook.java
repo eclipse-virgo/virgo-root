@@ -20,10 +20,8 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.FindHook;
 
 /**
@@ -95,11 +93,10 @@ public final class RegionBundleFindHook implements FindHook {
     }
 
     private void filter(Set<Bundle> bundles, RegionFilter filter) {
-        Set<OrderedPair<String, Version>> allowedBundles = filter.getAllowedBundles();
         Iterator<Bundle> i = bundles.iterator();
         while (i.hasNext()) {
             Bundle b = i.next();
-            if (!allowedBundles.contains(new OrderedPair<String, Version>(b.getSymbolicName(), b.getVersion()))) {
+            if (!filter.isBundleAllowed(b.getSymbolicName(), b.getVersion())) {
                 i.remove();
             }
         }

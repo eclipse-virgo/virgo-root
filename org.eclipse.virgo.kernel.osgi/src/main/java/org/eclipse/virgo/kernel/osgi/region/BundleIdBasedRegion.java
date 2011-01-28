@@ -18,10 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -82,8 +80,6 @@ public final class BundleIdBasedRegion implements Region {
 
             checkDuplicateBundleInRegion(bundle, symbolicName, version);
 
-            checkDuplicateBundleViaFilter(bundle, symbolicName, version);
-
             this.bundleIds.add(bundle.getBundleId());
         }
     }
@@ -98,20 +94,20 @@ public final class BundleIdBasedRegion implements Region {
 
     private void checkDuplicateBundleInRegion(Bundle bundle, String symbolicName, Version version) throws BundleException {
         Bundle existingBundle = getBundle(symbolicName, version);
-        if (existingBundle != null) {
+        if (existingBundle != null && !existingBundle.equals(bundle)) {
             throw new BundleException("Cannot add bundle '" + bundle + "' to region '" + this
                 + "' as its symbolic name and version conflict with those of bundle '" + existingBundle + "' which is already present in the region",
                 BundleException.DUPLICATE_BUNDLE_ERROR);
         }
     }
-
-    private void checkDuplicateBundleViaFilter(Bundle bundle, String symbolicName, Version version) throws BundleException {
-        for (FilteredRegion filteredRegion : this.regionDigraph.getEdges(this)) {
-            RegionFilter filter = filteredRegion.getFilter();
-            if (filter.getAllowedBundles().contains(new OrderedPair<String, Version>(symbolicName, version))) {
-                throw new BundleException("Cannot add bundle '" + bundle + "' to region '" + this + "' as filter '" + filter
-                    + "' allows it to be seen from region '" + filteredRegion.getRegion() + "'", BundleException.DUPLICATE_BUNDLE_ERROR);
-            }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void addBundle(long bundleId) {
+        synchronized (this.updateMonitor) {
+            this.bundleIds.add(bundleId);
         }
     }
 
@@ -197,15 +193,6 @@ public final class BundleIdBasedRegion implements Region {
      * {@inheritDoc}
      */
     @Override
-    public BundleContext getBundleContext() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean contains(Bundle bundle) {
         return this.bundleIds.contains(bundle.getBundleId());
     }
@@ -239,6 +226,33 @@ public final class BundleIdBasedRegion implements Region {
     @Override
     public boolean contains(long bundleId) {
         return this.bundleIds.contains(bundleId);
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeBundle(Bundle bundle) {
+        removeBundle(bundle.getBundleId());
+        
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeBundle(long bundleId) {
+        synchronized (this.updateMonitor) {
+            this.bundleIds.remove(bundleId);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

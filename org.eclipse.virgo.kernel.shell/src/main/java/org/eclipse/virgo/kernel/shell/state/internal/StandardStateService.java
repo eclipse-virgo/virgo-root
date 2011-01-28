@@ -50,11 +50,11 @@ final public class StandardStateService implements StateService {
 
     private final Region kernelRegion;
     
-    public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionDigraph regionMembership) {
+    public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionDigraph regionDigraph) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.bundleContext = bundleContext;
-        this.regionDigraph = regionMembership;
-        this.kernelRegion = getKernelRegion(regionMembership);
+        this.regionDigraph = regionDigraph;
+        this.kernelRegion = getKernelRegion(regionDigraph);
     }
 
     private Region getKernelRegion(RegionDigraph regionDigraph) {

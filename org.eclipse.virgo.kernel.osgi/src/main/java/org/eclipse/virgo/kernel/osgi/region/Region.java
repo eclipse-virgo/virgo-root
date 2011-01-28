@@ -62,6 +62,17 @@ public interface Region {
     void addBundle(Bundle bundle) throws BundleException;
 
     /**
+     * Associates the given bundle id with this region. If the given bundle id is already associated with this region,
+     * this is not an error and there is no effect.
+     * <p>
+     * This is useful when manipulating offline resolver states and bundle descriptions which do not correspond to
+     * bundles.
+     * 
+     * @param bundleId the bundle id to be associated with this region
+     */
+    void addBundle(long bundleId);
+
+    /**
      * Installs a bundle and associates the bundle with this region. The bundle's location will have the region name
      * prepended to the given location to ensure the location is unique across regions.
      * <p>
@@ -92,7 +103,7 @@ public interface Region {
      * @see BundleContext#installBundle(String)
      */
     Bundle installBundle(String location) throws BundleException;
-    
+
     /**
      * Returns <code>true</code> if and only if the given bundle belongs to this region.
      * 
@@ -105,10 +116,11 @@ public interface Region {
      * Returns <code>true</code> if and only if a bundle with the given bundle id belongs to this region.
      * 
      * @param bundleId a bundle id
-     * @return <code>true</code> if a bundle with the given bundle id belongs to this region and <code>false</code> otherwise
+     * @return <code>true</code> if a bundle with the given bundle id belongs to this region and <code>false</code>
+     *         otherwise
      */
     boolean contains(long bundleId);
-    
+
     /**
      * Get the bundle in this region with the given symbolic name and version.
      * 
@@ -119,9 +131,9 @@ public interface Region {
     Bundle getBundle(String symbolicName, Version version);
 
     /**
-     * Connects this region to the given tail region and associates the given {@link RegionFilter} with the
-     * connection. This region may then, subject to the region filter, see bundles, packages, and services visible in
-     * the tail region.
+     * Connects this region to the given tail region and associates the given {@link RegionFilter} with the connection.
+     * This region may then, subject to the region filter, see bundles, packages, and services visible in the tail
+     * region.
      * <p>
      * If the filter allows the same bundle symbolic name and version as a bundle already present in this region or a
      * filter connecting this region to a region other than the tail region, then BundleException with exception type
@@ -137,12 +149,19 @@ public interface Region {
     void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException;
 
     /**
-     * Returns a {@link BundleContext} that can be used to access the contents of the region.
+     * Removes the given bundle from this region. If the given bundle does not belong to this region, this is not an
+     * error and there is no effect.
      * 
-     * @return a <code>BundleContext</code>
-     * @deprecated This method should not appear on the API as it is hard to guarantee the availability of a suitable
-     *             bundle context
+     * @param bundle the bundle to be removed
      */
-    BundleContext getBundleContext();
+    void removeBundle(Bundle bundle);
+
+    /**
+     * Removes the given bundle id from this region. If the given bundle id is not associated with this region, this is
+     * not an error and there is no effect.
+     * 
+     * @param bundleId the bundle id to be removed
+     */
+    void removeBundle(long bundleId);
 
 }

@@ -37,25 +37,25 @@ import org.eclipse.osgi.service.resolver.StateDelta;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.osgi.service.resolver.VersionConstraint;
 import org.eclipse.osgi.service.resolver.VersionRange;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
+import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.ResolutionDumpContributor;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
-
-import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.Repository;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Calculates the dependencies of a given set of {@link BundleDescription BundleDescriptions}.
@@ -68,7 +68,9 @@ import org.eclipse.virgo.repository.Repository;
  */
 public final class DependencyCalculator {
 
-    private static final String USER_REGION_TAG = "userregion@";
+    private static final String COREGION_SUFFIX = ".coregion";
+
+    private static final String REGION_LOCATION_DELIMITER = "@";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -84,9 +86,13 @@ public final class DependencyCalculator {
 
     private final DumpGenerator dumpGenerator;
 
-    private RegionDigraph regionDigraph;
+    private final RegionDigraph regionDigraph;
 
-    private Region userRegion;
+    private final Region userRegion;
+
+    private Region coregion;
+
+    private final BundleContext systemBundleContext;
 
     public DependencyCalculator(StateObjectFactory stateObjectFactory, ResolutionFailureDetective detective, Repository repository,
         BundleContext bundleContext) {
@@ -95,7 +101,8 @@ public final class DependencyCalculator {
         this.stateObjectFactory = stateObjectFactory;
         this.dumpGenerator = bundleContext.getService(bundleContext.getServiceReference(DumpGenerator.class));
         this.regionDigraph = bundleContext.getService(bundleContext.getServiceReference(RegionDigraph.class));
-        userRegion = this.regionDigraph.getRegion(bundleContext.getBundle());
+        this.userRegion = this.regionDigraph.getRegion(bundleContext.getBundle());
+        this.systemBundleContext = bundleContext.getBundle(0L).getBundleContext();
     }
 
     /**
@@ -127,55 +134,72 @@ public final class DependencyCalculator {
         UnableToSatisfyDependenciesException {
         this.logger.info("Calculating missing dependencies of bundle(s) '{}'", bundles);
         synchronized (this.monitor) {
+            createCoregion();
 
-            doSatisfyConstraints(bundles, state);
+            try {
+                doSatisfyConstraints(bundles, state);
 
-            StateDelta delta = state.resolve(bundles);
+                StateDelta delta = state.resolve(bundles);
 
-            for (BundleDescription description : bundles) {
-                if (!description.isResolved()) {
-                    generateDump(state);
+                for (BundleDescription description : bundles) {
+                    if (!description.isResolved()) {
+                        generateDump(state);
 
-                    ResolverErrorsHolder reh = new ResolverErrorsHolder();
-                    String failure = this.detective.generateFailureDescription(state, description, reh);
+                        ResolverErrorsHolder reh = new ResolverErrorsHolder();
+                        String failure = this.detective.generateFailureDescription(state, description, reh);
 
-                    ResolverError[] resolverErrors = reh.getResolverErrors();
-                    if (resolverErrors != null) {
-                        for (ResolverError resolverError : resolverErrors) {
-                            if (resolverError.getType() == ResolverError.IMPORT_PACKAGE_USES_CONFLICT) {
-                                VersionConstraint unsatisfiedConstraint = resolverError.getUnsatisfiedConstraint();
-                                if ((unsatisfiedConstraint instanceof ImportPackageSpecification)) {
-                                    ImportPackageSpecification importPackageSpecification = (ImportPackageSpecification) unsatisfiedConstraint;
-                                    this.logger.debug("Uses conflict: package '{}' version '{}' bundle '{}' version '{}'", new Object[] {
-                                        importPackageSpecification.getName(), importPackageSpecification.getVersionRange(),
-                                        importPackageSpecification.getBundleSymbolicName(), importPackageSpecification.getBundleVersionRange() });
+                        ResolverError[] resolverErrors = reh.getResolverErrors();
+                        if (resolverErrors != null) {
+                            for (ResolverError resolverError : resolverErrors) {
+                                if (resolverError.getType() == ResolverError.IMPORT_PACKAGE_USES_CONFLICT) {
+                                    VersionConstraint unsatisfiedConstraint = resolverError.getUnsatisfiedConstraint();
+                                    if (unsatisfiedConstraint instanceof ImportPackageSpecification) {
+                                        ImportPackageSpecification importPackageSpecification = (ImportPackageSpecification) unsatisfiedConstraint;
+                                        this.logger.debug("Uses conflict: package '{}' version '{}' bundle '{}' version '{}'", new Object[] {
+                                            importPackageSpecification.getName(), importPackageSpecification.getVersionRange(),
+                                            importPackageSpecification.getBundleSymbolicName(), importPackageSpecification.getBundleVersionRange() });
+                                    }
                                 }
                             }
                         }
+
+                        throw new UnableToSatisfyBundleDependenciesException(description.getSymbolicName(), description.getVersion(), failure, state,
+                            reh.getResolverErrors());
                     }
-
-                    throw new UnableToSatisfyBundleDependenciesException(description.getSymbolicName(), description.getVersion(), failure, state,
-                        reh.getResolverErrors());
                 }
+
+                BundleDelta[] deltas = delta.getChanges(BundleDelta.ADDED, false);
+                Set<BundleDescription> newBundles = new HashSet<BundleDescription>();
+
+                for (BundleDelta bundleDelta : deltas) {
+                    newBundles.add(bundleDelta.getBundle());
+                }
+
+                Set<BundleDescription> dependenciesSet = getNewTransitiveDependencies(new HashSet<BundleDescription>(Arrays.asList(bundles)),
+                    newBundles);
+
+                List<BundleDescription> dependencies = new ArrayList<BundleDescription>(dependenciesSet);
+                this.logger.info("The dependencies of '{}' are '{}'", Arrays.toString(bundles), dependencies);
+
+                Collections.sort(dependencies, new BundleDescriptionComparator());
+
+                BundleDescription[] dependencyDescriptions = dependencies.toArray(new BundleDescription[dependencies.size()]);
+                return dependencyDescriptions;
+            } finally {
+                destroyCoregion();
             }
-
-            BundleDelta[] deltas = delta.getChanges(BundleDelta.ADDED, false);
-            Set<BundleDescription> newBundles = new HashSet<BundleDescription>();
-
-            for (BundleDelta bundleDelta : deltas) {
-                newBundles.add(bundleDelta.getBundle());
-            }
-
-            Set<BundleDescription> dependenciesSet = getNewTransitiveDependencies(new HashSet<BundleDescription>(Arrays.asList(bundles)), newBundles);
-
-            List<BundleDescription> dependencies = new ArrayList<BundleDescription>(dependenciesSet);
-            this.logger.info("The dependencies of '{}' are '{}'", Arrays.toString(bundles), dependencies);
-
-            Collections.sort(dependencies, new BundleDescriptionComparator());
-
-            BundleDescription[] dependencyDescriptions = dependencies.toArray(new BundleDescription[dependencies.size()]);
-            return dependencyDescriptions;
         }
+    }
+
+    private void createCoregion() throws BundleException {
+        this.coregion = new BundleIdBasedRegion(this.userRegion.getName() + COREGION_SUFFIX, this.regionDigraph, this.systemBundleContext);
+        this.userRegion.connectRegion(this.coregion, RegionFilter.TOP);
+        this.coregion.connectRegion(this.userRegion, RegionFilter.TOP);
+    }
+
+    private void destroyCoregion() {
+        this.regionDigraph.removeRegion(this.coregion);
+        this.coregion = null;
     }
 
     private Set<BundleDescription> getNewTransitiveDependencies(Set<BundleDescription> dependingBundles, Collection<BundleDescription> newBundles) {
@@ -259,6 +283,7 @@ public final class DependencyCalculator {
         for (BundleDescription constraintSatisfier : constraintsSatisfiers) {
             if (!isBundlePresentInState(constraintSatisfier.getName(), constraintSatisfier.getVersion(), state)) {
                 state.addBundle(constraintSatisfier);
+                this.coregion.addBundle(constraintSatisfier.getBundleId());
                 doSatisfyConstraints(constraintSatisfier, state);
             }
         }
@@ -358,9 +383,9 @@ public final class DependencyCalculator {
         try {
             URI uri = artifact.getUri();
             String installLocation = "file".equals(uri.getScheme()) ? new File(uri).getAbsolutePath() : uri.toString();
-            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(state, manifest, this.userRegion.getName() + "@" + installLocation,
-                this.bundleId.getAndIncrement());
-            //TODO: need to add bundle id to user region and then clean it up at the end
+            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(state, manifest, this.coregion.getName()
+                + REGION_LOCATION_DELIMITER + installLocation, this.bundleId.getAndIncrement());
+            this.coregion.addBundle(bundleDescription.getBundleId());
             return bundleDescription;
         } catch (RuntimeException e) {
             throw new BundleException("Unable to read bundle at '" + artifact.getUri() + "'", e);
