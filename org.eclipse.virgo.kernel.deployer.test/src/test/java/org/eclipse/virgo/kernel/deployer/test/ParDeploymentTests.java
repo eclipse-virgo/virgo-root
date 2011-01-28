@@ -34,6 +34,7 @@ public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
     
     private static final File PAR_FILE = new File("src/test/resources/BundlesAndConfig.par");
     private static final File PAR_FOR_BUG331767 = new File("src/test/resources/bug331767.par");
+	private static final File PAR_FOR_BUG330506 = new File("src/test/resources/bug330506.par");
     
     private static final String BUNDLE_SYMBOLIC_NAME = "appA-1-bundleA";
     private static final String BUNDLE_SYMBOLIC_NAME_BUG331767 = "PARbug331767-1-BUNDLEbug331767";
@@ -64,6 +65,11 @@ public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
         assertBundlePresent(BUNDLE_SYMBOLIC_NAME_BUG331767, BUNDLE_VERSION);
         this.deployer.undeploy(deploymentIdentity);
         assertBundleNotPresent(BUNDLE_SYMBOLIC_NAME_BUG331767, BUNDLE_VERSION);
+    }
+	
+	@Test(expected=DeploymentException.class)
+    public void deployParContainingFragmentOfSystemBundle() throws DeploymentException {
+        this.deployer.deploy(PAR_FOR_BUG330506.toURI());
     }
    
     private void assertBundlePresent(String symbolicName, Version version) {

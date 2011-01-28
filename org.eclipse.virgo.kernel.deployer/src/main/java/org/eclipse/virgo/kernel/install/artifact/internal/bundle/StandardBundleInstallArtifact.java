@@ -66,6 +66,8 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String MANIFEST_ENTRY_NAME = "/META-INF/MANIFEST.MF";
+	
+	private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
 	private static final long REFRESH_RESTART_WAIT_PERIOD = 60;
 
@@ -224,6 +226,22 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     void trackStart() {
         AbortableSignal signal = createStateMonitorSignal(null);
         this.bundleDriver.trackStart(signal);
+    }
+
+	@Override
+    public void beginInstall() throws DeploymentException {
+        if (isFragmentOnSystemBundle()) {
+            throw new DeploymentException("Deploying fragments of the system bundle is not supported");
+        }
+        super.beginInstall();
+    }
+
+    private boolean isFragmentOnSystemBundle() {
+        String fragmentHost = this.bundleManifest.getFragmentHost().getBundleSymbolicName();
+        if (fragmentHost != null) {
+            return fragmentHost.equals(EQUINOX_SYSTEM_BUNDLE_NAME);
+        }
+        return false;
     }
 
     /**
