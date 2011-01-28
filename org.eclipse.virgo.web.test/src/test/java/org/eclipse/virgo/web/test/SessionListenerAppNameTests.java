@@ -26,7 +26,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.junit.Test;
 
 public class SessionListenerAppNameTests extends AbstractWebIntegrationTests {

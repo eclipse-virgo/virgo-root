@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
