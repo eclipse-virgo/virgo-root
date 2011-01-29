@@ -32,7 +32,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.0.RELEASE/org.springframework.core-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.0.RELEASE/org.springframework.core-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.2.0.D-20110128105114/org.eclipse.virgo.medic-2.2.0.D-20110128105114.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/2.2.0.D-20110129173439/org.eclipse.virgo.medic-2.2.0.D-20110129173439.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
