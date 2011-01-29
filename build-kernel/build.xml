@@ -86,6 +86,7 @@
 				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>	
 				<filter token="SPRING.VERSION" value="${org.springframework}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
+				<filter token="OSGI.EXTENSIONS.VERSION" value="${org.eclipse.virgo.osgi}"/>
 			</filterset>
 		</copy>
 
