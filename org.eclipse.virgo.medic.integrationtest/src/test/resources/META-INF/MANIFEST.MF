@@ -4,7 +4,7 @@ Bundle-Name: Medic Logging Integration Tests
 Bundle-SymbolicName: org.eclipse.virgo.medic.log.test
 Import-Package: ch.qos.logback.classic.spi,
  ch.qos.logback.core,
- org.eclipse.virgo.medic.log;version="[2.2.0,2.3)",
+ org.eclipse.virgo.medic.log;version="[3.0, 4.0)",
  org.eclipse.virgo.medic.log.appender,
  org.osgi.service.cm,
  org.osgi.framework;version=0,
