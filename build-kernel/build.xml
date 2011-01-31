@@ -77,8 +77,8 @@
 			<filterset>
 				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
 				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
+				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
 				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
-				<filter token="FELIX.EVENTADMIN.VERSION" value="${org.apache.felix.eventadmin}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
@@ -86,6 +86,7 @@
 				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>	
 				<filter token="SPRING.VERSION" value="${org.springframework}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
+				<filter token="OSGI.EXTENSIONS.VERSION" value="${org.eclipse.virgo.osgi}"/>
 			</filterset>
 		</copy>
 
@@ -94,8 +95,8 @@
 			<filterset>
 				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
 				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
+				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
 				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
-				<filter token="FELIX.EVENTADMIN.VERSION" value="${org.apache.felix.eventadmin}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
