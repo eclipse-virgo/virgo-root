@@ -11,6 +11,15 @@
 
 package org.eclipse.virgo.kernel.agent.dm;
 
+/**
+ * 
+ * This class is the standard implementation for the AgentDMStartTracker
+ * <p />
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ * Thread safe.
+ */
+
 public class StandardAgentDMStartTracker implements AgentDMStartTracker {
 
 }
