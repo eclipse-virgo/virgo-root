@@ -6,7 +6,7 @@ Bundle-SymbolicName: org.eclipse.virgo.apps.admin.web
 Bundle-ClassPath: WEB-INF/classes
 Web-ContextPath: /admin
 Import-Template: 
- org.eclipse.virgo.apps.admin.*;version="[2.2.0, 3.0.0)",
+ org.eclipse.virgo.apps.admin.*;version="[3.0, 4.0)",
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[-1, +1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[-1, +1)}",
  org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
