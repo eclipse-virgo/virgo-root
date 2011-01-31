@@ -14,5 +14,5 @@ Import-Template:
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
  org.springframework.*;version="${org.springframework:[2.5.6, =.+1)}",
  org.springframework.osgi.*;version="${org.springframework.osgi:[=.=.=, +1)}"
-Service-Component: OSGI-INF/dm_agent.xml
+Service-Component: OSGI-INF/dm_agent.xml, OSGI-INF/agentdm_start_tracker.xml
  

@@ -9,15 +9,16 @@
  *   SAP AG - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core;
+package org.eclipse.virgo.kernel.agent.dm;
 
-public interface KernelConfig {
-    
-    /**
-     * Obtains the specified property from the ConfigAdmin's configuration provided by the core bundle.
-     * @param name - the name of the wanted property
-     * @return the property's value
-     */
-	public String getProperty(String name);
+/**
+ * 
+ * This interface is registered as a service that is enable only when the agent DM is started successfully
+ * <p />
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ * Thread safe.
+ */
+public interface AgentDMStartTracker {
 
 }

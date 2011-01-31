@@ -9,15 +9,8 @@
  *   SAP AG - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core;
+package org.eclipse.virgo.kernel.agent.dm;
 
-public interface KernelConfig {
-    
-    /**
-     * Obtains the specified property from the ConfigAdmin's configuration provided by the core bundle.
-     * @param name - the name of the wanted property
-     * @return the property's value
-     */
-	public String getProperty(String name);
+public class StandardAgentDMStartTracker implements AgentDMStartTracker {
 
 }

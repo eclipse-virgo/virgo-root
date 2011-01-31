@@ -37,6 +37,7 @@ import org.springframework.osgi.context.event.OsgiBundleApplicationContextListen
  */
 public final class AgentActivator {
 
+    private static final String AGENT_DM_START_TRACKER = "agentDMStartTracker";
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
     /**
@@ -44,6 +45,7 @@ public final class AgentActivator {
      */
     public void activate(ComponentContext context) {
         registerSpringDmToBlueprintEventAdapter(context.getBundleContext());
+        context.enableComponent(AGENT_DM_START_TRACKER);
     }
 
     private void registerSpringDmToBlueprintEventAdapter(BundleContext context) {

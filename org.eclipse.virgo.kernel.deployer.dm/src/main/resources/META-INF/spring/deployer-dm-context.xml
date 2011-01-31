@@ -12,5 +12,8 @@
 
 	<osgi:service ref="moduleContextAccessor"
 		interface="org.eclipse.virgo.kernel.module.ModuleContextAccessor" />
+		
+	<osgi:reference id="agentDMStartTracker"
+		interface="org.eclipse.virgo.kernel.agent.dm.AgentDMStartTracker" />
 
 </beans:beans>
