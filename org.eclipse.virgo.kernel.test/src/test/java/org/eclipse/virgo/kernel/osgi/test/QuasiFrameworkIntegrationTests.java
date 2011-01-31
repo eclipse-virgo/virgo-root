@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +69,11 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
         Assert.assertNotNull(this.quasiFrameworkFactory);
         this.quasiFramework = this.quasiFrameworkFactory.create();
         Assert.assertNotNull(this.quasiFramework);
+    }
+    
+    @After
+    public void tearDown() {
+        this.quasiFramework.destroy();
     }
 
     @Test

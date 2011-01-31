@@ -272,6 +272,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         } catch (UnableToSatisfyBundleDependenciesException utsbde) {
             logDependencySatisfactionException(uri, utsbde);
             throw new DeploymentException("Dependency satisfaction failed", utsbde);
+        } finally {
+            installEnvironment.destroy();
         }
     }
 

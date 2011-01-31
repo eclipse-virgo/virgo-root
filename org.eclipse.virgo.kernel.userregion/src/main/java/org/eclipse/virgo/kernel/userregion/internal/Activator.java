@@ -97,7 +97,6 @@ public class Activator implements BundleActivator {
         EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLoggerFactory.class).getService().createEventLogger(context.getBundle());
         
         RegionDigraph regionDigraph = OsgiFrameworkUtils.getService(context, RegionDigraph.class).getService();
-        Region userRegion = regionDigraph.getRegion("org.eclipse.virgo.region.user");
 
         ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));
@@ -110,7 +109,7 @@ public class Activator implements BundleActivator {
         DumpContributor dumpContributor = createResolutionDumpContributor(context);
         this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), dumpContributor, null));
 
-        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, userRegion);
+        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph);
         this.registrationTracker.track(context.registerService(QuasiFrameworkFactory.class.getName(), quasiFrameworkFactory, null));
 
         EquinoxHookRegistrar hookRegistrar = createHookRegistrar(context, packageAdmin, bundleTransformerHandler);
@@ -144,8 +143,8 @@ public class Activator implements BundleActivator {
     }
 
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
-        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, Region userRegion) {
-        return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler, userRegion);
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, RegionDigraph regionDigraph) {
+        return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler, regionDigraph);
     }
 
     private TransformedManifestProvidingBundleFileWrapper createBundleTransformationHandler(ImportExpansionHandler importExpander) {

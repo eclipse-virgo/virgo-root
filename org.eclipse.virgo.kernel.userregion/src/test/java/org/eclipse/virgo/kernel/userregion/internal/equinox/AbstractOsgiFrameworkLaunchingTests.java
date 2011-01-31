@@ -115,7 +115,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         RegionDigraph regionDigraph = new StandardRegionDigraph();
 
-        Region userRegion = new BundleIdBasedRegion("stubUserRegion", regionDigraph, bundleContext.getBundle(0L).getBundleContext());
+        Region userRegion = new BundleIdBasedRegion("org.eclipse.virgo.region.user", regionDigraph, bundleContext.getBundle(0L).getBundleContext());
         regionDigraph.addRegion(userRegion);
         userRegion.addBundle(this.bundleContext.getBundle());
 
@@ -156,7 +156,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
-        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, userRegion).create();
+        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph).create();
     }
 
     private ImportExpander createImportExpander(PackageAdmin packageAdmin) {

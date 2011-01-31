@@ -20,20 +20,18 @@ import org.eclipse.osgi.internal.baseadaptor.StateManager;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.io.FileSystemUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardQuasiFrameworkFactory} is the default implementation of {@link QuasiFrameworkFactory}.
@@ -60,9 +58,9 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
     
     private final TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler;
 
-    private final Region userRegion;
+    private final RegionDigraph userRegion;
 
-    public StandardQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective, Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, Region userRegion) {
+    public StandardQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective, Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDigraph) {
         this.bundleContext = bundleContext;
         this.platformAdmin = getPlatformAdminService(bundleContext);
         this.detective = detective;
@@ -70,7 +68,7 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
         ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
         this.stateManager = (StateManager) bundleContext.getService(platformAdminServiceReference);
         this.bundleTransformationHandler = bundleTransformationHandler;
-        this.userRegion = userRegion;
+        this.userRegion = regionDigraph;
     }
 
     /**

@@ -33,12 +33,16 @@ import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.StateHelper;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.osgi.service.resolver.VersionConstraint;
+import org.eclipse.virgo.kernel.core.FatalKernelException;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
+import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
 import org.eclipse.virgo.repository.Repository;
@@ -67,6 +71,8 @@ import org.slf4j.LoggerFactory;
 final class StandardQuasiFramework implements QuasiFramework {
 
     private static final String REGION_LOCATION_DELIMITER = "@";
+
+    private static final String COREGION_SUFFIX = ".coregion";
 
     private static final String REFERENCE_SCHEME = "reference:";
 
@@ -97,19 +103,25 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     private final TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler;
 
+    private final RegionDigraph regionDigraph;
+
+    private Region coregion;
+
     private final Region userRegion;
 
     StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
-        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, Region userRegion) {
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDiagraph) {
         this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
         this.detective = detective;
-        this.dependencyCalculator = new DependencyCalculator(platformAdmin.getFactory(), this.detective, repository, this.bundleContext);
         this.stateHelper = platformAdmin.getStateHelper();
         this.bundleTransformationHandler = bundleTransformationHandler;
-        this.userRegion = userRegion;
+        this.regionDigraph = regionDiagraph;
+        this.userRegion = regionDigraph.getRegion("org.eclipse.virgo.region.user");
         setResolverHookFactory();
+
+        this.dependencyCalculator = new DependencyCalculator(platformAdmin.getFactory(), this.detective, repository, this.bundleContext);
     }
 
     private void setResolverHookFactory() {
@@ -133,9 +145,26 @@ final class StandardQuasiFramework implements QuasiFramework {
      */
     public QuasiBundle install(URI location, BundleManifest bundleManifest) throws BundleException {
         synchronized (this.monitor) {
+            createCoregionIfNecessary();
             StandardQuasiBundle qb = doInstall(location, bundleManifest);
             this.installedQuasiBundles.add(qb);
             return qb;
+        }
+    }
+
+    private void createCoregionIfNecessary() {
+        synchronized (this.monitor) {
+            if (this.coregion == null) {
+                this.coregion = new BundleIdBasedRegion(this.userRegion.getName() + COREGION_SUFFIX, this.regionDigraph,
+                    this.bundleContext.getBundle(0L).getBundleContext());
+                try {
+                    this.userRegion.connectRegion(this.coregion, RegionFilter.TOP);
+                    this.coregion.connectRegion(this.userRegion, RegionFilter.TOP);
+                } catch (BundleException e) {
+                    // should never happen
+                    throw new FatalKernelException("Failed to create coregion", e);
+                }
+            }
         }
     }
 
@@ -143,9 +172,10 @@ final class StandardQuasiFramework implements QuasiFramework {
         try {
             Dictionary<String, String> manifest = bundleManifest.toDictionary();
             String installLocation = "file".equals(location.getScheme()) ? new File(location).getAbsolutePath() : location.toString();
-            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(this.state, manifest, this.userRegion.getName()
+            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(this.state, manifest, this.coregion.getName()
                 + REGION_LOCATION_DELIMITER + installLocation, nextBundleId());
             this.state.addBundle(bundleDescription);
+            this.coregion.addBundle(bundleDescription.getBundleId());
             return new StandardQuasiBundle(bundleDescription, bundleManifest, this.stateHelper);
         } catch (RuntimeException e) {
             throw new BundleException("Unable to read bundle at '" + location + "'", e);
@@ -228,8 +258,9 @@ final class StandardQuasiFramework implements QuasiFramework {
     }
 
     private BundleDescription[] getDependencies(BundleDescription[] bundles) {
+        createCoregionIfNecessary();
         try {
-            return this.dependencyCalculator.calculateDependencies(this.state, bundles);
+            return this.dependencyCalculator.calculateDependencies(this.state, this.coregion, bundles);
         } catch (BundleException e) {
             return new BundleDescription[0];
         } catch (UnableToSatisfyDependenciesException utsde) {
@@ -479,6 +510,18 @@ final class StandardQuasiFramework implements QuasiFramework {
                 }
                 quasiBundle.setBundle(null);
             }
+        }
+    }
+
+    @Override
+    public void destroy() {
+        Region coregionCopy;
+        synchronized (this.monitor) {
+            coregionCopy = this.coregion;
+            this.coregion = null;
+        }
+        if (coregionCopy != null) {
+            this.regionDigraph.removeRegion(coregionCopy);
         }
     }
 }

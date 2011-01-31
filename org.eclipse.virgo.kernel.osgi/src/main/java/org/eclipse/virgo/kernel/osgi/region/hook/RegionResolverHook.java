@@ -39,7 +39,7 @@ final class RegionResolverHook implements ResolverHook {
 
     private static final long INVALID_BUNDLE_ID = -1L;
 
-    private static final Boolean DEBUG = true;
+    private static final Boolean DEBUG = false;
 
     private final RegionDigraph regionDigraph;
 
@@ -84,8 +84,7 @@ final class RegionResolverHook implements ResolverHook {
     }
 
     private Region getRegion(Long bundleId) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.regionDigraph.getRegion(bundleId);
     }
 
     private Long getBundleId(BundleRevision bundleRevision) {
@@ -189,7 +188,7 @@ final class RegionResolverHook implements ResolverHook {
                 String pkg = (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY);
                 System.out.println("    Package " + pkg + " from provider " + providerRevision.getSymbolicName() + "_"
                     + providerRevision.getVersion() + "[" + getBundleId(providerRevision) + "]");
-                if (pkg.equals("javax.portlet")) {
+                if (pkg.equals("slow")) {
                     System.out.println(">>> put breakpoint here <<<");
                 }
             } else {
@@ -211,7 +210,7 @@ final class RegionResolverHook implements ResolverHook {
                 String pkg = (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY);
                 System.out.println("    Package " + pkg + " from provider " + providerRevision.getSymbolicName() + "_"
                     + providerRevision.getVersion() + "[" + getBundleId(providerRevision) + "]");
-                if (pkg.equals("org.springframework.jdbc")) {
+                if (pkg.equals("slow")) {
                     System.out.println(">>> put breakpoint here <<<");
                 }
             } else {
