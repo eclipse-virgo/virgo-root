@@ -63,7 +63,7 @@ public abstract class AbstractWebIntegrationTests {
 
     private static final long HOT_DEPLOY_TIMEOUT = 30000;
 
-	private static final String CURRENT_VERSION = "2.2.0";
+	private static final String CURRENT_VERSION = "3.0.0";
 
     protected final List<String> deployedWebApps = new ArrayList<String>();
 
