@@ -13,11 +13,11 @@ package org.eclipse.virgo.kernel.agent.dm;
 
 /**
  * 
- * This interface is registered as a service that is enable only when the agent DM is started successfully
+ * This interface is registered as a service that is enabled only when the agent.DM is started successfully
  * <p />
  *
  * <strong>Concurrent Semantics</strong><br />
- * Thread safe.
+ * Implementations of this interface must be thread safe.
  */
 public interface AgentDMStartTracker {
 

@@ -11,6 +11,14 @@
 
 package org.eclipse.virgo.kernel.core;
 
+/**
+ * 
+ * Interface defining a way to access kernel's configuration.
+ * <p />
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ * The implementations of this interface must be thread safe.
+ */
 public interface KernelConfig {
     
     /**

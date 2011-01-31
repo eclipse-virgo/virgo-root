@@ -13,25 +13,36 @@ package org.eclipse.virgo.kernel.config.internal;
 
 import org.eclipse.virgo.kernel.core.KernelConfig;
 import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * 
+ * This class is the standard implementation for the KernelConfig interface. It enables access to the configurations provided by the kernel core.
+ * <p />
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ * Thread safe.
+ */
 
 public class StandardKernelConfig implements KernelConfig {
-
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     ComponentContext context;
 
     protected void activate(ComponentContext context) {
         this.context = context;
-        System.out.println("Activating StandardKernelConfig component with properties " + context.getProperties());
+        LOGGER.debug("Activating StandardKernelConfig component with properties " + context.getProperties());
     }
 
     protected void deactivate(ComponentContext context) {
-        System.out.println("Deactivating StandardKernelConfig component");
+        LOGGER.debug("Deactivating StandardKernelConfig component");
         this.context = null;
     }
 
     @Override
     public String getProperty(String name) {
         Object value = this.context.getProperties().get(name);
-        System.out.println("KernelConfig.getProperty() is called with name [" + name + "] value is [" + value + "]");
+        LOGGER.debug("KernelConfig.getProperty() is called with name [" + name + "] value is [" + value + "]");
         if (value instanceof String) {
             return (String) value;
         } else if (value instanceof String[] && ((String[]) value).length > 0) {
