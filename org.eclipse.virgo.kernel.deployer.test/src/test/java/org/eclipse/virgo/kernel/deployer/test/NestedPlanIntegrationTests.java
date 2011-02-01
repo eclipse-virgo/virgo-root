@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
@@ -276,7 +277,8 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     private void checkPlanScoping(TestPlanArtifactInfo parent, Model model) {
         if (parent.isScoped()) {
             Artifact parentPlan = getPlan(parent);
-            for (Artifact child : parentPlan.getDependents()) {
+            Set<Artifact> children = parentPlan.getDependents();
+            for (Artifact child : children) {
                 if (PLAN_TYPE.equals(child.getType())) {
                     String childPlanName = child.getName();
                     String unscopedChildPlanName = parent.getChildPlan().getName();

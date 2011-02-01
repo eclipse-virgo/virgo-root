@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 
@@ -36,12 +37,18 @@ public class ModelBundleListenerInitializerTests {
     private final PackageAdminUtil packageAdminUtil = createMock(PackageAdminUtil.class);
 
     private final StubBundleContext bundleContext;
+    
+    private final StubBundleContext systemBundleContext;
     {
         StubBundle bundle = new StubBundle();
         this.bundleContext = (StubBundleContext) bundle.getBundleContext();
+        StubBundle stubSystemBundle = new StubBundle(0L, "org.osgi.framework", new Version("0"), "loc");
+        this.systemBundleContext = (StubBundleContext)stubSystemBundle.getBundleContext();
+        this.bundleContext.addInstalledBundle(stubSystemBundle);
+        this.systemBundleContext.addInstalledBundle(bundle);
         String filterString = String.format("(&(objectClass=%s)(artifactType=bundle))", DependencyDeterminer.class.getCanonicalName());
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
-        this.bundleContext.addInstalledBundle(bundle);
+        //this.bundleContext.addInstalledBundle(bundle);
     }
 
     private final ModelBundleListenerInitializer initializer = new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, bundleContext);
@@ -62,23 +69,23 @@ public class ModelBundleListenerInitializerTests {
     }
 
     @Test(expected = FatalAssertionException.class)
-    public void nullUserBundleContext() {
+    public void nullUserRegionBundleContext() {
         new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, null);
     }
-    
+
     @Test
     public void initialize() throws IOException, InvalidSyntaxException {
-        assertEquals(0, this.bundleContext.getBundleListeners().size());
+        assertEquals(0, this.systemBundleContext.getBundleListeners().size());
         this.initializer.initialize();
-        assertEquals(1, this.bundleContext.getBundleListeners().size());
+        assertEquals(1, this.systemBundleContext.getBundleListeners().size());
         assertEquals(1, this.artifactRepository.getArtifacts().size());
     }
 
     @Test
     public void destroy() throws IOException, InvalidSyntaxException {
         this.initializer.initialize();
-        assertEquals(1, this.bundleContext.getBundleListeners().size());
+        assertEquals(1, this.systemBundleContext.getBundleListeners().size());
         this.initializer.destroy();
-        assertEquals(0, this.bundleContext.getBundleListeners().size());
+        assertEquals(0, this.systemBundleContext.getBundleListeners().size());
     }
 }
