@@ -11,25 +11,25 @@ Web-ContextPath: /admin
 Import-Package: javax.management;version="0",javax.servlet;version="[2
  .5.0,3)",javax.servlet.http;version="[2.5.0,3)",javax.servlet.jsp.jst
  l.core;version="[1.1.2,2)",org.eclipse.virgo.apps.admin.core;version=
- "[2.2.0, 3.0.0)",org.eclipse.virgo.kernel.module;version="[1,3)",org.
- eclipse.virgo.kernel.shell.model.helper;version="[1,3)",org.eclipse.v
- irgo.teststubs.osgi.service.cm,org.eclipse.virgo.web.dm;version="[1,3
- )",org.junit,org.osgi.framework;version="0",org.osgi.service.cm;versi
- on="0",org.slf4j;version="[1.6.1,2)",org.springframework.beans.factor
- y.annotation;version="[2.5.6,4)",org.springframework.beans.factory.xm
- l;version="[2.5.6,4)",org.springframework.context.config;version="[2.
- 5.6,4)",org.springframework.context.support;version="[2.5.6,4)",org.s
- pringframework.js.resource;version="[2.0.8,3)",org.springframework.mo
- ck.web;version="[2.5.6,4)",org.springframework.stereotype;version="[2
- .5.6,4)",org.springframework.web.bind;version="[2.5.6,4)",org.springf
- ramework.web.bind.annotation;version="[2.5.6,4)",org.springframework.
- web.context;version="[2.5.6,4)",org.springframework.web.context.suppo
- rt;version="[2.5.6,4)",org.springframework.web.multipart;version="[2.
- 5.6,4)",org.springframework.web.multipart.commons;version="[2.5.6,4)"
- ,org.springframework.web.servlet;version="[2.5.6,4)",org.springframew
- ork.web.servlet.handler;version="[2.5.6,4)",org.springframework.web.s
- ervlet.mvc;version="[2.5.6,4)",org.springframework.web.servlet.mvc.an
- notation;version="[2.5.6,4)",org.springframework.web.servlet.support;
- version="[2.5.6,4)",org.springframework.web.servlet.view;version="[2.
- 5.6,4)"
+ "[3.0, 4.0)",org.eclipse.virgo.kernel.module;version="[1,3)",org.ecli
+ pse.virgo.kernel.shell.model.helper;version="[1,3)",org.eclipse.virgo
+ .teststubs.osgi.service.cm,org.eclipse.virgo.web.dm;version="[1,3)",o
+ rg.junit,org.osgi.framework;version="0",org.osgi.service.cm;version="
+ 0",org.slf4j;version="[1.6.1,2)",org.springframework.beans.factory.an
+ notation;version="[2.5.6,4)",org.springframework.beans.factory.xml;ve
+ rsion="[2.5.6,4)",org.springframework.context.config;version="[2.5.6,
+ 4)",org.springframework.context.support;version="[2.5.6,4)",org.sprin
+ gframework.js.resource;version="[2.0.8,3)",org.springframework.mock.w
+ eb;version="[2.5.6,4)",org.springframework.stereotype;version="[2.5.6
+ ,4)",org.springframework.web.bind;version="[2.5.6,4)",org.springframe
+ work.web.bind.annotation;version="[2.5.6,4)",org.springframework.web.
+ context;version="[2.5.6,4)",org.springframework.web.context.support;v
+ ersion="[2.5.6,4)",org.springframework.web.multipart;version="[2.5.6,
+ 4)",org.springframework.web.multipart.commons;version="[2.5.6,4)",org
+ .springframework.web.servlet;version="[2.5.6,4)",org.springframework.
+ web.servlet.handler;version="[2.5.6,4)",org.springframework.web.servl
+ et.mvc;version="[2.5.6,4)",org.springframework.web.servlet.mvc.annota
+ tion;version="[2.5.6,4)",org.springframework.web.servlet.support;vers
+ ion="[2.5.6,4)",org.springframework.web.servlet.view;version="[2.5.6,
+ 4)"
 

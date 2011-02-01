@@ -41,5 +41,6 @@
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.equinox/org.eclipse.equinox.cm/1.0.200.v20100520/org.eclipse.equinox.cm-1.0.200.v20100520.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

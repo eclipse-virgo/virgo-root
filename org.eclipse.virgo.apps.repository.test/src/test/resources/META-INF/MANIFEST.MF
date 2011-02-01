@@ -10,7 +10,7 @@ Bundle-Name: Hosted Provisioning Repository Test
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.repository.test
 Import-Package: org.eclipse.virgo.kernel.deployer.core;version="[2.2.0
- ,3)",org.eclipse.virgo.util.io;version="[2.2.0,3)",org.junit;version=
- "[4.7.0,5)",org.junit.runner;version="[4.7.0,5)",org.osgi.framework;v
- ersion="0",org.osgi.service.event
+ ,3.4)",org.eclipse.virgo.util.io;version="[2.2.0,3.3)",org.junit;vers
+ ion="[4.7.0,5)",org.junit.runner;version="[4.7.0,5)",org.osgi.framewo
+ rk;version="0",org.osgi.service.event
 
