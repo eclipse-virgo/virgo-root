@@ -13,7 +13,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal.event;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 
 
 

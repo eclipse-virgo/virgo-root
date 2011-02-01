@@ -13,7 +13,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal.recovery;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.deployer.core.internal.event.DeploymentListener;
 
 

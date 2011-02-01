@@ -59,7 +59,7 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
     public Tree<InstallArtifact> constructInstallArtifactTree(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
         Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
-            ArtifactStateMonitor artifactStateMonitor = new ArtifactStateMonitor(this.bundleContext);
+            ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
             InstallArtifact configInstallArtifact = new ConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
                 this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger);
             return constructInstallTree(configInstallArtifact);

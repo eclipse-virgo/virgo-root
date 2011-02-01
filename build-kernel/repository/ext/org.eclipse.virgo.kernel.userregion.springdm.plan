@@ -1,4 +1,4 @@
-<plan name="org.eclipse.virgo.kernel.userregion.springdm" version="2.2.0" scoped="false" atomic="false"
+<plan name="org.eclipse.virgo.kernel.userregion.springdm" version="3.0.0" scoped="false" atomic="false"
                 xmlns="http://www.eclipse.org/virgo/schema/plan"
 				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				xsi:schemaLocation="
@@ -8,6 +8,6 @@
         <artifact type="bundle" name="org.springframework.osgi.core" version="[1.2.1, 1.3.0)"/>
         <artifact type="bundle" name="org.springframework.osgi.extender" version="[1.2.1, 1.3.0)"/>
         <artifact type="bundle" name="org.springframework.osgi.io" version="[1.2.1, 1.3.0)"/>
-        <artifact type="bundle" name="org.eclipse.virgo.kernel.agent.dm" version="[2.1.0, 3.0)"/>
-        <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[2.1.0, 3.0)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.kernel.agent.dm" version="[3.0, 4.0)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[3.0, 4.0)"/>
 </plan>

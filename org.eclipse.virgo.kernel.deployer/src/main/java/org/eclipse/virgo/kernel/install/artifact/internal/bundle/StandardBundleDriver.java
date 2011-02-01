@@ -19,6 +19,7 @@ import org.osgi.framework.BundleListener;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.core.BundleUtils;
 import org.eclipse.virgo.kernel.core.KernelException;
@@ -140,7 +141,7 @@ final class StandardBundleDriver implements BundleDriver {
     /**
      * {@inheritDoc}
      */
-    public void start(Signal signal) throws DeploymentException {
+    public void start(AbortableSignal signal) throws DeploymentException {
         Bundle bundle = obtainLocalBundle();
 
         if (!BundleUtils.isFragmentBundle(bundle)) {
@@ -162,7 +163,7 @@ final class StandardBundleDriver implements BundleDriver {
 
     }
 
-    private void startBundle(Bundle bundle, Signal signal) throws DeploymentException {
+    private void startBundle(Bundle bundle, AbortableSignal signal) throws DeploymentException {
         this.bundleListener.addSolicitedStart(bundle);
         try {
             this.bundleStarter.start(bundle, signal);
@@ -198,23 +199,6 @@ final class StandardBundleDriver implements BundleDriver {
                 popThreadContext();
             }
         }
-    }
-
-    public boolean asyncStart(Signal signal) {
-        Bundle bundle = obtainLocalBundle();
-
-        if (!BundleUtils.isFragmentBundle(bundle)) {
-            pushThreadContext();
-            try {
-                this.bundleStarter.start(obtainLocalBundle(), signal);
-            } catch (BundleException be) {
-                // ignore - the bundle starter will have already notified the signal
-            } finally {
-                popThreadContext();
-            }
-        } else
-            signalSuccessfulCompletion(signal);
-        return true;
     }
 
     private Bundle obtainLocalBundle() {
@@ -302,7 +286,7 @@ final class StandardBundleDriver implements BundleDriver {
     /** 
      * {@inheritDoc}
      */
-    public void trackStart(Signal signal) {
+    public void trackStart(AbortableSignal signal) {
         this.bundleStarter.trackStart(obtainLocalBundle(), signal);
     }
 }

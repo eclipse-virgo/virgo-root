@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -76,8 +77,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * @param repositoryName the name of the source repository, or <code>null</code> if the artifact is not from a
      *        repository
      */
-    protected AbstractInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage,
-        @NonNull ArtifactStateMonitor artifactStateMonitor, String repositoryName, EventLogger eventLogger) {
+    protected AbstractInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage, @NonNull ArtifactStateMonitor artifactStateMonitor, String repositoryName, EventLogger eventLogger) {
         this.identity = identity;
         this.artifactStorage = artifactStorage;
         this.artifactStateMonitor = artifactStateMonitor;
@@ -184,7 +184,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
-    public void start(Signal signal) throws DeploymentException {
+    public void start(AbortableSignal signal) throws DeploymentException {
         // If ACTIVE, signal successful completion immediately, otherwise proceed with start processing.
         if (getState().equals(State.ACTIVE)) {
             if (signal != null) {
@@ -203,20 +203,20 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         }
     }
 
-    protected final void driveDoStart(Signal signal) throws DeploymentException {
-        Signal stateMonitorSignal = createStateMonitorSignal(signal);
+    protected final void driveDoStart(AbortableSignal signal) throws DeploymentException {
+        AbortableSignal stateMonitorSignal = createStateMonitorSignal(signal);
         doStart(stateMonitorSignal);
     }
 
-    protected Signal createStateMonitorSignal(Signal signal) {
-        return new StateMonitorSignal(signal);
+    protected final AbortableSignal createStateMonitorSignal(AbortableSignal signal){
+    	return new StateMonitorSignal(signal);
     }
+    
+    private final class StateMonitorSignal implements AbortableSignal {
 
-    private final class StateMonitorSignal implements Signal {
+        private final AbortableSignal signal;
 
-        private final Signal signal;
-
-        public StateMonitorSignal(Signal signal) {
+        public StateMonitorSignal(AbortableSignal signal) {
             this.signal = signal;
         }
 
@@ -237,10 +237,6 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
          */
         public void signalFailure(Throwable cause) {
             asyncStartFailed(cause);
-            handleFailure(cause);
-        }
-
-        private void handleFailure(Throwable cause) {
             try {
                 stop();
             } catch (DeploymentException de) {
@@ -248,6 +244,19 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
             }
             AbstractInstallArtifact.signalFailure(this.signal, cause);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+		public void signalAborted() {
+            asyncStartAborted();
+            try {
+                stop();
+            } catch (DeploymentException de) {
+                AbstractInstallArtifact.this.logger.error("Stop aborted", de);
+            }
+            AbstractInstallArtifact.signalAbortion(this.signal);
+		}
 
     }
 
@@ -263,6 +272,12 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         }
     }
 
+    protected static void signalAbortion(AbortableSignal signal) {
+        if (signal != null) {
+            signal.signalAborted();
+        }
+    }
+
     /**
      * Perform the actual start of this {@link InstallArtifact} and drive the given {@link Signal} on successful or
      * unsuccessful completion.
@@ -270,7 +285,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * @param signal the <code>Signal</code> to be driven
      * @throws DeploymentException if the start fails synchronously
      */
-    protected abstract void doStart(Signal signal) throws DeploymentException;
+    protected abstract void doStart(AbortableSignal signal) throws DeploymentException;
 
     private final void asyncStartSucceeded() throws DeploymentException {
         pushThreadContext();
@@ -285,6 +300,17 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         pushThreadContext();
         try {
             this.artifactStateMonitor.onStartFailed(this, cause);
+        } catch (DeploymentException e) {
+            logger.error(String.format("listener for %s threw DeploymentException", this), e);
+        } finally {
+            popThreadContext();
+        }
+    }
+
+    private final void asyncStartAborted() {
+        pushThreadContext();
+        try {
+            this.artifactStateMonitor.onStartAborted(this);
         } catch (DeploymentException e) {
             logger.error(String.format("listener for %s threw DeploymentException", this), e);
         } finally {

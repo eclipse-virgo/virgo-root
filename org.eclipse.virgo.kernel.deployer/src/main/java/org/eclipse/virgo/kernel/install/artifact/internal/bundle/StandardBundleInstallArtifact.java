@@ -23,17 +23,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.osgi.framework.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.BlockingSignal;
+import org.eclipse.virgo.kernel.deployer.core.internal.BlockingAbortableSignal;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -44,6 +38,7 @@ import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifac
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactRefreshHandler;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ArtifactIdentityScoper;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.Tree;
@@ -53,6 +48,9 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.BundleSymbolicName;
 import org.eclipse.virgo.util.osgi.manifest.ExportedPackage;
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardBundleInstallArtifact} is the default implementation of {@link BundleInstallArtifact}.
@@ -68,6 +66,8 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String MANIFEST_ENTRY_NAME = "/META-INF/MANIFEST.MF";
+	
+	private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
 	private static final long REFRESH_RESTART_WAIT_PERIOD = 60;
 
@@ -224,15 +224,31 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      * Track the start of the bundle.
      */
     void trackStart() {
-        Signal signal = createStateMonitorSignal(null);
+        AbortableSignal signal = createStateMonitorSignal(null);
         this.bundleDriver.trackStart(signal);
+    }
+
+	@Override
+    public void beginInstall() throws DeploymentException {
+        if (isFragmentOnSystemBundle()) {
+            throw new DeploymentException("Deploying fragments of the system bundle is not supported");
+        }
+        super.beginInstall();
+    }
+
+    private boolean isFragmentOnSystemBundle() {
+        String fragmentHost = this.bundleManifest.getFragmentHost().getBundleSymbolicName();
+        if (fragmentHost != null) {
+            return fragmentHost.equals(EQUINOX_SYSTEM_BUNDLE_NAME);
+        }
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void start(Signal signal) throws DeploymentException {
+    public void start(AbortableSignal signal) throws DeploymentException {
         /*
          * Do not call super.start(signal) as it is essential that the starting event is driven under the bundle
          * lifecycle event so the listeners see a suitable bundle state.
@@ -249,7 +265,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      * {@inheritDoc}
      */
     @Override
-    protected void doStart(Signal signal) throws DeploymentException {
+    protected void doStart(AbortableSignal signal) throws DeploymentException {
         this.bundleDriver.start(signal);
     }
 
@@ -316,7 +332,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
             boolean refreshed = this.bundleDriver.update(bundleManifest);
             if (refreshed) {
                 if (startRequired) {
-                    BlockingSignal blockingSignal = new BlockingSignal(true);
+                    BlockingAbortableSignal blockingSignal = new BlockingAbortableSignal(true);
                     start(blockingSignal);
                     try {
                         refreshed = blockingSignal.checkComplete();
@@ -403,7 +419,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     
     private void startIfNecessary(boolean bundleStopped) throws DeploymentException {
     	if (bundleStopped) {
-    		BlockingSignal signal = new BlockingSignal(true);
+    		BlockingAbortableSignal signal = new BlockingAbortableSignal(true);
             start(signal);
             signal.awaitCompletion(REFRESH_RESTART_WAIT_PERIOD);
         }

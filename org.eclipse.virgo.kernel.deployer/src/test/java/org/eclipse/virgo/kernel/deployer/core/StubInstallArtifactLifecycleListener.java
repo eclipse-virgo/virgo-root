@@ -36,7 +36,9 @@ public final class StubInstallArtifactLifecycleListener implements InstallArtifa
     private final AtomicInteger startingCount = new AtomicInteger();
 
     private final AtomicInteger startFailedCount = new AtomicInteger();
-
+    
+    private final AtomicInteger startAbortedCount = new AtomicInteger();
+    
     private final AtomicInteger startedCount = new AtomicInteger();
 
     private final AtomicInteger stoppingCount = new AtomicInteger();
@@ -113,6 +115,10 @@ public final class StubInstallArtifactLifecycleListener implements InstallArtifa
 
     public void assertStartFailedCount(int startFailed) {
         assertEquals("Incorrect start failed count", startFailed, this.startFailedCount.get());
+    }
+
+    public void assertStartAbortedCount(int startAborted) {
+        assertEquals("Incorrect start abortion count", startAborted, this.startAbortedCount.get());
     }
 
     public void assertStartedCount(int started) {
@@ -201,6 +207,13 @@ public final class StubInstallArtifactLifecycleListener implements InstallArtifa
      */
     public void onStartFailed(InstallArtifact installArtifact, Throwable cause) {
         this.startFailedCount.incrementAndGet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void onStartAborted(InstallArtifact installArtifact) {
+        this.startAbortedCount.incrementAndGet();
     }
 
     /**

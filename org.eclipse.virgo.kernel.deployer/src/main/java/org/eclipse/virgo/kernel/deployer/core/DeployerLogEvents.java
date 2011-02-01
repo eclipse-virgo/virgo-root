@@ -69,6 +69,7 @@ public enum DeployerLogEvents implements LogEvent {
     REFRESH_REQUEST_FAILED(505, Level.ERROR), //
     UNDEPLOY_ARTEFACT_NOT_FOUND(506, Level.ERROR), //
     REFRESH_ARTEFACT_NOT_FOUND(507, Level.ERROR), //
+    START_ABORTED(508, Level.INFO), //    
 
     JAR_UNPACK_ERROR(600, Level.ERROR), //
 

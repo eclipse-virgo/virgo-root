@@ -108,7 +108,6 @@ public class ClassLoadingHelperTests {
         verify(bundle);
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
     public void testTryToLoadMissingBundle() throws Exception {
         assertNull("Class [" + CLASS_NAME + "] found, while no bundle is specified",
@@ -129,7 +128,8 @@ public class ClassLoadingHelperTests {
         verify(bundle);
     }
 
-    @Test
+    @SuppressWarnings("rawtypes")
+	@Test
     public void testTryToLoadExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
 

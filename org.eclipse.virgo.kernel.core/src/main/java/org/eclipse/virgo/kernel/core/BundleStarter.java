@@ -35,7 +35,7 @@ public interface BundleStarter {
      * @param signal the <code>Signal</code> to drive.
      * @throws BundleException if Bundle {@link Bundle#start()} fails
      */
-    void start(Bundle bundle, Signal signal) throws BundleException;
+    void start(Bundle bundle, AbortableSignal signal) throws BundleException;
 
     /**
      * Starts the supplied {@link Bundle}, driving the supplied signal upon successful or unsuccessful completion
@@ -48,7 +48,13 @@ public interface BundleStarter {
      * @param signal the <code>Signal</code> to drive.
      * @throws BundleException
      */
-    void start(Bundle bundle, int options, Signal signal) throws BundleException;
+    void start(Bundle bundle, int options, AbortableSignal signal) throws BundleException;
     
-    void trackStart(Bundle bundle, Signal signal);
+    /**
+     * Apply tracking to the given <code>Bundle</code> using the given <code>Signal</code> but don't actually start it.
+     * 
+     * @param bundle the <code>Bundle</code> to track.
+     * @param signal the <code>Signal</code> to be notified.
+     */
+    void trackStart(Bundle bundle, AbortableSignal signal);
 }

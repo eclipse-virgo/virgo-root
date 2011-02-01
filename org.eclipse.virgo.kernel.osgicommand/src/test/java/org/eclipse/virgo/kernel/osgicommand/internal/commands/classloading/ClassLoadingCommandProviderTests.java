@@ -221,7 +221,7 @@ public class ClassLoadingCommandProviderTests {
         verify(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("rawtypes")
     @Test
     public void testClLoadWithBundleIdAndExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);

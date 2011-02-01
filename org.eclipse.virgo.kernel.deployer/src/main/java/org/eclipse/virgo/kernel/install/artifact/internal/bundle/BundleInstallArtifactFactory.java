@@ -28,6 +28,7 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
+import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactRefreshHandler;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.io.IOUtils;
@@ -69,7 +70,7 @@ final class BundleInstallArtifactFactory {
 
     BundleInstallArtifact createBundleInstallArtifact(ArtifactIdentity identity, ArtifactStorage artifactStorage, String repositoryName) throws DeploymentException {
 
-        ArtifactStateMonitor artifactStateMonitor = new ArtifactStateMonitor(this.kernelBundleContext);
+        ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.kernelBundleContext);
 
         StandardBundleDriver bundleDriver = this.bundleDriverFactory.createBundleDriver(identity, artifactStateMonitor);
 

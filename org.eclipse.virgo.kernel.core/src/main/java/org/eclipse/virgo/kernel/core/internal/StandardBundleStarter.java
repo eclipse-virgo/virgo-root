@@ -11,9 +11,9 @@
 
 package org.eclipse.virgo.kernel.core.internal;
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.core.BundleUtils;
-import org.eclipse.virgo.kernel.core.Signal;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -41,14 +41,14 @@ final class StandardBundleStarter implements BundleStarter {
     /**
      * {@inheritDoc}
      */
-    public void start(Bundle bundle, Signal signal) throws BundleException {
+    public void start(Bundle bundle, AbortableSignal signal) throws BundleException {
         start(bundle, DEFAULT_START_OPTIONS, signal);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void start(Bundle bundle, int options, Signal signal) throws BundleException {
+    public void start(Bundle bundle, int options, AbortableSignal signal) throws BundleException {
         
         trackStart(bundle, signal);
         
@@ -56,9 +56,22 @@ final class StandardBundleStarter implements BundleStarter {
             try {
                 bundle.start(options);
             } catch (BundleException be) {
-                this.bundleStartTracker.cleanup(bundle, be);
+                this.bundleStartTracker.cleanup(bundle, false, be);
                 throw be;
             }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void trackStart(Bundle bundle, AbortableSignal signal) {
+        if (BundleUtils.isFragmentBundle(bundle)) {
+            throw new IllegalArgumentException("A fragment bundle cannot be started and so start cannot be tracked");
+        }
+        
+        if (signal != null) {
+            this.bundleStartTracker.trackStart(bundle, signal);
         }
     }
 
@@ -69,14 +82,5 @@ final class StandardBundleStarter implements BundleStarter {
         }
         return false;
     }
-
-    public void trackStart(Bundle bundle, Signal signal) {
-        if (BundleUtils.isFragmentBundle(bundle)) {
-            throw new IllegalArgumentException("A fragment bundle cannot be started and so start cannot be tracked");
-        }
-        
-        if (signal != null) {
-            this.bundleStartTracker.trackStart(bundle, signal);
-        }
-    }
+    
 }

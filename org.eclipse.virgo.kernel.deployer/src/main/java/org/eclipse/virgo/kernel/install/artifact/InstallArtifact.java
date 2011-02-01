@@ -17,7 +17,7 @@ import org.osgi.framework.Version;
 
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.Tree;
@@ -79,14 +79,14 @@ public interface InstallArtifact {
     /**
      * Starts this {@link InstallArtifact}. Returns before any asynchronous processing has necessarily completed.
      * <p/>
-     * Equivalent to calling {@link InstallArtifact#start(Signal) start(null)}.
+     * Equivalent to calling {@link InstallArtifact#start(AbortableSignal) start(null)}.
      * 
      * @throws DeploymentException
      */
     void start() throws DeploymentException;
 
     /**
-     * Starts this {@link InstallArtifact} and drives the given {@link Signal} when the start, including any
+     * Starts this {@link InstallArtifact} and drives the given {@link AbortableSignal} when the start, including any
      * asynchronous processing, completes either successfully or unsuccessfully.
      * <p/>
      * If the start does not involve asynchronous processing, drives the given <code>Signal</code> before returning.
@@ -100,10 +100,10 @@ public interface InstallArtifact {
      * Note: this method behaves as specified above when called multiple times on the same <code>InstallArtifact</code>
      * with any combination of the same or distinct or <code>null</code> <code>Signals</code>.
      * 
-     * @param signal a <code>Signal</code> that is ready to be driven or <code>null</code> if signalling is not required
+     * @param signal a <code>AbortableSignal</code> that is ready to be driven or <code>null</code> if signalling is not required
      * @throws DeploymentException
      */
-    void start(Signal signal) throws DeploymentException;
+    void start(AbortableSignal signal) throws DeploymentException;
 
     /**
      * Stops this {@link InstallArtifact}. If the <code>InstallArtifact</code> is already stopped, do nothing.

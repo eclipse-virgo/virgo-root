@@ -11,20 +11,20 @@
 
 package org.eclipse.virgo.kernel.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
-import org.eclipse.virgo.kernel.core.Signal;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
-
 
 /**
  */
@@ -48,6 +48,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         while (!ts.isComplete()) {
             Thread.sleep(100);
         }
+        assertFalse(ts.isAborted());
         assertNull(ts.getCause());
     }
 
@@ -61,6 +62,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         while (!ts.isComplete()) {
             Thread.sleep(100);
         }
+        assertFalse(ts.isAborted());
         assertNull(ts.getCause());
     }
 
@@ -73,7 +75,25 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         while (!ts.isComplete()) {
             Thread.sleep(100);
         }
+        assertFalse(ts.isAborted());
         assertNotNull(ts.getCause());
+    }
+
+    @Test
+    public void signalAbort() throws Exception {
+        Bundle bundle = installBundle(new File("src/test/resources/monitor/lazy"));
+        assertNotNull(bundle);        
+        TestSignal ts = new TestSignal();
+        this.monitor.start(bundle, ts);
+        while (bundle.getState() != Bundle.STARTING) {
+            Thread.sleep(100);
+        }
+        bundle.stop();
+        while (!ts.isComplete()) {
+            Thread.sleep(100);
+        }
+        assertNull(ts.getCause());
+        assertTrue(ts.isAborted());
     }
 
     @Test
@@ -84,6 +104,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         this.monitor.start(bundle, ts);
         waitForComplete(ts, 1000);
         assertTrue(ts.isComplete());
+        assertFalse(ts.isAborted());
         assertNull(ts.getCause());
     }
 
@@ -269,15 +290,16 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
         return this.context.installBundle(bundleFile.toURI().toString());               
     }
     
-    private static class TestSignal implements Signal {
-        
+    private static class TestSignal implements AbortableSignal {
+
         private volatile boolean complete = false;
+        
+        private volatile boolean aborted = false;
         
         private volatile Throwable cause = null;
 
         public void signalSuccessfulCompletion() {
             this.complete = true;
-            
         }
 
         public void signalFailure(Throwable t) {
@@ -285,8 +307,17 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
             this.cause = t;
         }
         
+		public void signalAborted() {
+            this.complete = true;
+            this.aborted = true;
+		}
+        
         public boolean isComplete() {
             return this.complete;
+        }
+        
+        public boolean isAborted() {
+            return this.aborted;
         }
         
         public Throwable getCause() {

@@ -71,7 +71,7 @@ final class ParPlanInstallArtifactFactory {
     }
 
     ParPlanInstallArtifact createParPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, @NonNull ArtifactStorage artifactStorage, String repositoryName) throws DeploymentException {
-        ArtifactStateMonitor artifactStateMonitor = new ArtifactStateMonitor(this.bundleContext);
+        ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
         return new ParPlanInstallArtifact(artifactIdentity, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger,
             bundleInstallArtifactTreeFactory, refreshHandler, repositoryName, this.configInstallArtifactTreeFactory,
             this.artifactStorageFactory, this.artifactIdentityDeterminer);

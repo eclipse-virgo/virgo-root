@@ -39,6 +39,7 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
+import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.StubInstallArtifactRefreshHandler;
 import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleDriver;
 import org.eclipse.virgo.kernel.install.artifact.internal.bundle.StandardBundleInstallArtifact;
@@ -65,7 +66,7 @@ public class StandardBundleInstallArtifactTests {
 
     private final BundleContext bundleContext = new StubBundleContext();
 
-    private final ArtifactStateMonitor artifactStateMonitor = new ArtifactStateMonitor(this.bundleContext);
+    private final ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
 
     private BundleInstallArtifact createInstallArtifact(ArtifactStorage artifactStorage, ArtifactStateMonitor artifactStateMonitor)
         throws IOException {

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleUtils;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.osgi.framework.Bundle;
@@ -68,7 +69,7 @@ final class BundleStartTracker implements EventHandler {
 
     private final Map<Bundle, Throwable> failureMap = new HashMap<Bundle, Throwable>();
 
-    private final Map<Bundle, List<Signal>> signalMap = new HashMap<Bundle, List<Signal>>();
+    private final Map<Bundle, List<AbortableSignal>> signalMap = new HashMap<Bundle, List<AbortableSignal>>();
 
     private final BundleListener bundleListener = new StartupTrackerBundleListener();
     
@@ -92,7 +93,7 @@ final class BundleStartTracker implements EventHandler {
 
     private void driveSignalsIfStartCompleted(Bundle bundle, boolean springDmPowered) {
 
-        List<Signal> signals = null;
+        List<AbortableSignal> signals = null;
         Throwable failure = null;
         boolean isActive = isBundleActive(bundle);
         
@@ -123,20 +124,22 @@ final class BundleStartTracker implements EventHandler {
         if (signals != null) {
             if (!springDmPowered && isActive) {
                 LOGGER.info("Non-Spring DM powered bundle '{}' has started. Driving signals '{}'.", bundle, signals);
-                driveSignals(signals, null);
+                driveSignals(signals, false, null);
             }
             else {
-                driveSignals(signals, failure);
+                driveSignals(signals, false, failure);
             }
         }
     }
 
-    private void driveSignals(final List<Signal> signals, final Throwable cause) {
+    private void driveSignals(final List<AbortableSignal> signals, final boolean aborted, final Throwable cause) {
         this.signalExecutor.execute(new Runnable() {
             public void run() {
-                for (Signal signal : signals) {
+                for (AbortableSignal signal : signals) {
                     LOGGER.info("Driving signal '{}'", signal);
-                    if (cause == null) {
+                    if (aborted){
+                    	signal.signalAborted();
+                    } else if (cause == null) {
                         signal.signalSuccessfulCompletion();
                     } else {
                         signal.signalFailure(cause);
@@ -154,7 +157,7 @@ final class BundleStartTracker implements EventHandler {
         LOGGER.info("Handling event '{}'", event);
 
         Throwable cause = null;
-        List<Signal> signals = null;
+        List<AbortableSignal> signals = null;
 
         Bundle bundle = (Bundle) event.getProperty("bundle");
         if (EVENT_FAILURE.equals(event.getTopic())) {
@@ -176,11 +179,11 @@ final class BundleStartTracker implements EventHandler {
         }
 
         if (signals != null) {
-            driveSignals(signals, cause);
+            driveSignals(signals, false, cause);
         }
     }
 
-    public void trackStart(Bundle bundle, Signal signal) {
+    public void trackStart(Bundle bundle, AbortableSignal signal) {
         if (BundleUtils.isFragmentBundle(bundle)) {
             throw new IllegalArgumentException("Cannot track the start of a fragment bundle.");
         }
@@ -191,11 +194,11 @@ final class BundleStartTracker implements EventHandler {
         
         if (signal != null) {
             if (springDmPowered || !bundleActive) {
-                List<Signal> queue;
+                List<AbortableSignal> queue;
                 synchronized (this.monitor) {
                     queue = this.signalMap.get(bundle);
                     if (queue == null) {
-                        queue = new ArrayList<Signal>();
+                        queue = new ArrayList<AbortableSignal>();
                         this.signalMap.put(bundle, queue);
                     }
                     LOGGER.info("Adding signal '{}' for bundle '{}'", signal, bundle);
@@ -203,7 +206,7 @@ final class BundleStartTracker implements EventHandler {
                 }
             } else {
                 // !springDmPowered && bundleActive
-                driveSignals(Arrays.asList(signal), null);
+                driveSignals(Arrays.asList(signal), false, null);
             }
         }
         driveSignalsIfStartCompleted(bundle, springDmPowered);
@@ -224,26 +227,32 @@ final class BundleStartTracker implements EventHandler {
 
     private final class StartupTrackerBundleListener implements SynchronousBundleListener {
 
+    	private Boolean isLazyBundle = false;
+
         /**
          * {@inheritDoc}
          */
         public void bundleChanged(BundleEvent event) {
             Bundle bundle = event.getBundle();
             if (event.getType() == BundleEvent.STARTED) {
-                List<Signal> signals = null;
+                List<AbortableSignal> signals = null;
                 if (!isSpringDmPoweredBundle(bundle)) {
                     synchronized (BundleStartTracker.this.monitor) {
                         signals = BundleStartTracker.this.signalMap.remove(bundle);
                     }
                     if (signals != null) {
                         LOGGER.info("Non-Spring DM powered bundle '{}' has started. Driving signals '{}'.", bundle, signals);
-                        driveSignals(signals, null);
+                        driveSignals(signals, false, null);
                     }
                 }
             }
+        	if(event.getType() == BundleEvent.LAZY_ACTIVATION){
+        		this.isLazyBundle = true;
+                LOGGER.info("Bundle '{}' has lazy activation and is in the starting state.", bundle);
+        	}
             if (event.getType() == BundleEvent.STOPPED) {
                 LOGGER.info("Bundle '{}' has stopped. Removing its related tracking state.", bundle);
-                BundleStartTracker.this.cleanup(bundle, new RuntimeException("bundle stopped"));
+                BundleStartTracker.this.cleanup(bundle, this.isLazyBundle, this.isLazyBundle ? null : new RuntimeException("bundle stopped"));
             }
         }
     }
@@ -253,8 +262,8 @@ final class BundleStartTracker implements EventHandler {
      * @param bundle whose tracking state is removed
      * @param cause reason for cleaning up
      */
-    public void cleanup(Bundle bundle, Throwable cause) {
-        List<Signal> danglingSignals = null;
+    public void cleanup(Bundle bundle, boolean aborted, Throwable cause) {
+        List<AbortableSignal> danglingSignals = null;
         synchronized (BundleStartTracker.this.monitor) {
             if (bundle != null) {
                 BundleStartTracker.this.bundlesWithCreatedApplicationContexts.remove(bundle);
@@ -263,7 +272,7 @@ final class BundleStartTracker implements EventHandler {
             }
         }
         if (danglingSignals != null) {
-            driveSignals(danglingSignals, cause);
+            driveSignals(danglingSignals, aborted, cause);
         }
     }
 

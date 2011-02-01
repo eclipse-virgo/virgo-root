@@ -14,15 +14,11 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
-import org.eclipse.virgo.kernel.core.Signal;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.SignalJunction;
+import org.eclipse.virgo.kernel.deployer.core.internal.AbortableSignalJunction;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -34,6 +30,8 @@ import org.eclipse.virgo.kernel.shim.scope.Scope;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.Tree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardPlanInstallArtifact} is the standard implementation of {@link PlanInstallArtifact}.
@@ -102,20 +100,20 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
      * {@inheritDoc}
      */
     @Override
-    protected final void doStart(Signal signal) throws DeploymentException {
+    protected final void doStart(AbortableSignal signal) throws DeploymentException {
         List<Tree<InstallArtifact>> children = getChildrenSnapshot();
         int numChildren = children.size();
 
         // The SignalJunction constructor will drive the signal if numChildren == 0.
-        SignalJunction signalJunction = new SignalJunction(signal, numChildren);
+        AbortableSignalJunction signalJunction = new AbortableSignalJunction(signal, numChildren);
         
         LOGGER.debug("Created {} that will notify {} to track start of {}", new Object[] {signalJunction, signal, this});
         
-        List<Signal> subSignals = signalJunction.getSignals();
+        List<AbortableSignal> subSignals = signalJunction.getSignals();
 
         for (int childIndex = 0; childIndex < numChildren && !signalJunction.failed(); childIndex++) {
             InstallArtifact childArtifact = children.get(childIndex).getValue();
-            Signal subSignal = subSignals.get(childIndex);
+            AbortableSignal subSignal = subSignals.get(childIndex);
             
             LOGGER.debug("Starting {} with signal {} from {}", new Object[] {childArtifact, subSignal, signalJunction});
             

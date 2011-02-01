@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import java.net.URI;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer.DeploymentOptions;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 
 
 /**

@@ -13,24 +13,23 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
+import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
+import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
-
-
-import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.core.Signal;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
-import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
-import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
-import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 
 /**
  */
@@ -42,11 +41,14 @@ public class AbstractInstallArtifactTests {
 
     private static final String PROPERTY_VALUE_2 = "value2";
 
-    private TestInstallArtifact installArtifact;
+    private StubInstallArtifact installArtifact;
+    
+    private StubArtifactStateMonitor artifactStateMonitor;
 
     @Before
     public void setUp() throws Exception {
-        installArtifact = new TestInstallArtifact();
+        this.artifactStateMonitor = new StubArtifactStateMonitor();
+        this.installArtifact = new StubInstallArtifact(artifactStateMonitor);
     }
 
     @After
@@ -77,34 +79,126 @@ public class AbstractInstallArtifactTests {
         assertEquals(PROPERTY_VALUE, this.installArtifact.setProperty(PROPERTY_NAME, PROPERTY_VALUE_2));
     }
 
-    public static final class TestInstallArtifact extends AbstractInstallArtifact {
+    @Test
+    public void testStart() throws DeploymentException {
+        this.artifactStateMonitor.setState(State.RESOLVED);
+        this.installArtifact.start(new StubAbortableSignal());
 
-        public TestInstallArtifact() {
-            super(new ArtifactIdentity("type", "name", Version.emptyVersion, null), new StubArtifactStorage(), null, null, new MockEventLogger());
-        }
-
-        @Override
-        protected void doStop() throws DeploymentException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        protected void doUninstall() throws DeploymentException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        protected void doStart(Signal signal) throws DeploymentException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        protected boolean doRefresh() throws DeploymentException {
-            return false;
-        }
+        assertEquals(0, this.installArtifact.doRefreshCount);
+        assertEquals(1, this.installArtifact.doStartCount);
+        assertEquals(0, this.installArtifact.doStopCount);
+        assertEquals(0, this.installArtifact.doUninstallCount);
     }
 
-    private static class StubArtifactStorage implements ArtifactStorage {
+    @Test
+    public void testStartWhenAlreadyStarted() throws DeploymentException {
+        this.artifactStateMonitor.setState(State.ACTIVE);
+        this.installArtifact.start(new StubAbortableSignal());
+
+        assertEquals(0, this.installArtifact.doRefreshCount);
+        assertEquals(0, this.installArtifact.doStartCount);
+        assertEquals(0, this.installArtifact.doStopCount);
+        assertEquals(0, this.installArtifact.doUninstallCount);
+    }
+
+    @Test
+    public void testStop() throws DeploymentException {
+        this.artifactStateMonitor.setState(State.ACTIVE);
+        this.installArtifact.stop();
+
+        assertEquals(0, this.installArtifact.doRefreshCount);
+        assertEquals(0, this.installArtifact.doStartCount);
+        assertEquals(1, this.installArtifact.doStopCount);
+        assertEquals(0, this.installArtifact.doUninstallCount);
+    }
+
+    @Test
+    public void testStopWhenNotStarted() throws DeploymentException {
+        this.artifactStateMonitor.setState(State.INSTALLED);
+        this.installArtifact.stop();
+
+        assertEquals(0, this.installArtifact.doRefreshCount);
+        assertEquals(0, this.installArtifact.doStartCount);
+        assertEquals(0, this.installArtifact.doStopCount);
+        assertEquals(0, this.installArtifact.doUninstallCount);
+    }
+
+    @Test
+    public void testRefresh() throws DeploymentException {
+        this.artifactStateMonitor.setState(State.ACTIVE);
+        assertTrue(this.installArtifact.refresh());
+
+        assertEquals(1, this.installArtifact.doRefreshCount);
+        assertEquals(0, this.installArtifact.doStartCount);
+        assertEquals(0, this.installArtifact.doStopCount);
+        assertEquals(0, this.installArtifact.doUninstallCount);
+    }
+
+    @Test
+    public void testUninstall() throws DeploymentException {
+        this.artifactStateMonitor.setState(State.ACTIVE);
+        this.installArtifact.uninstall();
+
+        assertEquals(0, this.installArtifact.doRefreshCount);
+        assertEquals(0, this.installArtifact.doStartCount);
+        assertEquals(1, this.installArtifact.doStopCount);
+        assertEquals(1, this.installArtifact.doUninstallCount);
+    }
+    
+    private final class StubInstallArtifact extends AbstractInstallArtifact {
+
+        public StubInstallArtifact(ArtifactStateMonitor artifactStateMonitor) {
+            super(new ArtifactIdentity("type", "name", Version.emptyVersion, null), new StubArtifactStorage(), artifactStateMonitor, null, new MockEventLogger());
+        }
+
+        private int doStopCount = 0;
+        
+        private int doStartCount = 0;
+        
+        private int doUninstallCount = 0;
+
+        private int doRefreshCount = 0;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void doStop() throws DeploymentException {
+            this.doStopCount++;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void doUninstall() throws DeploymentException {
+            this.doUninstallCount++;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void doStart(AbortableSignal signal) throws DeploymentException {
+            this.doStartCount++;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean doRefresh() throws DeploymentException {
+            this.doRefreshCount++;
+            return true;
+        }
+
+    }
+    
+    
+    
+    
+    
+    static class StubArtifactStorage implements ArtifactStorage {
 
         public void delete() {
         }

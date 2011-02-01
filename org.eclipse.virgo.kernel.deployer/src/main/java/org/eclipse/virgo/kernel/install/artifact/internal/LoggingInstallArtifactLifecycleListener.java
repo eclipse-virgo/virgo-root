@@ -87,6 +87,13 @@ final class LoggingInstallArtifactLifecycleListener implements InstallArtifactLi
     /**
      * {@inheritDoc}
      */
+    public void onStartAborted(InstallArtifact installArtifact) {
+        logEvent(DeployerLogEvents.START_ABORTED, installArtifact);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void onStarted(InstallArtifact installArtifact) {
         logEvent(DeployerLogEvents.STARTED, installArtifact);
     }
