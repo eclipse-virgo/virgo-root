@@ -7,7 +7,7 @@ Import-Template:
  javax.management.*;version="0",
  org.osgi.framework;version="0",
  org.slf4j.*;version="${org.slf4j:[=.=.=, =.+1.0)}"
-Bundle-Version: 1.0.0
+Bundle-Version: 3.0.0
 Bundle-Name: Medic API
 Excluded-Imports: 
  ch.qos.logback.classic.*

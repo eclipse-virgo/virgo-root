@@ -13,5 +13,5 @@ Import-Package: ch.qos.logback.classic.spi,
  org.eclipse.virgo.test.framework,
  org.eclipse.virgo.medic.dump,
  org.eclipse.virgo.medic.eventlog
-Bundle-Version: 1.0.0
+Bundle-Version: 3.0.0
 Bundle-ManifestVersion: 2
