@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ClassPath: .,org.springframework.beans-2.5.6.A.jar,org.springfr
  amework.core-2.5.6.A.jar
-Bundle-Version: 2.2.0
+Bundle-Version: 3.0.0
 Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Virgo Kernel Deployer Test
 Bundle-ManifestVersion: 2

@@ -12,7 +12,7 @@ Export-Package: org.eclipse.virgo.kernel.concurrent.test;version="2.2.
 Bundle-ClassPath: .,quasi/simpleexporter.jar,quasi/simpleimporter.jar,
  QuickConsumer.jar,SlowService.jar,quasi/simpleexporter.jar,quasi/simp
  leimporter.jar,QuickConsumer.jar,SlowService.jar
-Bundle-Version: 2.2.0
+Bundle-Version: 3.0.0
 Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Virgo Kernel Test
 Bundle-ManifestVersion: 2
