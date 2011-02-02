@@ -23,9 +23,7 @@ import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.hooks.bundle.EventHook;
 import org.osgi.framework.hooks.bundle.FindHook;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
@@ -58,50 +56,9 @@ final class RegionManager {
 
     private RegionDigraph createRegionDigraph() throws BundleException {
         RegionDigraph regionDigraph = new StandardRegionDigraph();
-        Region kernelRegion = createKernelRegion(regionDigraph);
+        createKernelRegion(regionDigraph);
         registerRegionDigraph(regionDigraph, this.bundleContext);
-        createBundleListener(regionDigraph, kernelRegion);
         return regionDigraph;
-    }
-
-    private void createBundleListener(final RegionDigraph regionDigraph, final Region kernelRegion) {
-        BundleContext systemBundleContext = getSystemBundleContext();
-        systemBundleContext.addBundleListener(new SynchronousBundleListener() {
-
-            @Override
-            public void bundleChanged(BundleEvent event) {
-                Bundle bundle = event.getBundle();
-                switch (event.getType()) {
-                    case BundleEvent.INSTALLED:
-                        Bundle originBundle = event.getOrigin();
-                        /*
-                         * The system bundle is used, by BundleIdBasedRegion, to install bundles into arbitrary regions,
-                         * so ignore it as an origin.
-                         */
-                        if (originBundle.getBundleId() != 0L) {
-                            Region originRegion = regionDigraph.getRegion(originBundle);
-                            if (originRegion != null) {
-                                try {
-                                    originRegion.addBundle(bundle);
-                                } catch (BundleException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        break;
-                    case BundleEvent.UNINSTALLED:
-                        Region region = regionDigraph.getRegion(bundle);
-                        if (region != null) {
-                            region.removeBundle(bundle);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-        });
-
     }
 
     private Region createKernelRegion(RegionDigraph regionDigraph) throws BundleException {
@@ -124,7 +81,7 @@ final class RegionManager {
 
         registerBundleFindHook(bundleFindHook);
 
-        registerBundleEventHook(new RegionBundleEventHook(bundleFindHook));
+        registerBundleEventHook(new RegionBundleEventHook(regionDigraph, bundleFindHook));
 
         RegionServiceFindHook serviceFindHook = new RegionServiceFindHook(regionDigraph);
 

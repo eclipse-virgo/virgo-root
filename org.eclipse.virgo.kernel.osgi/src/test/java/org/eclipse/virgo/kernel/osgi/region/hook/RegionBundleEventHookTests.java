@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.easymock.EasyMock;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.After;
@@ -41,8 +42,11 @@ public class RegionBundleEventHookTests {
 
     private Bundle eventBundle;
 
+    private RegionDigraph mockRegionDigraph;
+
     @Before
     public void setUp() throws Exception {
+        this.mockRegionDigraph = EasyMock.createMock(RegionDigraph.class);
         this.mockFindHook = EasyMock.createMock(FindHook.class);
         this.eventBundle = new StubBundle();
         this.bundleEvent = new BundleEvent(BundleEvent.STARTED, this.eventBundle, this.eventBundle);
@@ -63,7 +67,7 @@ public class RegionBundleEventHookTests {
             public void find(BundleContext context, Collection<Bundle> bundles) {
             }
         };
-        EventHook eventHook = new RegionBundleEventHook(this.mockFindHook);
+        EventHook eventHook = new RegionBundleEventHook(this.mockRegionDigraph, this.mockFindHook);
         eventHook.event(this.bundleEvent, this.contexts);
         assertEquals(1, this.contexts.size());
     }
@@ -77,7 +81,7 @@ public class RegionBundleEventHookTests {
                 bundles.clear();
             }
         };
-        EventHook eventHook = new RegionBundleEventHook(this.mockFindHook);
+        EventHook eventHook = new RegionBundleEventHook(this.mockRegionDigraph, this.mockFindHook);
         eventHook.event(this.bundleEvent, this.contexts);
         assertTrue(this.contexts.isEmpty());
     }
