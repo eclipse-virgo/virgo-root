@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Kernel Authentication
 Bundle-SymbolicName: org.eclipse.virgo.kernel.authentication
-Bundle-Version: 2.2.0
+Bundle-Version: 3.0.0
 Import-Template: javax.security.*;version="0"
 Excluded-Exports: *.internal.*
 
