@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 2.2.0
+Bundle-Version: 3.0.0
 Bundle-Name: Virgo Kernel Shutdown Client
 Bundle-SymbolicName: org.eclipse.virgo.kernel.shutdown

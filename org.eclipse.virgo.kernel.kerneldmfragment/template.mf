@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Kernel OSGi Spring DM Fragment
 Fragment-Host: org.springframework.osgi.extender
 Bundle-SymbolicName: org.eclipse.virgo.kernel.kerneldmfragment
-Bundle-Version: 2.2.0
+Bundle-Version: 3.0.0
 Import-Package: 
  org.eclipse.virgo.kernel.agent.dm;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.kernel.shim.serviceability;version="${version:[=.=.=, =.+1)}"
