@@ -5,10 +5,10 @@ Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.apps.repository.test
 Bundle-Version: 3.0.0
 Import-Template: 
- org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1.+2)}",
- org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, +1.+1)}",
- org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1.+1)}",
- org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1.+1)}",
+ org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
+ org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, +1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
  org.eclipse.gemini.web.*;version="${org.eclipse.gemini.web:[=.=.=, +1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
  org.junit.*;version="${org.junit:[=.=.=, +1)}",
