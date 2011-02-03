@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Web Support Tomcat Support
 Bundle-SymbolicName: org.eclipse.virgo.web.tomcat
 Fragment-Host: org.eclipse.gemini.web.tomcat
-Bundle-Version: 2.0
+Bundle-Version: 3.0.0
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
  org.eclipse.gemini.web.*;version="${org.eclipse.gemini.web:[=.=.=, +1)}",
