@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Import-Bundle: com.springsource.org.apache.taglibs.standard;version="[
  1.1.2,2)",org.springframework.js;version="[2.0.8,3)"
 Bundle-ClassPath: WEB-INF/classes
-Bundle-Version: 2.0.0
+Bundle-Version: 3.0.0
 Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Admin Console Web Bundle
 Bundle-ManifestVersion: 2
