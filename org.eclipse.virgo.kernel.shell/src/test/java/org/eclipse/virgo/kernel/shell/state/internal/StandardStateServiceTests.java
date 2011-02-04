@@ -18,16 +18,16 @@ import static org.junit.Assert.assertNull;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
-import org.eclipse.virgo.kernel.shell.state.internal.StandardStateService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFrameworkFactory;
-
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>
@@ -48,25 +48,37 @@ public class StandardStateServiceTests {
     private StubBundleContext stubBundleContext;
 
     private QuasiFrameworkFactory stubQuasiFrameworkFactory;
-    
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	    this.stubBundleContext = new StubBundleContext();
-	    this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
-	    this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext);
-	}
 
-	@Test	
-	public void getAllBundlesNullDump() {
-	    List<QuasiBundle> result = this.standardStateService.getAllBundles(null);
-	    assertNotNull(result);
-	    assertEquals(1, result.size());
-	}
-    
-    @Test      
+    private Region mockUserRegion;
+
+    private RegionDigraph mockRegionDigraph;
+
+    private Region mockKernelRegion;
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        this.stubBundleContext = new StubBundleContext();
+        this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
+        this.mockUserRegion = EasyMock.createMock(Region.class);
+        this.mockKernelRegion = EasyMock.createMock(Region.class);
+        this.mockRegionDigraph = EasyMock.createMock(RegionDigraph.class);
+        EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.anyLong())).andReturn(this.mockUserRegion).anyTimes();
+        EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.eq("org.eclipse.virgo.region.kernel"))).andReturn(this.mockKernelRegion).anyTimes();
+        EasyMock.replay(this.mockUserRegion, this.mockKernelRegion, this.mockRegionDigraph);
+        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext, this.mockRegionDigraph);
+    }
+
+    @Test
+    public void getAllBundlesNullDump() {
+        List<QuasiBundle> result = this.standardStateService.getAllBundles(null);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
     public void getAllBundlesFromDump() {
         List<QuasiBundle> result = this.standardStateService.getAllBundles(TEST_DUMP_FILE);
         assertNotNull(result);

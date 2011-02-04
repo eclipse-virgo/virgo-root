@@ -15,6 +15,7 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependencies
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
+import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
 import org.eclipse.virgo.util.common.Tree;
@@ -46,12 +47,15 @@ final class StandardInstallArtifactRefreshHandler implements InstallArtifactRefr
         Tree<InstallArtifact> tree = installArtifact.getTree();
         
         boolean refreshed = true;
+        InstallEnvironment installEnvironment = this.installEnvironmentFactory.createInstallEnvironment(installArtifact);
         try {
-            this.refreshPipeline.process(tree, this.installEnvironmentFactory.createInstallEnvironment(installArtifact));
+            this.refreshPipeline.process(tree, installEnvironment);
         } catch (UnableToSatisfyBundleDependenciesException _) {
             refreshed = false;
         } catch (DeploymentException _) {
             refreshed = false;
+        } finally {
+            installEnvironment.destroy();
         }
         return refreshed;
     }

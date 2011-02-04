@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.userregionfactory;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -22,7 +22,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-import org.eclipse.virgo.kernel.osgi.region.PackageImportWildcardExpander;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 

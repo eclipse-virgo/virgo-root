@@ -120,4 +120,11 @@ final class StandardQuasiLiveFramework implements QuasiFramework {
         return this.quasiFramework.getBundle(name, version);
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() {
+    }
+
 }

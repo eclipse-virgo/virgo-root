@@ -48,4 +48,9 @@ public interface InstallEnvironment {
      * @return an OSGi state or <code>null</code>
      */
     QuasiFramework getQuasiFramework();
+
+    /**
+     * Delete any resources associated with this {@link InstallEnvironment}.
+     */
+    void destroy();
 }

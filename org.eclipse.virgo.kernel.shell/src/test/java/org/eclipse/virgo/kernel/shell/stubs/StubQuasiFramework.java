@@ -83,4 +83,8 @@ public class StubQuasiFramework implements QuasiFramework{
         return null;
     }
 
+    @Override
+    public void destroy() {
+    }
+
 }

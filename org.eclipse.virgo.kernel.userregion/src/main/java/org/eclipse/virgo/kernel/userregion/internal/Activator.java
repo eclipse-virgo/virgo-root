@@ -31,6 +31,7 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxHookRegistrar;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
@@ -43,6 +44,7 @@ import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFramework
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
 import org.eclipse.virgo.osgi.extensions.equinox.hooks.MetaInfResourceClassLoaderDelegateHook;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
@@ -91,7 +93,9 @@ public class Activator implements BundleActivator {
         Repository repository = OsgiFrameworkUtils.getService(context, Repository.class).getService();
         PackageAdmin packageAdmin = OsgiFrameworkUtils.getService(context, PackageAdmin.class).getService();
 
-        EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLogger.class).getService();
+        EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLoggerFactory.class).getService().createEventLogger(context.getBundle());
+        
+        RegionDigraph regionDigraph = OsgiFrameworkUtils.getService(context, RegionDigraph.class).getService();
 
         ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));
@@ -104,7 +108,7 @@ public class Activator implements BundleActivator {
         DumpContributor dumpContributor = createResolutionDumpContributor(context);
         this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), dumpContributor, null));
 
-        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler);
+        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph);
         this.registrationTracker.track(context.registerService(QuasiFrameworkFactory.class.getName(), quasiFrameworkFactory, null));
 
         EquinoxHookRegistrar hookRegistrar = createHookRegistrar(context, packageAdmin, bundleTransformerHandler);
@@ -138,8 +142,8 @@ public class Activator implements BundleActivator {
     }
 
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
-        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
-        return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler);
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, RegionDigraph regionDigraph) {
+        return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler, regionDigraph);
     }
 
     private TransformedManifestProvidingBundleFileWrapper createBundleTransformationHandler(ImportExpansionHandler importExpander) {

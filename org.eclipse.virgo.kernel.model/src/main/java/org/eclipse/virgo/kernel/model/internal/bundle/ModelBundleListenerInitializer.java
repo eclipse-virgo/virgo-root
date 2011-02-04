@@ -15,14 +15,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 
 /**
  * An intializer responsible for registering a {@link ModelBundleListener} and enumerating any existing {@link Bundle}
@@ -44,10 +43,12 @@ public final class ModelBundleListenerInitializer {
     private final PackageAdminUtil packageAdminUtil;
 
     private final BundleContext kernelBundleContext;
-    
+
     private final BundleContext userRegionBundleContext;
 
     private final BundleListener bundleListener;
+
+    private final BundleContext systemBundleContext;
 
     public ModelBundleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil,
         @NonNull BundleContext kernelBundleContext, @NonNull BundleContext userRegionBundleContext) {
@@ -55,6 +56,7 @@ public final class ModelBundleListenerInitializer {
         this.packageAdminUtil = packageAdminUtil;
         this.kernelBundleContext = kernelBundleContext;
         this.userRegionBundleContext = userRegionBundleContext;
+        this.systemBundleContext = kernelBundleContext.getBundle(0L).getBundleContext();
         this.bundleListener = new ModelBundleListener(kernelBundleContext, artifactRepository, packageAdminUtil);
     }
 
@@ -64,12 +66,14 @@ public final class ModelBundleListenerInitializer {
      */
     @PostConstruct
     public void initialize() {
-        this.userRegionBundleContext.addBundleListener(bundleListener);
-        for (Bundle bundle : userRegionBundleContext.getBundles()) {
+        // Register the listener with the system bundle to see all bundles.
+        this.systemBundleContext.addBundleListener(this.bundleListener);
+        // Find bundles using the user region context as application bundles are added to the user region.
+        for (Bundle bundle : this.userRegionBundleContext.getBundles()) {
             try {
-                this.artifactRepository.add(new BundleArtifact(kernelBundleContext, packageAdminUtil, bundle));
+                this.artifactRepository.add(new BundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle));
             } catch (Exception e) {
-                logger.error(String.format("Exception adding bundle '%s:%s' to the repository", bundle.getSymbolicName(),
+                this.logger.error(String.format("Exception adding bundle '%s:%s' to the repository", bundle.getSymbolicName(),
                     bundle.getVersion().toString()), e);
             }
         }
@@ -80,6 +84,6 @@ public final class ModelBundleListenerInitializer {
      */
     @PreDestroy
     public void destroy() {
-        this.userRegionBundleContext.removeBundleListener(bundleListener);
+        this.systemBundleContext.removeBundleListener(this.bundleListener);
     }
 }

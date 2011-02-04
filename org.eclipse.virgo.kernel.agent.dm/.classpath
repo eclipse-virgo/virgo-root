@@ -40,6 +40,7 @@
 	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.core"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.0.RELEASE/org.springframework.core-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.0.RELEASE/org.springframework.core-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse/equinox-event/1.2.100.v20101208/equinox-event-1.2.100.v20101208.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

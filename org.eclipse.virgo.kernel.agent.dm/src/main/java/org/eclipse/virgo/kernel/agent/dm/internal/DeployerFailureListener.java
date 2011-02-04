@@ -11,12 +11,15 @@
 
 package org.eclipse.virgo.kernel.agent.dm.internal;
 
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-
-import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**
  * A {@link EventHandler} implementation that listens for and handles Blueprint container failure events.
@@ -37,6 +40,10 @@ final class DeployerFailureListener implements EventHandler {
 
     private final EventLogger eventLogger;
 
+    private volatile RegionDigraph regionDigraph;
+
+    private volatile Region agentRegion;
+
     public DeployerFailureListener(EventLogger eventLogger) {
         this.eventLogger = eventLogger;
     }
@@ -55,8 +62,25 @@ final class DeployerFailureListener implements EventHandler {
     }
 
     private boolean inThisRegion(Bundle bundle) {
-        Bundle agentBundle = FrameworkUtil.getBundle(getClass());
-        return agentBundle.getBundleContext().getBundle(bundle.getBundleId()) == bundle;
+        if (regionDigraph == null) {
+            Bundle agentBundle = FrameworkUtil.getBundle(getClass());
+            BundleContext bundleContext = agentBundle.getBundleContext();
+            ServiceReference<RegionDigraph> regionMembershipServiceReference = bundleContext.getServiceReference(RegionDigraph.class);
+            if (regionMembershipServiceReference != null) {
+                this.regionDigraph = bundleContext.getService(regionMembershipServiceReference);
+                this.agentRegion = getRegion(agentBundle);
+            }
+        }
+        return this.regionDigraph != null ? getRegion(bundle).equals(this.agentRegion) : true;
+    }
+
+    private Region getRegion(Bundle bundle) {
+        for (Region region : this.regionDigraph) {
+            if (region.contains(bundle)) {
+                return region;
+            }
+        }
+        return null;
     }
 
 }

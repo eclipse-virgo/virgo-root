@@ -9,6 +9,7 @@
 		<pathelement location="../org.eclipse.virgo.kernel.services"/>
 		<pathelement location="../org.eclipse.virgo.kernel.osgi"/>
 		<pathelement location="../org.eclipse.virgo.kernel.deployer"/>
+        <pathelement location="../org.eclipse.virgo.kernel.userregionfactory"/>
 		<pathelement location="../org.eclipse.virgo.kernel.userregion"/>
 		<pathelement location="../org.eclipse.virgo.kernel.agent.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.kerneldmfragment"/>

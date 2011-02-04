@@ -4,18 +4,15 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd">
 
-	<!--
-		Configuration for OSGi services that the kernel depends on and
-		provides to the framework. These services are not considered part of
-		the kernel API.
-	-->
+	<!-- Configuration for OSGi services that the kernel depends on and provides 
+		to the framework. These services are not considered part of the kernel API. -->
 
 	<osgi:reference id="configAdmin"
 		interface="org.osgi.service.cm.ConfigurationAdmin" />
 
 	<osgi:reference id="eventLogger"
 		interface="org.eclipse.virgo.medic.eventlog.EventLogger" />
-		
+
 	<osgi:reference id="dumpGenerator"
 		interface="org.eclipse.virgo.medic.dump.DumpGenerator" />
 
@@ -42,16 +39,21 @@
 
 	<osgi:reference id="quasiFrameworkFactory"
 		interface="org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory" />
-		
+
 	<osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin" />
 
-	<osgi:reference id="bundleStarter" interface="org.eclipse.virgo.kernel.core.BundleStarter" context-class-loader="unmanaged"/>
-	
-	<osgi:reference id="importExpander" interface="org.eclipse.virgo.kernel.osgi.framework.ImportExpander"/>
-	
-	<osgi:reference id="region" interface="org.eclipse.virgo.kernel.osgi.region.Region"/>
-	
-	<!--  services -->
+	<osgi:reference id="bundleStarter"
+		interface="org.eclipse.virgo.kernel.core.BundleStarter"
+		context-class-loader="unmanaged" />
+
+	<osgi:reference id="importExpander"
+		interface="org.eclipse.virgo.kernel.osgi.framework.ImportExpander" />
+
+	<osgi:reference id="region"
+		interface="org.eclipse.virgo.kernel.osgi.region.Region"
+		filter="(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.user)" />
+
+	<!-- services -->
 	<osgi:service ref="moduleContextEventPublisher"
 		interface="org.eclipse.virgo.kernel.module.ModuleContextEventPublisher" />
 

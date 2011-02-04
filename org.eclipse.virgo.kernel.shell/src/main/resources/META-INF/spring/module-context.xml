@@ -28,8 +28,9 @@
 	<bean id="stateService" class="org.eclipse.virgo.kernel.shell.state.internal.StandardStateService">
 		<constructor-arg ref="quasiFrameworkFactory" />
 		<constructor-arg ref="userRegionBundleContext" />
+		<constructor-arg ref="regionDigraph" />
 	</bean>
-
+	
 	<bean id="installCommand" class="org.eclipse.virgo.kernel.shell.internal.commands.InstallCommand"/>
 
 	<bean id="bundleCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.BundleCommands">
