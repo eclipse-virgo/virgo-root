@@ -31,8 +31,8 @@ import org.osgi.framework.hooks.bundle.FindHook;
  * {@link RegionBundleEventHook} manages the visibility of bundle events across regions according to the
  * {@link RegionDigraph}.
  * <p>
- * The current implementation delegates to {@link RegionBundleFindHook}. This is likely to perform adequately
- * because of the low frequency of bundle events and the typically small number of bundle listeners.
+ * The current implementation delegates to {@link RegionBundleFindHook}. This is likely to perform adequately because of
+ * the low frequency of bundle events and the typically small number of bundle listeners.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -44,9 +44,12 @@ public final class RegionBundleEventHook implements EventHook {
 
     private final FindHook bundleFindHook;
 
-    public RegionBundleEventHook(RegionDigraph regionDigraph, FindHook bundleFindBook) {
+    private final ThreadLocal<Region> threadLocal;
+
+    public RegionBundleEventHook(RegionDigraph regionDigraph, FindHook bundleFindBook, ThreadLocal<Region> threadLocal) {
         this.regionDigraph = regionDigraph;
         this.bundleFindHook = bundleFindBook;
+        this.threadLocal = threadLocal;
     }
 
     /**
@@ -78,11 +81,18 @@ public final class RegionBundleEventHook implements EventHook {
 
     private void bundleInstalled(Bundle eventBundle, Bundle originBundle) {
         /*
-         * The system bundle is used, by BundleIdBasedRegion, to install bundles into arbitrary regions,
-         * so ignore it as an origin.
+         * BundleIdBasedRegion sets thread local to install bundles into arbitrary regions. If this is not set, the
+         * bundle inherits the region of the origin bundle.
          */
-        if (originBundle.getBundleId() != 0L) {
-            Region originRegion = regionDigraph.getRegion(originBundle);
+        Region installRegion = this.threadLocal.get();
+        if (installRegion != null) {
+            try {
+                installRegion.addBundle(eventBundle);
+            } catch (BundleException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Region originRegion = this.regionDigraph.getRegion(originBundle);
             if (originRegion != null) {
                 try {
                     originRegion.addBundle(eventBundle);
@@ -92,12 +102,12 @@ public final class RegionBundleEventHook implements EventHook {
             }
         }
     }
-    
+
     private void bundleUninstalled(Bundle eventBundle) {
-        Region region = regionDigraph.getRegion(eventBundle);
+        Region region = this.regionDigraph.getRegion(eventBundle);
         if (region != null) {
             region.removeBundle(eventBundle);
-        }        
+        }
     }
-    
+
 }

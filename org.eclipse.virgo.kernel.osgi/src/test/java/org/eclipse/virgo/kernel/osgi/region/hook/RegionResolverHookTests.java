@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
@@ -75,8 +74,6 @@ public class RegionResolverHookTests {
 
     private StandardRegionDigraph digraph;
 
-    private StubBundleContext stubBundleContext;
-
     private ResolverHook resolverHook;
 
     private Map<String, Region> regions;
@@ -85,13 +82,18 @@ public class RegionResolverHookTests {
 
     private Collection<Capability> candidates;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
-        this.digraph = new StandardRegionDigraph();
-        this.stubBundleContext = new StubBundleContext();
+        this.threadLocal = new ThreadLocal<Region>();
+        StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
+        StubBundleContext stubBundleContext = new StubBundleContext();
+        stubBundleContext.addInstalledBundle(stubSystemBundle);
+        this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
         this.resolverHook = new RegionResolverHook(this.digraph);
         this.candidates = new HashSet<Capability>();
 
@@ -267,13 +269,12 @@ public class RegionResolverHookTests {
     }
 
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext);
+        Region region = this.digraph.createRegion(regionName);
         for (String bundleSymbolicName : bundleSymbolicNames) {
             Bundle stubBundle = createBundle(bundleSymbolicName);
             region.addBundle(stubBundle);
         }
         this.regions.put(regionName, region);
-        this.digraph.addRegion(region);
         return region;
     }
 

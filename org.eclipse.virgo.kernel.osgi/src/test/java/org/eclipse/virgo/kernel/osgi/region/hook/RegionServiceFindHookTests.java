@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
@@ -35,8 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.service.FindHook;
@@ -70,8 +69,6 @@ public class RegionServiceFindHookTests {
 
     private StandardRegionDigraph digraph;
 
-    private StubBundleContext stubBundleContext;
-
     private FindHook bundleFindHook;
 
     private Map<String, Region> regions;
@@ -82,14 +79,20 @@ public class RegionServiceFindHookTests {
 
     private Collection<ServiceReference<?>> candidates;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
         this.serviceReferences = new HashMap<String, ServiceReference<Object>>();
-        this.digraph = new StandardRegionDigraph();
-        this.stubBundleContext = new StubBundleContext();
+        
+        StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
+        StubBundleContext stubBundleContext = new StubBundleContext();
+        stubBundleContext.addInstalledBundle(stubSystemBundle);
+        this.threadLocal = new ThreadLocal<Region>();
+        this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
         this.bundleFindHook = new RegionServiceFindHook(this.digraph);
         this.candidates = new HashSet<ServiceReference<?>>();
 
@@ -225,13 +228,12 @@ public class RegionServiceFindHookTests {
     }
 
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext);
+        Region region = this.digraph.createRegion(regionName);
         for (String bundleSymbolicName : bundleSymbolicNames) {
             Bundle stubBundle = createBundle(bundleSymbolicName);
             region.addBundle(stubBundle);
         }
         this.regions.put(regionName, region);
-        this.digraph.addRegion(region);
         return region;
     }
 

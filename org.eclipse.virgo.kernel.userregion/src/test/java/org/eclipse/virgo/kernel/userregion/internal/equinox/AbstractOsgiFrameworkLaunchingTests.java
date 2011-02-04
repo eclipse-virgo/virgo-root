@@ -27,7 +27,6 @@ import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
@@ -79,6 +78,8 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     protected QuasiFramework quasiFramework;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
 
@@ -113,10 +114,10 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         };
 
-        RegionDigraph regionDigraph = new StandardRegionDigraph();
+        this.threadLocal = new ThreadLocal<Region>();
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
 
-        Region userRegion = new BundleIdBasedRegion("org.eclipse.virgo.region.user", regionDigraph, bundleContext.getBundle(0L).getBundleContext());
-        regionDigraph.addRegion(userRegion);
+        Region userRegion = regionDigraph.createRegion("org.eclipse.virgo.region.user");
         userRegion.addBundle(this.bundleContext.getBundle());
 
         final EventLogger mockEventLogger = new MockEventLogger();

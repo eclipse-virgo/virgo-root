@@ -56,19 +56,22 @@ public interface RegionDigraph extends Iterable<Region> {
     }
 
     /**
-     * Adds the given {@link Region} to the digraph.
+     * Create a {@link Region} with the given name. If a region with the given name already exists, then BundleException with
+     * exception type UNSUPPORTED_OPERATION is thrown.
      * 
-     * @param region the region to be added
+     * @param regionName the name of the region
+     * @return the {@link Region} created
+     * @throws BundleException if the region was not created
      */
-    void addRegion(Region region);
+    Region createRegion(String regionName) throws BundleException;
 
     /**
      * Removes the given {@link Region} from the digraph along with any edges which have the given region as head or
      * tail. If the given region is not present in the digraph, this is not an error and there is no effect.
      * 
-     * @param coregion the {@link Region} to be removed
+     * @param region the {@link Region} to be removed
      */
-    void removeRegion(Region coregion);
+    void removeRegion(Region region);
 
     /**
      * Gets the {@link Region} in the digraph with the given name.
@@ -101,11 +104,6 @@ public interface RegionDigraph extends Iterable<Region> {
      * region.
      * <p>
      * The given head and tail regions are added to the digraph if they are not already present.
-     * <p>
-     * If the filter allows the same bundle symbolic name and version as a bundle already present in the tail region or
-     * as a filter connecting the tail region to a region other than the head region, then BundleException with
-     * exception type DUPLICATE_BUNDLE_ERROR is thrown. This ensures that bundles visible in a region are uniquely
-     * identified by the combination of bundle symbolic name and bundle version.
      * <p>
      * If the given tail region is already connected to the given head region, then BundleException with exception type
      * UNSUPPORTED_OPERATION is thrown.
