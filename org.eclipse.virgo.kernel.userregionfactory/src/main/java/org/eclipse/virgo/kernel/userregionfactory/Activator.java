@@ -27,7 +27,6 @@ import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
@@ -144,8 +143,7 @@ public final class Activator implements BundleActivator {
         Region kernelRegion = getKernelRegion(regionDigraph);
         kernelRegion.removeBundle(userRegionFactoryBundle);
 
-        Region userRegion = new BundleIdBasedRegion(REGION_USER, regionDigraph, systemBundleContext, regionDigraph.getThreadLocal());
-        regionDigraph.addRegion(userRegion);
+        Region userRegion = regionDigraph.createRegion(REGION_USER);
         userRegion.addBundle(userRegionFactoryBundle);
 
         RegionFilter kernelFilter = createKernelFilter(systemBundleContext);

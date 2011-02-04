@@ -58,15 +58,14 @@ final class RegionManager {
     }
 
     private RegionDigraph createRegionDigraph() throws BundleException {
-        RegionDigraph regionDigraph = new StandardRegionDigraph(this.threadLocal);
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
         createKernelRegion(regionDigraph);
         registerRegionDigraph(regionDigraph, this.bundleContext);
         return regionDigraph;
     }
 
     private Region createKernelRegion(RegionDigraph regionDigraph) throws BundleException {
-        Region kernelRegion = new BundleIdBasedRegion(REGION_KERNEL, regionDigraph, getSystemBundleContext(), this.threadLocal);
-        regionDigraph.addRegion(kernelRegion);
+        Region kernelRegion = regionDigraph.createRegion(REGION_KERNEL);
 
         for (Bundle bundle : this.bundleContext.getBundles()) {
             kernelRegion.addBundle(bundle);

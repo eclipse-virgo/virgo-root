@@ -39,7 +39,6 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesExcept
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
@@ -155,9 +154,8 @@ final class StandardQuasiFramework implements QuasiFramework {
     private void createCoregionIfNecessary() {
         synchronized (this.monitor) {
             if (this.coregion == null) {
-                this.coregion = new BundleIdBasedRegion(this.userRegion.getName() + COREGION_SUFFIX, this.regionDigraph,
-                    this.bundleContext.getBundle(0L).getBundleContext(), this.regionDigraph.getThreadLocal());
                 try {
+                    this.coregion = this.regionDigraph.createRegion(this.userRegion.getName() + COREGION_SUFFIX);
                     this.userRegion.connectRegion(this.coregion, RegionFilter.TOP);
                     this.coregion.connectRegion(this.userRegion, RegionFilter.TOP);
                 } catch (BundleException e) {

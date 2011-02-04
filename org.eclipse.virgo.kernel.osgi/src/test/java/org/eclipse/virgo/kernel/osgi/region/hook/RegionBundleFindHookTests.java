@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
@@ -62,8 +61,6 @@ public class RegionBundleFindHookTests {
 
     private StandardRegionDigraph digraph;
 
-    private StubBundleContext stubBundleContext;
-
     private FindHook bundleFindHook;
 
     private Map<String, Region> regions;
@@ -79,9 +76,12 @@ public class RegionBundleFindHookTests {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
+        
+        StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
+        StubBundleContext stubBundleContext = new StubBundleContext();
+        stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.threadLocal = new ThreadLocal<Region>();
-        this.digraph = new StandardRegionDigraph(this.threadLocal);
-        this.stubBundleContext = new StubBundleContext();
+        this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
         this.bundleFindHook = new RegionBundleFindHook(this.digraph);
         this.candidates = new HashSet<Bundle>();
 
@@ -218,13 +218,12 @@ public class RegionBundleFindHookTests {
     }
 
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext, this.threadLocal);
+        Region region = this.digraph.createRegion(regionName);
         for (String bundleSymbolicName : bundleSymbolicNames) {
             Bundle stubBundle = createBundle(bundleSymbolicName);
             region.addBundle(stubBundle);
         }
         this.regions.put(regionName, region);
-        this.digraph.addRegion(region);
         return region;
     }
 

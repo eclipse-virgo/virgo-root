@@ -25,6 +25,7 @@ import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 /**
@@ -44,10 +45,28 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private final Map<OrderedPair<Region, Region>, RegionFilter> filter = new HashMap<OrderedPair<Region, Region>, RegionFilter>();
 
+    private final BundleContext systemBundleContext;
+
     private final ThreadLocal<Region> threadLocal;
 
-    public StandardRegionDigraph(ThreadLocal<Region> threadLocal) {
+    public StandardRegionDigraph(BundleContext bundleContext, ThreadLocal<Region> threadLocal) {
+        this.systemBundleContext = bundleContext.getBundle(0L).getBundleContext();
         this.threadLocal = threadLocal;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Region createRegion(String regionName) throws BundleException {
+        Region region = new BundleIdBasedRegion(regionName, this, this.systemBundleContext, this.threadLocal);
+        synchronized (this.monitor) {
+            if (getRegion(regionName) != null) {
+                throw new BundleException("Region '" + regionName + "' already exists", BundleException.UNSUPPORTED_OPERATION);
+            }
+            this.regions.add(region);
+            return region;
+        }
     }
 
     /**
@@ -86,16 +105,6 @@ public final class StandardRegionDigraph implements RegionDigraph {
             Set<Region> snapshot = new HashSet<Region>(this.regions.size());
             snapshot.addAll(this.regions);
             return snapshot.iterator();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addRegion(Region region) {
-        synchronized (this.monitor) {
-            this.regions.add(region);
         }
     }
 
@@ -230,11 +239,6 @@ public final class StandardRegionDigraph implements RegionDigraph {
             s.append("]");
             return s.toString();
         }
-    }
-
-    @Override
-    public ThreadLocal<Region> getThreadLocal() {
-        return this.threadLocal;
     }
 
 }

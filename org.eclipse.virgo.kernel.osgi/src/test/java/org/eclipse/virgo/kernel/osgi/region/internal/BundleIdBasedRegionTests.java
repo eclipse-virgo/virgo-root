@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.easymock.EasyMock;
-import org.eclipse.virgo.kernel.osgi.region.BundleIdBasedRegion;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;

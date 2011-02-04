@@ -16,7 +16,6 @@ package org.eclipse.virgo.kernel.osgi.region.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Set;
@@ -24,8 +23,10 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +53,10 @@ public class StandardRegionDigraphTests {
 
     @Before
     public void setUp() throws Exception {
-        this.digraph = new StandardRegionDigraph(new ThreadLocal<Region>());
+        StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
+        StubBundleContext stubBundleContext = new StubBundleContext();
+        stubBundleContext.addInstalledBundle(stubSystemBundle);
+        this.digraph = new StandardRegionDigraph(stubBundleContext, new ThreadLocal<Region>());
        
         this.mockRegion1 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion1.getName()).andReturn("mockRegion1").anyTimes();
@@ -132,21 +136,6 @@ public class StandardRegionDigraphTests {
 
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
         this.digraph.connect(this.mockRegion1, this.regionFilter2, this.mockRegion2);
-    }
-
-    @Test
-    public void testAddRegion() {
-        setDefaultMockFilters();
-        replayMocks();
-
-        this.digraph.addRegion(this.mockRegion1);
-        boolean found = false;
-        for (Region region : this.digraph) {
-            if (this.mockRegion1.equals(region)) {
-                found = true;
-            }
-        }
-        assertTrue(found);
     }
 
     @Test
