@@ -156,7 +156,7 @@ final class StandardQuasiFramework implements QuasiFramework {
         synchronized (this.monitor) {
             if (this.coregion == null) {
                 this.coregion = new BundleIdBasedRegion(this.userRegion.getName() + COREGION_SUFFIX, this.regionDigraph,
-                    this.bundleContext.getBundle(0L).getBundleContext());
+                    this.bundleContext.getBundle(0L).getBundleContext(), this.regionDigraph.getThreadLocal());
                 try {
                     this.userRegion.connectRegion(this.coregion, RegionFilter.TOP);
                     this.coregion.connectRegion(this.userRegion, RegionFilter.TOP);

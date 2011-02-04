@@ -44,6 +44,12 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private final Map<OrderedPair<Region, Region>, RegionFilter> filter = new HashMap<OrderedPair<Region, Region>, RegionFilter>();
 
+    private final ThreadLocal<Region> threadLocal;
+
+    public StandardRegionDigraph(ThreadLocal<Region> threadLocal) {
+        this.threadLocal = threadLocal;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -224,6 +230,11 @@ public final class StandardRegionDigraph implements RegionDigraph {
             s.append("]");
             return s.toString();
         }
+    }
+
+    @Override
+    public ThreadLocal<Region> getThreadLocal() {
+        return this.threadLocal;
     }
 
 }

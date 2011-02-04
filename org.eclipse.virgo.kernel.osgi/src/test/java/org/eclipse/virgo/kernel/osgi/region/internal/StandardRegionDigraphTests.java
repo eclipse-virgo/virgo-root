@@ -52,7 +52,7 @@ public class StandardRegionDigraphTests {
 
     @Before
     public void setUp() throws Exception {
-        this.digraph = new StandardRegionDigraph();
+        this.digraph = new StandardRegionDigraph(new ThreadLocal<Region>());
        
         this.mockRegion1 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion1.getName()).andReturn("mockRegion1").anyTimes();

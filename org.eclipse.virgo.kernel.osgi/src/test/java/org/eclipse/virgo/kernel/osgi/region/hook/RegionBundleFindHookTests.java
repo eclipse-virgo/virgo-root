@@ -72,12 +72,15 @@ public class RegionBundleFindHookTests {
 
     private Collection<Bundle> candidates;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
-        this.digraph = new StandardRegionDigraph();
+        this.threadLocal = new ThreadLocal<Region>();
+        this.digraph = new StandardRegionDigraph(this.threadLocal);
         this.stubBundleContext = new StubBundleContext();
         this.bundleFindHook = new RegionBundleFindHook(this.digraph);
         this.candidates = new HashSet<Bundle>();
@@ -87,7 +90,7 @@ public class RegionBundleFindHookTests {
         createRegion(REGION_B, BUNDLE_B);
         createRegion(REGION_C, BUNDLE_C);
         createRegion(REGION_D, BUNDLE_D);
-        
+
         createBundle(BUNDLE_X);
 
     }
@@ -152,16 +155,16 @@ public class RegionBundleFindHookTests {
     @Test
     public void testFindInCyclicGraph() throws BundleException {
         region(REGION_D).addBundle(bundle(BUNDLE_X));
-        
+
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_D, BUNDLE_X));
         region(REGION_B).connectRegion(region(REGION_A), createFilter());
-        
+
         region(REGION_B).connectRegion(region(REGION_D), createFilter(BUNDLE_D));
         region(REGION_D).connectRegion(region(REGION_B), createFilter());
-        
+
         region(REGION_B).connectRegion(region(REGION_C), createFilter(BUNDLE_X));
         region(REGION_C).connectRegion(region(REGION_B), createFilter());
-        
+
         region(REGION_C).connectRegion(region(REGION_D), createFilter(BUNDLE_X));
         region(REGION_D).connectRegion(region(REGION_C), createFilter());
 
@@ -181,24 +184,24 @@ public class RegionBundleFindHookTests {
         assertEquals(2, this.candidates.size());
         assertTrue(this.candidates.contains(bundle(BUNDLE_D)));
         assertTrue(this.candidates.contains(bundle(BUNDLE_X)));
-        
+
         // Find from region B
         this.candidates.add(bundle(BUNDLE_B));
         this.candidates.add(bundle(BUNDLE_C));
         this.candidates.add(bundle(BUNDLE_D));
         this.candidates.add(bundle(BUNDLE_X));
-        
+
         this.bundleFindHook.find(bundleContext(BUNDLE_B), this.candidates);
         assertEquals(3, this.candidates.size());
         assertTrue(this.candidates.contains(bundle(BUNDLE_B)));
         assertTrue(this.candidates.contains(bundle(BUNDLE_D)));
         assertTrue(this.candidates.contains(bundle(BUNDLE_X)));
     }
-    
+
     @Test
     public void testFindFromSystemBundle() {
         this.candidates.add(bundle(BUNDLE_A));
-        
+
         Bundle stubBundle = new StubBundle(0L, "sys", BUNDLE_VERSION, "");
         this.bundleFindHook.find(stubBundle.getBundleContext(), this.candidates);
         assertEquals(1, this.candidates.size());
@@ -208,15 +211,14 @@ public class RegionBundleFindHookTests {
     @Test
     public void testFindFromBundleInNoRegion() {
         this.candidates.add(bundle(BUNDLE_A));
-        
+
         Bundle stranger = createBundle("stranger");
         this.bundleFindHook.find(stranger.getBundleContext(), this.candidates);
         assertEquals(0, this.candidates.size());
     }
 
-
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext);
+        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext, this.threadLocal);
         for (String bundleSymbolicName : bundleSymbolicNames) {
             Bundle stubBundle = createBundle(bundleSymbolicName);
             region.addBundle(stubBundle);
@@ -237,7 +239,7 @@ public class RegionBundleFindHookTests {
         }
         return filter;
     }
-    
+
     private Bundle createBundle(String bundleSymbolicName) {
         Bundle stubBundle = new StubBundle(this.bundleId++, bundleSymbolicName, BUNDLE_VERSION, "loc:" + bundleSymbolicName);
         this.bundles.put(bundleSymbolicName, stubBundle);

@@ -85,12 +85,15 @@ public class RegionResolverHookTests {
 
     private Collection<Capability> candidates;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
-        this.digraph = new StandardRegionDigraph();
+        this.threadLocal = new ThreadLocal<Region>();
+        this.digraph = new StandardRegionDigraph(this.threadLocal);
         this.stubBundleContext = new StubBundleContext();
         this.resolverHook = new RegionResolverHook(this.digraph);
         this.candidates = new HashSet<Capability>();
@@ -267,7 +270,7 @@ public class RegionResolverHookTests {
     }
 
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext);
+        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext, this.threadLocal);
         for (String bundleSymbolicName : bundleSymbolicNames) {
             Bundle stubBundle = createBundle(bundleSymbolicName);
             region.addBundle(stubBundle);

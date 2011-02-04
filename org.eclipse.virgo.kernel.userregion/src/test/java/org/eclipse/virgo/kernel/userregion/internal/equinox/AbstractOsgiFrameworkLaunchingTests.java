@@ -79,6 +79,8 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     protected QuasiFramework quasiFramework;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
 
@@ -113,9 +115,11 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         };
 
-        RegionDigraph regionDigraph = new StandardRegionDigraph();
+        this.threadLocal = new ThreadLocal<Region>();
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.threadLocal);
 
-        Region userRegion = new BundleIdBasedRegion("org.eclipse.virgo.region.user", regionDigraph, bundleContext.getBundle(0L).getBundleContext());
+        Region userRegion = new BundleIdBasedRegion("org.eclipse.virgo.region.user", regionDigraph, bundleContext.getBundle(0L).getBundleContext(),
+            this.threadLocal);
         regionDigraph.addRegion(userRegion);
         userRegion.addBundle(this.bundleContext.getBundle());
 

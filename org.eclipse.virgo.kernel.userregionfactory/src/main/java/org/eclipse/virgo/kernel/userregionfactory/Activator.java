@@ -140,11 +140,11 @@ public final class Activator implements BundleActivator {
 
         BundleContext systemBundleContext = getSystemBundleContext();
         Bundle userRegionFactoryBundle = userRegionBundleContext.getBundle();
-        
+
         Region kernelRegion = getKernelRegion(regionDigraph);
         kernelRegion.removeBundle(userRegionFactoryBundle);
 
-        Region userRegion = new BundleIdBasedRegion(REGION_USER, regionDigraph, systemBundleContext);
+        Region userRegion = new BundleIdBasedRegion(REGION_USER, regionDigraph, systemBundleContext, regionDigraph.getThreadLocal());
         regionDigraph.addRegion(userRegion);
         userRegion.addBundle(userRegionFactoryBundle);
 
@@ -221,7 +221,7 @@ public final class Activator implements BundleActivator {
             expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
                 systemBundleContext);
         }
-        
+
         UserRegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy(expandedUserRegionImportsProperty);
         return userRegionPackageImportPolicy;
     }

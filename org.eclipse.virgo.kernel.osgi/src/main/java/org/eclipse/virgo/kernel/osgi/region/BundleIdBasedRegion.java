@@ -53,10 +53,14 @@ public final class BundleIdBasedRegion implements Region {
 
     private final BundleContext systemBundleContext;
 
-    public BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext systemBundleContext) {
+    private final ThreadLocal<Region> threadLocal;
+
+    public BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext systemBundleContext,
+        @NonNull ThreadLocal<Region> threadLocal) {
         this.regionName = regionName;
         this.regionDigraph = regionDigraph;
         this.systemBundleContext = systemBundleContext;
+        this.threadLocal = threadLocal;
     }
 
     /**
@@ -100,8 +104,8 @@ public final class BundleIdBasedRegion implements Region {
                 BundleException.DUPLICATE_BUNDLE_ERROR);
         }
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -116,13 +120,12 @@ public final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
-        /*
-         * TODO: use bundle install hook to close the window between the bundle being installed and it belonging to the region.
-         * See bug 333189.
-         */
-        Bundle bundle = this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, input);
-        addBundle(bundle);
-        return bundle;
+        setRegionThreadLocal();
+        try {
+            return this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, input);
+        } finally {
+            removeRegionThreadLocal();
+        }
     }
 
     /**
@@ -130,13 +133,20 @@ public final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location) throws BundleException {
-        /*
-         * TODO: use bundle install hook to close the window between the bundle being installed and it belonging to the region.
-         * See bug 333189.
-         */
-        Bundle bundle = this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, openBundleStream(location));
-        addBundle(bundle);
-        return bundle;
+        setRegionThreadLocal();
+        try {
+            return this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, openBundleStream(location));
+        } finally {
+            removeRegionThreadLocal();
+        }
+    }
+
+    private void setRegionThreadLocal() {
+        this.threadLocal.set(this);
+    }
+
+    private void removeRegionThreadLocal() {
+        this.threadLocal.remove();
     }
 
     private InputStream openBundleStream(String location) throws BundleException {
@@ -220,7 +230,7 @@ public final class BundleIdBasedRegion implements Region {
         return this.regionName.equals(other.regionName);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -228,16 +238,16 @@ public final class BundleIdBasedRegion implements Region {
         return this.bundleIds.contains(bundleId);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
     public void removeBundle(Bundle bundle) {
         removeBundle(bundle.getBundleId());
-        
+
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -247,7 +257,7 @@ public final class BundleIdBasedRegion implements Region {
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override

@@ -66,9 +66,9 @@ public interface RegionDigraph extends Iterable<Region> {
      * Removes the given {@link Region} from the digraph along with any edges which have the given region as head or
      * tail. If the given region is not present in the digraph, this is not an error and there is no effect.
      * 
-     * @param coregion the {@link Region} to be removed
+     * @param region the {@link Region} to be removed
      */
-    void removeRegion(Region coregion);
+    void removeRegion(Region region);
 
     /**
      * Gets the {@link Region} in the digraph with the given name.
@@ -128,5 +128,11 @@ public interface RegionDigraph extends Iterable<Region> {
      * @return a {@link Set} of {@link FilteredRegion FilteredRegions} of head regions and region filters
      */
     Set<FilteredRegion> getEdges(Region tailRegion);
+    
+    
+    /**
+     * @deprecated temporary method during refactoring
+     */
+    ThreadLocal<Region> getThreadLocal();
 
 }

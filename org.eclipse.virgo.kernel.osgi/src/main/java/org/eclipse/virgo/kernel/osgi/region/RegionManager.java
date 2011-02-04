@@ -45,8 +45,11 @@ final class RegionManager {
 
     private final BundleContext bundleContext;
 
+    private final ThreadLocal<Region> threadLocal;
+
     public RegionManager(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        this.threadLocal = new ThreadLocal<Region>();
     }
 
     public void start() throws BundleException {
@@ -55,14 +58,14 @@ final class RegionManager {
     }
 
     private RegionDigraph createRegionDigraph() throws BundleException {
-        RegionDigraph regionDigraph = new StandardRegionDigraph();
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.threadLocal);
         createKernelRegion(regionDigraph);
         registerRegionDigraph(regionDigraph, this.bundleContext);
         return regionDigraph;
     }
 
     private Region createKernelRegion(RegionDigraph regionDigraph) throws BundleException {
-        Region kernelRegion = new BundleIdBasedRegion(REGION_KERNEL, regionDigraph, getSystemBundleContext());
+        Region kernelRegion = new BundleIdBasedRegion(REGION_KERNEL, regionDigraph, getSystemBundleContext(), this.threadLocal);
         regionDigraph.addRegion(kernelRegion);
 
         for (Bundle bundle : this.bundleContext.getBundles()) {
@@ -81,7 +84,7 @@ final class RegionManager {
 
         registerBundleFindHook(bundleFindHook);
 
-        registerBundleEventHook(new RegionBundleEventHook(regionDigraph, bundleFindHook));
+        registerBundleEventHook(new RegionBundleEventHook(regionDigraph, bundleFindHook, this.threadLocal));
 
         RegionServiceFindHook serviceFindHook = new RegionServiceFindHook(regionDigraph);
 

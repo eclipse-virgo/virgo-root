@@ -82,13 +82,16 @@ public class RegionServiceFindHookTests {
 
     private Collection<ServiceReference<?>> candidates;
 
+    private ThreadLocal<Region> threadLocal;
+
     @Before
     public void setUp() throws Exception {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
         this.serviceReferences = new HashMap<String, ServiceReference<Object>>();
-        this.digraph = new StandardRegionDigraph();
+        this.threadLocal = new ThreadLocal<Region>();
+        this.digraph = new StandardRegionDigraph(this.threadLocal);
         this.stubBundleContext = new StubBundleContext();
         this.bundleFindHook = new RegionServiceFindHook(this.digraph);
         this.candidates = new HashSet<ServiceReference<?>>();
@@ -225,7 +228,7 @@ public class RegionServiceFindHookTests {
     }
 
     private Region createRegion(String regionName, String... bundleSymbolicNames) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext);
+        Region region = new BundleIdBasedRegion(regionName, this.digraph, this.stubBundleContext, this.threadLocal);
         for (String bundleSymbolicName : bundleSymbolicNames) {
             Bundle stubBundle = createBundle(bundleSymbolicName);
             region.addBundle(stubBundle);
