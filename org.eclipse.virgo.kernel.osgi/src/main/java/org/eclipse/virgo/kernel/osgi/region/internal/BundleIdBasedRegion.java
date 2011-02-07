@@ -82,11 +82,6 @@ final class BundleIdBasedRegion implements Region {
         synchronized (this.updateMonitor) {
             checkBundleNotAssociatedWithAnotherRegion(bundle);
 
-            String symbolicName = bundle.getSymbolicName();
-            Version version = bundle.getVersion();
-
-            checkDuplicateBundleInRegion(bundle, symbolicName, version);
-
             this.bundleIds.add(bundle.getBundleId());
         }
     }
@@ -96,15 +91,6 @@ final class BundleIdBasedRegion implements Region {
             if (!this.equals(r) && r.contains(bundle)) {
                 throw new BundleException("Bundle '" + bundle + "' is already associated with region '" + r + "'", BundleException.INVALID_OPERATION);
             }
-        }
-    }
-
-    private void checkDuplicateBundleInRegion(Bundle bundle, String symbolicName, Version version) throws BundleException {
-        Bundle existingBundle = getBundle(symbolicName, version);
-        if (existingBundle != null && !existingBundle.equals(bundle)) {
-            throw new BundleException("Cannot add bundle '" + bundle + "' to region '" + this
-                + "' as its symbolic name and version conflict with those of bundle '" + existingBundle + "' which is already present in the region",
-                BundleException.DUPLICATE_BUNDLE_ERROR);
         }
     }
 
