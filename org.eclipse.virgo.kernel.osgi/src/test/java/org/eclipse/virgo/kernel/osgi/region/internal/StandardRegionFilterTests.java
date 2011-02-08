@@ -14,12 +14,14 @@
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,8 +53,20 @@ public class StandardRegionFilterTests {
 
     @Test
     public void testAllowBundle() {
-        this.regionFilter.allowBundle(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
+        this.regionFilter.allowBundle(BUNDLE_SYMBOLIC_NAME, VersionRange.NATURAL_NUMBER_RANGE);
         assertTrue(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
+    }
+    
+    @Test
+    public void testBundleNotAllowed() {
+        assertFalse(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
+    }
+
+    @Test
+    public void testBundleNotAllowedInRange() {
+        this.regionFilter.allowBundle(BUNDLE_SYMBOLIC_NAME, new VersionRange("1"));
+
+        assertFalse(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
     }
 
     @Test

@@ -16,6 +16,7 @@ package org.eclipse.virgo.kernel.osgi.region;
 import java.util.Dictionary;
 import java.util.Map;
 
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -66,7 +67,7 @@ public interface RegionFilter {
     public static final RegionFilter TOP = new RegionFilter() {
 
         @Override
-        public RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion) {
+        public RegionFilter allowBundle(String bundleSymbolicName, VersionRange versionRange) {
             return this;
         }
 
@@ -77,7 +78,7 @@ public interface RegionFilter {
 
         @Override
         public RegionFilter setPackageImportPolicy(RegionPackageImportPolicy packageImportPolicy) {
-            return this;
+            throw new UnsupportedOperationException("TOP is immutable");
         }
 
         @Override
@@ -87,7 +88,7 @@ public interface RegionFilter {
 
         @Override
         public RegionFilter setServiceFilter(Filter serviceFilter) {
-            return this;
+            throw new UnsupportedOperationException("TOP is immutable");
         }
 
         @Override
@@ -97,15 +98,15 @@ public interface RegionFilter {
     };
 
     /**
-     * Allows a bundle with the given bundle symbolic name and version to be imported.
+     * Allows bundles with the given bundle symbolic name and bundle version in the given range to be imported.
      * 
-     * Note that the system bundle has the OSGi defined symbolic name "system.bundle".
+     * Note that the system bundle has the OSGi defined symbolic name "org.osgi.framework".
      * 
      * @param bundleSymbolicName
-     * @param bundleVersion
+     * @param versionRange
      * @return this {@link RegionFilter} for chaining purposes
      */
-    RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion);
+    RegionFilter allowBundle(String bundleSymbolicName, VersionRange versionRange);
 
     /**
      * Determines whether this filter allows the bundle with the given symbolic name and version

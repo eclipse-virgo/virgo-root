@@ -28,6 +28,7 @@ import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -301,7 +302,7 @@ public class RegionResolverHookTests {
 
     private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) {
         RegionFilter filter = new StandardRegionFilter();
-        filter.allowBundle(bundleSymbolicName, bundleVersion);
+        filter.allowBundle(bundleSymbolicName, new VersionRange(bundleVersion.toString()));
         return filter;
     }
 
