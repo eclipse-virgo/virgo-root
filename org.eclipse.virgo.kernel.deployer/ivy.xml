@@ -22,7 +22,7 @@
 		<dependency org="org.eclipse.virgo.teststubs" name="org.eclipse.virgo.teststubs.osgi" rev="${org.eclipse.virgo.teststubs}" conf="test->runtime"/>
 
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}" conf="compile->runtime"/>
 
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="compile->runtime"/>
