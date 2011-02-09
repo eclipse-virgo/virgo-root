@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.virgo.web.test;version="2.0.0";uses:="org.
- apache.commons.httpclient,org.eclipse.virgo.kernel.deployer.core,org.
- eclipse.virgo.util.io,org.junit,org.junit.runner"
+Export-Package: org.eclipse.virgo.web.test;version="3.0.0"
+Bundle-ClassPath: .,org.eclipse.equinox.ds-1.2.100.v20101206.jar,org.e
+ clipse.equinox.util-1.0.200.v20100503.jar
 Bundle-Version: 3.0.0
 Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Virgo Web Test Bundle
@@ -15,4 +15,5 @@ Import-Package: javax.management;version="0",org.apache.commons.httpcl
  )",org.junit.runner;version="[4.7.0,5)",org.osgi.framework;version="0
  "
 Bundle-SymbolicName: org.eclipse.virgo.web.test
+
 

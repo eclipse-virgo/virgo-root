@@ -39,7 +39,7 @@
 		<dependency org="org.eclipse.gemini.web" name="org.eclipse.gemini.web.core" rev="${org.eclipse.gemini.web}" conf="compile->compile"/>
 		<dependency org="org.eclipse.gemini.web" name="org.eclipse.gemini.web.tomcat" rev="${org.eclipse.gemini.web}" conf="compile->compile"/>
 		
-		<dependency org="org.eclipse" name="equinox-event" rev="${org.eclipse.equinox.event}"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}"/>
 		
 		<dependency org="org.springframework.osgi" name="org.springframework.osgi.extender" rev="${org.springframework.osgi}" conf="compile->compile"/>
 		
