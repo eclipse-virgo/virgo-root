@@ -30,7 +30,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.Capability;
-import org.osgi.framework.wiring.WiredCapability;
 
 /**
  */
@@ -400,14 +399,6 @@ public class StubBundleDescription implements BundleDescription {
      * {@inheritDoc}
      */
     @Override
-    public WiredCapability getWiredCapability() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<Capability> getDeclaredCapabilities(String namespace) {
         throw new UnsupportedOperationException();
     }
@@ -457,6 +448,22 @@ public class StubBundleDescription implements BundleDescription {
      */
     @Override
     public BundleWiring getBundleWiring() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Capability getCapability() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, Object> getAttributes() {
         throw new UnsupportedOperationException();
     }
 

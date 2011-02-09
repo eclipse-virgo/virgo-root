@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.osgi.framework.Version;
-import org.osgi.framework.wiring.WiredCapability;
+import org.osgi.framework.wiring.Capability;
 
 /**
  */
@@ -100,7 +100,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
      * {@inheritDoc}
      */
     @Override
-    public WiredCapability getWiredCapability() {
+    public Capability getCapability() {
         throw new UnsupportedOperationException();
     }
 

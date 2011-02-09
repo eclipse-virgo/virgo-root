@@ -31,7 +31,7 @@
         <dependency org="org.eclipse.osgi"  name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
 
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
-		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
 
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		
