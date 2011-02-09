@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.eclipse.osgi.internal.module.ResolverBundle;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
@@ -93,9 +93,9 @@ final class RegionResolverHook implements ResolverHook {
         if (bundle != null) {
             return bundle.getBundleId();
         }
-        if (bundleRevision instanceof ResolverBundle) {
-            ResolverBundle resolverBundle = (ResolverBundle) bundleRevision;
-            return resolverBundle.getBundleDescription().getBundleId();
+        if (bundleRevision instanceof BundleDescription) {
+            BundleDescription bundleDescription = (BundleDescription) bundleRevision;
+            return bundleDescription.getBundleId();
         }
         Assert.isTrue(false, "Cannot determine bundle id of BundleRevision '%s'", bundleRevision);
         return INVALID_BUNDLE_ID;
