@@ -91,7 +91,7 @@ public final class StandardRegionFilter implements RegionFilter {
     public boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion) {
         synchronized (this.monitor) {
             for (OrderedPair<String, VersionRange> allowedBundle : this.allowedBundles) {
-                if (allowedBundle.getFirst().endsWith(bundleSymbolicName) && allowedBundle.getSecond().includes(bundleVersion)) {
+                if (allowedBundle.getFirst().equals(bundleSymbolicName) && allowedBundle.getSecond().includes(bundleVersion)) {
                     return true;
                 }
             }
