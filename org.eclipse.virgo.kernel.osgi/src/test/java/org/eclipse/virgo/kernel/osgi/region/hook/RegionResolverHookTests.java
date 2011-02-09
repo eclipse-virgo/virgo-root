@@ -257,7 +257,6 @@ public class RegionResolverHookTests {
     @Test
     public void testUnimplementedMethods() {
         this.resolverHook.filterResolvable(null);
-        this.resolverHook.filterSingletonCollisions(null, null);
         this.resolverHook.end();
     }
 

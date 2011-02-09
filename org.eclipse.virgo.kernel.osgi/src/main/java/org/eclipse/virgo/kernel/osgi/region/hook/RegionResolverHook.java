@@ -174,6 +174,7 @@ final class RegionResolverHook implements ResolverHook {
 
     @Override
     public void filterSingletonCollisions(Capability singleton, Collection<Capability> collisionCandidates) {
+        collisionCandidates.clear(); //XXX temporary hack in lieu of Borislav's changes
     }
 
     private void debugEntry(BundleRevision requirer, Collection<Capability> candidates) {
