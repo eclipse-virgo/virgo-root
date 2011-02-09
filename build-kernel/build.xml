@@ -79,6 +79,8 @@
 				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
 				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
 				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
+				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
+				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
@@ -97,6 +99,8 @@
 				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
 				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
 				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
+				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
+				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
