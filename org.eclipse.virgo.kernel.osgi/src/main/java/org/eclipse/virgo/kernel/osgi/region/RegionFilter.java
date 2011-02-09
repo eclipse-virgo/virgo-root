@@ -100,7 +100,7 @@ public interface RegionFilter {
     /**
      * Allows bundles with the given bundle symbolic name and bundle version in the given range to be imported.
      * 
-     * Note that the system bundle has the OSGi defined symbolic name "org.osgi.framework".
+     * Note that the system bundle has the symbolic name "org.eclipse.osgi".
      * 
      * @param bundleSymbolicName
      * @param versionRange
