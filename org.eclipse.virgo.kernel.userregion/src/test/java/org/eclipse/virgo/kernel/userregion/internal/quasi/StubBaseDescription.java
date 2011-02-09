@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.osgi.service.resolver.BaseDescription;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Version;
-import org.osgi.framework.wiring.WiredCapability;
+import org.osgi.framework.wiring.Capability;
 
 
 /**
@@ -80,7 +80,7 @@ public class StubBaseDescription implements BaseDescription {
      * {@inheritDoc}
      */
     @Override
-    public WiredCapability getWiredCapability() {
+    public Capability getCapability() {
         throw new UnsupportedOperationException();
     }
 

@@ -27,13 +27,11 @@ import org.eclipse.osgi.service.resolver.HostSpecification;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.NativeCodeSpecification;
 import org.eclipse.osgi.service.resolver.State;
-import org.eclipse.virgo.kernel.userregion.internal.quasi.BundleDescriptionComparator;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.Capability;
-import org.osgi.framework.wiring.WiredCapability;
 
 
 public class BundleDescriptionComparatorTests {
@@ -253,11 +251,6 @@ public class BundleDescriptionComparatorTests {
         }
 
         @Override
-        public WiredCapability getWiredCapability() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public List<Capability> getDeclaredCapabilities(String namespace) {
             throw new UnsupportedOperationException();
         }
@@ -289,6 +282,16 @@ public class BundleDescriptionComparatorTests {
 
         @Override
         public BundleWiring getBundleWiring() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Capability getCapability() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
             throw new UnsupportedOperationException();
         }
     }
