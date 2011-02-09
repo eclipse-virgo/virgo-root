@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.virgo.util.math.OrderedPair;
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.osgi.framework.Filter;
 import org.osgi.framework.Version;
 
@@ -29,7 +30,7 @@ public final class StandardRegionFilter implements RegionFilter {
 
     private final Object monitor = new Object();
 
-    private final Set<OrderedPair<String, Version>> allowedBundles = new HashSet<OrderedPair<String, Version>>();
+    private final Set<OrderedPair<String, VersionRange>> allowedBundles = new HashSet<OrderedPair<String, VersionRange>>();
 
     private RegionPackageImportPolicy packageImportPolicy;
 
@@ -39,15 +40,15 @@ public final class StandardRegionFilter implements RegionFilter {
      * {@inheritDoc}
      */
     @Override
-    public RegionFilter allowBundle(String bundleSymbolicName, Version bundleVersion) {
+    public RegionFilter allowBundle(String bundleSymbolicName, VersionRange versionRange) {
         synchronized (this.monitor) {
-            this.allowedBundles.add(createPair(bundleSymbolicName, bundleVersion));
+            this.allowedBundles.add(createPair(bundleSymbolicName, versionRange));
         }
         return this;
     }
 
-    private OrderedPair<String, Version> createPair(String bundleSymbolicName, Version bundleVersion) {
-        return new OrderedPair<String, Version>(bundleSymbolicName, bundleVersion);
+    private OrderedPair<String, VersionRange> createPair(String bundleSymbolicName, VersionRange versionRange) {
+        return new OrderedPair<String, VersionRange>(bundleSymbolicName, versionRange);
     }
 
     /**
@@ -89,7 +90,12 @@ public final class StandardRegionFilter implements RegionFilter {
     @Override
     public boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion) {
         synchronized (this.monitor) {
-            return this.allowedBundles.contains(createPair(bundleSymbolicName, bundleVersion));
+            for (OrderedPair<String, VersionRange> allowedBundle : this.allowedBundles) {
+                if (allowedBundle.getFirst().endsWith(bundleSymbolicName) && allowedBundle.getSecond().includes(bundleVersion)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

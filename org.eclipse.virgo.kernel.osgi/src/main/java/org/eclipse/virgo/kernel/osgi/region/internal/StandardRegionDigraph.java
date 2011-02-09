@@ -13,6 +13,7 @@
 
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,11 +23,14 @@ import java.util.Set;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionLifecycleListener;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 /**
  * {@link StandardRegionDigraph} is the default implementation of {@link RegionDigraph}.
@@ -65,8 +69,9 @@ public final class StandardRegionDigraph implements RegionDigraph {
                 throw new BundleException("Region '" + regionName + "' already exists", BundleException.UNSUPPORTED_OPERATION);
             }
             this.regions.add(region);
-            return region;
         }
+        notifyAdded(region);
+        return region;
     }
 
     /**
@@ -78,18 +83,25 @@ public final class StandardRegionDigraph implements RegionDigraph {
             throw new BundleException("Cannot connect region '" + headRegion + "' to itself", BundleException.UNSUPPORTED_OPERATION);
         }
         OrderedPair<Region, Region> nodePair = new OrderedPair<Region, Region>(tailRegion, headRegion);
+        boolean tailAdded = false;
+        boolean headAdded = false;
         synchronized (this.monitor) {
             if (this.filter.containsKey(nodePair)) {
                 throw new BundleException("Region '" + tailRegion + "' is already connected to region '" + headRegion,
                     BundleException.UNSUPPORTED_OPERATION);
             } else {
                 checkFilterDoesNotAllowExistingBundle(tailRegion, filter);
-                this.regions.add(tailRegion);
-                this.regions.add(headRegion);
+                tailAdded = this.regions.add(tailRegion);
+                headAdded = this.regions.add(headRegion);
                 this.filter.put(nodePair, filter);
             }
         }
-
+        if (tailAdded) {
+            notifyAdded(tailRegion);
+        }
+        if (headAdded) {
+            notifyAdded(headRegion);
+        }
     }
 
     private void checkFilterDoesNotAllowExistingBundle(Region tailRegion, RegionFilter filter) throws BundleException {
@@ -197,13 +209,14 @@ public final class StandardRegionDigraph implements RegionDigraph {
      * {@inheritDoc}
      */
     @Override
-    public void removeRegion(@NonNull Region coregion) {
+    public void removeRegion(@NonNull Region region) {
+        notifyRemoving(region);
         synchronized (this.monitor) {
-            this.regions.remove(coregion);
+            this.regions.remove(region);
             Iterator<OrderedPair<Region, Region>> i = this.filter.keySet().iterator();
             while (i.hasNext()) {
                 OrderedPair<Region, Region> regionPair = i.next();
-                if (coregion.equals(regionPair.getFirst()) || coregion.equals(regionPair.getSecond())) {
+                if (region.equals(regionPair.getFirst()) || region.equals(regionPair.getSecond())) {
                     i.remove();
                 }
             }
@@ -239,6 +252,46 @@ public final class StandardRegionDigraph implements RegionDigraph {
             s.append("]");
             return s.toString();
         }
+    }
+
+    @Override
+    public Set<Region> getRegions() {
+        Set<Region> result = new HashSet<Region>();
+        synchronized (this.monitor) {
+            result.addAll(this.regions);
+        }
+        return result;
+    }
+
+    private void notifyAdded(Region region) {
+        Set<RegionLifecycleListener> listeners = getListeners();
+        for (RegionLifecycleListener listener : listeners) {
+            listener.regionAdded(region);
+        }
+    }
+
+    private void notifyRemoving(Region region) {
+        Set<RegionLifecycleListener> listeners = getListeners();
+        for (RegionLifecycleListener listener : listeners) {
+            listener.regionRemoving(region);
+        }
+    }
+
+    private Set<RegionLifecycleListener> getListeners() {
+        Set<RegionLifecycleListener> listeners = new HashSet<RegionLifecycleListener>();
+        try {
+            Collection<ServiceReference<RegionLifecycleListener>> listenerServiceReferences = this.systemBundleContext.getServiceReferences(
+                RegionLifecycleListener.class, null);
+            for (ServiceReference<RegionLifecycleListener> listenerServiceReference : listenerServiceReferences) {
+                RegionLifecycleListener regionLifecycleListener = this.systemBundleContext.getService(listenerServiceReference);
+                if (regionLifecycleListener != null) {
+                    listeners.add(regionLifecycleListener);
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        return listeners;
     }
 
 }

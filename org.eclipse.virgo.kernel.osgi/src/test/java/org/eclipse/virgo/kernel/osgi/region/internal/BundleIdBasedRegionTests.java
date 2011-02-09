@@ -161,7 +161,7 @@ public class BundleIdBasedRegionTests {
         r.addBundle(this.mockBundle);
     }
 
-    @Test(expected = BundleException.class)
+    // This restriction was removed, so no exception should be thrown.
     public void testAddConflictingBundle() throws BundleException {
         defaultSetUp();
 

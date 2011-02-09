@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.core.FatalKernelException;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.osgi.framework.Bundle;
@@ -90,6 +91,7 @@ public final class RegionBundleEventHook implements EventHook {
                 installRegion.addBundle(eventBundle);
             } catch (BundleException e) {
                 e.printStackTrace();
+                throw new FatalKernelException("Bundle could not be added to region", e);
             }
         } else {
             Region originRegion = this.regionDigraph.getRegion(originBundle);
@@ -98,6 +100,7 @@ public final class RegionBundleEventHook implements EventHook {
                     originRegion.addBundle(eventBundle);
                 } catch (BundleException e) {
                     e.printStackTrace();
+                    throw new FatalKernelException("Bundle could not be added to region", e);
                 }
             }
         }

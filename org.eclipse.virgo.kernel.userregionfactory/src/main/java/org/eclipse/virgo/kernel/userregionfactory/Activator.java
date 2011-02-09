@@ -35,6 +35,10 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.eclipse.virgo.util.osgi.manifest.RequireBundle;
+import org.eclipse.virgo.util.osgi.manifest.RequiredBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -71,6 +75,8 @@ public final class Activator implements BundleActivator {
 
     private static final String USER_REGION_SERVICE_IMPORTS_PROPERTY = "serviceImports";
 
+    private static final String USER_REGION_BUNDLE_IMPORTS_PROPERTY = "bundleImports";
+
     private static final String USER_REGION_SERVICE_EXPORTS_PROPERTY = "serviceExports";
 
     private static final String USER_REGION_BUNDLE_CONTEXT_SERVICE_PROPERTY = "org.eclipse.virgo.kernel.regionContext";
@@ -85,9 +91,11 @@ public final class Activator implements BundleActivator {
 
     private String regionBundles;
 
-    private String regionImports;
+    private String regionPackageImports;
 
     private String regionServiceImports;
+
+    private String regionBundleImports;
 
     private String regionServiceExports;
 
@@ -110,7 +118,7 @@ public final class Activator implements BundleActivator {
         Shutdown shutdown = getPotentiallyDelayedService(bundleContext, Shutdown.class);
         getRegionConfiguration(configAdmin, eventLogger, shutdown);
 
-        createUserRegion(bundleContext, regionDigraph);
+        createUserRegion(bundleContext, regionDigraph, eventLogger);
     }
 
     private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
@@ -122,8 +130,9 @@ public final class Activator implements BundleActivator {
 
             if (properties != null) {
                 this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY);
-                this.regionImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
+                this.regionPackageImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
                 this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
+                this.regionBundleImports = properties.get(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
                 this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
             } else {
                 eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
@@ -135,7 +144,7 @@ public final class Activator implements BundleActivator {
         }
     }
 
-    private void createUserRegion(BundleContext userRegionBundleContext, RegionDigraph regionDigraph) throws BundleException {
+    private void createUserRegion(BundleContext userRegionBundleContext, RegionDigraph regionDigraph, EventLogger eventLogger) throws BundleException {
 
         BundleContext systemBundleContext = getSystemBundleContext();
         Bundle userRegionFactoryBundle = userRegionBundleContext.getBundle();
@@ -146,7 +155,7 @@ public final class Activator implements BundleActivator {
         Region userRegion = regionDigraph.createRegion(REGION_USER);
         userRegion.addBundle(userRegionFactoryBundle);
 
-        RegionFilter kernelFilter = createKernelFilter(systemBundleContext);
+        RegionFilter kernelFilter = createKernelFilter(systemBundleContext, eventLogger);
         userRegion.connectRegion(kernelRegion, kernelFilter);
 
         RegionFilter userRegionFilter = createUserRegionFilter();
@@ -178,10 +187,9 @@ public final class Activator implements BundleActivator {
         return regionDigraph.iterator().next();
     }
 
-    private RegionFilter createKernelFilter(BundleContext systemBundleContext) throws BundleException {
+    private RegionFilter createKernelFilter(BundleContext systemBundleContext, EventLogger eventLogger) throws BundleException {
         RegionFilter kernelFilter = new StandardRegionFilter();
-        Bundle systemBundle = systemBundleContext.getBundle();
-        kernelFilter.allowBundle(systemBundle.getSymbolicName(), systemBundle.getVersion());
+        allowImportedBundles(kernelFilter, eventLogger);
         kernelFilter.setPackageImportPolicy(createUserRegionPackageImportPolicy(systemBundleContext));
         Filter serviceFilter;
         try {
@@ -192,6 +200,24 @@ public final class Activator implements BundleActivator {
         }
         kernelFilter.setServiceFilter(serviceFilter);
         return kernelFilter;
+    }
+
+    private void allowImportedBundles(RegionFilter kernelFilter, EventLogger eventLogger) {
+        String userRegionBundleImports = this.regionBundleImports != null ? this.regionBundleImports
+            : this.bundleContext.getProperty(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
+
+        RequireBundle bundleImportsAsRequireBundle = representBundleImportsAsRequireBundle(userRegionBundleImports, eventLogger);
+        List<RequiredBundle> importedBundles = bundleImportsAsRequireBundle.getRequiredBundles();
+        for (RequiredBundle importedBundle : importedBundles) {
+            kernelFilter.allowBundle(importedBundle.getBundleSymbolicName(), importedBundle.getBundleVersion());
+        }
+    }
+
+    private RequireBundle representBundleImportsAsRequireBundle(String userRegionBundleImportsProperty, EventLogger eventLogger) {
+        Dictionary<String, String> headers = new Hashtable<String, String>();
+        headers.put("Require-Bundle", userRegionBundleImportsProperty);
+        BundleManifest manifest = BundleManifestFactory.createBundleManifest(headers, new UserRegionFactoryParserLogger(eventLogger));
+        return manifest.getRequireBundle();
     }
 
     private String classesToFilter(String classList) {
@@ -212,7 +238,7 @@ public final class Activator implements BundleActivator {
     }
 
     private UserRegionPackageImportPolicy createUserRegionPackageImportPolicy(BundleContext systemBundleContext) {
-        String userRegionImportsProperty = this.regionImports != null ? this.regionImports
+        String userRegionImportsProperty = this.regionPackageImports != null ? this.regionPackageImports
             : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
         String expandedUserRegionImportsProperty = null;
         if (userRegionImportsProperty != null) {

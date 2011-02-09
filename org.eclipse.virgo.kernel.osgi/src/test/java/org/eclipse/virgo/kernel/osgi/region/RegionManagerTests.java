@@ -34,11 +34,11 @@ public class RegionManagerTests {
         bundleContext.addInstalledBundle(stubSystemBundle);
                               
        
-        RegionManager manager = new RegionManager(bundleContext);
+        RegionManager manager = new RegionManager(bundleContext, "test.domain");
         manager.start();
         
         List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
-        assertEquals("Region services not registered", 8, serviceRegistrations.size());
+        assertEquals("Region services not registered", 9, serviceRegistrations.size());
         
         manager.stop();
         
