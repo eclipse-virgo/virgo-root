@@ -27,7 +27,7 @@
 		<!-- === RUNTIME-DEFAULT =========================================== -->
 		<!-- === PROVIDED-RUNTIME =========================================== -->
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="provided->runtime"/>
-		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="provided->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="provided->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="provided->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jstl}" conf="provided->runtime"/>

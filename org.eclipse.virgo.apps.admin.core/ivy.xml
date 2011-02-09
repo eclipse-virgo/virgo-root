@@ -31,7 +31,7 @@
 		<!-- === PROVIDED-RUNTIME =========================================== -->
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="provided->runtime"/>
-		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="provided->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="provided->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.fileupload" rev="${org.apache.commons.fileupload}" conf="provided->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.io" rev="${org.apache.commons.io}" conf="provided->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="provided->runtime"/>
