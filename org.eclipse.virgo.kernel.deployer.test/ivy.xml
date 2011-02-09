@@ -36,8 +36,8 @@
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.dbcp" rev="${commons.dbcp}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.pool" rev="${commons.pool}" conf="test->runtime"/>
 		
-		<dependency org="org.eclipse" name="equinox-ds" rev="latest.integration"/>
-		<dependency org="org.eclipse" name="equinox-util" rev="latest.integration"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="test->runtime"/>

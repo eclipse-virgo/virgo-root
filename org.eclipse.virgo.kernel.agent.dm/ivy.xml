@@ -20,8 +20,8 @@
         <dependency name='org.eclipse.osgi' rev='${org.eclipse.osgi}' org='org.eclipse.osgi' conf='compile->runtime'/>
 
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
-		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
-		<dependency org="org.eclipse" name="equinox-event" rev="${org.eclipse.equinox.event}"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}"/>
 
         <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf='compile->compile'/>
         <dependency name='org.eclipse.virgo.util.io' rev='${org.eclipse.virgo.util}' org='org.eclipse.virgo.util' conf='compile->compile'/>
