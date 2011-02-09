@@ -16,6 +16,7 @@ package org.eclipse.virgo.kernel.osgi.region.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Set;
@@ -174,6 +175,18 @@ public class StandardRegionDigraphTests {
         this.digraph.removeRegion(this.mockRegion1);
         assertNull(this.digraph.getRegion("mockRegion1"));
         assertNotNull(this.digraph.getRegion("mockRegion2"));
+    }
+    
+    @Test
+    public void testGetRegions() throws BundleException {
+        setDefaultMockFilters();
+        replayMocks();
+        
+        this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
+        Set<Region> regions = this.digraph.getRegions();
+        assertEquals(2, regions.size());
+        assertTrue(regions.contains(this.mockRegion1));
+        assertTrue(regions.contains(this.mockRegion2));
     }
     
 }

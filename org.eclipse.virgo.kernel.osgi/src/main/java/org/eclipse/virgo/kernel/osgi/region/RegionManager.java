@@ -20,6 +20,7 @@ import org.eclipse.virgo.kernel.osgi.region.hook.RegionResolverHookFactory;
 import org.eclipse.virgo.kernel.osgi.region.hook.RegionServiceEventHook;
 import org.eclipse.virgo.kernel.osgi.region.hook.RegionServiceFindHook;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.management.internal.StandardManageableRegionDigraph;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -47,9 +48,12 @@ final class RegionManager {
 
     private final ThreadLocal<Region> threadLocal;
 
-    public RegionManager(BundleContext bundleContext) {
+    private final String domain;
+
+    public RegionManager(BundleContext bundleContext, String domain) {
         this.bundleContext = bundleContext;
         this.threadLocal = new ThreadLocal<Region>();
+        this.domain = domain;
     }
 
     public void start() throws BundleException {
@@ -59,9 +63,15 @@ final class RegionManager {
 
     private RegionDigraph createRegionDigraph() throws BundleException {
         RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
+        registerDigraphMbean(regionDigraph);
         createKernelRegion(regionDigraph);
         registerRegionDigraph(regionDigraph, this.bundleContext);
         return regionDigraph;
+    }
+
+    private void registerDigraphMbean(RegionDigraph regionDigraph) {
+        StandardManageableRegionDigraph standardManageableRegionDigraph = new StandardManageableRegionDigraph(regionDigraph, this.domain, this.bundleContext);
+        standardManageableRegionDigraph.registerMBean();
     }
 
     private Region createKernelRegion(RegionDigraph regionDigraph) throws BundleException {
@@ -90,10 +100,6 @@ final class RegionManager {
         registerServiceFindHook(serviceFindHook);
 
         registerServiceEventHook(new RegionServiceEventHook(serviceFindHook));
-    }
-
-    private BundleContext getSystemBundleContext() {
-        return this.bundleContext.getBundle(0L).getBundleContext();
     }
 
     private void registerRegionDigraph(RegionDigraph regionDigraph, BundleContext userRegionBundleContext) {

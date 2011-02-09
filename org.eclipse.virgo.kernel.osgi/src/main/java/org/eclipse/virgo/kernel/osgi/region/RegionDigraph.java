@@ -72,6 +72,13 @@ public interface RegionDigraph extends Iterable<Region> {
      * @param region the {@link Region} to be removed
      */
     void removeRegion(Region region);
+    
+    /**
+     * Gets all the {@link Region Regions} in the digraph.
+     * 
+     * @return a set of {@link Region Regions}
+     */
+    Set<Region> getRegions();
 
     /**
      * Gets the {@link Region} in the digraph with the given name.

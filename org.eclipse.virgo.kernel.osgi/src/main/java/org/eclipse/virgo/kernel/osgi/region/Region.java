@@ -12,6 +12,7 @@
 package org.eclipse.virgo.kernel.osgi.region;
 
 import java.io.InputStream;
+import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -103,6 +104,14 @@ public interface Region {
      * @see BundleContext#installBundle(String)
      */
     Bundle installBundle(String location) throws BundleException;
+    
+    /**
+     * 
+     * Gets the bundle ids of the bundles associated with this region.
+     * 
+     * @return a set of bundle ids
+     */
+    Set<Long> getBundleIds();
 
     /**
      * Returns <code>true</code> if and only if the given bundle belongs to this region.

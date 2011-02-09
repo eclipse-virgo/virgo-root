@@ -21,4 +21,5 @@ Import-Template:
  org.osgi.service.*;version="0",
  org.osgi.util.*;version="0",
  org.slf4j.*;version="${org.slf4j:[=.=.=, +1)}",
- org.springframework.*;version="${org.springframework:[2.5.6, =.+1)}"
+ org.springframework.*;version="${org.springframework:[2.5.6, =.+1)}",
+ javax.management;version="0"

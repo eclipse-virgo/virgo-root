@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
@@ -252,6 +253,15 @@ final class BundleIdBasedRegion implements Region {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public Set<Long> getBundleIds() {
+        Set<Long> bundleIds = new HashSet<Long>();
+        synchronized (this.updateMonitor) {
+            bundleIds.addAll(this.bundleIds);
+        }
+        return bundleIds;
     }
 
 }
