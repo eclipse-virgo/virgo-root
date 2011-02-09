@@ -33,7 +33,7 @@
 		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="test->runtime"/>
 		
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
-		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="test->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="test->runtime"/>
 		
 		<!-- Prevent org.eclipse.osgi.services dragging in old Equinox -->
 		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
