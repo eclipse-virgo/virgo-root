@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.virgo.web.test;version="3.0.0"
-Bundle-ClassPath: .,org.eclipse.equinox.ds-1.2.100.v20101206.jar,org.e
- clipse.equinox.util-1.0.200.v20100503.jar
+Bundle-ClassPath: .,org.eclipse.equinox.ds-1.3.0.v20110124-0830.jar,or
+ g.eclipse.equinox.util-1.0.200.v20100503.jar
 Bundle-Version: 3.0.0
 Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Virgo Web Test Bundle
