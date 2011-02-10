@@ -96,4 +96,11 @@ final class StubQuasiFramework implements QuasiFramework {
         return new ArrayList<QuasiResolutionFailure>();
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() {
+    }
+
 }
