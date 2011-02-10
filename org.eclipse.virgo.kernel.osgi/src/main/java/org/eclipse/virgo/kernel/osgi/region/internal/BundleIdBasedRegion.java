@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
@@ -262,6 +263,14 @@ final class BundleIdBasedRegion implements Region {
             bundleIds.addAll(this.bundleIds);
         }
         return bundleIds;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Set<FilteredRegion> getEdges() {
+        return this.regionDigraph.getEdges(this);
     }
 
 }

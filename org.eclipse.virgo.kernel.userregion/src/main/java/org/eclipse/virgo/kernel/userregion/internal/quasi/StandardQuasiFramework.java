@@ -109,14 +109,14 @@ final class StandardQuasiFramework implements QuasiFramework {
     private final Region userRegion;
 
     StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
-        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDiagraph) {
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDigraph) {
         this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
         this.detective = detective;
         this.stateHelper = platformAdmin.getStateHelper();
         this.bundleTransformationHandler = bundleTransformationHandler;
-        this.regionDigraph = regionDiagraph;
+        this.regionDigraph = regionDigraph;
         this.userRegion = regionDigraph.getRegion("org.eclipse.virgo.region.user");
         setResolverHookFactory();
 

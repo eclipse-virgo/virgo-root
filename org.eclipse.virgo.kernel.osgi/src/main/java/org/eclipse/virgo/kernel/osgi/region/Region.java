@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.osgi.region;
 import java.io.InputStream;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -172,5 +173,13 @@ public interface Region {
      * @param bundleId the bundle id to be removed
      */
     void removeBundle(long bundleId);
+    
+    /**
+     * Gets a {@link Set} containing a snapshot of the {@link FilteredRegion FilteredRegions} attached to this tail
+     * region.
+     * 
+     * @return a {@link Set} of {@link FilteredRegion FilteredRegions} of head regions and region filters
+     */
+    Set<FilteredRegion> getEdges();
 
 }
