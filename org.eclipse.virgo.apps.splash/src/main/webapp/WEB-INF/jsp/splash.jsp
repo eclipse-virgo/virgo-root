@@ -56,7 +56,7 @@
     </div><!-- /container -->
     
     <div id="footer-wrapper">
-      <div id="footer-left">&copy; Copyright 2008, 2010 VMware Inc. Licensed under the Eclipse Public License v1.0.</div>
+      <div id="footer-left">&copy; Copyright 2008, 2011 VMware Inc. Licensed under the Eclipse Public License v1.0.</div>
 
       <div id="footer-right"></div> 
     </div>
