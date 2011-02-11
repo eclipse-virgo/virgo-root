@@ -26,13 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * Class for integration testing {@link org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper}
  */
-@SuppressWarnings("deprecation")
 @RunWith(DmKernelTestRunner.class)
 public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegrationTest {
     private static final String SHELL_COMMANDS_BUNDLE_NAME = "org.eclipse.virgo.kernel.osgicommand";
