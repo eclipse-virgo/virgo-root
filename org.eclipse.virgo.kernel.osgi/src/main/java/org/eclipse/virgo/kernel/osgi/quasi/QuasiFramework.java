@@ -15,10 +15,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
-
-import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 /**
  * {@link QuasiFramework} is a snapshot of the OSGi framework state into which bundles can be installed and resolved
@@ -102,5 +101,10 @@ public interface QuasiFramework {
      * @throws BundleException if the contents could not be resolved and installed
      */
     void commit() throws BundleException;
+
+    /**
+     * Delete any resources associated with this {@link QuasiFramework}.
+     */
+    void destroy();
 
 }

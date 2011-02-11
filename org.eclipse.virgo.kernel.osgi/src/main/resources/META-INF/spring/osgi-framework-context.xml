@@ -5,16 +5,7 @@
 	
 	<bean class="org.eclipse.virgo.kernel.osgi.region.RegionManager" init-method="start" destroy-method="stop">
 		<constructor-arg ref="bundleContext"/>
-		<constructor-arg ref="compositeBundleFactory"/>
-		<constructor-arg ref="eventAdmin"/>
-		<constructor-arg>
-			<bean class="org.eclipse.virgo.kernel.osgi.region.eventlog.RegionAwareEventLoggerServiceFactory">
-				<constructor-arg ref="eventLoggerFactory"/>
-			</bean>
-		</constructor-arg>
-		<constructor-arg ref="configAdmin"/>
-		<constructor-arg ref="eventLogger"/>
-		<constructor-arg ref="shutdown"/>
+		<constructor-arg type="java.lang.String" value="${domain}"/>
 	</bean>
-
+	
 </beans>

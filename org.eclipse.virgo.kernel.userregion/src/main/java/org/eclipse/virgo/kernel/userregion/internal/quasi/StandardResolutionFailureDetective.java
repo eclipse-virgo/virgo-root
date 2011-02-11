@@ -221,8 +221,9 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
 
     private void formatUsesConflict(ResolverError resolverError, StringBuilder sb, State state) {
         VersionConstraint unsatisfiedConstraint = resolverError.getUnsatisfiedConstraint();
+        BundleDescription bundle = resolverError.getBundle();
         sb.append("Uses violation: <").append(unsatisfiedConstraint)
-        .append("> in bundle <").append(resolverError.getBundle()).append(">\n");
+        .append("> in bundle <").append(bundle).append("[").append(bundle.getBundleId()).append("]").append(">\n");
         
         AnalysedUsesConflict[] usesConflicts = this.usesAnalyser.getUsesConflicts(state, resolverError);            
         if (usesConflicts==null || usesConflicts.length==0) {

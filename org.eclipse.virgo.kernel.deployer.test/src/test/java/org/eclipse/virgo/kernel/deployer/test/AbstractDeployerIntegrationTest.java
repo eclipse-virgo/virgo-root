@@ -20,6 +20,10 @@ import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
+import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -31,14 +35,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.framework.SurrogateBundle;
 import org.osgi.service.packageadmin.PackageAdmin;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 
 @RunWith(DmKernelTestRunner.class)
 @SuppressWarnings("deprecation")
@@ -66,15 +63,16 @@ public abstract class AbstractDeployerIntegrationTest {
             this.deployer = this.context.getService(applicationDeployerServiceReference);
         }
 
-        Bundle bundle = this.context.getBundle(1);
-        if (bundle instanceof SurrogateBundle) {
-            this.kernelContext = ((SurrogateBundle) bundle).getCompositeBundleContext();
-        }
+        this.kernelContext = getKernelContext();
 
         ServiceReference<PackageAdmin> packageAdminServiceReference = context.getServiceReference(PackageAdmin.class);
         if (packageAdminServiceReference != null) {
             this.packageAdmin = context.getService(packageAdminServiceReference);
         }
+    }
+    
+    private BundleContext getKernelContext() {
+        return this.context.getBundle(0L).getBundleContext();
     }
 
     @BeforeClass

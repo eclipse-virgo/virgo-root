@@ -23,6 +23,28 @@ import java.util.Set;
 
 import org.eclipse.osgi.launch.Equinox;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
+import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
+import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
+import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
+import org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean;
+import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
+import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
+import org.eclipse.virgo.medic.dump.DumpGenerator;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
+import org.eclipse.virgo.osgi.extensions.equinox.EquinoxLauncherConfiguration;
+import org.eclipse.virgo.osgi.extensions.equinox.ExtendedEquinoxLauncher;
+import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.repository.ArtifactBridge;
+import org.eclipse.virgo.repository.Repository;
+import org.eclipse.virgo.repository.RepositoryFactory;
+import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.osgi.framework.BundleContext;
@@ -30,30 +52,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
-
-import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
-import org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.KernelClassLoaderCreator;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
-import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
-import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
-import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
-
-import org.eclipse.virgo.osgi.extensions.equinox.EquinoxLauncherConfiguration;
-import org.eclipse.virgo.osgi.extensions.equinox.ExtendedEquinoxLauncher;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableClassLoadingHook;
-import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
-import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
-import org.eclipse.virgo.medic.dump.DumpGenerator;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.repository.ArtifactBridge;
-import org.eclipse.virgo.repository.Repository;
-import org.eclipse.virgo.repository.RepositoryFactory;
-import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
-import org.eclipse.virgo.util.io.FileSystemUtils;
 
 @SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFrameworkLaunchingTests {
@@ -74,9 +72,13 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     private ServiceRegistration<DumpGenerator> dumpGeneratorRegistration;
 
+    private ServiceRegistration<RegionDigraph> regionDigraphRegistration;
+
     private Equinox equinox;
 
     protected QuasiFramework quasiFramework;
+
+    private ThreadLocal<Region> threadLocal;
 
     @Before
     public void setUp() throws Exception {
@@ -89,6 +91,9 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         // Uncomment this line to enable Equinox debugging
         // FrameworkProperties.setProperty("osgi.debug", "src/test/resources/debug.options");
+
+        // Uncomment thils line to enable Equinox console
+        // FrameworkProperties.setProperty("osgi.console", "2401");
         EquinoxLauncherConfiguration launcherConfiguration = new EquinoxLauncherConfiguration();
         launcherConfiguration.setClean(true);
         URI targetURI = new File("./target").toURI();
@@ -109,10 +114,17 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         };
 
+        this.threadLocal = new ThreadLocal<Region>();
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
+
+        Region userRegion = regionDigraph.createRegion("org.eclipse.virgo.region.user");
+        userRegion.addBundle(this.bundleContext.getBundle());
+
         final EventLogger mockEventLogger = new MockEventLogger();
 
         eventLoggerRegistration = bundleContext.registerService(EventLogger.class, mockEventLogger, null);
         dumpGeneratorRegistration = bundleContext.registerService(DumpGenerator.class, dumpGenerator, null);
+        regionDigraphRegistration = bundleContext.registerService(RegionDigraph.class, regionDigraph, null);
 
         this.repositoryBundleActivator = new RepositoryBundleActivator();
         this.repositoryBundleActivator.start(bundleContext);
@@ -145,7 +157,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
-        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper).create();
+        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph).create();
     }
 
     private ImportExpander createImportExpander(PackageAdmin packageAdmin) {
@@ -170,6 +182,11 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         if (this.dumpGeneratorRegistration != null) {
             this.dumpGeneratorRegistration.unregister();
             this.dumpGeneratorRegistration = null;
+        }
+
+        if (this.regionDigraphRegistration != null) {
+            this.regionDigraphRegistration.unregister();
+            this.regionDigraphRegistration = null;
         }
 
         if (this.eventLoggerRegistration != null) {

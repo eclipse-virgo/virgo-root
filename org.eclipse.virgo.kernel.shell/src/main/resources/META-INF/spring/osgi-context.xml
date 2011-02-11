@@ -28,7 +28,9 @@
 	<osgi:reference id="deployer" interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer"/>
 
     <osgi:service ref="modelAccessorHelper" interface="org.eclipse.virgo.kernel.shell.model.helper.RamAccessorHelper" />
-
+    
+    <osgi:reference id="regionDigraph" interface="org.eclipse.virgo.kernel.osgi.region.RegionDigraph" />
+    
 <!-- SERVICES FOR THE TYPE CONVERTERS -->
 
 	<osgi:service ref="longConverter" interface="org.eclipse.virgo.kernel.shell.Converter">

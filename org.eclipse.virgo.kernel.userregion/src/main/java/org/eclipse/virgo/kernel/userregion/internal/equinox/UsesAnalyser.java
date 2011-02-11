@@ -292,7 +292,7 @@ public final class UsesAnalyser {
 
     private final static String stringOf(BundleDescription bundle) {
         StringBuilder sb = new StringBuilder("'");
-        sb.append(bundle.getSymbolicName()).append("_").append(bundle.getVersion()).append("'");
+        sb.append(bundle.getSymbolicName()).append("_").append(bundle.getVersion()).append("[").append(bundle.getBundleId()).append("]").append("'");
         return sb.toString();
     }
 

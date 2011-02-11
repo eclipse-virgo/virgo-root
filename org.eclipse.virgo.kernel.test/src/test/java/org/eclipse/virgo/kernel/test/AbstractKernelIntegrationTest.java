@@ -16,20 +16,16 @@ import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
+import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.framework.SurrogateBundle;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 
 @RunWith(DmKernelTestRunner.class)
-@SuppressWarnings("deprecation")
 public abstract class AbstractKernelIntegrationTest {
     
     protected volatile BundleContext kernelContext;
@@ -45,10 +41,11 @@ public abstract class AbstractKernelIntegrationTest {
             this.framework = this.context.getService(serviceReference);
         }
         
-        Bundle bundle = this.context.getBundle(1);
-        if (bundle instanceof SurrogateBundle) {
-            this.kernelContext = ((SurrogateBundle)bundle).getCompositeBundleContext();
-        }
+        this.kernelContext = getKernelContext();
+    }
+
+    private BundleContext getKernelContext() {
+        return this.context.getBundle(0L).getBundleContext();
     }
 
     @BeforeClass

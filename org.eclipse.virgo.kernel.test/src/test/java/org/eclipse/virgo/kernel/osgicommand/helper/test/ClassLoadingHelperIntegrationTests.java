@@ -56,15 +56,14 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
         // execute initialization code
         super.setup();
 
-        // get osgicommand bundle
-        ServiceReference<PackageAdmin> reference = context.getServiceReference(PackageAdmin.class);
-        PackageAdmin packageAdmin = context.getService(reference);
-        Bundle[] bundles = packageAdmin.getBundles(SHELL_COMMANDS_BUNDLE_NAME, null);
-        assertNotNull("No bundles with symbolic name [" + SHELL_COMMANDS_BUNDLE_NAME + "] found in bundles set " + Arrays.toString(context.getBundles()),
-                      bundles);
-        assertTrue("Found [" + bundles.length + "] bundles with symbolic name [" + SHELL_COMMANDS_BUNDLE_NAME + "] in bundles set " + Arrays.toString(context.getBundles()),
-                   bundles.length == 1);
-        this.shellCommandsBundle = bundles[0];
+        for (Bundle bundle : context.getBundles()) {
+            if (SHELL_COMMANDS_BUNDLE_NAME.equals(bundle.getSymbolicName())) {
+               this.shellCommandsBundle = bundle; 
+            }
+        }
+        
+        assertNotNull("No bundles with symbolic name [" + SHELL_COMMANDS_BUNDLE_NAME + "] found in bundles " + context.getBundles(),
+                      this.shellCommandsBundle);
 
         // get this bundle
         this.currentBundle = context.getBundle();

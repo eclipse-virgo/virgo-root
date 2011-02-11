@@ -36,7 +36,6 @@ public class RegionTests extends AbstractKernelIntegrationTest {
         
         Region userRegion = (Region) this.kernelContext.getService(serviceReferences[0]);
         assertNotNull(userRegion);
-        assertNotNull(userRegion.getBundleContext());
     }
 
     private ServiceReference<?>[] lookupRegionServices(String name) throws InvalidSyntaxException {

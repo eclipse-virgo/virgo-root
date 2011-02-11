@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.userregionfactory;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -18,13 +18,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.ExportedPackage;
-import org.osgi.service.packageadmin.PackageAdmin;
-
-
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -32,6 +25,11 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.DynamicImportPackage;
 import org.eclipse.virgo.util.osgi.manifest.DynamicallyImportedPackage;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.packageadmin.ExportedPackage;
+import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * {@link PackageImportWildcardExpander} expands the wildcards in a string containing the body of an import package
@@ -90,7 +88,7 @@ final class PackageImportWildcardExpander {
         Dictionary<String, String> headers = new Hashtable<String, String>();
         headers.put("DynamicImport-Package", userRegionImportsProperty);
 
-        BundleManifest manifest = BundleManifestFactory.createBundleManifest(headers, new RegionManagerParserLogger(eventLogger));
+        BundleManifest manifest = BundleManifestFactory.createBundleManifest(headers, new UserRegionFactoryParserLogger(eventLogger));
         return manifest.getDynamicImportPackage();
     }
 
