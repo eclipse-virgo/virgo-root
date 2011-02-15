@@ -133,10 +133,7 @@ abstract class AbstractTrackedPackageImports implements TrackedPackageImports {
         Map<String, String> targetAttributes = targetPackageImport.getAttributes();
         Map<String, String> sourceAttributes = sourceImportToMerge.getAttributes();
 
-        mergeVersionRanges(targetPackageImport, sourceImportToMerge);
-
-        mergeBundleVersionRanges(targetPackageImport, sourceImportToMerge);
-
+        // Merge attributes before versions so, for example, conflicting bundle symbolic names take precedence over disjoint bundle version ranges.
         for (Entry<String, String> sourceAttributeEntry : sourceAttributes.entrySet()) {
             String sourceAttributeName = sourceAttributeEntry.getKey();
             if (!isVersionAttribute(sourceAttributeName)) {
@@ -146,13 +143,17 @@ abstract class AbstractTrackedPackageImports implements TrackedPackageImports {
                     if (!targetAttributeValue.equals(sourceAttributeValue)) {
                         throw new ImportMergeException(targetPackageImport.getPackageName(), getPackageSources(targetPackageImport),
                             "conflicting values '" + sourceAttributeValue + "', '" + targetAttributeValue + "' of attribute '" + sourceAttributeName
-                                + "'");
+                            + "'");
                     }
                 } else {
                     targetAttributes.put(sourceAttributeName, sourceAttributeValue);
                 }
             }
         }
+        
+        mergeVersionRanges(targetPackageImport, sourceImportToMerge);
+
+        mergeBundleVersionRanges(targetPackageImport, sourceImportToMerge);
     }
 
     /**
