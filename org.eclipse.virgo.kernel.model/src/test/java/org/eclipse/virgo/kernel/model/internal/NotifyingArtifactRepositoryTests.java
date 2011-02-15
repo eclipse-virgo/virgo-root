@@ -18,16 +18,24 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.osgi.framework.Version;
+
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
 import org.eclipse.virgo.kernel.model.internal.ArtifactRepositoryListener;
 import org.eclipse.virgo.kernel.model.internal.NotifyingRuntimeArtifactRepository;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.Test;
 
 
 public class NotifyingArtifactRepositoryTests {
 
-    private final NotifyingRuntimeArtifactRepository artifactRepository = new NotifyingRuntimeArtifactRepository();
+    private StubBundle stubBundle = new StubBundle("org.eclipse.virgo.kernel", new Version("3.0.0"));
+    
+    private StubBundleContext stubBundleContext = new StubBundleContext(stubBundle);
+    
+    private final NotifyingRuntimeArtifactRepository artifactRepository = new NotifyingRuntimeArtifactRepository(stubBundleContext);
 
     @Test
     public void add() {
@@ -48,7 +56,7 @@ public class NotifyingArtifactRepositoryTests {
     public void listeners() {
         StubArtifactRepositoryListener listener1 = new StubArtifactRepositoryListener(true);
         StubArtifactRepositoryListener listener2 = new StubArtifactRepositoryListener(false);
-        NotifyingRuntimeArtifactRepository artifactRepository = new NotifyingRuntimeArtifactRepository(listener1, listener2);
+        NotifyingRuntimeArtifactRepository artifactRepository = new NotifyingRuntimeArtifactRepository(stubBundleContext, listener1, listener2);
         StubCompositeArtifact artifact = new StubCompositeArtifact();
         artifactRepository.add(artifact);
         artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion());
