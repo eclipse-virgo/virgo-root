@@ -21,7 +21,6 @@
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="lib-kernel->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="lib-kernel->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="lib-kernel->runtime"/>
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.console" rev="${org.eclipse.virgo.osgi}" conf="lib-kernel->runtime"/>
 
 		<!-- repository-ext -->
 		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
