@@ -137,7 +137,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
         return edges;
     }
 
-    private class StandardFilteredRegion implements FilteredRegion {
+    private static class StandardFilteredRegion implements FilteredRegion {
 
         private Region region;
 
