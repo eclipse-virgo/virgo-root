@@ -48,27 +48,24 @@ public final class ModelBundleListenerInitializer {
 
     private final BundleListener bundleListener;
 
-    private final BundleContext systemBundleContext;
-
     public ModelBundleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil,
         @NonNull BundleContext kernelBundleContext, @NonNull BundleContext userRegionBundleContext) {
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
         this.kernelBundleContext = kernelBundleContext;
         this.userRegionBundleContext = userRegionBundleContext;
-        this.systemBundleContext = kernelBundleContext.getBundle(0L).getBundleContext();
         this.bundleListener = new ModelBundleListener(kernelBundleContext, artifactRepository, packageAdminUtil);
     }
 
     /**
      * Registers a {@link BundleListener} with the OSGi framework. Enumerates any existing {@link Bundle}s that exist
-     * from the OSGi framework.
+     * in the user region.
      */
     @PostConstruct
     public void initialize() {
-        // Register the listener with the system bundle to see all bundles.
-        this.systemBundleContext.addBundleListener(this.bundleListener);
-        // Find bundles using the user region context as application bundles are added to the user region.
+        // Register the listener with the user region bundle context to see all bundles in the user region.
+        this.userRegionBundleContext.addBundleListener(this.bundleListener);
+        // Find bundles in the user region as the listener has almost certainly missed their installation.
         for (Bundle bundle : this.userRegionBundleContext.getBundles()) {
             try {
                 this.artifactRepository.add(new BundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle));
@@ -84,6 +81,6 @@ public final class ModelBundleListenerInitializer {
      */
     @PreDestroy
     public void destroy() {
-        this.systemBundleContext.removeBundleListener(this.bundleListener);
+        this.userRegionBundleContext.removeBundleListener(this.bundleListener);
     }
 }
