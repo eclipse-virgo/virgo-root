@@ -15,23 +15,20 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.deployer.test.util.ArtifactLifecycleEvent;
+import org.eclipse.virgo.kernel.deployer.test.util.ArtifactListener;
+import org.eclipse.virgo.kernel.deployer.test.util.TestLifecycleEvent;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
+import org.eclipse.virgo.util.math.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
-
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.util.math.Sets;
 
 /**
  * Test refresh of artifacts in a Par
@@ -180,184 +177,4 @@ public class ParRefreshTests extends AbstractDeployerIntegrationTest {
         }
     }  
     
-    private static enum TestLifecycleEvent {
-        INSTALLED, INSTALLING, RESOLVED, RESOLVING, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNINSTALLING, UNRESOLVED
-    }
-
-    private static class ArtifactLifecycleEvent {
-        public ArtifactLifecycleEvent(TestLifecycleEvent lifecycleEvent, String type, String name, Version version) {
-            this.lifeCycleEvent = lifecycleEvent;
-            this.type = type;
-            this.name = name;
-            this.version = version;
-        }
-        public boolean equals(Object obj) {
-            if (obj instanceof ArtifactLifecycleEvent) {
-                ArtifactLifecycleEvent other = (ArtifactLifecycleEvent) obj;
-                return (this.lifeCycleEvent.equals(other.lifeCycleEvent)
-                    && this.type.equals(other.type)
-                    && this.name.equals(other.name)
-                    && this.version.equals(other.version));
-            }
-            return false;
-        }
-        public int hashCode() {
-            final int prime = 17;
-            int result = this.lifeCycleEvent.hashCode() + prime
-                * (this.name.hashCode() + prime * (this.type.hashCode() + prime * (this.version.hashCode())));
-            return result;
-        }
-        public String toString() {
-            StringBuilder sb = new StringBuilder("[");
-            sb.append(this.lifeCycleEvent).append(", ");
-            sb.append(this.type).append(", ");
-            sb.append(this.name).append(", ");
-            sb.append(this.version).append("]");
-            return sb.toString();
-        }
-        
-        private final TestLifecycleEvent lifeCycleEvent;
-        private final String type;
-        private final String name;
-        private final Version version;
-    }
-    
-    private static class ArtifactListener extends InstallArtifactLifecycleListenerSupport {
-
-        private final Object monitor = new Object();
-        
-        List<ArtifactLifecycleEvent> eventList = new ArrayList<ArtifactLifecycleEvent>();
-        
-        public void clear() {
-            synchronized (this.monitor) {
-                this.eventList.clear();
-            }
-        }        
-        
-        public boolean waitForEvents(final Set<ArtifactLifecycleEvent> expectedEventSet, long timeout) {
-            boolean allReceived = eventsReceived(expectedEventSet);
-            while (!allReceived && timeout>0) {
-                timeout -= 50L;
-                try {
-                    Thread.sleep(50L);
-                } catch (InterruptedException _) {
-                    // do nothing
-                }
-                allReceived = eventsReceived(expectedEventSet);
-            }
-            return allReceived;
-        }
-
-        private boolean eventsReceived(Set<ArtifactLifecycleEvent> eventSet) {
-            synchronized (this.monitor) {
-                for (ArtifactLifecycleEvent event : eventSet) {
-                    if (!this.eventList.contains(event)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        
-        public List<ArtifactLifecycleEvent> extract() {
-            synchronized (this.monitor) {
-                return new ArrayList<ArtifactLifecycleEvent>(this.eventList);
-            }
-        }
-        
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onInstalled(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.INSTALLED, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onInstalling(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.INSTALLING, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onResolved(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.RESOLVED, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onResolving(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.RESOLVING, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onStarted(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.STARTED, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onStarting(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.STARTING, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onStopped(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.STOPPED, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onStopping(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.STOPPING, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onUninstalled(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.UNINSTALLED, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onUninstalling(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.UNINSTALLING, installArtifact);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        @Override
-        public void onUnresolved(InstallArtifact installArtifact) {
-            addEvent(TestLifecycleEvent.UNRESOLVED, installArtifact);
-        }
-
-        private void addEvent(TestLifecycleEvent event, InstallArtifact installArtifact) {
-            synchronized (this.monitor) {
-                this.eventList.add(new ArtifactLifecycleEvent(event, installArtifact.getType(), installArtifact.getName(),
-                    installArtifact.getVersion()));
-            }
-        }
-    }
 }

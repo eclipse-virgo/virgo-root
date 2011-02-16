@@ -73,6 +73,7 @@ final class BundleDriverBundleListener implements SynchronousBundleListener {
                         artifactStateMonitor.onResolved(this.installArtifact);
                         break;
                     case BundleEvent.LAZY_ACTIVATION:
+                        break;
                     case BundleEvent.STARTING:
                         artifactStateMonitor.onStarting(this.installArtifact);
                         break;
