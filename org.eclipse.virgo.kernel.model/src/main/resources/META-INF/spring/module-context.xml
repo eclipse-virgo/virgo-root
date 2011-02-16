@@ -35,6 +35,7 @@
 	</bean>
 
 	<bean id="artifactRepository" class="org.eclipse.virgo.kernel.model.internal.NotifyingRuntimeArtifactRepository">
+		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="artifactRepositoryListener"/>
 	</bean>
 
