@@ -14,21 +14,21 @@
 		<!-- lib/kernel -->	
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="latest.integration" conf="lib-kernel->runtime"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="lib-kernel->runtime"/>
+        <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.userregionfactory" rev="latest.integration" conf="lib-kernel->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="lib-kernel->runtime"/>
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="lib-kernel->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="lib-kernel->runtime"/>
-		<dependency org="org.eclipse.equinox" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="lib-kernel->runtime"/>
-		<dependency org="org.eclipse" name="equinox-ds" rev="latest.integration"/>
-		<dependency org="org.eclipse" name="equinox-util" rev="latest.integration"/>
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.console" rev="${org.eclipse.virgo.osgi}" conf="lib-kernel->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="lib-kernel->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="lib-kernel->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="lib-kernel->runtime"/>
 
 		<!-- repository-ext -->
 		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
 		<dependency org="org.springframework.osgi" name="org.springframework.osgi.extender" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
 		<dependency org="org.springframework.osgi" name="org.springframework.osgi.io" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse" name="equinox-ds" rev="latest.integration"/>
-		<dependency org="org.eclipse" name="equinox-util" rev="latest.integration"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>		
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="repository-ext->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="repository-ext->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>
 		
 		
 		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>

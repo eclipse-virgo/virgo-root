@@ -199,6 +199,7 @@ rem ------------------------------
   set CONFIG_DIR=%KERNEL_HOME%\config
   if not defined TRUSTSTORE_PATH set TRUSTSTORE_PATH=%KERNEL_HOME%\config\keystore
   if not defined TRUSTSTORE_PASSWORD set TRUSTSTORE_PASSWORD=changeit
+  if not defined JMX_PORT set JMX_PORT=9875
   set OTHER_ARGS=
 
   rem Loop through options
@@ -208,6 +209,7 @@ rem ------------------------------
   if "%~1"=="-truststore" goto truststoreStop
   if "%~1"=="-truststorePassword" goto truststorePasswordStop
   if "%~1"=="-configDir" goto configDirStop 
+  if "%~1"=="-jmxport" goto jmxportStop
   
   set OTHER_ARGS=%OTHER_ARGS% "%~1"
     
@@ -235,6 +237,11 @@ rem ------------------------------
     shift
     goto continueStopOptionLoop
 
+  :jmxportStop
+  set JMX_PORT=%~2
+  shift
+  goto continueStopOptionLoop
+
   :endStopOptionLoop
 
   rem Call shutdown client
@@ -242,6 +249,7 @@ rem ------------------------------
     rem Extend JMX options
     set JMX_OPTS=%JMX_OPTS% -Djavax.net.ssl.trustStore="%TRUSTSTORE_PATH%"
     set JMX_OPTS=%JMX_OPTS% -Djavax.net.ssl.trustStorePassword=%TRUSTSTORE_PASSWORD%
+    set OTHER_ARGS=%OTHER_ARGS% -jmxport %JMX_PORT%
 
     rem Marshall parameters
     set SHUTDOWN_PARMS= %JAVA_OPTS% %JMX_OPTS%

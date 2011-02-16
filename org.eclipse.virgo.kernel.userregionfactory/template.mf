@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel User Region Factory
+Bundle-SymbolicName: org.eclipse.virgo.kernel.userregionfactory
+Bundle-Version: 2.2.0
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
+ org.eclipse.osgi.framework.*;version="0",
+ org.eclipse.osgi.service.resolver.*;version="0",
+ org.osgi.framework.*;version="0",
+ org.osgi.service.*;version="0",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}"
+Import-Package: org.aspectj.lang;version="0"
+Bundle-Activator: org.eclipse.virgo.kernel.userregionfactory.Activator
+Excluded-Imports: org.easymock,
+ org.eclipse.virgo.osgi.launcher.*,
+ org.eclipse.virgo.teststubs.*
+Excluded-Exports: *

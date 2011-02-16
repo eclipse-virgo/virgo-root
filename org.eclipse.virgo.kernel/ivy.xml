@@ -25,6 +25,7 @@
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.services" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shell" rev="latest.integration"/>
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.userregionfactory" rev="latest.integration"/>
 	</dependencies>
 
 </ivy-module>

@@ -195,6 +195,11 @@ then
 		TRUSTSTORE_PASSWORD=changeit
 	fi
 
+	if [ -z "$JMX_PORT" ]
+	then
+		JMX_PORT=9875
+	fi
+
 	shopt -s extglob
 
 	while (($# > 0))
@@ -212,6 +217,10 @@ then
 				CONFIG_DIR=$2
 				shift;
 				;;
+		-jmxport)
+				JMX_PORT=$2
+				shift;
+				;;
 		*)
 			OTHER_ARGS+=" $1"
 			;;
@@ -223,6 +232,8 @@ then
 		$JMX_OPTS \
 		-Djavax.net.ssl.trustStore=${TRUSTSTORE_PATH} \
 		-Djavax.net.ssl.trustStorePassword=${TRUSTSTORE_PASSWORD}"
+
+	OTHER_ARGS+=" -jmxport $JMX_PORT"
 
 	$JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
 		-classpath $CLASSPATH \

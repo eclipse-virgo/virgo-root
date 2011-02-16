@@ -81,9 +81,6 @@ public class CoreBundleActivator {
     
     private volatile BundleStartTracker bundleStartTracker;
 
-    /**
-     * {@inheritDoc}
-     */
     public void activate(ComponentContext componentContext) throws Exception {
         BundleContext context = componentContext.getBundleContext();
         
@@ -155,9 +152,6 @@ public class CoreBundleActivator {
         return bundleStarter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void deactivate(ComponentContext context) throws Exception {
         this.tracker.unregisterAll();
         this.startupTracker.stop();

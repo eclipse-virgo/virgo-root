@@ -162,5 +162,10 @@ public class ManifestUpgraderTests {
             throw new UnsupportedOperationException();
         }
 
+        @Override
+        public void destroy() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 }

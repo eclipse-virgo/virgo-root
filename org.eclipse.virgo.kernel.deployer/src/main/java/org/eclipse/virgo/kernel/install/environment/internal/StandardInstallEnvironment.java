@@ -61,4 +61,13 @@ final class StandardInstallEnvironment implements InstallEnvironment {
     public QuasiFramework getQuasiFramework() {
         return this.quasiFramework;
     }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() {
+        this.quasiFramework.destroy();
+    }
+    
 }

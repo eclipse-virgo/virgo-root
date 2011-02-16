@@ -40,9 +40,6 @@ public final class AgentActivator {
     private static final String AGENT_DM_START_TRACKER = "agentDMStartTracker";
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
-    /**
-     * {@inheritDoc}
-     */
     public void activate(ComponentContext context) {
         registerSpringDmToBlueprintEventAdapter(context.getBundleContext());
         context.enableComponent(AGENT_DM_START_TRACKER);
@@ -68,9 +65,6 @@ public final class AgentActivator {
         this.registrationTracker.track(context.registerService(EventHandler.class.getName(), failureListener, props));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void deactivate(ComponentContext context) throws Exception {
         this.registrationTracker.unregisterAll();
     }
