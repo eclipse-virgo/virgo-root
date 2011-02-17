@@ -25,16 +25,16 @@
 	<classpathentry kind="var" path="WEB_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-2.5.0.jar" sourcepath="/WEB_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-sources-2.5.0.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110124-0830/org.eclipse.osgi-3.7.0.v20110124-0830.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110124-0830/org.eclipse.osgi-sources-3.7.0.v20110124-0830.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.web.core"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/3.0.0.D-20110209111851/org.eclipse.virgo.util.math-3.0.0.D-20110209111851.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/3.0.0.M01/org.eclipse.virgo.util.math-3.0.0.M01.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.2.0.M02/org.eclipse.gemini.web.tomcat-1.2.0.M02.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/1.1.0.CI-46/org.eclipse.gemini.web.tomcat-sources-1.1.0.CI-46.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.D-20110216134709/org.eclipse.virgo.kernel.osgi-3.0.0.D-20110216134709.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.D-20110216134709/org.eclipse.virgo.kernel.osgi-sources-3.0.0.D-20110216134709.jar">
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.M01/org.eclipse.virgo.kernel.osgi-3.0.0.M01.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.M01/org.eclipse.virgo.kernel.osgi-sources-3.0.0.M01.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.0.0.D-20110209111851/org.eclipse.virgo.util.io-3.0.0.D-20110209111851.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.0.0.D-20110209111851/org.eclipse.virgo.util.io-sources-3.0.0.D-20110209111851.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110209112443/org.eclipse.virgo.medic-3.0.0.D-20110209112443.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110209112443/org.eclipse.virgo.medic-sources-3.0.0.D-20110209112443.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.D-20110216134709/org.eclipse.virgo.kernel.core-3.0.0.D-20110216134709.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.D-20110216134709/org.eclipse.virgo.kernel.core-sources-3.0.0.D-20110216134709.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.0.0.M01/org.eclipse.virgo.util.io-3.0.0.M01.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.0.0.M01/org.eclipse.virgo.util.io-sources-3.0.0.M01.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.M01/org.eclipse.virgo.medic-3.0.0.M01.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.M01/org.eclipse.virgo.medic-sources-3.0.0.M01.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.M01/org.eclipse.virgo.kernel.core-3.0.0.M01.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.M01/org.eclipse.virgo.kernel.core-sources-3.0.0.M01.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
