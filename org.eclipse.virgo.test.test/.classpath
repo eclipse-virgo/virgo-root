@@ -7,7 +7,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110124-0830/org.eclipse.osgi-3.7.0.v20110124-0830.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110124-0830/org.eclipse.osgi-sources-3.7.0.v20110124-0830.jar"/>
-	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/3.0.0.D-20110209111605/org.eclipse.virgo.osgi.launcher-3.0.0.D-20110209111605.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/3.0.0.D-20110209111605/org.eclipse.virgo.osgi.launcher-sources-3.0.0.D-20110209111605.jar"/>
+	<classpathentry kind="var" path="TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/3.0.0.M01/org.eclipse.virgo.osgi.launcher-3.0.0.M01.jar" sourcepath="/TEST_FRAMEWORK_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/3.0.0.M01/org.eclipse.virgo.osgi.launcher-sources-3.0.0.M01.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.test.framework"/>
 
 	<classpathentry kind="output" path="target/classes"/>
