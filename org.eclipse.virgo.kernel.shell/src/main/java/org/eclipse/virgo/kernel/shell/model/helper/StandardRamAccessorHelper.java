@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.shell.model.helper;
 
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +175,19 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
      * {@inheritDoc}
      */
     public ArtifactAccessor getArtifact(String type, String name, String version) {
+        
+        //TODO work around until 337211 is done
+        if("org.eclipse.virgo.kernel".equals(name)){
+            Map<String, Object> attributes = new TreeMap<String, Object>();
+            attributes.put(TYPE_ATTRIBUTE, "Region");
+            attributes.put(NAME_ATTRIBUTE, name);
+            attributes.put(VERSION_ATTRIBUTE, version);
+            attributes.put(STATE_ATTRIBUTE, "-");    
+            attributes.put("atomic", false);       
+            attributes.put("scoped", false); 
+            return new StandardArtifactAccessor(attributes, new HashMap<String, String>(),  new HashSet<ArtifactAccessorPointer>());
+        }
+        
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
             ObjectName objectName = new ObjectName(String.format(ARTIFACT_MBEAN_QUERY, type, name, version));
@@ -230,8 +244,17 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
             String dependentVersion = objectName.getKeyProperty("version");
 
             ManageableArtifact dependantArtifact = JMX.newMXBeanProxy(mBeanServer, objectName, ManageableArtifact.class);
-            String state = dependantArtifact.getState();
-            
+            String state;
+            if(dependantArtifact != null){
+                //TODO work around until 337211 is done
+                try {
+                    state = dependantArtifact.getState();
+                } catch (Exception e) {
+                    state = "-";
+                }
+            } else {
+                state = "-";
+            }
             if (dependentType != null && dependentName != null && dependentVersion != null) {
                 result = new StandardArtifactAccessorPointer(dependentType, dependentName, dependentVersion, state);
             }
