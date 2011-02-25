@@ -15,9 +15,8 @@ import org.eclipse.osgi.service.resolver.BaseDescription;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.service.resolver.VersionRange;
+import org.osgi.framework.wiring.BundleRequirement;
 
-/**
- */
 public class StubBundleSpecification implements BundleSpecification {
 
     private String name;
@@ -98,6 +97,11 @@ public class StubBundleSpecification implements BundleSpecification {
     
     public void setSupplier(BaseDescription supplier) {
         this.supplier = supplier;
+    }
+
+    @Override
+    public BundleRequirement getRequirement() {
+        throw new UnsupportedOperationException();
     }
 
 }

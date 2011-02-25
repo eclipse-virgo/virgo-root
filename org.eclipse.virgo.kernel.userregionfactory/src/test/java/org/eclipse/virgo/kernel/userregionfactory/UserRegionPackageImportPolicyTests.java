@@ -20,7 +20,7 @@ import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Version;
-import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.BundleRevision;
 
 public class UserRegionPackageImportPolicyTests {
 
@@ -65,7 +65,7 @@ public class UserRegionPackageImportPolicyTests {
 
     private Map<String, Object> createAttributes(String packageName) {
         Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put(Capability.PACKAGE_CAPABILITY, packageName);
+        attributes.put(BundleRevision.PACKAGE_NAMESPACE, packageName);
         return attributes;
     }
 
