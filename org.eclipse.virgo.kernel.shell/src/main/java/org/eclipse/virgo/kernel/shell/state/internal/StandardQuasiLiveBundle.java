@@ -51,7 +51,11 @@ final class StandardQuasiLiveBundle implements QuasiLiveBundle {
     public StandardQuasiLiveBundle(QuasiFramework quasiFramework, QuasiBundle quasiBundle, Bundle osgiBundle) {
         this.quasiFramework = quasiFramework;
         this.quasiBundle = quasiBundle;
-        this.osgiBundle = osgiBundle;
+        if(osgiBundle != null){
+            this.osgiBundle = osgiBundle;
+        } else {
+            this.osgiBundle = new KernelRegionFauxQuasiLiveBundle(quasiBundle.getBundleId(), quasiBundle.getVersion(), quasiBundle.getSymbolicName());
+        }
     }
     
     /** 
