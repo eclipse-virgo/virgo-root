@@ -29,7 +29,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.extender/1.2.1/org.springframework.osgi.extender-1.2.1.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.extender/1.2.1/org.springframework.osgi.extender-sources-1.2.1.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.io/1.2.1/org.springframework.osgi.io-1.2.1.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.io/1.2.1/org.springframework.osgi.io-sources-1.2.1.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110224/org.eclipse.osgi-3.7.0.v20110224.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.0.200809221524/org.eclipse.osgi-3.5.0.200809221524.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110228103235/org.eclipse.virgo.medic-3.0.0.D-20110228103235.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.M02/org.eclipse.virgo.medic-3.0.0.M02.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
