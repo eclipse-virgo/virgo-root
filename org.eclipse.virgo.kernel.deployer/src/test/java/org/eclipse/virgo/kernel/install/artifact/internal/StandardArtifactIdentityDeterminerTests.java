@@ -11,99 +11,97 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.repository.ArtifactBridge;
+import org.eclipse.virgo.repository.ArtifactDescriptor;
+import org.eclipse.virgo.repository.ArtifactGenerationException;
+import org.junit.Test;
+import org.osgi.framework.Version;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Version;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
-import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
-import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
-import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactIdentityDeterminer;
-import org.eclipse.virgo.repository.ArtifactBridge;
-import org.eclipse.virgo.repository.ArtifactDescriptor;
-import org.eclipse.virgo.repository.ArtifactGenerationException;
-
-/**
- */
 public class StandardArtifactIdentityDeterminerTests {
 
-    private ArtifactIdentityDeterminer artifactIdentityDeterminer;
-
-    @Before
-    public void setUp() {
-        this.artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(Collections.<ArtifactBridge>emptySet());
-    }
+    private static final File TEST_FILE = new File("test");
 
     @Test
-    public void testJarFileType() {
-        ArtifactIdentity identity = this.artifactIdentityDeterminer.determineIdentity(new File("test.jar"), null);
-        assertEquals(ArtifactIdentityDeterminer.BUNDLE_TYPE, identity.getType());
-        assertEquals("test", identity.getName());
-        assertEquals(Version.emptyVersion, identity.getVersion());
+    public void identityWithoutBridge() {
+        ArtifactIdentity identity = new StandardArtifactIdentityDeterminer(Collections.<ArtifactBridge>emptySet()).determineIdentity(TEST_FILE, null);
+        assertNull(identity);
     }
 
-    @Test
-    public void testPlanFileType() {
-        ArtifactIdentity identity = this.artifactIdentityDeterminer.determineIdentity(new File("test.plan"), null);
-        assertEquals(ArtifactIdentityDeterminer.PLAN_TYPE, identity.getType());
-        assertEquals("test", identity.getName());
-        assertEquals(Version.emptyVersion, identity.getVersion());
-    }
-
-    @Test
-    public void testPropertiesFileType() {
-        ArtifactIdentity identity = this.artifactIdentityDeterminer.determineIdentity(new File("test.properties"), null);
-        assertEquals(ArtifactIdentityDeterminer.CONFIGURATION_TYPE, identity.getType());
-        assertEquals("test", identity.getName());
-        assertEquals(Version.emptyVersion, identity.getVersion());
-    }
-
-    @Test
-    public void testParFileType() {
-        ArtifactIdentity identity = this.artifactIdentityDeterminer.determineIdentity(new File("test.par"), null);
-        assertEquals(ArtifactIdentityDeterminer.PAR_TYPE, identity.getType());
-        assertEquals("test", identity.getName());
-        assertEquals(Version.emptyVersion, identity.getVersion());
-    }
-
-    @Test
-    public void testWarFileType() {
-        assertNull(this.artifactIdentityDeterminer.determineIdentity(new File("test.war"), null));
-    }
-
-    @Test
-    public void testNoFileType() {
-        assertNull(this.artifactIdentityDeterminer.determineIdentity(new File("test"), null));
-    }
-    
     @Test
     public void identityFromBridge() throws ArtifactGenerationException {
+        ArtifactDescriptor artifactDescriptor = createArtifactDescriptorMock();
+        ArtifactBridge bridge = createArtifactBridgeMock(artifactDescriptor);
+
+        checkIdentityDeterminer(bridge);
+
+        verify(artifactDescriptor, bridge);
+    }
+
+    @Test
+    public void identityFromBridgeThrowingException() throws ArtifactGenerationException {
+        ArtifactDescriptor artifactDescriptor = createArtifactDescriptorMock();
+        ArtifactBridge interestedBridge = createArtifactBridgeMock(artifactDescriptor);
+
+        ArtifactBridge throwingBridge = createMock(ArtifactBridge.class);
+        expect(throwingBridge.generateArtifactDescriptor(new File("test"))).andThrow(new ArtifactGenerationException("Illegal argument"));
+
+        replay(throwingBridge);
+
+        assertNull(new StandardArtifactIdentityDeterminer(new LinkedHashSet<ArtifactBridge>(Arrays.asList(throwingBridge, interestedBridge))).determineIdentity(new File("test"), null));
+    }
+
+    @Test
+    public void identityFromSeveralBridges() throws ArtifactGenerationException {
+        ArtifactDescriptor artifactDescriptor = createArtifactDescriptorMock();
+        ArtifactBridge interestedBridge = createArtifactBridgeMock(artifactDescriptor);
+
+        ArtifactBridge throwingBridge = createMock(ArtifactBridge.class);
+
+        ArtifactBridge uninterestedBridge = createMock(ArtifactBridge.class);
+        expect(uninterestedBridge.generateArtifactDescriptor(TEST_FILE)).andReturn(null);
+
+        replay(throwingBridge, uninterestedBridge);
+
+        checkIdentityDeterminer(uninterestedBridge,  interestedBridge, throwingBridge);
+
+        verify(artifactDescriptor, throwingBridge, interestedBridge, uninterestedBridge);
+    }
+
+    private ArtifactDescriptor createArtifactDescriptorMock() throws ArtifactGenerationException {
         ArtifactDescriptor artifactDescriptor = createMock(ArtifactDescriptor.class);
         expect(artifactDescriptor.getType()).andReturn("foo");
         expect(artifactDescriptor.getName()).andReturn("bar");
-        expect(artifactDescriptor.getVersion()).andReturn(new Version(1,2,3));
-        
+        expect(artifactDescriptor.getVersion()).andReturn(new Version(1, 2, 3));
+
+        replay(artifactDescriptor);
+
+        return artifactDescriptor;
+    }
+
+    private ArtifactBridge createArtifactBridgeMock(ArtifactDescriptor descriptor) throws ArtifactGenerationException {
         ArtifactBridge bridge = createMock(ArtifactBridge.class);
-        expect(bridge.generateArtifactDescriptor(new File("test"))).andReturn(artifactDescriptor);
-        
-        replay(artifactDescriptor, bridge);
-        
-        ArtifactIdentity artifactIdentity = new StandardArtifactIdentityDeterminer(new HashSet<ArtifactBridge>(Arrays.asList(bridge))).determineIdentity(new File("test"), null);
+        expect(bridge.generateArtifactDescriptor(new File("test"))).andReturn(descriptor);
+
+        replay(bridge);
+
+        return bridge;
+    }
+
+    private void checkIdentityDeterminer(ArtifactBridge... bridges) {
+        ArtifactIdentity artifactIdentity = new StandardArtifactIdentityDeterminer(new LinkedHashSet<ArtifactBridge>(Arrays.asList(bridges))).determineIdentity(TEST_FILE, null);
+        assertNotNull(artifactIdentity);
         assertEquals("foo", artifactIdentity.getType());
         assertEquals("bar", artifactIdentity.getName());
-        assertEquals(new Version(1,2,3), artifactIdentity.getVersion());
-        
-        verify(artifactDescriptor, bridge);
+        assertEquals(new Version(1, 2, 3), artifactIdentity.getVersion());
     }
+
 }

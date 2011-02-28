@@ -37,21 +37,21 @@ import org.osgi.framework.Version;
  * Unit tests for {@link org.eclipse.virgo.kernel.artifact.bundle.BundleBridge BundleBridge}. Uses a combination of real bundle files and
  * static test data.
  * </p>
- * 
+ *
  * <strong>Concurrent Semantics</strong><br />
- * 
+ *
  * Threadsafe test case
- * 
+ *
  */
 public class BundleBridgeTests {
-    
+
     //Test Data
-    
+
     private final static String ARTEFACT_ATTRIBUTE_NAME = "name";
 
     private final static String ARTEFACT_ATTRIBUTE_VERSION = "version";
     //End Test Data
-    
+
     private static BundleBridge BUNDLE_BRIDGE;
 
     private static final StubBundleArtefactBridge STUB_ARTEFACT_DEFINITION = new StubBundleArtefactBridge();
@@ -162,7 +162,7 @@ public class BundleBridgeTests {
     public void webBundleWar() throws ArtifactGenerationException {
         ArtifactDescriptor descriptor = BUNDLE_BRIDGE.generateArtifactDescriptor(new File("src/test/resources/wars/test.war"));
         assertNotNull(descriptor);
-        assertEquals("bundle", descriptor.getType());
+        assertEquals(BundleBridge.BRIDGE_TYPE, descriptor.getType());
         assertEquals("com.springsource.server.admin.web", descriptor.getName());
         assertEquals(new Version(2, 0, 0), descriptor.getVersion());
     }
@@ -171,14 +171,32 @@ public class BundleBridgeTests {
     public void explodedBundle() throws ArtifactGenerationException {
         ArtifactDescriptor descriptor = BUNDLE_BRIDGE.generateArtifactDescriptor(new File("src/test/resources/bundle.jar"));
         assertNotNull(descriptor);
-        assertEquals("bundle", descriptor.getType());
+        assertEquals(BundleBridge.BRIDGE_TYPE, descriptor.getType());
         assertEquals("exploded.bundle", descriptor.getName());
         assertEquals(new Version(1, 0, 0), descriptor.getVersion());
     }
 
+    @Test
+    public void noSymbolicName() throws ArtifactGenerationException {
+        ArtifactDescriptor descriptor = BUNDLE_BRIDGE.generateArtifactDescriptor(new File("src/test/resources/jars/no-symbolic-name.jar"));
+        assertNotNull(descriptor);
+        assertEquals(BundleBridge.BRIDGE_TYPE, descriptor.getType());
+        assertEquals("no-symbolic-name", descriptor.getName());
+        assertEquals(new Version(0, 0, 0), descriptor.getVersion());
+    }
+
+    @Test
+    public void noManifest() throws ArtifactGenerationException {
+        ArtifactDescriptor descriptor = BUNDLE_BRIDGE.generateArtifactDescriptor(new File("src/test/resources/jars/no-manifest.jar"));
+        assertNotNull(descriptor);
+        assertEquals(BundleBridge.BRIDGE_TYPE, descriptor.getType());
+        assertEquals("no-manifest", descriptor.getName());
+        assertEquals(Version.emptyVersion, descriptor.getVersion());
+    }
+
     private Set<ArtifactDescriptor> generateArtefacts(File directory) throws ArtifactGenerationException {
         Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
-        
+
         for (File fileInDir : directory.listFiles()) {
             if(!fileInDir.getName().endsWith(".jar") && !fileInDir.getName().contains("sources")){
                 ArtifactDescriptor artefact = BUNDLE_BRIDGE.generateArtifactDescriptor(fileInDir);

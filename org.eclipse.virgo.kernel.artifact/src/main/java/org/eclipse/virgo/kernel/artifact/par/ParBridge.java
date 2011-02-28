@@ -25,16 +25,17 @@ import org.eclipse.virgo.repository.builder.ArtifactDescriptorBuilder;
 import org.eclipse.virgo.repository.builder.AttributeBuilder;
 import org.eclipse.virgo.util.common.StringUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.framework.Version;
 
 /**
  * An <code>ArtifactBridge</code> for PAR files.
- * 
+ *
  * <p />
- * 
+ *
  * <strong>Concurrent Semantics</strong><br />
- * 
+ *
  * Thread-safe.
- * 
+ *
  */
 public final class ParBridge implements ArtifactBridge {
 
@@ -50,6 +51,8 @@ public final class ParBridge implements ArtifactBridge {
 
     public static final String BRIDGE_TYPE = "par";
 
+    public static final String PAR_SUFFIX = ".par";
+
     private final HashGenerator hashGenerator;
 
     public ParBridge(HashGenerator hashGenerator) {
@@ -61,7 +64,7 @@ public final class ParBridge implements ArtifactBridge {
         BundleManifest manifest;
 
         try {
-            manifest = BundleManifestUtils.readBundleManifest(artifactFile, ".par");
+            manifest = BundleManifestUtils.readBundleManifest(artifactFile, PAR_SUFFIX);
         } catch (IOException ioe) {
             throw new ArtifactGenerationException("Failed to read manifest from " + artifactFile, ioe);
         }
@@ -69,8 +72,25 @@ public final class ParBridge implements ArtifactBridge {
         if (manifest != null) {
             return createDescriptorFromManifest(manifest, artifactFile);
         } else {
-            return null;
+            return createDescriptorFromFile(artifactFile);
         }
+    }
+
+    private ArtifactDescriptor createDescriptorFromFile(File artifactFile) throws ArtifactGenerationException {
+        String fileName = artifactFile.getName();
+
+        if (fileName.endsWith(PAR_SUFFIX)) {
+            String symbolicName = fileName.substring(0, fileName.length() - PAR_SUFFIX.length());
+
+            ArtifactDescriptorBuilder builder = new ArtifactDescriptorBuilder();
+            builder.setType(BRIDGE_TYPE).setName(symbolicName).setVersion(Version.emptyVersion).setUri(artifactFile.toURI());
+
+            this.hashGenerator.generateHash(builder, artifactFile);
+
+            return builder.build();
+        }
+
+        return null;
     }
 
     private ArtifactDescriptor createDescriptorFromManifest(BundleManifest manifest, File artifactFile) throws ArtifactGenerationException {
@@ -88,7 +108,7 @@ public final class ParBridge implements ArtifactBridge {
 
         applyAttributeIfPresent(HEADER_APPLICATION_NAME, manifest, builder);
         applyAttributeIfPresent(HEADER_APPLICATION_DESCRIPTION, manifest, builder);
-        
+
         this.hashGenerator.generateHash(builder, artifactFile);
 
         return builder.build();
@@ -102,7 +122,7 @@ public final class ParBridge implements ArtifactBridge {
         }
     }
 
-    private Version getApplicationVersion(BundleManifest manifest) throws ArtifactGenerationException {
+    private Version getApplicationVersion(BundleManifest manifest) {
         String versionString = manifest.getHeader(HEADER_APPLICATION_VERSION);
         Version version;
 
@@ -112,7 +132,7 @@ public final class ParBridge implements ArtifactBridge {
             try {
                 version = new Version(versionString);
             } catch (IllegalArgumentException iae) {
-                throw new ArtifactGenerationException("Version '" + versionString + "' is ill-formed", iae);
+                throw new IllegalArgumentException("Version '" + versionString + "' is ill-formed", iae);
             }
         }
         return version;

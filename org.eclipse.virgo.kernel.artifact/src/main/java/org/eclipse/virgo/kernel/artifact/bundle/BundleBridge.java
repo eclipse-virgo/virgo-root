@@ -40,9 +40,9 @@ import org.eclipse.virgo.util.osgi.manifest.FragmentHost.Extension;
  * either as a JAR file, or a directory.
  * <p />
  * <strong>Concurrent Semantics</strong><br />
- * 
+ *
  * This class is thread-safe
- * 
+ *
  */
 public final class BundleBridge implements ArtifactBridge {
 
@@ -53,9 +53,9 @@ public final class BundleBridge implements ArtifactBridge {
     public static final String RAW_HEADER_PREFIX = "RAW_HEADER:";
 
     public static final String BRIDGE_TYPE = "bundle";
-    
+
     private final HashGenerator hashGenerator;
-    
+
     public BundleBridge(HashGenerator hashGenerator) {
         this.hashGenerator = hashGenerator;
     }
@@ -72,17 +72,47 @@ public final class BundleBridge implements ArtifactBridge {
         BundleManifest bundleManifest;
 
         try {
-            bundleManifest = BundleManifestUtils.readBundleManifest(artifactFile, JAR_SUFFIX, WAR_SUFFIX);            
+            bundleManifest = BundleManifestUtils.readBundleManifest(artifactFile, JAR_SUFFIX, WAR_SUFFIX);
         } catch (RuntimeException re) {
             throw new RuntimeException(String.format("Error occurred while parsing the manifest of file '%s'.", artifactFile.getPath()),  re);
         } catch (Exception e) {
             throw new ArtifactGenerationException("Error occurred while parsing the manifest.", BRIDGE_TYPE, e);
         }
-        
-        if (bundleManifest == null) {
-            return null;
+
+        ArtifactDescriptor descriptor = null;
+
+        if (bundleManifest != null) {
+            descriptor = createArtifactDescriptorFromManifest(artifactFile, bundleManifest);
         }
 
+        if (descriptor == null) {
+            descriptor = createArtifactDescriptorFromFile(artifactFile);
+        }
+
+        return descriptor;
+    }
+
+    private ArtifactDescriptor createArtifactDescriptorFromFile(File artifactFile) {
+        String fileName = artifactFile.getName();
+
+        if (fileName.endsWith(JAR_SUFFIX) || fileName.endsWith(WAR_SUFFIX)) {
+            String name = fileName.substring(0, fileName.length() - JAR_SUFFIX.length());
+
+            ArtifactDescriptorBuilder artifactDescriptorBuilder = new ArtifactDescriptorBuilder();
+            artifactDescriptorBuilder.setUri(artifactFile.toURI());
+            artifactDescriptorBuilder.setName(name);
+            artifactDescriptorBuilder.setType(BRIDGE_TYPE);
+            artifactDescriptorBuilder.setVersion(Version.emptyVersion);
+
+            this.hashGenerator.generateHash(artifactDescriptorBuilder, artifactFile);
+
+            return artifactDescriptorBuilder.build();
+        }
+
+        return null;
+    }
+
+    private ArtifactDescriptor createArtifactDescriptorFromManifest(File artifactFile, BundleManifest bundleManifest) throws ArtifactGenerationException {
         try {
             ArtifactDescriptorBuilder artifactDescriptorBuilder = new ArtifactDescriptorBuilder();
 

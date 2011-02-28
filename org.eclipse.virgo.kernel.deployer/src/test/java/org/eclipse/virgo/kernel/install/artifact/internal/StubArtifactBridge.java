@@ -49,9 +49,12 @@ public class StubArtifactBridge implements ArtifactBridge {
      */
     public ArtifactDescriptor generateArtifactDescriptor(File artifactFile) throws ArtifactGenerationException {
         boolean matched = false;
+        final String fileName = artifactFile.getName();
+
         for(String ending : this.matchs){
-            if(artifactFile.getName().endsWith(ending)){
+            if(fileName.endsWith(ending)){
                 matched = true;
+                break;
             }
         }
         
@@ -59,7 +62,7 @@ public class StubArtifactBridge implements ArtifactBridge {
             return new ArtifactDescriptor() {
                 
                 public Version getVersion() {
-                    return null;
+                    return Version.emptyVersion;
                 }
                 
                 public URI getUri() {
@@ -71,11 +74,11 @@ public class StubArtifactBridge implements ArtifactBridge {
                 }
                 
                 public String getName() {
-                    return null;
+                    return fileName.substring(0, fileName.lastIndexOf('.'));
                 }
                 
                 public String getFilename() {
-                    return null;
+                    return fileName;
                 }
                 
                 public Set<Attribute> getAttributes() {
