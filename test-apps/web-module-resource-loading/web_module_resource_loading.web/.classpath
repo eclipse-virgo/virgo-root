@@ -5,7 +5,7 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110124-0830/org.eclipse.osgi-3.7.0.v20110124-0830.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110124-0830/org.eclipse.osgi-sources-3.7.0.v20110124-0830.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110224/org.eclipse.osgi-3.7.0.v20110224.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110224/org.eclipse.osgi-sources-3.7.0.v20110224.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-2.5.0.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.web/3.0.0.RELEASE/org.springframework.web-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.web.servlet/3.0.0.RELEASE/org.springframework.web.servlet-3.0.0.RELEASE.jar"/>
