@@ -28,11 +28,10 @@ import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.BundleCapability;
 
-/**
- */
 public class StubBundleDescription implements BundleDescription {
 
     private String bsn;
@@ -178,6 +177,11 @@ public class StubBundleDescription implements BundleDescription {
             }
 
             public boolean isSatisfiedBy(BaseDescription supplier) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public BundleRequirement getRequirement() {
                 throw new UnsupportedOperationException();
             }
 
@@ -399,7 +403,7 @@ public class StubBundleDescription implements BundleDescription {
      * {@inheritDoc}
      */
     @Override
-    public List<Capability> getDeclaredCapabilities(String namespace) {
+    public List<BundleCapability> getDeclaredCapabilities(String namespace) {
         throw new UnsupportedOperationException();
     }
     
@@ -447,15 +451,7 @@ public class StubBundleDescription implements BundleDescription {
      * {@inheritDoc}
      */
     @Override
-    public BundleWiring getBundleWiring() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Capability getCapability() {
+    public BundleCapability getCapability() {
         throw new UnsupportedOperationException();
     }
 
@@ -464,6 +460,16 @@ public class StubBundleDescription implements BundleDescription {
      */
     @Override
     public Map<String, Object> getAttributes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<BundleRequirement> getDeclaredRequirements(String namespace) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public BundleWiring getWiring() {
         throw new UnsupportedOperationException();
     }
 

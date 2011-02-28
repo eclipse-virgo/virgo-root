@@ -25,8 +25,9 @@ import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.resolver.ResolverHook;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
-import org.osgi.framework.wiring.Capability;
 
 /**
  * {@link RegionResolverHook} manages the visibility of bundles across regions according to the {@link RegionDigraph}.
@@ -48,7 +49,8 @@ final class RegionResolverHook implements ResolverHook {
     }
 
     @Override
-    public void filterMatches(BundleRevision requirer, Collection<Capability> candidates) {
+    public void filterMatches(BundleRequirement requirement, Collection<BundleCapability> candidates) {
+        BundleRevision requirer = requirement.getRevision();
         try {
             if (DEBUG) {
                 debugEntry(requirer, candidates);
@@ -64,7 +66,7 @@ final class RegionResolverHook implements ResolverHook {
                 return;
             }
 
-            Set<Capability> allowed = getAllowed(requirerRegion, candidates, new HashSet<Region>());
+            Set<BundleCapability> allowed = getAllowed(requirerRegion, candidates, new HashSet<Region>());
 
             candidates.retainAll(allowed);
         } finally {
@@ -101,8 +103,8 @@ final class RegionResolverHook implements ResolverHook {
         return INVALID_BUNDLE_ID;
     }
 
-    private Set<Capability> getAllowed(Region r, Collection<Capability> candidates, Set<Region> path) {
-        Set<Capability> allowed = new HashSet<Capability>();
+    private Set<BundleCapability> getAllowed(Region r, Collection<BundleCapability> candidates, Set<Region> path) {
+        Set<BundleCapability> allowed = new HashSet<BundleCapability>();
 
         if (!path.contains(r)) {
             allowPackagesInRegion(allowed, r, candidates);
@@ -112,17 +114,17 @@ final class RegionResolverHook implements ResolverHook {
         return allowed;
     }
 
-    private void allowImportedPackages(Set<Capability> allowed, Region r, Collection<Capability> candidates, Set<Region> path) {
+    private void allowImportedPackages(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            Set<Capability> a = getAllowed(fr.getRegion(), candidates, extendPath(r, path));
+            Set<BundleCapability> a = getAllowed(fr.getRegion(), candidates, extendPath(r, path));
             filter(a, fr.getFilter());
             allowed.addAll(a);
         }
     }
 
-    private void allowPackagesInRegion(Set<Capability> allowed, Region r, Collection<Capability> candidates) {
-        for (Capability b : candidates) {
-            if (r.equals(getRegion(b.getProviderRevision()))) {
+    private void allowPackagesInRegion(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates) {
+        for (BundleCapability b : candidates) {
+            if (r.equals(getRegion(b.getRevision()))) {
                 allowed.add(b);
             }
         }
@@ -134,19 +136,19 @@ final class RegionResolverHook implements ResolverHook {
         return newPath;
     }
 
-    private void filter(Set<Capability> capabilities, RegionFilter filter) {
+    private void filter(Set<BundleCapability> capabilities, RegionFilter filter) {
         RegionPackageImportPolicy packageImportPolicy = filter.getPackageImportPolicy();
-        Iterator<Capability> i = capabilities.iterator();
+        Iterator<BundleCapability> i = capabilities.iterator();
         while (i.hasNext()) {
-            Capability c = i.next();
+            BundleCapability c = i.next();
             String namespace = c.getNamespace();
-            if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                if (!packageImportPolicy.isImported((String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY), c.getAttributes(),
+            if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
+                if (!packageImportPolicy.isImported((String) c.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE), c.getAttributes(),
                     c.getDirectives())) {
                     i.remove();
                 }
             } else {
-                BundleRevision providerRevision = c.getProviderRevision();
+                BundleRevision providerRevision = c.getRevision();
                 if (!filter.isBundleAllowed(providerRevision.getSymbolicName(), providerRevision.getVersion())) {
                     i.remove();
                 }
@@ -173,49 +175,49 @@ final class RegionResolverHook implements ResolverHook {
     }
 
     @Override
-    public void filterSingletonCollisions(Capability singleton, Collection<Capability> collisionCandidates) {
+    public void filterSingletonCollisions(BundleCapability singleton, Collection<BundleCapability> collisionCandidates) {
         collisionCandidates.clear(); //XXX temporary hack in lieu of Borislav's changes
     }
 
-    private void debugEntry(BundleRevision requirer, Collection<Capability> candidates) {
+    private void debugEntry(BundleRevision requirer, Collection<BundleCapability> candidates) {
         System.out.println("Requirer: " + requirer.getSymbolicName() + "_" + requirer.getVersion() + "[" + getBundleId(requirer) + "]");
         System.out.println("  Candidates: ");
-        Iterator<Capability> i = candidates.iterator();
+        Iterator<BundleCapability> i = candidates.iterator();
         while (i.hasNext()) {
-            Capability c = i.next();
+            BundleCapability c = i.next();
             String namespace = c.getNamespace();
-            if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                BundleRevision providerRevision = c.getProviderRevision();
-                String pkg = (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY);
+            if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
+                BundleRevision providerRevision = c.getRevision();
+                String pkg = (String) c.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE);
                 System.out.println("    Package " + pkg + " from provider " + providerRevision.getSymbolicName() + "_"
                     + providerRevision.getVersion() + "[" + getBundleId(providerRevision) + "]");
                 if (pkg.equals("slow")) {
                     System.out.println(">>> put breakpoint here <<<");
                 }
             } else {
-                BundleRevision providerRevision = c.getProviderRevision();
+                BundleRevision providerRevision = c.getRevision();
                 System.out.println("    Bundle from provider " + providerRevision.getSymbolicName() + "_" + providerRevision.getVersion() + "["
                     + getBundleId(providerRevision) + "]");
             }
         }
     }
 
-    private void debugExit(BundleRevision requirer, Collection<Capability> candidates) {
+    private void debugExit(BundleRevision requirer, Collection<BundleCapability> candidates) {
         System.out.println("  Filtered candidates: ");
-        Iterator<Capability> i = candidates.iterator();
+        Iterator<BundleCapability> i = candidates.iterator();
         while (i.hasNext()) {
-            Capability c = i.next();
+            BundleCapability c = i.next();
             String namespace = c.getNamespace();
-            if (Capability.PACKAGE_CAPABILITY.equals(namespace)) {
-                BundleRevision providerRevision = c.getProviderRevision();
-                String pkg = (String) c.getAttributes().get(Capability.PACKAGE_CAPABILITY);
+            if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
+                BundleRevision providerRevision = c.getRevision();
+                String pkg = (String) c.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE);
                 System.out.println("    Package " + pkg + " from provider " + providerRevision.getSymbolicName() + "_"
                     + providerRevision.getVersion() + "[" + getBundleId(providerRevision) + "]");
                 if (pkg.equals("slow")) {
                     System.out.println(">>> put breakpoint here <<<");
                 }
             } else {
-                BundleRevision providerRevision = c.getProviderRevision();
+                BundleRevision providerRevision = c.getRevision();
                 System.out.println("    Bundle from provider " + providerRevision.getSymbolicName() + "_" + providerRevision.getVersion() + "["
                     + getBundleId(providerRevision) + "]");
             }

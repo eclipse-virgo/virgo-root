@@ -16,10 +16,8 @@ import java.util.Map;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.osgi.framework.Version;
-import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.BundleCapability;
 
-/**
- */
 public class StubExportPackageDescription extends StubParameterised implements ExportPackageDescription {
 
     private String name;
@@ -100,7 +98,7 @@ public class StubExportPackageDescription extends StubParameterised implements E
      * {@inheritDoc}
      */
     @Override
-    public Capability getCapability() {
+    public BundleCapability getCapability() {
         throw new UnsupportedOperationException();
     }
 

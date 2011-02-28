@@ -16,18 +16,8 @@ import java.util.Map;
 import org.eclipse.osgi.service.resolver.BaseDescription;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Version;
-import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.BundleCapability;
 
-
-/**
- * TODO Document StubBaseDescription
- * <p />
- *
- * <strong>Concurrent Semantics</strong><br />
- *
- * TODO Document concurrent semantics of StubBaseDescription
- *
- */
 public class StubBaseDescription implements BaseDescription {
 
     private BundleDescription supplier;
@@ -80,7 +70,7 @@ public class StubBaseDescription implements BaseDescription {
      * {@inheritDoc}
      */
     @Override
-    public Capability getCapability() {
+    public BundleCapability getCapability() {
         throw new UnsupportedOperationException();
     }
 

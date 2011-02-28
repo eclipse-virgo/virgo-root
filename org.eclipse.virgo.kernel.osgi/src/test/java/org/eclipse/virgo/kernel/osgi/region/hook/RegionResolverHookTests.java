@@ -36,8 +36,10 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.resolver.ResolverHook;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
-import org.osgi.framework.wiring.Capability;
+import org.osgi.framework.wiring.BundleWiring;
 
 public class RegionResolverHookTests {
 
@@ -81,7 +83,7 @@ public class RegionResolverHookTests {
 
     private Map<String, Bundle> bundles;
 
-    private Collection<Capability> candidates;
+    private Collection<BundleCapability> candidates;
 
     private ThreadLocal<Region> threadLocal;
 
@@ -96,7 +98,7 @@ public class RegionResolverHookTests {
         stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
         this.resolverHook = new RegionResolverHook(this.digraph);
-        this.candidates = new HashSet<Capability>();
+        this.candidates = new HashSet<BundleCapability>();
 
         // Create regions A, B, C, D containing bundles A, B, C, D, respectively.
         createRegion(REGION_A, BUNDLE_A);
@@ -115,14 +117,14 @@ public class RegionResolverHookTests {
     @Test
     public void testResolveInSameRegion() {
         this.candidates.add(packageCapability(BUNDLE_A, PACKAGE_A));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_A, PACKAGE_A)));
     }
 
     @Test
     public void testResolveInDisconnectedRegion() {
         this.candidates.add(packageCapability(BUNDLE_B, PACKAGE_B));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertFalse(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
     }
 
@@ -132,7 +134,7 @@ public class RegionResolverHookTests {
         region(REGION_A).connectRegion(region(REGION_B), filter);
 
         this.candidates.add(packageCapability(BUNDLE_B, PACKAGE_B));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
     }
 
@@ -142,7 +144,7 @@ public class RegionResolverHookTests {
         region(REGION_A).connectRegion(region(REGION_B), filter);
 
         this.candidates.add(bundleCapability(BUNDLE_B));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(bundleCapability(BUNDLE_B)));
     }
 
@@ -154,7 +156,7 @@ public class RegionResolverHookTests {
 
         this.candidates.add(packageCapability(BUNDLE_B, PACKAGE_B));
         this.candidates.add(packageCapability(BUNDLE_X, PACKAGE_X));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
         assertFalse(this.candidates.contains(packageCapability(BUNDLE_X, PACKAGE_X)));
     }
@@ -168,7 +170,7 @@ public class RegionResolverHookTests {
 
         this.candidates.add(bundleCapability(BUNDLE_B));
         this.candidates.add(bundleCapability(BUNDLE_X));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(bundleCapability(BUNDLE_B)));
         assertFalse(this.candidates.contains(bundleCapability(BUNDLE_X)));
     }
@@ -182,7 +184,7 @@ public class RegionResolverHookTests {
         this.candidates.add(packageCapability(BUNDLE_B, PACKAGE_B));
         this.candidates.add(packageCapability(BUNDLE_C, PACKAGE_C));
         this.candidates.add(packageCapability(BUNDLE_X, PACKAGE_X));
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_C, PACKAGE_C)));
         assertFalse(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
         assertFalse(this.candidates.contains(packageCapability(BUNDLE_X, PACKAGE_X)));
@@ -217,7 +219,7 @@ public class RegionResolverHookTests {
         this.candidates.add(packageCapability(BUNDLE_D, PACKAGE_D));
         this.candidates.add(packageCapability(BUNDLE_X, PACKAGE_X));
 
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_A), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_A), this.candidates);
         assertEquals(2, this.candidates.size());
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_D, PACKAGE_D)));
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_X, PACKAGE_X)));
@@ -228,7 +230,7 @@ public class RegionResolverHookTests {
         this.candidates.add(packageCapability(BUNDLE_D, PACKAGE_D));
         this.candidates.add(packageCapability(BUNDLE_X, PACKAGE_X));
 
-        this.resolverHook.filterMatches(bundleRevision(BUNDLE_B), this.candidates);
+        this.resolverHook.filterMatches(bundleRequirement(BUNDLE_B), this.candidates);
         assertEquals(3, this.candidates.size());
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_B, PACKAGE_B)));
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_D, PACKAGE_D)));
@@ -240,7 +242,7 @@ public class RegionResolverHookTests {
         this.candidates.add(packageCapability(BUNDLE_A, PACKAGE_A));
 
         Bundle stubBundle = new StubBundle(0L, "sys", BUNDLE_VERSION, "");
-        this.resolverHook.filterMatches(new StubBundleRevision(stubBundle), this.candidates);
+        this.resolverHook.filterMatches(new StubBundleRequirement(stubBundle), this.candidates);
         assertEquals(1, this.candidates.size());
         assertTrue(this.candidates.contains(packageCapability(BUNDLE_A, PACKAGE_A)));
     }
@@ -250,7 +252,7 @@ public class RegionResolverHookTests {
         this.candidates.add(packageCapability(BUNDLE_A, PACKAGE_A));
 
         Bundle stranger = createBundle("stranger");
-        this.resolverHook.filterMatches(new StubBundleRevision(stranger), this.candidates);
+        this.resolverHook.filterMatches(new StubBundleRequirement(stranger), this.candidates);
         assertEquals(0, this.candidates.size());
     }
 
@@ -260,11 +262,11 @@ public class RegionResolverHookTests {
         this.resolverHook.end();
     }
 
-    private Capability packageCapability(final String bundleSymbolicName, String packageName) {
+    private BundleCapability packageCapability(final String bundleSymbolicName, String packageName) {
         return new StubPackageCapability(bundleSymbolicName, packageName);
     }
 
-    private Capability bundleCapability(String bundleSymbolicName) {
+    private BundleCapability bundleCapability(String bundleSymbolicName) {
         return new StubBundleCapability(bundleSymbolicName);
     }
 
@@ -310,9 +312,9 @@ public class RegionResolverHookTests {
         this.bundles.put(bundleSymbolicName, stubBundle);
         return stubBundle;
     }
-
-    private BundleRevision bundleRevision(String bundleSymbolicName) {
-        return new StubBundleRevision(bundle(bundleSymbolicName));
+    
+    private BundleRequirement bundleRequirement(String bundleSymbolicName) {
+        return new StubBundleRequirement(bundle(bundleSymbolicName));
     }
 
     private Bundle bundle(String bundleSymbolicName) {
@@ -320,7 +322,7 @@ public class RegionResolverHookTests {
         return bundleA;
     }
 
-    private final class StubPackageCapability implements Capability {
+    private final class StubPackageCapability implements BundleCapability {
 
         private final String bundleSymbolicName;
 
@@ -333,7 +335,7 @@ public class RegionResolverHookTests {
 
         @Override
         public String getNamespace() {
-            return Capability.PACKAGE_CAPABILITY;
+            return BundleRevision.PACKAGE_NAMESPACE;
         }
 
         @Override
@@ -344,12 +346,12 @@ public class RegionResolverHookTests {
         @Override
         public Map<String, Object> getAttributes() {
             HashMap<String, Object> attributes = new HashMap<String, Object>();
-            attributes.put(Capability.PACKAGE_CAPABILITY, this.packageName);
+            attributes.put(BundleRevision.PACKAGE_NAMESPACE, this.packageName);
             return attributes;
         }
 
         @Override
-        public BundleRevision getProviderRevision() {
+        public BundleRevision getRevision() {
             return new StubBundleRevision(bundle(this.bundleSymbolicName));
         }
 
@@ -401,7 +403,7 @@ public class RegionResolverHookTests {
 
     }
 
-    private final class StubBundleCapability implements Capability {
+    private final class StubBundleCapability implements BundleCapability {
 
         private final String bundleSymbolicName;
 
@@ -411,7 +413,7 @@ public class RegionResolverHookTests {
 
         @Override
         public String getNamespace() {
-            return Capability.BUNDLE_CAPABILITY;
+            return BundleRevision.BUNDLE_NAMESPACE;
         }
 
         @Override
@@ -426,7 +428,7 @@ public class RegionResolverHookTests {
         }
 
         @Override
-        public BundleRevision getProviderRevision() {
+        public BundleRevision getRevision() {
             return new StubBundleRevision(bundle(this.bundleSymbolicName));
         }
 
@@ -463,6 +465,41 @@ public class RegionResolverHookTests {
         }
 
     }
+    
+    private final class StubBundleRequirement implements BundleRequirement {
+        
+        private final StubBundleRevision bundleRevision;
+
+        private StubBundleRequirement(Bundle bundle) {
+            this.bundleRevision = new StubBundleRevision(bundle);
+        }
+
+        @Override
+        public String getNamespace() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Map<String, String> getDirectives() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public BundleRevision getRevision() {
+            return this.bundleRevision;
+        }
+
+        @Override
+        public boolean matches(BundleCapability capability) {
+            throw new UnsupportedOperationException();
+        }
+        
+    }
 
     private final class StubBundleRevision implements BundleRevision {
 
@@ -488,12 +525,22 @@ public class RegionResolverHookTests {
         }
 
         @Override
-        public List<Capability> getDeclaredCapabilities(String namespace) {
+        public List<BundleCapability> getDeclaredCapabilities(String namespace) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         public int getTypes() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<BundleRequirement> getDeclaredRequirements(String namespace) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public BundleWiring getWiring() {
             throw new UnsupportedOperationException();
         }
 
