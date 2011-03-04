@@ -160,27 +160,11 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
     }
 
     private void pollUntilInDeploymentIdentities(String type, String name, String version) throws InterruptedException {
-        long start = System.currentTimeMillis();
-
-        while (!isInDeploymentIdentities(type, name, version)) {
-            long delta = System.currentTimeMillis() - start;
-            if (delta > 60000) {
-                fail("Deployment identity was not available within 60 seconds");
-            }
-            Thread.sleep(100);
-        }
+        ConfigurationTestUtils.pollUntilInDeploymentIdentities(appDeployer, type, name, version);
     }
 
     private void pollUntilNotInDeploymentIdentities(String type, String name, String version) throws InterruptedException {
-        long start = System.currentTimeMillis();
-
-        while (isInDeploymentIdentities(type, name, version)) {
-            long delta = System.currentTimeMillis() - start;
-            if (delta > 60000) {
-                fail("Deployment identity was still available after 60 seconds");
-            }
-            Thread.sleep(100);
-        }
+        ConfigurationTestUtils.pollUntilNotInDeploymentIdentities(appDeployer, type, name, version);
     }
 
     @SuppressWarnings("unchecked")
@@ -206,40 +190,18 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
     }
 
     private boolean isInDeploymentIdentities(DeploymentIdentity deploymentIdentity) {
-        boolean found = false;
-        for (DeploymentIdentity id : this.appDeployer.getDeploymentIdentities()) {
-            if (deploymentIdentity.equals(id)) {
-                found = true;
-            }
-        }
-        return found;
-    }
-
-    private boolean isInDeploymentIdentities(String type, String name, String version) {
-        for (DeploymentIdentity id : this.appDeployer.getDeploymentIdentities()) {
-            if (id.getType().equals(type) && id.getSymbolicName().equals(name) && id.getVersion().equals(version)) {
-                return true;
-            }
-        }
-        return false;
+        return ConfigurationTestUtils.isInDeploymentIdentities(appDeployer, deploymentIdentity);
     }
 
     private boolean isInConfigurationAdmin() throws IOException, InvalidSyntaxException {
-        Configuration[] configurations = this.configAdmin.listConfigurations(null);
-        for (Configuration configuration : configurations) {
-            if ("t".equals(configuration.getPid())) {
-                return true;
-            }
-        }
-
-        return false;
+        return ConfigurationTestUtils.isInConfigurationAdmin(configAdmin, "t");
     }
 
     @SuppressWarnings("unchecked")
     private void checkConfigAvailable() throws IOException, InvalidSyntaxException, InterruptedException {
-	// Allow asynchronous delivery of configuration events to complete
-	Thread.sleep(100);
-	
+        // Allow asynchronous delivery of configuration events to complete
+        Thread.sleep(100);
+
         long start = System.currentTimeMillis();
 
         while (!isInConfigurationAdmin()) {
@@ -257,9 +219,9 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
     }
 
     private void checkConfigUnavailable() throws IOException, InvalidSyntaxException, InterruptedException {
-	// Allow asynchronous delivery of configuration events to complete
-	Thread.sleep(100);
-	
+        // Allow asynchronous delivery of configuration events to complete
+        Thread.sleep(100);
+
         assertFalse(isInConfigurationAdmin());
     }
 
