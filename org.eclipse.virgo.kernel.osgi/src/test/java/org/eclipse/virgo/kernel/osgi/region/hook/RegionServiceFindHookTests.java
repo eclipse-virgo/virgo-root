@@ -15,15 +15,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
@@ -35,7 +36,8 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Filter;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.service.FindHook;
@@ -93,7 +95,13 @@ public class RegionServiceFindHookTests {
         stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.threadLocal = new ThreadLocal<Region>();
         this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
-        this.bundleFindHook = new RegionServiceFindHook(this.digraph);
+        org.osgi.framework.hooks.bundle.FindHook mockFindHook = new org.osgi.framework.hooks.bundle.FindHook() {
+			@Override
+			public void find(BundleContext context, Collection<Bundle> bundles) {
+				return;
+			}
+		};
+        this.bundleFindHook = new RegionServiceFindHook(this.digraph, mockFindHook);
         this.candidates = new HashSet<ServiceReference<?>>();
 
         // Create regions A, B, C, D containing bundles A, B, C, D, respectively.
@@ -242,38 +250,20 @@ public class RegionServiceFindHookTests {
     }
 
     private RegionFilter createFilter(final String... referenceNames) {
-        RegionFilter filter = new StandardRegionFilter();
-        Filter f = new Filter() {
-
-            @Override
-            public boolean match(ServiceReference<?> reference) {
-                for (String referenceName : referenceNames) {
-                    if (reference.getBundle().getSymbolicName().equals(referenceName)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean match(Dictionary<String, ?> dictionary) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public boolean matchCase(Dictionary<String, ?> dictionary) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public boolean matches(Map<String, ?> map) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-        };
-        filter.setServiceFilter(f);
+        RegionFilter filter = new RegionFilter();
+        if (referenceNames.length == 0)
+        	return filter;
+        Collection<String> filters = new ArrayList<String>(referenceNames.length);
+        for (String referenceName : referenceNames) {
+            StringBuilder builder = new StringBuilder();
+            builder.append('(').append(Constants.OBJECTCLASS).append('=').append(referenceName).append(')');
+            filters.add(builder.toString());
+        }
+       	try {
+			filter.setFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE, filters);
+		} catch (InvalidSyntaxException e) {
+			Assert.fail(e.getMessage());
+		}
         return filter;
     }
 
@@ -286,7 +276,7 @@ public class RegionServiceFindHookTests {
 
     private StubServiceReference<Object> createServiceReference(Bundle stubBundle, String referenceName) {
         StubServiceRegistration<Object> stubServiceRegistration = new StubServiceRegistration<Object>(
-            (StubBundleContext) stubBundle.getBundleContext(), Object.class.getName());
+            (StubBundleContext) stubBundle.getBundleContext(), referenceName);
         StubServiceReference<Object> stubServiceReference = new StubServiceReference<Object>(stubServiceRegistration);
         this.serviceReferences.put(referenceName, stubServiceReference);
         return stubServiceReference;

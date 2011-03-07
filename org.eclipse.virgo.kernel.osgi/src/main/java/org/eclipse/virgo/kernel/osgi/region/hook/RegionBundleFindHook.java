@@ -11,9 +11,14 @@
 
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
@@ -22,6 +27,7 @@ import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.FindHook;
 
 /**
@@ -96,7 +102,7 @@ public final class RegionBundleFindHook implements FindHook {
         Iterator<Bundle> i = bundles.iterator();
         while (i.hasNext()) {
             Bundle b = i.next();
-            if (!filter.isBundleAllowed(b.getSymbolicName(), b.getVersion())) {
+            if (!filter.isBundleAllowed(b)) {
                 i.remove();
             }
         }
@@ -111,5 +117,4 @@ public final class RegionBundleFindHook implements FindHook {
         }
         return null;
     }
-
 }

@@ -21,7 +21,6 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.resolver.ResolverHook;
@@ -107,14 +106,14 @@ final class RegionResolverHook implements ResolverHook {
         Set<BundleCapability> allowed = new HashSet<BundleCapability>();
 
         if (!path.contains(r)) {
-            allowPackagesInRegion(allowed, r, candidates);
-            allowImportedPackages(allowed, r, candidates, path);
+            allowCapabilitiesInRegion(allowed, r, candidates);
+            allowImportedCapabilities(allowed, r, candidates, path);
         }
 
         return allowed;
     }
 
-    private void allowImportedPackages(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates, Set<Region> path) {
+    private void allowImportedCapabilities(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
             Set<BundleCapability> a = getAllowed(fr.getRegion(), candidates, extendPath(r, path));
             filter(a, fr.getFilter());
@@ -122,7 +121,7 @@ final class RegionResolverHook implements ResolverHook {
         }
     }
 
-    private void allowPackagesInRegion(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates) {
+    private void allowCapabilitiesInRegion(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates) {
         for (BundleCapability b : candidates) {
             if (r.equals(getRegion(b.getRevision()))) {
                 allowed.add(b);
@@ -137,23 +136,11 @@ final class RegionResolverHook implements ResolverHook {
     }
 
     private void filter(Set<BundleCapability> capabilities, RegionFilter filter) {
-        RegionPackageImportPolicy packageImportPolicy = filter.getPackageImportPolicy();
         Iterator<BundleCapability> i = capabilities.iterator();
         while (i.hasNext()) {
             BundleCapability c = i.next();
-            String namespace = c.getNamespace();
-            if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
-                if (!packageImportPolicy.isImported((String) c.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE), c.getAttributes(),
-                    c.getDirectives())) {
-                    i.remove();
-                }
-            } else {
-                BundleRevision providerRevision = c.getRevision();
-                if (!filter.isBundleAllowed(providerRevision.getSymbolicName(), providerRevision.getVersion())) {
-                    i.remove();
-                }
-
-            }
+            if (!filter.isCapabilityAllowed(c))
+            	i.remove();
         }
     }
 

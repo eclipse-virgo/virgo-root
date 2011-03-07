@@ -15,25 +15,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.util.osgi.VersionRange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.resolver.ResolverHook;
 import org.osgi.framework.wiring.BundleCapability;
@@ -285,25 +288,34 @@ public class RegionResolverHookTests {
     }
 
     private RegionFilter createFilter(final String... packageNames) {
-        RegionFilter filter = new StandardRegionFilter();
-        filter.setPackageImportPolicy(new RegionPackageImportPolicy() {
+        RegionFilter filter = new RegionFilter();
+        if (packageNames.length == 0)
+        	return filter;
+        Collection<String> filters = new ArrayList<String>(packageNames.length);
+        for (String pkg : packageNames) {
+            StringBuilder builder = new StringBuilder();
+       		builder.append('(').append(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).append('=').append(pkg).append(')');
+       		filters.add(builder.toString());
+        }
 
-            @Override
-            public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
-                for (String pkg : packageNames) {
-                    if (packageName.equals(pkg)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+        try {
+			filter.setFilters(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filters);
+		} catch (InvalidSyntaxException e) {
+			Assert.fail(e.getMessage());
+		}
         return filter;
     }
 
     private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) {
-        RegionFilter filter = new StandardRegionFilter();
-        filter.allowBundle(bundleSymbolicName, new VersionRange(bundleVersion.toString()));
+        RegionFilter filter = new RegionFilter();
+        StringBuilder builder = new StringBuilder();
+        builder.append("(&(").append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(bundleSymbolicName).append(')');
+        builder.append('(').append(Constants.BUNDLE_VERSION_ATTRIBUTE).append(">=").append(bundleVersion).append("))");
+        try {
+			filter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(builder.toString()));
+		} catch (InvalidSyntaxException e) {
+			Assert.fail(e.getMessage());
+		}
         return filter;
     }
 

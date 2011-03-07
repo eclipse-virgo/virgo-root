@@ -15,24 +15,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.util.osgi.VersionRange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.FindHook;
 
@@ -233,10 +235,20 @@ public class RegionBundleFindHookTests {
     }
 
     private RegionFilter createFilter(String... bundleSymbolicNames) {
-        RegionFilter filter = new StandardRegionFilter();
+        RegionFilter filter = new RegionFilter();
+        if (bundleSymbolicNames.length == 0)
+        	return filter;
+        Collection<String> filters = new ArrayList<String>(bundleSymbolicNames.length);
         for (String bundleSymbolicName : bundleSymbolicNames) {
-            filter.allowBundle(bundleSymbolicName, new VersionRange(BUNDLE_VERSION.toString()));
+            StringBuilder builder = new StringBuilder();
+        	builder.append('(').append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(bundleSymbolicName).append(')');
+        	filters.add(builder.toString());
         }
+       	try {
+			filter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filters);
+		} catch (InvalidSyntaxException e) {
+			Assert.fail(e.getMessage());
+		}
         return filter;
     }
 

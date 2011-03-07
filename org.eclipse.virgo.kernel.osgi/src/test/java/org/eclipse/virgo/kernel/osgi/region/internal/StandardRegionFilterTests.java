@@ -17,16 +17,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.easymock.EasyMock;
+import java.util.Arrays;
+
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.Filter;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleRevision;
 
 public class StandardRegionFilterTests {
 
@@ -36,49 +38,56 @@ public class StandardRegionFilterTests {
 
     private RegionFilter regionFilter;
 
-    private Filter mockFilter;
 
-    private RegionPackageImportPolicy packageImportPolicy;
+    private StubBundle stubBundle;
+    private String packageImportPolicy = "(" + BundleRevision.PACKAGE_NAMESPACE + "=*)";
+    private String serviceImportPolicy = "(" + Constants.SERVICE_ID + "=*)";
 
     @Before
     public void setUp() throws Exception {
-        this.regionFilter = new StandardRegionFilter();
-        this.mockFilter = EasyMock.createMock(Filter.class);
-        this.packageImportPolicy = EasyMock.createMock(RegionPackageImportPolicy.class);
+        this.regionFilter = new RegionFilter();
+        this.stubBundle = new StubBundle(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
     }
 
     @After
     public void tearDown() throws Exception {
     }
 
+    private void addBundleFilter(String bundleSymbolicName, Version bundleVersion) throws InvalidSyntaxException {
+    	String filter = "(&(" + 
+				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + bundleSymbolicName + ")(" +
+				Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + bundleVersion;
+		regionFilter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter));
+
+	}
+
     @Test
-    public void testAllowBundle() {
-        this.regionFilter.allowBundle(BUNDLE_SYMBOLIC_NAME, VersionRange.NATURAL_NUMBER_RANGE);
-        assertTrue(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
+    public void testAllowBundle() throws InvalidSyntaxException {
+        addBundleFilter(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
+        assertTrue(this.regionFilter.isBundleAllowed(stubBundle));
     }
-    
-    @Test
+
+	@Test
     public void testBundleNotAllowed() {
-        assertFalse(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
+        assertFalse(this.regionFilter.isBundleAllowed(stubBundle));
     }
 
     @Test
-    public void testBundleNotAllowedInRange() {
-        this.regionFilter.allowBundle(BUNDLE_SYMBOLIC_NAME, new VersionRange("1"));
-
-        assertFalse(this.regionFilter.isBundleAllowed(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION));
+    public void testBundleNotAllowedInRange() throws InvalidSyntaxException {
+        addBundleFilter(BUNDLE_SYMBOLIC_NAME, new Version(1,0,0));
+        assertFalse(this.regionFilter.isBundleAllowed(stubBundle));
     }
 
     @Test
-    public void testSetPackageImportPolicy() {
-        this.regionFilter.setPackageImportPolicy(this.packageImportPolicy);
-        assertEquals(this.packageImportPolicy, this.regionFilter.getPackageImportPolicy());
+    public void testSetPackageImportPolicy() throws InvalidSyntaxException {
+		this.regionFilter.setFilters(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
+        assertEquals(Arrays.asList(this.packageImportPolicy), this.regionFilter.getFilters(RegionFilter.VISIBLE_PACKAGE_NAMESPACE));
     }
 
     @Test
-    public void testSetServiceFilter() {
-        this.regionFilter.setServiceFilter(this.mockFilter);
-        assertEquals(this.mockFilter, this.regionFilter.getServiceFilter());
+    public void testSetServiceFilter() throws InvalidSyntaxException {
+        this.regionFilter.setFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE, Arrays.asList(serviceImportPolicy));
+        assertEquals(Arrays.asList(this.packageImportPolicy), this.regionFilter.getFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE));
     }
 
 }

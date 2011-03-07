@@ -19,13 +19,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.util.math.OrderedPair;
@@ -34,6 +35,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 
 public class StandardRegionDigraphTests {
@@ -68,25 +71,22 @@ public class StandardRegionDigraphTests {
         this.mockRegion3 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion3.getName()).andReturn("mockRegion3").anyTimes();
 
-        this.regionFilter1 = EasyMock.createMock(RegionFilter.class);
-        this.regionFilter2 = EasyMock.createMock(RegionFilter.class);
+        this.regionFilter1 = new RegionFilter();
+        this.regionFilter2 = new RegionFilter();
         this.mockBundle = EasyMock.createMock(Bundle.class);
     }
 
-    private void setDefaultMockFilters() {
-        setMockFilterAllowedBundles(this.regionFilter1);
-        setMockFilterAllowedBundles(this.regionFilter2);
+    private void setDefaultMockFilters() throws InvalidSyntaxException {
+        this.regionFilter1.removeFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE);
+        this.regionFilter2.removeFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE);
     }
 
-    private void setMockFilterAllowedBundles(RegionFilter regionFilter) {
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.isA(String.class), EasyMock.isA(Version.class))).andReturn(false).anyTimes();
-    }
 
-    private void setMockFilterAllowedBundle(RegionFilter regionFilter, OrderedPair<String, Version> bundle) {
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.eq(bundle.getFirst()), EasyMock.eq(bundle.getSecond()))).andReturn(true).anyTimes();
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.not(EasyMock.eq(bundle.getFirst())), EasyMock.eq(bundle.getSecond()))).andReturn(false).anyTimes();
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.eq(bundle.getFirst()), EasyMock.not(EasyMock.eq(bundle.getSecond())))).andReturn(false).anyTimes();
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.not(EasyMock.eq(bundle.getFirst())), EasyMock.not(EasyMock.eq(bundle.getSecond())))).andReturn(false).anyTimes();
+    private void setMockFilterAllowedBundle(RegionFilter regionFilter, OrderedPair<String, Version> bundle) throws InvalidSyntaxException {
+   		String filter = "(&(" + 
+				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + bundle.getFirst() + ")(" +
+				Constants.BUNDLE_VERSION_ATTRIBUTE + "=" + bundle.getSecond();
+		regionFilter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter));
     }
 
     private void replayMocks() {
@@ -99,7 +99,7 @@ public class StandardRegionDigraphTests {
     }
 
     @Test
-    public void testConnect() throws BundleException {
+    public void testConnect() throws BundleException, InvalidSyntaxException {
         setDefaultMockFilters();
         replayMocks();
 
@@ -107,7 +107,7 @@ public class StandardRegionDigraphTests {
     }
 
     @Test
-    public void testConnectWithFilterContents() throws BundleException {
+    public void testConnectWithFilterContents() throws BundleException, InvalidSyntaxException {
         OrderedPair<String, Version> b1 = new OrderedPair<String, Version>("b1", new Version("0"));
         setMockFilterAllowedBundle(this.regionFilter1, b1);
         EasyMock.expect(this.mockRegion1.getBundle(b1.getFirst(), b1.getSecond())).andReturn(null).anyTimes();
@@ -123,7 +123,7 @@ public class StandardRegionDigraphTests {
     }
 
     @Test(expected = BundleException.class)
-    public void testConnectLoop() throws BundleException {
+    public void testConnectLoop() throws BundleException, InvalidSyntaxException {
         setDefaultMockFilters();
         replayMocks();
 
@@ -131,7 +131,7 @@ public class StandardRegionDigraphTests {
     }
 
     @Test(expected = BundleException.class)
-    public void testDuplicateConnection() throws BundleException {
+    public void testDuplicateConnection() throws BundleException, InvalidSyntaxException {
         setDefaultMockFilters();
         replayMocks();
 
@@ -140,7 +140,7 @@ public class StandardRegionDigraphTests {
     }
 
     @Test
-    public void testGetEdges() throws BundleException {
+    public void testGetEdges() throws BundleException, InvalidSyntaxException {
         setDefaultMockFilters();
         replayMocks();
 
@@ -164,7 +164,7 @@ public class StandardRegionDigraphTests {
     }
 
     @Test
-    public void testRemoveRegion() throws BundleException {
+    public void testRemoveRegion() throws BundleException, InvalidSyntaxException {
         setDefaultMockFilters();
         replayMocks();
 
@@ -178,7 +178,7 @@ public class StandardRegionDigraphTests {
     }
     
     @Test
-    public void testGetRegions() throws BundleException {
+    public void testGetRegions() throws BundleException, InvalidSyntaxException {
         setDefaultMockFilters();
         replayMocks();
         

@@ -95,7 +95,7 @@ final class RegionManager {
 
         registerBundleEventHook(new RegionBundleEventHook(regionDigraph, bundleFindHook, this.threadLocal));
 
-        RegionServiceFindHook serviceFindHook = new RegionServiceFindHook(regionDigraph);
+        RegionServiceFindHook serviceFindHook = new RegionServiceFindHook(regionDigraph, bundleFindHook);
 
         registerServiceFindHook(serviceFindHook);
 

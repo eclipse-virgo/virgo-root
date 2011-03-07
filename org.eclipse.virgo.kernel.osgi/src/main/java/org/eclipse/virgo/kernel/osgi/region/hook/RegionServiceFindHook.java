@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,9 +38,11 @@ import org.osgi.framework.hooks.service.FindHook;
 public final class RegionServiceFindHook implements FindHook {
 
     private final RegionDigraph regionDigraph;
+    private final org.osgi.framework.hooks.bundle.FindHook bundleFindHook;
 
-    public RegionServiceFindHook(RegionDigraph regionDigraph) {
+    public RegionServiceFindHook(RegionDigraph regionDigraph, org.osgi.framework.hooks.bundle.FindHook bundleFindHook) {
         this.regionDigraph = regionDigraph;
+        this.bundleFindHook = bundleFindHook;
     }
 
     /**
@@ -58,6 +61,16 @@ public final class RegionServiceFindHook implements FindHook {
         }
 
         Set<ServiceReference<?>> allowed = getAllowed(finderRegion, references, new HashSet<Region>());
+        Collection<Bundle> registrant = new ArrayList<Bundle>(1);
+        for (ServiceReference<?> reference : references) {
+        	if (allowed.contains(reference))
+        		continue;
+        	registrant.clear();
+        	registrant.add(reference.getBundle());
+        	bundleFindHook.find(context, registrant);
+        	if (!registrant.isEmpty())
+        		allowed.add(reference);
+		}
 
         references.retainAll(allowed);
     }
@@ -67,13 +80,13 @@ public final class RegionServiceFindHook implements FindHook {
 
         if (!path.contains(r)) {
             allowServiceReferencesInRegion(allowed, r, references);
-            allowImportedBundles(allowed, r, references, path);
+            allowImportedServices(allowed, r, references, path);
         }
 
         return allowed;
     }
 
-    private void allowImportedBundles(Set<ServiceReference<?>> allowed, Region r, Collection<ServiceReference<?>> references, Set<Region> path) {
+    private void allowImportedServices(Set<ServiceReference<?>> allowed, Region r, Collection<ServiceReference<?>> references, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
             Set<ServiceReference<?>> a = getAllowed(fr.getRegion(), references, extendPath(r, path));
             filter(a, fr.getFilter());
@@ -96,11 +109,10 @@ public final class RegionServiceFindHook implements FindHook {
     }
 
     private void filter(Set<ServiceReference<?>> references, RegionFilter filter) {
-        Filter serviceFilter = filter.getServiceFilter();
         Iterator<ServiceReference<?>> i = references.iterator();
         while (i.hasNext()) {
             ServiceReference<?> sr = i.next();
-            if (!serviceFilter.match(sr)) {
+            if (!filter.isServiceAllowed(sr)) {
                 i.remove();
             }
         }
