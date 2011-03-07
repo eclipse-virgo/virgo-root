@@ -436,6 +436,7 @@ public class RegionResolverHookTests {
         @Override
         public Map<String, Object> getAttributes() {
             HashMap<String, Object> attributes = new HashMap<String, Object>();
+            attributes.put(BundleRevision.BUNDLE_NAMESPACE, bundleSymbolicName);
             return attributes;
         }
 
