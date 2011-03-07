@@ -101,7 +101,7 @@ public class RegionFilter {
     	HashMap<String, Object> attrs = new HashMap<String, Object>(3);
     	String bsn = bundle.getSymbolicName();
     	if (bsn != null)
-    		attrs.put(org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME_ATTRIBUTE, bsn);
+    		attrs.put(VISIBLE_BUNDLE_NAMESPACE, bsn);
     	attrs.put(org.osgi.framework.Constants.BUNDLE_VERSION_ATTRIBUTE, bundle.getVersion());
     	return isBundleAllowed(attrs);
     }
@@ -116,7 +116,7 @@ public class RegionFilter {
     	HashMap<String, Object> attrs = new HashMap<String, Object>(3);
     	String bsn = bundle.getSymbolicName();
     	if (bsn != null)
-    		attrs.put(org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME_ATTRIBUTE, bsn);
+    		attrs.put(VISIBLE_BUNDLE_NAMESPACE, bsn);
     	attrs.put(org.osgi.framework.Constants.BUNDLE_VERSION_ATTRIBUTE, bundle.getVersion());
     	return isBundleAllowed(attrs);
     }

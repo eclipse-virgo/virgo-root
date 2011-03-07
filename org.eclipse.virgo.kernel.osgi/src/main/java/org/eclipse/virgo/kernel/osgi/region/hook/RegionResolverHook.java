@@ -139,7 +139,7 @@ final class RegionResolverHook implements ResolverHook {
         Iterator<BundleCapability> i = capabilities.iterator();
         while (i.hasNext()) {
             BundleCapability c = i.next();
-            if (!filter.isCapabilityAllowed(c))
+            if (!filter.isCapabilityAllowed(c) && !filter.isBundleAllowed(c.getRevision()))
             	i.remove();
         }
     }
