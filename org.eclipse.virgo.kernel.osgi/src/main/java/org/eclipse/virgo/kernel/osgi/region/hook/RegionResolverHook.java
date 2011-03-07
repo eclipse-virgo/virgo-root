@@ -141,18 +141,17 @@ final class RegionResolverHook implements ResolverHook {
         Iterator<BundleCapability> i = capabilities.iterator();
         while (i.hasNext()) {
             BundleCapability c = i.next();
-            String namespace = c.getNamespace();
-            if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
-                if (!packageImportPolicy.isImported((String) c.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE), c.getAttributes(),
-                    c.getDirectives())) {
-                    i.remove();
+            BundleRevision providerRevision = c.getRevision();
+            if (!filter.isBundleAllowed(providerRevision.getSymbolicName(), providerRevision.getVersion())) {
+                String namespace = c.getNamespace();
+                if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
+                    if (!packageImportPolicy.isImported((String) c.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE), c.getAttributes(),
+                        c.getDirectives())) {
+                        i.remove();
+                    }
+                } else {
+                        i.remove();
                 }
-            } else {
-                BundleRevision providerRevision = c.getRevision();
-                if (!filter.isBundleAllowed(providerRevision.getSymbolicName(), providerRevision.getVersion())) {
-                    i.remove();
-                }
-
             }
         }
     }
@@ -176,7 +175,7 @@ final class RegionResolverHook implements ResolverHook {
 
     @Override
     public void filterSingletonCollisions(BundleCapability singleton, Collection<BundleCapability> collisionCandidates) {
-        collisionCandidates.clear(); //XXX temporary hack in lieu of Borislav's changes
+        collisionCandidates.clear(); // XXX temporary hack in lieu of Borislav's changes
     }
 
     private void debugEntry(BundleRevision requirer, Collection<BundleCapability> candidates) {
