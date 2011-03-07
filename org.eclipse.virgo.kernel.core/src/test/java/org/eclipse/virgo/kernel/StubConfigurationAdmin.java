@@ -14,14 +14,15 @@ package org.eclipse.virgo.kernel;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-
 public class StubConfigurationAdmin implements ConfigurationAdmin {
-    
+
+    private final AtomicInteger factoryConfigurationCounter = new AtomicInteger(0);
     private final Map<String, Configuration> configurations = new HashMap<String, Configuration>();
 
     public Configuration createFactoryConfiguration(String arg0) throws IOException {
@@ -29,7 +30,8 @@ public class StubConfigurationAdmin implements ConfigurationAdmin {
     }
 
     public Configuration createFactoryConfiguration(String arg0, String arg1) throws IOException {
-        throw new UnsupportedOperationException();
+        final String pid = arg0 + "-" + System.currentTimeMillis() + "-" + factoryConfigurationCounter.incrementAndGet();
+        return getConfiguration(pid, arg1, arg0);
     }
 
     public Configuration getConfiguration(String arg0) throws IOException {
@@ -37,15 +39,22 @@ public class StubConfigurationAdmin implements ConfigurationAdmin {
     }
 
     public Configuration getConfiguration(String pid, String location) throws IOException {
-        Configuration configuration = this.configurations.get(pid);
-        if (configuration == null) {
-            configuration = new StubConfiguration();
-            configurations.put(pid, configuration);
-        }        
-        return configuration;
+        return getConfiguration(pid, location, null);
     }
 
     public Configuration[] listConfigurations(String arg0) throws IOException, InvalidSyntaxException {
-        throw new UnsupportedOperationException();
+        if (arg0 == null) {
+            return configurations.values().toArray(new Configuration[configurations.values().size()]);
+        }
+        throw new UnsupportedOperationException("only support 'null' filter in stub");
+    }
+
+    private Configuration getConfiguration(String pid, String location, String factoryPid) {
+        Configuration configuration = this.configurations.get(pid);
+        if (configuration == null) {
+            configuration = new StubConfiguration(pid, factoryPid);
+            configurations.put(pid, configuration);
+        }
+        return configuration;
     }
 }

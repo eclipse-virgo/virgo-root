@@ -23,6 +23,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.IterableEnumeration;
+import org.eclipse.virgo.util.common.StringUtils;
 
 /**
  * <code>ConfigurationPublisher</code>, publishes kernel configuration to {@link ConfigurationAdmin}.
@@ -64,7 +65,7 @@ final class ConfigurationPublisher {
 
     @SuppressWarnings("unchecked")
     private void populateConfigurationWithProperties(@NonNull String pid, @NonNull Properties properties) throws IOException {
-        Configuration config = this.configAdmin.getConfiguration(pid, null);
+        Configuration config = getConfiguration(pid, properties);
 
         Dictionary configProperties = config.getProperties();
         if (configProperties == null) {
@@ -77,6 +78,23 @@ final class ConfigurationPublisher {
         }
 
         config.update(configProperties);
+    }
+
+    /**
+     * @param pid
+     * @param properties
+     * @return
+     * @throws IOException 
+     */
+    private Configuration getConfiguration(String pid, Properties properties) throws IOException {
+        Configuration result = null;
+        String factoryPid = properties.getProperty(ConfigurationAdmin.SERVICE_FACTORYPID);
+        if (StringUtils.hasText(factoryPid)) {
+            result = this.configAdmin.createFactoryConfiguration(factoryPid, null);
+        } else {
+            result = this.configAdmin.getConfiguration(pid, null);
+        }
+        return result;
     }
 
 }

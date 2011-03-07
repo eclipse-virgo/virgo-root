@@ -13,7 +13,10 @@ package org.eclipse.virgo.kernel.config.internal;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -23,7 +26,6 @@ import org.eclipse.virgo.kernel.config.internal.ConfigurationPublisher;
 import org.eclipse.virgo.kernel.config.internal.PropertiesSource;
 import org.junit.Test;
 import org.osgi.service.cm.Configuration;
-
 
 /**
  */
@@ -78,7 +80,7 @@ public class ConfigurationPublisherTests {
 
         Configuration configuration = configAdmin.getConfiguration(pidOne, null);
         assertConfigurationEquals(configuration, propertiesOne);
-        
+
         configuration = configAdmin.getConfiguration(pidTwo, null);
         assertConfigurationEquals(configuration, propertiesTwo);
 
@@ -117,6 +119,33 @@ public class ConfigurationPublisherTests {
         assertEquals("bar", configuration.getProperties().get("foo"));
         assertEquals("boo", configuration.getProperties().get("bar"));
         assertEquals("bof", configuration.getProperties().get("boo"));
+    }
+
+    @Test
+    public void testPublicationIncludingFactoryConfigurations() throws Exception {
+        File[] dirs = new File[] { new File("src/test/resources/UserConfigurationPropertiesSourceTests")};
+
+        UserConfigurationPropertiesSource source = new UserConfigurationPropertiesSource(dirs);
+
+        StubConfigurationAdmin configAdmin = new StubConfigurationAdmin();
+
+        ConfigurationPublisher publisher = new ConfigurationPublisher(configAdmin, source);
+        publisher.publishConfigurations();
+
+        // make sure nothing broke on the way here and file name based pids still work
+        Configuration three = configAdmin.getConfiguration("three", null);
+        assertConfigurationEquals(three, source.getConfigurationProperties().get("three"));
+
+        // check on factories
+        List<Configuration> factories = new ArrayList<Configuration>();
+        Configuration[] all = configAdmin.listConfigurations(null);
+        for (Configuration c : all) {
+            if ("factory.pid".equals(c.getFactoryPid())) {
+                factories.add(c);
+            }
+        }
+
+        assertEquals(2, factories.size());
     }
 
     private void assertConfigurationEquals(Configuration configuration, Properties properties) {
