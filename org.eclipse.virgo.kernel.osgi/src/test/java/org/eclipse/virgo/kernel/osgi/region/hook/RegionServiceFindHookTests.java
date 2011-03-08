@@ -95,13 +95,7 @@ public class RegionServiceFindHookTests {
         stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.threadLocal = new ThreadLocal<Region>();
         this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
-        org.osgi.framework.hooks.bundle.FindHook mockFindHook = new org.osgi.framework.hooks.bundle.FindHook() {
-			@Override
-			public void find(BundleContext context, Collection<Bundle> bundles) {
-				return;
-			}
-		};
-        this.bundleFindHook = new RegionServiceFindHook(this.digraph, mockFindHook);
+        this.bundleFindHook = new RegionServiceFindHook(this.digraph);
         this.candidates = new HashSet<ServiceReference<?>>();
 
         // Create regions A, B, C, D containing bundles A, B, C, D, respectively.
