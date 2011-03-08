@@ -56,7 +56,7 @@ public class StandardRegionFilterTests {
     private void addBundleFilter(String bundleSymbolicName, Version bundleVersion) throws InvalidSyntaxException {
     	String filter = "(&(" + 
 				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + bundleSymbolicName + ")(" +
-				Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + bundleVersion;
+				Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + bundleVersion + "))";
 		regionFilter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter));
 
 	}
@@ -87,7 +87,7 @@ public class StandardRegionFilterTests {
     @Test
     public void testSetServiceFilter() throws InvalidSyntaxException {
         this.regionFilter.setFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE, Arrays.asList(serviceImportPolicy));
-        assertEquals(Arrays.asList(this.packageImportPolicy), this.regionFilter.getFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE));
+        assertEquals(Arrays.asList(serviceImportPolicy), this.regionFilter.getFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE));
     }
 
 }

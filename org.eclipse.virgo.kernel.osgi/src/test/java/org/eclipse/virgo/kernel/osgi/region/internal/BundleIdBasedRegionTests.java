@@ -79,7 +79,7 @@ public class BundleIdBasedRegionTests {
         this.mockRegion = EasyMock.createMock(Region.class);
         this.mockRegion2 = EasyMock.createMock(Region.class);
 
-        this.mockRegionFilter = EasyMock.createMock(RegionFilter.class);
+        this.mockRegionFilter = new RegionFilter();
 
         this.regionIterator = new Iterator<Region>() {
 
@@ -103,12 +103,12 @@ public class BundleIdBasedRegionTests {
     }
 
     private void replayMocks() {
-        EasyMock.replay(this.mockBundleContext, this.mockBundle, this.mockRegion, this.mockRegion2, this.mockRegionFilter, this.mockGraph);
+        EasyMock.replay(this.mockBundleContext, this.mockBundle, this.mockRegion, this.mockRegion2, this.mockGraph);
     }
 
     @After
     public void tearDown() throws Exception {
-        EasyMock.verify(this.mockBundleContext, this.mockBundle, this.mockRegion, this.mockRegion2, this.mockRegionFilter, this.mockGraph);
+        EasyMock.verify(this.mockBundleContext, this.mockBundle, this.mockRegion, this.mockRegion2, this.mockGraph);
     }
 
     @Test

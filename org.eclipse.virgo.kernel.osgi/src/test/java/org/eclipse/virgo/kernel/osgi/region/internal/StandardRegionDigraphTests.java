@@ -85,17 +85,17 @@ public class StandardRegionDigraphTests {
     private void setMockFilterAllowedBundle(RegionFilter regionFilter, OrderedPair<String, Version> bundle) throws InvalidSyntaxException {
    		String filter = "(&(" + 
 				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + bundle.getFirst() + ")(" +
-				Constants.BUNDLE_VERSION_ATTRIBUTE + "=" + bundle.getSecond();
+				Constants.BUNDLE_VERSION_ATTRIBUTE + "=" + bundle.getSecond() + "))";
 		regionFilter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter));
     }
 
     private void replayMocks() {
-        EasyMock.replay(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.regionFilter1, this.regionFilter2, this.mockBundle);
+        EasyMock.replay(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.mockBundle);
     }
 
     @After
     public void tearDown() throws Exception {
-        EasyMock.verify(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.regionFilter1, this.regionFilter2, this.mockBundle);
+        EasyMock.verify(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.mockBundle);
     }
 
     @Test
