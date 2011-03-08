@@ -38,11 +38,9 @@ import org.osgi.framework.hooks.service.FindHook;
 public final class RegionServiceFindHook implements FindHook {
 
     private final RegionDigraph regionDigraph;
-    private final org.osgi.framework.hooks.bundle.FindHook bundleFindHook;
 
-    public RegionServiceFindHook(RegionDigraph regionDigraph, org.osgi.framework.hooks.bundle.FindHook bundleFindHook) {
+    public RegionServiceFindHook(RegionDigraph regionDigraph) {
         this.regionDigraph = regionDigraph;
-        this.bundleFindHook = bundleFindHook;
     }
 
     /**
@@ -61,16 +59,6 @@ public final class RegionServiceFindHook implements FindHook {
         }
 
         Set<ServiceReference<?>> allowed = getAllowed(finderRegion, references, new HashSet<Region>());
-        Collection<Bundle> registrant = new ArrayList<Bundle>(1);
-        for (ServiceReference<?> reference : references) {
-        	if (allowed.contains(reference))
-        		continue;
-        	registrant.clear();
-        	registrant.add(reference.getBundle());
-        	bundleFindHook.find(context, registrant);
-        	if (!registrant.isEmpty())
-        		allowed.add(reference);
-		}
 
         references.retainAll(allowed);
     }
@@ -112,7 +100,7 @@ public final class RegionServiceFindHook implements FindHook {
         Iterator<ServiceReference<?>> i = references.iterator();
         while (i.hasNext()) {
             ServiceReference<?> sr = i.next();
-            if (!filter.isServiceAllowed(sr)) {
+            if (!filter.isServiceAllowed(sr) && !filter.isBundleAllowed(sr.getBundle())) {
                 i.remove();
             }
         }
