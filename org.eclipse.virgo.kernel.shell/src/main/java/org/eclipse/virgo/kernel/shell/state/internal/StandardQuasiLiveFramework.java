@@ -43,7 +43,7 @@ final class StandardQuasiLiveFramework implements QuasiFramework {
     
     private final QuasiFramework quasiFramework;
     
-    private final BundleContext bundleContext;
+    private final BundleContext systemBundleContext;
 
     /**
      * Takes in the {@link QuasiFramework} to be decorated with the extra functionality 
@@ -54,7 +54,7 @@ final class StandardQuasiLiveFramework implements QuasiFramework {
      */
     public StandardQuasiLiveFramework(QuasiFramework quasiFramework, BundleContext bundleContext) {
         this.quasiFramework = quasiFramework;
-        this.bundleContext = bundleContext;
+        this.systemBundleContext = bundleContext.getBundle(0L).getBundleContext();
     }
 
     /** 
@@ -65,7 +65,7 @@ final class StandardQuasiLiveFramework implements QuasiFramework {
         if(quasiBundle == null){
             return null;
         }
-        Bundle rawBundle = this.bundleContext.getBundle(bundleId);
+        Bundle rawBundle = this.systemBundleContext.getBundle(bundleId);
         return new StandardQuasiLiveBundle(this, quasiBundle, rawBundle);
     }
 
@@ -78,7 +78,7 @@ final class StandardQuasiLiveFramework implements QuasiFramework {
         Bundle rawBundle;
         
         for(QuasiBundle quasiBundle : quasiBundles){
-            rawBundle = this.bundleContext.getBundle(quasiBundle.getBundleId());
+            rawBundle = this.systemBundleContext.getBundle(quasiBundle.getBundleId());
             quasiLiveBundles.add(new StandardQuasiLiveBundle(this, quasiBundle, rawBundle));
         }
         

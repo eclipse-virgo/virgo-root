@@ -20,6 +20,7 @@ import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
@@ -42,9 +43,12 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
 
     private final RuntimeArtifactRepository artifactRepository;
 
-    public BundleDependencyDeterminer(@NonNull QuasiFrameworkFactory quasiFrameworkFactory, @NonNull RuntimeArtifactRepository artifactRepository) {
+    private final PackageAdminUtil packageAdminUtil;
+
+    public BundleDependencyDeterminer(@NonNull QuasiFrameworkFactory quasiFrameworkFactory, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.artifactRepository = artifactRepository;
+        this.packageAdminUtil = packageAdminUtil;
     }
 
     /**
@@ -62,7 +66,11 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
             QuasiExportPackage provider = importPackage.getProvider();
             if (provider != null) {
                 QuasiBundle bundle = provider.getExportingBundle();
-                artifacts.add(artifactRepository.getArtifact(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion()));
+                Artifact artifact = artifactRepository.getArtifact(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion());
+                if (artifact == null) {
+                    artifact = new QuasiBundleArtifact(bundle, this.packageAdminUtil);
+                }
+                artifacts.add(artifact);
             }
         }
 

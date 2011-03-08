@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +44,8 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
 
     private final List<ArtifactRepositoryListener> listeners;
 
-    private final KernelRegionBundle kernelRegionBundle;
-    
-    public NotifyingRuntimeArtifactRepository(BundleContext bundleContext, ArtifactRepositoryListener... listeners) {
+    public NotifyingRuntimeArtifactRepository(ArtifactRepositoryListener... listeners) {
         this.listeners = Arrays.asList(listeners);
-        this.kernelRegionBundle = new KernelRegionBundle(bundleContext.getBundle().getVersion());
     }
 
     /**
@@ -110,7 +106,7 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
                     return artifact;
                 }
             }
-            return this.kernelRegionBundle;
+            return null;
         }
     }
 

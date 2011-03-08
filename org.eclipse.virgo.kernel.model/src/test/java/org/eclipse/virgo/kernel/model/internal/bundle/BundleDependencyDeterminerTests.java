@@ -28,6 +28,7 @@ import org.eclipse.virgo.kernel.model.internal.bundle.BundleDependencyDeterminer
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.junit.Test;
 
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
@@ -37,17 +38,24 @@ public class BundleDependencyDeterminerTests {
     private final QuasiFrameworkFactory quasiFrameworkFactory = createMock(QuasiFrameworkFactory.class);
 
     private final RuntimeArtifactRepository artifactRepository = new StubArtifactRepository();
+    
+    private final PackageAdminUtil packageAdminUtil = createMock(PackageAdminUtil.class);
 
-    private final BundleDependencyDeterminer determiner = new BundleDependencyDeterminer(quasiFrameworkFactory, artifactRepository);
+    private final BundleDependencyDeterminer determiner = new BundleDependencyDeterminer(quasiFrameworkFactory, artifactRepository, packageAdminUtil);
 
     @Test(expected = FatalAssertionException.class)
     public void nullFactory() {
-        new BundleDependencyDeterminer(null, artifactRepository);
+        new BundleDependencyDeterminer(null, artifactRepository, packageAdminUtil);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullRepository() {
-        new BundleDependencyDeterminer(quasiFrameworkFactory, null);
+        new BundleDependencyDeterminer(quasiFrameworkFactory, null, packageAdminUtil);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullPackageAdminUtil() {
+        new BundleDependencyDeterminer(quasiFrameworkFactory, artifactRepository, null);
     }
 
     @Test
