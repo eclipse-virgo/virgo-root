@@ -18,10 +18,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.osgi.internal.resolver.StateImpl;
@@ -52,6 +56,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
@@ -68,6 +73,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 final class StandardQuasiFramework implements QuasiFramework {
+    public final RegionFilter TOP;
 
     private static final String REGION_LOCATION_DELIMITER = "@";
 
@@ -110,7 +116,14 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
         Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDigraph) {
-        this.bundleContext = bundleContext;
+    	Map<String, Collection<String>> all = new HashMap<String, Collection<String>>();
+    	all.put(RegionFilter.VISIBLE_ALL_NAMESPACE, Arrays.asList(RegionFilter.ALL));
+    	try {
+			TOP = regionDigraph.createRegionFilter(all);
+		} catch (InvalidSyntaxException e) {
+			throw new RuntimeException(e);
+		}
+    	this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
         this.detective = detective;
@@ -156,8 +169,8 @@ final class StandardQuasiFramework implements QuasiFramework {
             if (this.coregion == null) {
                 try {
                     this.coregion = this.regionDigraph.createRegion(this.userRegion.getName() + COREGION_SUFFIX);
-                    this.userRegion.connectRegion(this.coregion, RegionFilter.TOP);
-                    this.coregion.connectRegion(this.userRegion, RegionFilter.TOP);
+                    this.userRegion.connectRegion(this.coregion, TOP);
+                    this.coregion.connectRegion(this.userRegion, TOP);
                 } catch (BundleException e) {
                     // should never happen
                     throw new FatalKernelException("Failed to create coregion", e);

@@ -13,10 +13,13 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * {@link RegionDigraph} is a <a href="http://en.wikipedia.org/wiki/Directed_graph">directed graph</a>, or
@@ -64,6 +67,16 @@ public interface RegionDigraph extends Iterable<Region> {
      * @throws BundleException if the region was not created
      */
     Region createRegion(String regionName) throws BundleException;
+
+    /**
+     * Create a {@link RegionFilter} with the given sharing policy.  The sharing 
+     * policy map uses capability name spaces as the key and a collection of 
+     * filter strings as the value.
+     * @param sharingPolicy the sharing policy filters use to match shared capabilities.
+     * @return the {@link RegionFilter} created
+     * @throws InvalidSyntaxException if a specified sharing policy filter is invalid
+     */
+    RegionFilter createRegionFilter(Map<String, Collection<String>> sharingPolicy) throws InvalidSyntaxException;
 
     /**
      * Removes the given {@link Region} from the digraph along with any edges which have the given region as head or

@@ -161,10 +161,10 @@ public final class Activator implements BundleActivator {
         Region userRegion = regionDigraph.createRegion(REGION_USER);
         userRegion.addBundle(userRegionFactoryBundle);
 
-        RegionFilter kernelFilter = createKernelFilter(systemBundleContext, eventLogger);
+        RegionFilter kernelFilter = createKernelFilter(regionDigraph, systemBundleContext, eventLogger);
         userRegion.connectRegion(kernelRegion, kernelFilter);
 
-        RegionFilter userRegionFilter = createUserRegionFilter();
+        RegionFilter userRegionFilter = createUserRegionFilter(regionDigraph);
         kernelRegion.connectRegion(userRegion, userRegionFilter);
 
         notifyUserRegionStarting(userRegionBundleContext);
@@ -175,39 +175,33 @@ public final class Activator implements BundleActivator {
         publishUserRegionBundleContext(userRegionBundleContext);
     }
 
-    private RegionFilter createUserRegionFilter() throws BundleException {
-        RegionFilter userRegionFilter = new RegionFilter();
+    private RegionFilter createUserRegionFilter(RegionDigraph digraph) throws InvalidSyntaxException {
+    	Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
         Collection<String> serviceFilter = classesToFilter(this.regionServiceExports);
-        try {
-        	userRegionFilter.setFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilter);
-        } catch (InvalidSyntaxException e) {
-            throw new BundleException("Invalid " + USER_REGION_SERVICE_EXPORTS_PROPERTY + "in user region configuration: '"
-                + this.regionServiceExports + "'", e);
-        }
-
-        return userRegionFilter;
+       	policy.put(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilter);
+        return digraph.createRegionFilter(policy);
     }
 
     private Region getKernelRegion(RegionDigraph regionDigraph) {
         return regionDigraph.iterator().next();
     }
 
-    private RegionFilter createKernelFilter(BundleContext systemBundleContext, EventLogger eventLogger) throws BundleException, InvalidSyntaxException {
-        RegionFilter kernelFilter = new RegionFilter();
-        allowImportedBundles(kernelFilter, eventLogger);
-        kernelFilter.setFilters(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, createUserRegionPackageImportPolicy(systemBundleContext));
+    private RegionFilter createKernelFilter(RegionDigraph digraph, BundleContext systemBundleContext, EventLogger eventLogger) throws BundleException, InvalidSyntaxException {
+        Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
+        allowImportedBundles(policy, eventLogger);
+        policy.put(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, createUserRegionPackageImportPolicy(systemBundleContext));
         Collection<String> serviceFilter = classesToFilter(this.regionServiceImports);
-        kernelFilter.setFilters(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilter);
-        return kernelFilter;
+        policy.put(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilter);
+        return digraph.createRegionFilter(policy);
     }
 
-    private void allowImportedBundles(RegionFilter kernelFilter, EventLogger eventLogger) throws InvalidSyntaxException {
+    private void allowImportedBundles(Map<String, Collection<String>> policy, EventLogger eventLogger) {
         String userRegionBundleImports = this.regionBundleImports != null ? this.regionBundleImports
             : this.bundleContext.getProperty(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
 
         RequireBundle bundleImportsAsRequireBundle = representBundleImportsAsRequireBundle(userRegionBundleImports, eventLogger);
         Collection<String> importedBundles = importBundleToFilter(bundleImportsAsRequireBundle.getRequiredBundles());
-        kernelFilter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, importedBundles);
+        policy.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, importedBundles);
      }
 
     private RequireBundle representBundleImportsAsRequireBundle(String userRegionBundleImportsProperty, EventLogger eventLogger) {

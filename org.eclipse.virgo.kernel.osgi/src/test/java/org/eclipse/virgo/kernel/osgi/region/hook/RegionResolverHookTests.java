@@ -28,6 +28,7 @@ import junit.framework.Assert;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.After;
@@ -288,35 +289,34 @@ public class RegionResolverHookTests {
     }
 
     private RegionFilter createFilter(final String... packageNames) {
-        RegionFilter filter = new RegionFilter();
-        if (packageNames.length == 0)
-        	return filter;
         Collection<String> filters = new ArrayList<String>(packageNames.length);
         for (String pkg : packageNames) {
-            StringBuilder builder = new StringBuilder();
-       		builder.append('(').append(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).append('=').append(pkg).append(')');
-       		filters.add(builder.toString());
+       		filters.add('(' + RegionFilter.VISIBLE_PACKAGE_NAMESPACE + '=' + pkg + ')');
         }
-
-        try {
-			filter.setFilters(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filters);
+        Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
+        if (!filters.isEmpty()) {
+        	policy.put(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filters);
+        }
+       	try {
+			return new StandardRegionFilter(policy);
 		} catch (InvalidSyntaxException e) {
 			Assert.fail(e.getMessage());
 		}
-        return filter;
+       	return null; // only for compiling; should not happen
     }
 
     private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) {
-        RegionFilter filter = new RegionFilter();
-        StringBuilder builder = new StringBuilder();
-        builder.append("(&(").append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(bundleSymbolicName).append(')');
-        builder.append('(').append(Constants.BUNDLE_VERSION_ATTRIBUTE).append(">=").append(bundleVersion).append("))");
+    	String bundleFilter = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + '=' + bundleSymbolicName + ')' +
+    			'(' + Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + (bundleVersion == null ? "0" : bundleVersion.toString()) + "))";
+        
         try {
-			filter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(builder.toString()));
+        	Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
+        	policy.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(bundleFilter));
+        	return new StandardRegionFilter(policy);
 		} catch (InvalidSyntaxException e) {
 			Assert.fail(e.getMessage());
 		}
-        return filter;
+       	return null; // only for compiling; should not happen
     }
 
     private Bundle createBundle(String bundleSymbolicName) {

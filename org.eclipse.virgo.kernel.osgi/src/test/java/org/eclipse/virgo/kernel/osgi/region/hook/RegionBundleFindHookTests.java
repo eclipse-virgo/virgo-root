@@ -26,6 +26,7 @@ import junit.framework.Assert;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.After;
@@ -235,21 +236,20 @@ public class RegionBundleFindHookTests {
     }
 
     private RegionFilter createFilter(String... bundleSymbolicNames) {
-        RegionFilter filter = new RegionFilter();
-        if (bundleSymbolicNames.length == 0)
-        	return filter;
         Collection<String> filters = new ArrayList<String>(bundleSymbolicNames.length);
         for (String bundleSymbolicName : bundleSymbolicNames) {
-            StringBuilder builder = new StringBuilder();
-        	builder.append('(').append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(bundleSymbolicName).append(')');
-        	filters.add(builder.toString());
+        	filters.add('(' + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + '=' + bundleSymbolicName + ')');
+        }
+        Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
+        if (!filters.isEmpty()) {
+        	policy.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filters);
         }
        	try {
-			filter.setFilters(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filters);
+			return new StandardRegionFilter(policy);
 		} catch (InvalidSyntaxException e) {
 			Assert.fail(e.getMessage());
 		}
-        return filter;
+        return null; // only for compiling; should not happen
     }
 
     private Bundle createBundle(String bundleSymbolicName) {

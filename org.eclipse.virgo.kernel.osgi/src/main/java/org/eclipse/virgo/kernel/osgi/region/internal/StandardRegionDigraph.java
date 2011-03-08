@@ -263,6 +263,11 @@ public final class StandardRegionDigraph implements RegionDigraph {
         return result;
     }
 
+	@Override
+	public RegionFilter createRegionFilter(Map<String, Collection<String>> sharingPolicy) throws InvalidSyntaxException {
+		return new StandardRegionFilter(sharingPolicy);
+	}
+
     private void notifyAdded(Region region) {
         Set<RegionLifecycleListener> listeners = getListeners();
         for (RegionLifecycleListener listener : listeners) {
@@ -293,5 +298,4 @@ public final class StandardRegionDigraph implements RegionDigraph {
         }
         return listeners;
     }
-
 }

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -33,78 +34,93 @@ import org.osgi.framework.wiring.BundleRevision;
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
- * This implementations is thread safe.
+ * Implementations must be thread safe.
  * 
  */
-public class RegionFilter {
-
+public interface RegionFilter {
+	/**
+	 * Name space for sharing package capabilities.
+	 * @see BundleRevision#PACKAGE_NAMESPACE
+	 */
 	public static final String VISIBLE_PACKAGE_NAMESPACE = BundleRevision.PACKAGE_NAMESPACE;
+
+	/**
+	 * Name space for sharing bundle capabilities for require bundle constraints.
+	 * @see BundleRevision#BUNDLE_NAMESPACE
+	 */
 	public static final String VISIBLE_REQUIRE_NAMESPACE = BundleRevision.BUNDLE_NAMESPACE;
+
+	/**
+	 * Name space for sharing host capabilities.
+	 * @see BundleRevision#HOST_NAMESPACE
+	 */
 	public static final String VISIBLE_HOST_NAMESPACE = BundleRevision.HOST_NAMESPACE;
+
+	/**
+	 * Name space for sharing services.  The filters specified in this name space will
+	 * be used to match {@link ServiceReference services}. 
+	 */
 	public static final String VISIBLE_SERVICE_NAMESPACE = "org.eclipse.equinox.allow.service";
+
+	/**
+	 * Name space for sharing bundles.  The filters specified in this name space will
+	 * be use to match against a bundle's symbolic name and version.  The attribute
+	 * {@link Constants#BUNDLE_SYMBOLICNAME_ATTRIBUTE bundle-symbolic-name} is used
+	 * for the symbolic name and the attribute {@link Constants#BUNDLE_VERSION_ATTRIBUTE 
+	 * bundle-version} is used for the bundle version.
+	 */
 	public static final String VISIBLE_BUNDLE_NAMESPACE = "org.eclipse.equinox.allow.bundle";
+
+	/**
+	 * Name space for matching against all capabilities.  The filters specified in this
+	 * name space will be used to match all capabilities.
+	 */
 	public static final String VISIBLE_ALL_NAMESPACE = "org.eclipse.equinox.allow.all";
 
+	/**
+	 * A filter specification that matches all package capabilities in the 
+	 * {@link VISIBLE_PACKAGE_NAMESPACE} name space.
+	 */
     public static final String ALL_PACKAGES = '(' + VISIBLE_PACKAGE_NAMESPACE + "=*)";
+
+    /**
+	 * A filter specification that matches all require bundle capabilities in the 
+	 * {@link VISIBLE_REQUIRE_NAMESPACE} name space.
+	 */
     public static final String ALL_REQUIRES = '(' + VISIBLE_REQUIRE_NAMESPACE + "=*)";
+
+	/**
+	 * A filter specification that matches all host capabilities in the 
+	 * {@link VISIBLE_HOST_NAMESPACE} name space.
+	 */
     public static final String ALL_HOSTS = '(' + VISIBLE_HOST_NAMESPACE + "=*)";
+
+	/**
+	 * A filter specification that matches all service in the 
+	 * {@link VISIBLE_SERVICE_NAMESPACE} name space.
+	 */
     public static final String ALL_SERVICES = '(' + org.osgi.framework.Constants.SERVICE_ID + "=*)";
+
+	/**
+	 * A filter specification that matches all bundles in the 
+	 * {@link VISIBLE_BUNDLE_NAMESPACE} name space.
+	 */
     public static final String ALL_BUNDLES = '(' + org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME_ATTRIBUTE + "=*)";
-    // pretty much a hack to make Filter always return true
+
+    /**
+     * A filter specification that matches all capabilities in all name spaces.
+     * This is useful if you want to use the {@link VISIBLE_ALL_NAMESPACE} to
+     * match all capabilities.
+     */
     public static final String ALL = "(|(x=*)(!(x=*)))";
 
-    public static final RegionFilter TOP = new RegionFilter() {
-
-		@Override
-		public boolean isBundleAllowed(Bundle bundle) {
-			return true;
-		}
-
-		@Override
-		public boolean isBundleAllowed(BundleRevision bundle) {
-			return true;
-		}
-
-		@Override
-		public boolean isServiceAllowed(ServiceReference<?> service) {
-			return true;
-		}
-
-		@Override
-		public boolean isCapabilityAllowed(BundleCapability capability) {
-			return true;
-		}
-
-		@Override
-		public RegionFilter setFilters(String namespace, Collection<String> filters)
-				throws InvalidSyntaxException {
-			throw new UnsupportedOperationException("TOP is immutable");
-		}
-    };
-
-    private Object monitor = new Object();
-    private Collection<Filter> packages = null;
-	private Collection<Filter> requires = null;
-	private Collection<Filter> hosts = null;
-	private Collection<Filter> services = null;
-    private Collection<Filter> bundles = null;
-    private Collection<Filter> all = null;
-    private Map<String, Collection<Filter>> generics = null;
- 
     /**
      * Determines whether this filter allows the given bundle
      * 
      * @param bundle the bundle
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    public boolean isBundleAllowed(Bundle bundle) {
-    	HashMap<String, Object> attrs = new HashMap<String, Object>(3);
-    	String bsn = bundle.getSymbolicName();
-    	if (bsn != null)
-    		attrs.put(VISIBLE_BUNDLE_NAMESPACE, bsn);
-    	attrs.put(org.osgi.framework.Constants.BUNDLE_VERSION_ATTRIBUTE, bundle.getVersion());
-    	return isBundleAllowed(attrs);
-    }
+    public boolean isBundleAllowed(Bundle bundle);
 
     /**
      * Determines whether this filter allows the given bundle
@@ -112,48 +128,7 @@ public class RegionFilter {
      * @param bundle the bundle revision
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    public boolean isBundleAllowed(BundleRevision bundle) {
-    	HashMap<String, Object> attrs = new HashMap<String, Object>(3);
-    	String bsn = bundle.getSymbolicName();
-    	if (bsn != null)
-    		attrs.put(VISIBLE_BUNDLE_NAMESPACE, bsn);
-    	attrs.put(org.osgi.framework.Constants.BUNDLE_VERSION_ATTRIBUTE, bundle.getVersion());
-    	return isBundleAllowed(attrs);
-    }
-
-    /**
-     * Determines whether this filter allows the bundle with the given attributes
-     * 
-     * @param bundleAttributes the bundle attributes
-     * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
-     */
-    private boolean isBundleAllowed(Map<String, ?> bundleAttributes) {
-    	synchronized (this.monitor) {
-			if (match(bundles, bundleAttributes))
-				return true;
-			return match(all, bundleAttributes);
-		}
-    }
-
-    private boolean match(Collection<Filter> filters, Map<String, ?> attrs) {
-    	if (filters == null)
-    		return false;
-    	for (Filter filter : filters) {
-			if (filter.matches(attrs))
-				return true;
-		}
-    	return false;
-    }
-
-    private boolean match(Collection<Filter> filters, ServiceReference<?> service) {
-    	if (filters == null)
-    		return false;
-    	for (Filter filter : filters) {
-			if (filter.match(service))
-				return true;
-		}
-    	return false;
-    }
+    public boolean isBundleAllowed(BundleRevision bundle);
 
     /**
      * Determines whether this filter allows the given service reference.
@@ -161,13 +136,7 @@ public class RegionFilter {
      * @param service the service reference of the service
      * @return <code>true</code> if the service is allowed and <code>false</code>otherwise
      */
-    public boolean isServiceAllowed(ServiceReference<?> service) {
-    	synchronized (this.monitor) {
-			if (match(services, service))
-				return true;
-			return match(all, service);
-		}
-    }
+    public boolean isServiceAllowed(ServiceReference<?> service);
 
     /**
      * Determines whether this filter allows the given capability.
@@ -175,116 +144,7 @@ public class RegionFilter {
      * @param capability the bundle capability
      * @return <code>true</code> if the capability is allowed and <code>false</code>otherwise
      */
-    public boolean isCapabilityAllowed(BundleCapability capability) {
-    	String namespace = capability.getNamespace();
-    	Collection<Filter> filter = null;
-    	synchronized (this.monitor) {
-			if (VISIBLE_PACKAGE_NAMESPACE.equals(namespace))
-				filter = packages;
-			else if (VISIBLE_REQUIRE_NAMESPACE.equals(namespace))
-				filter = requires;
-			else if (VISIBLE_HOST_NAMESPACE.equals(namespace))
-				filter = hosts;
-			else
-				filter = generics == null ? null : generics.get(namespace);
-			Map<String, ?> attrs = capability.getAttributes();
-			if (match(filter, attrs))
-				return true;
-			return match(all, attrs);
-		}
-    }
+    public boolean isCapabilityAllowed(BundleCapability capability);
 
-    public RegionFilter setFilters(String namespace, Collection<String> filters) throws InvalidSyntaxException {
-    	if (namespace == null || filters == null)
-    		throw new IllegalArgumentException("The namespace and filters must not be null.");
-    	Collection<Filter> filterImpls = createFilters(filters);
-    	synchronized (monitor) {
-			if (VISIBLE_PACKAGE_NAMESPACE.equals(namespace))
-				packages = filterImpls;
-			else if (VISIBLE_REQUIRE_NAMESPACE.equals(namespace))
-				requires  = filterImpls;
-			else if (VISIBLE_HOST_NAMESPACE.equals(namespace))
-				hosts = filterImpls;
-			else if (VISIBLE_SERVICE_NAMESPACE.equals(namespace))
-				services = filterImpls;
-			else if (VISIBLE_BUNDLE_NAMESPACE.equals(namespace))
-				bundles = filterImpls;
-			else if (VISIBLE_ALL_NAMESPACE.equals(namespace))
-				all = filterImpls;
-			else {
-				if (generics == null)
-					generics = new HashMap<String, Collection<Filter>>();
-				generics.put(namespace, filterImpls);
-			}
-    	}
-    	return this;
-    }
-
-    public RegionFilter removeFilters(String namespace) {
-    	if (namespace == null)
-    		throw new IllegalArgumentException("The namespace must not be null.");
-   	synchronized (monitor) {
-			if (VISIBLE_PACKAGE_NAMESPACE.equals(namespace))
-				packages = null;
-			else if (VISIBLE_REQUIRE_NAMESPACE.equals(namespace))
-				requires  = null;
-			else if (VISIBLE_HOST_NAMESPACE.equals(namespace))
-				hosts = null;
-			else if (VISIBLE_SERVICE_NAMESPACE.equals(namespace))
-				services = null;
-			else if (VISIBLE_BUNDLE_NAMESPACE.equals(namespace))
-				bundles = null;
-			else if (VISIBLE_ALL_NAMESPACE.equals(namespace))
-				all = null;
-			else {
-				if (generics == null)
-					generics = new HashMap<String, Collection<Filter>>();
-				generics.remove(namespace);
-			}
-    	}
-    	return this;
-    }
-
-    public Collection<String> getFilters(String namespace) {
-    	if (namespace == null)
-    		throw new IllegalArgumentException("The namespace not be null.");
-    	synchronized (monitor) {
-			if (VISIBLE_PACKAGE_NAMESPACE.equals(namespace))
-				return getFilters(packages);
-			else if (VISIBLE_REQUIRE_NAMESPACE.equals(namespace))
-				return getFilters(requires);
-			else if (VISIBLE_HOST_NAMESPACE.equals(namespace))
-				return getFilters(hosts);
-			else if (VISIBLE_SERVICE_NAMESPACE.equals(namespace))
-				return getFilters(services);
-			else if (VISIBLE_BUNDLE_NAMESPACE.equals(namespace))
-				return getFilters(bundles);
-			else if (VISIBLE_ALL_NAMESPACE.equals(namespace))
-				return getFilters(all);
-			else {
-				if (generics != null)
-					return getFilters(generics.get(namespace));
-			}
-			return null;
-    	}
-    }
-
-    private static Collection<String> getFilters(Collection<Filter> filters) {
-    	Collection<String> result = new ArrayList<String>(filters.size());
-    	for (Filter filter : filters) {
-			result.add(filter.toString());
-		}
-    	return result;
-    }
-
-    private static Collection<Filter> createFilters(Collection<String> filters) throws InvalidSyntaxException {
-    	if (filters == null)
-    		return null;
-    	Collection<Filter> result = new ArrayList<Filter>(filters.size());
-    	//TODO Using FrameworkUtil for now;  Should move to using BundleContext
-    	for (String filter : filters) {
-			result.add(FrameworkUtil.createFilter(filter));
-    	}
-    	return result;
-    }
+    public Map<String, Collection<String>> getSharingPolicy();
 }
