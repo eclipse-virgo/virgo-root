@@ -140,7 +140,7 @@ final class RegionResolverHook implements ResolverHook {
         while (i.hasNext()) {
             BundleCapability c = i.next();
             if (!filter.isCapabilityAllowed(c) && !filter.isBundleAllowed(c.getRevision()))
-            	i.remove();
+                i.remove();
         }
     }
 
@@ -163,7 +163,7 @@ final class RegionResolverHook implements ResolverHook {
 
     @Override
     public void filterSingletonCollisions(BundleCapability singleton, Collection<BundleCapability> collisionCandidates) {
-        collisionCandidates.clear(); //XXX temporary hack in lieu of Borislav's changes
+        collisionCandidates.clear(); // XXX temporary hack in lieu of Borislav's changes
     }
 
     private void debugEntry(BundleRevision requirer, Collection<BundleCapability> candidates) {

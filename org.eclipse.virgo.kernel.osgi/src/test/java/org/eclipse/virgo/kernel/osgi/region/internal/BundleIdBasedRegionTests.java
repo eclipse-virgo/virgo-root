@@ -11,7 +11,10 @@
 
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,8 +23,8 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.After;
 import org.junit.Before;
