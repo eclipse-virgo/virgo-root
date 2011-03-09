@@ -19,11 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.easymock.EasyMock;
@@ -65,10 +60,10 @@ public class StandardRegionDigraphTests {
         StubBundleContext stubBundleContext = new StubBundleContext();
         stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.digraph = new StandardRegionDigraph(stubBundleContext, new ThreadLocal<Region>());
-       
+
         this.mockRegion1 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion1.getName()).andReturn("mockRegion1").anyTimes();
-      
+
         this.mockRegion2 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion2.getName()).andReturn("mockRegion2").anyTimes();
 
@@ -79,25 +74,19 @@ public class StandardRegionDigraphTests {
     }
 
     private void setDefaultFilters() throws InvalidSyntaxException {
-        this.regionFilter1 = new StandardRegionFilter(Collections.EMPTY_MAP);
-        this.regionFilter2 = new StandardRegionFilter(Collections.EMPTY_MAP);
+        this.regionFilter1 = digraph.createRegionFilterBuilder().build();
+        this.regionFilter2 = digraph.createRegionFilterBuilder().build();
     }
 
-
     private void setAllowedFilters(OrderedPair<String, Version> b1, OrderedPair<String, Version> b2) throws InvalidSyntaxException {
-   		String filter1 = "(&(" + 
-				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + b1.getFirst() + ")(" +
-				Constants.BUNDLE_VERSION_ATTRIBUTE + "=" + b1.getSecond() + "))";
-   		Map<String, Collection<String>> policy1 = new HashMap<String, Collection<String>>();
-   		policy1.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter1));
-   		regionFilter1 = new StandardRegionFilter(policy1);
+        String filter1 = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + b1.getFirst() + ")(" + Constants.BUNDLE_VERSION_ATTRIBUTE + "="
+            + b1.getSecond() + "))";
+        regionFilter1 = digraph.createRegionFilterBuilder().allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter1).build();
 
-   		String filter2 = "(&(" + 
-				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + b1.getFirst() + ")(" +
-				Constants.BUNDLE_VERSION_ATTRIBUTE + "=" + b1.getSecond() + "))";
-   		Map<String, Collection<String>> policy2 = new HashMap<String, Collection<String>>();
-   		policy2.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter2));
-   		regionFilter2 = new StandardRegionFilter(policy2);
+        String filter2 = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + b1.getFirst() + ")(" + Constants.BUNDLE_VERSION_ATTRIBUTE + "="
+            + b1.getSecond() + "))";
+        regionFilter2 = digraph.createRegionFilterBuilder().allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter2).build();
+
     }
 
     private void replayMocks() {
@@ -185,17 +174,17 @@ public class StandardRegionDigraphTests {
         assertNull(this.digraph.getRegion("mockRegion1"));
         assertNotNull(this.digraph.getRegion("mockRegion2"));
     }
-    
+
     @Test
     public void testGetRegions() throws BundleException, InvalidSyntaxException {
         setDefaultFilters();
         replayMocks();
-        
+
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
         Set<Region> regions = this.digraph.getRegions();
         assertEquals(2, regions.size());
         assertTrue(regions.contains(this.mockRegion1));
         assertTrue(regions.contains(this.mockRegion2));
     }
-    
+
 }

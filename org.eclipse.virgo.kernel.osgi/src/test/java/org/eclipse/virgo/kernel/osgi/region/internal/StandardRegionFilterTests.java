@@ -27,15 +27,12 @@ import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.framework.StubServiceReference;
 import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.Version;
 import org.osgi.framework.wiring.BundleCapability;
@@ -48,7 +45,9 @@ public class StandardRegionFilterTests {
     private static final Version BUNDLE_VERSION = new Version("0");
 
     private StubBundle stubBundle;
+
     private String packageImportPolicy = "(" + BundleRevision.PACKAGE_NAMESPACE + "=foo)";
+
     private String serviceImportPolicy = "(" + Constants.OBJECTCLASS + "=foo.Service)";
 
     @Before
@@ -61,18 +60,17 @@ public class StandardRegionFilterTests {
     }
 
     private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) throws InvalidSyntaxException {
-    	String filter = "(&(" + 
-				RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + bundleSymbolicName + ")(" +
-				Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + bundleVersion + "))";
-   		Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
-   		policy.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(filter));
-   		return new StandardRegionFilter(policy);
-	}
+        String filter = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + bundleSymbolicName + ")(" + Constants.BUNDLE_VERSION_ATTRIBUTE + ">="
+            + bundleVersion + "))";
+        return new StandardRegionFilterBuilder().allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter).build();
+    }
 
     private RegionFilter createRegionFilter(String namespace, Collection<String> filters) throws InvalidSyntaxException {
-   		Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
-   		policy.put(namespace, filters);
-   		return new StandardRegionFilter(policy);
+        StandardRegionFilterBuilder builder = new StandardRegionFilterBuilder();
+        for (String filter : filters) {
+            builder.allow(namespace, filter);
+        }
+        return builder.build();
     }
 
     @Test
@@ -81,41 +79,41 @@ public class StandardRegionFilterTests {
         assertTrue(regionFilter.isBundleAllowed(stubBundle));
     }
 
-	@Test
+    @Test
     public void testBundleNotAllowed() throws InvalidSyntaxException {
-		RegionFilter regionFilter = new StandardRegionFilter(Collections.EMPTY_MAP);
+        RegionFilter regionFilter = new StandardRegionFilter(Collections.EMPTY_MAP);
         assertFalse(regionFilter.isBundleAllowed(stubBundle));
     }
 
     @Test
     public void testBundleNotAllowedInRange() throws InvalidSyntaxException {
-        RegionFilter regionFilter = createBundleFilter(BUNDLE_SYMBOLIC_NAME, new Version(1,0,0));
+        RegionFilter regionFilter = createBundleFilter(BUNDLE_SYMBOLIC_NAME, new Version(1, 0, 0));
         assertFalse(regionFilter.isBundleAllowed(stubBundle));
     }
 
     @Test
     public void testPackageImportAllowed() throws InvalidSyntaxException {
-		RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
-		BundleCapability packageCapability = EasyMock.createMock(BundleCapability.class);
-		Map<String, Object> attrs = new HashMap<String, Object>();
-		attrs.put(BundleRevision.PACKAGE_NAMESPACE, "foo");
-		EasyMock.expect(packageCapability.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
-		EasyMock.expect(packageCapability.getAttributes()).andReturn(attrs).anyTimes();
-		EasyMock.replay(packageCapability);
-		assertTrue(regionFilter.isCapabilityAllowed(packageCapability));
+        RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
+        BundleCapability packageCapability = EasyMock.createMock(BundleCapability.class);
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        attrs.put(BundleRevision.PACKAGE_NAMESPACE, "foo");
+        EasyMock.expect(packageCapability.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
+        EasyMock.expect(packageCapability.getAttributes()).andReturn(attrs).anyTimes();
+        EasyMock.replay(packageCapability);
+        assertTrue(regionFilter.isCapabilityAllowed(packageCapability));
         assertEquals(Arrays.asList(this.packageImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_PACKAGE_NAMESPACE));
     }
 
     @Test
     public void testPackageImportNotAllowed() throws InvalidSyntaxException {
-		RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
-		BundleCapability packageCapability = EasyMock.createMock(BundleCapability.class);
-		Map<String, Object> attrs = new HashMap<String, Object>();
-		attrs.put(BundleRevision.PACKAGE_NAMESPACE, "bar");
-		EasyMock.expect(packageCapability.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
-		EasyMock.expect(packageCapability.getAttributes()).andReturn(attrs).anyTimes();
-		EasyMock.replay(packageCapability);
-		assertFalse(regionFilter.isCapabilityAllowed(packageCapability));
+        RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
+        BundleCapability packageCapability = EasyMock.createMock(BundleCapability.class);
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        attrs.put(BundleRevision.PACKAGE_NAMESPACE, "bar");
+        EasyMock.expect(packageCapability.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
+        EasyMock.expect(packageCapability.getAttributes()).andReturn(attrs).anyTimes();
+        EasyMock.replay(packageCapability);
+        assertFalse(regionFilter.isCapabilityAllowed(packageCapability));
         assertEquals(Arrays.asList(this.packageImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_PACKAGE_NAMESPACE));
     }
 
@@ -126,7 +124,7 @@ public class StandardRegionFilterTests {
         assertTrue(regionFilter.isServiceAllowed(reg.getReference()));
         assertEquals(Arrays.asList(serviceImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_SERVICE_NAMESPACE));
     }
- 
+
     @Test
     public void testServiceImportNotAllowed() throws InvalidSyntaxException {
         RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_SERVICE_NAMESPACE, Arrays.asList(serviceImportPolicy));

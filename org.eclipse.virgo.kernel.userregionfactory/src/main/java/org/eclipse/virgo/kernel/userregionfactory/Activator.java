@@ -32,6 +32,7 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
@@ -150,7 +151,8 @@ public final class Activator implements BundleActivator {
         }
     }
 
-    private void createUserRegion(BundleContext userRegionBundleContext, RegionDigraph regionDigraph, EventLogger eventLogger) throws BundleException, InvalidSyntaxException {
+    private void createUserRegion(BundleContext userRegionBundleContext, RegionDigraph regionDigraph, EventLogger eventLogger)
+        throws BundleException, InvalidSyntaxException {
 
         BundleContext systemBundleContext = getSystemBundleContext();
         Bundle userRegionFactoryBundle = userRegionBundleContext.getBundle();
@@ -176,33 +178,43 @@ public final class Activator implements BundleActivator {
     }
 
     private RegionFilter createUserRegionFilter(RegionDigraph digraph) throws InvalidSyntaxException {
-    	Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
-        Collection<String> serviceFilter = classesToFilter(this.regionServiceExports);
-       	policy.put(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilter);
-        return digraph.createRegionFilter(policy);
+        Collection<String> serviceFilters = classesToFilter(this.regionServiceExports);
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        for (String filter : serviceFilters) {
+            builder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, filter);
+        }
+        return builder.build();
     }
 
     private Region getKernelRegion(RegionDigraph regionDigraph) {
         return regionDigraph.iterator().next();
     }
 
-    private RegionFilter createKernelFilter(RegionDigraph digraph, BundleContext systemBundleContext, EventLogger eventLogger) throws BundleException, InvalidSyntaxException {
-        Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
-        allowImportedBundles(policy, eventLogger);
-        policy.put(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, createUserRegionPackageImportPolicy(systemBundleContext));
-        Collection<String> serviceFilter = classesToFilter(this.regionServiceImports);
-        policy.put(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilter);
-        return digraph.createRegionFilter(policy);
+    private RegionFilter createKernelFilter(RegionDigraph digraph, BundleContext systemBundleContext, EventLogger eventLogger)
+        throws BundleException, InvalidSyntaxException {
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        Collection<String> allowedBundles = allowImportedBundles(eventLogger);
+        for (String filter : allowedBundles) {
+            builder.allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter);
+        }
+        Collection<String> allowedPackages = createUserRegionPackageImportPolicy(systemBundleContext);
+        for (String filter : allowedPackages) {
+            builder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filter);
+        }
+        Collection<String> allowedServices = classesToFilter(this.regionServiceImports);
+        for (String filter : allowedServices) {
+            builder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, filter);
+        }
+        return builder.build();
     }
 
-    private void allowImportedBundles(Map<String, Collection<String>> policy, EventLogger eventLogger) {
+    private Collection<String> allowImportedBundles(EventLogger eventLogger) {
         String userRegionBundleImports = this.regionBundleImports != null ? this.regionBundleImports
             : this.bundleContext.getProperty(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
 
         RequireBundle bundleImportsAsRequireBundle = representBundleImportsAsRequireBundle(userRegionBundleImports, eventLogger);
-        Collection<String> importedBundles = importBundleToFilter(bundleImportsAsRequireBundle.getRequiredBundles());
-        policy.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, importedBundles);
-     }
+        return importBundleToFilter(bundleImportsAsRequireBundle.getRequiredBundles());
+    }
 
     private RequireBundle representBundleImportsAsRequireBundle(String userRegionBundleImportsProperty, EventLogger eventLogger) {
         Dictionary<String, String> headers = new Hashtable<String, String>();
@@ -212,63 +224,63 @@ public final class Activator implements BundleActivator {
     }
 
     private static Collection<String> importBundleToFilter(List<RequiredBundle> importedBundles) {
-    	if (importedBundles == null || importedBundles.isEmpty())
-    		return Collections.emptyList();
-    	Collection<String> result = new ArrayList<String>(importedBundles.size());
-    	for (RequiredBundle importedBundle : importedBundles) {
-    		StringBuilder f = new StringBuilder();
-    		f.append("(&(").append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(importedBundle.getBundleSymbolicName()).append(')');
-    		addRange(Constants.BUNDLE_VERSION_ATTRIBUTE, importedBundle.getBundleVersion(), f);
-    		f.append(')');
-    		result.add(f.toString());
-		}
-    	return result;
+        if (importedBundles == null || importedBundles.isEmpty())
+            return Collections.emptyList();
+        Collection<String> result = new ArrayList<String>(importedBundles.size());
+        for (RequiredBundle importedBundle : importedBundles) {
+            StringBuilder f = new StringBuilder();
+            f.append("(&(").append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(importedBundle.getBundleSymbolicName()).append(')');
+            addRange(Constants.BUNDLE_VERSION_ATTRIBUTE, importedBundle.getBundleVersion(), f);
+            f.append(')');
+            result.add(f.toString());
+        }
+        return result;
     }
 
     private static Collection<String> importPackageToFilter(String importList) {
         if (importList == null || importList.isEmpty()) {
-        	return Collections.emptyList();
+            return Collections.emptyList();
         }
         if (importList.contains(WILDCARD)) {
-        	throw new IllegalArgumentException("Wildcards not supported in region imports: '" + importList + "'");
+            throw new IllegalArgumentException("Wildcards not supported in region imports: '" + importList + "'");
         }
         BundleManifest manifest = BundleManifestFactory.createBundleManifest();
         manifest.setHeader("Import-Package", importList);
         List<ImportedPackage> list = manifest.getImportPackage().getImportedPackages();
         if (list.isEmpty())
-        	return Collections.emptyList();
+            return Collections.emptyList();
         Collection<String> filters = new ArrayList<String>(list.size());
         for (ImportedPackage importedPackage : list) {
-        	StringBuilder f = new StringBuilder();
-        	f.append("(&(").append(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).append('=').append(importedPackage.getPackageName()).append(')');
-       		Map<String, String> attrs = importedPackage.getAttributes();
-       		for (Map.Entry<String, String> attr : attrs.entrySet()) {
-       			if (Constants.VERSION_ATTRIBUTE.equals(attr.getKey()) || Constants.BUNDLE_VERSION_ATTRIBUTE.equals(attr.getKey())) {
-       				addRange(attr.getKey(), new VersionRange(attr.getValue()), f);
-       			} else {
-       				f.append('(').append(attr.getKey()).append('=').append(attr.getValue()).append(')');
-       			}
-       		}
-       		f.append(')');
-       		filters.add(f.toString());
-       	}
-       	return filters;
+            StringBuilder f = new StringBuilder();
+            f.append("(&(").append(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).append('=').append(importedPackage.getPackageName()).append(')');
+            Map<String, String> attrs = importedPackage.getAttributes();
+            for (Map.Entry<String, String> attr : attrs.entrySet()) {
+                if (Constants.VERSION_ATTRIBUTE.equals(attr.getKey()) || Constants.BUNDLE_VERSION_ATTRIBUTE.equals(attr.getKey())) {
+                    addRange(attr.getKey(), new VersionRange(attr.getValue()), f);
+                } else {
+                    f.append('(').append(attr.getKey()).append('=').append(attr.getValue()).append(')');
+                }
+            }
+            f.append(')');
+            filters.add(f.toString());
+        }
+        return filters;
     }
 
     private static void addRange(String key, VersionRange range, StringBuilder f) {
-    	if (range.isFloorInclusive()) {
-				f.append('(' + key + ">=" + range.getFloor() + ')');
-			} else {
-				f.append("(!(" + key + "<=" + range.getFloor() +"))");
-			}
-			Version ceiling = range.getCeiling();
-			if (ceiling != null) {
-				if (range.isCeilingInclusive()) {
-					f.append('(' + key + "<=" + ceiling + ')');
-				} else {
-					f.append("(!(" + key + ">=" + ceiling + "))");
-				}
-			}
+        if (range.isFloorInclusive()) {
+            f.append('(' + key + ">=" + range.getFloor() + ')');
+        } else {
+            f.append("(!(" + key + "<=" + range.getFloor() + "))");
+        }
+        Version ceiling = range.getCeiling();
+        if (ceiling != null) {
+            if (range.isCeilingInclusive()) {
+                f.append('(' + key + "<=" + ceiling + ')');
+            } else {
+                f.append("(!(" + key + ">=" + ceiling + "))");
+            }
+        }
     }
 
     private static Collection<String> classesToFilter(String classList) {

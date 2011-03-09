@@ -16,19 +16,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.After;
@@ -133,7 +130,7 @@ public class RegionResolverHookTests {
     }
 
     @Test
-    public void testResolveConnectedRegionAllowed() throws BundleException {
+    public void testResolveConnectedRegionAllowed() throws BundleException, InvalidSyntaxException {
         RegionFilter filter = createFilter(PACKAGE_B);
         region(REGION_A).connectRegion(region(REGION_B), filter);
 
@@ -143,7 +140,7 @@ public class RegionResolverHookTests {
     }
 
     @Test
-    public void testResolveBundleCapabilityConnectedRegionAllowed() throws BundleException {
+    public void testResolveBundleCapabilityConnectedRegionAllowed() throws BundleException, InvalidSyntaxException {
         RegionFilter filter = createBundleFilter(BUNDLE_B, BUNDLE_VERSION);
         region(REGION_A).connectRegion(region(REGION_B), filter);
 
@@ -153,7 +150,7 @@ public class RegionResolverHookTests {
     }
 
     @Test
-    public void testResolveConnectedRegionFiltering() throws BundleException {
+    public void testResolveConnectedRegionFiltering() throws BundleException, InvalidSyntaxException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(PACKAGE_B));
         Bundle x = createBundle(BUNDLE_X);
         region(REGION_B).addBundle(x);
@@ -166,7 +163,7 @@ public class RegionResolverHookTests {
     }
 
     @Test
-    public void testResolveBundleConnectedRegionFiltering() throws BundleException {
+    public void testResolveBundleConnectedRegionFiltering() throws BundleException, InvalidSyntaxException {
         RegionFilter filter = createBundleFilter(BUNDLE_B, BUNDLE_VERSION);
         region(REGION_A).connectRegion(region(REGION_B), filter);
         Bundle x = createBundle(BUNDLE_X);
@@ -180,7 +177,7 @@ public class RegionResolverHookTests {
     }
 
     @Test
-    public void testResolveTransitive() throws BundleException {
+    public void testResolveTransitive() throws BundleException, InvalidSyntaxException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(PACKAGE_C));
         region(REGION_B).connectRegion(region(REGION_C), createFilter(PACKAGE_C));
         region(REGION_C).addBundle(bundle(BUNDLE_X));
@@ -196,7 +193,7 @@ public class RegionResolverHookTests {
     }
 
     @Test
-    public void testResolveInCyclicGraph() throws BundleException {
+    public void testResolveInCyclicGraph() throws BundleException, InvalidSyntaxException {
         region(REGION_D).addBundle(bundle(BUNDLE_X));
 
         region(REGION_A).connectRegion(region(REGION_B), createFilter(PACKAGE_D, PACKAGE_X));
@@ -288,35 +285,23 @@ public class RegionResolverHookTests {
         return this.regions.get(regionName);
     }
 
-    private RegionFilter createFilter(final String... packageNames) {
+    private RegionFilter createFilter(final String... packageNames) throws InvalidSyntaxException {
         Collection<String> filters = new ArrayList<String>(packageNames.length);
         for (String pkg : packageNames) {
-       		filters.add('(' + RegionFilter.VISIBLE_PACKAGE_NAMESPACE + '=' + pkg + ')');
+            filters.add('(' + RegionFilter.VISIBLE_PACKAGE_NAMESPACE + '=' + pkg + ')');
         }
-        Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
-        if (!filters.isEmpty()) {
-        	policy.put(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filters);
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        for (String filter : filters) {
+            builder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filter);
         }
-       	try {
-			return new StandardRegionFilter(policy);
-		} catch (InvalidSyntaxException e) {
-			Assert.fail(e.getMessage());
-		}
-       	return null; // only for compiling; should not happen
+        return builder.build();
     }
 
-    private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) {
-    	String bundleFilter = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + '=' + bundleSymbolicName + ')' +
-    			'(' + Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + (bundleVersion == null ? "0" : bundleVersion.toString()) + "))";
-        
-        try {
-        	Map<String, Collection<String>> policy = new HashMap<String, Collection<String>>();
-        	policy.put(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, Arrays.asList(bundleFilter));
-        	return new StandardRegionFilter(policy);
-		} catch (InvalidSyntaxException e) {
-			Assert.fail(e.getMessage());
-		}
-       	return null; // only for compiling; should not happen
+    private RegionFilter createBundleFilter(String bundleSymbolicName, Version bundleVersion) throws InvalidSyntaxException {
+        String bundleFilter = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + '=' + bundleSymbolicName + ')' + '('
+            + Constants.BUNDLE_VERSION_ATTRIBUTE + ">=" + (bundleVersion == null ? "0" : bundleVersion.toString()) + "))";
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        return builder.allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, bundleFilter).build();
     }
 
     private Bundle createBundle(String bundleSymbolicName) {
@@ -324,7 +309,7 @@ public class RegionResolverHookTests {
         this.bundles.put(bundleSymbolicName, stubBundle);
         return stubBundle;
     }
-    
+
     private BundleRequirement bundleRequirement(String bundleSymbolicName) {
         return new StubBundleRequirement(bundle(bundleSymbolicName));
     }
@@ -478,9 +463,9 @@ public class RegionResolverHookTests {
         }
 
     }
-    
+
     private final class StubBundleRequirement implements BundleRequirement {
-        
+
         private final StubBundleRevision bundleRevision;
 
         private StubBundleRequirement(Bundle bundle) {
@@ -511,7 +496,7 @@ public class RegionResolverHookTests {
         public boolean matches(BundleCapability capability) {
             throw new UnsupportedOperationException();
         }
-        
+
     }
 
     private final class StubBundleRevision implements BundleRevision {

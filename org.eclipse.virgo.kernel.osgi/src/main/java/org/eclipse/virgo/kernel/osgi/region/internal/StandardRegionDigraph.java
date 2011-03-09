@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.kernel.osgi.region.RegionLifecycleListener;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
@@ -263,10 +264,10 @@ public final class StandardRegionDigraph implements RegionDigraph {
         return result;
     }
 
-	@Override
-	public RegionFilter createRegionFilter(Map<String, Collection<String>> sharingPolicy) throws InvalidSyntaxException {
-		return new StandardRegionFilter(sharingPolicy);
-	}
+    @Override
+    public RegionFilterBuilder createRegionFilterBuilder() {
+        return new StandardRegionFilterBuilder();
+    }
 
     private void notifyAdded(Region region) {
         Set<RegionLifecycleListener> listeners = getListeners();

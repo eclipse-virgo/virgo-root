@@ -13,13 +13,10 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * {@link RegionDigraph} is a <a href="http://en.wikipedia.org/wiki/Directed_graph">directed graph</a>, or
@@ -59,8 +56,8 @@ public interface RegionDigraph extends Iterable<Region> {
     }
 
     /**
-     * Create a {@link Region} with the given name. If a region with the given name already exists, then BundleException with
-     * exception type UNSUPPORTED_OPERATION is thrown.
+     * Create a {@link Region} with the given name. If a region with the given name already exists, then BundleException
+     * with exception type UNSUPPORTED_OPERATION is thrown.
      * 
      * @param regionName the name of the region
      * @return the {@link Region} created
@@ -69,14 +66,11 @@ public interface RegionDigraph extends Iterable<Region> {
     Region createRegion(String regionName) throws BundleException;
 
     /**
-     * Create a {@link RegionFilter} with the given sharing policy.  The sharing 
-     * policy map uses capability name spaces as the key and a collection of 
-     * filter strings as the value.
-     * @param sharingPolicy the sharing policy filters use to match shared capabilities.
-     * @return the {@link RegionFilter} created
-     * @throws InvalidSyntaxException if a specified sharing policy filter is invalid
+     * Create a {@link RegionFilterBuilder} instance.
+     * 
+     * @return a region filter builder
      */
-    RegionFilter createRegionFilter(Map<String, Collection<String>> sharingPolicy) throws InvalidSyntaxException;
+    RegionFilterBuilder createRegionFilterBuilder();
 
     /**
      * Removes the given {@link Region} from the digraph along with any edges which have the given region as head or
@@ -85,7 +79,7 @@ public interface RegionDigraph extends Iterable<Region> {
      * @param region the {@link Region} to be removed
      */
     void removeRegion(Region region);
-    
+
     /**
      * Gets all the {@link Region Regions} in the digraph.
      * 

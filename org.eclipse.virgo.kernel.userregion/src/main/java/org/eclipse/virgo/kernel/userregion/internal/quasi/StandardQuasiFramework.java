@@ -18,14 +18,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.osgi.internal.resolver.StateImpl;
@@ -73,7 +69,10 @@ import org.slf4j.LoggerFactory;
  * 
  */
 final class StandardQuasiFramework implements QuasiFramework {
-    public final RegionFilter TOP;
+
+    private final RegionFilter TOP;
+
+    private final String TOP_FILTER = "(|(!(x=*))(x=*))";
 
     private static final String REGION_LOCATION_DELIMITER = "@";
 
@@ -116,14 +115,12 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
         Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDigraph) {
-    	Map<String, Collection<String>> all = new HashMap<String, Collection<String>>();
-    	all.put(RegionFilter.VISIBLE_ALL_NAMESPACE, Arrays.asList(RegionFilter.ALL));
-    	try {
-			TOP = regionDigraph.createRegionFilter(all);
-		} catch (InvalidSyntaxException e) {
-			throw new RuntimeException(e);
-		}
-    	this.bundleContext = bundleContext;
+        try {
+            TOP = regionDigraph.createRegionFilterBuilder().allow(RegionFilter.VISIBLE_ALL_NAMESPACE, TOP_FILTER).build();
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
         this.detective = detective;
