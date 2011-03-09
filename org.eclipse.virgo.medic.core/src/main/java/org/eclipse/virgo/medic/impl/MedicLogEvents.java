@@ -17,9 +17,9 @@ import org.eclipse.virgo.medic.eventlog.LogEvent;
 public enum MedicLogEvents implements LogEvent {
 
     MISSING_MESSAGE(1, Level.WARNING), //
-    DIRECTORY_CREATION_FAILED(2, Level.WARNING), //
-    CONTRIBUTION_FAILED(3, Level.WARNING), //
-    DUMP_GENERATED(4, Level.INFO);
+    CONTRIBUTION_FAILED(2, Level.WARNING), //
+    DUMP_GENERATED(3, Level.INFO), //
+    DIRECTORY_CREATION_FAILED(4, Level.WARNING);
 
     private static final String PREFIX = "ME";
 
