@@ -27,9 +27,9 @@ import java.util.Set;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.repository.internal.chain.ChainedQuery;
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.junit.Before;
 import org.junit.Test;
-
 
 public class ChainedQueryTests {
 
@@ -118,5 +118,35 @@ public class ChainedQueryTests {
         assertEquals(artefacts.next(), artefact1);
         assertEquals(artefacts.next(), artefact2);
         assertEquals(artefacts.next(), artefact3);
+    }
+
+    @Test
+    public void setVersionRangeFilter() {
+        final VersionRange versionRange = VersionRange.naturalNumberRange();
+
+        expect(query1.setVersionRangeFilter(versionRange)).andReturn(query1);
+        expect(query2.setVersionRangeFilter(versionRange)).andReturn(query2);
+        expect(query3.setVersionRangeFilter(versionRange)).andReturn(query3);
+
+        replay(query1, query2, query3);
+
+        chainedQuery.setVersionRangeFilter(versionRange);
+
+        verify(query1, query2, query3);
+    }
+
+    @Test
+    public void setVersionRangeFilterWithStrategy() {
+        final VersionRange versionRange = VersionRange.naturalNumberRange();
+
+        expect(query1.setVersionRangeFilter(versionRange, Query.VersionRangeMatchingStrategy.HIGHEST)).andReturn(query1);
+        expect(query2.setVersionRangeFilter(versionRange, Query.VersionRangeMatchingStrategy.HIGHEST)).andReturn(query2);
+        expect(query3.setVersionRangeFilter(versionRange, Query.VersionRangeMatchingStrategy.HIGHEST)).andReturn(query3);
+
+        replay(query1, query2, query3);
+
+        chainedQuery.setVersionRangeFilter(versionRange, Query.VersionRangeMatchingStrategy.HIGHEST);
+
+        verify(query1, query2, query3);
     }
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.repository.internal.cacheing.cache.RepositoryCache;
-
+import org.eclipse.virgo.util.osgi.VersionRange;
 
 /**
  * {@link CacheingQuery} wraps a {@link Query} and provides cacheing in the run method.
@@ -54,6 +54,24 @@ final class CacheingQuery implements Query {
      */
     public Query addFilter(String name, String value, Map<String, Set<String>> properties) {
         this.delegate.addFilter(name, value, properties);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange) {
+        this.delegate.setVersionRangeFilter(versionRange);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange, VersionRangeMatchingStrategy strategy) {
+        this.delegate.setVersionRangeFilter(versionRange, strategy);
         return this;
     }
 

@@ -11,8 +11,12 @@
 
 package org.eclipse.virgo.repository;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.virgo.repository.internal.RepositoryUtils;
+import org.eclipse.virgo.util.osgi.VersionRange;
 
 /**
  * A <code>Query</code> is created by a {@link Repository} and is used to obtain a <code>Set</code> of
@@ -36,6 +40,52 @@ import java.util.Set;
 public interface Query {
 
     /**
+     * Strategy for matching on <code>VersionRange</code>. Matching is done on grouped artifacts where artifact type and
+     * name are identical.
+     * 
+     * <p />
+     */
+    enum VersionRangeMatchingStrategy {
+        ALL {
+
+            @Override
+            public <T extends ArtifactDescriptor> Set<T> match(Set<T> unfiltered, VersionRange versionRange) {
+                return unfiltered;
+            }
+        },
+        HIGHEST {
+
+            @Override
+            public <T extends ArtifactDescriptor> Set<T> match(Set<T> unfiltered, VersionRange versionRange) {
+                Set<T> result = new HashSet<T>();
+
+                Set<Set<T>> grouped = RepositoryUtils.groupByTypeAndName(unfiltered);
+                for (Set<T> group : grouped) {
+                    result.add(RepositoryUtils.selectHighestVersionInRange(group, versionRange));
+                }
+
+                return result;
+            }
+        },
+        LOWEST {
+
+            @Override
+            public <T extends ArtifactDescriptor> Set<T> match(Set<T> unfiltered, VersionRange versionRange) {
+                Set<T> result = new HashSet<T>();
+
+                Set<Set<T>> grouped = RepositoryUtils.groupByTypeAndName(unfiltered);
+                for (Set<T> group : grouped) {
+                    result.add(RepositoryUtils.selectLowestVersionInRange(group, versionRange));
+                }
+
+                return result;
+            }
+        };
+
+        public abstract <T extends ArtifactDescriptor> Set<T> match(Set<T> unfiltered, VersionRange versionRange);
+    }
+
+    /**
      * Apply a new filter to this <code>Query</code> such that, for an <code>ArtifactDescriptor</code> to match this
      * <code>Query</code>, it must have an <code>Attribute</code> with the specified name and value.
      * 
@@ -56,6 +106,29 @@ public interface Query {
      * @return the Query to allow method chaining
      */
     public Query addFilter(String name, String value, Map<String, Set<String>> properties);
+
+    /**
+     * Apply a new VersionRange filter to this <code>Query</code>. </p> This filter is applied after all other
+     * <code>Attribute</code> based filters and uses {@link VersionRangeMatchingStrategy#ALL} matching strategy.
+     * 
+     * <p/>
+     * VersionRange filtering is applied to the artifact of the identical group, that is artifact of same type and name.
+     * 
+     * @param versionRange
+     * @return
+     */
+    public Query setVersionRangeFilter(VersionRange versionRange);
+
+    /**
+     * Apply a new VersionRange filter to the <code>Query</code> while using a specific
+     * {@link VersionRangeMatchingStrategy}
+     * 
+     * @param versionRange
+     * @param strategy
+     * @return
+     * @see #setVersionRangeFilter(VersionRange)
+     */
+    public Query setVersionRangeFilter(VersionRange versionRange, VersionRangeMatchingStrategy strategy);
 
     /**
      * Run the <code>Query</code>, returning a set of zero or more <code>ArtifactDescriptor</code>s.

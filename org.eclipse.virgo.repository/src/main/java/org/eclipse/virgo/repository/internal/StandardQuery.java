@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
-
+import org.eclipse.virgo.util.osgi.VersionRange;
 
 /**
  * <p>
@@ -36,6 +36,10 @@ final public class StandardQuery implements Query {
     private final Set<Attribute> filters = new HashSet<Attribute>();
 
     private final ArtifactDescriptorDepository artifactDepository;
+
+    private VersionRange versionRangeFilter;
+
+    private VersionRangeMatchingStrategy versionRangeMatchingStrategy = VersionRangeMatchingStrategy.ALL;
 
     private final Object filterLock = new Object();
 
@@ -88,8 +92,32 @@ final public class StandardQuery implements Query {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange) {
+        return setVersionRangeFilter(versionRange, VersionRangeMatchingStrategy.ALL);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange, VersionRangeMatchingStrategy strategy) {
+        synchronized (filterLock) {
+            this.versionRangeFilter = versionRange;
+            this.versionRangeMatchingStrategy = strategy;
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Set<RepositoryAwareArtifactDescriptor> run() {
-        return this.artifactDepository.resolveArtifactDescriptors(this.filters);
+        Set<RepositoryAwareArtifactDescriptor> resolved = this.artifactDepository.resolveArtifactDescriptors(this.filters);
+        if (this.versionRangeFilter != null) {
+            resolved = this.versionRangeMatchingStrategy.match(resolved, this.versionRangeFilter);
+        }
+        return resolved;
     }
 
     /**
