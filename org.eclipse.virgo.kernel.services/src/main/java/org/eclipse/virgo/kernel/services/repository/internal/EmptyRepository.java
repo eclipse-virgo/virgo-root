@@ -86,6 +86,20 @@ public class EmptyRepository implements Repository {
         /**
          * {@inheritDoc}
          */
+         public Query setVersionRangeFilter(VersionRange versionRange) {
+             return this;
+         }
+
+         /**
+          * {@inheritDoc}
+          */
+         public Query setVersionRangeFilter(VersionRange versionRange, VersionRangeMatchingStrategy strategy) {
+             return this;
+         }
+
+        /**
+         * {@inheritDoc}
+         */
         public Set<RepositoryAwareArtifactDescriptor> run() {
             return Collections.<RepositoryAwareArtifactDescriptor> emptySet();
         }
