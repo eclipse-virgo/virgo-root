@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.region.Region;
@@ -118,7 +117,7 @@ public final class Activator implements BundleActivator {
         Shutdown shutdown = getPotentiallyDelayedService(bundleContext, Shutdown.class);
         getRegionConfiguration(configAdmin, eventLogger, shutdown);
 
-        createUserRegion(bundleContext, regionDigraph, eventLogger);
+        createUserRegion(regionDigraph, eventLogger);
     }
 
     private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
@@ -135,19 +134,19 @@ public final class Activator implements BundleActivator {
                 this.regionBundleImports = properties.get(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
                 this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
             } else {
-                eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
+                eventLogger.log(UserRegionFactoryLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
                 shutdown.immediateShutdown();
             }
         } catch (Exception e) {
-            eventLogger.log(OsgiFrameworkLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE, e);
+            eventLogger.log(UserRegionFactoryLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE, e);
             shutdown.immediateShutdown();
         }
     }
 
-    private void createUserRegion(BundleContext userRegionBundleContext, RegionDigraph regionDigraph, EventLogger eventLogger) throws BundleException {
+    private void createUserRegion(RegionDigraph regionDigraph, EventLogger eventLogger) throws BundleException {
 
         BundleContext systemBundleContext = getSystemBundleContext();
-        Bundle userRegionFactoryBundle = userRegionBundleContext.getBundle();
+        Bundle userRegionFactoryBundle = this.bundleContext.getBundle();
 
         Region kernelRegion = getKernelRegion(regionDigraph);
         kernelRegion.removeBundle(userRegionFactoryBundle);
@@ -161,12 +160,12 @@ public final class Activator implements BundleActivator {
         RegionFilter userRegionFilter = createUserRegionFilter();
         kernelRegion.connectRegion(userRegion, userRegionFilter);
 
-        notifyUserRegionStarting(userRegionBundleContext);
+        notifyUserRegionStarting(this.bundleContext);
 
         initialiseUserRegionBundles(userRegion);
 
         registerRegionService(userRegion);
-        publishUserRegionBundleContext(userRegionBundleContext);
+        publishUserRegionBundleContext(this.bundleContext);
     }
 
     private RegionFilter createUserRegionFilter() throws BundleException {
@@ -190,7 +189,7 @@ public final class Activator implements BundleActivator {
     private RegionFilter createKernelFilter(BundleContext systemBundleContext, EventLogger eventLogger) throws BundleException {
         RegionFilter kernelFilter = new StandardRegionFilter();
         allowImportedBundles(kernelFilter, eventLogger);
-        kernelFilter.setPackageImportPolicy(createUserRegionPackageImportPolicy(systemBundleContext));
+        kernelFilter.setPackageImportPolicy(createUserRegionPackageImportPolicy(systemBundleContext, eventLogger));
         Filter serviceFilter;
         try {
             serviceFilter = this.bundleContext.createFilter(classesToFilter(this.regionServiceImports));
@@ -231,23 +230,22 @@ public final class Activator implements BundleActivator {
         StringBuffer filter = new StringBuffer();
         filter.append("(|");
         for (String className : classes) {
-            filter.append("(objectClass=" + className + ")");
+            filter.append("(objectClass=").append(className).append(")");
         }
         filter.append(")");
         return filter.toString();
     }
 
-    private UserRegionPackageImportPolicy createUserRegionPackageImportPolicy(BundleContext systemBundleContext) {
+    private UserRegionPackageImportPolicy createUserRegionPackageImportPolicy(BundleContext systemBundleContext, EventLogger eventLogger) {
         String userRegionImportsProperty = this.regionPackageImports != null ? this.regionPackageImports
             : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
         String expandedUserRegionImportsProperty = null;
         if (userRegionImportsProperty != null) {
             expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
-                systemBundleContext);
+                systemBundleContext, eventLogger);
         }
 
-        UserRegionPackageImportPolicy userRegionPackageImportPolicy = new UserRegionPackageImportPolicy(expandedUserRegionImportsProperty);
-        return userRegionPackageImportPolicy;
+        return new UserRegionPackageImportPolicy(expandedUserRegionImportsProperty);
     }
 
     private BundleContext getSystemBundleContext() {

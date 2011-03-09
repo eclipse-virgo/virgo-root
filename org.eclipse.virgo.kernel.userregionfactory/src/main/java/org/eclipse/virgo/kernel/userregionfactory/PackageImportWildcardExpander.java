@@ -18,7 +18,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -46,17 +45,10 @@ final class PackageImportWildcardExpander {
 
     private static final String wildcard = "*";
 
-    static String expandPackageImportsWildcards(String userRegionImportsProperty, BundleContext bundleContext) {
-        ServiceReference<EventLogger> eventLoggerServiceReference = bundleContext.getServiceReference(EventLogger.class);
-        EventLogger eventLogger = bundleContext.getService(eventLoggerServiceReference);
+    static String expandPackageImportsWildcards(String userRegionImportsProperty, BundleContext systemBundleContext, EventLogger eventLogger) {
+        String[] exportedPackageNames = getExportedPackageNames(systemBundleContext);
 
-        String[] exportedPackageNames = getExportedPackageNames(bundleContext);
-
-        String expandedUserRegionImportsProperty = expandWildcards(userRegionImportsProperty, exportedPackageNames, eventLogger);
-
-        bundleContext.ungetService(eventLoggerServiceReference);
-
-        return expandedUserRegionImportsProperty;
+        return expandWildcards(userRegionImportsProperty, exportedPackageNames, eventLogger);
     }
 
     private static String[] getExportedPackageNames(BundleContext bundleContext) {
@@ -64,7 +56,7 @@ final class PackageImportWildcardExpander {
         for (ExportedPackage exportedPackage : getExportedPackages(bundleContext)) {
             exportedPackageNames.add(exportedPackage.getName());
         }
-        return exportedPackageNames.toArray(new String[] {});
+        return exportedPackageNames.toArray(new String[exportedPackageNames.size()]);
     }
 
     private static ExportedPackage[] getExportedPackages(BundleContext bundleContext) {
@@ -132,7 +124,7 @@ final class PackageImportWildcardExpander {
             }
         }
         if (expansions.isEmpty()) {
-            eventLogger.log(OsgiFrameworkLogEvents.REGION_IMPORT_NO_MATCH, wildcardedPackageName);
+            eventLogger.log(UserRegionFactoryLogEvents.REGION_IMPORT_NO_MATCH, wildcardedPackageName);
         }
         return expansions;
     }
