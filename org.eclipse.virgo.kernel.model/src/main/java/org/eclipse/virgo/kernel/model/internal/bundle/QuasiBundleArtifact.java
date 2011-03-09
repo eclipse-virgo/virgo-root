@@ -172,4 +172,40 @@ final class QuasiBundleArtifact implements Artifact {
         return Collections.<String, String> emptyMap();
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((quasiBundle == null) ? 0 : quasiBundle.hashCode());
+        return result;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof QuasiBundleArtifact)) {
+            return false;
+        }
+        QuasiBundleArtifact other = (QuasiBundleArtifact) obj;
+        if (quasiBundle == null) {
+            if (other.quasiBundle != null) {
+                return false;
+            }
+        } else if (!quasiBundle.equals(other.quasiBundle)) {
+            return false;
+        }
+        return true;
+    }
+
 }
