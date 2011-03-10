@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
+import org.eclipse.virgo.util.osgi.VersionRange;
 
 
 /**
@@ -41,6 +42,22 @@ public class StubQuery implements Query {
     public Query addFilter(String name, String value, Map<String, Set<String>> properties) {
         this.attribFilters.put(name, value);
         return this;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange) {
+        throw new UnsupportedOperationException("setVersionRangeFilter not implemented in stub");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange, VersionRangeMatchingStrategy strategy) {
+        throw new UnsupportedOperationException("setVersionRangeFilter not implemented in stub");
     }
 
     public Set<RepositoryAwareArtifactDescriptor> run() {

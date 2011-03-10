@@ -20,8 +20,8 @@ import java.util.TreeSet;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.osgi.framework.Version;
-
 
 /**
  * <strong>Concurrent Semantics</strong><br />
@@ -53,6 +53,28 @@ class ChainedQuery implements Query {
     public Query addFilter(String name, String value, Map<String, Set<String>> properties) {
         for (Query query : this.queries) {
             query.addFilter(name, value, properties);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange) {
+        for (Query query : this.queries) {
+            query.setVersionRangeFilter(versionRange);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Query setVersionRangeFilter(VersionRange versionRange, VersionRangeMatchingStrategy strategy) {
+        for (Query query : this.queries) {
+            query.setVersionRangeFilter(versionRange, strategy);
         }
         return this;
     }
@@ -133,7 +155,7 @@ class ChainedQuery implements Query {
          * {@inheritDoc}
          */
         public int compareTo(ComparableArtifactDescriptor o) {
-            return this.index - o.index; 
+            return this.index - o.index;
         }
 
         @Override

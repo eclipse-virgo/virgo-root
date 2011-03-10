@@ -59,18 +59,6 @@ public final class ArtifactDescriptorBuilder {
     }
 
     /**
-     * Sets the URI for the {@link ArtifactDescriptor} being created. This method converts the {@link String} to a
-     * proper {@link URI} internally. This conversion may fail if the input is not a properly formed URI string.
-     * 
-     * @param uri the URI for the {@link ArtifactDescriptor} being created
-     * @return <code>this</code> {@link ArtifactDescriptorBuilder}
-     */
-    public ArtifactDescriptorBuilder setUri(String uri) {
-        this.uri = URI.create(uri);
-        return this;
-    }
-
-    /**
      * Sets the type for the {@link ArtifactDescriptor} being created
      * 
      * @param type the type for the {@link ArtifactDescriptor} being created

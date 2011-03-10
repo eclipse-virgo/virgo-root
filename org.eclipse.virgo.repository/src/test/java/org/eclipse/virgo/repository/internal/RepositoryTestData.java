@@ -20,11 +20,7 @@ import java.util.Set;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.repository.builder.ArtifactDescriptorBuilder;
-import org.eclipse.virgo.repository.internal.DelegatingRepositoryAwareArtifactDescriptor;
-import org.eclipse.virgo.repository.internal.IdentityUriMapper;
-import org.eclipse.virgo.repository.internal.StandardAttribute;
 import org.osgi.framework.Version;
-
 
 public final class RepositoryTestData {
 
@@ -430,6 +426,10 @@ public final class RepositoryTestData {
         TEST_ATTRIBUTE_PARAMETERS_THREE);
 
     private RepositoryTestData() {
+    }
+
+    static RepositoryAwareArtifactDescriptor createDescriptor(String type, String name, Version version, Set<Attribute> attributes) {
+        return createDescriptor(URI.create(TESTING_DIRECTORY + name + "." + type), type, name, version, attributes);
     }
 
     private static RepositoryAwareArtifactDescriptor createDescriptor(URI uri, String type, String name, Version version, Set<Attribute> attributes) {
