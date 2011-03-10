@@ -16,6 +16,7 @@
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.console" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
+		<dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="lib->runtime"/>
 	</dependencies>
 
 </ivy-module>
