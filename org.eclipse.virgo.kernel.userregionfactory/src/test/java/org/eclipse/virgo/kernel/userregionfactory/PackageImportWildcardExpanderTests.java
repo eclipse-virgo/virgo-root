@@ -44,7 +44,6 @@ public class PackageImportWildcardExpanderTests {
 
         this.mockEventLogger = createMock(EventLogger.class);
         replay(this.mockEventLogger);
-        this.stubBundleContext.registerService(EventLogger.class.getName(), this.mockEventLogger, null);
 
         this.mockPackageAdmin = createMock(PackageAdmin.class);
         this.exportedPackages = new ExportedPackage[] { createdMockExportedPackage("q"), createdMockExportedPackage("r.a"),
@@ -63,13 +62,13 @@ public class PackageImportWildcardExpanderTests {
 
     @Test
     public void testNoWildcards() {
-        String expansion = PackageImportWildcardExpander.expandPackageImportsWildcards("p,r", this.stubBundleContext);
+        String expansion = PackageImportWildcardExpander.expandPackageImportsWildcards("p,r", this.stubBundleContext, mockEventLogger);
         assertEquals("Incorrect expansion", "p,r", expansion);
     }
 
     @Test
     public void testWildcards() {
-        String expansion = PackageImportWildcardExpander.expandPackageImportsWildcards("r.*", this.stubBundleContext);
+        String expansion = PackageImportWildcardExpander.expandPackageImportsWildcards("r.*", this.stubBundleContext, mockEventLogger);
         assertEquals("Incorrect expansion", "r.a,r.b.c", expansion);
     }
 

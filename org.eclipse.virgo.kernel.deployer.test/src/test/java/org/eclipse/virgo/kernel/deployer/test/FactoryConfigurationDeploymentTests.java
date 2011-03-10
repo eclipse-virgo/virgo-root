@@ -1,3 +1,15 @@
+/*
+ * This file is part of the Eclipse Virgo project.
+ *
+ * Copyright (c) 2011 Chariot Solutions, LLC
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    dsklyut - initial contribution
+ */
 
 package org.eclipse.virgo.kernel.deployer.test;
 
@@ -24,6 +36,10 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 
+/**
+ * Tests for Configuration artifacts that support ManagedServiceFactory
+ *
+ */
 public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegrationTest {
 
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
@@ -165,7 +181,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             // copy file to hot deploy location
             hotDeployConfiguration.store(new FileOutputStream(target), "no comment");
 
-            ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(configAdmin, factoryPid);
+            ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(0, service.deleteCount());
@@ -177,7 +193,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
 
             // remove the file and let it be removed
             target.delete();
-            ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(configAdmin, factoryPid);
+            ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(this.configAdmin, factoryPid);
 
             assertEquals(0, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
@@ -219,7 +235,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             // copy file to hot deploy location
             hotDeployConfiguration.store(new FileOutputStream(target), "initial");
 
-            ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(configAdmin, factoryPid);
+            ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             // let events propagate
             Thread.sleep(100);
             assertEquals(1, countFactoryConfigurations(factoryPid));
@@ -249,7 +265,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
 
             // remove the file and let it be removed
             target.delete();
-            ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(configAdmin, factoryPid);
+            ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(this.configAdmin, factoryPid);
 
             assertEquals(0, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount());
@@ -260,18 +276,18 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             }
         }
     }
-    
+
     @Test
     @SuppressWarnings("rawtypes")
     public void testHotDeployMultipleFactoryConfiguration() throws Exception {
 
         final String factoryPid = "test.factory.pid.hot.multiple";
-        
+
         final Properties configOne = new Properties();
         configOne.setProperty(ConfigurationAdmin.SERVICE_FACTORYPID, factoryPid);
         configOne.setProperty("prop1", "prop1");
         configOne.setProperty("prop2", "1");
-        
+
         final Properties configTwo = new Properties();
         configTwo.setProperty(ConfigurationAdmin.SERVICE_FACTORYPID, factoryPid);
         configTwo.setProperty("prop1", "prop2");
@@ -286,7 +302,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         if (targetTwo.exists()) {
             assertTrue(targetTwo.delete());
         }
-        
+
         try {
 
             Hashtable<String, String> properties = new Hashtable<String, String>();
@@ -299,14 +315,14 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
 
             // copy file to hot deploy location
             configOne.store(new FileOutputStream(targetOne), "initial");
-            
-            ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(configAdmin, factoryPid);
+
+            ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             // let events propagate
             Thread.sleep(100);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(0, service.deleteCount());
-            
+
             // validate first configuration
             Dictionary propertiesFromService = service.getProperties();
             assertNotNull(propertiesFromService);
@@ -318,17 +334,17 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             assertEquals(2, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount());
             assertEquals(0, service.deleteCount());
-            
+
             propertiesFromService = service.getProperties();
             assertNotNull(propertiesFromService);
             assertEquals("prop2", propertiesFromService.get("prop1"));
             assertEquals("2", propertiesFromService.get("prop2"));
-            
+
             assertTrue(targetOne.delete());
             assertTrue(targetTwo.delete());
-            
+
             // let events propagate and update happen
-            ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(configAdmin, factoryPid);
+            ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(this.configAdmin, factoryPid);
             assertEquals(0, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount());
             assertEquals(2, service.deleteCount());
