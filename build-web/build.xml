@@ -4,13 +4,13 @@
 	<path id="unit.test.bundles">
 		<pathelement location="../org.eclipse.virgo.web.dm"/>
 		<pathelement location="../org.eclipse.virgo.web.core"/>
-		<pathelement location="../org.eclipse.virgo.web.tomcat"/>
+		<pathelement location="../org.eclipse.virgo.web.tomcat.support"/>
 	</path>
 
 	<path id="bundles">
 		<path refid="unit.test.bundles" />
 		<pathelement location="../org.eclipse.virgo.web.test"/>
-		<pathelement location="../org.eclipse.virgo.web"/>
+		<pathelement location="../org.eclipse.virgo.web.tomcat"/>
 	</path>
 
 	<property file="${basedir}/../build.properties"/>

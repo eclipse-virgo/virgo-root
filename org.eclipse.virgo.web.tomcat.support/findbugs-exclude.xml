@@ -3,7 +3,7 @@
      <!-- Exclusions -->
      <Match>
        	<Bug pattern="DM_EXIT"/>
-        <Class name="org.eclipse.virgo.web.tomcat.ServerLifecycleLoggingListener"/>
+        <Class name="org.eclipse.virgo.web.tomcat.support.ServerLifecycleLoggingListener"/>
         <Or>
             <Method name="checkPortAvailability"/>
         </Or>

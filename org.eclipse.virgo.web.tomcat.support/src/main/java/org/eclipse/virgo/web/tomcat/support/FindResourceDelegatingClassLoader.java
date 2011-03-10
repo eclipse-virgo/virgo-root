@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.web.tomcat;
+package org.eclipse.virgo.web.tomcat.support;
 
 import java.io.IOException;
 import java.net.URL;

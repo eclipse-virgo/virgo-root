@@ -13,12 +13,12 @@
 	
 	<service ref="customizer" interface="org.eclipse.gemini.web.tomcat.spi.ClassLoaderCustomizer"/>
 	
-	<beans:bean class="org.eclipse.virgo.web.tomcat.ApplicationNameTrackingDelegate" factory-method="getInstance">
+	<beans:bean class="org.eclipse.virgo.web.tomcat.support.ApplicationNameTrackingDelegate" factory-method="getInstance">
 		<beans:property name="tracingService" ref="tracingService"/>
 		<beans:property name="registry" ref="registry"/>
 	</beans:bean>
 
-	<beans:bean id="customizer" class="org.eclipse.virgo.web.tomcat.ServerClassLoaderCustomizer">
+	<beans:bean id="customizer" class="org.eclipse.virgo.web.tomcat.support.ServerClassLoaderCustomizer">
 		<beans:constructor-arg ref="framework"/>
 	</beans:bean>
 </beans:beans>

@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.web.tomcat;
+package org.eclipse.virgo.web.tomcat.support;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.security.AccessController;

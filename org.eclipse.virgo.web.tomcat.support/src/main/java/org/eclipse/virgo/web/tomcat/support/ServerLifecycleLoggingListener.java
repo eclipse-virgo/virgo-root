@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.web.tomcat;
+package org.eclipse.virgo.web.tomcat.support;
 
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;

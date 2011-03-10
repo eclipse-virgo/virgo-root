@@ -1,4 +1,4 @@
-<plan name="org.eclipse.virgo.web" version="3.0.0" scoped="false" atomic="false"
+<plan name="org.eclipse.virgo.web.tomcat" version="3.0.0" scoped="false" atomic="false"
                 xmlns="http://www.eclipse.org/virgo/schema/plan"
 				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				xsi:schemaLocation="
@@ -9,5 +9,5 @@
         <artifact type="bundle" name="org.eclipse.gemini.web.tomcat" version="[1.0, 2.0)"/>
         <artifact type="bundle" name="org.eclipse.virgo.web.core" version="[3.0, 4.0)"/>
         <artifact type="bundle" name="org.eclipse.virgo.web.dm" version="[3.0, 4.0)"/>
-        <artifact type="bundle" name="org.eclipse.virgo.web.tomcat" version="[3.0, 4.0)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.web.tomcat.support" version="[3.0, 4.0)"/>
 </plan>
