@@ -12,14 +12,10 @@
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.Stack;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -61,107 +57,36 @@ public final class RegionBundleFindHook implements FindHook {
 
         bundles.retainAll(allowed);
     }
-
-    private class Visitor implements RegionDigraphVisitor {
-
-        private final Collection<Bundle> bundles;
-
-        private final Stack<Set<Bundle>> allowedStack = new Stack<Set<Bundle>>();
-
-        private Object monitor = new Object();
-
-        private Set<Bundle> allowed;
-
-        private Visitor(Collection<Bundle> bundles) {
-            this.bundles = bundles;
-            synchronized (this.monitor) {
-                this.allowed = new HashSet<Bundle>();
-            }
-        }
-
-        private Set<Bundle> getAllowed() {
-            synchronized (this.monitor) {
-                return this.allowed;
-            }
-        }
-
-        private void allow(Bundle b) {
-            synchronized (this.monitor) {
-                this.allowed.add(b);
-            }
-        }
+    
+    private class Visitor extends RegionDigraphVisitorBase<Bundle> {
         
-        
-        private void allow(Set<Bundle> a) {
-            synchronized (this.monitor) {
-                this.allowed.addAll(a);
-            }
-        }
-        
-        private void pushAllowed() {
-            synchronized (this.monitor) {
-                this.allowedStack.push(this.allowed);
-                this.allowed = new HashSet<Bundle>();
-            }
+        private Visitor(Collection<Bundle> candidates) {
+            super(candidates);
         }
 
-        private Set<Bundle> popAllowed() {
-            synchronized (this.monitor) {
-                Set<Bundle> a = this.allowed;
-                this.allowed = this.allowedStack.pop();
-                return a;
-            }
-        }
-        
-        /**
+        /** 
          * {@inheritDoc}
          */
-        public boolean visit(Region r) {
-            for (Bundle b : this.bundles) {
-                if (r.contains(b)) {
-                    allow(b);
-                }
-            }
-            return true;
+        @Override
+        protected boolean contains(Region region, Bundle candidate) {
+            return region.contains(candidate);
         }
 
-        /**
+        /** 
          * {@inheritDoc}
          */
-        public boolean preEdgeTraverse(RegionFilter regionFilter) {
-            pushAllowed();
-            return true;
-        }
-
-        /**
+        /** 
          * {@inheritDoc}
          */
-        public void postEdgeTraverse(RegionFilter regionFilter) {
-            Set<Bundle> a = popAllowed();
-            filter(a, regionFilter);
-            allow(a);
+        @Override
+        protected boolean isAllowed(Bundle candidate, RegionFilter filter) {
+            return filter.isBundleAllowed(candidate.getSymbolicName(), candidate.getVersion());
         }
-
-        private void filter(Set<Bundle> bundles, RegionFilter filter) {
-            Iterator<Bundle> i = bundles.iterator();
-            while (i.hasNext()) {
-                Bundle b = i.next();
-                if (!filter.isBundleAllowed(b.getSymbolicName(), b.getVersion())) {
-                    i.remove();
-                }
-            }
-        }
-
+        
     }
-
+    
     private Region getRegion(BundleContext context) {
-        Bundle b = context.getBundle();
-        for (Region r : this.regionDigraph) {
-            if (r.contains(b)) {
-                return r;
-            }
-        }
-        return null;
+        return this.regionDigraph.getRegion(context.getBundle());
     }
 
 }

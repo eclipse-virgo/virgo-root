@@ -12,17 +12,12 @@
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.hooks.service.FindHook;
 
@@ -57,63 +52,39 @@ public final class RegionServiceFindHook implements FindHook {
             return;
         }
 
-        Set<ServiceReference<?>> allowed = getAllowed(finderRegion, references, new HashSet<Region>());
+        Visitor visitor = new Visitor(references);
+        finderRegion.visitSubgraph(visitor);
+        Set<ServiceReference<?>> allowed = visitor.getAllowed();
 
         references.retainAll(allowed);
     }
-    
-    private Set<ServiceReference<?>> getAllowed(Region r, Collection<ServiceReference<?>> references, Set<Region> path) {
-        Set<ServiceReference<?>> allowed = new HashSet<ServiceReference<?>>();
 
-        if (!path.contains(r)) {
-            allowServiceReferencesInRegion(allowed, r, references);
-            allowImportedBundles(allowed, r, references, path);
+    private class Visitor extends RegionDigraphVisitorBase<ServiceReference<?>> {
+
+        private Visitor(Collection<ServiceReference<?>> candidates) {
+            super(candidates);
         }
 
-        return allowed;
-    }
-
-    private void allowImportedBundles(Set<ServiceReference<?>> allowed, Region r, Collection<ServiceReference<?>> references, Set<Region> path) {
-        for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            Set<ServiceReference<?>> a = getAllowed(fr.getRegion(), references, extendPath(r, path));
-            filter(a, fr.getFilter());
-            allowed.addAll(a);
+        /** 
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean contains(Region region, ServiceReference<?> candidate) {
+            return region.contains(candidate.getBundle());
         }
-    }
 
-    private void allowServiceReferencesInRegion(Set<ServiceReference<?>> allowed, Region r, Collection<ServiceReference<?>> references) {
-        for (ServiceReference<?> b : references) {
-            if (r.contains(b.getBundle())) {
-                allowed.add(b);
-            }
+        /** 
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean isAllowed(ServiceReference<?> candidate, RegionFilter filter) {
+            return filter.getServiceFilter().match(candidate);
         }
-    }
 
-    private Set<Region> extendPath(Region r, Set<Region> path) {
-        Set<Region> newPath = new HashSet<Region>(path);
-        newPath.add(r);
-        return newPath;
-    }
-
-    private void filter(Set<ServiceReference<?>> references, RegionFilter filter) {
-        Filter serviceFilter = filter.getServiceFilter();
-        Iterator<ServiceReference<?>> i = references.iterator();
-        while (i.hasNext()) {
-            ServiceReference<?> sr = i.next();
-            if (!serviceFilter.match(sr)) {
-                i.remove();
-            }
-        }
     }
 
     private Region getRegion(BundleContext context) {
-        Bundle b = context.getBundle();
-        for (Region r : this.regionDigraph) {
-            if (r.contains(b)) {
-                return r;
-            }
-        }
-        return null;
+        return this.regionDigraph.getRegion(context.getBundle());
     }
 
 }
