@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
@@ -54,53 +55,76 @@ public final class RegionBundleFindHook implements FindHook {
             return;
         }
 
-        Set<Bundle> allowed = getAllowed(finderRegion, bundles, new HashSet<Region>());
+        Visitor visitor = new Visitor(bundles);
+        getAllowed(finderRegion, visitor, new HashSet<Region>());
+        Set<Bundle> allowed = visitor.getAllowed();
 
         bundles.retainAll(allowed);
     }
 
     private class Visitor {
 
+        private Object monitor = new Object();
+
         private final Collection<Bundle> bundles;
 
-        private final Set<Bundle> allowed = new HashSet<Bundle>();
+        private Set<Bundle> allowed = new HashSet<Bundle>();
+
+        private final Stack<Set<Bundle>> allowedStack = new Stack<Set<Bundle>>();
 
         private Visitor(Collection<Bundle> bundles) {
             this.bundles = bundles;
         }
 
         private Set<Bundle> getAllowed() {
-            return this.allowed;
+            synchronized (this.monitor) {
+                return this.allowed;
+            }
         }
 
         private Collection<Bundle> getBundles() {
             return this.bundles;
         }
+
+        private void pushAllowed() {
+            synchronized (this.monitor) {
+                this.allowedStack.push(this.allowed);
+                this.allowed = new HashSet<Bundle>();
+            }
+        }
+
+        private void popAllowed() {
+            synchronized (this.monitor) {
+                this.allowed = this.allowedStack.pop();
+            }
+        }
     }
 
-    private Set<Bundle> getAllowed(Region r, Collection<Bundle> bundles, Set<Region> path) {
-        Visitor visitor = new Visitor(bundles);
+    private Set<Bundle> getAllowed(Region r, Visitor visitor, Set<Region> path) {
 
         if (!path.contains(r)) {
-            allowBundlesInRegion(visitor.getAllowed(), r, visitor.getBundles());
-            allowImportedBundles(visitor.getAllowed(), r, visitor.getBundles(), path);
+            allowBundlesInRegion(r, visitor);
+            allowImportedBundles(r, visitor, path);
         }
 
         return visitor.getAllowed();
     }
 
-    private void allowImportedBundles(Set<Bundle> allowed, Region r, Collection<Bundle> bundles, Set<Region> path) {
+    private void allowImportedBundles(Region r, Visitor visitor, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            Set<Bundle> a = getAllowed(fr.getRegion(), bundles, extendPath(r, path));
+            visitor.pushAllowed();
+            getAllowed(fr.getRegion(), visitor, extendPath(r, path));
+            Set<Bundle> a = visitor.getAllowed();
+            visitor.popAllowed();
             filter(a, fr.getFilter());
-            allowed.addAll(a);
+            visitor.getAllowed().addAll(a);
         }
     }
 
-    private void allowBundlesInRegion(Set<Bundle> allowed, Region r, Collection<Bundle> bundles) {
-        for (Bundle b : bundles) {
+    private void allowBundlesInRegion(Region r, Visitor visitor) {
+        for (Bundle b : visitor.getBundles()) {
             if (r.contains(b)) {
-                allowed.add(b);
+                visitor.getAllowed().add(b);
             }
         }
     }
