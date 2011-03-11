@@ -61,19 +61,29 @@ public final class RegionBundleFindHook implements FindHook {
 
     private class Visitor {
 
-        private Set<Bundle> allowed = new HashSet<Bundle>();
+        private final Collection<Bundle> bundles;
 
-        Set<Bundle> getAllowed() {
+        private final Set<Bundle> allowed = new HashSet<Bundle>();
+
+        private Visitor(Collection<Bundle> bundles) {
+            this.bundles = bundles;
+        }
+
+        private Set<Bundle> getAllowed() {
             return this.allowed;
+        }
+
+        private Collection<Bundle> getBundles() {
+            return this.bundles;
         }
     }
 
     private Set<Bundle> getAllowed(Region r, Collection<Bundle> bundles, Set<Region> path) {
-        Visitor visitor = new Visitor();
+        Visitor visitor = new Visitor(bundles);
 
         if (!path.contains(r)) {
-            allowBundlesInRegion(visitor.getAllowed(), r, bundles);
-            allowImportedBundles(visitor.getAllowed(), r, bundles, path);
+            allowBundlesInRegion(visitor.getAllowed(), r, visitor.getBundles());
+            allowImportedBundles(visitor.getAllowed(), r, visitor.getBundles(), path);
         }
 
         return visitor.getAllowed();
