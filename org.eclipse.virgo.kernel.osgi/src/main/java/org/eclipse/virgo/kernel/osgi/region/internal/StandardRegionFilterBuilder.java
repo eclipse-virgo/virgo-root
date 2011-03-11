@@ -22,7 +22,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
-public class StandardRegionFilterBuilder implements RegionFilterBuilder {
+final class StandardRegionFilterBuilder implements RegionFilterBuilder {
 
     private final Object monitor = new Object();
 

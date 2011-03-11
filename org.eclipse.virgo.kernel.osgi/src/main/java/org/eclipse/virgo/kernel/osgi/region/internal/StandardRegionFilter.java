@@ -23,11 +23,11 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRevision;
 
-public class StandardRegionFilter implements RegionFilter {
+final class StandardRegionFilter implements RegionFilter {
 
     private final Map<String, Collection<Filter>> filters;
 
-    public StandardRegionFilter(Map<String, Collection<Filter>> filters) {
+    StandardRegionFilter(Map<String, Collection<Filter>> filters) {
         if (filters == null) {
             throw new IllegalArgumentException("filters must not be null.");
         }
