@@ -24,13 +24,21 @@ import org.osgi.framework.InvalidSyntaxException;
 public interface RegionFilterBuilder {
 
     /**
-     * Allow capabilities with the given namespace matching the given filter.
+     * Allow capabilities with the given name space matching the given filter.
      * 
-     * @param namespace the namespace of the capabilities to be allowed
+     * @param namespace the name space of the capabilities to be allowed
      * @param filter the filter matching the capabilities to be allowed
      * @return this builder (for method chaining)
      */
     RegionFilterBuilder allow(String namespace, String filter) throws InvalidSyntaxException;
+
+    /**
+     * Allow all capabilities with the given name space.
+     * 
+     * @param namespace the name space of the capabilities to be allowed
+     * @return this builder (for method chaining)
+     */
+    RegionFilterBuilder allowAll(String namespace);
 
     /**
      * Build a {@link RegionFilter} from the current state of this builder.

@@ -24,6 +24,19 @@ import org.osgi.framework.InvalidSyntaxException;
 
 final class StandardRegionFilterBuilder implements RegionFilterBuilder {
 
+    private final static String ALL_SPEC = "(|(!(all=*))(all=*))";
+
+    private final static Filter ALL;
+    static {
+        try {
+            ALL = FrameworkUtil.createFilter(ALL_SPEC);
+        } catch (InvalidSyntaxException e) {
+            // should never happen!
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     private final Object monitor = new Object();
 
     private final Map<String, Collection<Filter>> policy = new HashMap<String, Collection<Filter>>();
@@ -42,6 +55,22 @@ final class StandardRegionFilterBuilder implements RegionFilterBuilder {
             }
             // TODO need to use BundleContext.createFilter here
             namespaceFilters.add(FrameworkUtil.createFilter(filter));
+        }
+        return this;
+    }
+
+    public RegionFilterBuilder allowAll(String namespace) {
+        if (namespace == null)
+            throw new IllegalArgumentException("The namespace must not be null.");
+        synchronized (this.monitor) {
+            Collection<Filter> namespaceFilters = policy.get(namespace);
+            if (namespaceFilters == null) {
+                namespaceFilters = new ArrayList<Filter>();
+                policy.put(namespace, namespaceFilters);
+            }
+            // remove any other filters since this will override them all.
+            namespaceFilters.clear();
+            namespaceFilters.add(ALL);
         }
         return this;
     }

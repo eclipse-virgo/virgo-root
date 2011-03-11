@@ -52,7 +52,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
@@ -115,11 +114,7 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
         Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDigraph) {
-        try {
-            TOP = regionDigraph.createRegionFilterBuilder().allow(RegionFilter.VISIBLE_ALL_NAMESPACE, TOP_FILTER).build();
-        } catch (InvalidSyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        TOP = regionDigraph.createRegionFilterBuilder().allowAll(RegionFilter.VISIBLE_ALL_NAMESPACE).build();
         this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
