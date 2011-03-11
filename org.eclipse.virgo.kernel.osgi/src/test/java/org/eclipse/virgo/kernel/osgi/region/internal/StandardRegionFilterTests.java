@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,9 +49,33 @@ public class StandardRegionFilterTests {
 
     private String serviceImportPolicy = "(" + Constants.OBJECTCLASS + "=foo.Service)";
 
+    private BundleCapability fooPackage;
+
+    private BundleCapability barPackage;
+
+    private ServiceRegistration<Object> fooService;
+
+    private ServiceRegistration<Object> barService;
+
     @Before
     public void setUp() throws Exception {
         this.stubBundle = new StubBundle(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
+        this.fooService = new StubServiceRegistration<Object>(new StubBundleContext(), "foo.Service");
+        this.barService = new StubServiceRegistration<Object>(new StubBundleContext(), "bar.Service");
+
+        this.fooPackage = EasyMock.createMock(BundleCapability.class);
+        Map<String, Object> fooAttrs = new HashMap<String, Object>();
+        fooAttrs.put(BundleRevision.PACKAGE_NAMESPACE, "foo");
+        EasyMock.expect(fooPackage.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
+        EasyMock.expect(fooPackage.getAttributes()).andReturn(fooAttrs).anyTimes();
+        EasyMock.replay(fooPackage);
+
+        this.barPackage = EasyMock.createMock(BundleCapability.class);
+        Map<String, Object> barAttrs = new HashMap<String, Object>();
+        barAttrs.put(BundleRevision.PACKAGE_NAMESPACE, "bar");
+        EasyMock.expect(barPackage.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
+        EasyMock.expect(barPackage.getAttributes()).andReturn(barAttrs).anyTimes();
+        EasyMock.replay(barPackage);
     }
 
     @After
@@ -74,15 +97,21 @@ public class StandardRegionFilterTests {
     }
 
     @Test
-    public void testAllowBundle() throws InvalidSyntaxException {
+    public void testBundleAllow() throws InvalidSyntaxException {
         RegionFilter regionFilter = createBundleFilter(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
         assertTrue(regionFilter.isAllowed(stubBundle));
     }
 
     @Test
-    public void testBundleNotAllowed() throws InvalidSyntaxException {
-        RegionFilter regionFilter = new StandardRegionFilter(Collections.EMPTY_MAP);
+    public void testBundleAllNotAllowed() {
+        RegionFilter regionFilter = new StandardRegionFilterBuilder().build();
         assertFalse(regionFilter.isAllowed(stubBundle));
+    }
+
+    @Test
+    public void testBundleAllAllowed() {
+        RegionFilter regionFilter = new StandardRegionFilterBuilder().allowAll(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).build();
+        assertTrue(regionFilter.isAllowed(stubBundle));
     }
 
     @Test
@@ -92,44 +121,71 @@ public class StandardRegionFilterTests {
     }
 
     @Test
-    public void testPackageImportAllowed() throws InvalidSyntaxException {
+    public void testCapabilityAllowed() throws InvalidSyntaxException {
         RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
-        BundleCapability packageCapability = EasyMock.createMock(BundleCapability.class);
-        Map<String, Object> attrs = new HashMap<String, Object>();
-        attrs.put(BundleRevision.PACKAGE_NAMESPACE, "foo");
-        EasyMock.expect(packageCapability.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
-        EasyMock.expect(packageCapability.getAttributes()).andReturn(attrs).anyTimes();
-        EasyMock.replay(packageCapability);
-        assertTrue(regionFilter.isAllowed(packageCapability));
+        assertTrue(regionFilter.isAllowed(fooPackage));
         assertEquals(Arrays.asList(this.packageImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_PACKAGE_NAMESPACE));
     }
 
     @Test
-    public void testPackageImportNotAllowed() throws InvalidSyntaxException {
+    public void testCapabilityAllNotAllowed() {
+        RegionFilter regionFilter = new StandardRegionFilterBuilder().build();
+        assertFalse(regionFilter.isAllowed(barPackage));
+    }
+
+    @Test
+    public void testCapabilityAllAllowed() {
+        RegionFilter regionFilter = new StandardRegionFilterBuilder().allowAll(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).build();
+        assertTrue(regionFilter.isAllowed(barPackage));
+    }
+
+    @Test
+    public void testCapabilityNotAllowed() throws InvalidSyntaxException {
         RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, Arrays.asList(packageImportPolicy));
-        BundleCapability packageCapability = EasyMock.createMock(BundleCapability.class);
-        Map<String, Object> attrs = new HashMap<String, Object>();
-        attrs.put(BundleRevision.PACKAGE_NAMESPACE, "bar");
-        EasyMock.expect(packageCapability.getNamespace()).andReturn(BundleRevision.PACKAGE_NAMESPACE).anyTimes();
-        EasyMock.expect(packageCapability.getAttributes()).andReturn(attrs).anyTimes();
-        EasyMock.replay(packageCapability);
-        assertFalse(regionFilter.isAllowed(packageCapability));
+        assertFalse(regionFilter.isAllowed(barPackage));
         assertEquals(Arrays.asList(this.packageImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_PACKAGE_NAMESPACE));
     }
 
     @Test
-    public void testServiceImportAllowed() throws InvalidSyntaxException {
+    public void testServiceAllowed() throws InvalidSyntaxException {
         RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_SERVICE_NAMESPACE, Arrays.asList(serviceImportPolicy));
-        ServiceRegistration<?> reg = new StubServiceRegistration<Object>(new StubBundleContext(), "foo.Service");
-        assertTrue(regionFilter.isAllowed(reg.getReference()));
+        assertTrue(regionFilter.isAllowed(fooService.getReference()));
         assertEquals(Arrays.asList(serviceImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_SERVICE_NAMESPACE));
     }
 
     @Test
-    public void testServiceImportNotAllowed() throws InvalidSyntaxException {
+    public void testServiceAllNotAllowed() {
+        RegionFilter regionFilter = new StandardRegionFilterBuilder().build();
+        assertFalse(regionFilter.isAllowed(fooService.getReference()));
+    }
+
+    @Test
+    public void testServiceAllAllowed() {
+        RegionFilter regionFilter = new StandardRegionFilterBuilder().allowAll(RegionFilter.VISIBLE_SERVICE_NAMESPACE).build();
+        assertTrue(regionFilter.isAllowed(fooService.getReference()));
+    }
+
+    @Test
+    public void testServiceNotAllowed() throws InvalidSyntaxException {
         RegionFilter regionFilter = createRegionFilter(RegionFilter.VISIBLE_SERVICE_NAMESPACE, Arrays.asList(serviceImportPolicy));
-        ServiceRegistration<?> reg = new StubServiceRegistration<Object>(new StubBundleContext(), "bar.Service");
-        assertFalse(regionFilter.isAllowed(reg.getReference()));
+        assertFalse(regionFilter.isAllowed(barService.getReference()));
         assertEquals(Arrays.asList(serviceImportPolicy), regionFilter.getSharingPolicy().get(RegionFilter.VISIBLE_SERVICE_NAMESPACE));
+    }
+
+    @Test
+    public void testAllNamespace() throws InvalidSyntaxException {
+        RegionFilter regionFilterNotAllowed = new StandardRegionFilterBuilder().allow(RegionFilter.VISIBLE_ALL_NAMESPACE, "(all=namespace)").build();
+        assertFalse(regionFilterNotAllowed.isAllowed(stubBundle));
+        assertFalse(regionFilterNotAllowed.isAllowed(fooPackage));
+        assertFalse(regionFilterNotAllowed.isAllowed(barPackage));
+        assertFalse(regionFilterNotAllowed.isAllowed(fooService.getReference()));
+        assertFalse(regionFilterNotAllowed.isAllowed(barService.getReference()));
+
+        RegionFilter regionFilterAllAllowed = new StandardRegionFilterBuilder().allowAll(RegionFilter.VISIBLE_ALL_NAMESPACE).build();
+        assertTrue(regionFilterAllAllowed.isAllowed(stubBundle));
+        assertTrue(regionFilterAllAllowed.isAllowed(fooPackage));
+        assertTrue(regionFilterAllAllowed.isAllowed(barPackage));
+        assertTrue(regionFilterAllAllowed.isAllowed(fooService.getReference()));
+        assertTrue(regionFilterAllAllowed.isAllowed(barService.getReference()));
     }
 }
