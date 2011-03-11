@@ -36,8 +36,11 @@ public final class RegionBundleFindHook implements FindHook {
 
     private final RegionDigraph regionDigraph;
 
+    private final SubgraphTraverser subgraphTraverser;
+
     public RegionBundleFindHook(RegionDigraph regionDigraph) {
         this.regionDigraph = regionDigraph;
+        this.subgraphTraverser = new SubgraphTraverser(regionDigraph);
     }
 
     /**
@@ -56,7 +59,7 @@ public final class RegionBundleFindHook implements FindHook {
         }
 
         Visitor visitor = new Visitor(bundles);
-        visitSubgraph(finderRegion, visitor);
+        subgraphTraverser.visitSubgraph(finderRegion, visitor);
         Set<Bundle> allowed = visitor.getAllowed();
 
         bundles.retainAll(allowed);
@@ -66,9 +69,9 @@ public final class RegionBundleFindHook implements FindHook {
 
         void visit(Region r);
 
-        void preEdge(FilteredRegion fr);
+        void preEdgeTraverse(FilteredRegion fr);
 
-        void postEdge(FilteredRegion fr);
+        void postEdgeTraverse(FilteredRegion fr);
         
     }
 
@@ -92,14 +95,14 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
-        public void preEdge(FilteredRegion fr) {
+        public void preEdgeTraverse(FilteredRegion fr) {
             synchronized (this.monitor) {
                 this.allowedStack.push(this.allowed);
                 this.allowed = new HashSet<Bundle>();
             }
         }
         
-        public void postEdge(FilteredRegion fr) {
+        public void postEdgeTraverse(FilteredRegion fr) {
             Set<Bundle> a = getAllowed();
             popAllowed();
             filter(a, fr.getFilter());
@@ -131,32 +134,6 @@ public final class RegionBundleFindHook implements FindHook {
         }
     }
     
-    private void visitSubgraph(Region finderRegion, Visitor visitor) {
-        visitRemainingSubgraph(finderRegion, visitor, new HashSet<Region>());
-    }
-
-    private void visitRemainingSubgraph(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
-        if (!path.contains(r)) {
-            visitor.visit(r);
-            traverseEdges(r, visitor, path);
-        }
-    }
-
-    private void traverseEdges(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
-        for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            visitor.preEdge(fr);
-            visitRemainingSubgraph(fr.getRegion(), visitor, extendPath(r, path));
-            visitor.postEdge(fr);
-        }
-    }
-
-    private Set<Region> extendPath(Region r, Set<Region> path) {
-        Set<Region> newPath = new HashSet<Region>(path);
-        newPath.add(r);
-        return newPath;
-    }
-
-
     private Region getRegion(BundleContext context) {
         Bundle b = context.getBundle();
         for (Region r : this.regionDigraph) {
