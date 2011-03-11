@@ -98,12 +98,20 @@ public final class RegionBundleFindHook implements FindHook {
                 this.allowed = this.allowedStack.pop();
             }
         }
+        
+        private void allowInRegion(Region r) {
+            for (Bundle b : this.bundles) {
+                if (r.contains(b)) {
+                    getAllowed().add(b);
+                }
+            }
+        }
     }
 
     private Set<Bundle> getAllowed(Region r, Visitor visitor, Set<Region> path) {
 
         if (!path.contains(r)) {
-            allowBundlesInRegion(r, visitor);
+            visitor.allowInRegion(r);
             allowImportedBundles(r, visitor, path);
         }
 
@@ -112,21 +120,17 @@ public final class RegionBundleFindHook implements FindHook {
 
     private void allowImportedBundles(Region r, Visitor visitor, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            visitor.pushAllowed();
-            getAllowed(fr.getRegion(), visitor, extendPath(r, path));
-            Set<Bundle> a = visitor.getAllowed();
-            visitor.popAllowed();
-            filter(a, fr.getFilter());
-            visitor.getAllowed().addAll(a);
+            allowTransitive(r, visitor, path, fr);
         }
     }
 
-    private void allowBundlesInRegion(Region r, Visitor visitor) {
-        for (Bundle b : visitor.getBundles()) {
-            if (r.contains(b)) {
-                visitor.getAllowed().add(b);
-            }
-        }
+    private void allowTransitive(Region r, Visitor visitor, Set<Region> path, FilteredRegion fr) {
+        visitor.pushAllowed();
+        getAllowed(fr.getRegion(), visitor, extendPath(r, path));
+        Set<Bundle> a = visitor.getAllowed();
+        visitor.popAllowed();
+        filter(a, fr.getFilter());
+        visitor.getAllowed().addAll(a);
     }
 
     private Set<Region> extendPath(Region r, Set<Region> path) {
