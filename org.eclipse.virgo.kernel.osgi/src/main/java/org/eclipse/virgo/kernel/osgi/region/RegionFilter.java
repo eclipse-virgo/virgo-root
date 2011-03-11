@@ -83,7 +83,7 @@ public interface RegionFilter {
      * @param bundle the bundle
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    public boolean isBundleAllowed(Bundle bundle);
+    public boolean isAllowed(Bundle bundle);
 
     /**
      * Determines whether this filter allows the given bundle
@@ -91,7 +91,7 @@ public interface RegionFilter {
      * @param bundle the bundle revision
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    public boolean isBundleAllowed(BundleRevision bundle);
+    public boolean isAllowed(BundleRevision bundle);
 
     /**
      * Determines whether this filter allows the given service reference.
@@ -99,7 +99,7 @@ public interface RegionFilter {
      * @param service the service reference of the service
      * @return <code>true</code> if the service is allowed and <code>false</code>otherwise
      */
-    public boolean isServiceAllowed(ServiceReference<?> service);
+    public boolean isAllowed(ServiceReference<?> service);
 
     /**
      * Determines whether this filter allows the given capability.
@@ -107,7 +107,7 @@ public interface RegionFilter {
      * @param capability the bundle capability
      * @return <code>true</code> if the capability is allowed and <code>false</code>otherwise
      */
-    public boolean isCapabilityAllowed(BundleCapability capability);
+    public boolean isAllowed(BundleCapability capability);
 
     /**
      * Returns a map of the filters used by each name space for this region filter. The may key is the name space and

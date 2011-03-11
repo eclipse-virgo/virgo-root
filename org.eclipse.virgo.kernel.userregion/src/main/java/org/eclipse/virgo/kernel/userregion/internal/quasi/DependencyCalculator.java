@@ -361,7 +361,7 @@ public final class DependencyCalculator {
                 Region userRegion = edge.getRegion();
                 RegionFilter filter = edge.getFilter();
                 long bundleId = bundleDescription.getBundleId();
-                if ((bundleId == 0L || this.coregion.contains(bundleId) || (filter.isBundleAllowed(bundleDescription) && userRegion.contains(bundleId)))) {
+                if ((bundleId == 0L || this.coregion.contains(bundleId) || (filter.isAllowed(bundleDescription) && userRegion.contains(bundleId)))) {
                     return true;
                 }
             }

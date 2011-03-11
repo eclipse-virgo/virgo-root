@@ -45,7 +45,7 @@ final class StandardRegionFilter implements RegionFilter {
      * @param bundle the bundle
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    public boolean isBundleAllowed(Bundle bundle) {
+    public boolean isAllowed(Bundle bundle) {
         HashMap<String, Object> attrs = new HashMap<String, Object>(3);
         String bsn = bundle.getSymbolicName();
         if (bsn != null)
@@ -60,7 +60,7 @@ final class StandardRegionFilter implements RegionFilter {
      * @param bundle the bundle revision
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    public boolean isBundleAllowed(BundleRevision bundle) {
+    public boolean isAllowed(BundleRevision bundle) {
         HashMap<String, Object> attrs = new HashMap<String, Object>(3);
         String bsn = bundle.getSymbolicName();
         if (bsn != null)
@@ -107,7 +107,7 @@ final class StandardRegionFilter implements RegionFilter {
      * @param service the service reference of the service
      * @return <code>true</code> if the service is allowed and <code>false</code>otherwise
      */
-    public boolean isServiceAllowed(ServiceReference<?> service) {
+    public boolean isAllowed(ServiceReference<?> service) {
         if (match(filters.get(VISIBLE_SERVICE_NAMESPACE), service))
             return true;
         return match(filters.get(VISIBLE_ALL_NAMESPACE), service);
@@ -119,7 +119,7 @@ final class StandardRegionFilter implements RegionFilter {
      * @param capability the bundle capability
      * @return <code>true</code> if the capability is allowed and <code>false</code>otherwise
      */
-    public boolean isCapabilityAllowed(BundleCapability capability) {
+    public boolean isAllowed(BundleCapability capability) {
         String namespace = capability.getNamespace();
         Map<String, ?> attrs = capability.getAttributes();
         if (match(filters.get(namespace), attrs))

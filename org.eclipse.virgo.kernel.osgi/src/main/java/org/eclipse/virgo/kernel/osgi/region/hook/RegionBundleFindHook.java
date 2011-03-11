@@ -77,7 +77,7 @@ public final class RegionBundleFindHook implements FindHook {
          */
         @Override
         protected boolean isAllowed(Bundle candidate, RegionFilter filter) {
-            return filter.isBundleAllowed(candidate);
+            return filter.isAllowed(candidate);
         }
 
     }

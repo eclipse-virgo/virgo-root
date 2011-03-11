@@ -88,7 +88,7 @@ final class RegionResolverHook implements ResolverHook {
 
         @Override
         protected boolean isAllowed(BundleCapability candidate, RegionFilter filter) {
-            return filter.isCapabilityAllowed(candidate) || filter.isBundleAllowed(candidate.getRevision());
+            return filter.isAllowed(candidate) || filter.isAllowed(candidate.getRevision());
         }
 
     }

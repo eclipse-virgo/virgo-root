@@ -78,7 +78,7 @@ public final class RegionServiceFindHook implements FindHook {
          */
         @Override
         protected boolean isAllowed(ServiceReference<?> candidate, RegionFilter filter) {
-            return filter.isServiceAllowed(candidate) || filter.isBundleAllowed(candidate.getBundle());
+            return filter.isAllowed(candidate) || filter.isAllowed(candidate.getBundle());
         }
 
     }
