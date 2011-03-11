@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
@@ -184,9 +185,9 @@ final class BundleIdBasedRegion implements Region {
      * {@inheritDoc}
      */
     @Override
-    public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
+    public void connectRegion(Region headRegion, RegionFilter filter) throws BundleException {
         synchronized (this.updateMonitor) {
-            this.regionDigraph.connect(this, filter, tailRegion);
+            this.regionDigraph.connect(this, filter, headRegion);
         }
     }
 
@@ -271,6 +272,11 @@ final class BundleIdBasedRegion implements Region {
     @Override
     public Set<FilteredRegion> getEdges() {
         return this.regionDigraph.getEdges(this);
+    }
+
+    @Override
+    public void visitSubgraph(RegionDigraphVisitor visitor) {
+       this.regionDigraph.visitSubgraph(this, visitor);
     }
 
 }

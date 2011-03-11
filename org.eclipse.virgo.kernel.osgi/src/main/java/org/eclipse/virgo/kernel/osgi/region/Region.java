@@ -141,8 +141,8 @@ public interface Region {
     Bundle getBundle(String symbolicName, Version version);
 
     /**
-     * Connects this region to the given tail region and associates the given {@link RegionFilter} with the connection.
-     * This region may then, subject to the region filter, see bundles, packages, and services visible in the tail
+     * Connects this region to the given head region and associates the given {@link RegionFilter} with the connection.
+     * This region may then, subject to the region filter, see bundles, packages, and services visible in the head
      * region.
      * <p>
      * If the filter allows the same bundle symbolic name and version as a bundle already present in this region or a
@@ -152,11 +152,11 @@ public interface Region {
      * If the given source region is already connected to the given tail region, then BundleException with exception
      * type UNSUPPORTED_OPERATION is thrown.
      * 
-     * @param tailRegion the region to connect this region to
+     * @param headRegion the region to connect this region to
      * @param filter a {@link RegionFilter} which controls what is visible across the connection
      * @throws BundleException if the connection was not created
      */
-    void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException;
+    void connectRegion(Region headRegion, RegionFilter filter) throws BundleException;
 
     /**
      * Removes the given bundle from this region. If the given bundle does not belong to this region, this is not an
@@ -181,5 +181,12 @@ public interface Region {
      * @return a {@link Set} of {@link FilteredRegion FilteredRegions} of head regions and region filters
      */
     Set<FilteredRegion> getEdges();
+    
+    /**
+     * Visit the subgraph connected to this region.
+     * 
+     * @param visitor a {@link RegionDigraphVisitor} to be called as the subgraph is navigated
+     */
+    void visitSubgraph(RegionDigraphVisitor visitor);
 
 }

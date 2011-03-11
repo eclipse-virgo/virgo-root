@@ -12,14 +12,12 @@
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.osgi.framework.Bundle;
@@ -65,7 +63,9 @@ final class RegionResolverHook implements ResolverHook {
                 return;
             }
 
-            Set<BundleCapability> allowed = getAllowed(requirerRegion, candidates, new HashSet<Region>());
+            Visitor visitor = new Visitor(candidates);
+            requirerRegion.visitSubgraph(visitor);
+            Set<BundleCapability> allowed = visitor.getAllowed();
 
             candidates.retainAll(allowed);
         } finally {
@@ -73,6 +73,24 @@ final class RegionResolverHook implements ResolverHook {
                 debugExit(requirer, candidates);
             }
         }
+    }
+
+    private class Visitor extends RegionDigraphVisitorBase<BundleCapability> {
+
+        private Visitor(Collection<BundleCapability> candidates) {
+            super(candidates);
+        }
+
+        @Override
+        protected boolean contains(Region region, BundleCapability candidate) {
+            return region.equals(getRegion(candidate.getRevision()));
+        }
+
+        @Override
+        protected boolean isAllowed(BundleCapability candidate, RegionFilter filter) {
+            return filter.isCapabilityAllowed(candidate) || filter.isBundleAllowed(candidate.getRevision());
+        }
+
     }
 
     private Region getRegion(BundleRevision bundleRevision) {
@@ -102,55 +120,8 @@ final class RegionResolverHook implements ResolverHook {
         return INVALID_BUNDLE_ID;
     }
 
-    private Set<BundleCapability> getAllowed(Region r, Collection<BundleCapability> candidates, Set<Region> path) {
-        Set<BundleCapability> allowed = new HashSet<BundleCapability>();
-
-        if (!path.contains(r)) {
-            allowCapabilitiesInRegion(allowed, r, candidates);
-            allowImportedCapabilities(allowed, r, candidates, path);
-        }
-
-        return allowed;
-    }
-
-    private void allowImportedCapabilities(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates, Set<Region> path) {
-        for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            Set<BundleCapability> a = getAllowed(fr.getRegion(), candidates, extendPath(r, path));
-            filter(a, fr.getFilter());
-            allowed.addAll(a);
-        }
-    }
-
-    private void allowCapabilitiesInRegion(Set<BundleCapability> allowed, Region r, Collection<BundleCapability> candidates) {
-        for (BundleCapability b : candidates) {
-            if (r.equals(getRegion(b.getRevision()))) {
-                allowed.add(b);
-            }
-        }
-    }
-
-    private Set<Region> extendPath(Region r, Set<Region> path) {
-        Set<Region> newPath = new HashSet<Region>(path);
-        newPath.add(r);
-        return newPath;
-    }
-
-    private void filter(Set<BundleCapability> capabilities, RegionFilter filter) {
-        Iterator<BundleCapability> i = capabilities.iterator();
-        while (i.hasNext()) {
-            BundleCapability c = i.next();
-            if (!filter.isCapabilityAllowed(c) && !filter.isBundleAllowed(c.getRevision()))
-                i.remove();
-        }
-    }
-
     private Region getRegion(Bundle bundle) {
-        for (Region r : this.regionDigraph) {
-            if (r.contains(bundle)) {
-                return r;
-            }
-        }
-        return null;
+        return this.regionDigraph.getRegion(bundle);
     }
 
     @Override

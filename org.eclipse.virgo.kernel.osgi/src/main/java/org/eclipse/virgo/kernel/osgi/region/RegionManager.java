@@ -113,6 +113,7 @@ final class RegionManager {
         this.tracker.track(this.bundleContext.registerService(org.osgi.framework.hooks.service.FindHook.class, serviceFindHook, null));
     }
 
+    @SuppressWarnings("deprecation")
     private void registerServiceEventHook(org.osgi.framework.hooks.service.EventHook serviceEventHook) {
         this.tracker.track(this.bundleContext.registerService(org.osgi.framework.hooks.service.EventHook.class, serviceEventHook, null));
     }

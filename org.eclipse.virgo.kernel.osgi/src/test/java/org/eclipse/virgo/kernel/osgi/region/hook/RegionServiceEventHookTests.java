@@ -34,6 +34,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.hooks.service.EventHook;
 import org.osgi.framework.hooks.service.FindHook;
 
+@SuppressWarnings("deprecation")
 public class RegionServiceEventHookTests {
 
     private FindHook mockFindHook;

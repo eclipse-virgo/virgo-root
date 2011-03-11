@@ -11,23 +11,14 @@
 
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.FindHook;
 
 /**
@@ -60,61 +51,38 @@ public final class RegionBundleFindHook implements FindHook {
             return;
         }
 
-        Set<Bundle> allowed = getAllowed(finderRegion, bundles, new HashSet<Region>());
+        Visitor visitor = new Visitor(bundles);
+        finderRegion.visitSubgraph(visitor);
+        Set<Bundle> allowed = visitor.getAllowed();
 
         bundles.retainAll(allowed);
     }
 
-    private Set<Bundle> getAllowed(Region r, Collection<Bundle> bundles, Set<Region> path) {
-        Set<Bundle> allowed = new HashSet<Bundle>();
-        
-        if (!path.contains(r)) {
-            allowBundlesInRegion(allowed, r, bundles);
-            allowImportedBundles(allowed, r, bundles, path);
+    private class Visitor extends RegionDigraphVisitorBase<Bundle> {
+
+        private Visitor(Collection<Bundle> candidates) {
+            super(candidates);
         }
 
-        return allowed;
-    }
-
-    private void allowImportedBundles(Set<Bundle> allowed, Region r, Collection<Bundle> bundles, Set<Region> path) {
-        for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
-            Set<Bundle> a = getAllowed(fr.getRegion(), bundles, extendPath(r, path));
-            filter(a, fr.getFilter());
-            allowed.addAll(a);
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean contains(Region region, Bundle candidate) {
+            return region.contains(candidate);
         }
-    }
 
-    private void allowBundlesInRegion(Set<Bundle> allowed, Region r, Collection<Bundle> bundles) {
-        for (Bundle b : bundles) {
-            if (r.contains(b)) {
-                allowed.add(b);
-            }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean isAllowed(Bundle candidate, RegionFilter filter) {
+            return filter.isBundleAllowed(candidate);
         }
-    }
 
-    private Set<Region> extendPath(Region r, Set<Region> path) {
-        Set<Region> newPath = new HashSet<Region>(path);
-        newPath.add(r);
-        return newPath;
-    }
-
-    private void filter(Set<Bundle> bundles, RegionFilter filter) {
-        Iterator<Bundle> i = bundles.iterator();
-        while (i.hasNext()) {
-            Bundle b = i.next();
-            if (!filter.isBundleAllowed(b)) {
-                i.remove();
-            }
-        }
     }
 
     private Region getRegion(BundleContext context) {
-        Bundle b = context.getBundle();
-        for (Region r : this.regionDigraph) {
-            if (r.contains(b)) {
-                return r;
-            }
-        }
-        return null;
+        return this.regionDigraph.getRegion(context.getBundle());
     }
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.kernel.osgi.region.RegionLifecycleListener;
@@ -54,7 +55,10 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private final ThreadLocal<Region> threadLocal;
 
+    private SubgraphTraverser subgraphTraverser;
+
     public StandardRegionDigraph(BundleContext bundleContext, ThreadLocal<Region> threadLocal) {
+        this.subgraphTraverser = new SubgraphTraverser();
         this.systemBundleContext = bundleContext.getBundle(0L).getBundleContext();
         this.threadLocal = threadLocal;
     }
@@ -298,6 +302,14 @@ public final class StandardRegionDigraph implements RegionDigraph {
             e.printStackTrace();
         }
         return listeners;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void visitSubgraph(Region startingRegion, RegionDigraphVisitor visitor) {
+        this.subgraphTraverser.visitSubgraph(startingRegion, visitor);
     }
 
     /**

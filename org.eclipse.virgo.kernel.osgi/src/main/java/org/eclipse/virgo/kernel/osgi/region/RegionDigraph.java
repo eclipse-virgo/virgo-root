@@ -140,5 +140,13 @@ public interface RegionDigraph extends Iterable<Region> {
      * @return a {@link Set} of {@link FilteredRegion FilteredRegions} of head regions and region filters
      */
     Set<FilteredRegion> getEdges(Region tailRegion);
+    
+    /**
+     * Visit the subgraph connected to the given region.
+     * 
+     * @param startingRegion the region at which to start
+     * @param visitor a {@link RegionDigraphVisitor} to be called as the subgraph is navigated
+     */
+    void visitSubgraph(Region startingRegion, RegionDigraphVisitor visitor);
 
 }

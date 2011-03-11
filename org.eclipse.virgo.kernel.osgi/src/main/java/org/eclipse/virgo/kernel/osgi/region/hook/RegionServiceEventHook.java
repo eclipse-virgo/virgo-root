@@ -37,6 +37,7 @@ import org.osgi.framework.hooks.service.FindHook;
  * <strong>Concurrent Semantics</strong><br />
  * Thread safe.
  */
+@SuppressWarnings("deprecation")
 public final class RegionServiceEventHook implements EventHook {
 
     private final FindHook serviceFindHook;
