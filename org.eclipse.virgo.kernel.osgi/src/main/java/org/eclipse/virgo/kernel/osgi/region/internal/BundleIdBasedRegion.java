@@ -185,9 +185,9 @@ final class BundleIdBasedRegion implements Region {
      * {@inheritDoc}
      */
     @Override
-    public void connectRegion(Region tailRegion, RegionFilter filter) throws BundleException {
+    public void connectRegion(Region headRegion, RegionFilter filter) throws BundleException {
         synchronized (this.updateMonitor) {
-            this.regionDigraph.connect(this, filter, tailRegion);
+            this.regionDigraph.connect(this, filter, headRegion);
         }
     }
 
