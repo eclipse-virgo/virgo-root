@@ -61,7 +61,7 @@ public final class RegionServiceFindHook implements FindHook {
 
         references.retainAll(allowed);
     }
-
+    
     private Set<ServiceReference<?>> getAllowed(Region r, Collection<ServiceReference<?>> references, Set<Region> path) {
         Set<ServiceReference<?>> allowed = new HashSet<ServiceReference<?>>();
 

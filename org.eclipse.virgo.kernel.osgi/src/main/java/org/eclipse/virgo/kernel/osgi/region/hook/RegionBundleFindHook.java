@@ -64,16 +64,19 @@ public final class RegionBundleFindHook implements FindHook {
 
     private class Visitor implements RegionDigraphVisitor {
 
-        private Object monitor = new Object();
-
         private final Collection<Bundle> bundles;
-
-        private Set<Bundle> allowed = new HashSet<Bundle>();
 
         private final Stack<Set<Bundle>> allowedStack = new Stack<Set<Bundle>>();
 
+        private Object monitor = new Object();
+
+        private Set<Bundle> allowed;
+
         private Visitor(Collection<Bundle> bundles) {
             this.bundles = bundles;
+            synchronized (this.monitor) {
+                this.allowed = new HashSet<Bundle>();
+            }
         }
 
         private Set<Bundle> getAllowed() {
@@ -82,20 +85,47 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
+        private void allow(Bundle b) {
+            synchronized (this.monitor) {
+                this.allowed.add(b);
+            }
+        }
+        
+        
+        private void allow(Set<Bundle> a) {
+            synchronized (this.monitor) {
+                this.allowed.addAll(a);
+            }
+        }
+        
         private void pushAllowed() {
             synchronized (this.monitor) {
                 this.allowedStack.push(this.allowed);
                 this.allowed = new HashSet<Bundle>();
             }
         }
-        
-        private void popAllowed() {
+
+        private Set<Bundle> popAllowed() {
             synchronized (this.monitor) {
+                Set<Bundle> a = this.allowed;
                 this.allowed = this.allowedStack.pop();
+                return a;
             }
         }
         
-        /** 
+        /**
+         * {@inheritDoc}
+         */
+        public boolean visit(Region r) {
+            for (Bundle b : this.bundles) {
+                if (r.contains(b)) {
+                    allow(b);
+                }
+            }
+            return true;
+        }
+
+        /**
          * {@inheritDoc}
          */
         public boolean preEdgeTraverse(RegionFilter regionFilter) {
@@ -103,14 +133,13 @@ public final class RegionBundleFindHook implements FindHook {
             return true;
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         public void postEdgeTraverse(RegionFilter regionFilter) {
-            Set<Bundle> a = getAllowed();
-            popAllowed();
+            Set<Bundle> a = popAllowed();
             filter(a, regionFilter);
-            getAllowed().addAll(a);
+            allow(a);
         }
 
         private void filter(Set<Bundle> bundles, RegionFilter filter) {
@@ -123,19 +152,8 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
-        /** 
-         * {@inheritDoc}
-         */
-        public boolean visit(Region r) {
-            for (Bundle b : this.bundles) {
-                if (r.contains(b)) {
-                    getAllowed().add(b);
-                }
-            }
-            return true;
-        }
     }
-    
+
     private Region getRegion(BundleContext context) {
         Bundle b = context.getBundle();
         for (Region r : this.regionDigraph) {
