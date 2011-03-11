@@ -61,8 +61,18 @@ public final class RegionBundleFindHook implements FindHook {
 
         bundles.retainAll(allowed);
     }
+    
+    public interface RegionDigraphVisitor {
 
-    private class Visitor {
+        void visit(Region r);
+
+        void preEdge(FilteredRegion fr);
+
+        void postEdge(FilteredRegion fr);
+        
+    }
+
+    private class Visitor implements RegionDigraphVisitor {
 
         private Object monitor = new Object();
 
@@ -82,18 +92,14 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
-        private Collection<Bundle> getBundles() {
-            return this.bundles;
-        }
-
-        private void preEdge(FilteredRegion fr) {
+        public void preEdge(FilteredRegion fr) {
             synchronized (this.monitor) {
                 this.allowedStack.push(this.allowed);
                 this.allowed = new HashSet<Bundle>();
             }
         }
         
-        private void postEdge(FilteredRegion fr) {
+        public void postEdge(FilteredRegion fr) {
             Set<Bundle> a = getAllowed();
             popAllowed();
             filter(a, fr.getFilter());
@@ -110,15 +116,13 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
-
-
         private void popAllowed() {
             synchronized (this.monitor) {
                 this.allowed = this.allowedStack.pop();
             }
         }
         
-        private void visit(Region r) {
+        public void visit(Region r) {
             for (Bundle b : this.bundles) {
                 if (r.contains(b)) {
                     getAllowed().add(b);
@@ -127,17 +131,14 @@ public final class RegionBundleFindHook implements FindHook {
         }
     }
 
-    private Set<Bundle> getAllowed(Region r, Visitor visitor, Set<Region> path) {
-
+    private void getAllowed(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
         if (!path.contains(r)) {
             visitor.visit(r);
             allowImportedBundles(r, visitor, path);
         }
-
-        return visitor.getAllowed();
     }
 
-    private void allowImportedBundles(Region r, Visitor visitor, Set<Region> path) {
+    private void allowImportedBundles(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
             visitor.preEdge(fr);
             getAllowed(fr.getRegion(), visitor, extendPath(r, path));
