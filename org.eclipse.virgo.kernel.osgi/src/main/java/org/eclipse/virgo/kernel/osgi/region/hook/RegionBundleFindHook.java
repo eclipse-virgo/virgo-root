@@ -19,6 +19,7 @@ import java.util.Stack;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.osgi.framework.Bundle;
@@ -36,11 +37,8 @@ public final class RegionBundleFindHook implements FindHook {
 
     private final RegionDigraph regionDigraph;
 
-    private final SubgraphTraverser subgraphTraverser;
-
     public RegionBundleFindHook(RegionDigraph regionDigraph) {
         this.regionDigraph = regionDigraph;
-        this.subgraphTraverser = new SubgraphTraverser(regionDigraph);
     }
 
     /**
@@ -59,20 +57,10 @@ public final class RegionBundleFindHook implements FindHook {
         }
 
         Visitor visitor = new Visitor(bundles);
-        subgraphTraverser.visitSubgraph(finderRegion, visitor);
+        this.regionDigraph.visitSubgraph(finderRegion, visitor);
         Set<Bundle> allowed = visitor.getAllowed();
 
         bundles.retainAll(allowed);
-    }
-
-    public interface RegionDigraphVisitor {
-
-        void visit(Region r);
-
-        void preEdgeTraverse(FilteredRegion fr);
-
-        void postEdgeTraverse(FilteredRegion fr);
-        
     }
 
     private class Visitor implements RegionDigraphVisitor {
