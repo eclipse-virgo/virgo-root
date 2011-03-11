@@ -56,12 +56,12 @@ public final class RegionBundleFindHook implements FindHook {
         }
 
         Visitor visitor = new Visitor(bundles);
-        getAllowed(finderRegion, visitor, new HashSet<Region>());
+        visitSubgraph(finderRegion, visitor);
         Set<Bundle> allowed = visitor.getAllowed();
 
         bundles.retainAll(allowed);
     }
-    
+
     public interface RegionDigraphVisitor {
 
         void visit(Region r);
@@ -130,18 +130,22 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
     }
+    
+    private void visitSubgraph(Region finderRegion, Visitor visitor) {
+        visitRemainingSubgraph(finderRegion, visitor, new HashSet<Region>());
+    }
 
-    private void getAllowed(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
+    private void visitRemainingSubgraph(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
         if (!path.contains(r)) {
             visitor.visit(r);
-            allowImportedBundles(r, visitor, path);
+            traverseEdges(r, visitor, path);
         }
     }
 
-    private void allowImportedBundles(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
+    private void traverseEdges(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
         for (FilteredRegion fr : this.regionDigraph.getEdges(r)) {
             visitor.preEdge(fr);
-            getAllowed(fr.getRegion(), visitor, extendPath(r, path));
+            visitRemainingSubgraph(fr.getRegion(), visitor, extendPath(r, path));
             visitor.postEdge(fr);
         }
     }
