@@ -181,5 +181,12 @@ public interface Region {
      * @return a {@link Set} of {@link FilteredRegion FilteredRegions} of head regions and region filters
      */
     Set<FilteredRegion> getEdges();
+    
+    /**
+     * Visit the subgraph connected to this region.
+     * 
+     * @param visitor a {@link RegionDigraphVisitor} to be called as the subgraph is navigated
+     */
+    void visitSubgraph(RegionDigraphVisitor visitor);
 
 }

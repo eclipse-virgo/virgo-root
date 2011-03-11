@@ -57,7 +57,7 @@ public final class RegionBundleFindHook implements FindHook {
         }
 
         Visitor visitor = new Visitor(bundles);
-        this.regionDigraph.visitSubgraph(finderRegion, visitor);
+        finderRegion.visitSubgraph(visitor);
         Set<Bundle> allowed = visitor.getAllowed();
 
         bundles.retainAll(allowed);
