@@ -20,7 +20,6 @@ import java.util.Stack;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -83,17 +82,34 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
-        public void preEdgeTraverse(FilteredRegion fr) {
+        private void pushAllowed() {
             synchronized (this.monitor) {
                 this.allowedStack.push(this.allowed);
                 this.allowed = new HashSet<Bundle>();
             }
         }
         
-        public void postEdgeTraverse(FilteredRegion fr) {
+        private void popAllowed() {
+            synchronized (this.monitor) {
+                this.allowed = this.allowedStack.pop();
+            }
+        }
+        
+        /** 
+         * {@inheritDoc}
+         */
+        public boolean preEdgeTraverse(RegionFilter regionFilter) {
+            pushAllowed();
+            return true;
+        }
+
+        /** 
+         * {@inheritDoc}
+         */
+        public void postEdgeTraverse(RegionFilter regionFilter) {
             Set<Bundle> a = getAllowed();
             popAllowed();
-            filter(a, fr.getFilter());
+            filter(a, regionFilter);
             getAllowed().addAll(a);
         }
 
@@ -107,18 +123,16 @@ public final class RegionBundleFindHook implements FindHook {
             }
         }
 
-        private void popAllowed() {
-            synchronized (this.monitor) {
-                this.allowed = this.allowedStack.pop();
-            }
-        }
-        
-        public void visit(Region r) {
+        /** 
+         * {@inheritDoc}
+         */
+        public boolean visit(Region r) {
             for (Bundle b : this.bundles) {
                 if (r.contains(b)) {
                     getAllowed().add(b);
                 }
             }
+            return true;
         }
     }
     

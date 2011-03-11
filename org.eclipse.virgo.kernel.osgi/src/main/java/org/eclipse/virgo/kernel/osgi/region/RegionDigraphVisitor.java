@@ -13,8 +13,6 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
-
 /**
  * {@link RegionDigraphVisitor} is used to traverse a subgraph of a {@link RegionDigraph}.
  * <p />
@@ -25,10 +23,28 @@ import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
  */
 public interface RegionDigraphVisitor {
 
-    void visit(Region r);
+    /**
+     * Visits the given region and determines whether or not to continue traversing.
+     * 
+     * @param region the region to visit
+     * @return <code>true</code> if the traversal is to continue and <code>false</code> otherwise
+     */
+    boolean visit(Region region);
 
-    void preEdgeTraverse(FilteredRegion fr);
+    /**
+     * Prepares to traverse an edge with the given {@link RegionFilter} and determines whether or not to traverse the
+     * edge.
+     * 
+     * @param regionFilter the {@link RegionFilter} of the edge to be traversed
+     * @return <code>true</code> if the edge is to be traversed and <code>false</code> otherwise
+     */
+    boolean preEdgeTraverse(RegionFilter regionFilter);
 
-    void postEdgeTraverse(FilteredRegion fr);
+    /**
+     * This is called after traversing an edge with the given {@link RegionFilter}.
+     * 
+     * @param regionFilter the {@link RegionFilter} of the edge that has just been traversed
+     */
+    void postEdgeTraverse(RegionFilter regionFilter);
 
 }

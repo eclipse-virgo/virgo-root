@@ -36,16 +36,21 @@ final class SubgraphTraverser {
 
     private void visitRemainingSubgraph(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
         if (!path.contains(r)) {
-            visitor.visit(r);
-            traverseEdges(r, visitor, path);
+            if (visitor.visit(r)) {
+                traverseEdges(r, visitor, path);
+            }
         }
     }
 
     private void traverseEdges(Region r, RegionDigraphVisitor visitor, Set<Region> path) {
         for (FilteredRegion fr : r.getEdges()) {
-            visitor.preEdgeTraverse(fr);
-            visitRemainingSubgraph(fr.getRegion(), visitor, extendPath(r, path));
-            visitor.postEdgeTraverse(fr);
+            if (visitor.preEdgeTraverse(fr.getFilter())) {
+                try {
+                    visitRemainingSubgraph(fr.getRegion(), visitor, extendPath(r, path));
+                } finally {
+                    visitor.postEdgeTraverse(fr.getFilter());
+                }
+            }
         }
     }
 
