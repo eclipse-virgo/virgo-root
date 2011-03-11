@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.kernel.userregionfactory;
 
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.manifest.parse.ParserLogger;
 
@@ -37,6 +36,6 @@ final class UserRegionFactoryParserLogger implements ParserLogger {
     }
 
     public void outputErrorMsg(Exception re, String item) {
-        this.eventLogger.log(OsgiFrameworkLogEvents.REGION_IMPORTS_PARSE_FAILED, re, item);
+        this.eventLogger.log(UserRegionFactoryLogEvents.REGION_IMPORTS_PARSE_FAILED, re, item);
     }
 }

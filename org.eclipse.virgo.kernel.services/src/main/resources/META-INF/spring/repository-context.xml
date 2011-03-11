@@ -48,6 +48,9 @@
 	
 	<bean id="propertiesBridge" class="org.eclipse.virgo.kernel.artifact.properties.PropertiesBridge">
 		<constructor-arg ref="hashGenerator"/>
+		<constructor-arg>
+		  <osgi:reference interface="org.osgi.service.cm.ConfigurationAdmin"/>
+		</constructor-arg>
 	</bean>
 	<osgi:service ref="propertiesBridge" interface="org.eclipse.virgo.repository.ArtifactBridge"/>
 	

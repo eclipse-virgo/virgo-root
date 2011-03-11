@@ -14,8 +14,6 @@ package org.eclipse.virgo.kernel.artifact.par;
 import java.io.File;
 import java.io.IOException;
 
-import org.osgi.framework.Version;
-
 import org.eclipse.virgo.kernel.artifact.internal.BundleManifestUtils;
 import org.eclipse.virgo.repository.ArtifactBridge;
 import org.eclipse.virgo.repository.ArtifactDescriptor;

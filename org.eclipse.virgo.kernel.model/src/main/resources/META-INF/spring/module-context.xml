@@ -27,6 +27,7 @@
 	<bean id="bundleDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.bundle.BundleDependencyDeterminer">
 		<constructor-arg ref="quasiFrameworkFactory"/>
 		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="packageAdminUtil"/>
 	</bean>
 
 	<bean id="deployerCompositeArtifactDependencyDeterminer"
@@ -35,7 +36,6 @@
 	</bean>
 
 	<bean id="artifactRepository" class="org.eclipse.virgo.kernel.model.internal.NotifyingRuntimeArtifactRepository">
-		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="artifactRepositoryListener"/>
 	</bean>
 

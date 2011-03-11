@@ -109,7 +109,7 @@ final class BundleArtifact extends AbstractArtifact {
         }
     }
 
-    private ArtifactState mapBundleState(int state) {
+    static ArtifactState mapBundleState(int state) {
         if (Bundle.UNINSTALLED == state) {
             return ArtifactState.UNINSTALLED;
         } else if (Bundle.INSTALLED == state) {

@@ -194,7 +194,11 @@ public class StandardRamAccessorHelperTests {
     @Test
     public void testGetArtifactNotExist() {
         ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(TYPE, NAME, VERSION);
-        assertNull(artifact);
+        assertNotNull(artifact);
+        // This accommodates the workaround to bug 337211.
+        assertEquals("Region", artifact.getType());
+        assertEquals(NAME, artifact.getName());
+        assertEquals(VERSION, artifact.getVersion());
     }
     
 }
