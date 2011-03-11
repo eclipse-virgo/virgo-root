@@ -25,9 +25,11 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFrameworkFactory;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Version;
 
 /**
  * <p>
@@ -61,6 +63,10 @@ public class StandardStateServiceTests {
     @Before
     public void setUp() throws Exception {
         this.stubBundleContext = new StubBundleContext();
+        
+        StubBundle stubSystemBundle = new StubBundle(0L, "stub.system.bundle", Version.emptyVersion, "stubLocation");
+        this.stubBundleContext.addInstalledBundle(stubSystemBundle);
+        
         this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
         this.mockUserRegion = EasyMock.createMock(Region.class);
         this.mockKernelRegion = EasyMock.createMock(Region.class);
