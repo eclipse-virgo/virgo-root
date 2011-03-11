@@ -299,4 +299,19 @@ public final class StandardRegionDigraph implements RegionDigraph {
         }
         return listeners;
     }
+
+    /**
+     * Returns a snapshot of filtered regions
+     * 
+     * @return a snapshot of filtered regions
+     */
+    Map<Region, Set<FilteredRegion>> getFilteredRegions() {
+        Map<Region, Set<FilteredRegion>> result = new HashMap<Region, Set<FilteredRegion>>();
+        synchronized (this.monitor) {
+            for (Region region : regions) {
+                result.put(region, getEdges(region));
+            }
+        }
+        return result;
+    }
 }

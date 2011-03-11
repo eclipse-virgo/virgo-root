@@ -24,7 +24,9 @@ import org.osgi.framework.wiring.BundleRevision;
 
 /**
  * A {@link RegionFilter} is associated with a connection from one region to another and determines the bundles,
- * packages, and services which are visible across the connection.
+ * packages, services and other capabilities which are visible across the connection. A region filter is constant; its
+ * sharing policy cannot be changed after construction. Instances of region filters can be created with a
+ * {@link RegionFilterBuilder}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -107,5 +109,12 @@ public interface RegionFilter {
      */
     public boolean isCapabilityAllowed(BundleCapability capability);
 
+    /**
+     * Returns a map of the filters used by each name space for this region filter. The may key is the name space and
+     * the value is a collection of filters for the name space. The returned map is a snapshot of the sharing policy.
+     * Changes made to the returned map have no affect on this region filter.
+     * 
+     * @return a map containing the sharing policy used by this region filter
+     */
     public Map<String, Collection<String>> getSharingPolicy();
 }
