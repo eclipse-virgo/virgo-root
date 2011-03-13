@@ -244,7 +244,7 @@ public final class ApplicationContextDependencyMonitor implements EventHandler {
 
         List<ServiceDependency> serviceDependencies = new ArrayList<ServiceDependency>();
 
-        if (filters != null) {
+        if (filters != null && beanNames != null) {
             for (int i = 0; i < filters.length; i++) {
                 serviceDependencies.add(new ServiceDependency(filters[i], beanNames[i]));
             }
