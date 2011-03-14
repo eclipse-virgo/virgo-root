@@ -26,20 +26,21 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
 import org.eclipse.virgo.kernel.shell.state.StateService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.springframework.util.AntPathMatcher;
 
 /**
  * 
  */
 final public class StandardStateService implements StateService {
-    
+
     private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
 
     private final QuasiFrameworkFactory quasiFrameworkFactory;
@@ -49,7 +50,7 @@ final public class StandardStateService implements StateService {
     private final RegionDigraph regionDigraph;
 
     private final Region kernelRegion;
-    
+
     public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionDigraph regionDigraph) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.bundleContext = bundleContext;
@@ -95,25 +96,34 @@ final public class StandardStateService implements StateService {
      * {@inheritDoc}
      */
     public List<QuasiLiveService> getAllServices(File source) {
-        SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
-
         List<QuasiLiveService> quasiLiveServices = new ArrayList<QuasiLiveService>();
-        for (Entry<Long, QuasiLiveService> serviceEntry : services.entrySet()) {
-            quasiLiveServices.add(serviceEntry.getValue());
+        if (source == null) {
+            SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
+            for (Entry<Long, QuasiLiveService> serviceEntry : services.entrySet()) {
+                quasiLiveServices.add(serviceEntry.getValue());
+            }
         }
         return quasiLiveServices;
     }
 
+    /**
+     * Pre-condition: this must only be used on the live framework. 
+     */
     private SortedMap<Long, QuasiLiveService> getServicesSortedMap(QuasiFramework quasiFramework) {
         SortedMap<Long, QuasiLiveService> services = new TreeMap<Long, QuasiLiveService>();
-        List<QuasiBundle> allBundles = quasiFramework.getBundles();
-        for (QuasiBundle bundle : allBundles) {
-            if (bundle instanceof QuasiLiveBundle) {
-                QuasiLiveBundle liveBundle = (QuasiLiveBundle) bundle;
-                for (QuasiLiveService service : liveBundle.getExportedServices()) {
-                    services.put(service.getServiceId(), service);
-                }
-            }
+        ServiceReference<?>[] allServiceReferences = null;
+        try {
+            /*
+             * Use bundleContext (which belongs to the user region) to find services so this is subject to the region
+             * digraph filtering.
+             */
+            allServiceReferences = this.bundleContext.getAllServiceReferences(null, null);
+        } catch (InvalidSyntaxException e) {
+            // Will not happen
+        }
+        for (ServiceReference<?> serviceReference : allServiceReferences) {
+            QuasiLiveService service = new StandardQuasiLiveService(quasiFramework, serviceReference);
+            services.put(service.getServiceId(), service);
         }
         return services;
     }
@@ -122,8 +132,8 @@ final public class StandardStateService implements StateService {
      * {@inheritDoc}
      */
     public QuasiLiveService getService(File source, long serviceId) {
-        SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
-        if (services.containsKey(serviceId)) {
+        if (source == null) {
+            SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
             return services.get(serviceId);
         }
         return null;
