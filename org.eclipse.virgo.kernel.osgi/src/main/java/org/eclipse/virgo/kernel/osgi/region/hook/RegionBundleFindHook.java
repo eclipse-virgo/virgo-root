@@ -57,14 +57,14 @@ public final class RegionBundleFindHook implements FindHook {
 
         bundles.retainAll(allowed);
     }
-    
+
     private class Visitor extends RegionDigraphVisitorBase<Bundle> {
-        
+
         private Visitor(Collection<Bundle> candidates) {
             super(candidates);
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -72,21 +72,17 @@ public final class RegionBundleFindHook implements FindHook {
             return region.contains(candidate);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
-        /** 
+        /**
          * {@inheritDoc}
          */
         @Override
         protected boolean isAllowed(Bundle candidate, RegionFilter filter) {
-            return filter.isBundleAllowed(candidate.getSymbolicName(), candidate.getVersion());
+            return filter.isAllowed(candidate);
         }
-        
+
     }
-    
+
     private Region getRegion(BundleContext context) {
         return this.regionDigraph.getRegion(context.getBundle());
     }
-
 }

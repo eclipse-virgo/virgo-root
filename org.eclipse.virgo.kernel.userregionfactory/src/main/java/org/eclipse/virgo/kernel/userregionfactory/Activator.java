@@ -15,6 +15,8 @@ package org.eclipse.virgo.kernel.userregionfactory;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -29,21 +31,24 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.eclipse.virgo.util.osgi.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.RequireBundle;
 import org.eclipse.virgo.util.osgi.manifest.RequiredBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Filter;
+import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.Event;
@@ -85,6 +90,8 @@ public final class Activator implements BundleActivator {
     private static final String EVENT_REGION_STARTING = "org/eclipse/virgo/kernel/region/STARTING";
 
     private static final String EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
+
+    private static final String WILDCARD = "*";
 
     private EventAdmin eventAdmin;
 
@@ -143,7 +150,7 @@ public final class Activator implements BundleActivator {
         }
     }
 
-    private void createUserRegion(RegionDigraph regionDigraph, EventLogger eventLogger) throws BundleException {
+    private void createUserRegion(RegionDigraph regionDigraph, EventLogger eventLogger) throws BundleException, InvalidSyntaxException {
 
         BundleContext systemBundleContext = getSystemBundleContext();
         Bundle userRegionFactoryBundle = this.bundleContext.getBundle();
@@ -154,10 +161,10 @@ public final class Activator implements BundleActivator {
         Region userRegion = regionDigraph.createRegion(REGION_USER);
         userRegion.addBundle(userRegionFactoryBundle);
 
-        RegionFilter kernelFilter = createKernelFilter(systemBundleContext, eventLogger);
+        RegionFilter kernelFilter = createKernelFilter(regionDigraph, systemBundleContext, eventLogger);
         userRegion.connectRegion(kernelRegion, kernelFilter);
 
-        RegionFilter userRegionFilter = createUserRegionFilter();
+        RegionFilter userRegionFilter = createUserRegionFilter(regionDigraph);
         kernelRegion.connectRegion(userRegion, userRegionFilter);
 
         notifyUserRegionStarting(this.bundleContext);
@@ -168,48 +175,43 @@ public final class Activator implements BundleActivator {
         publishUserRegionBundleContext(this.bundleContext);
     }
 
-    private RegionFilter createUserRegionFilter() throws BundleException {
-        RegionFilter userRegionFilter = new StandardRegionFilter();
-        Filter serviceFilter;
-        try {
-            serviceFilter = this.bundleContext.createFilter(classesToFilter(this.regionServiceExports));
-        } catch (InvalidSyntaxException e) {
-            throw new BundleException("Invalid " + USER_REGION_SERVICE_EXPORTS_PROPERTY + "in user region configuration: '"
-                + this.regionServiceExports + "'", e);
+    private RegionFilter createUserRegionFilter(RegionDigraph digraph) throws InvalidSyntaxException {
+        Collection<String> serviceFilters = classesToFilter(this.regionServiceExports);
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        for (String filter : serviceFilters) {
+            builder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, filter);
         }
-        userRegionFilter.setServiceFilter(serviceFilter);
-
-        return userRegionFilter;
+        return builder.build();
     }
 
     private Region getKernelRegion(RegionDigraph regionDigraph) {
         return regionDigraph.iterator().next();
     }
 
-    private RegionFilter createKernelFilter(BundleContext systemBundleContext, EventLogger eventLogger) throws BundleException {
-        RegionFilter kernelFilter = new StandardRegionFilter();
-        allowImportedBundles(kernelFilter, eventLogger);
-        kernelFilter.setPackageImportPolicy(createUserRegionPackageImportPolicy(systemBundleContext, eventLogger));
-        Filter serviceFilter;
-        try {
-            serviceFilter = this.bundleContext.createFilter(classesToFilter(this.regionServiceImports));
-        } catch (InvalidSyntaxException e) {
-            throw new BundleException("Invalid " + USER_REGION_SERVICE_IMPORTS_PROPERTY + "in user region configuration: '"
-                + this.regionServiceImports + "'", e);
+    private RegionFilter createKernelFilter(RegionDigraph digraph, BundleContext systemBundleContext, EventLogger eventLogger)
+        throws BundleException, InvalidSyntaxException {
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        Collection<String> allowedBundles = allowImportedBundles(eventLogger);
+        for (String filter : allowedBundles) {
+            builder.allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter);
         }
-        kernelFilter.setServiceFilter(serviceFilter);
-        return kernelFilter;
+        Collection<String> allowedPackages = createUserRegionPackageImportPolicy(systemBundleContext, eventLogger);
+        for (String filter : allowedPackages) {
+            builder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, filter);
+        }
+        Collection<String> allowedServices = classesToFilter(this.regionServiceImports);
+        for (String filter : allowedServices) {
+            builder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, filter);
+        }
+        return builder.build();
     }
 
-    private void allowImportedBundles(RegionFilter kernelFilter, EventLogger eventLogger) {
+    private Collection<String> allowImportedBundles(EventLogger eventLogger) {
         String userRegionBundleImports = this.regionBundleImports != null ? this.regionBundleImports
             : this.bundleContext.getProperty(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
 
         RequireBundle bundleImportsAsRequireBundle = representBundleImportsAsRequireBundle(userRegionBundleImports, eventLogger);
-        List<RequiredBundle> importedBundles = bundleImportsAsRequireBundle.getRequiredBundles();
-        for (RequiredBundle importedBundle : importedBundles) {
-            kernelFilter.allowBundle(importedBundle.getBundleSymbolicName(), importedBundle.getBundleVersion());
-        }
+        return importBundleToFilter(bundleImportsAsRequireBundle.getRequiredBundles());
     }
 
     private RequireBundle representBundleImportsAsRequireBundle(String userRegionBundleImportsProperty, EventLogger eventLogger) {
@@ -219,24 +221,82 @@ public final class Activator implements BundleActivator {
         return manifest.getRequireBundle();
     }
 
-    private String classesToFilter(String classList) {
+    private static Collection<String> importBundleToFilter(List<RequiredBundle> importedBundles) {
+        if (importedBundles == null || importedBundles.isEmpty())
+            return Collections.emptyList();
+        Collection<String> result = new ArrayList<String>(importedBundles.size());
+        for (RequiredBundle importedBundle : importedBundles) {
+            StringBuilder f = new StringBuilder();
+            f.append("(&(").append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(importedBundle.getBundleSymbolicName()).append(')');
+            addRange(Constants.BUNDLE_VERSION_ATTRIBUTE, importedBundle.getBundleVersion(), f);
+            f.append(')');
+            result.add(f.toString());
+        }
+        return result;
+    }
+
+    private static Collection<String> importPackageToFilter(String importList) {
+        if (importList == null || importList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (importList.contains(WILDCARD)) {
+            throw new IllegalArgumentException("Wildcards not supported in region imports: '" + importList + "'");
+        }
+        BundleManifest manifest = BundleManifestFactory.createBundleManifest();
+        manifest.setHeader("Import-Package", importList);
+        List<ImportedPackage> list = manifest.getImportPackage().getImportedPackages();
+        if (list.isEmpty())
+            return Collections.emptyList();
+        Collection<String> filters = new ArrayList<String>(list.size());
+        for (ImportedPackage importedPackage : list) {
+            StringBuilder f = new StringBuilder();
+            f.append("(&(").append(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).append('=').append(importedPackage.getPackageName()).append(')');
+            Map<String, String> attrs = importedPackage.getAttributes();
+            for (Map.Entry<String, String> attr : attrs.entrySet()) {
+                if (Constants.VERSION_ATTRIBUTE.equals(attr.getKey()) || Constants.BUNDLE_VERSION_ATTRIBUTE.equals(attr.getKey())) {
+                    addRange(attr.getKey(), new VersionRange(attr.getValue()), f);
+                } else {
+                    f.append('(').append(attr.getKey()).append('=').append(attr.getValue()).append(')');
+                }
+            }
+            f.append(')');
+            filters.add(f.toString());
+        }
+        return filters;
+    }
+
+    private static void addRange(String key, VersionRange range, StringBuilder f) {
+        if (range.isFloorInclusive()) {
+            f.append('(' + key + ">=" + range.getFloor() + ')');
+        } else {
+            f.append("(!(" + key + "<=" + range.getFloor() + "))");
+        }
+        Version ceiling = range.getCeiling();
+        if (ceiling != null) {
+            if (range.isCeilingInclusive()) {
+                f.append('(' + key + "<=" + ceiling + ')');
+            } else {
+                f.append("(!(" + key + ">=" + ceiling + "))");
+            }
+        }
+    }
+
+    private static Collection<String> classesToFilter(String classList) {
         if (classList == null) {
-            return "";
+            return Collections.emptyList();
         }
         String[] classes = classList.split(CLASS_LIST_SEPARATOR);
         if (classes.length == 0) {
-            return "";
+            return Collections.emptyList();
         }
-        StringBuffer filter = new StringBuffer();
-        filter.append("(|");
+        Collection<String> result = new ArrayList<String>(classes.length);
         for (String className : classes) {
-            filter.append("(objectClass=").append(className).append(")");
+            result.add("(objectClass=" + className + ")");
         }
-        filter.append(")");
-        return filter.toString();
+        return result;
     }
 
-    private UserRegionPackageImportPolicy createUserRegionPackageImportPolicy(BundleContext systemBundleContext, EventLogger eventLogger) {
+    private Collection<String> createUserRegionPackageImportPolicy(BundleContext systemBundleContext, EventLogger eventLogger) {
         String userRegionImportsProperty = this.regionPackageImports != null ? this.regionPackageImports
             : this.bundleContext.getProperty(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
         String expandedUserRegionImportsProperty = null;
@@ -244,8 +304,7 @@ public final class Activator implements BundleActivator {
             expandedUserRegionImportsProperty = PackageImportWildcardExpander.expandPackageImportsWildcards(userRegionImportsProperty,
                 systemBundleContext, eventLogger);
         }
-
-        return new UserRegionPackageImportPolicy(expandedUserRegionImportsProperty);
+        return importPackageToFilter(expandedUserRegionImportsProperty);
     }
 
     private BundleContext getSystemBundleContext() {

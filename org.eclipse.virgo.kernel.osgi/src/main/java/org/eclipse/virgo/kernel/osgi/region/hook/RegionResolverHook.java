@@ -19,7 +19,6 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionPackageImportPolicy;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.resolver.ResolverHook;
@@ -63,7 +62,7 @@ final class RegionResolverHook implements ResolverHook {
                 candidates.clear();
                 return;
             }
-            
+
             Visitor visitor = new Visitor(candidates);
             requirerRegion.visitSubgraph(visitor);
             Set<BundleCapability> allowed = visitor.getAllowed();
@@ -75,9 +74,9 @@ final class RegionResolverHook implements ResolverHook {
             }
         }
     }
-    
+
     private class Visitor extends RegionDigraphVisitorBase<BundleCapability> {
-        
+
         private Visitor(Collection<BundleCapability> candidates) {
             super(candidates);
         }
@@ -89,22 +88,9 @@ final class RegionResolverHook implements ResolverHook {
 
         @Override
         protected boolean isAllowed(BundleCapability candidate, RegionFilter filter) {
-            RegionPackageImportPolicy packageImportPolicy = filter.getPackageImportPolicy();
-            BundleRevision providerRevision = candidate.getRevision();
-            if (!filter.isBundleAllowed(providerRevision.getSymbolicName(), providerRevision.getVersion())) {
-                String namespace = candidate.getNamespace();
-                if (BundleRevision.PACKAGE_NAMESPACE.equals(namespace)) {
-                    if (!packageImportPolicy.isImported((String) candidate.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE), candidate.getAttributes(),
-                        candidate.getDirectives())) {
-                        return false;
-                    }
-                } else {
-                        return false;
-                }
-            }
-            return true;
+            return filter.isAllowed(candidate) || filter.isAllowed(candidate.getRevision());
         }
-        
+
     }
 
     private Region getRegion(BundleRevision bundleRevision) {

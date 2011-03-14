@@ -24,8 +24,8 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.util.math.OrderedPair;
@@ -34,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 
 public class StandardRegionDigraphTests {
@@ -58,62 +60,58 @@ public class StandardRegionDigraphTests {
         StubBundleContext stubBundleContext = new StubBundleContext();
         stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.digraph = new StandardRegionDigraph(stubBundleContext, new ThreadLocal<Region>());
-       
+
         this.mockRegion1 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion1.getName()).andReturn("mockRegion1").anyTimes();
-      
+
         this.mockRegion2 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion2.getName()).andReturn("mockRegion2").anyTimes();
 
         this.mockRegion3 = EasyMock.createMock(Region.class);
         EasyMock.expect(this.mockRegion3.getName()).andReturn("mockRegion3").anyTimes();
 
-        this.regionFilter1 = EasyMock.createMock(RegionFilter.class);
-        this.regionFilter2 = EasyMock.createMock(RegionFilter.class);
         this.mockBundle = EasyMock.createMock(Bundle.class);
     }
 
-    private void setDefaultMockFilters() {
-        setMockFilterAllowedBundles(this.regionFilter1);
-        setMockFilterAllowedBundles(this.regionFilter2);
+    private void setDefaultFilters() throws InvalidSyntaxException {
+        this.regionFilter1 = digraph.createRegionFilterBuilder().build();
+        this.regionFilter2 = digraph.createRegionFilterBuilder().build();
     }
 
-    private void setMockFilterAllowedBundles(RegionFilter regionFilter) {
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.isA(String.class), EasyMock.isA(Version.class))).andReturn(false).anyTimes();
-    }
+    private void setAllowedFilters(OrderedPair<String, Version> b1, OrderedPair<String, Version> b2) throws InvalidSyntaxException {
+        String filter1 = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + b1.getFirst() + ")(" + Constants.BUNDLE_VERSION_ATTRIBUTE + "="
+            + b1.getSecond() + "))";
+        regionFilter1 = digraph.createRegionFilterBuilder().allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter1).build();
 
-    private void setMockFilterAllowedBundle(RegionFilter regionFilter, OrderedPair<String, Version> bundle) {
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.eq(bundle.getFirst()), EasyMock.eq(bundle.getSecond()))).andReturn(true).anyTimes();
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.not(EasyMock.eq(bundle.getFirst())), EasyMock.eq(bundle.getSecond()))).andReturn(false).anyTimes();
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.eq(bundle.getFirst()), EasyMock.not(EasyMock.eq(bundle.getSecond())))).andReturn(false).anyTimes();
-        EasyMock.expect(regionFilter.isBundleAllowed(EasyMock.not(EasyMock.eq(bundle.getFirst())), EasyMock.not(EasyMock.eq(bundle.getSecond())))).andReturn(false).anyTimes();
+        String filter2 = "(&(" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + "=" + b1.getFirst() + ")(" + Constants.BUNDLE_VERSION_ATTRIBUTE + "="
+            + b1.getSecond() + "))";
+        regionFilter2 = digraph.createRegionFilterBuilder().allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter2).build();
+
     }
 
     private void replayMocks() {
-        EasyMock.replay(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.regionFilter1, this.regionFilter2, this.mockBundle);
+        EasyMock.replay(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.mockBundle);
     }
 
     @After
     public void tearDown() throws Exception {
-        EasyMock.verify(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.regionFilter1, this.regionFilter2, this.mockBundle);
+        EasyMock.verify(this.mockRegion1, this.mockRegion2, this.mockRegion3, this.mockBundle);
     }
 
     @Test
-    public void testConnect() throws BundleException {
-        setDefaultMockFilters();
+    public void testConnect() throws BundleException, InvalidSyntaxException {
+        setDefaultFilters();
         replayMocks();
 
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
     }
 
     @Test
-    public void testConnectWithFilterContents() throws BundleException {
+    public void testConnectWithFilterContents() throws BundleException, InvalidSyntaxException {
         OrderedPair<String, Version> b1 = new OrderedPair<String, Version>("b1", new Version("0"));
-        setMockFilterAllowedBundle(this.regionFilter1, b1);
-        EasyMock.expect(this.mockRegion1.getBundle(b1.getFirst(), b1.getSecond())).andReturn(null).anyTimes();
-
         OrderedPair<String, Version> b2 = new OrderedPair<String, Version>("b2", new Version("0"));
-        setMockFilterAllowedBundle(this.regionFilter2, b2);
+        setAllowedFilters(b1, b2);
+        EasyMock.expect(this.mockRegion1.getBundle(b1.getFirst(), b1.getSecond())).andReturn(null).anyTimes();
         EasyMock.expect(this.mockRegion1.getBundle(b2.getFirst(), b2.getSecond())).andReturn(null).anyTimes();
 
         replayMocks();
@@ -123,16 +121,16 @@ public class StandardRegionDigraphTests {
     }
 
     @Test(expected = BundleException.class)
-    public void testConnectLoop() throws BundleException {
-        setDefaultMockFilters();
+    public void testConnectLoop() throws BundleException, InvalidSyntaxException {
+        setDefaultFilters();
         replayMocks();
 
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion1);
     }
 
     @Test(expected = BundleException.class)
-    public void testDuplicateConnection() throws BundleException {
-        setDefaultMockFilters();
+    public void testDuplicateConnection() throws BundleException, InvalidSyntaxException {
+        setDefaultFilters();
         replayMocks();
 
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
@@ -140,8 +138,8 @@ public class StandardRegionDigraphTests {
     }
 
     @Test
-    public void testGetEdges() throws BundleException {
-        setDefaultMockFilters();
+    public void testGetEdges() throws BundleException, InvalidSyntaxException {
+        setDefaultFilters();
         replayMocks();
 
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
@@ -164,8 +162,8 @@ public class StandardRegionDigraphTests {
     }
 
     @Test
-    public void testRemoveRegion() throws BundleException {
-        setDefaultMockFilters();
+    public void testRemoveRegion() throws BundleException, InvalidSyntaxException {
+        setDefaultFilters();
         replayMocks();
 
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
@@ -176,17 +174,17 @@ public class StandardRegionDigraphTests {
         assertNull(this.digraph.getRegion("mockRegion1"));
         assertNotNull(this.digraph.getRegion("mockRegion2"));
     }
-    
+
     @Test
-    public void testGetRegions() throws BundleException {
-        setDefaultMockFilters();
+    public void testGetRegions() throws BundleException, InvalidSyntaxException {
+        setDefaultFilters();
         replayMocks();
-        
+
         this.digraph.connect(this.mockRegion1, this.regionFilter1, this.mockRegion2);
         Set<Region> regions = this.digraph.getRegions();
         assertEquals(2, regions.size());
         assertTrue(regions.contains(this.mockRegion1));
         assertTrue(regions.contains(this.mockRegion2));
     }
-    
+
 }

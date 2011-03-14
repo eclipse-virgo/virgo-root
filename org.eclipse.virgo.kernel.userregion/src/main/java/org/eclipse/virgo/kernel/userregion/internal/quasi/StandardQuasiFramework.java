@@ -69,6 +69,10 @@ import org.slf4j.LoggerFactory;
  */
 final class StandardQuasiFramework implements QuasiFramework {
 
+    private final RegionFilter TOP;
+
+    private final String TOP_FILTER = "(|(!(x=*))(x=*))";
+
     private static final String REGION_LOCATION_DELIMITER = "@";
 
     private static final String COREGION_SUFFIX = ".coregion";
@@ -110,6 +114,7 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     StandardQuasiFramework(BundleContext bundleContext, State state, PlatformAdmin platformAdmin, ResolutionFailureDetective detective,
         Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler, RegionDigraph regionDigraph) {
+        TOP = regionDigraph.createRegionFilterBuilder().allowAll(RegionFilter.VISIBLE_ALL_NAMESPACE).build();
         this.bundleContext = bundleContext;
         this.state = state;
         this.stateObjectFactory = platformAdmin.getFactory();
@@ -156,8 +161,8 @@ final class StandardQuasiFramework implements QuasiFramework {
             if (this.coregion == null) {
                 try {
                     this.coregion = this.regionDigraph.createRegion(this.userRegion.getName() + COREGION_SUFFIX);
-                    this.userRegion.connectRegion(this.coregion, RegionFilter.TOP);
-                    this.coregion.connectRegion(this.userRegion, RegionFilter.TOP);
+                    this.userRegion.connectRegion(this.coregion, TOP);
+                    this.coregion.connectRegion(this.userRegion, TOP);
                 } catch (BundleException e) {
                     // should never happen
                     throw new FatalKernelException("Failed to create coregion", e);

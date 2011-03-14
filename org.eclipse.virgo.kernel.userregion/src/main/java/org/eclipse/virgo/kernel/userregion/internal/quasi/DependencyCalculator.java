@@ -355,13 +355,13 @@ public final class DependencyCalculator {
         BundleDescription[] bundleDescriptions = state.getBundles(bundleSymbolicName);
         for (BundleDescription bundleDescription : bundleDescriptions) {
             if (bundleDescription.getVersion().equals(version)) {
-                //XXX Refactoring required here. This temporary code only traverses the coregion and user region.
+                // XXX Refactoring required here. This temporary code only traverses the coregion and user region.
                 Set<FilteredRegion> edges = this.coregion.getEdges();
                 FilteredRegion edge = edges.iterator().next();
                 Region userRegion = edge.getRegion();
                 RegionFilter filter = edge.getFilter();
                 long bundleId = bundleDescription.getBundleId();
-                if ((bundleId == 0L || this.coregion.contains(bundleId) || (filter.isBundleAllowed(bundleSymbolicName, version) && userRegion.contains(bundleId)))) {
+                if ((bundleId == 0L || this.coregion.contains(bundleId) || (filter.isAllowed(bundleDescription) && userRegion.contains(bundleId)))) {
                     return true;
                 }
             }

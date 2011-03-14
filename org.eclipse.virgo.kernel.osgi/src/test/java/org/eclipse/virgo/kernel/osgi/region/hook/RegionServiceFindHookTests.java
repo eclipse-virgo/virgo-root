@@ -15,15 +15,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
@@ -35,7 +35,8 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Filter;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.service.FindHook;
@@ -87,7 +88,7 @@ public class RegionServiceFindHookTests {
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
         this.serviceReferences = new HashMap<String, ServiceReference<Object>>();
-        
+
         StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
         StubBundleContext stubBundleContext = new StubBundleContext();
         stubBundleContext.addInstalledBundle(stubSystemBundle);
@@ -125,7 +126,7 @@ public class RegionServiceFindHookTests {
     }
 
     @Test
-    public void testFindConnectedRegionAllowed() throws BundleException {
+    public void testFindConnectedRegionAllowed() throws BundleException, InvalidSyntaxException {
         RegionFilter filter = createFilter(BUNDLE_B);
         region(REGION_A).connectRegion(region(REGION_B), filter);
 
@@ -135,7 +136,7 @@ public class RegionServiceFindHookTests {
     }
 
     @Test
-    public void testFindConnectedRegionFiltering() throws BundleException {
+    public void testFindConnectedRegionFiltering() throws BundleException, InvalidSyntaxException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_B));
         Bundle x = createBundle(BUNDLE_X);
         region(REGION_B).addBundle(x);
@@ -148,7 +149,7 @@ public class RegionServiceFindHookTests {
     }
 
     @Test
-    public void testFindTransitive() throws BundleException {
+    public void testFindTransitive() throws BundleException, InvalidSyntaxException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_C));
         region(REGION_B).connectRegion(region(REGION_C), createFilter(BUNDLE_C));
         region(REGION_C).addBundle(bundle(BUNDLE_X));
@@ -163,7 +164,7 @@ public class RegionServiceFindHookTests {
     }
 
     @Test
-    public void testFindInCyclicGraph() throws BundleException {
+    public void testFindInCyclicGraph() throws BundleException, InvalidSyntaxException {
         region(REGION_D).addBundle(bundle(BUNDLE_X));
 
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_D, BUNDLE_X));
@@ -241,40 +242,16 @@ public class RegionServiceFindHookTests {
         return this.regions.get(regionName);
     }
 
-    private RegionFilter createFilter(final String... referenceNames) {
-        RegionFilter filter = new StandardRegionFilter();
-        Filter f = new Filter() {
-
-            @Override
-            public boolean match(ServiceReference<?> reference) {
-                for (String referenceName : referenceNames) {
-                    if (reference.getBundle().getSymbolicName().equals(referenceName)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean match(Dictionary<String, ?> dictionary) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public boolean matchCase(Dictionary<String, ?> dictionary) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public boolean matches(Map<String, ?> map) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-        };
-        filter.setServiceFilter(f);
-        return filter;
+    private RegionFilter createFilter(final String... referenceNames) throws InvalidSyntaxException {
+        Collection<String> filters = new ArrayList<String>(referenceNames.length);
+        for (String referenceName : referenceNames) {
+            filters.add('(' + Constants.OBJECTCLASS + '=' + referenceName + ')');
+        }
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        for (String filter : filters) {
+            builder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, filter);
+        }
+        return builder.build();
     }
 
     private Bundle createBundle(String bundleSymbolicName) {
@@ -286,7 +263,7 @@ public class RegionServiceFindHookTests {
 
     private StubServiceReference<Object> createServiceReference(Bundle stubBundle, String referenceName) {
         StubServiceRegistration<Object> stubServiceRegistration = new StubServiceRegistration<Object>(
-            (StubBundleContext) stubBundle.getBundleContext(), Object.class.getName());
+            (StubBundleContext) stubBundle.getBundleContext(), referenceName);
         StubServiceReference<Object> stubServiceReference = new StubServiceReference<Object>(stubServiceRegistration);
         this.serviceReferences.put(referenceName, stubServiceReference);
         return stubServiceReference;

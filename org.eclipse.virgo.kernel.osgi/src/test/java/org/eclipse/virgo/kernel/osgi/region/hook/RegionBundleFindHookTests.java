@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,17 +23,17 @@ import java.util.Map;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.StandardRegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.util.osgi.VersionRange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.bundle.FindHook;
 
@@ -77,7 +78,7 @@ public class RegionBundleFindHookTests {
         this.bundleId = 1L;
         this.regions = new HashMap<String, Region>();
         this.bundles = new HashMap<String, Bundle>();
-        
+
         StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
         StubBundleContext stubBundleContext = new StubBundleContext();
         stubBundleContext.addInstalledBundle(stubSystemBundle);
@@ -115,7 +116,7 @@ public class RegionBundleFindHookTests {
     }
 
     @Test
-    public void testFindConnectedRegionAllowed() throws BundleException {
+    public void testFindConnectedRegionAllowed() throws BundleException, InvalidSyntaxException {
         RegionFilter filter = createFilter(BUNDLE_B);
         region(REGION_A).connectRegion(region(REGION_B), filter);
 
@@ -125,7 +126,7 @@ public class RegionBundleFindHookTests {
     }
 
     @Test
-    public void testFindConnectedRegionFiltering() throws BundleException {
+    public void testFindConnectedRegionFiltering() throws BundleException, InvalidSyntaxException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_B));
         Bundle x = createBundle(BUNDLE_X);
         region(REGION_B).addBundle(x);
@@ -138,7 +139,7 @@ public class RegionBundleFindHookTests {
     }
 
     @Test
-    public void testFindTransitive() throws BundleException {
+    public void testFindTransitive() throws BundleException, InvalidSyntaxException {
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_C));
         region(REGION_B).connectRegion(region(REGION_C), createFilter(BUNDLE_C));
         region(REGION_C).addBundle(bundle(BUNDLE_X));
@@ -154,7 +155,7 @@ public class RegionBundleFindHookTests {
     }
 
     @Test
-    public void testFindInCyclicGraph() throws BundleException {
+    public void testFindInCyclicGraph() throws BundleException, InvalidSyntaxException {
         region(REGION_D).addBundle(bundle(BUNDLE_X));
 
         region(REGION_A).connectRegion(region(REGION_B), createFilter(BUNDLE_D, BUNDLE_X));
@@ -232,12 +233,16 @@ public class RegionBundleFindHookTests {
         return this.regions.get(regionName);
     }
 
-    private RegionFilter createFilter(String... bundleSymbolicNames) {
-        RegionFilter filter = new StandardRegionFilter();
+    private RegionFilter createFilter(String... bundleSymbolicNames) throws InvalidSyntaxException {
+        Collection<String> filters = new ArrayList<String>(bundleSymbolicNames.length);
         for (String bundleSymbolicName : bundleSymbolicNames) {
-            filter.allowBundle(bundleSymbolicName, new VersionRange(BUNDLE_VERSION.toString()));
+            filters.add('(' + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + '=' + bundleSymbolicName + ')');
         }
-        return filter;
+        RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
+        for (String filter : filters) {
+            builder.allow(RegionFilter.VISIBLE_BUNDLE_NAMESPACE, filter);
+        }
+        return builder.build();
     }
 
     private Bundle createBundle(String bundleSymbolicName) {

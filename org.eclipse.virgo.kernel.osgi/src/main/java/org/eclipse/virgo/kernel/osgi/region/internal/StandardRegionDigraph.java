@@ -24,6 +24,7 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
 import org.eclipse.virgo.kernel.osgi.region.RegionLifecycleListener;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
@@ -267,6 +268,11 @@ public final class StandardRegionDigraph implements RegionDigraph {
         return result;
     }
 
+    @Override
+    public RegionFilterBuilder createRegionFilterBuilder() {
+        return new StandardRegionFilterBuilder();
+    }
+
     private void notifyAdded(Region region) {
         Set<RegionLifecycleListener> listeners = getListeners();
         for (RegionLifecycleListener listener : listeners) {
@@ -298,7 +304,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
         return listeners;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -306,4 +312,18 @@ public final class StandardRegionDigraph implements RegionDigraph {
         this.subgraphTraverser.visitSubgraph(startingRegion, visitor);
     }
 
+    /**
+     * Returns a snapshot of filtered regions
+     * 
+     * @return a snapshot of filtered regions
+     */
+    Map<Region, Set<FilteredRegion>> getFilteredRegions() {
+        Map<Region, Set<FilteredRegion>> result = new HashMap<Region, Set<FilteredRegion>>();
+        synchronized (this.monitor) {
+            for (Region region : regions) {
+                result.put(region, getEdges(region));
+            }
+        }
+        return result;
+    }
 }

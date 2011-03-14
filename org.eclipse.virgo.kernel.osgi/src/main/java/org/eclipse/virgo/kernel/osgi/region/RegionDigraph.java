@@ -56,8 +56,8 @@ public interface RegionDigraph extends Iterable<Region> {
     }
 
     /**
-     * Create a {@link Region} with the given name. If a region with the given name already exists, then BundleException with
-     * exception type UNSUPPORTED_OPERATION is thrown.
+     * Create a {@link Region} with the given name. If a region with the given name already exists, then BundleException
+     * with exception type UNSUPPORTED_OPERATION is thrown.
      * 
      * @param regionName the name of the region
      * @return the {@link Region} created
@@ -66,13 +66,20 @@ public interface RegionDigraph extends Iterable<Region> {
     Region createRegion(String regionName) throws BundleException;
 
     /**
+     * Create a {@link RegionFilterBuilder} instance.
+     * 
+     * @return a region filter builder
+     */
+    RegionFilterBuilder createRegionFilterBuilder();
+
+    /**
      * Removes the given {@link Region} from the digraph along with any edges which have the given region as head or
      * tail. If the given region is not present in the digraph, this is not an error and there is no effect.
      * 
      * @param region the {@link Region} to be removed
      */
     void removeRegion(Region region);
-    
+
     /**
      * Gets all the {@link Region Regions} in the digraph.
      * 

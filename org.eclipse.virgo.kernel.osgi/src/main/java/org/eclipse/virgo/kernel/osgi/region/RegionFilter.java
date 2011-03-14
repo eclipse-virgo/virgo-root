@@ -13,17 +13,20 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import java.util.Dictionary;
+import java.util.Collection;
 import java.util.Map;
 
-import org.eclipse.virgo.util.osgi.VersionRange;
-import org.osgi.framework.Filter;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
 
 /**
  * A {@link RegionFilter} is associated with a connection from one region to another and determines the bundles,
- * packages, and services which are visible across the connection.
+ * packages, services and other capabilities which are visible across the connection. A region filter is constant; its
+ * sharing policy cannot be changed after construction. Instances of region filters can be created with a
+ * {@link RegionFilterBuilder}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -33,117 +36,85 @@ import org.osgi.framework.Version;
  */
 public interface RegionFilter {
 
-    public static final RegionPackageImportPolicy ALL_PACKAGES = new RegionPackageImportPolicy() {
-
-        @Override
-        public boolean isImported(String packageName, Map<String, Object> attributes, Map<String, String> directives) {
-            return true;
-        }
-    };
-
-    public static final Filter ALL_SERVICES = new Filter() {
-
-        @Override
-        public boolean match(ServiceReference<?> reference) {
-            return true;
-        }
-
-        @Override
-        public boolean match(Dictionary<String, ?> dictionary) {
-            return true;
-        }
-
-        @Override
-        public boolean matchCase(Dictionary<String, ?> dictionary) {
-            return true;
-        }
-
-        @Override
-        public boolean matches(Map<String, ?> map) {
-            return true;
-        }
-    };
-
-    public static final RegionFilter TOP = new RegionFilter() {
-
-        @Override
-        public RegionFilter allowBundle(String bundleSymbolicName, VersionRange versionRange) {
-            return this;
-        }
-
-        @Override
-        public boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion) {
-            return true;
-        }
-
-        @Override
-        public RegionFilter setPackageImportPolicy(RegionPackageImportPolicy packageImportPolicy) {
-            throw new UnsupportedOperationException("TOP is immutable");
-        }
-
-        @Override
-        public RegionPackageImportPolicy getPackageImportPolicy() {
-            return ALL_PACKAGES;
-        }
-
-        @Override
-        public RegionFilter setServiceFilter(Filter serviceFilter) {
-            throw new UnsupportedOperationException("TOP is immutable");
-        }
-
-        @Override
-        public Filter getServiceFilter() {
-            return ALL_SERVICES;
-        }
-    };
-
     /**
-     * Allows bundles with the given bundle symbolic name and bundle version in the given range to be imported.
+     * Name space for sharing package capabilities.
      * 
-     * Note that the system bundle has the symbolic name "org.eclipse.osgi".
-     * 
-     * @param bundleSymbolicName
-     * @param versionRange
-     * @return this {@link RegionFilter} for chaining purposes
+     * @see BundleRevision#PACKAGE_NAMESPACE
      */
-    RegionFilter allowBundle(String bundleSymbolicName, VersionRange versionRange);
+    public static final String VISIBLE_PACKAGE_NAMESPACE = BundleRevision.PACKAGE_NAMESPACE;
 
     /**
-     * Determines whether this filter allows the bundle with the given symbolic name and version
+     * Name space for sharing bundle capabilities for require bundle constraints.
      * 
-     * @param bundleSymbolicName the symbolic name of the bundle
-     * @param bundleVersion the {@link Version} of the bundle
+     * @see BundleRevision#BUNDLE_NAMESPACE
+     */
+    public static final String VISIBLE_REQUIRE_NAMESPACE = BundleRevision.BUNDLE_NAMESPACE;
+
+    /**
+     * Name space for sharing host capabilities.
+     * 
+     * @see BundleRevision#HOST_NAMESPACE
+     */
+    public static final String VISIBLE_HOST_NAMESPACE = BundleRevision.HOST_NAMESPACE;
+
+    /**
+     * Name space for sharing services. The filters specified in this name space will be used to match
+     * {@link ServiceReference services}.
+     */
+    public static final String VISIBLE_SERVICE_NAMESPACE = "org.eclipse.equinox.allow.service";
+
+    /**
+     * Name space for sharing bundles. The filters specified in this name space will be use to match against a bundle's
+     * symbolic name and version. The attribute {@link Constants#BUNDLE_SYMBOLICNAME_ATTRIBUTE bundle-symbolic-name} is
+     * used for the symbolic name and the attribute {@link Constants#BUNDLE_VERSION_ATTRIBUTE bundle-version} is used
+     * for the bundle version.
+     */
+    public static final String VISIBLE_BUNDLE_NAMESPACE = "org.eclipse.equinox.allow.bundle";
+
+    /**
+     * Name space for matching against all capabilities. The filters specified in this name space will be used to match
+     * all capabilities.
+     */
+    public static final String VISIBLE_ALL_NAMESPACE = "org.eclipse.equinox.allow.all";
+
+    /**
+     * Determines whether this filter allows the given bundle
+     * 
+     * @param bundle the bundle
      * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    boolean isBundleAllowed(String bundleSymbolicName, Version bundleVersion);
+    public boolean isAllowed(Bundle bundle);
 
     /**
-     * Sets the package import policy of this filter.
+     * Determines whether this filter allows the given bundle
      * 
-     * @param packageImportPolicy
-     * @return this {@link RegionFilter} for chaining purposes
+     * @param bundle the bundle revision
+     * @return <code>true</code> if the bundle is allowed and <code>false</code>otherwise
      */
-    RegionFilter setPackageImportPolicy(RegionPackageImportPolicy packageImportPolicy);
+    public boolean isAllowed(BundleRevision bundle);
 
     /**
-     * Gets the package import policy of this filter.
+     * Determines whether this filter allows the given service reference.
      * 
-     * @return the package import policy or <code>null</code> if this has not been set
+     * @param service the service reference of the service
+     * @return <code>true</code> if the service is allowed and <code>false</code>otherwise
      */
-    RegionPackageImportPolicy getPackageImportPolicy();
+    public boolean isAllowed(ServiceReference<?> service);
 
     /**
-     * @param serviceFilter
-     * @return this {@link RegionFilter} for chaining purposes
-     * @see org.osgi.framework.Filter more information about service filters
-     */
-    RegionFilter setServiceFilter(Filter serviceFilter);
-
-    /**
-     * Gets the service filter of this filter.
+     * Determines whether this filter allows the given capability.
      * 
-     * @return the service filter or <code>null</code> if this has not been set
+     * @param capability the bundle capability
+     * @return <code>true</code> if the capability is allowed and <code>false</code>otherwise
      */
-    Filter getServiceFilter();
+    public boolean isAllowed(BundleCapability capability);
 
+    /**
+     * Returns a map of the filters used by each name space for this region filter. The may key is the name space and
+     * the value is a collection of filters for the name space. The returned map is a snapshot of the sharing policy.
+     * Changes made to the returned map have no affect on this region filter.
+     * 
+     * @return a map containing the sharing policy used by this region filter
+     */
+    public Map<String, Collection<String>> getSharingPolicy();
 }

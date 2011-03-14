@@ -65,7 +65,7 @@ public final class RegionServiceFindHook implements FindHook {
             super(candidates);
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -73,12 +73,12 @@ public final class RegionServiceFindHook implements FindHook {
             return region.contains(candidate.getBundle());
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         @Override
         protected boolean isAllowed(ServiceReference<?> candidate, RegionFilter filter) {
-            return filter.getServiceFilter().match(candidate);
+            return filter.isAllowed(candidate) || filter.isAllowed(candidate.getBundle());
         }
 
     }
