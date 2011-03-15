@@ -16,7 +16,7 @@ import org.osgi.framework.InvalidSyntaxException;
 /**
  * A builder for creating {@link RegionFilter} instances. A builder instance can be obtained from the
  * {@link RegionDigraph#createRegionFilterBuilder()} method.
- * 
+ * <p />
  * <strong>Concurrent Semantics</strong><br />
  * 
  * Implementations of this interface must be thread safe.
