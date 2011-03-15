@@ -14,12 +14,15 @@
 package org.eclipse.virgo.kernel.osgi.region.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,8 +42,6 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 public class StandardRegionDigraphPeristenceTests {
 
@@ -87,9 +88,9 @@ public class StandardRegionDigraphPeristenceTests {
     }
 
     @Test
-    public void testConnection() throws InvalidSyntaxException, BundleException, IOException {
+    public void testSingleConnection() throws InvalidSyntaxException, BundleException, IOException {
         Region tail = null;
-        // create a connection between each region
+        // create a single connection between each region
         for (Region head : digraph) {
             if (tail != null) {
                 String name = head.getName();
@@ -100,11 +101,43 @@ public class StandardRegionDigraphPeristenceTests {
         doTest();
     }
 
+    @Test
+    public void testMultiConnection() throws BundleException, InvalidSyntaxException, IOException {
+        List<Region> tails = new ArrayList<Region>();
+        // create multiple connections between each region
+        for (Region head : digraph) {
+            for (Region tail : tails) {
+                String name = head.getName();
+                tail.connectRegion(head, createFilter(name + "A", name + "B", name + "C"));
+            }
+            tails.add(head);
+        }
+        doTest();
+    }
+
+    @Test
+    public void testMultiConnectionCycle() throws BundleException, InvalidSyntaxException, IOException {
+        List<Region> tails = new ArrayList<Region>();
+        for (Region region : digraph) {
+            tails.add(region);
+        }
+        // create multiple connections between each region
+        for (Region head : digraph) {
+            for (Region tail : tails) {
+                if (head == tail)
+                    continue;
+                String name = head.getName();
+                tail.connectRegion(head, createFilter(name + "A", name + "B", name + "C"));
+            }
+        }
+        doTest();
+    }
+
     private void doTest() throws IOException, InvalidSyntaxException, BundleException {
-        ByteOutputStream memOut = new ByteOutputStream();
+        ByteArrayOutputStream memOut = new ByteArrayOutputStream();
         StandardRegionDigraphPersistence.writeRegionDigraph(new DataOutputStream(memOut), digraph);
 
-        ByteArrayInputStream memIn = new ByteArrayInputStream(memOut.getBytes());
+        ByteArrayInputStream memIn = new ByteArrayInputStream(memOut.toByteArray());
         RegionDigraph copy = StandardRegionDigraphPersistence.readRegionDigraph(new DataInputStream(memIn), systemBundleContext, threadLocal);
         assertEquals(digraph, copy);
     }
