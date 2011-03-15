@@ -46,7 +46,6 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
                 + digraph.getClass().getName());
         Map<Region, Set<FilteredRegion>> filteredRegions = ((StandardRegionDigraph) digraph).getFilteredRegions();
 
-        boolean exception = false;
         try {
             // write the number of regions
             out.writeInt(filteredRegions.size());
@@ -64,16 +63,9 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
                     writeEdge(out, edges.getKey(), edge.getFilter(), edge.getRegion());
                 }
             }
-        } catch (IOException e) {
-            exception = true;
-            throw e;
         } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                if (!exception)
-                    throw e;
-            }
+            // note that the output is flushed even on exception
+            out.flush();
         }
     }
 
@@ -116,40 +108,23 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
     static RegionDigraph readRegionDigraph(DataInputStream in, BundleContext systemBundleContext, ThreadLocal<Region> threadLocal)
         throws IOException, InvalidSyntaxException, BundleException {
         RegionDigraph digraph = new StandardRegionDigraph(systemBundleContext, threadLocal);
-        boolean exception = false;
-        try {
-            // read the number of regions
-            int numRegions = in.readInt();
-            for (int i = 0; i < numRegions; i++) {
-                readRegion(in, digraph);
-            }
-            // read each edge
-            // read number of tail regions
-            int numTails = in.readInt();
-            for (int i = 0; i < numTails; i++) {
-                // read the number of edges for this tail
-                int numEdges = in.readInt();
-                for (int j = 0; j < numEdges; j++) {
-                    readEdge(in, digraph);
-                }
-            }
-        } catch (IOException e) {
-            exception = true;
-            throw e;
-        } catch (InvalidSyntaxException e) {
-            exception = true;
-            throw e;
-        } catch (BundleException e) {
-            exception = true;
-            throw e;
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                if (!exception)
-                    throw e;
+
+        // read the number of regions
+        int numRegions = in.readInt();
+        for (int i = 0; i < numRegions; i++) {
+            readRegion(in, digraph);
+        }
+        // read each edge
+        // read number of tail regions
+        int numTails = in.readInt();
+        for (int i = 0; i < numTails; i++) {
+            // read the number of edges for this tail
+            int numEdges = in.readInt();
+            for (int j = 0; j < numEdges; j++) {
+                readEdge(in, digraph);
             }
         }
+
         return digraph;
     }
 
@@ -214,7 +189,7 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
             throw new IllegalStateException("Internal error reading a filter", e);
         } catch (BundleException e) {
             // This should never happen since the digraph was valid on save
-            // propagate as IO ex
+            // propagate as IllegalStateException
             throw new IllegalStateException("Internal error creating the digraph", e);
         }
     }
