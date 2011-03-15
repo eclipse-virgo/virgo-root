@@ -1,6 +1,6 @@
 # Compile
-org.eclipse.virgo.kernel=3.0.0.D-20110315140238
-org.eclipse.virgo.repository=3.0.0.D-20110315135850
+org.eclipse.virgo.kernel=3.0.0.D-20110315170806
+org.eclipse.virgo.repository=3.0.0.D-20110315153749
 org.eclipse.virgo.util=3.0.0.M02
 org.eclipse.virgo.medic=3.0.0.M02
 javax.servlet=2.5.0
