@@ -10,6 +10,15 @@
  *******************************************************************************/
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -28,9 +37,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
-
 public class PipelinedApplicationDeployerTests {
 
     private PipelinedApplicationDeployer pipelinedApplicationDeployer;
@@ -43,6 +49,7 @@ public class PipelinedApplicationDeployerTests {
     private DeployUriNormaliser normaliser;
     private DeployerConfiguration deployerConfiguration;
     private InstallArtifact installArtifact;
+    private StubBundleContext stubBundleContext = new StubBundleContext();
     
     @Before
     public void setup() {
@@ -55,7 +62,6 @@ public class PipelinedApplicationDeployerTests {
         normaliser = createMock(DeployUriNormaliser.class);
         deployerConfiguration = createMock(DeployerConfiguration.class);
         installArtifact = createMock(InstallArtifact.class);
-        
         expect(this.deployerConfiguration.getDeploymentTimeoutSeconds()).andReturn(5);
     }
 
@@ -66,7 +72,7 @@ public class PipelinedApplicationDeployerTests {
 
     private void startTests() {
         replay(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger, this.normaliser, this.deployerConfiguration, this.installArtifact);
-        this.pipelinedApplicationDeployer = new PipelinedApplicationDeployer(pipeline, installArtifactTreeInclosure, installEnvironmentFactory, ram, deploymentListener, eventLogger, normaliser, deployerConfiguration, new StubBundleContext());
+        this.pipelinedApplicationDeployer = new PipelinedApplicationDeployer(pipeline, installArtifactTreeInclosure, installEnvironmentFactory, ram, deploymentListener, eventLogger, normaliser, deployerConfiguration, stubBundleContext);
     }
 
     private void verifyMocks() {
@@ -99,7 +105,7 @@ public class PipelinedApplicationDeployerTests {
     } 
     
     @Test
-    public void testIsdeployedSucsess() throws URISyntaxException, DeploymentException {
+    public void testIsdeployedSucsess() throws Exception {
         URI testURI = new URI("foo");
         expect(this.normaliser.normalise(testURI)).andReturn(testURI);
         expect(this.ram.get(testURI)).andReturn(this.installArtifact);
@@ -107,7 +113,8 @@ public class PipelinedApplicationDeployerTests {
         boolean result = this.pipelinedApplicationDeployer.isDeployed(testURI);
         this.verifyMocks();
         assertTrue(result);
-    }    
+    }
+ 
 
     @Test
     public void testIsdeployedFail() throws URISyntaxException, DeploymentException {

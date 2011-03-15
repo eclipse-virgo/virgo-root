@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.deployer.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -30,6 +31,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListene
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.repository.WatchableRepository;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.PathReference;
@@ -51,8 +53,12 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
 
     private ServiceRegistration<InstallArtifactLifecycleListener> lifecycleListenerRegistration;
 
-    private DeploymentIdentity deploymentIdentity;
+    private StubWatchableRepository watchableRepository;
 
+    private ServiceRegistration<WatchableRepository> watchableRepositoryRegistration;
+
+    private DeploymentIdentity deploymentIdentity;
+    
     @Before
     public void setUp() throws Exception {
         PathReference pr = new PathReference("./target/deployer");
@@ -63,6 +69,9 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
 
         this.lifecycleListener = new StubInstallArtifactLifecycleListener();
         this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class, this.lifecycleListener, null);
+        
+        this.watchableRepository = new StubWatchableRepository();
+        this.watchableRepositoryRegistration = this.kernelContext.registerService(WatchableRepository.class, this.watchableRepository, null);
     }
 
     private void clearPickup() {
@@ -77,6 +86,9 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         clearPickup();
         if (this.lifecycleListenerRegistration != null) {
             this.lifecycleListenerRegistration.unregister();
+        }
+        if (this.watchableRepository != null) {
+            this.watchableRepositoryRegistration.unregister();
         }
     }
 
@@ -103,6 +115,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         this.deployer.undeploy(this.deploymentIdentity);
         this.deploymentIdentity = null;
         this.lifecycleListener.assertLifecycleCounts(1, 1, 1, 1);
+        assertEquals(1, this.watchableRepository.getCheckCount());
     }
 
     @Test
@@ -116,6 +129,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
 
         File workDir = new File("target/work/org.eclipse.virgo.kernel/Module/dummy.jar-0");
         assertFalse(workDir.exists());
+        assertEquals(1, this.watchableRepository.getCheckCount());
     }
 
     @Test
@@ -124,6 +138,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         ObjectName objectName = ObjectName.getInstance("org.eclipse.virgo.kernel:category=Control,type=RecoveryMonitor");
         assertTrue(server.isRegistered(objectName));
         assertTrue((Boolean) server.getAttribute(objectName, "RecoveryComplete"));
+        assertEquals(0, this.watchableRepository.getCheckCount());
     }
 
     @Test
@@ -138,6 +153,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         this.lifecycleListener.assertLifecycleCounts(2, 2, 1, 1);
         undeploy();
         this.lifecycleListener.assertLifecycleCounts(2, 2, 2, 2);
+        assertEquals(2, this.watchableRepository.getCheckCount());
     }
 
     @Test
@@ -150,6 +166,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         this.lifecycleListener.assertLifecycleCounts(2, 2, 1, 1);
         undeploy();
         this.lifecycleListener.assertLifecycleCounts(2, 2, 2, 2);
+        assertEquals(1, this.watchableRepository.getCheckCount());
     }
 
     @Test
@@ -160,6 +177,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         assertLifecycleCountsAfterWait(1, 1, 0, 0, 10000);
         deployed.delete();
         assertLifecycleCountsAfterWait(1, 1, 1, 1, 6000);
+        assertEquals(1, this.watchableRepository.getCheckCount());
     }
 
     private void assertLifecycleCountsAfterWait(int starting, int started, int stopping, int stopped, long waitMillis) throws InterruptedException {
@@ -200,6 +218,7 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         undeploy(true);
         assertTrue(copy.exists());
         copy.delete();
+        assertEquals(3, this.watchableRepository.getCheckCount());
     }
 
     @Test
@@ -228,5 +247,6 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
         undeploy();
         this.lifecycleListener.assertLifecycleCounts(2, 2, 2, 2);
         assertFalse(copy.exists());
+        assertEquals(2, this.watchableRepository.getCheckCount());
     }
 }
