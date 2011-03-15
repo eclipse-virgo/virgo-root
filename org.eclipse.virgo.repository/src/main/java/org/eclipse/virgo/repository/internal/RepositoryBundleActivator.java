@@ -47,7 +47,7 @@ public class RepositoryBundleActivator implements BundleActivator {
         RepositoryDumpContributor contributor = new RepositoryDumpContributor(new XMLRepositoryCodec());
         this.tracker.track(bundleContext.registerService(DumpContributor.class.getName(), contributor, null));
 
-        RepositoryFactory repositoryFactory = new StandardRepositoryFactory(eventLogger, contributor);
+        RepositoryFactory repositoryFactory = new StandardRepositoryFactory(eventLogger, bundleContext, tracker, contributor);
         this.tracker.track(bundleContext.registerService(RepositoryFactory.class.getName(), repositoryFactory, null));
 
         HashGenerator hashGenerator = new ShaHashGenerator();
