@@ -49,12 +49,16 @@ final class UserRegionModuleContextAccessor implements ModuleContextAccessor {
                     "(Bundle-SymbolicName=" + symbolicName + ")");
                 if (refs.size() != 0) {
                     for (ServiceReference<ApplicationContext> ref : refs) {
-                        ApplicationContext appCtx = (ApplicationContext) bundleContext.getService(ref);
+                        Object service = bundleContext.getService(ref);
                         try {
-                            if (appCtx instanceof ConfigurableOsgiBundleApplicationContext) {
-                                ConfigurableOsgiBundleApplicationContext cAppCtx = (ConfigurableOsgiBundleApplicationContext) appCtx;
-                                if (bundleContext == cAppCtx.getBundleContext()) {
-                                    return new ModuleContextWrapper(cAppCtx);
+                            // Avoid kernel region application contexts.
+                            if (service instanceof ApplicationContext) {
+                                ApplicationContext appCtx = (ApplicationContext) service;
+                                if (appCtx instanceof ConfigurableOsgiBundleApplicationContext) {
+                                    ConfigurableOsgiBundleApplicationContext cAppCtx = (ConfigurableOsgiBundleApplicationContext) appCtx;
+                                    if (bundleContext == cAppCtx.getBundleContext()) {
+                                        return new ModuleContextWrapper(cAppCtx);
+                                    }
                                 }
                             }
                         } finally {
