@@ -56,11 +56,15 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private final ThreadLocal<Region> threadLocal;
 
-    private SubgraphTraverser subgraphTraverser;
+    private final SubgraphTraverser subgraphTraverser;
+
+    StandardRegionDigraph() {
+        this(null, null);
+    }
 
     public StandardRegionDigraph(BundleContext bundleContext, ThreadLocal<Region> threadLocal) {
         this.subgraphTraverser = new SubgraphTraverser();
-        this.systemBundleContext = bundleContext.getBundle(0L).getBundleContext();
+        this.systemBundleContext = bundleContext == null ? null : bundleContext.getBundle(0L).getBundleContext();
         this.threadLocal = threadLocal;
     }
 
@@ -290,6 +294,8 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private Set<RegionLifecycleListener> getListeners() {
         Set<RegionLifecycleListener> listeners = new HashSet<RegionLifecycleListener>();
+        if (this.systemBundleContext == null)
+            return listeners;
         try {
             Collection<ServiceReference<RegionLifecycleListener>> listenerServiceReferences = this.systemBundleContext.getServiceReferences(
                 RegionLifecycleListener.class, null);
@@ -330,6 +336,6 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     @Override
     public RegionDigraphPersistence getRegionDigraphPersistence() {
-        return new StandardRegionDigraphPersistence(systemBundleContext, threadLocal);
+        return new StandardRegionDigraphPersistence();
     }
 }

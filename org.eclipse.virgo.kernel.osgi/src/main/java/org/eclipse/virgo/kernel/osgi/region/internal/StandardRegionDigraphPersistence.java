@@ -26,7 +26,6 @@ import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraphPersistence;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 
@@ -105,9 +104,8 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
         }
     }
 
-    static RegionDigraph readRegionDigraph(DataInputStream in, BundleContext systemBundleContext, ThreadLocal<Region> threadLocal)
-        throws IOException, InvalidSyntaxException, BundleException {
-        RegionDigraph digraph = new StandardRegionDigraph(systemBundleContext, threadLocal);
+    static RegionDigraph readRegionDigraph(DataInputStream in) throws IOException, InvalidSyntaxException, BundleException {
+        RegionDigraph digraph = new StandardRegionDigraph();
 
         // read the number of regions
         int numRegions = in.readInt();
@@ -170,19 +168,10 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
         digraph.connect(tail, builder.build(), head);
     }
 
-    private final BundleContext context;
-
-    private final ThreadLocal<Region> threadLocal;
-
-    public StandardRegionDigraphPersistence(BundleContext context, ThreadLocal<Region> threadLocal) {
-        this.context = context;
-        this.threadLocal = threadLocal;
-    }
-
     @Override
     public RegionDigraph load(InputStream input) throws IOException {
         try {
-            return readRegionDigraph(new DataInputStream(input), context, threadLocal);
+            return readRegionDigraph(new DataInputStream(input));
         } catch (InvalidSyntaxException e) {
             // This should never happen since the filters were valid on save
             // propagate as IllegalStateException

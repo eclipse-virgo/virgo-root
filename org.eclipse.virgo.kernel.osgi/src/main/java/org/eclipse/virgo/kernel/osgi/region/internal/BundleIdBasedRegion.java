@@ -112,6 +112,8 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
+        if (this.systemBundleContext == null)
+            throw new BundleException("This region is not connected to an OSGi Framework.", BundleException.INVALID_OPERATION);
         setRegionThreadLocal();
         try {
             return this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, input);
@@ -125,6 +127,8 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location) throws BundleException {
+        if (this.systemBundleContext == null)
+            throw new BundleException("This region is not connected to an OSGi Framework.", BundleException.INVALID_OPERATION);
         setRegionThreadLocal();
         try {
             return this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, openBundleStream(location));
@@ -134,11 +138,13 @@ final class BundleIdBasedRegion implements Region {
     }
 
     private void setRegionThreadLocal() {
-        this.threadLocal.set(this);
+        if (this.threadLocal != null)
+            this.threadLocal.set(this);
     }
 
     private void removeRegionThreadLocal() {
-        this.threadLocal.remove();
+        if (this.threadLocal != null)
+            this.threadLocal.remove();
     }
 
     private InputStream openBundleStream(String location) throws BundleException {
@@ -170,7 +176,8 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle getBundle(@NonNull String symbolicName, @NonNull Version version) {
-
+        if (this.systemBundleContext == null)
+            return null; // this region is not connected to an OSGi framework
         // The following iteration is weakly consistent and will never throw ConcurrentModificationException.
         for (long bundleId : this.bundleIds) {
             Bundle bundle = this.systemBundleContext.getBundle(bundleId);
@@ -276,7 +283,7 @@ final class BundleIdBasedRegion implements Region {
 
     @Override
     public void visitSubgraph(RegionDigraphVisitor visitor) {
-       this.regionDigraph.visitSubgraph(this, visitor);
+        this.regionDigraph.visitSubgraph(this, visitor);
     }
 
 }

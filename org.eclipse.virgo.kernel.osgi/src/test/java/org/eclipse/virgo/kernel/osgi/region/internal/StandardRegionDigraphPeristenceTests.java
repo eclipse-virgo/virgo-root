@@ -37,6 +37,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -56,9 +57,8 @@ public class StandardRegionDigraphPeristenceTests {
 
     @Before
     public void setUp() throws Exception {
-        long nextId = 0;
-        StubBundle stubSystemBundle = new StubBundle(nextId++, "osgi.framework", new Version("0"), "loc");
-        systemBundleContext = new StubBundleContext();
+        StubBundle stubSystemBundle = new StubBundle(0L, "osgi.framework", new Version("0"), "loc");
+        systemBundleContext = (StubBundleContext) stubSystemBundle.getBundleContext();
         systemBundleContext.addInstalledBundle(stubSystemBundle);
         threadLocal = new ThreadLocal<Region>();
         this.digraph = new StandardRegionDigraph(systemBundleContext, threadLocal);
@@ -69,7 +69,9 @@ public class StandardRegionDigraphPeristenceTests {
             Region region = digraph.createRegion(regionName);
             for (int i = 0; i < 10; i++) {
                 String bsn = region.getName() + "." + i;
-                region.addBundle(new StubBundle(nextId++, bsn, new Version("0"), bsn));
+                StubBundle b = (StubBundle) systemBundleContext.installBundle(bsn);
+                systemBundleContext.addInstalledBundle(b);
+                region.addBundle(b);
             }
         }
     }
@@ -130,11 +132,54 @@ public class StandardRegionDigraphPeristenceTests {
         doTest();
     }
 
+    @Test
+    public void testInvalidOperations() throws IOException, InvalidSyntaxException, BundleException {
+        Region boot = digraph.getRegion(BOOT_REGION);
+        Bundle b = boot.installBundle("dynamic.add.a.1", null);
+        // needed because we don't have a bundle hook to add it for us
+        boot.addBundle(b);
+        // needed because StubBundleContext.installBundle does not do this!
+        systemBundleContext.addInstalledBundle((StubBundle) b);
+        Bundle p = boot.getBundle(b.getSymbolicName(), b.getVersion());
+        Assert.assertEquals(b, p);
+        // TODO seems testing this will require a reference handler to be present
+        // b = boot.installBundle("file:dynamic.add.a.2");
+        // boot.addBundle(b); // needed because we don't have a bundle hook to add it for us
+
+        RegionDigraph copy = copy(digraph);
+        Region bootCopy = copy.getRegion(BOOT_REGION);
+        p = bootCopy.getBundle(b.getSymbolicName(), b.getVersion());
+        Assert.assertNull(p);
+        try {
+            bootCopy.installBundle("dynamic.add.b.1", null);
+        } catch (BundleException e) {
+            // expected
+        }
+        try {
+            bootCopy.installBundle("dynamic.add.b.2");
+        } catch (BundleException e) {
+            // expected
+        }
+
+    }
+
     private void doTest() throws IOException, InvalidSyntaxException, BundleException {
         // test a single write
         doTest(1);
         // test writing and reading the digraph multiple times to same stream
         doTest(10);
+    }
+
+    private RegionDigraph copy(RegionDigraph toCopy) throws IOException, InvalidSyntaxException, BundleException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        DataOutputStream dataOut = new DataOutputStream(output);
+        StandardRegionDigraphPersistence.writeRegionDigraph(new DataOutputStream(output), digraph);
+        dataOut.close();
+
+        DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(output.toByteArray()));
+        RegionDigraph copy = StandardRegionDigraphPersistence.readRegionDigraph(dataIn);
+        dataIn.close();
+        return copy;
     }
 
     private void doTest(int iterations) throws IOException, InvalidSyntaxException, BundleException {
@@ -147,7 +192,7 @@ public class StandardRegionDigraphPeristenceTests {
 
         DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(output.toByteArray()));
         for (int i = 0; i < iterations; i++) {
-            RegionDigraph copy = StandardRegionDigraphPersistence.readRegionDigraph(dataIn, systemBundleContext, threadLocal);
+            RegionDigraph copy = StandardRegionDigraphPersistence.readRegionDigraph(dataIn);
             assertEquals(digraph, copy);
         }
         dataIn.close();
