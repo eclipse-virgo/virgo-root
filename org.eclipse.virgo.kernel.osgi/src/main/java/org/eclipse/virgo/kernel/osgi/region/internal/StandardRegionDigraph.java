@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraphPersistence;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
@@ -325,5 +326,10 @@ public final class StandardRegionDigraph implements RegionDigraph {
             }
         }
         return result;
+    }
+
+    @Override
+    public RegionDigraphPersistence getRegionDigraphPersistence() {
+        return new StandardRegionDigraphPersistence(systemBundleContext, threadLocal);
     }
 }
