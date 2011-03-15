@@ -23,6 +23,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeInclosure;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class PipelinedApplicationDeployerTests {
 
     private void startTests() {
         replay(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger, this.normaliser, this.deployerConfiguration, this.installArtifact);
-        this.pipelinedApplicationDeployer = new PipelinedApplicationDeployer(pipeline, installArtifactTreeInclosure, installEnvironmentFactory, ram, deploymentListener, eventLogger, normaliser, deployerConfiguration);
+        this.pipelinedApplicationDeployer = new PipelinedApplicationDeployer(pipeline, installArtifactTreeInclosure, installEnvironmentFactory, ram, deploymentListener, eventLogger, normaliser, deployerConfiguration, new StubBundleContext());
     }
 
     private void verifyMocks() {

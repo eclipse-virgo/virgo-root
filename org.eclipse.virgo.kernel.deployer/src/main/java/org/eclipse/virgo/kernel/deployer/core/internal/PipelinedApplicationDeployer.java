@@ -13,13 +13,9 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 
 import org.eclipse.virgo.kernel.core.KernelException;
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
@@ -41,9 +37,17 @@ import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.repository.Repository;
+import org.eclipse.virgo.repository.WatchableRepository;
 import org.eclipse.virgo.util.common.Tree;
 import org.eclipse.virgo.util.io.PathReference;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 
 /**
  * {@link PipelinedApplicationDeployer} is an implementation of {@link ApplicationDeployer} which creates a {@link Tree}
@@ -80,6 +84,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private final int deployerConfiguredTimeoutInSeconds;
 
+    private final BundleContext bundleContext;
+
     public PipelinedApplicationDeployer(Pipeline pipeline, 
                                         InstallArtifactTreeInclosure installArtifactTreeInclosure,
                                         InstallEnvironmentFactory installEnvironmentFactory, 
@@ -87,14 +93,15 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                                         DeploymentListener deploymentListener,
                                         EventLogger eventLogger, 
                                         DeployUriNormaliser normaliser, 
-                                        DeployerConfiguration deployerConfiguration) {
+                                        DeployerConfiguration deployerConfiguration,
+                                        BundleContext bundleContext){
         this.eventLogger = eventLogger;
         this.installArtifactTreeInclosure = installArtifactTreeInclosure;
         this.installEnvironmentFactory = installEnvironmentFactory;
         this.ram = ram;
         this.deploymentListener = deploymentListener;
         this.deployUriNormaliser = normaliser;
-
+        this.bundleContext = bundleContext;
         this.pipeline = pipeline;
         this.deployerConfiguredTimeoutInSeconds = deployerConfiguration.getDeploymentTimeoutSeconds();
     }
@@ -271,6 +278,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private void driveInstallPipeline(URI uri, Tree<InstallArtifact> installTree) throws DeploymentException {
 
+        refreshWatchedRepositories();
         InstallEnvironment installEnvironment = this.installEnvironmentFactory.createInstallEnvironment(installTree.getValue());
 
         try {
@@ -558,4 +566,28 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         installArtifact.uninstall();
     }
 
+    private void refreshWatchedRepositories() {
+        try {
+            Collection<ServiceReference<WatchableRepository>> references = this.bundleContext.getServiceReferences(WatchableRepository.class, null);
+            for(ServiceReference<WatchableRepository> reference : references){
+                WatchableRepository watchableRepository = this.bundleContext.getService(reference);
+                try {
+                    watchableRepository.forceCheck();
+                } catch (Exception e) {
+                    String name;
+                    if(watchableRepository instanceof Repository){
+                        name = ((Repository)watchableRepository).getName();
+                    } else {
+                        name = "unknown repository type";
+                    }
+                    this.eventLogger.log(DeployerLogEvents.WATCHED_REPOSITORY_REFRESH_FAILED, name);
+                }
+                this.bundleContext.ungetService(reference);
+            }
+        } catch (InvalidSyntaxException e) {
+            this.eventLogger.log(DeployerLogEvents.WATCHED_REPOSITORIES_REFRESH_FAILED);
+        }
+
+    }
+    
 }
