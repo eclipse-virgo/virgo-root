@@ -168,9 +168,15 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
 
     private static void readEdge(DataInputStream in, RegionDigraph digraph) throws IOException, InvalidSyntaxException, BundleException {
         // read tail region name
-        Region tail = digraph.getRegion(in.readUTF());
+        String tailName = in.readUTF();
+        Region tail = digraph.getRegion(tailName);
+        if (tail == null)
+            throw new IOException("Could not find tail reagion: " + tailName);
         // read head region name
-        Region head = digraph.getRegion(in.readUTF());
+        String headName = in.readUTF();
+        Region head = digraph.getRegion(headName);
+        if (head == null)
+            throw new IOException("Could not find head reagion: " + headName);
         // read the sharing policy
         RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
         // read the number of name spaces
