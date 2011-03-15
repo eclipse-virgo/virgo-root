@@ -171,12 +171,12 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
         String tailName = in.readUTF();
         Region tail = digraph.getRegion(tailName);
         if (tail == null)
-            throw new IOException("Could not find tail reagion: " + tailName);
+            throw new IOException("Could not find tail region: " + tailName);
         // read head region name
         String headName = in.readUTF();
         Region head = digraph.getRegion(headName);
         if (head == null)
-            throw new IOException("Could not find head reagion: " + headName);
+            throw new IOException("Could not find head region: " + headName);
         // read the sharing policy
         RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
         // read the number of name spaces
