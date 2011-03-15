@@ -13,8 +13,8 @@ package org.eclipse.virgo.repository.internal.management;
 
 import java.util.Set;
 
+import org.eclipse.virgo.repository.WatchableRepository;
 import org.eclipse.virgo.repository.internal.ArtifactDescriptorDepository;
-import org.eclipse.virgo.repository.internal.watched.WatchableRepository;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
 import org.eclipse.virgo.repository.management.WatchedStorageRepositoryInfo;
 

@@ -32,6 +32,7 @@ import org.eclipse.virgo.repository.IndexFormatException;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.repository.RepositoryCreationException;
+import org.eclipse.virgo.repository.WatchableRepository;
 import org.eclipse.virgo.repository.configuration.WatchedStorageRepositoryConfiguration;
 import org.eclipse.virgo.repository.internal.LocalRepository;
 import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
