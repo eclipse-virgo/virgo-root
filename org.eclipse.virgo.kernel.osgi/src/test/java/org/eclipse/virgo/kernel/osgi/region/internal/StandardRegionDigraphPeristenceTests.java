@@ -37,7 +37,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -54,8 +53,6 @@ public class StandardRegionDigraphPeristenceTests {
     private static final String BOOT_REGION = "boot";
 
     private static final Collection<String> regionNames = Arrays.asList("r0", "r1", "r2", "r3");
-
-    private static final Map<String, Set<Bundle>> regionBundles = new HashMap<String, Set<Bundle>>();
 
     @Before
     public void setUp() throws Exception {
@@ -121,7 +118,7 @@ public class StandardRegionDigraphPeristenceTests {
         for (Region region : digraph) {
             tails.add(region);
         }
-        // create multiple connections between each region
+        // create multiple connections between each region with cycles
         for (Region head : digraph) {
             for (Region tail : tails) {
                 if (head == tail)
@@ -134,12 +131,26 @@ public class StandardRegionDigraphPeristenceTests {
     }
 
     private void doTest() throws IOException, InvalidSyntaxException, BundleException {
-        ByteArrayOutputStream memOut = new ByteArrayOutputStream();
-        StandardRegionDigraphPersistence.writeRegionDigraph(new DataOutputStream(memOut), digraph);
+        // test a single write
+        doTest(1);
+        // test writing and reading the digraph multiple times to same stream
+        doTest(10);
+    }
 
-        ByteArrayInputStream memIn = new ByteArrayInputStream(memOut.toByteArray());
-        RegionDigraph copy = StandardRegionDigraphPersistence.readRegionDigraph(new DataInputStream(memIn), systemBundleContext, threadLocal);
-        assertEquals(digraph, copy);
+    private void doTest(int iterations) throws IOException, InvalidSyntaxException, BundleException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        DataOutputStream dataOut = new DataOutputStream(output);
+        for (int i = 0; i < iterations; i++) {
+            StandardRegionDigraphPersistence.writeRegionDigraph(new DataOutputStream(output), digraph);
+        }
+        dataOut.close();
+
+        DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(output.toByteArray()));
+        for (int i = 0; i < iterations; i++) {
+            RegionDigraph copy = StandardRegionDigraphPersistence.readRegionDigraph(dataIn, systemBundleContext, threadLocal);
+            assertEquals(digraph, copy);
+        }
+        dataIn.close();
     }
 
     private RegionFilter createFilter(String... input) throws InvalidSyntaxException {
