@@ -39,6 +39,10 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 final class StandardRegionDigraphPersistence implements RegionDigraphPersistence {
 
+    private static final String PERSISTENT_NAME = "virgo region digraph";
+
+    private static final int PERSISTENT_VERSION = 1;
+
     static void writeRegionDigraph(DataOutputStream out, RegionDigraph digraph) throws IOException {
         if (!(digraph instanceof StandardRegionDigraph))
             throw new IllegalArgumentException("Only digraphs of type '" + StandardRegionDigraph.class.getName() + "' are allowed: "
@@ -46,6 +50,9 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
         Map<Region, Set<FilteredRegion>> filteredRegions = ((StandardRegionDigraph) digraph).getFilteredRegions();
 
         try {
+            // write the persistent name and version
+            out.writeUTF(PERSISTENT_NAME);
+            out.writeInt(PERSISTENT_VERSION);
             // write the number of regions
             out.writeInt(filteredRegions.size());
             // write each region
@@ -107,6 +114,15 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
     static RegionDigraph readRegionDigraph(DataInputStream in) throws IOException, InvalidSyntaxException, BundleException {
         RegionDigraph digraph = new StandardRegionDigraph();
 
+        // Read and check the persistent name and version
+        String persistentName = in.readUTF();
+        if (!PERSISTENT_NAME.equals(persistentName)) {
+            throw new IllegalArgumentException("Input stream does not represent a digraph");
+        }
+        int persistentVersion = in.readInt();
+        if (PERSISTENT_VERSION != persistentVersion) {
+            throw new IllegalArgumentException("Input stream contains a digraph with an incompatible version '" + persistentVersion + "'");
+        }
         // read the number of regions
         int numRegions = in.readInt();
         for (int i = 0; i < numRegions; i++) {
@@ -168,6 +184,9 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
         digraph.connect(tail, builder.build(), head);
     }
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public RegionDigraph load(InputStream input) throws IOException {
         try {
@@ -183,6 +202,9 @@ final class StandardRegionDigraphPersistence implements RegionDigraphPersistence
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public void save(RegionDigraph digraph, OutputStream output) throws IOException {
         writeRegionDigraph(new DataOutputStream(output), digraph);

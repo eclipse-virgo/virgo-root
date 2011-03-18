@@ -34,8 +34,9 @@ public interface RegionDigraphPersistence {
      * The specified stream remains open after this method returns.
      * 
      * @param input an input stream to read a digraph from.
-     * @return
+     * @return the new digraph
      * @throws IOException if error occurs reading the digraph.
+     * @throws IllegalArgumentException if the input stream is not a digraph or has an incompatible persistent version
      */
     RegionDigraph load(InputStream input) throws IOException;
 

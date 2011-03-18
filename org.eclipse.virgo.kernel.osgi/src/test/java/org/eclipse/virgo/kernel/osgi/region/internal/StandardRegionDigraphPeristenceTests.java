@@ -163,6 +163,37 @@ public class StandardRegionDigraphPeristenceTests {
 
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidPersistentName() throws IOException, InvalidSyntaxException, BundleException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        DataOutputStream dataOut = new DataOutputStream(output);
+        dataOut.writeUTF("test");
+        dataOut.close();
+        byte[] byteArray = output.toByteArray();
+        readDigraph(byteArray);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidPersistentVersion() throws IOException, InvalidSyntaxException, BundleException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        DataOutputStream dataOut = new DataOutputStream(output);
+        dataOut.writeUTF("virgo region digraph");
+        dataOut.writeInt(-1);
+        dataOut.close();
+        byte[] byteArray = output.toByteArray();
+        readDigraph(byteArray);
+    }
+
+    private void readDigraph(byte[] byteArray) throws IOException, InvalidSyntaxException, BundleException {
+        ByteArrayInputStream input = new ByteArrayInputStream(byteArray);
+        DataInputStream dataIn = new DataInputStream(input);
+        try {
+            StandardRegionDigraphPersistence.readRegionDigraph(dataIn);
+        } finally {
+            dataIn.close();
+        }
+    }
+
     private void doTest() throws IOException, InvalidSyntaxException, BundleException {
         // test a single write
         doTest(1);
@@ -221,11 +252,7 @@ public class StandardRegionDigraphPeristenceTests {
     }
 
     static int countRegions(RegionDigraph digraph) {
-        int result = 0;
-        for (Region region : digraph) {
-            result++;
-        }
-        return result;
+        return digraph.getRegions().size();
     }
 
     static void assertEquals(Region r1, Region r2) {
