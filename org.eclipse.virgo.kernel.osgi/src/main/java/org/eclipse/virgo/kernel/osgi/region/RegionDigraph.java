@@ -140,7 +140,7 @@ public interface RegionDigraph extends Iterable<Region> {
      * @return a {@link Set} of {@link FilteredRegion FilteredRegions} of head regions and region filters
      */
     Set<FilteredRegion> getEdges(Region tailRegion);
-    
+
     /**
      * Visit the subgraph connected to the given region.
      * 
@@ -149,4 +149,11 @@ public interface RegionDigraph extends Iterable<Region> {
      */
     void visitSubgraph(Region startingRegion, RegionDigraphVisitor visitor);
 
+    /**
+     * Gets a {@link RegionDigraphPersistence} object which can be used to save and load a {@link RegionDigraph} to and
+     * from persistent storage.
+     * 
+     * @return a {@link RegionDigraphPersistence} object.
+     */
+    RegionDigraphPersistence getRegionDigraphPersistence();
 }

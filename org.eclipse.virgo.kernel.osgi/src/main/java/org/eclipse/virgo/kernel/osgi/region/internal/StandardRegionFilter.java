@@ -142,4 +142,8 @@ final class StandardRegionFilter implements RegionFilter {
         }
         return result;
     }
+
+    public String toString() {
+        return getSharingPolicy().toString();
+    }
 }
