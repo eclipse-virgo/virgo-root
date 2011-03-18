@@ -125,6 +125,7 @@
 		<beans:constructor-arg ref="eventLogger" />
 		<beans:constructor-arg ref="uriNormaliser" />
 		<beans:constructor-arg ref="deployerConfig" />
+		<beans:constructor-arg ref="bundleContext" />
 	</beans:bean>
 
 	<beans:bean id="stateCleanupListener"
