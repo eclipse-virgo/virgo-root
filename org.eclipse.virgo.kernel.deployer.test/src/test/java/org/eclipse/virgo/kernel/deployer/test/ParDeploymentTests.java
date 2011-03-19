@@ -27,38 +27,40 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 
-
-/**
- */
 public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
-    
-    private static final File PAR_FILE = new File("src/test/resources/BundlesAndConfig.par");
-    private static final File PAR_FOR_BUG331767 = new File("src/test/resources/bug331767.par");
-	private static final File PAR_FOR_BUG330506 = new File("src/test/resources/bug330506.par");
-    
-    private static final String BUNDLE_SYMBOLIC_NAME = "appA-1-bundleA";
-    private static final String BUNDLE_SYMBOLIC_NAME_BUG331767 = "PARbug331767-1-BUNDLEbug331767";
-    private static final Version BUNDLE_VERSION = new Version(1,0,0);    
 
+    private static final File PAR_FILE = new File("src/test/resources/BundlesAndConfig.par");
+
+    private static final File PAR_FOR_BUG331767 = new File("src/test/resources/bug331767.par");
+
+    private static final File PAR_FOR_BUG330506 = new File("src/test/resources/bug330506.par");
+
+    private static final File PAR_CONTAINING_PLAN = new File("src/test/resources/plan-in-par/ParContainingPlan.par");
+
+    private static final String BUNDLE_SYMBOLIC_NAME = "appA-1-bundleA";
+
+    private static final String BUNDLE_SYMBOLIC_NAME_BUG331767 = "PARbug331767-1-BUNDLEbug331767";
+
+    private static final Version BUNDLE_VERSION = new Version(1, 0, 0);
 
     @Test
     public void deployParContainingBundlesAndProperties() throws DeploymentException, IOException, InvalidSyntaxException {
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(PAR_FILE.toURI());
-        
+
         Configuration configuration = getConfiguration("foo");
-        assertNotNull(configuration);        
+        assertNotNull(configuration);
         assertEquals("bar", configuration.getProperties().get("foo"));
-        
+
         assertBundlePresent(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
-        
+
         this.deployer.undeploy(deploymentIdentity);
-        
+
         configuration = getConfiguration("foo");
         assertNull(configuration);
-        
+
         assertBundleNotPresent(BUNDLE_SYMBOLIC_NAME, BUNDLE_VERSION);
     }
-    
+
     @Test
     public void deployParContainingDynamicImportStar() throws DeploymentException {
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(PAR_FOR_BUG331767.toURI());
@@ -66,31 +68,38 @@ public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
         this.deployer.undeploy(deploymentIdentity);
         assertBundleNotPresent(BUNDLE_SYMBOLIC_NAME_BUG331767, BUNDLE_VERSION);
     }
-	
-	@Test(expected=DeploymentException.class)
+
+    @Test(expected = DeploymentException.class)
     public void deployParContainingFragmentOfSystemBundle() throws DeploymentException {
         this.deployer.deploy(PAR_FOR_BUG330506.toURI());
     }
-   
+
+    @Test
+    public void deployParContainingPlan() throws DeploymentException {
+        DeploymentIdentity deploymentIdentity = this.deployer.deploy(PAR_CONTAINING_PLAN.toURI());
+        assertBundlePresent("par.with.plan-1-simple.bundle.one", new Version(1, 0, 0, "BUILD-20090326114035"));
+        this.deployer.undeploy(deploymentIdentity);
+    }
+
     private void assertBundlePresent(String symbolicName, Version version) {
         Bundle[] bundles = this.context.getBundles();
-        
+
         for (Bundle bundle : bundles) {
             if (symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
                 return;
             }
         }
-        
+
         fail("The bundle " + symbolicName + " " + version + " was not found.");
     }
-    
+
     private void assertBundleNotPresent(String symbolicName, Version version) {
         Bundle[] bundles = this.context.getBundles();
-        
+
         for (Bundle bundle : bundles) {
             if (symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
                 fail("Bundle " + bundle + " should not be present");
             }
         }
-    }        
+    }
 }

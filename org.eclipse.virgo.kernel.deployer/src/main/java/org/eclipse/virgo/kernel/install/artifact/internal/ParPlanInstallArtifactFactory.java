@@ -55,10 +55,12 @@ final class ParPlanInstallArtifactFactory {
     
     private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
 
+    private final InstallArtifactTreeFactory planInstallArtifactTreeFactory;
+
     ParPlanInstallArtifactFactory(EventLogger eventLogger, BundleContext bundleContext,
         BundleInstallArtifactTreeFactory bundleInstallArtifactTreeFactory, ScopeServiceRepository scopeServiceRepository, ScopeFactory scopeFactory,
         InstallArtifactRefreshHandler refreshHandler, ConfigInstallArtifactTreeFactory configInstallArtifactTreeFactory,
-        ArtifactStorageFactory artifactStorageFactory, ArtifactIdentityDeterminer artifactIdentityDeterminer) {
+        ArtifactStorageFactory artifactStorageFactory, ArtifactIdentityDeterminer artifactIdentityDeterminer, PlanInstallArtifactTreeFactory planInstallArtifactTreeFactory) {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
         this.bundleInstallArtifactTreeFactory = bundleInstallArtifactTreeFactory;
@@ -68,12 +70,13 @@ final class ParPlanInstallArtifactFactory {
         this.configInstallArtifactTreeFactory = configInstallArtifactTreeFactory;
         this.artifactStorageFactory = artifactStorageFactory;
         this.artifactIdentityDeterminer = artifactIdentityDeterminer;
+        this.planInstallArtifactTreeFactory = planInstallArtifactTreeFactory;
     }
 
     ParPlanInstallArtifact createParPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, @NonNull ArtifactStorage artifactStorage, String repositoryName) throws DeploymentException {
         ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
         return new ParPlanInstallArtifact(artifactIdentity, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger,
             bundleInstallArtifactTreeFactory, refreshHandler, repositoryName, this.configInstallArtifactTreeFactory,
-            this.artifactStorageFactory, this.artifactIdentityDeterminer);
+            this.artifactStorageFactory, this.artifactIdentityDeterminer, this.planInstallArtifactTreeFactory);
     }
 }
