@@ -27,7 +27,7 @@ import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionLifecycleListener;
+import org.eclipse.virgo.kernel.osgi.region.internal.RegionLifecycleListener;
 import org.eclipse.virgo.kernel.osgi.region.management.ManageableRegion;
 import org.eclipse.virgo.kernel.osgi.region.management.ManageableRegionDigraph;
 import org.osgi.framework.BundleContext;

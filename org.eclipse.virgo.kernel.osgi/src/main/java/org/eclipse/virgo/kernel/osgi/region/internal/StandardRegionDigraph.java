@@ -26,7 +26,6 @@ import org.eclipse.virgo.kernel.osgi.region.RegionDigraphPersistence;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
-import org.eclipse.virgo.kernel.osgi.region.RegionLifecycleListener;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.math.OrderedPair;
 import org.osgi.framework.Bundle;

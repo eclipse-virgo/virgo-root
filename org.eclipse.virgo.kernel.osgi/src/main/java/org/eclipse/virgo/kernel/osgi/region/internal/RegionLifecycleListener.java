@@ -9,7 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region;
+package org.eclipse.virgo.kernel.osgi.region.internal;
+
+import org.eclipse.virgo.kernel.osgi.region.Region;
 
 /**
  * {@link RegionLifecycleListener} is a service interface to listen for regions being added to and deleted from the
