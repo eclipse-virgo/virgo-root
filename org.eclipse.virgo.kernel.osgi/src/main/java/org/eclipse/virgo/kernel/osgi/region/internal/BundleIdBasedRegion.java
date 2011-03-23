@@ -61,8 +61,7 @@ final class BundleIdBasedRegion implements Region {
 
     private final ThreadLocal<Region> threadLocal;
 
-    BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext bundleContext,
-        @NonNull ThreadLocal<Region> threadLocal) {
+    BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, BundleContext bundleContext, ThreadLocal<Region> threadLocal) {
         this.regionName = regionName;
         this.regionDigraph = regionDigraph;
         this.bundleContext = bundleContext;
