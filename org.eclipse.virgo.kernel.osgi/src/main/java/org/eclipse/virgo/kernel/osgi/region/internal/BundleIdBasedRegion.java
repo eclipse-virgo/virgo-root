@@ -57,15 +57,15 @@ final class BundleIdBasedRegion implements Region {
 
     private final RegionDigraph regionDigraph;
 
-    private final BundleContext systemBundleContext;
+    private final BundleContext bundleContext;
 
     private final ThreadLocal<Region> threadLocal;
 
-    BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext systemBundleContext,
+    BundleIdBasedRegion(@NonNull String regionName, @NonNull RegionDigraph regionDigraph, @NonNull BundleContext bundleContext,
         @NonNull ThreadLocal<Region> threadLocal) {
         this.regionName = regionName;
         this.regionDigraph = regionDigraph;
-        this.systemBundleContext = systemBundleContext;
+        this.bundleContext = bundleContext;
         this.threadLocal = threadLocal;
     }
 
@@ -112,11 +112,11 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
-        if (this.systemBundleContext == null)
+        if (this.bundleContext == null)
             throw new BundleException("This region is not connected to an OSGi Framework.", BundleException.INVALID_OPERATION);
         setRegionThreadLocal();
         try {
-            return this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, input);
+            return this.bundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, input);
         } finally {
             removeRegionThreadLocal();
         }
@@ -127,11 +127,11 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle installBundle(String location) throws BundleException {
-        if (this.systemBundleContext == null)
+        if (this.bundleContext == null)
             throw new BundleException("This region is not connected to an OSGi Framework.", BundleException.INVALID_OPERATION);
         setRegionThreadLocal();
         try {
-            return this.systemBundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, openBundleStream(location));
+            return this.bundleContext.installBundle(this.regionName + REGION_LOCATION_DELIMITER + location, openBundleStream(location));
         } finally {
             removeRegionThreadLocal();
         }
@@ -176,11 +176,12 @@ final class BundleIdBasedRegion implements Region {
      */
     @Override
     public Bundle getBundle(@NonNull String symbolicName, @NonNull Version version) {
-        if (this.systemBundleContext == null)
+        if (bundleContext == null)
             return null; // this region is not connected to an OSGi framework
+
         // The following iteration is weakly consistent and will never throw ConcurrentModificationException.
         for (long bundleId : this.bundleIds) {
-            Bundle bundle = this.systemBundleContext.getBundle(bundleId);
+            Bundle bundle = bundleContext.getBundle(bundleId);
             if (bundle != null && symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
                 return bundle;
             }

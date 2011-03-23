@@ -51,7 +51,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private final Map<OrderedPair<Region, Region>, RegionFilter> filter = new HashMap<OrderedPair<Region, Region>, RegionFilter>();
 
-    private final BundleContext systemBundleContext;
+    private final BundleContext bundleContext;
 
     private final ThreadLocal<Region> threadLocal;
 
@@ -63,7 +63,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     public StandardRegionDigraph(BundleContext bundleContext, ThreadLocal<Region> threadLocal) {
         this.subgraphTraverser = new SubgraphTraverser();
-        this.systemBundleContext = bundleContext == null ? null : bundleContext.getBundle(0L).getBundleContext();
+        this.bundleContext = bundleContext;
         this.threadLocal = threadLocal;
     }
 
@@ -72,7 +72,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
      */
     @Override
     public Region createRegion(String regionName) throws BundleException {
-        Region region = new BundleIdBasedRegion(regionName, this, this.systemBundleContext, this.threadLocal);
+        Region region = new BundleIdBasedRegion(regionName, this, this.bundleContext, this.threadLocal);
         synchronized (this.monitor) {
             if (getRegion(regionName) != null) {
                 throw new BundleException("Region '" + regionName + "' already exists", BundleException.UNSUPPORTED_OPERATION);
@@ -293,13 +293,13 @@ public final class StandardRegionDigraph implements RegionDigraph {
 
     private Set<RegionLifecycleListener> getListeners() {
         Set<RegionLifecycleListener> listeners = new HashSet<RegionLifecycleListener>();
-        if (this.systemBundleContext == null)
+        if (this.bundleContext == null)
             return listeners;
         try {
-            Collection<ServiceReference<RegionLifecycleListener>> listenerServiceReferences = this.systemBundleContext.getServiceReferences(
+            Collection<ServiceReference<RegionLifecycleListener>> listenerServiceReferences = this.bundleContext.getServiceReferences(
                 RegionLifecycleListener.class, null);
             for (ServiceReference<RegionLifecycleListener> listenerServiceReference : listenerServiceReferences) {
-                RegionLifecycleListener regionLifecycleListener = this.systemBundleContext.getService(listenerServiceReference);
+                RegionLifecycleListener regionLifecycleListener = this.bundleContext.getService(listenerServiceReference);
                 if (regionLifecycleListener != null) {
                     listeners.add(regionLifecycleListener);
                 }

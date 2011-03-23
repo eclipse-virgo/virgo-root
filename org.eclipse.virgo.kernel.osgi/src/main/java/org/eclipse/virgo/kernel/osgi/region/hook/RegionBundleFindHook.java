@@ -32,8 +32,11 @@ public final class RegionBundleFindHook implements FindHook {
 
     private final RegionDigraph regionDigraph;
 
-    public RegionBundleFindHook(RegionDigraph regionDigraph) {
+    private final long hookImplID;
+
+    public RegionBundleFindHook(RegionDigraph regionDigraph, long hookImplID) {
         this.regionDigraph = regionDigraph;
+        this.hookImplID = hookImplID;
     }
 
     /**
@@ -41,7 +44,10 @@ public final class RegionBundleFindHook implements FindHook {
      */
     @Override
     public void find(BundleContext context, Collection<Bundle> bundles) {
-        if (context.getBundle().getBundleId() == 0L) {
+        long bundleID = context.getBundle().getBundleId();
+
+        if (bundleID == 0 || bundleID == hookImplID) {
+            // The system bundle and the hook impl bundle can see all bundles
             return;
         }
 

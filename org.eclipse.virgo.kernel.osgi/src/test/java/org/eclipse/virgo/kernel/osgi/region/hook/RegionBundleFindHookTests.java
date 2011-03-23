@@ -84,7 +84,7 @@ public class RegionBundleFindHookTests {
         stubBundleContext.addInstalledBundle(stubSystemBundle);
         this.threadLocal = new ThreadLocal<Region>();
         this.digraph = new StandardRegionDigraph(stubBundleContext, this.threadLocal);
-        this.bundleFindHook = new RegionBundleFindHook(this.digraph);
+        this.bundleFindHook = new RegionBundleFindHook(this.digraph, stubSystemBundle.getBundleId());
         this.candidates = new HashSet<Bundle>();
 
         // Create regions A, B, C, D containing bundles A, B, C, D, respectively.

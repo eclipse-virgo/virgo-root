@@ -70,7 +70,8 @@ final class RegionManager {
     }
 
     private void registerDigraphMbean(RegionDigraph regionDigraph) {
-        StandardManageableRegionDigraph standardManageableRegionDigraph = new StandardManageableRegionDigraph(regionDigraph, this.domain, this.bundleContext);
+        StandardManageableRegionDigraph standardManageableRegionDigraph = new StandardManageableRegionDigraph(regionDigraph, this.domain,
+            this.bundleContext);
         standardManageableRegionDigraph.registerMBean();
     }
 
@@ -89,7 +90,7 @@ final class RegionManager {
     private void registerRegionHooks(RegionDigraph regionDigraph) {
         registerResolverHookFactory(new RegionResolverHookFactory(regionDigraph));
 
-        RegionBundleFindHook bundleFindHook = new RegionBundleFindHook(regionDigraph);
+        RegionBundleFindHook bundleFindHook = new RegionBundleFindHook(regionDigraph, bundleContext.getBundle().getBundleId());
 
         registerBundleFindHook(bundleFindHook);
 
