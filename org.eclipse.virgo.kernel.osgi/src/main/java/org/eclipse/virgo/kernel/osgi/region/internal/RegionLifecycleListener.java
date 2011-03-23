@@ -17,6 +17,8 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
  * {@link RegionLifecycleListener} is a service interface to listen for regions being added to and deleted from the
  * region digraph.
  * <p />
+ * Note that this is an internal interface and is not intended for external use.
+ * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
  * Implementations of this interface must be thread safe.
