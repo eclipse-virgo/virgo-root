@@ -13,10 +13,9 @@
 
 package org.eclipse.virgo.kernel.osgi.region.hook;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.eclipse.virgo.kernel.core.FatalKernelException;
 import org.eclipse.virgo.kernel.osgi.region.Region;
@@ -74,7 +73,7 @@ public final class RegionBundleEventHook implements EventHook {
     }
 
     private boolean find(BundleContext finderBundleContext, Bundle candidateBundle) {
-        Set<Bundle> candidates = new HashSet<Bundle>();
+        Collection<Bundle> candidates = new ArrayList<Bundle>(1);
         candidates.add(candidateBundle);
         this.bundleFindHook.find(finderBundleContext, candidates);
         return !candidates.isEmpty();
