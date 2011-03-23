@@ -65,7 +65,7 @@ final class RegionManager {
         RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
         registerDigraphMbean(regionDigraph);
         createKernelRegion(regionDigraph);
-        registerRegionDigraph(regionDigraph, this.bundleContext);
+        registerRegionDigraph(regionDigraph);
         return regionDigraph;
     }
 
@@ -103,11 +103,8 @@ final class RegionManager {
         registerServiceEventHook(new RegionServiceEventHook(serviceFindHook));
     }
 
-    private void registerRegionDigraph(RegionDigraph regionDigraph, BundleContext userRegionBundleContext) {
+    private void registerRegionDigraph(RegionDigraph regionDigraph) {
         this.tracker.track(this.bundleContext.registerService(RegionDigraph.class, regionDigraph, null));
-        if (userRegionBundleContext != null) {
-            this.tracker.track(userRegionBundleContext.registerService(RegionDigraph.class, regionDigraph, null));
-        }
     }
 
     private void registerServiceFindHook(org.osgi.framework.hooks.service.FindHook serviceFindHook) {

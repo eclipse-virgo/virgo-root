@@ -26,21 +26,20 @@ public class RegionManagerTests {
     @Test
     public void testStartAndStop() throws Exception {
         StubBundleContext bundleContext = new StubBundleContext();
-        
+
         StubBundle stubUserRegionFactoryBundle = new StubBundle("org.eclipse.virgo.kernel.userregionfactory", new Version("2.2.0"));
         bundleContext.addInstalledBundle(stubUserRegionFactoryBundle);
-        
+
         StubBundle stubSystemBundle = new StubBundle(0L, "org.osgi.framework", new Version("0"), "");
         bundleContext.addInstalledBundle(stubSystemBundle);
-                              
-       
+
         RegionManager manager = new RegionManager(bundleContext, "test.domain");
         manager.start();
-        
+
         List<StubServiceRegistration<Object>> serviceRegistrations = bundleContext.getServiceRegistrations();
-        assertEquals("Region services not registered", 9, serviceRegistrations.size());
-        
+        assertEquals("Region services not registered", 8, serviceRegistrations.size());
+
         manager.stop();
-        
+
     }
 }
