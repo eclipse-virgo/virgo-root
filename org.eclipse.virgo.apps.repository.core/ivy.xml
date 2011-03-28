@@ -34,7 +34,15 @@
         <dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="test->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>	
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>	
+		
 		<override org="org.springframework" rev="${org.springframework}"/>
+		<!-- Override the version of util so the transitive dependency of Gemini Web is ignored. This avoids the need to update Gemini Web, for example when
+		     rippling a util change to web which does not affect Gemini Web. -->
+		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}" />
+		<override org="org.eclipse.virgo.osgi" rev="${org.eclipse.virgo.osgi}" />
+        <override org="org.eclipse.virgo.test" rev="${org.eclipse.virgo.test}" />    
+        <override org="org.eclipse.virgo.teststubs" rev="${org.eclipse.virgo.teststubs}" />
+		
 	</dependencies>
 
 </ivy-module>
