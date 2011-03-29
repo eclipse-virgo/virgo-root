@@ -18,16 +18,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipException;
 
+import org.eclipse.virgo.apps.admin.core.stubs.StubDumpPathLocator;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.eclipse.virgo.apps.admin.core.state.StateDumpExtractor;
-import org.eclipse.virgo.apps.admin.core.stubs.StubDumpPathLocator;
-import org.eclipse.virgo.apps.admin.core.stubs.StubWorkArea;
-import org.eclipse.virgo.kernel.services.work.WorkArea;
-
-/**
- */
 public class StateDumpExtractorTests {
     
     private final String DUMP_FOLDER_CONTENT = "testDumpWithContent"; 
@@ -36,36 +30,29 @@ public class StateDumpExtractorTests {
     
     private final String DUMP_FOLDER_NOT_EXIST = "notHere"; 
     
-    private StateDumpExtractor stateDumpExtractor;
-    
-    private WorkArea workArea = new StubWorkArea();
+    private StandardDumpLocator stateDumpExtractor;
     
     @Before
     public void setUp() {            
         StubDumpPathLocator stubDumpPathLocator = new StubDumpPathLocator();
-        this.stateDumpExtractor = new StateDumpExtractor(workArea, stubDumpPathLocator);
+        this.stateDumpExtractor = new StandardDumpLocator(stubDumpPathLocator);
     }
     
     @Test
     public void getStateDump() throws ZipException, IOException {
-        File result = this.stateDumpExtractor.getStateDump(DUMP_FOLDER_CONTENT);
+        File result = this.stateDumpExtractor.getDumpDir(DUMP_FOLDER_CONTENT);
         assertNotNull(result);
-        assertEquals("state", result.getName());
-    }
-    
-    @Test(expected=IOException.class)
-    public void getStateDumpNoContent() throws ZipException, IOException {
-        this.stateDumpExtractor.getStateDump(DUMP_FOLDER_NO_CONTENT);
+        assertEquals(DUMP_FOLDER_CONTENT, result.getName());
     }
     
     @Test(expected=IOException.class)
     public void getStateDumpNotExists() throws ZipException, IOException {
-        this.stateDumpExtractor.getStateDump(DUMP_FOLDER_NOT_EXIST);
+        this.stateDumpExtractor.getDumpDir(DUMP_FOLDER_NOT_EXIST);
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void getStateDumpNull() throws ZipException, IOException {
-        this.stateDumpExtractor.getStateDump(null);
+        this.stateDumpExtractor.getDumpDir(null);
     }
     
 }

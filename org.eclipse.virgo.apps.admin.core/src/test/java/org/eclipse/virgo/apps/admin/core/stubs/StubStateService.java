@@ -47,6 +47,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiBundle> getAllBundles(File source) {
         this.checkNull(source);
         ArrayList<QuasiBundle> arrayList = new ArrayList<QuasiBundle>();
@@ -57,6 +58,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public QuasiBundle getBundle(File source, long bundleId){ 
         this.checkNull(source);
         if(bundleId == EXISTING_ID){
@@ -68,6 +70,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiLiveService> getAllServices(File source) {
         this.checkNull(source);
         return new ArrayList<QuasiLiveService>();
@@ -76,6 +79,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public QuasiPackage getPackages(File source, String packageName) {
         this.checkNull(source);
         if(packageName.equals(TEST_PACKAGE_SEARCH)) {
@@ -87,6 +91,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public QuasiLiveService getService(File source, long serviceId) {
         this.checkNull(source);
         if(serviceId == EXISTING_ID){
@@ -98,17 +103,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
-    public QuasiBundle installBundle(File source, String location) {
-        this.checkNull(source);
-        if(TEST_INSTALL_LOCATION.equals(location)) {
-            return new StubQuasiLiveBundle(EXISTING_ID, null);
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public List<QuasiBundle> search(File source, String term) {
         this.checkNull(source);
         return new ArrayList<QuasiBundle>();
@@ -117,6 +112,7 @@ final public class StubStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiResolutionFailure> getResolverReport(File source, long bundleId) {
         this.checkNull(source);
         return new ArrayList<QuasiResolutionFailure>();
@@ -129,5 +125,5 @@ final public class StubStateService implements StateService {
             assertNotNull(source);
         }
     }
-    
+
 }

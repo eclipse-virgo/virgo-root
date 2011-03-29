@@ -22,14 +22,13 @@
 
 <!-- STATE INSPECTOR -->
 
-	<bean id="stateDumpExtractor" class="org.eclipse.virgo.apps.admin.core.state.StateDumpExtractor">
-		<constructor-arg ref="workArea"/>
+	<bean id="dumpLocator" class="org.eclipse.virgo.apps.admin.core.state.StandardDumpLocator">
 		<constructor-arg ref="dumpPathLocator"/>
 	</bean>
 	
 	<bean id="stateHolder" class="org.eclipse.virgo.apps.admin.core.state.StandardStateHolder">
 		<constructor-arg ref="stateService" />
-		<constructor-arg ref="stateDumpExtractor"/>
+		<constructor-arg ref="dumpLocator"/>
 		<constructor-arg ref="moduleContextAccessor"/>
 		<constructor-arg ref="quasiFrameworkFactory" />
 	</bean>

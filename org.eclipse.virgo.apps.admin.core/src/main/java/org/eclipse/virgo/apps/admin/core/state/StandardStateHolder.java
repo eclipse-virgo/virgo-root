@@ -15,11 +15,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.apps.admin.core.BundleHolder;
-import org.eclipse.virgo.apps.admin.core.DumpExtractor;
+import org.eclipse.virgo.apps.admin.core.DumpLocator;
 import org.eclipse.virgo.apps.admin.core.ExportedPackageHolder;
 import org.eclipse.virgo.apps.admin.core.FailedResolutionHolder;
 import org.eclipse.virgo.apps.admin.core.ImportedPackageHolder;
@@ -35,56 +32,58 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
  * StandardStateInspectorService is the standard implementation of {@link StateHolder}.
  * </p>
- *
+ * 
  * <strong>Concurrent Semantics</strong><br />
- *
+ * 
  * StandardStateInspectorService is Thread-safe
- *
+ * 
  */
 final class StandardStateHolder implements StateHolder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StandardStateHolder.class);
-    
+
     private static final String LIVE = "Live";
-    
-	private final StateService stateService;
-	
-    private final DumpExtractor stateDumpExtractor;
+
+    private final StateService stateService;
+
+    private final DumpLocator dumpLocator;
 
     private final ModuleContextAccessor moduleContextAccessor;
 
     private final QuasiFrameworkFactory quasiFrameworkFactory;
 
-	public StandardStateHolder(StateService stateService, DumpExtractor dumpStateExtractor, ModuleContextAccessor moduleContextAccessor, QuasiFrameworkFactory quasiFrameworkFactory) {
-		this.stateService = stateService;
-		this.stateDumpExtractor = dumpStateExtractor;
+    public StandardStateHolder(StateService stateService, DumpLocator dumpLocator, ModuleContextAccessor moduleContextAccessor,
+        QuasiFrameworkFactory quasiFrameworkFactory) {
+        this.stateService = stateService;
+        this.dumpLocator = dumpLocator;
         this.moduleContextAccessor = moduleContextAccessor;
         this.quasiFrameworkFactory = quasiFrameworkFactory;
-	}
+    }
 
     /**
      * {@inheritDoc}
      */
     public List<BundleHolder> getAllBundles(String source) {
         File dumpDirectory = null;
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
         List<QuasiBundle> allBundles = this.stateService.getAllBundles(dumpDirectory);
         List<BundleHolder> heldBundles = new ArrayList<BundleHolder>();
-        for(QuasiBundle quasiBundle : allBundles) {
-            if(quasiBundle != null) {
+        for (QuasiBundle quasiBundle : allBundles) {
+            if (quasiBundle != null) {
                 heldBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor));
             }
         }
         return heldBundles;
     }
-
 
     /**
      * {@inheritDoc}
@@ -92,28 +91,27 @@ final class StandardStateHolder implements StateHolder {
     public List<ServiceHolder> getAllServices(String source) {
         File dumpDirectory = null;
         List<ServiceHolder> serviceHolders = new ArrayList<ServiceHolder>();
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
         List<QuasiLiveService> allServices = this.stateService.getAllServices(dumpDirectory);
-        for(QuasiLiveService quasiLiveService : allServices) {
+        for (QuasiLiveService quasiLiveService : allServices) {
             serviceHolders.add(new StandardServiceHolder(quasiLiveService, moduleContextAccessor));
         }
         return serviceHolders;
     }
-
 
     /**
      * {@inheritDoc}
      */
     public BundleHolder getBundle(String source, long bundleId) {
         File dumpDirectory = null;
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
-        
+
         QuasiBundle bundle = stateService.getBundle(dumpDirectory, bundleId);
-        if(bundle != null) {
+        if (bundle != null) {
             return new StandardBundleHolder(bundle, this.moduleContextAccessor);
         }
         return null;
@@ -124,40 +122,38 @@ final class StandardStateHolder implements StateHolder {
      */
     public BundleHolder getBundle(String source, String name, String version) {
         File dumpDirectory = null;
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
         QuasiBundle result = null;
-        if(name != null && version != null) {
+        if (name != null && version != null) {
             List<QuasiBundle> allBundles = this.stateService.getAllBundles(dumpDirectory);
-            for(QuasiBundle quasiBundle : allBundles) {
-                if(quasiBundle.getSymbolicName().equals(name) && quasiBundle.getVersion().toString().equals(version)) {
+            for (QuasiBundle quasiBundle : allBundles) {
+                if (quasiBundle.getSymbolicName().equals(name) && quasiBundle.getVersion().toString().equals(version)) {
                     result = quasiBundle;
                 }
             }
         }
-        if(result != null) {
+        if (result != null) {
             return new StandardBundleHolder(result, this.moduleContextAccessor);
-        } 
+        }
         return null;
     }
-
 
     /**
      * {@inheritDoc}
      */
     public ServiceHolder getService(String source, long serviceId) {
         File dumpDirectory = null;
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
         QuasiLiveService service = this.stateService.getService(dumpDirectory, serviceId);
-        if(service != null) {
+        if (service != null) {
             return new StandardServiceHolder(service, this.moduleContextAccessor);
         }
         return null;
     }
-
 
     /**
      * {@inheritDoc}
@@ -168,33 +164,32 @@ final class StandardStateHolder implements StateHolder {
 
         List<ImportedPackageHolder> importedPackageHolders = new ArrayList<ImportedPackageHolder>();
         List<ExportedPackageHolder> exportedPackageHolders = new ArrayList<ExportedPackageHolder>();
-        
-        for(QuasiBundle qBundle : bundles){
+
+        for (QuasiBundle qBundle : bundles) {
             ImportedPackageHolder importPackage = processImporters(qBundle, packageName);
-            if (importPackage != null){
+            if (importPackage != null) {
                 importedPackageHolders.add(importPackage);
             }
             ExportedPackageHolder exportPackage = processExporters(qBundle, packageName);
-            if (exportPackage != null){
+            if (exportPackage != null) {
                 exportedPackageHolders.add(exportPackage);
             }
         }
         return new StandardPackagesCollection(packageName, importedPackageHolders, exportedPackageHolders);
     }
 
-
     /**
      * {@inheritDoc}
      */
     public List<FailedResolutionHolder> getResolverReport(String source, long bundleId) {
         File dumpDirectory = null;
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
         List<QuasiResolutionFailure> resolverReport = this.stateService.getResolverReport(dumpDirectory, bundleId);
         List<FailedResolutionHolder> failedResolutionHolders = new ArrayList<FailedResolutionHolder>();
-        if(resolverReport != null) {
-            for(QuasiResolutionFailure quasiResolutionFailure : resolverReport) {
+        if (resolverReport != null) {
+            for (QuasiResolutionFailure quasiResolutionFailure : resolverReport) {
                 failedResolutionHolders.add(new StandardFailedResolutionHolder(quasiResolutionFailure, this.moduleContextAccessor));
             }
         }
@@ -206,46 +201,45 @@ final class StandardStateHolder implements StateHolder {
      */
     public List<BundleHolder> search(String source, String term) {
         File dumpDirectory = null;
-        if(source != null && !LIVE.equals(source)){
+        if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
         }
         List<QuasiBundle> matchingBundles = this.stateService.search(dumpDirectory, term);
         List<BundleHolder> heldMatchingBundles = new ArrayList<BundleHolder>();
-        for(QuasiBundle quasiBundle : matchingBundles) {
-            if(quasiBundle != null) {
+        for (QuasiBundle quasiBundle : matchingBundles) {
+            if (quasiBundle != null) {
                 heldMatchingBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor));
             }
         }
         return heldMatchingBundles;
     }
-    
-    private File getDumpDirectory(String source){
+
+    private File getDumpDirectory(String source) {
         File dumpDirectory = null;
         try {
-            dumpDirectory = this.stateDumpExtractor.getStateDump(source);
+            dumpDirectory = this.dumpLocator.getDumpDir(source);
         } catch (Exception e) {
             LOGGER.warn(String.format("Unable to obtain the dump directory '%s'", source), e);
         }
         return dumpDirectory;
     }
-    
-    private QuasiFramework getQuasiFramework(String source){
-        File dumpDirectory = null;
-        try {
-            dumpDirectory = this.stateDumpExtractor.getStateDump(source);
-        } catch (Exception e) {
-            LOGGER.warn(String.format("Unable to obtain the dump directory '%s'", source), e);
-        }
-        if(dumpDirectory != null) {
-            return this.quasiFrameworkFactory.create(dumpDirectory);
+
+    private QuasiFramework getQuasiFramework(String source) {
+        File dumpDirectory = getDumpDirectory(source);
+        if (dumpDirectory != null) {
+            try {
+                return this.quasiFrameworkFactory.create(dumpDirectory);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to create quasi-framework", e);
+            }
         } else {
             return this.quasiFrameworkFactory.create();
         }
     }
 
-    private ImportedPackageHolder  processImporters(QuasiBundle qBundle, String packageName) {
-        for(QuasiImportPackage qImportPackage : qBundle.getImportPackages()){
-            if(qImportPackage.getPackageName().equals(packageName)){
+    private ImportedPackageHolder processImporters(QuasiBundle qBundle, String packageName) {
+        for (QuasiImportPackage qImportPackage : qBundle.getImportPackages()) {
+            if (qImportPackage.getPackageName().equals(packageName)) {
                 return new StandardImportedPackageHolder(qImportPackage, this.moduleContextAccessor);
             }
         }
@@ -253,12 +247,12 @@ final class StandardStateHolder implements StateHolder {
     }
 
     private ExportedPackageHolder processExporters(QuasiBundle qBundle, String packageName) {
-        for(QuasiExportPackage qExportPackage : qBundle.getExportPackages()){
-            if(qExportPackage.getPackageName().equals(packageName)){
+        for (QuasiExportPackage qExportPackage : qBundle.getExportPackages()) {
+            if (qExportPackage.getPackageName().equals(packageName)) {
                 return new StandardExportedPackageHolder(qExportPackage, this.moduleContextAccessor);
             }
         }
         return null;
     }
-    
+
 }

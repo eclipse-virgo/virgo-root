@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipException;
 
-import org.eclipse.virgo.apps.admin.core.DumpExtractor;
+import org.eclipse.virgo.apps.admin.core.DumpLocator;
 
 
 /**
  */
-final public class StubDumpExtractor implements DumpExtractor {
+final public class StubDumpExtractor implements DumpLocator {
 
     public List<File> getListOfPossibleDumps() {
         return new ArrayList<File>();
@@ -31,7 +31,7 @@ final public class StubDumpExtractor implements DumpExtractor {
     /**
      * {@inheritDoc}
      */
-    public File getStateDump(String dump) throws ZipException, IOException {
+    public File getDumpDir(String dump) throws ZipException, IOException {
         return new File(dump);
     }
 
