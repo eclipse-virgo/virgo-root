@@ -109,7 +109,7 @@ public interface Query {
 
     /**
      * Apply a new VersionRange filter to this <code>Query</code>. </p> This filter is applied after all other
-     * <code>Attribute</code> based filters and uses {@link VersionRangeMatchingStrategy#ALL} matching strategy.
+     * <code>Attribute</code> based filters and uses {@link VersionRangeMatchingStrategy#HIGHEST} matching strategy.
      * 
      * <p/>
      * VersionRange filtering is applied to the artifact of the identical group, that is artifact of same type and name.
