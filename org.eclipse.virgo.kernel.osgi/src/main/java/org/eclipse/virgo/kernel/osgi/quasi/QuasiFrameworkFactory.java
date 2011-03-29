@@ -12,6 +12,8 @@
 package org.eclipse.virgo.kernel.osgi.quasi;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.zip.ZipException;
 
 /**
  * {@link QuasiFrameworkFactory} is used to create {@link QuasiFramework QuasiFrameworks}.
@@ -32,11 +34,13 @@ public interface QuasiFrameworkFactory {
     QuasiFramework create();
 
     /**
-     * Creates a {@link QuasiFramework} from a state dump in the given directory.
+     * Creates a {@link QuasiFramework} from a dump in the given directory.
      * 
-     * @param stateDump a {@link File} containing the state dump directory
+     * @param stateDump a {@link File} containing the dump directory
      * @return the <code>QuasiFramework</code>, which is never <code>null</code>
+     * @throws ZipException when unzipping
+     * @throws IOException when reading
      */
-    QuasiFramework create(File stateDump);
+    QuasiFramework create(File stateDump)  throws ZipException, IOException ;
 
 }

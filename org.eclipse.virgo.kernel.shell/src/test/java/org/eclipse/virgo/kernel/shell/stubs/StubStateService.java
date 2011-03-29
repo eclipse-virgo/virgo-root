@@ -30,14 +30,26 @@ public class StubStateService implements StateService {
     
     private StubQuasiLiveBundle stubQuasiBundle = new StubQuasiLiveBundle(STUB_STATE_BUNDLE_ID, new StubBundle());
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public List<QuasiBundle> getAllBundles(File source) {
         return new ArrayList<QuasiBundle>();
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public List<QuasiLiveService> getAllServices(File source) {
         return new ArrayList<QuasiLiveService>();
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public QuasiBundle getBundle(File source, long bundleId) {
         if (bundleId == stubQuasiBundle.getBundleId()) {
             return this.stubQuasiBundle;
@@ -46,22 +58,34 @@ public class StubStateService implements StateService {
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public List<QuasiResolutionFailure> getResolverReport(File source, long bundleId) {
         return new ArrayList<QuasiResolutionFailure>();
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public QuasiLiveService getService(File source, long serviceId) {
         return new StubQuasiLiveService(STUB_STATE_SERVICE_ID, this.stubQuasiBundle);
     }
 
-    public QuasiBundle installBundle(File source, String location) {
-        return this.stubQuasiBundle;
-    }
-
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public QuasiPackage getPackages(File source, String packageName) {
         return new StubQuasiPackage(packageName);
     }
 
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
     public List<QuasiBundle> search(File source, String term) {
         ArrayList<QuasiBundle> arrayList = new ArrayList<QuasiBundle>();
         if (term.contains("*")) {

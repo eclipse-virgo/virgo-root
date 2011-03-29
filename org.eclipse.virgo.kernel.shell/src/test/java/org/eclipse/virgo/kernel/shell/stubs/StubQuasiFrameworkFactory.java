@@ -20,12 +20,20 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
  */
 public class StubQuasiFrameworkFactory implements QuasiFrameworkFactory {
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public QuasiFramework create() {
         return new StubQuasiFramework();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public QuasiFramework create(File arg0) {
         return new StubQuasiFramework();
     }
-    
+
 }

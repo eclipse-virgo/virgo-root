@@ -12,21 +12,11 @@
 package org.eclipse.virgo.kernel.osgi.test;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipException;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
@@ -34,10 +24,14 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
-import org.eclipse.virgo.util.io.PathReference;
-import org.eclipse.virgo.util.io.ZipUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
 
 /**
  */
@@ -82,7 +76,7 @@ public class QuasiFrameworkStateDumpIntegrationTests extends AbstractKernelInteg
 
         File dump = newFileSet.iterator().next();
 
-        QuasiFramework stateDump = this.quasiFrameworkFactory.create(getStateDump(dump));
+        QuasiFramework stateDump = this.quasiFrameworkFactory.create(dump);
         List<QuasiBundle> bundles = stateDump.getBundles();
         boolean found = false;
         for (QuasiBundle quasiBundle : bundles) {
@@ -92,35 +86,6 @@ public class QuasiFrameworkStateDumpIntegrationTests extends AbstractKernelInteg
         }
         Assert.assertTrue(found);
 
-    }
-
-	private File getStateDump(File dump) throws ZipException, IOException {
-        File stateDump;
-        Assert.assertFalse(dump == null);
-        File[] stateDumpZipFiles = dump.listFiles(new FilenameFilter() {
-
-            public boolean accept(File dir, String name) {
-                return name.equals("osgi.zip");
-            }
-        });
-        Assert.assertEquals(1, stateDumpZipFiles.length);
-        File stateDumpZipFile = stateDumpZipFiles[0];
-
-        stateDump = unzip(stateDumpZipFile);
-        return stateDump;
-    }
-    
-    private File unzip(File stateDumpZipFile) throws IOException {
-        PathReference zipFile = new PathReference(stateDumpZipFile);
-        String stateDumpFileName = getTmpDir();
-        PathReference dest = new PathReference(stateDumpFileName);
-        ZipUtils.unzipTo(zipFile, dest);
-        return dest.newChild("state").toFile();
-    }
-
-    private static String getTmpDir() {
-        return System.getProperty("java.io.tmpdir") + File.separator + QuasiFrameworkStateDumpIntegrationTests.class.getSimpleName()
-            + System.currentTimeMillis();
     }
 
     private Set<File> getDumpFiles() {

@@ -29,15 +29,17 @@ import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
 import org.eclipse.virgo.kernel.shell.state.StateService;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.springframework.util.AntPathMatcher;
 
 /**
- * 
+ * {@link StandardStateService} is the default implementation of {@link StateService}.
+ * <p />
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ * Thread safe.
  */
 final public class StandardStateService implements StateService {
 
@@ -65,6 +67,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiBundle> getAllBundles(File source) {
         List<QuasiBundle> bundles = this.getQuasiFramework(source).getBundles();
         if (source == null) {
@@ -88,6 +91,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public QuasiBundle getBundle(File source, long bundleId) {
         return this.getQuasiFramework(source).getBundle(bundleId);
     }
@@ -95,6 +99,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiLiveService> getAllServices(File source) {
         List<QuasiLiveService> quasiLiveServices = new ArrayList<QuasiLiveService>();
         if (source == null) {
@@ -131,6 +136,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public QuasiLiveService getService(File source, long serviceId) {
         if (source == null) {
             SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
@@ -142,6 +148,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiResolutionFailure> getResolverReport(File source, long bundleId) {
         QuasiFramework framework = this.getQuasiFramework(source);
         return framework.diagnose(bundleId);
@@ -150,29 +157,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
-    public QuasiBundle installBundle(File source, String location) {
-        if (source != null) {
-            throw new IllegalStateException("Unable to install a bundle in to a non-live state.");
-        }
-        Bundle installBundle = null;
-        try {
-            installBundle = this.bundleContext.installBundle(location);
-        } catch (BundleException e) {
-            throw new IllegalStateException(String.format("Unable to install the bundle '%s'.", e.getMessage()), e);
-        }
-        if (installBundle == null) {
-            return null;
-        }
-        QuasiFramework framework = this.getQuasiFramework(null);
-        if (framework == null) {
-            return null;
-        }
-        return framework.getBundle(installBundle.getBundleId());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public QuasiPackage getPackages(File source, String packageName) {
         QuasiFramework framework = this.getQuasiFramework(source);
         if (packageName != null) {
@@ -197,6 +182,7 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<QuasiBundle> search(File source, String term) {
         QuasiFramework framework = this.getQuasiFramework(source);
         List<QuasiBundle> matchingBundles = new ArrayList<QuasiBundle>();
@@ -218,7 +204,11 @@ final public class StandardStateService implements StateService {
         if (source == null) {
             return new StandardQuasiLiveFramework(this.quasiFrameworkFactory.create(), this.bundleContext);
         } else {
-            return this.quasiFrameworkFactory.create(source);
+            try {
+                return this.quasiFrameworkFactory.create(source);
+            } catch (Exception e) {
+                throw new RuntimeException("Error creating quasi-framework", e);
+            }
         }
     }
 

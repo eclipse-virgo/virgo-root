@@ -31,6 +31,9 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean;
+import org.eclipse.virgo.kernel.services.work.WorkArea;
+import org.eclipse.virgo.kernel.userregion.internal.DumpExtractor;
+import org.eclipse.virgo.kernel.userregion.internal.dump.StandardDumpExtractor;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
@@ -45,8 +48,10 @@ import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryFactory;
 import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
 import org.eclipse.virgo.util.io.FileSystemUtils;
+import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;
 import org.junit.Before;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -157,7 +162,21 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
-        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph).create();
+
+        WorkArea workArea = new WorkArea() {
+
+            @Override
+            public Bundle getOwner() {
+                return bundleContext.getBundle();
+            }
+
+            @Override
+            public PathReference getWorkDirectory() {
+                return new PathReference(new File("target/work"));
+            }
+        };
+        DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
+        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph, dumpExtractor).create();
     }
 
     private ImportExpander createImportExpander(PackageAdmin packageAdmin) {

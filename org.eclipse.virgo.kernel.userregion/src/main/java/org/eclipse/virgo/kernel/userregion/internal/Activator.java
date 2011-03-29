@@ -32,9 +32,12 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.virgo.kernel.services.work.WorkArea;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
+import org.eclipse.virgo.kernel.userregion.internal.dump.StandardDumpExtractor;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxHookRegistrar;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
+import org.eclipse.virgo.kernel.userregion.internal.equinox.RegionDigraphDumpContributor;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.ResolutionDumpContributor;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StandardPackageAdminUtil;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
@@ -96,7 +99,9 @@ public class Activator implements BundleActivator {
         EventLogger eventLogger = OsgiFrameworkUtils.getService(context, EventLoggerFactory.class).getService().createEventLogger(context.getBundle());
         
         RegionDigraph regionDigraph = OsgiFrameworkUtils.getService(context, RegionDigraph.class).getService();
-
+        
+        WorkArea workArea = OsgiFrameworkUtils.getService(context, WorkArea.class).getService();
+        
         ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));
 
@@ -105,10 +110,14 @@ public class Activator implements BundleActivator {
         OsgiFramework osgiFramework = createOsgiFramework(context, packageAdmin, bundleTransformerHandler);
         this.registrationTracker.track(context.registerService(OsgiFramework.class.getName(), osgiFramework, null));
 
-        DumpContributor dumpContributor = createResolutionDumpContributor(context);
-        this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), dumpContributor, null));
+        DumpContributor resolutionDumpContributor = createResolutionDumpContributor(context);
+        this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), resolutionDumpContributor, null));
+        
+        DumpContributor regionDigraphDumpContributor = createRegionDigraphDumpContributor(context);
+        this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), regionDigraphDumpContributor, null));
 
-        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph);
+        DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
+        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph, dumpExtractor);
         this.registrationTracker.track(context.registerService(QuasiFrameworkFactory.class.getName(), quasiFrameworkFactory, null));
 
         EquinoxHookRegistrar hookRegistrar = createHookRegistrar(context, packageAdmin, bundleTransformerHandler);
@@ -141,9 +150,13 @@ public class Activator implements BundleActivator {
         return new ResolutionDumpContributor(bundleContext);
     }
 
+    private DumpContributor createRegionDigraphDumpContributor(BundleContext bundleContext) {
+        return new RegionDigraphDumpContributor(bundleContext);
+    }
+    
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
-        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, RegionDigraph regionDigraph) {
-        return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler, regionDigraph);
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, RegionDigraph regionDigraph, DumpExtractor dumpExtractor) {
+        return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler, regionDigraph, dumpExtractor);
     }
 
     private TransformedManifestProvidingBundleFileWrapper createBundleTransformationHandler(ImportExpansionHandler importExpander) {
