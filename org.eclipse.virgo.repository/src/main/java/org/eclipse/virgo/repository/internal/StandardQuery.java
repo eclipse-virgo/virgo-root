@@ -94,7 +94,7 @@ final public class StandardQuery implements Query {
      */
     @Override
     public Query setVersionRangeFilter(VersionRange versionRange) {
-        return setVersionRangeFilter(versionRange, VersionRangeMatchingStrategy.ALL);
+        return setVersionRangeFilter(versionRange, VersionRangeMatchingStrategy.HIGHEST);
     }
 
     /**
@@ -113,9 +113,12 @@ final public class StandardQuery implements Query {
      * {@inheritDoc}
      */
     public Set<RepositoryAwareArtifactDescriptor> run() {
+        final VersionRange localVersionRange = this.versionRangeFilter;
+        final VersionRangeMatchingStrategy localVersionRangeMatchingStrategy = this.versionRangeMatchingStrategy;
+
         Set<RepositoryAwareArtifactDescriptor> resolved = this.artifactDepository.resolveArtifactDescriptors(this.filters);
-        if (this.versionRangeFilter != null) {
-            resolved = this.versionRangeMatchingStrategy.match(resolved, this.versionRangeFilter);
+        if (localVersionRangeMatchingStrategy != null) {
+            resolved = localVersionRangeMatchingStrategy.match(resolved, localVersionRange);
         }
         return resolved;
     }

@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.repository.internal.watched;
+package org.eclipse.virgo.repository;
 
 import org.eclipse.virgo.repository.internal.LocationsRepository;
 

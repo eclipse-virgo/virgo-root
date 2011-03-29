@@ -14,6 +14,7 @@ package org.eclipse.virgo.repository.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ import org.eclipse.virgo.repository.ArtifactDescriptorPersister;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryCreationException;
 import org.eclipse.virgo.repository.RepositoryFactory;
+import org.eclipse.virgo.repository.WatchableRepository;
 import org.eclipse.virgo.repository.configuration.ExternalStorageRepositoryConfiguration;
 import org.eclipse.virgo.repository.configuration.ManagedStorageRepositoryConfiguration;
 import org.eclipse.virgo.repository.configuration.RemoteRepositoryConfiguration;
@@ -35,6 +37,7 @@ import org.eclipse.virgo.repository.internal.persistence.NoOpArtifactDescriptorP
 import org.eclipse.virgo.repository.internal.remote.RemoteRepository;
 import org.eclipse.virgo.repository.internal.watched.WatchedStorageRepository;
 import org.eclipse.virgo.util.common.Assert;
+import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 /**
  * <strong>Concurrent Semantics</strong><br />
@@ -50,8 +53,14 @@ final class StandardRepositoryFactory implements RepositoryFactory {
 
     private final RepositoryDumpContributor dumpContributor;
 
-    StandardRepositoryFactory(EventLogger eventLogger, RepositoryDumpContributor dumpContributor) {
+    private final BundleContext bundleContext;
+
+    private final ServiceRegistrationTracker tracker;
+
+    StandardRepositoryFactory(EventLogger eventLogger, BundleContext bundleContext, ServiceRegistrationTracker tracker, RepositoryDumpContributor dumpContributor) {
         this.eventLogger = eventLogger;
+        this.bundleContext = bundleContext;
+        this.tracker = tracker;
         this.dumpContributor = dumpContributor;
     }    
 
@@ -131,11 +140,14 @@ final class StandardRepositoryFactory implements RepositoryFactory {
 
     private final LocalRepository createWatchedRepository(RepositoryConfiguration repositoryConfiguration, ArtifactDescriptorPersister artifactDescriptorPersister) throws RepositoryCreationException {
         try {
+            WatchedStorageRepository watchableRepository;
             if (artifactDescriptorPersister==null) {
-                return new WatchedStorageRepository((WatchedStorageRepositoryConfiguration) repositoryConfiguration, new NoOpArtifactDescriptorPersister(), eventLogger);
+                watchableRepository = new WatchedStorageRepository((WatchedStorageRepositoryConfiguration) repositoryConfiguration, new NoOpArtifactDescriptorPersister(), eventLogger);
             } else {
-                return new WatchedStorageRepository((WatchedStorageRepositoryConfiguration) repositoryConfiguration, artifactDescriptorPersister, eventLogger);
+                watchableRepository = new WatchedStorageRepository((WatchedStorageRepositoryConfiguration) repositoryConfiguration, artifactDescriptorPersister, eventLogger);
             }
+            this.tracker.track(this.bundleContext.registerService(WatchableRepository.class, watchableRepository, null));
+            return watchableRepository;
         } catch (Exception e) {
             throw new RepositoryCreationException("Failed to create watched repository '" + repositoryConfiguration.getName() + "'.", e);
         }
