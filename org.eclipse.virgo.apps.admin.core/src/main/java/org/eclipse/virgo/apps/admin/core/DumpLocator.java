@@ -17,24 +17,24 @@ import java.util.zip.ZipException;
 
 /**
  * <p>
- * DumpExtractor provides an interface for clients to obtain state dump zips as produced by equinox.
+ * DumpExtractor provides an interface for clients to obtain dump directories.
  * </p>
  *
  * <strong>Concurrent Semantics</strong><br/>
  *
- * Implementations of DumpExtractor must be threadsafe
+ * Implementations of this interface must be thread safe.
  *
  */
-public interface DumpExtractor {
+public interface DumpLocator {
 
     /**
-     * A zip file from the folder with a name from the {@link DumpInspectorService#getDumpEntries(String)} method.
+     * Returns a dump directory with the given dump name.
      * 
      * @param dump name
-     * @return the zip file
+     * @return the dump directory
      * @throws ZipException when zipping
      * @throws IOException when reading
      */
-    public File getStateDump(String dump) throws ZipException, IOException;
+    public File getDumpDir(String dump) throws ZipException, IOException;
 
 }
