@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.osgi.internal.resolver.StateImpl;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
@@ -42,6 +41,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.virgo.kernel.osgi.region.hook.RegionResolverHookFactory;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
 import org.eclipse.virgo.repository.Repository;
@@ -52,7 +52,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.slf4j.Logger;
@@ -70,8 +69,6 @@ import org.slf4j.LoggerFactory;
 final class StandardQuasiFramework implements QuasiFramework {
 
     private final RegionFilter TOP;
-
-    private final String TOP_FILTER = "(|(!(x=*))(x=*))";
 
     private static final String REGION_LOCATION_DELIMITER = "@";
 
@@ -129,19 +126,13 @@ final class StandardQuasiFramework implements QuasiFramework {
     }
 
     private void setResolverHookFactory() {
-        // XXX Bug 332771: Temporary workaround since the resolver hook is not driven by default for State resolutions
-        if (this.state instanceof StateImpl) {
-            // Following not used as ServiceRegistry is a bit fiddly to get
-            // ResolverHookFactory resolverHookFactory = new CoreResolverHookFactory(xx,yy);
-            // ((StateImpl) this.state).setResolverHookFactory(resolverHookFactory);
-
-            ServiceReference<ResolverHookFactory> ref = this.bundleContext.getServiceReference(ResolverHookFactory.class);
-            if (ref != null) {
-                ResolverHookFactory resolverHookFactory = this.bundleContext.getService(ref);
-                ((StateImpl) this.state).setResolverHookFactory(resolverHookFactory);
-                this.bundleContext.ungetService(ref);
-            }
-        }
+        /*
+         * Create a resolver hook factory for the region digraph. If the region digraph is live, this will create a hook
+         * factory equivalent to the live hook factory. If the region digraph is disconnected (a reconstituted copy of a
+         * live region digraph), this will produce a hook factory independent of the live hook factory.
+         */
+        ResolverHookFactory resolverHookFactory = new RegionResolverHookFactory(this.regionDigraph);
+        this.state.setResolverHookFactory(resolverHookFactory);
     }
 
     /**
