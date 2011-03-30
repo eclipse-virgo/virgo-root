@@ -21,6 +21,19 @@ public class StubConfiguration implements Configuration {
 
     private Hashtable properties = null;
 
+    private final String pid;
+
+    private final String factoryPid;
+
+    public StubConfiguration() {
+        this(null, null);
+    }
+    
+    public StubConfiguration(String pid, String factoryPid) {
+        this.pid = pid;
+        this.factoryPid = factoryPid;
+    }
+
     public void delete() throws IOException {
         throw new UnsupportedOperationException();
     }
@@ -30,16 +43,17 @@ public class StubConfiguration implements Configuration {
     }
 
     public String getFactoryPid() {
-        throw new UnsupportedOperationException();
+        return factoryPid;
     }
 
     public String getPid() {
-        throw new UnsupportedOperationException();
+        return pid;
     }
 
     @SuppressWarnings("unchecked")
     public Dictionary getProperties() {
-        if (this.properties == null) return null;
+        if (this.properties == null)
+            return null;
         Hashtable propertiesCopy = new Hashtable();
         propertiesCopy.putAll(this.properties);
         return propertiesCopy;
@@ -54,6 +68,37 @@ public class StubConfiguration implements Configuration {
     }
 
     public void update(Dictionary dictionary) throws IOException {
-        this.properties = (Hashtable)dictionary;
+        this.properties = (Hashtable) dictionary;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((pid == null) ? 0 : pid.hashCode());
+        return result;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        StubConfiguration other = (StubConfiguration) obj;
+        if (pid == null) {
+            if (other.pid != null)
+                return false;
+        } else if (!pid.equals(other.pid))
+            return false;
+        return true;
     }
 }

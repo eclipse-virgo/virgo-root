@@ -37,9 +37,32 @@ public class UserConfigurationPropertiesSourceTests {
         
         Properties one = properties.get("one");
         Properties two = properties.get("two");
+        Properties three = properties.get("three");
         assertNotNull(one);
         assertNotNull(two);
+        assertNotNull(three);
         assertEquals("bar", one.getProperty("foo"));
         assertEquals("baz", two.getProperty("bar"));
+        assertEquals("three", three.getProperty("foo"));
+    }
+    
+    @Test
+    public void testReadFactoryUserConfiguration() {
+        File[] dirs = new File[]{
+            new File("src/test/resources/" + getClass().getSimpleName())
+        };
+        
+        UserConfigurationPropertiesSource source = new UserConfigurationPropertiesSource(dirs);
+        Map<String, Properties> properties = source.getConfigurationProperties();
+        
+        assertEquals(5, properties.size());
+        
+        Properties one = properties.get("factory.pid-factoryOne");
+        Properties two = properties.get("factory.pid-factoryTwo");
+        
+        assertNotNull(one);
+        assertNotNull(two);
+        assertEquals("one", one.getProperty("foo"));
+        assertEquals("two", two.getProperty("foo"));
     }
 }

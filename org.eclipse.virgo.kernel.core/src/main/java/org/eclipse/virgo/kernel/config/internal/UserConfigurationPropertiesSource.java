@@ -19,10 +19,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 
+import org.eclipse.virgo.util.common.StringUtils;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
+import org.osgi.framework.Constants;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * Implementation of {@link PropertiesSource} that loads all the configuration supplied by the kernel user.
@@ -68,8 +72,10 @@ final class UserConfigurationPropertiesSource implements PropertiesSource {
         for (File dir : this.kernelConfigDirectories) {
             File[] configFiles = getPropertiesFiles(dir);
             for (File file : configFiles) {
-                String pid = createPid(file);
                 Properties properties = readPropertiesFromFile(file);
+
+                String pid = computePid(file, properties, result.keySet());
+
                 // Last pid encountered wins; no merging is performed
                 result.put(pid, properties);
             }
@@ -101,7 +107,7 @@ final class UserConfigurationPropertiesSource implements PropertiesSource {
         }
         return props;
     }
-    
+
     private static String createPid(final File file) {
         return trimExtension(file.getName());
     }
@@ -109,5 +115,21 @@ final class UserConfigurationPropertiesSource implements PropertiesSource {
     private static String trimExtension(final String name) {
         int lpDot = name.lastIndexOf('.');
         return lpDot == -1 ? name : name.substring(0, lpDot);
+    }
+
+    private String computePid(File file, Properties properties, Set<String> existingPids) {
+
+        // check for factory pid in properties
+        String pid = properties.getProperty(ConfigurationAdmin.SERVICE_FACTORYPID);
+        if (StringUtils.hasText(pid)) {
+            // need something unique - so multiple factory pids can be deployed
+            return pid + "-" + createPid(file);
+        }
+        // account for service.pid as a property in the file
+        pid = properties.getProperty(Constants.SERVICE_PID);
+        if (StringUtils.hasText(pid)) {
+            return pid;
+        }
+        return createPid(file);
     }
 }
