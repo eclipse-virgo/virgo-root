@@ -17,13 +17,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.model.Artifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
-
 
 /**
  * An abstract implementation of {@link Artifact} that all implementations should extend.
@@ -54,10 +54,13 @@ public abstract class AbstractArtifact implements Artifact {
 
     private final ServiceTracker dependencyDeterminerTracker;
 
-    public AbstractArtifact(@NonNull BundleContext bundleContext, @NonNull String type, @NonNull String name, @NonNull Version version) {
+    private final Region region;
+
+    public AbstractArtifact(@NonNull BundleContext bundleContext, @NonNull String type, @NonNull String name, @NonNull Version version, Region region) {
         this.type = type;
         this.name = name;
         this.version = version;
+        this.region = region;
 
         Filter filter;
         try {
@@ -93,6 +96,14 @@ public abstract class AbstractArtifact implements Artifact {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public Region getRegion() {
+        return this.region;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public final Set<Artifact> getDependents() {
         Set<Artifact> dependents = new HashSet<Artifact>();
 
@@ -116,43 +127,55 @@ public abstract class AbstractArtifact implements Artifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + name.hashCode();
-        result = prime * result + type.hashCode();
-        result = prime * result + version.hashCode();
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((region == null) ? 0 : region.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
         return result;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (!(obj instanceof Artifact)) {
+        if (!(obj instanceof AbstractArtifact))
             return false;
-        }
-        Artifact other = (Artifact) obj;
-        if (!name.equals(other.getName())) {
+        AbstractArtifact other = (AbstractArtifact) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
             return false;
-        }
-        if (!type.equals(other.getType())) {
+        if (region == null) {
+            if (other.region != null)
+                return false;
+        } else if (!region.equals(other.region))
             return false;
-        }
-        if (!version.equals(other.getVersion())) {
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.equals(other.type))
             return false;
-        }
+        if (version == null) {
+            if (other.version != null)
+                return false;
+        } else if (!version.equals(other.version))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return String.format("type: %s, name: %s, version: %s", this.type, this.name, this.version.toString());
+        return String.format("type: %s, name: %s, version: %s, region: " + (this.region == null ? "?" : this.region.getName()), this.type, this.name,
+            this.version.toString());
     }
 }

@@ -18,10 +18,10 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Implementation of {@link RuntimeArtifactRepository} that notifies a collection of listeners that a change has
@@ -102,8 +102,12 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
     public Artifact getArtifact(String type, String name, Version version) {
         synchronized (this.monitor) {
             for (Artifact artifact : this.artifacts) {
-                if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)) {
-                    return artifact;
+                // Skip kernel artifacts.
+                Region region = artifact.getRegion();
+                if (region == null || !region.contains(0L)) {
+                    if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)) {
+                        return artifact;
+                    }
                 }
             }
             return null;

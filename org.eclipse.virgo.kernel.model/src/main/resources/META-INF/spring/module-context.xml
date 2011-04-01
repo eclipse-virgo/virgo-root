@@ -10,6 +10,7 @@
 		<constructor-arg ref="packageAdminUtil"/>
 		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="userBundleContext"/>
+		<constructor-arg ref="regionDigraph"/>
 	</bean>
 
 	<bean class="org.eclipse.virgo.kernel.model.internal.configurationadmin.ModelConfigurationListenerInitializer">
@@ -22,12 +23,12 @@
 		<constructor-arg ref="artifactRepository"/>
 		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="runtimeArtifactModel"/>
+		<constructor-arg ref="regionDigraph"/>
 	</bean>
 
 	<bean id="bundleDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.bundle.BundleDependencyDeterminer">
 		<constructor-arg ref="quasiFrameworkFactory"/>
 		<constructor-arg ref="artifactRepository"/>
-		<constructor-arg ref="packageAdminUtil"/>
 	</bean>
 
 	<bean id="deployerCompositeArtifactDependencyDeterminer"

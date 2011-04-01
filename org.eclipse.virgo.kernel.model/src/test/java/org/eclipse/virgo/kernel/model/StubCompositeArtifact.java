@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.CompositeArtifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 
 public class StubCompositeArtifact implements CompositeArtifact {
@@ -67,6 +68,11 @@ public class StubCompositeArtifact implements CompositeArtifact {
 
     public Map<String, String> getProperties() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Region getRegion() {
+        return null;
     }
 
 }

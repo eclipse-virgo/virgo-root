@@ -14,9 +14,8 @@ package org.eclipse.virgo.kernel.model.management;
 import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.model.Artifact;
-import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
-
 
 /**
  * An strategy interface for creating object names based on an input {@link Artifact}
@@ -44,9 +43,20 @@ public interface RuntimeArtifactModelObjectNameCreator {
      * @param type The type of the object to create an @{link ObjectName} for
      * @param name The name of the object to create an @{link ObjectName} for
      * @param version The version of the object to create an @{link ObjectName} for
-     * @return An {@link ObjectName} for the runtime artifact represented by this type name and version
+     * @return An {@link ObjectName} for the runtime artifact represented by this type, name, and version
      */
     ObjectName create(String type, String name, Version version);
+
+    /**
+     * Creates an {@link ObjectName} based on an input type, name, version, and region.
+     * 
+     * @param type The type of the object to create an @{link ObjectName} for
+     * @param name The name of the object to create an @{link ObjectName} for
+     * @param version The version of the object to create an @{link ObjectName} for
+     * @param region The {@link Region} of the object to create an @{link ObjectName} for
+     * @return An {@link ObjectName} for the runtime artifact represented by this type, name, version, and region
+     */
+    ObjectName create(String type, String name, Version version, Region region);
 
     /**
      * Creates a query {@link ObjectName} that can be used to enumerate all of the artifacts in the runtime artifact

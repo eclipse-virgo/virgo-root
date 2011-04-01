@@ -12,12 +12,17 @@
 package org.eclipse.virgo.kernel.model.internal.bundle;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
@@ -34,31 +39,41 @@ public class ModelBundleListenerTests {
     private final PackageAdminUtil packageAdminUtil = createMock(PackageAdminUtil.class);
 
     private final StubBundleContext bundleContext;
+    
+    private final RegionDigraph regionDigraph = createMock(RegionDigraph.class);
+
     {
         this.bundleContext = new StubBundleContext();
         String filterString = String.format("(&(objectClass=%s)(artifactType=bundle))", DependencyDeterminer.class.getCanonicalName());
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
+        expect(regionDigraph.getRegion(isA(Bundle.class))).andReturn(null).anyTimes();
     }
 
-    private final ModelBundleListener listener = new ModelBundleListener(bundleContext, artifactRepository, packageAdminUtil);
+    private final ModelBundleListener listener = new ModelBundleListener(bundleContext, artifactRepository, packageAdminUtil, regionDigraph);
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ModelBundleListener(null, artifactRepository, packageAdminUtil);
+        new ModelBundleListener(null, artifactRepository, packageAdminUtil, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelBundleListener(bundleContext, null, packageAdminUtil);
+        new ModelBundleListener(bundleContext, null, packageAdminUtil, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullPackageAdminUtil() {
-        new ModelBundleListener(bundleContext, artifactRepository, null);
+        new ModelBundleListener(bundleContext, artifactRepository, null, regionDigraph);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegionDigraph() {
+        new ModelBundleListener(bundleContext, artifactRepository, packageAdminUtil, null);
     }
 
     @Test
     public void installed() {
+        replay(regionDigraph);
         assertEquals(0, this.artifactRepository.getArtifacts().size());
         BundleEvent event1 = new BundleEvent(BundleEvent.INSTALLED, new StubBundle().setBundleContext(this.bundleContext));
         this.listener.bundleChanged(event1);
@@ -70,6 +85,7 @@ public class ModelBundleListenerTests {
 
     @Test
     public void uninstalled() {
+        replay(regionDigraph);
         BundleEvent event1 = new BundleEvent(BundleEvent.INSTALLED, new StubBundle().setBundleContext(this.bundleContext));
         this.listener.bundleChanged(event1);
         assertEquals(1, this.artifactRepository.getArtifacts().size());
@@ -83,6 +99,7 @@ public class ModelBundleListenerTests {
 
     @Test
     public void unknownEventType() {
+        replay(regionDigraph);
         BundleEvent event = new BundleEvent(-1, new StubBundle().setBundleContext(this.bundleContext));
         this.listener.bundleChanged(event);
     }

@@ -18,13 +18,14 @@ import org.osgi.framework.BundleContext;
 
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 
 final class DeployerBundleArtifact extends DeployerArtifact implements BundleArtifact {
 
     private final BundleInstallArtifact installArtifact;
 
-    public DeployerBundleArtifact(@NonNull BundleContext bundleContext, @NonNull BundleInstallArtifact installArtifact) {
-        super(bundleContext, installArtifact);
+    public DeployerBundleArtifact(@NonNull BundleContext bundleContext, @NonNull BundleInstallArtifact installArtifact, Region region) {
+        super(bundleContext, installArtifact, region);
         this.installArtifact = installArtifact;
     }
 

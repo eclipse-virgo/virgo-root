@@ -121,11 +121,11 @@ public class AbztractArtifactTests {
     private static class StubArtifact extends AbstractArtifact {
 
         public StubArtifact(BundleContext bundleContext) {
-            super(bundleContext, "test-type", "test-name", Version.emptyVersion);
+            super(bundleContext, "test-type", "test-name", Version.emptyVersion, null);
         }
 
         public StubArtifact(BundleContext bundleContext, String type, String name, Version version) {
-            super(bundleContext, type, name, version);
+            super(bundleContext, type, name, version, null);
         }
 
         public ArtifactState getState() {

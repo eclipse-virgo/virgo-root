@@ -19,6 +19,9 @@ import org.osgi.framework.Version;
  * A single in-memory repository with representations of all artifacts in the running system. Operations are generally
  * executed against the artifacts themselves rather than the repository.
  * <p />
+ * Bundle artifacts may reside in a number of {@link Region Regions}, but certain repository operations such as remove
+ * and get operate only on bundle artifacts in the user region. This is to preserve backward compatibility with Virgo
+ * 2.1.0 for the RuntimeArtifactRepository interface (and for JMX).
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
@@ -37,7 +40,8 @@ public interface RuntimeArtifactRepository {
     boolean add(Artifact artifact);
 
     /**
-     * Remove an {@link Artifact} from this repository
+     * Remove an {@link Artifact} from this repository. If the artifact is a bundle, it is only removed if the bundle is
+     * in the user region.
      * 
      * @param type The type of the {@link Artifact} to remove
      * @param name The name of the {@link Artifact} to remove
@@ -56,7 +60,8 @@ public interface RuntimeArtifactRepository {
     Set<Artifact> getArtifacts();
 
     /**
-     * Gets a specific {@link Artifact} from this repository
+     * Gets a specific {@link Artifact} from this repository. If the artifact is a bundle, it is only returned if the
+     * bundle is in the user region.
      * 
      * @param type The type of the {@link Artifact} to get
      * @param name The name of the {@link Artifact} to get

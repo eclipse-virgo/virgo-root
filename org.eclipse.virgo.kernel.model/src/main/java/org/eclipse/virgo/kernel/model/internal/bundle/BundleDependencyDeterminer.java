@@ -18,14 +18,12 @@ import java.util.Set;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 
 /**
  * Implementation of {@link DependencyDeterminer} that returns the dependents of a {@link org.osgi.framework.Bundle
@@ -43,12 +41,9 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
 
     private final RuntimeArtifactRepository artifactRepository;
 
-    private final PackageAdminUtil packageAdminUtil;
-
-    public BundleDependencyDeterminer(@NonNull QuasiFrameworkFactory quasiFrameworkFactory, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil) {
+    public BundleDependencyDeterminer(@NonNull QuasiFrameworkFactory quasiFrameworkFactory, @NonNull RuntimeArtifactRepository artifactRepository) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.artifactRepository = artifactRepository;
-        this.packageAdminUtil = packageAdminUtil;
     }
 
     /**
@@ -68,7 +63,13 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
                 QuasiBundle bundle = provider.getExportingBundle();
                 Artifact artifact = artifactRepository.getArtifact(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion());
                 if (artifact == null) {
-                    artifact = new QuasiBundleArtifact(bundle, this.packageAdminUtil);
+                    // If there is no matching artifact in the user region, try the kernel region.
+                    for (Artifact a : this.artifactRepository.getArtifacts()) {
+                        if (BundleArtifact.TYPE.equals(a.getType()) && bundle.getSymbolicName().equals(a.getName()) && bundle.getVersion().equals(a.getVersion())) {
+                            artifact = a;
+                            break;
+                        }
+                    }
                 }
                 artifacts.add(artifact);
             }

@@ -43,7 +43,7 @@ final class ConfigurationArtifact extends AbstractArtifact {
     private final String pid;
 
     public ConfigurationArtifact(@NonNull BundleContext bundleContext, @NonNull ConfigurationAdmin configurationAdmin, @NonNull String pid) {
-        super(bundleContext, TYPE, pid, Version.emptyVersion);
+        super(bundleContext, TYPE, pid, Version.emptyVersion, null);
         this.configurationAdmin = configurationAdmin;
         this.pid = pid;
     }

@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 /**
  * Implementation of {@link BundleListener} that notices {@link BundleEvent#INSTALLED} and
@@ -44,11 +46,14 @@ final class ModelBundleListener implements SynchronousBundleListener {
 
     private final PackageAdminUtil packageAdminUtil;
 
+    private final RegionDigraph regionDigraph;
+
     public ModelBundleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository,
-        @NonNull PackageAdminUtil packageAdminUtil) {
+        @NonNull PackageAdminUtil packageAdminUtil, @NonNull RegionDigraph regionDigraph) {
         this.bundleContext = bundleContext;
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
+        this.regionDigraph = regionDigraph;
     }
 
     /**
@@ -64,8 +69,10 @@ final class ModelBundleListener implements SynchronousBundleListener {
 
     private void processInstalled(BundleEvent event) {
         Bundle bundle = event.getBundle();
-        logger.info("Processing installed event for '{}:{}'", bundle.getSymbolicName(), bundle.getVersion().toString());
-        this.artifactRepository.add(new BundleArtifact(bundleContext, packageAdminUtil, bundle));
+        Region region = this.regionDigraph.getRegion(bundle);
+        String regionName = region == null ? "?" : region.getName();
+        logger.info("Processing installed event for '{}:{}' in region '" + regionName + "'", bundle.getSymbolicName(), bundle.getVersion().toString());
+        this.artifactRepository.add(new BundleArtifact(bundleContext, packageAdminUtil, bundle, region));
     }
 
     private void processUninstalled(BundleEvent event) {
