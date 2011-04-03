@@ -46,7 +46,7 @@ final class ConfigCommands extends AbstractInstallArtifactBasedCommands<Manageab
     private static final String STATE_ACTIVE = "ACTIVE";
 
     public ConfigCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator, ConfigurationAdmin configurationAdmin) {
-        super(TYPE, objectNameCreator, new ConfigInstallArtifactCommandFormatter(configurationAdmin), ManageableArtifact.class);
+        super(TYPE, objectNameCreator, new ConfigInstallArtifactCommandFormatter(configurationAdmin), ManageableArtifact.class, null);
     }
 
     @Command("examine")

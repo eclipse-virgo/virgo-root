@@ -22,6 +22,6 @@ final class ParCommands extends AbstractInstallArtifactBasedCommands<ManageableC
     private static final String TYPE = "par";
 
     public ParCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator) {
-        super(TYPE, objectNameCreator, new CompositeInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class);
+        super(TYPE, objectNameCreator, new CompositeInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, null);
     }
 }

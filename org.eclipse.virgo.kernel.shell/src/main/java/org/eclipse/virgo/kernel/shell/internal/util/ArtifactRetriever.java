@@ -22,6 +22,7 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 
 /**
  * <p>
@@ -67,6 +68,17 @@ public final class ArtifactRetriever<T extends ManageableArtifact> {
      */
     public T getArtifact(String name, Version version) throws InstanceNotFoundException {
         return getArtifact(this.objectNameCreator.create(this.type, name, version));
+    }
+    
+    /**
+     * @param name
+     * @param version
+     * @param region
+     * @return
+     * @throws InstanceNotFoundException
+     */
+    public T getArtifact(String name, Version version, Region region) throws InstanceNotFoundException {
+        return getArtifact(this.objectNameCreator.create(this.type, name, version, region));
     }
 
     /**

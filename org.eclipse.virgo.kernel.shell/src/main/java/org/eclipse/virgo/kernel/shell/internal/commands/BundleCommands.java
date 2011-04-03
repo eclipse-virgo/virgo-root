@@ -14,16 +14,16 @@ package org.eclipse.virgo.kernel.shell.internal.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import org.osgi.framework.Version;
-
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.BundleInstallArtifactCommandFormatter;
 import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.osgi.framework.Version;
 
 /**
  * <p>
@@ -49,8 +49,8 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
     private final StateService stateService;
 
     public BundleCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator, StateService stateService,
-        ModuleContextAccessor moduleContextAccessor) {
-        super(TYPE, objectNameCreator, new BundleInstallArtifactCommandFormatter(stateService, moduleContextAccessor), ManageableArtifact.class);
+        ModuleContextAccessor moduleContextAccessor, RegionDigraph regionDigraph) {
+        super(TYPE, objectNameCreator, new BundleInstallArtifactCommandFormatter(stateService, moduleContextAccessor), ManageableArtifact.class, regionDigraph);
         this.stateService = stateService;
         this.formatter = new BundleInstallArtifactCommandFormatter(stateService, moduleContextAccessor);
     }
