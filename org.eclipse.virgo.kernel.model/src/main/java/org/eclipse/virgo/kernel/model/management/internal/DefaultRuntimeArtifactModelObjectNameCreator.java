@@ -43,7 +43,7 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
 
     private static final String ARTIFACT_FORMAT = "%s:type=Model,artifact-type=%s,name=%s,version=%s";
     
-    private static final String EXTENDED_ARTIFACT_FORMAT = "%s:type=RegionModel,artifact-type=%s,name=%s,version=%s,region=%s";
+    private static final String EXTENDED_ARTIFACT_FORMAT = "%s:type=KernelModel,artifact-type=%s,name=%s,version=%s,region=%s";
 
     private static final String KEY_TYPE = "artifact-type";
 
