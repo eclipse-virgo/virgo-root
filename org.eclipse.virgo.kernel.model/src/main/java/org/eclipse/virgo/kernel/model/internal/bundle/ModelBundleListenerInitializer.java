@@ -25,13 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An intializer responsible for registering a {@link ModelBundleListener} and enumerating any existing {@link Bundle}
+ * An initializer responsible for registering a {@link ModelBundleListener} and enumerating any existing {@link Bundle}
  * objects from the OSGi Framework.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
- * Threadsafe
+ * Thread safe
  * 
  * @see ModelBundleListener
  */
@@ -50,7 +50,7 @@ public final class ModelBundleListenerInitializer {
     private final RegionDigraph regionDigraph;
 
     public ModelBundleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil,
-        @NonNull BundleContext kernelBundleContext, @NonNull BundleContext userRegionBundleContext, @NonNull RegionDigraph regionDigraph) {
+        @NonNull BundleContext kernelBundleContext, @NonNull RegionDigraph regionDigraph) {
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
         this.kernelBundleContext = kernelBundleContext;

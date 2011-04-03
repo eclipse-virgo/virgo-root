@@ -52,31 +52,26 @@ public class ModelBundleListenerInitializerTests {
     }
 
     private final ModelBundleListenerInitializer initializer = new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil,
-        bundleContext, bundleContext, regionDigraph);
+        bundleContext, regionDigraph);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelBundleListenerInitializer(null, packageAdminUtil, bundleContext, bundleContext, regionDigraph);
+        new ModelBundleListenerInitializer(null, packageAdminUtil, bundleContext, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullPackageAdminUtil() {
-        new ModelBundleListenerInitializer(artifactRepository, null, bundleContext, bundleContext, regionDigraph);
+        new ModelBundleListenerInitializer(artifactRepository, null, bundleContext, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullKernelBundleContext() {
-        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, null, bundleContext, regionDigraph);
+        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, null, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
-    public void nullUserRegionBundleContext() {
-        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, null, regionDigraph);
-    }
-    
-    @Test(expected = FatalAssertionException.class)
     public void nullRegionDigraph() {
-        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, bundleContext, null);
+        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, null);
     }
 
     @Test

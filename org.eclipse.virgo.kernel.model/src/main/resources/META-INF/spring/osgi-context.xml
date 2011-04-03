@@ -39,8 +39,6 @@
 	
 	<reference id="runtimeArtifactModel" interface="org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel"/>
 	
-	<reference id="userBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
-	
 	<reference id="applicationDeployer" interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer"/>
 	
 	<reference id="regionDigraph" interface="org.eclipse.virgo.kernel.osgi.region.RegionDigraph" />
