@@ -37,6 +37,7 @@
 		<constructor-arg ref="objectNameCreator"/>
 		<constructor-arg ref="stateService" />
 		<constructor-arg ref="moduleContextAccessor" />
+		<constructor-arg ref="regionDigraph" />
 	</bean>
 
 	<bean id="serviceCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.ServiceCommands">

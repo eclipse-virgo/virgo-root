@@ -17,7 +17,7 @@ import org.eclipse.virgo.kernel.shell.internal.commands.AbstractInstallArtifactB
 final class StubAbstractCompositeInstallArtifactBasedCommands extends AbstractInstallArtifactBasedCommands<ManageableCompositeArtifact> {
 
     public StubAbstractCompositeInstallArtifactBasedCommands() {
-        super("test", new StubRuntimeArtifactModelObjectNameCreator(), new StubInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class);
+        super("test", new StubRuntimeArtifactModelObjectNameCreator(), new StubInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, null);
     }
 
 }

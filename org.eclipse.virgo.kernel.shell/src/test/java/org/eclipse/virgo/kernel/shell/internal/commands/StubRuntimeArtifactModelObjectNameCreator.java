@@ -38,7 +38,7 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
     @Override
     public ObjectName create(String type, String name, Version version, Region region) {
         try {
-            return new ObjectName("test:type=RegionModel,artifact-type=" + type + ",name=" + name + ",version=" + version + "region="
+            return new ObjectName("test:type=KernelModel,artifact-type=" + type + ",name=" + name + ",version=" + version + "region="
                 + region.getName());
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {

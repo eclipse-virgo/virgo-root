@@ -22,7 +22,7 @@ final class PlanCommands extends AbstractInstallArtifactBasedCommands<Manageable
     private static final String TYPE = "plan";
 
     public PlanCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator) {
-        super(TYPE, objectNameCreator, new CompositeInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class);
+        super(TYPE, objectNameCreator, new CompositeInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, null);
     }
 
 }

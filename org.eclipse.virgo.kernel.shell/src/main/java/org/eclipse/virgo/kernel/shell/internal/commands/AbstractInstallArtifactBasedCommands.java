@@ -27,6 +27,8 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.InstallArtifactCommandFormatter;
 import org.eclipse.virgo.kernel.shell.internal.util.ArtifactRetriever;
@@ -53,12 +55,15 @@ abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact
 
     private final ArtifactRetriever<T> artifactRetriever;
 
+    private final Region kernelRegion;
+
     public AbstractInstallArtifactBasedCommands(String type, RuntimeArtifactModelObjectNameCreator objectNameCreator,
-        InstallArtifactCommandFormatter<T> formatter, Class<T> artifactType) {
+        InstallArtifactCommandFormatter<T> formatter, Class<T> artifactType, RegionDigraph regionDigraph) {
         this.type = type;
         this.objectNameCreator = objectNameCreator;
         this.formatter = formatter;
         this.artifactRetriever = new ArtifactRetriever<T>(type, objectNameCreator, artifactType);
+        this.kernelRegion = regionDigraph == null ? null : regionDigraph.getRegion(0L);
     }
 
     @Command("list")
@@ -77,13 +82,22 @@ abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact
     }
 
     @Command("examine")
-    public List<String> examine(String name, String version) {
+    public List<String> examine(String name, String versionString) {
+        Version version = convertToVersion(versionString);
         try {
-            return this.formatter.formatExamine(this.artifactRetriever.getArtifact(name, convertToVersion(version)));
+            return this.formatter.formatExamine(this.artifactRetriever.getArtifact(name, version));
         } catch (IllegalArgumentException iae) {
             return Arrays.asList(iae.getMessage());
         } catch (InstanceNotFoundException e) {
-            return getDoesNotExistMessage(this.type, name, version);
+            if (this.kernelRegion != null) {
+                try {
+                    return this.formatter.formatExamine(this.artifactRetriever.getArtifact(name, version, this.kernelRegion));
+                } catch (InstanceNotFoundException _) {
+                    return getDoesNotExistMessage(this.type, name, versionString);
+                }
+            } else {
+                return getDoesNotExistMessage(this.type, name, versionString);
+            }
         }
     }
 
