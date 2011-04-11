@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.model.internal.deployer;
 
+import static org.easymock.EasyMock.createMock;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -19,6 +20,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.ModelInstallArtifactLifecycleListener;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -31,6 +33,8 @@ import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
 public class ModelInstallArtifactLifecycleListenerTests {
 
     private final StubArtifactRepository artifactRepository = new StubArtifactRepository();
+    
+    private final RegionDigraph regionDigraph = createMock(RegionDigraph.class);
 
     private final StubBundleContext bundleContext;
     {
@@ -41,16 +45,21 @@ public class ModelInstallArtifactLifecycleListenerTests {
         this.bundleContext.addFilter(filterString2, new TrueFilter(filterString2));
     }
 
-    private final ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository);
+    private final ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, regionDigraph);
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ModelInstallArtifactLifecycleListener(null, artifactRepository);
+        new ModelInstallArtifactLifecycleListener(null, artifactRepository, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelInstallArtifactLifecycleListener(bundleContext, null);
+        new ModelInstallArtifactLifecycleListener(bundleContext, null, regionDigraph);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegionDigraph() {
+        new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, null);
     }
 
     @Test

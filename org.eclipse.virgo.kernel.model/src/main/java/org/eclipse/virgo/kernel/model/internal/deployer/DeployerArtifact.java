@@ -25,6 +25,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 
@@ -42,7 +43,12 @@ class DeployerArtifact extends AbstractArtifact {
     private final InstallArtifact installArtifact;
 
     public DeployerArtifact(@NonNull BundleContext bundleContext, @NonNull InstallArtifact installArtifact) {
-        super(bundleContext, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion());
+        super(bundleContext, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
+        this.installArtifact = installArtifact;
+    }
+    
+    public DeployerArtifact(@NonNull BundleContext bundleContext, @NonNull InstallArtifact installArtifact, Region region) {
+        super(bundleContext, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), region);
         this.installArtifact = installArtifact;
     }
 

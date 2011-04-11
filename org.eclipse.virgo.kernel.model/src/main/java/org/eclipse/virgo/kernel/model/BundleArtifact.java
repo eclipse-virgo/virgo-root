@@ -39,4 +39,5 @@ public interface BundleArtifact extends Artifact {
      * @param targetPath The bundle relative path to delete
      */
     void deleteEntry(String targetPath);
+    
 }

@@ -18,6 +18,7 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 
 public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeArtifactModelObjectNameCreator {
 
@@ -28,6 +29,17 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
     public ObjectName create(String type, String name, Version version) {
         try {
             return new ObjectName("test:type=Model,artifact-type=" + type + ",name=" + name + ",version=" + version);
+        } catch (MalformedObjectNameException e) {
+        } catch (NullPointerException e) {
+        }
+        return null;
+    }
+
+    @Override
+    public ObjectName create(String type, String name, Version version, Region region) {
+        try {
+            return new ObjectName("test:type=RegionModel,artifact-type=" + type + ",name=" + name + ",version=" + version + "region="
+                + region.getName());
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }

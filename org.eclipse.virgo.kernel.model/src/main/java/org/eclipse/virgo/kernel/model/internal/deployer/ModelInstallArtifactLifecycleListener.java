@@ -24,6 +24,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListene
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 /**
  * Implementation of {@link InstallArtifactLifecycleListener} that notices
@@ -44,15 +45,21 @@ import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
  */
 class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
 
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final RuntimeArtifactRepository artifactRepository;
 
     private final BundleContext bundleContext;
 
-    public ModelInstallArtifactLifecycleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository) {
+    private final RegionDigraph regionDigraph;
+
+    public ModelInstallArtifactLifecycleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository,
+        @NonNull RegionDigraph regionDigraph) {
         this.bundleContext = bundleContext;
         this.artifactRepository = artifactRepository;
+        this.regionDigraph = regionDigraph;
     }
 
     /**
@@ -79,7 +86,8 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
             bundleInstallArtifact.getVersion());
         if (!(existingBundleArtifact instanceof DeployerBundleArtifact)) {
             remove(bundleInstallArtifact);
-            this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact));
+            this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact,
+                this.regionDigraph.getRegion(USER_REGION_NAME)));
         }
     }
 
@@ -106,8 +114,8 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void logEvent(String event, InstallArtifact installArtifact) {
-        this.logger.info("Processing " + event + " event for {} '{}' version '{}'", new String[] { installArtifact.getType(),
-            installArtifact.getName(), installArtifact.getVersion().toString() });
+        this.logger.info("Processing " + event + " event for {} '{}' version '{}'",
+            new String[] { installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion().toString() });
     }
 
     private void remove(InstallArtifact installArtifact) {

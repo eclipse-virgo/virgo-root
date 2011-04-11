@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.shell.model.helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
@@ -193,11 +194,7 @@ public class StandardRamAccessorHelperTests {
     @Test
     public void testGetArtifactNotExist() {
         ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(TYPE, NAME, VERSION);
-        assertNotNull(artifact);
-        // This accommodates the workaround to bug 337211.
-        assertEquals("Region", artifact.getType());
-        assertEquals(NAME, artifact.getName());
-        assertEquals(VERSION, artifact.getVersion());
+        assertNull(artifact);
     }
     
 }

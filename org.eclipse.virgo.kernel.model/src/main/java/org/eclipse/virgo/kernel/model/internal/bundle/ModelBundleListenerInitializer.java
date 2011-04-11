@@ -16,6 +16,7 @@ import javax.annotation.PreDestroy;
 
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -44,17 +45,17 @@ public final class ModelBundleListenerInitializer {
 
     private final BundleContext kernelBundleContext;
 
-    private final BundleContext userRegionBundleContext;
-
     private final BundleListener bundleListener;
 
+    private final RegionDigraph regionDigraph;
+
     public ModelBundleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil,
-        @NonNull BundleContext kernelBundleContext, @NonNull BundleContext userRegionBundleContext) {
+        @NonNull BundleContext kernelBundleContext, @NonNull BundleContext userRegionBundleContext, @NonNull RegionDigraph regionDigraph) {
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
         this.kernelBundleContext = kernelBundleContext;
-        this.userRegionBundleContext = userRegionBundleContext;
-        this.bundleListener = new ModelBundleListener(kernelBundleContext, artifactRepository, packageAdminUtil);
+        this.bundleListener = new ModelBundleListener(kernelBundleContext, artifactRepository, packageAdminUtil, regionDigraph);
+        this.regionDigraph = regionDigraph;
     }
 
     /**
@@ -63,12 +64,14 @@ public final class ModelBundleListenerInitializer {
      */
     @PostConstruct
     public void initialize() {
-        // Register the listener with the user region bundle context to see all bundles in the user region.
-        this.userRegionBundleContext.addBundleListener(this.bundleListener);
-        // Find bundles in the user region as the listener has almost certainly missed their installation.
-        for (Bundle bundle : this.userRegionBundleContext.getBundles()) {
+        BundleContext systemBundleContext = getSystemBundleContext();
+        // Register the listener with the system bundle context to see all bundles in all regions.
+       systemBundleContext.addBundleListener(this.bundleListener);
+        // Find bundles that the listener has almost certainly missed.
+        for (Bundle bundle : systemBundleContext.getBundles()) {
             try {
-                this.artifactRepository.add(new BundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle));
+                this.artifactRepository.add(new BundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle,
+                    this.regionDigraph.getRegion(bundle)));
             } catch (Exception e) {
                 this.logger.error(String.format("Exception adding bundle '%s:%s' to the repository", bundle.getSymbolicName(),
                     bundle.getVersion().toString()), e);
@@ -76,11 +79,16 @@ public final class ModelBundleListenerInitializer {
         }
     }
 
+    private BundleContext getSystemBundleContext() {
+        BundleContext systemBundleContext = this.kernelBundleContext.getBundle(0L).getBundleContext();
+        return systemBundleContext;
+    }
+
     /**
      * Unregisters the listener from the OSGi framework
      */
     @PreDestroy
     public void destroy() {
-        this.userRegionBundleContext.removeBundleListener(this.bundleListener);
+        getSystemBundleContext().removeBundleListener(this.bundleListener);
     }
 }

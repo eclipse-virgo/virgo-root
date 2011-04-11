@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 
 /**
@@ -70,6 +71,13 @@ public interface Artifact {
      * @return The {@link Version} of this {@link Artifact}
      */
     Version getVersion();
+    
+    /**
+     * Get the {@link Region} of this {@link Artifact} or <code>null</code> if this artifact does not belong in a region
+     * 
+     * @return the {@link Region} of this {@link Artifact} or <code>null</code> if this artifact does not belong in a region
+     */
+    Region getRegion();
 
     /**
      * Get the state of this {@link Artifact}

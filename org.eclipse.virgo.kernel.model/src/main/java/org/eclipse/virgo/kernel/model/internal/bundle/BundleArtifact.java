@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 
 /**
  * Implementation of {@link Artifact} that delegates to an OSGi native bundle
@@ -41,9 +42,9 @@ final class BundleArtifact extends AbstractArtifact {
     private final PackageAdminUtil packageAdminUtil;
 
     private final Bundle bundle;
-
-    public BundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle) {
-        super(bundleContext, TYPE, bundle.getSymbolicName(), bundle.getVersion());
+    
+    public BundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, Region region) {
+        super(bundleContext, TYPE, bundle.getSymbolicName(), bundle.getVersion(), region);
         this.packageAdminUtil = packageAdminUtil;
         this.bundle = bundle;
     }
@@ -126,5 +127,5 @@ final class BundleArtifact extends AbstractArtifact {
             throw new IllegalArgumentException(String.format("Unknown bundle state '%d'", state));
         }
     }
-
+    
 }

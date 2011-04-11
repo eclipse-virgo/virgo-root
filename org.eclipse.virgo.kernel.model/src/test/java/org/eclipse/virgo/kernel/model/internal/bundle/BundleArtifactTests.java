@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.model.internal.bundle;
 
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +23,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
@@ -39,28 +41,31 @@ public class BundleArtifactTests {
     private final StubBundle bundle = new StubBundle();
 
     private final StubBundleContext bundleContext;
+    
+    private final Region region = createMock(Region.class);
 
     {
         this.bundleContext = (StubBundleContext) bundle.getBundleContext();
         String filterString = String.format("(&(objectClass=%s)(artifactType=bundle))", DependencyDeterminer.class.getCanonicalName());
         bundleContext.addFilter(filterString, new TrueFilter(filterString));
+        expect(this.region.getName()).andReturn("test.region").anyTimes();
     }
 
-    private final AbstractArtifact artifact = new BundleArtifact(bundleContext, packageAdminUtil, bundle);
+    private final AbstractArtifact artifact = new BundleArtifact(bundleContext, packageAdminUtil, bundle, this.region);
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new BundleArtifact(null, packageAdminUtil, bundle);
+        new BundleArtifact(null, packageAdminUtil, bundle, this.region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullPackageAdminUtil() {
-        new BundleArtifact(bundleContext, null, bundle);
+        new BundleArtifact(bundleContext, null, bundle, this.region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundle() {
-        new BundleArtifact(bundleContext, packageAdminUtil, null);
+        new BundleArtifact(bundleContext, packageAdminUtil, null, this.region);
     }
 
     @Test
