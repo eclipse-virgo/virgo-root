@@ -64,6 +64,8 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
 
     private static final String ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=Model,artifact-type=%s,name=%s,version=%s";
 
+    private static final String KERNEL_ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=KernelModel,artifact-type=%s,name=%s,version=%s,region=%s";
+
     public StandardRamAccessorHelper() {
     }
 
@@ -149,8 +151,8 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
         List<ArtifactAccessorPointer> artifacts = new ArrayList<ArtifactAccessorPointer>();
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-            Set<ObjectName> objectNames = mBeanServer.queryNames(new ObjectName(String.format(
-                "org.eclipse.virgo.kernel:type=Model,artifact-type=%s,*", type)), null);
+            Set<ObjectName> objectNames = mBeanServer.queryNames(
+                new ObjectName(String.format("org.eclipse.virgo.kernel:type=Model,artifact-type=%s,*", type)), null);
             for (ObjectName objectName : objectNames) {
                 ArtifactAccessorPointer pointer = buildArtifactAccessorPointer(objectName);
                 if (pointer != null) {
@@ -178,6 +180,22 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
         try {
             ObjectName objectName = new ObjectName(String.format(ARTIFACT_MBEAN_QUERY, type, name, version));
             ArtifactAccessorPointer pointer = buildArtifactAccessorPointer(objectName);
+
+            /*
+             * Partial temporary workaround for bug 342458. Need to add the region to the dojo tree so it can be passed
+             * in as a parameter. Meanwhile if the artifact isn't found in the user region portion of JMX, try the
+             * kernel portion. This is not a proper fix as some artifacts appear in both user region and kernel and this
+             * algorithm will sometimes wrongly return the user region artifact rather than the kernel artifacts.
+             * Perhaps this is worse than a NPE, but it's only temporary and at least it proves the underlying JMX
+             * structure.
+             */
+            if (pointer == null) {
+                String region = "org.eclipse.virgo.region.kernel"; // should be a parameter, but note there is no region
+                                                                   // in the user region mbeans (for backward
+                                                                   // compatibility)
+                objectName = new ObjectName(String.format(KERNEL_ARTIFACT_MBEAN_QUERY, type, name, version, region));
+                pointer = buildArtifactAccessorPointer(objectName);
+            }
 
             if (pointer != null) {
                 Map<String, Object> attributes = new TreeMap<String, Object>();
