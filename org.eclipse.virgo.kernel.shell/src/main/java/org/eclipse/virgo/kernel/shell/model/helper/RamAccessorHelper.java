@@ -98,4 +98,16 @@ public interface RamAccessorHelper {
      */
     public ArtifactAccessor getArtifact(String type, String name, String version);
 
+    /**
+     * Return a representation of the requested artifact as an {@link ArtifactAccessor}. If no such artifact exists null
+     * may be returned.
+     * 
+     * @param type of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
+     * @param name of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
+     * @param version of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
+     * @param region of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
+     * @return an {@link ArtifactAccessor} for the identified artifact, or <code>null</code> if there isn't one
+     */
+    public ArtifactAccessor getArtifact(String type, String name, String version, String region);
+
 }

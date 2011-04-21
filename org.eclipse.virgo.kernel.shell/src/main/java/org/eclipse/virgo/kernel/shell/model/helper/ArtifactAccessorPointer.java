@@ -38,6 +38,11 @@ public interface ArtifactAccessorPointer extends Comparable<ArtifactAccessorPoin
      * @return The version of the Artifact as a String
      */
     String getVersion();
+
+    /**
+     * @return The Region name the Artifact is in
+     */
+    String getRegion();
     
     /**
      * @return the state of the artifact represented by this pointer

@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.management.MXBean;
 import javax.management.ObjectName;
 
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 
 /**
@@ -87,6 +88,13 @@ public interface ManageableArtifact {
      * @return The state of this {@link ManageableArtifact}
      */
     String getState();
+    
+    /**
+     * Get the {@link Region} of this {@link ManageableArtifact} or the empty string if this artifact does not belong in a region
+     * 
+     * @return the {@link Region} of this {@link ManageableArtifact} or the enpty string if this artifact does not belong in a region
+     */
+    String getRegion();
 
     /**
      * Get this {@link ManageableArtifact}'s properties. This map is free to hold any properties contributed by any

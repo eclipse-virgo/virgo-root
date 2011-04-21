@@ -28,6 +28,8 @@ public class StandardArtifactAccessorPointerTests {
     
     private static final String VERSION = "quo";
     
+    private static final String REGION = "woo";
+    
     private static final String STATE = "moo";
     
     private StandardArtifactAccessorPointer standardArtifactAccessorPointer;
@@ -37,27 +39,32 @@ public class StandardArtifactAccessorPointerTests {
      */
     @Before
     public void setUp() throws Exception {
-        this.standardArtifactAccessorPointer = new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, STATE);
+        this.standardArtifactAccessorPointer = new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, REGION, STATE);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testConstructorNullType(){
-        new StandardArtifactAccessorPointer(null, NAME, VERSION, STATE);
+        new StandardArtifactAccessorPointer(null, NAME, VERSION, REGION, STATE);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testConstructorNullName(){
-        new StandardArtifactAccessorPointer(TYPE, null, VERSION, STATE);
+        new StandardArtifactAccessorPointer(TYPE, null, VERSION, REGION, STATE);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testConstructorNullVersion(){
-        new StandardArtifactAccessorPointer(TYPE, NAME, null, STATE);
+        new StandardArtifactAccessorPointer(TYPE, NAME, null, REGION, STATE);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testConstructorNullRegion(){
+        new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, null, STATE);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testConstructorNullState(){
-        new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, null);
+        new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, REGION, null);
     }
 
     @Test
@@ -77,12 +84,12 @@ public class StandardArtifactAccessorPointerTests {
     
     @Test
     public void testEqualsFalse() {
-        assertFalse(this.standardArtifactAccessorPointer.equals(new StandardArtifactAccessorPointer("foo", "bar", "123", "state")));
+        assertFalse(this.standardArtifactAccessorPointer.equals(new StandardArtifactAccessorPointer("foo", "bar", "123", "quo", "state")));
     }
     
     @Test
     public void testEqualsTrue() {
-        assertTrue(this.standardArtifactAccessorPointer.equals(new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, STATE)));
+        assertTrue(this.standardArtifactAccessorPointer.equals(new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, REGION, STATE)));
     }
 
     @Test
@@ -97,12 +104,12 @@ public class StandardArtifactAccessorPointerTests {
     
     @Test
     public void testCompareFalse() {
-        assertTrue(0 != this.standardArtifactAccessorPointer.compareTo(new StandardArtifactAccessorPointer("foo", "bar", "123", "state")));
+        assertTrue(0 != this.standardArtifactAccessorPointer.compareTo(new StandardArtifactAccessorPointer("foo", "bar", "123", "quo", "state")));
     }
     
     @Test
     public void testCompareTrue() {
-        assertEquals(0, this.standardArtifactAccessorPointer.compareTo(new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, STATE)));
+        assertEquals(0, this.standardArtifactAccessorPointer.compareTo(new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, REGION, STATE)));
     }
     
     @Test
@@ -112,12 +119,12 @@ public class StandardArtifactAccessorPointerTests {
     
     @Test
     public void testHashNoMatch() {
-        assertFalse(this.standardArtifactAccessorPointer.hashCode() == new StandardArtifactAccessorPointer("foo", "bar", "123", "state").hashCode());
+        assertFalse(this.standardArtifactAccessorPointer.hashCode() == new StandardArtifactAccessorPointer("foo", "bar", "123", "quo", "state").hashCode());
     }
     
     @Test
     public void testHashMatch() {
-        assertEquals(this.standardArtifactAccessorPointer.hashCode(), new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, STATE).hashCode());
+        assertEquals(this.standardArtifactAccessorPointer.hashCode(), new StandardArtifactAccessorPointer(TYPE, NAME, VERSION, REGION, STATE).hashCode());
     }
 
 }

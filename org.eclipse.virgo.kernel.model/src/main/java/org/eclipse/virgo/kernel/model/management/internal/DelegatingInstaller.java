@@ -51,8 +51,7 @@ public final class DelegatingInstaller implements Installer {
         } catch (DeploymentException e) {
             throw new InstallException(String.format("Exception encountered while installing '%s'", uri), e);
         }
-        return this.artifactObjectNameCreator.create(deploymentIdentity.getType(), deploymentIdentity.getSymbolicName(),
-            new Version(deploymentIdentity.getVersion()));
+        return this.artifactObjectNameCreator.create(deploymentIdentity.getType(), deploymentIdentity.getSymbolicName(), new Version(deploymentIdentity.getVersion()));
     }
 
 }

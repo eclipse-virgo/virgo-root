@@ -77,4 +77,8 @@ public final class DummyManagableArtifact implements ManageableArtifact {
         return "testState";
     }
 
+    public String getRegion() {
+        return "testRegion";
+    }
+
 }

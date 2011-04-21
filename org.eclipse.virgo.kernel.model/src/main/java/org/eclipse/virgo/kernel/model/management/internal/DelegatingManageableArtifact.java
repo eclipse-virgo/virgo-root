@@ -20,6 +20,7 @@ import javax.management.ObjectName;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 
 
@@ -78,6 +79,18 @@ class DelegatingManageableArtifact implements ManageableArtifact {
      */
     public final String getVersion() {
         return this.artifact.getVersion().toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRegion() {
+        Region region = this.artifact.getRegion();
+        if(region != null){
+        return region.toString();
+        } else {
+            return "";
+        }
     }
 
     /**

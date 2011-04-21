@@ -29,16 +29,18 @@ final class StandardArtifactAccessorPointer implements ArtifactAccessorPointer {
 
     private final String version;
 
+    private final String region;
+    
     private final String state;
 
-
-    public StandardArtifactAccessorPointer(String type, String name, String version, String state) {
-        if(type == null || name == null || version == null || state == null ) {
+    public StandardArtifactAccessorPointer(String type, String name, String version, String region, String state) {
+        if(type == null || name == null || version == null || region == null || state == null ) {
             throw new IllegalArgumentException(String.format("Null arguments can not be used for the construction of StandardArtifactAccessorPointer '%s' '%s' '%s'", type, name, version));
         }
         this.type = type;
         this.name = name;
         this.version = version;
+        this.region = region;
         this.state = state;
     }
 
@@ -62,6 +64,13 @@ final class StandardArtifactAccessorPointer implements ArtifactAccessorPointer {
     public String getVersion() {
         return this.version;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRegion() {
+        return this.region;
+    }
     
     /**
      * {@inheritDoc}
@@ -78,6 +87,7 @@ final class StandardArtifactAccessorPointer implements ArtifactAccessorPointer {
         result = prime * result + ((state == null) ? 0 : state.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + ((region == null) ? 0 : region.hashCode());
         return result;
     }
 
@@ -97,6 +107,8 @@ final class StandardArtifactAccessorPointer implements ArtifactAccessorPointer {
         if (!type.equals(other.type))
             return false;
         if (!version.equals(other.version))
+            return false;
+        if (!region.equals(other.region))
             return false;
         return true;
     }
@@ -118,6 +130,11 @@ final class StandardArtifactAccessorPointer implements ArtifactAccessorPointer {
         int versionResult = this.version.compareTo(o.getVersion());
         if (versionResult != 0) {
             return versionResult;
+        }
+
+        int regionResult = this.region.compareTo(o.getRegion());
+        if (regionResult != 0) {
+            return regionResult;
         }
 
         return 0;

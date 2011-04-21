@@ -63,6 +63,10 @@ public class ConfigInstallArtifactCommandFormatterTests {
             throw new UnsupportedOperationException();
         }
 
+        public String getRegion() {
+            throw new UnsupportedOperationException();
+        }
+
         public String getType() {
             throw new UnsupportedOperationException();
         }

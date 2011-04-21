@@ -35,6 +35,8 @@ public class StubManageableCompositeArtifact implements ManageableCompositeArtif
 
     private volatile boolean versionCalled = false;
 
+    private volatile boolean regionCalled = false;
+
     private volatile boolean startCalled = false;
 
     private volatile boolean stopCalled = false;
@@ -98,6 +100,11 @@ public class StubManageableCompositeArtifact implements ManageableCompositeArtif
         this.stateCalled = true;
         return this.state;
     }
+
+    public String getRegion() {
+        this.regionCalled = true;
+        return "testRegion";
+    }
     
     public StubManageableCompositeArtifact setState(String state) {
         this.state = state;
@@ -149,6 +156,10 @@ public class StubManageableCompositeArtifact implements ManageableCompositeArtif
 
     public boolean getTypeCalled() {
         return typeCalled;
+    }
+
+    public boolean getRegionCalled() {
+        return regionCalled;
     }
 
     public boolean getVersionCalled() {
