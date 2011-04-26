@@ -47,6 +47,14 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     /** 
      * {@inheritDoc}
      */
+    public ArtifactAccessor getArtifact(String type, String name, String version, String region) {
+        this.lastCalled = "getArtifact";
+        return new StubArtifactAccessorAndPointer(type, name, version, region, "state");
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
     public List<ArtifactAccessorPointer> getArtifactsOfType(String type) {
         this.lastCalled = "getArtifactsOfType";
         ArrayList<ArtifactAccessorPointer> artifactPointers = new ArrayList<ArtifactAccessorPointer>();
