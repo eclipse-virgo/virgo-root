@@ -41,6 +41,8 @@ public class DojoTreeJsonFormatterTests {
     
     public static final String TEST_VERSION = "aVersion";
     
+    public static final String TEST_REGION = "aRegion";
+    
     public static final String TEST_STATE = "aState";
 
     private List<String> testTypes = new ArrayList<String>();
@@ -55,8 +57,8 @@ public class DojoTreeJsonFormatterTests {
     public void setUp() {
         this.testTypes.add(TEST_TYPE);
         this.testAccessorPointers = new ArrayList<ArtifactAccessorPointer>();
-        this.testAccessorPointers.add(new StubArtifactAccessorAndPointer(TEST_TYPE, TEST_NAME, TEST_VERSION, TEST_STATE));
-        this.testArtifactAccessor = new StubArtifactAccessorAndPointer(TEST_TYPE, TEST_NAME, TEST_VERSION, TEST_STATE);
+        this.testAccessorPointers.add(new StubArtifactAccessorAndPointer(TEST_TYPE, TEST_NAME, TEST_VERSION, TEST_REGION, TEST_STATE));
+        this.testArtifactAccessor = new StubArtifactAccessorAndPointer(TEST_TYPE, TEST_NAME, TEST_VERSION, TEST_REGION, TEST_STATE);
         dojoTreeJsonFormatter = new DojoTreeJsonFormatter();
     }
 
@@ -110,7 +112,7 @@ public class DojoTreeJsonFormatterTests {
 
     @Test
     public void testGetArtifactDetailsNotExistNullParent() {
-        String artifactDetails = this.dojoTreeJsonFormatter.formatArtifactDetails(null, new StubArtifactAccessorAndPointer("bar", "foo", "bar", "foo"));
+        String artifactDetails = this.dojoTreeJsonFormatter.formatArtifactDetails(null, new StubArtifactAccessorAndPointer("bar", "foo", "bar", "moo", "foo"));
         assertNotNull(artifactDetails);
         assertEquals(0, artifactDetails.length());
     }

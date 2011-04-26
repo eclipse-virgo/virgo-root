@@ -41,7 +41,7 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
      */
     public ArtifactAccessor getArtifact(String type, String name, String version) {
         this.lastCalled = "getArtifact";
-        return new StubArtifactAccessorAndPointer(type, name, version, "state");
+        return new StubArtifactAccessorAndPointer(type, name, version, "region", "state");
     }
 
     /** 
@@ -50,7 +50,7 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     public List<ArtifactAccessorPointer> getArtifactsOfType(String type) {
         this.lastCalled = "getArtifactsOfType";
         ArrayList<ArtifactAccessorPointer> artifactPointers = new ArrayList<ArtifactAccessorPointer>();
-        artifactPointers.add(new StubArtifactAccessorAndPointer(type, "testName", "testVersion", "state"));
+        artifactPointers.add(new StubArtifactAccessorAndPointer(type, "testName", "testVersion", "region", "state"));
         return artifactPointers;
     }
 

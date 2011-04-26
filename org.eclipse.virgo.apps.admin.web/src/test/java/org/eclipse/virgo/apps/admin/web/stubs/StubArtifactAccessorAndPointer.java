@@ -33,13 +33,17 @@ final public class StubArtifactAccessorAndPointer implements ArtifactAccessor, A
     
     private final Map<String, Object> attributes = new HashMap<String, Object>();
 
-    public StubArtifactAccessorAndPointer(String testType, String testName, String testVersion, String testState) {
+    private final String testRegion;
+
+    public StubArtifactAccessorAndPointer(String testType, String testName, String testVersion, String testRegion, String testState) {
         this.testType = testType;
         this.testName = testName;
         this.testVersion = testVersion;
         this.testState = testState;
+        this.testRegion = testRegion;
 
         this.attributes.put("State", testState);
+        this.attributes.put("Region", testRegion);
     }
     
     /**
@@ -61,6 +65,13 @@ final public class StubArtifactAccessorAndPointer implements ArtifactAccessor, A
      */
     public String getVersion() {
         return this.testVersion;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRegion() {
+        return testRegion;
     }
 
     /**
