@@ -10,14 +10,14 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
 	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.M03/org.eclipse.virgo.medic-3.0.0.M03.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.M04/org.eclipse.virgo.medic-3.0.0.M04.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/3.0.0.M03/org.eclipse.virgo.osgi.launcher-3.0.0.M03.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.2.0.D-20101207145732/org.eclipse.virgo.osgi.launcher-sources-2.2.0.D-20101207145732.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/3.0.0.M03/org.eclipse.virgo.util.osgi-3.0.0.M03.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101207150035/org.eclipse.virgo.util.osgi-sources-2.2.0.D-20101207150035.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/3.0.0.M03/org.eclipse.virgo.util.parser.manifest-3.0.0.M03.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/2.2.0.D-20101207150035/org.eclipse.virgo.util.parser.manifest-sources-2.2.0.D-20101207150035.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.0.0.M03/org.eclipse.virgo.teststubs.osgi-3.0.0.M03.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/3.0.0.M04/org.eclipse.virgo.osgi.launcher-3.0.0.M04.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.osgi/org.eclipse.virgo.osgi.launcher/2.2.0.D-20101207145732/org.eclipse.virgo.osgi.launcher-sources-2.2.0.D-20101207145732.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/3.0.0.M04/org.eclipse.virgo.util.osgi-3.0.0.M04.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/2.2.0.D-20101207150035/org.eclipse.virgo.util.osgi-sources-2.2.0.D-20101207150035.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/3.0.0.M04/org.eclipse.virgo.util.parser.manifest-3.0.0.M04.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/2.2.0.D-20101207150035/org.eclipse.virgo.util.parser.manifest-sources-2.2.0.D-20101207150035.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.0.0.M04/org.eclipse.virgo.teststubs.osgi-3.0.0.M04.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
