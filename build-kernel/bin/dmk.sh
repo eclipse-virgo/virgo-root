@@ -45,6 +45,7 @@ then
 	# parse the standard arguments
 	CONFIG_DIR=$KERNEL_HOME/config
 	CLEAN_FLAG=
+	NO_START_FLAG=
 
 	SHELL_FLAG=
 	
@@ -93,6 +94,10 @@ then
 				KEYSTORE_PASSWORD=$2
 				shift;
 				;;
+		-noStart)
+				NO_START_FLAG=1
+				;;
+				
 		-suspend)
 				SUSPEND=y
 				;;
@@ -154,31 +159,33 @@ then
 
 	# If we get here we have the correct Java version.
 	
-	TMP_DIR=$KERNEL_HOME/work/tmp
+	if [ -z "$NO_START_FLAG" ]
+	then
+		TMP_DIR=$KERNEL_HOME/work/tmp
+		# Ensure that the tmp directory exists
+		mkdir -p $TMP_DIR
 	
-	# Ensure that the tmp directory exists
-	mkdir -p $TMP_DIR
-	
-	cd $KERNEL_HOME; $JAVA_HOME/bin/java \
-		$JAVA_OPTS \
-		$DEBUG_OPTS \
-		$JMX_OPTS \
-		-XX:+HeapDumpOnOutOfMemoryError \
-		-XX:ErrorFile=$KERNEL_HOME/serviceability/error.log \
-		-XX:HeapDumpPath=$KERNEL_HOME/serviceability/heap_dump.hprof \
-		-Djava.security.auth.login.config=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config \
-		-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
-		-Djava.io.tmpdir=$TMP_DIR \
-		-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
-		-classpath $CLASSPATH \
-		org.eclipse.virgo.osgi.launcher.Launcher \
-	    -config $KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties \
-		-Forg.eclipse.virgo.kernel.home=$KERNEL_HOME \
-		-Forg.eclipse.virgo.kernel.config=$CONFIG_DIR \
-		-Fosgi.configuration.area=$KERNEL_HOME/work/osgi/configuration \
-		-Fosgi.java.profile="file:$KERNEL_HOME/lib/java6-server.profile" \
-		$LAUNCH_OPTS \
-		$ADDITIONAL_ARGS
+		cd $KERNEL_HOME; $JAVA_HOME/bin/java \
+			$JAVA_OPTS \
+			$DEBUG_OPTS \
+			$JMX_OPTS \
+			-XX:+HeapDumpOnOutOfMemoryError \
+			-XX:ErrorFile=$KERNEL_HOME/serviceability/error.log \
+			-XX:HeapDumpPath=$KERNEL_HOME/serviceability/heap_dump.hprof \
+			-Djava.security.auth.login.config=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config \
+			-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
+			-Djava.io.tmpdir=$TMP_DIR \
+			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
+			-classpath $CLASSPATH \
+			org.eclipse.virgo.osgi.launcher.Launcher \
+	    		-config $KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties \
+			-Forg.eclipse.virgo.kernel.home=$KERNEL_HOME \
+			-Forg.eclipse.virgo.kernel.config=$CONFIG_DIR \
+			-Fosgi.configuration.area=$KERNEL_HOME/work/osgi/configuration \
+			-Fosgi.java.profile="file:$KERNEL_HOME/lib/java6-server.profile" \
+			$LAUNCH_OPTS \
+			$ADDITIONAL_ARGS
+	fi
 elif [ "$COMMAND" = "stop" ]
 then
 
