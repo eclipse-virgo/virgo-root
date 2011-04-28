@@ -41,6 +41,8 @@ import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
  * @see ModelInstallArtifactLifecycleListener
  */
 public final class ModelInstallArtifactLifecycleListenerInitializer {
+    
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -68,8 +70,7 @@ public final class ModelInstallArtifactLifecycleListenerInitializer {
      */
     @PostConstruct
     public void initialize() {
-        ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(this.bundleContext, this.artifactRepository,
-            this.regionDigraph);
+        ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(this.bundleContext, this.artifactRepository, this.regionDigraph);
         this.registrationTracker.track(this.bundleContext.registerService(InstallArtifactLifecycleListener.class.getCanonicalName(), listener, null));
         for (DeploymentIdentity deploymentIdentity : this.runtimeArtifactModel.getDeploymentIdentities()) {
             InstallArtifact installArtifact = this.runtimeArtifactModel.get(deploymentIdentity);
@@ -77,10 +78,9 @@ public final class ModelInstallArtifactLifecycleListenerInitializer {
                 if (installArtifact instanceof PlanInstallArtifact) {
                     this.artifactRepository.add(new DeployerCompositeArtifact(this.bundleContext, (PlanInstallArtifact) installArtifact));
                 } else if (installArtifact instanceof BundleInstallArtifact) {
-                    this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
+                    this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.regionDigraph.getRegion(USER_REGION_NAME));
                     BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
-                    this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact,
-                        this.regionDigraph.getRegion(bundleInstallArtifact.getBundle())));
+                    this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact, this.regionDigraph.getRegion(USER_REGION_NAME)));
                 } else {
                     this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
                     this.artifactRepository.add(new DeployerArtifact(this.bundleContext, installArtifact));

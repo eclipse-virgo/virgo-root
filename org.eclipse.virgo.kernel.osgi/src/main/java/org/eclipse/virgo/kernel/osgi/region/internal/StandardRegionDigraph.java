@@ -188,10 +188,7 @@ public final class StandardRegionDigraph implements RegionDigraph {
      * {@inheritDoc}
      */
     @Override
-    public Region getRegion(Bundle bundle) {
-        if(bundle == null){
-            return null;
-        }
+    public Region getRegion(@NonNull Bundle bundle) {
         synchronized (this.monitor) {
             for (Region region : this) {
                 if (region.contains(bundle)) {

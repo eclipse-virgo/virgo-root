@@ -118,7 +118,7 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
 
     private void remove(InstallArtifact installArtifact) {
         if(installArtifact instanceof BundleInstallArtifact){
-            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.regionDigraph.getRegion(((BundleInstallArtifact) installArtifact).getBundle()));
+            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.regionDigraph.getRegion(USER_REGION_NAME));
         } else {
             this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
         }
