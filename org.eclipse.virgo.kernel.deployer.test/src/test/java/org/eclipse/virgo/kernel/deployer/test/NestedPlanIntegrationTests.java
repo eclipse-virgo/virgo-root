@@ -30,7 +30,6 @@ import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,8 +59,6 @@ import org.osgi.service.packageadmin.ExportedPackage;
  */
 @SuppressWarnings("deprecation")
 public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest {
-
-    private static final String REGION_USER = "org.eclipse.virgo.region.user";
     
     private static final String GLOBAL_PACKAGE = "global";
 
@@ -114,10 +111,6 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     private DeploymentIdentity globalBundleDeploymentIdentity;
 
-    private ServiceReference<RegionDigraph> regionDigraphReference;
-
-    private RegionDigraph regionDigraph;
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         File generatedPlanDirectory = new File(GENERATED_PLAN_DIRECTORY);
@@ -132,9 +125,6 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         if (serviceReference != null) {
             this.ram = context.getService(serviceReference);
         }
-
-        this.regionDigraphReference = this.kernelContext.getServiceReference(RegionDigraph.class);
-        this.regionDigraph = this.kernelContext.getService(regionDigraphReference);
 
         globalBundleDeploymentIdentity = deploy(GLOBAL_BUNDLE_INFO);
     }
@@ -259,7 +249,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
             this.deployer.undeploy(parentId);
         } catch (DeploymentException e) {
             // Fail the test if the plan should have deployed ok.
-            assertFalse(expectDeployOk);
+            assertFalse("The plan '" + parent.getName() + "' failed to deploy '" + e.getMessage() + "'", expectDeployOk);
         }
     }
 
@@ -329,7 +319,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         ExportedPackage[] exportedPackages = this.packageAdmin.getExportedPackages(pkg);
 
         // The tests should not export a package from multiple bundles at any point in time.
-        assertEquals(1, exportedPackages.length);
+        assertEquals("The Package '" + pkg + "' is exported from " + exportedPackages.length + " bundles.", 1, exportedPackages.length);
 
         ExportedPackage parentExportedPackage = exportedPackages[0];
         Bundle[] importingBundles = parentExportedPackage.getImportingBundles();
@@ -374,7 +364,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         Artifact childArtifact;
         
         if (parent.isScoped()) {
-            childArtifact = getPlan(childPlan.getType(), model.getScopeName() + SCOPE_SEPARATOR + childPlan.getName(), childPlan.getVersion(), this.regionDigraph.getRegion(REGION_USER));
+            childArtifact = getPlan(childPlan.getType(), model.getScopeName() + SCOPE_SEPARATOR + childPlan.getName(), childPlan.getVersion(), null);
         } else {
             childArtifact = getPlan(childPlan);
         }
@@ -393,7 +383,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private Artifact getPlan(TestPlanArtifactInfo plan) {
-        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), this.regionDigraph.getRegion(REGION_USER));        
+        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), null);       
     }
     
     private Artifact getPlan(String type, String name, Version version, Region region) {
