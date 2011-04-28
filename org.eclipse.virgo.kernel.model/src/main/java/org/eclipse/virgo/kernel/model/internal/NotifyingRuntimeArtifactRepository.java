@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
  * @see ArtifactRepositoryListener
  */
 public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifactRepository {
+    
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -70,9 +72,9 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
     /**
      * {@inheritDoc}
      */
-    public boolean remove(String type, String name, Version version) {
+    public boolean remove(String type, String name, Version version, Region region) {
         synchronized (this.monitor) {
-            Artifact artifact = getArtifact(type, name, version);
+            Artifact artifact = getArtifact(type, name, version, region);
             boolean result = this.artifacts.remove(artifact);
             if (result) {
                 for (ArtifactRepositoryListener listener : listeners) {
@@ -99,18 +101,35 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
     /**
      * {@inheritDoc}
      */
-    public Artifact getArtifact(String type, String name, Version version) {
+    public Artifact getArtifact(String type, String name, Version version, Region region) {
         synchronized (this.monitor) {
+            Artifact fallBack = null;
             for (Artifact artifact : this.artifacts) {
-                // Skip kernel artifacts.
-                Region region = artifact.getRegion();
-                if (region == null || !region.contains(0L)) {
-                    if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)) {
-                        return artifact;
+                if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)){
+                    if(region == null){
+                        //Look everywhere because there is still plenty of code that doesn't know about regions
+                        if(artifact.getRegion() == null){
+                            return artifact;
+                        } else {
+                            //They might mean this artifact but don't know to give a region so return it if we don't find a better match
+                            String regionName = artifact.getRegion().getName();
+                            if(USER_REGION_NAME.equals(regionName)){
+                                //Give priority to the user region
+                                fallBack = artifact;
+                            } else if(fallBack == null) {
+                                //and only set it to the other (kernel) region if nothing has been set already
+                                fallBack = artifact;
+                            }
+                        }
+                    } else {
+                        //Otherwise only look in the requested region
+                        if(artifact.getRegion() != null && artifact.getRegion().equals(region)){
+                            return artifact;
+                        }
                     }
                 }
             }
-            return null;
+            return fallBack;
         }
     }
 

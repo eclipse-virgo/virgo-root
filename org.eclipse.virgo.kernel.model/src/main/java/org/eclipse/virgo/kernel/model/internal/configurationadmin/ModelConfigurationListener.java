@@ -70,9 +70,9 @@ final class ModelConfigurationListener implements ConfigurationListener {
     private void processDelete(ConfigurationEvent event) {
         logger.info("Processing delete event for '{}'", event.getPid());
 
-        Artifact artifact = this.artifactRepository.getArtifact(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion);
+        Artifact artifact = this.artifactRepository.getArtifact(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion, null);
         if (artifact instanceof ConfigurationArtifact) {
-            this.artifactRepository.remove(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion);
+            this.artifactRepository.remove(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion, null);
         }
     }
 

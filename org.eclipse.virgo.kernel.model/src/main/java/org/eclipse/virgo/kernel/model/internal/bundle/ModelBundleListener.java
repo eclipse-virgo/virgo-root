@@ -78,7 +78,7 @@ final class ModelBundleListener implements SynchronousBundleListener {
     private void processUninstalled(BundleEvent event) {
         Bundle bundle = event.getBundle();
         logger.info("Processing uninstalled event for '{}:{}'", bundle.getSymbolicName(), bundle.getVersion().toString());
-        this.artifactRepository.remove(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion());
+        this.artifactRepository.remove(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion(), this.regionDigraph.getRegion(bundle));
     }
 
 }

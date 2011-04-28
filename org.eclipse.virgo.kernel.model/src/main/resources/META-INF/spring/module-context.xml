@@ -28,6 +28,7 @@
 	<bean id="bundleDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.bundle.BundleDependencyDeterminer">
 		<constructor-arg ref="quasiFrameworkFactory"/>
 		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="regionDigraph"/>
 	</bean>
 
 	<bean id="deployerCompositeArtifactDependencyDeterminer"

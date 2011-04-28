@@ -38,8 +38,8 @@ public class NotifyingArtifactRepositoryTests {
     public void remove() {
         StubCompositeArtifact artifact = new StubCompositeArtifact();
         assertTrue(this.artifactRepository.add(artifact));
-        assertTrue(this.artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion()));
-        assertFalse(this.artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion()));
+        assertTrue(this.artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getRegion()));
+        assertFalse(this.artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getRegion()));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class NotifyingArtifactRepositoryTests {
         NotifyingRuntimeArtifactRepository artifactRepository = new NotifyingRuntimeArtifactRepository(listener1, listener2);
         StubCompositeArtifact artifact = new StubCompositeArtifact();
         artifactRepository.add(artifact);
-        artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion());
+        artifactRepository.remove(artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getRegion());
         assertTrue(listener1.getAdded());
         assertTrue(listener2.getAdded());
         assertTrue(listener1.getRemoved());

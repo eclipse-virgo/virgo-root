@@ -58,6 +58,14 @@ public interface StateService {
     public QuasiBundle getBundle(File source, long bundleId);
 
     /**
+     * Lookup the name of a bundles region from the live state.
+     * 
+     * @param bundleId
+     * @return the name of the region that this bundle belongs to in the running (live) state.
+     */
+    public String getBundleRegionName(long bundleId);
+    
+    /**
      * Returns the {@link QuasiLiveService} that represents the service with the requested service Id in the live state
      * or the given dump directory. If no such service exists then <code>null</code> is returned.
      * 

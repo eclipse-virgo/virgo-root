@@ -91,6 +91,13 @@ final public class StandardStateService implements StateService {
     /**
      * {@inheritDoc}
      */
+    public String getBundleRegionName(long bundleId) {
+        return this.regionDigraph.getRegion(bundleId).getName();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public QuasiBundle getBundle(File source, long bundleId) {
         return this.getQuasiFramework(source).getBundle(bundleId);

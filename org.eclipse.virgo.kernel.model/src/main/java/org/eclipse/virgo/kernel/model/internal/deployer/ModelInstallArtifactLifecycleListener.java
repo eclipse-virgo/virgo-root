@@ -82,12 +82,10 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void addOrReplaceBundle(BundleInstallArtifact bundleInstallArtifact) {
-        Artifact existingBundleArtifact = this.artifactRepository.getArtifact(bundleInstallArtifact.getType(), bundleInstallArtifact.getName(),
-            bundleInstallArtifact.getVersion());
+        Artifact existingBundleArtifact = this.artifactRepository.getArtifact(bundleInstallArtifact.getType(), bundleInstallArtifact.getName(), bundleInstallArtifact.getVersion(), this.regionDigraph.getRegion(USER_REGION_NAME));
         if (!(existingBundleArtifact instanceof DeployerBundleArtifact)) {
             remove(bundleInstallArtifact);
-            this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact,
-                this.regionDigraph.getRegion(USER_REGION_NAME)));
+            this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact, this.regionDigraph.getRegion(USER_REGION_NAME)));
         }
     }
 
@@ -119,7 +117,11 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void remove(InstallArtifact installArtifact) {
-        this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion());
+        if(installArtifact instanceof BundleInstallArtifact){
+            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.regionDigraph.getRegion(((BundleInstallArtifact) installArtifact).getBundle()));
+        } else {
+            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
+        }
     }
 
 }

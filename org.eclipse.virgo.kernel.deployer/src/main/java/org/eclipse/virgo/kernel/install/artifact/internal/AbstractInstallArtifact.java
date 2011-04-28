@@ -350,8 +350,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * {@inheritDoc}
      */
     public void uninstall() throws DeploymentException {
-        if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED)
-            || getState().equals(State.INSTALLED)) {
+        if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED) || getState().equals(State.INSTALLED)) {
             pushThreadContext();
             try {
                 if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {

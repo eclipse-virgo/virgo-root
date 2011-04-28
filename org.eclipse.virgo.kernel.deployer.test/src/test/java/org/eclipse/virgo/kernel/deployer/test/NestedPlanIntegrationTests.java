@@ -29,6 +29,8 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -59,6 +61,8 @@ import org.osgi.service.packageadmin.ExportedPackage;
 @SuppressWarnings("deprecation")
 public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest {
 
+    private static final String REGION_USER = "org.eclipse.virgo.region.user";
+    
     private static final String GLOBAL_PACKAGE = "global";
 
     private static final String PARENT_PACKAGE_NAME = "parent";
@@ -110,6 +114,10 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     private DeploymentIdentity globalBundleDeploymentIdentity;
 
+    private ServiceReference<RegionDigraph> regionDigraphReference;
+
+    private RegionDigraph regionDigraph;
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         File generatedPlanDirectory = new File(GENERATED_PLAN_DIRECTORY);
@@ -124,6 +132,9 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         if (serviceReference != null) {
             this.ram = context.getService(serviceReference);
         }
+
+        this.regionDigraphReference = this.kernelContext.getServiceReference(RegionDigraph.class);
+        this.regionDigraph = this.kernelContext.getService(regionDigraphReference);
 
         globalBundleDeploymentIdentity = deploy(GLOBAL_BUNDLE_INFO);
     }
@@ -363,7 +374,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         Artifact childArtifact;
         
         if (parent.isScoped()) {
-            childArtifact = getPlan(childPlan.getType(), model.getScopeName() + SCOPE_SEPARATOR + childPlan.getName(), childPlan.getVersion());
+            childArtifact = getPlan(childPlan.getType(), model.getScopeName() + SCOPE_SEPARATOR + childPlan.getName(), childPlan.getVersion(), this.regionDigraph.getRegion(REGION_USER));
         } else {
             childArtifact = getPlan(childPlan);
         }
@@ -382,11 +393,11 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private Artifact getPlan(TestPlanArtifactInfo plan) {
-        return getPlan(plan.getType(), plan.getName(), plan.getVersion());        
+        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), this.regionDigraph.getRegion(REGION_USER));        
     }
     
-    private Artifact getPlan(String type, String name, Version version) {
-        Artifact planArtifact = this.ram.getArtifact(type, name, version);
+    private Artifact getPlan(String type, String name, Version version, Region region) {
+        Artifact planArtifact = this.ram.getArtifact(type, name, version, region);
         assertNotNull(planArtifact);
         return planArtifact;
     }

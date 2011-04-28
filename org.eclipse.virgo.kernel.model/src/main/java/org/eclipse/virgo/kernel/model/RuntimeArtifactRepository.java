@@ -13,15 +13,12 @@ package org.eclipse.virgo.kernel.model;
 
 import java.util.Set;
 
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 
 /**
  * A single in-memory repository with representations of all artifacts in the running system. Operations are generally
  * executed against the artifacts themselves rather than the repository.
- * <p />
- * Bundle artifacts may reside in a number of {@link Region Regions}, but certain repository operations such as remove
- * and get operate only on bundle artifacts in the user region. This is to preserve backward compatibility with Virgo
- * 2.1.0 for the RuntimeArtifactRepository interface (and for JMX).
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
@@ -46,9 +43,10 @@ public interface RuntimeArtifactRepository {
      * @param type The type of the {@link Artifact} to remove
      * @param name The name of the {@link Artifact} to remove
      * @param version The {@link Version} of the {@link Artifact} to remove
+     * @param region The {@link Region} to remove the {@link Artifact} from
      * @return <code>true</code> if this repository contained the specified {@link Artifact}
      */
-    boolean remove(String type, String name, Version version);
+    boolean remove(String type, String name, Version version, Region region);
 
     /**
      * Returns the entire collection of {@link Artifact}s contained within this repository. The returned collection
@@ -66,8 +64,9 @@ public interface RuntimeArtifactRepository {
      * @param type The type of the {@link Artifact} to get
      * @param name The name of the {@link Artifact} to get
      * @param version The {@link Version} of the {@link Artifact} to get
+     * @param region The {@link Region} to get the {@link Artifact} from
      * @return The {@link Artifact} represented by this type, name, and version if it is in the repository, otherwise
      *         <code>null</code>
      */
-    Artifact getArtifact(String type, String name, Version version);
+    Artifact getArtifact(String type, String name, Version version, Region region);
 }

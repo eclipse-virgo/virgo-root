@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 
 public class StubArtifactRepository implements RuntimeArtifactRepository {
@@ -26,18 +27,26 @@ public class StubArtifactRepository implements RuntimeArtifactRepository {
         return this.artifacts.add(artifact);
     }
 
-    public boolean remove(String type, String name, Version version) {
-        return this.artifacts.remove(getArtifact(type, name, version));
+    public boolean remove(String type, String name, Version version, Region region) {
+        return this.artifacts.remove(getArtifact(type, name, version, region));
     }
 
     public Set<Artifact> getArtifacts() {
         return this.artifacts;
     }
 
-    public Artifact getArtifact(String type, String name, Version version) {
+    public Artifact getArtifact(String type, String name, Version version, Region region) {
         for (Artifact artifact : this.artifacts) {
             if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)) {
-                return artifact;
+                if(artifact.getRegion() == null){
+                    if(region == null){
+                        return artifact;
+                    }
+                }else{
+                    if(artifact.getRegion().equals(region)){
+                        return artifact;
+                    }
+                }
             }
         }
         return null;

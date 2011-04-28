@@ -52,7 +52,7 @@ public abstract class AbstractArtifact implements Artifact {
 
     private final Version version;
 
-    private final ServiceTracker dependencyDeterminerTracker;
+    private final ServiceTracker<DependencyDeterminer, DependencyDeterminer> dependencyDeterminerTracker;
 
     private final Region region;
 

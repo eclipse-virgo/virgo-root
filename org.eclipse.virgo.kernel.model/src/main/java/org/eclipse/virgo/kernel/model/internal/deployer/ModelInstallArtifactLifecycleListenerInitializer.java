@@ -77,12 +77,12 @@ public final class ModelInstallArtifactLifecycleListenerInitializer {
                 if (installArtifact instanceof PlanInstallArtifact) {
                     this.artifactRepository.add(new DeployerCompositeArtifact(this.bundleContext, (PlanInstallArtifact) installArtifact));
                 } else if (installArtifact instanceof BundleInstallArtifact) {
-                    this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion());
+                    this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
                     BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
                     this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact,
                         this.regionDigraph.getRegion(bundleInstallArtifact.getBundle())));
                 } else {
-                    this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion());
+                    this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
                     this.artifactRepository.add(new DeployerArtifact(this.bundleContext, installArtifact));
                 }
             } catch (Exception e) {

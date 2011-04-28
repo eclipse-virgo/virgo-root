@@ -61,6 +61,17 @@ public class StubStateService implements StateService {
     /** 
      * {@inheritDoc}
      */
+    public String getBundleRegionName(long bundleId) {
+        if (bundleId == stubQuasiBundle.getBundleId()) {
+            return "org.eclipse.virgo.region.user";
+        } else {
+            return null;
+        }
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public List<QuasiResolutionFailure> getResolverReport(File source, long bundleId) {
         return new ArrayList<QuasiResolutionFailure>();

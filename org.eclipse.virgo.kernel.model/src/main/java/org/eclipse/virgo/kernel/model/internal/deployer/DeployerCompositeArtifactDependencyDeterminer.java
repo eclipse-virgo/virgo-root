@@ -54,7 +54,7 @@ public final class DeployerCompositeArtifactDependencyDeterminer implements Depe
         List<Tree<InstallArtifact>> children = ((DeployerCompositeArtifact) rootArtifact).getInstallArtifact().getTree().getChildren();
         for (Tree<InstallArtifact> child : children) {
             InstallArtifact artifact = child.getValue();
-            dependents.add(artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion()));
+            dependents.add(artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion(), rootArtifact.getRegion()));
         }
 
         return dependents;

@@ -543,8 +543,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 String symbolicName = deploymentIdentity.getSymbolicName();
                 String version = deploymentIdentity.getVersion();
                 this.eventLogger.log(DeployerLogEvents.UNDEPLOY_ARTEFACT_NOT_FOUND, type, symbolicName, version);
-                throw new DeploymentException("Undeploy not possible as no " + type + " with name " + symbolicName + " and version " + version
-                    + " is deployed");
+                throw new DeploymentException("Undeploy not possible as no " + type + " with name " + symbolicName + " and version " + version + " is deployed");
             } else {
                 URI location = this.ram.getLocation(deploymentIdentity);
 

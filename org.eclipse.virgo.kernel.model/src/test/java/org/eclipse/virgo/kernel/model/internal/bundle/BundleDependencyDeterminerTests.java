@@ -27,6 +27,7 @@ import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.junit.Test;
 
@@ -36,16 +37,23 @@ public class BundleDependencyDeterminerTests {
 
     private final RuntimeArtifactRepository artifactRepository = new StubArtifactRepository();
     
-    private final BundleDependencyDeterminer determiner = new BundleDependencyDeterminer(quasiFrameworkFactory, artifactRepository);
+    private final RegionDigraph regionDigraph = createMock(RegionDigraph.class);
+    
+    private final BundleDependencyDeterminer determiner = new BundleDependencyDeterminer(quasiFrameworkFactory, artifactRepository, regionDigraph);
 
     @Test(expected = FatalAssertionException.class)
     public void nullFactory() {
-        new BundleDependencyDeterminer(null, artifactRepository);
+        new BundleDependencyDeterminer(null, artifactRepository, regionDigraph);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullRepository() {
-        new BundleDependencyDeterminer(quasiFrameworkFactory, null);
+        new BundleDependencyDeterminer(quasiFrameworkFactory, null, regionDigraph);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegionDigraph() {
+        new BundleDependencyDeterminer(quasiFrameworkFactory, artifactRepository, null);
     }
     
     @Test

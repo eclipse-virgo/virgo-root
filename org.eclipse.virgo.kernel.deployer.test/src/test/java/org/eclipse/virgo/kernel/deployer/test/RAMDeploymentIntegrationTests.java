@@ -27,6 +27,7 @@ import org.osgi.framework.Version;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 /**
  * Test the interactions between the Runtime Artifact Model (RAM) and the deployer.
@@ -34,6 +35,8 @@ import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
  */
 public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTest {
 
+    private static final String REGION_USER = "org.eclipse.virgo.region.user";
+    
     private StubInstallArtifactLifecycleListener lifecycleListener;
 
     private ServiceRegistration<InstallArtifactLifecycleListener> lifecycleListenerRegistration;
@@ -41,8 +44,12 @@ public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTe
     private DeploymentIdentity deploymentIdentity;
 
     private ServiceReference<RuntimeArtifactRepository> ramReference;
-
+    
     private RuntimeArtifactRepository ram;
+
+    private ServiceReference<RegionDigraph> regionDigraphReference;
+
+    private RegionDigraph regionDigraph;
 
     @Before
     public void setUp() throws Exception {
@@ -51,6 +58,9 @@ public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTe
 
         this.ramReference = this.kernelContext.getServiceReference(RuntimeArtifactRepository.class);
         this.ram = this.kernelContext.getService(ramReference);
+        
+        this.regionDigraphReference = this.kernelContext.getServiceReference(RegionDigraph.class);
+        this.regionDigraph = this.kernelContext.getService(regionDigraphReference);
     }
 
     @After
@@ -71,8 +81,7 @@ public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTe
         this.lifecycleListener.assertLifecycleCounts(0, 0, 0, 0);
         this.deploymentIdentity = this.deployer.deploy(file.toURI());
         this.lifecycleListener.assertLifecycleCounts(1, 1, 0, 0);
-        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(
-            this.deploymentIdentity.getVersion()));
+        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(this.deploymentIdentity.getVersion()), this.regionDigraph.getRegion(REGION_USER));
         assertNotNull(artifact);
         artifact.uninstall();
         this.lifecycleListener.assertLifecycleCounts(1, 1, 1, 1);
@@ -82,8 +91,7 @@ public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTe
     public void testRAMUndeploymentFollowedByDeployerUndeployment() throws Exception {
         File file = new File("src/test/resources/dummy.jar");
         this.deploymentIdentity = this.deployer.deploy(file.toURI());
-        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(
-            this.deploymentIdentity.getVersion()));
+        Artifact artifact = this.ram.getArtifact(this.deploymentIdentity.getType(), this.deploymentIdentity.getSymbolicName(), new Version(this.deploymentIdentity.getVersion()), this.regionDigraph.getRegion(REGION_USER));
         artifact.uninstall();
 
         // The following deployer operation should throw DeploymentException.
