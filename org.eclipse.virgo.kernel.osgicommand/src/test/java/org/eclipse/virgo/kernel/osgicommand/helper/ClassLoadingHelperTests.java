@@ -129,7 +129,7 @@ public class ClassLoadingHelperTests {
     }
 
     @SuppressWarnings("rawtypes")
-	@Test
+    @Test
     public void testTryToLoadExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
 
