@@ -22,9 +22,6 @@ import java.util.Map;
 
 /**
  * Class loading commands for supportability and diagnostics
- *
- * @author Hristo Spaschev Iliev
- * @version 1.0
  */
 public class ClassLoadingCommandProvider implements CommandProvider {
     public static final String NEW_LINE = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$

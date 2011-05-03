@@ -16,9 +16,6 @@ import java.util.Map;
 
 /**
  * mBean interface for class loading queries
- *
- * @author Hristo Iliev (hristo.iliev@sap.com)
- * @version 1.0
  */
 public interface ClassLoadingSupportMBean {
 
