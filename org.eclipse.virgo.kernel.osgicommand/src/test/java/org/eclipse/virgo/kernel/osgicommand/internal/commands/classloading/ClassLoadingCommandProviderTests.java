@@ -26,9 +26,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for class loading commands
- *
- * @author Hristo Iliev (hristo.iliev@sap.com)
- * @version 1.0
  */
 public class ClassLoadingCommandProviderTests {
 

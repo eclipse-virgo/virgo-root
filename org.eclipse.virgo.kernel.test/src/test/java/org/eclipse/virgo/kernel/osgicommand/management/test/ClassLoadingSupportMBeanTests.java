@@ -8,6 +8,7 @@
  * Contributors:
  *    Hristo Iliev, SAP AG - initial contribution
  ******************************************************************************/
+
 package org.eclipse.virgo.kernel.osgicommand.management.test;
 
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
@@ -26,9 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Test for testing Class loading support mBean
- *
- * @author Hristo Iliev (hristo.iliev@sap.com)
- * @version 1.0
  */
 public class ClassLoadingSupportMBeanTests extends AbstractKernelIntegrationTest {
 

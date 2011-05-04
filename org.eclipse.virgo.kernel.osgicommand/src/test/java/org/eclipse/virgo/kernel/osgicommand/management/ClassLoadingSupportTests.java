@@ -30,10 +30,8 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 /**
- * Class for
+ * Tests for {@link ClassLoadingSupport}
  *
- * @author Hristo Iliev (hristo.iliev@sap.com)
- * @version 1.0
  */
 public class ClassLoadingSupportTests {
 

@@ -18,10 +18,7 @@ import java.io.PrintStream;
 import java.util.Dictionary;
 
 /**
- * Stub class for mocking CommandInterpreter. Needed for testing of Equinox shell commands
- *
- * @author Hristo Iliev (hristo.iliev@sap.com)
- * @version 1.0
+ * Stub class for mocking {@link CommandInterpreter}. Needed for testing Equinox shell commands
  */
 public class StubCommandInterpreter implements CommandInterpreter {
 
