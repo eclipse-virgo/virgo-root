@@ -26,6 +26,8 @@ import org.osgi.framework.BundleContext;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
 
+import javax.management.MalformedObjectNameException;
+
 public class DmKernelTestRunnerTests {
 
     private DmKernelTestRunner testRunner;
@@ -33,7 +35,7 @@ public class DmKernelTestRunnerTests {
     private final StubBundleContext kernelBundleContext = new StubBundleContext();
 
     @Before
-    public void setup() throws InitializationError {
+    public void setup() throws InitializationError, MalformedObjectNameException {
         this.testRunner = new DmKernelTestRunner(getClass(), 1000);
         this.kernelBundleContext.addFilter("(org.eclipse.virgo.kernel.regionContext=true)", new TrueFilter());
     }

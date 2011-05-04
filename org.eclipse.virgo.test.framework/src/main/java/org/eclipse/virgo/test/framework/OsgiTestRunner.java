@@ -11,13 +11,6 @@
 
 package org.eclipse.virgo.test.framework;
 
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
 import org.eclipse.virgo.osgi.launcher.FrameworkBuilder;
@@ -33,11 +26,19 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.util.*;
+
 /**
- * 
  * JUnit TestRunner for running OSGi integration tests on the Equinox framework.
- * <p />
- * 
+ * <p/>
+ *
  * <strong>Concurrent Semantics</strong><br />
  * TODO Document concurrent semantics of OsgiTestRunner
  */
@@ -47,9 +48,13 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
 
     private final PluginManager pluginManager;
 
-    public OsgiTestRunner(Class<?> klass) throws InitializationError {
+    private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+    private final ObjectName searchObjectName;
+
+    public OsgiTestRunner(Class<?> klass) throws InitializationError, MalformedObjectNameException {
         super(klass);
         this.pluginManager = new PluginManager(klass);
+        this.searchObjectName = new ObjectName("org.eclipse.virgo.*:*");
     }
 
     private void stupidEquinoxHack() {
@@ -98,7 +103,26 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                     e.printStackTrace();
                 }
             }
+            unregisterVirgoMBeans();
             BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
+        }
+    }
+
+    private void unregisterVirgoMBeans() {
+        Set<ObjectName> objectNames = this.server.queryNames(this.searchObjectName, null);
+
+        if (objectNames.size() == 0) {
+            return;
+        }
+
+        System.err.println("The mBeans " + objectNames + " were not unregistered.");
+
+        for (ObjectName objectName : objectNames) {
+            try {
+                this.server.unregisterMBean(objectName);
+            } catch (JMException jme) {
+                jme.printStackTrace();
+            }
         }
     }
 
@@ -110,7 +134,7 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
 
     /**
      * Returns the {@link BundleContext} that should be used to install the test bundle
-     * 
+     *
      * @return the target <code>BundleContext</code>.
      */
     protected BundleContext getTargetBundleContext(BundleContext bundleContext) {

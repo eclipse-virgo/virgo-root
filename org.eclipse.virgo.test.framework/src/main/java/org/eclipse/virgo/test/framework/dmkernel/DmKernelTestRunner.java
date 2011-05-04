@@ -30,6 +30,8 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+import javax.management.MalformedObjectNameException;
+
 /**
  * JUnit TestRunner for running OSGi integration tests on the dm Kernel.
  * <p />
@@ -45,11 +47,11 @@ public class DmKernelTestRunner extends OsgiTestRunner {
 
     private final long userRegionStartWaitTime;
 
-    public DmKernelTestRunner(Class<?> klass) throws InitializationError {
+    public DmKernelTestRunner(Class<?> klass) throws InitializationError, MalformedObjectNameException {
         this(klass, DEFAULT_USER_REGION_START_WAIT_TIME);
     }
 
-    protected DmKernelTestRunner(Class<?> klass, long userRegionStartWaitTime) throws InitializationError {
+    protected DmKernelTestRunner(Class<?> klass, long userRegionStartWaitTime) throws InitializationError, MalformedObjectNameException {
         super(klass);
         this.userRegionStartWaitTime = userRegionStartWaitTime;
     }
