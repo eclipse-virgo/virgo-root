@@ -253,7 +253,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             hotDeployConfiguration.store(new FileOutputStream(target), "updated");
 
             // let events propagate and update happen
-            Thread.sleep(3000);
+            Thread.sleep(6000);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount());
             assertEquals(0, service.deleteCount());

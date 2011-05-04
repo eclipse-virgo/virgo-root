@@ -120,6 +120,7 @@ final class StandardQuasiFramework implements QuasiFramework {
         this.bundleTransformationHandler = bundleTransformationHandler;
         this.regionDigraph = regionDigraph;
         this.userRegion = regionDigraph.getRegion("org.eclipse.virgo.region.user");
+        this.coregion = regionDigraph.getRegion(this.userRegion.getName() + COREGION_SUFFIX);
         setResolverHookFactory();
 
         this.dependencyCalculator = new DependencyCalculator(platformAdmin.getFactory(), this.detective, repository, this.bundleContext);

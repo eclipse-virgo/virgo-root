@@ -10,36 +10,48 @@
  * Contributors:
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
-
 package org.eclipse.virgo.kernel.osgicommand;
 
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgicommand.internal.OsgiKernelShellCommand;
-import org.eclipse.virgo.kernel.shell.CommandExecutor;
 import org.eclipse.virgo.kernel.osgicommand.internal.commands.classloading.ClassLoadingCommandProvider;
+import org.eclipse.virgo.kernel.osgicommand.management.ClassLoadingSupport;
+import org.eclipse.virgo.kernel.shell.CommandExecutor;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+
 /**
  * {@link BundleActivator} for the osgi.console command extension bundle
- * <p />
- *
+ * <p/>
+ * <p/>
  * <strong>Concurrent Semantics</strong><br />
  * thread-safe
  */
 public class Activator implements BundleActivator {
 
-    private static final int COMMAND_EXECUTOR_SERVICE_WAIT = 20*1000; // 20 seconds
+    private static final int COMMAND_EXECUTOR_SERVICE_WAIT = 20 * 1000; // 20 seconds
     private static final int SERVICE_WAIT_PAUSE = 100; // 100 milliseconds
     private static final String PROVIDER_NAME = "org.eclipse.osgi.framework.console.CommandProvider"; //$NON-NLS-1$
-    
+
     private ServiceRegistration<?> providerRegistration = null;
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
-    
+
+    private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+    private final ObjectName classLoadingObjectName;
+
+    public Activator() throws MalformedObjectNameException {
+        this.classLoadingObjectName = new ObjectName("org.eclipse.virgo.kernel:type=Classloading");
+    }
+
     public void start(BundleContext context) throws Exception {
         boolean registerCommands = true;
         try {
@@ -53,6 +65,8 @@ public class Activator implements BundleActivator {
             providerRegistration = context.registerService(PROVIDER_NAME, provider, null);
         }
 
+        this.server.registerMBean(new ClassLoadingSupport(context), this.classLoadingObjectName);
+
         Runnable runnable = new PostStartInitialisationRunnable(context, this.registrationTracker);
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
@@ -65,29 +79,32 @@ public class Activator implements BundleActivator {
         providerRegistration = null;
 
         this.registrationTracker.unregisterAll();
+
+        this.server.unregisterMBean(this.classLoadingObjectName);
     }
 
     /**
      * Get a service which might not be immediately available
-     * @param <T> type of service to get
-     * @param context in which to search for service
+     *
+     * @param <T>          type of service to get
+     * @param context      in which to search for service
      * @param serviceClass of service to locate
-     * @param millis maximum time to delay in milliseconds
+     * @param millis       maximum time to delay in milliseconds
      * @return null if timeout before getting service, otherwise service
      */
     private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass, long millis) {
         T service = null;
-        
+
         while (service == null) {
             try {
                 OsgiServiceHolder<T> serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
                 if (serviceHolder != null) {
-                   service = serviceHolder.getService();
+                    service = serviceHolder.getService();
                 }
             } catch (IllegalStateException e) {
                 try {
                     millis -= SERVICE_WAIT_PAUSE;
-                    if (millis>0) {
+                    if (millis > 0) {
                         Thread.sleep(SERVICE_WAIT_PAUSE);
                     } else {
                         return null;
@@ -96,22 +113,22 @@ public class Activator implements BundleActivator {
                 }
             }
         }
-        
+
         return service;
     }
-    
+
     private static final class PostStartInitialisationRunnable implements Runnable {
-        
+
         private final BundleContext context;
-        
+
         private final ServiceRegistrationTracker registrationTracker;
-        
+
         public PostStartInitialisationRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker) {
             this.context = context;
             this.registrationTracker = registrationTracker;
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         public void run() {
