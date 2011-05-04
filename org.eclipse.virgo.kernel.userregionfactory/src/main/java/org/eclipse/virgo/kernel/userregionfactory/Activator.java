@@ -32,6 +32,7 @@ import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
 import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
+import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
@@ -111,12 +112,15 @@ public final class Activator implements BundleActivator {
 
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
 
+    private DumpGenerator dumpGenerator;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
         this.bundleContext = bundleContext;
+        this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
         RegionDigraph regionDigraph = getPotentiallyDelayedService(bundleContext, RegionDigraph.class);
         this.eventAdmin = getPotentiallyDelayedService(bundleContext, EventAdmin.class);
         ConfigurationAdmin configAdmin = getPotentiallyDelayedService(bundleContext, ConfigurationAdmin.class);
@@ -338,6 +342,8 @@ public final class Activator implements BundleActivator {
                 try {
                     bundle.start();
                 } catch (BundleException e) {
+                    // Take state dump for diagnosis of resolution failures
+                    this.dumpGenerator.generateDump("User region bundle failed to start", e);
                     throw new BundleException("Failed to start bundle " + bundle.getSymbolicName() + " " + bundle.getVersion(), e);
                 }
             }
