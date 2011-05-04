@@ -151,6 +151,7 @@ final public class StandardStateService implements StateService {
     @Override
     public List<QuasiResolutionFailure> getResolverReport(File source, long bundleId) {
         QuasiFramework framework = this.getQuasiFramework(source);
+        framework.resolve();
         return framework.diagnose(bundleId);
     }
 
