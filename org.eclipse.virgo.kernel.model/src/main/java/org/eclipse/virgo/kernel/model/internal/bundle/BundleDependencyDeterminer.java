@@ -54,27 +54,21 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
      * {@inheritDoc}
      */
     public Set<Artifact> getDependents(Artifact rootArtifact) {
-        Set<Artifact> artifacts = new HashSet<Artifact>();
+        if(!rootArtifact.getType().equalsIgnoreCase("bundle")){
+            return Collections.<Artifact> emptySet();
+        }
+        
         QuasiBundle rootBundle = getBundle(rootArtifact);
-
         if (rootBundle == null) {
             return Collections.<Artifact> emptySet();
         }
 
+        Set<Artifact> artifacts = new HashSet<Artifact>();
         for (QuasiImportPackage importPackage : rootBundle.getImportPackages()) {
             QuasiExportPackage provider = importPackage.getProvider();
             if (provider != null) {
                 QuasiBundle bundle = provider.getExportingBundle();
                 Artifact artifact = artifactRepository.getArtifact(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion(), this.regionDigraph.getRegion(bundle.getBundleId()));
-//                if (artifact == null) {
-//                    // If there is no matching artifact in the user region, try the kernel region.
-//                    for (Artifact a : this.artifactRepository.getArtifacts()) {
-//                        if (BundleArtifact.TYPE.equals(a.getType()) && bundle.getSymbolicName().equals(a.getName()) && bundle.getVersion().equals(a.getVersion())) {
-//                            artifact = a;
-//                            break;
-//                        }
-//                    }
-//                }
                 artifacts.add(artifact);
             }
         }
@@ -85,7 +79,9 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
     private QuasiBundle getBundle(Artifact artifact) {
         QuasiFramework framework = quasiFrameworkFactory.create();
         for (QuasiBundle bundle : framework.getBundles()) {
-            if (artifact.getName().equals(bundle.getSymbolicName()) && artifact.getVersion().equals(bundle.getVersion())) {
+            if (artifact.getName().equals(bundle.getSymbolicName()) && 
+                artifact.getVersion().equals(bundle.getVersion()) && 
+                artifact.getRegion().equals(this.regionDigraph.getRegion(bundle.getBundleId()))) {
                 return bundle;
             }
         }

@@ -25,9 +25,10 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.Tree;
 
 /**
- * Implementation of {@link DependencyDeterminer} that reutns the dependent of a <code>Plan</code>. The dependents
+ * Implementation of {@link DependencyDeterminer} that returns the dependent of a <code>Plan</code>. The dependents
  * consist of the artifacts specified in the plan.
  * <p />
+ * This class makes the assumption that the children of a composite artifact will always be in the same region as the parent.
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
@@ -54,7 +55,7 @@ public final class DeployerCompositeArtifactDependencyDeterminer implements Depe
         List<Tree<InstallArtifact>> children = ((DeployerCompositeArtifact) rootArtifact).getInstallArtifact().getTree().getChildren();
         for (Tree<InstallArtifact> child : children) {
             InstallArtifact artifact = child.getValue();
-            dependents.add(artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion(), rootArtifact.getRegion()));
+            dependents.add(artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion(), rootArtifact.getRegion()));//Plans don't have a region so this only works as null will also return artifacts in regions
         }
 
         return dependents;

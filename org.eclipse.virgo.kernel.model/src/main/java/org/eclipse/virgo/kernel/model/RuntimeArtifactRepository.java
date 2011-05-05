@@ -58,13 +58,12 @@ public interface RuntimeArtifactRepository {
     Set<Artifact> getArtifacts();
 
     /**
-     * Gets a specific {@link Artifact} from this repository. If the artifact is a bundle, it is only returned if the
-     * bundle is in the user region.
+     * Gets a specific {@link Artifact} from this repository. 
      * 
      * @param type The type of the {@link Artifact} to get
      * @param name The name of the {@link Artifact} to get
      * @param version The {@link Version} of the {@link Artifact} to get
-     * @param region The {@link Region} to get the {@link Artifact} from
+     * @param region The {@link Region} to get the {@link Artifact} from or null if the artifact has no region or the region isn't known
      * @return The {@link Artifact} represented by this type, name, and version if it is in the repository, otherwise
      *         <code>null</code>
      */
