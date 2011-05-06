@@ -14,12 +14,21 @@ package org.eclipse.virgo.kernel.model.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
+import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
 import org.junit.Test;
 
 
@@ -64,7 +73,80 @@ public class NotifyingArtifactRepositoryTests {
         Set<Artifact> artifacts2 = this.artifactRepository.getArtifacts();
         assertNotSame(artifacts1, artifacts2);
     }
+    
+    @Test 
+    public void getArtifact(){
+        Region stubRegion = new StubRegion();
+        Artifact stubArtifact = new StubCompositeArtifact("foo", "bar", null);
+        Artifact stubArtifact2 = new StubCompositeArtifact("foo2", "bar2", stubRegion);
+        this.artifactRepository.add(stubArtifact);
+        this.artifactRepository.add(stubArtifact2);
+        Artifact retrieved = this.artifactRepository.getArtifact("foo", "bar", new Version("0.1.0"), null);
+        assertNull(retrieved);
+        retrieved = this.artifactRepository.getArtifact("foo", "bar", Version.emptyVersion, null);
+        assertEquals(stubArtifact, retrieved);
+        retrieved = this.artifactRepository.getArtifact("foo", "bar", Version.emptyVersion, stubRegion);
+        assertNull(retrieved);
+        retrieved = this.artifactRepository.getArtifact("foo2", "bar2", Version.emptyVersion, stubRegion);
+        assertEquals(stubArtifact2, retrieved);
+    }
 
+    private static class StubRegion implements Region{
+
+        public String getName() {
+            return "region";
+        }
+
+        public void addBundle(Bundle bundle) throws BundleException {
+            
+        }
+
+        public void addBundle(long bundleId) {
+            
+        }
+
+        public Bundle installBundle(String location, InputStream input) throws BundleException {
+            return null;
+        }
+
+        public Bundle installBundle(String location) throws BundleException {
+            return null;
+        }
+
+        public Set<Long> getBundleIds() {
+            return null;
+        }
+
+        public boolean contains(Bundle bundle) {
+            return false;
+        }
+
+        public boolean contains(long bundleId) {
+            return false;
+        }
+
+        public Bundle getBundle(String symbolicName, Version version) {
+            return null;
+        }
+
+        public void connectRegion(Region headRegion, RegionFilter filter) throws BundleException {
+        }
+
+        public void removeBundle(Bundle bundle) {
+        }
+
+        public void removeBundle(long bundleId) {
+        }
+
+        public Set<FilteredRegion> getEdges() {
+            return null;
+        }
+
+        public void visitSubgraph(RegionDigraphVisitor visitor) {
+        }
+        
+    }
+    
     private static class StubArtifactRepositoryListener implements ArtifactRepositoryListener {
 
         private final boolean throwException;

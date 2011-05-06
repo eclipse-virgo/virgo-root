@@ -81,7 +81,7 @@ public class BundleDependencyDeterminerTests {
         QuasiFramework framework = createMock(QuasiFramework.class);
         replay(quasiFrameworkFactory, regionDigraph, framework);
 
-        Set<Artifact> dependents = this.determiner.getDependents(new StubCompositeArtifact("foo", "bar", regionB));
+        Set<Artifact> dependents = this.determiner.getDependents(new StubCompositeArtifact("bar", "foo", regionB));
         assertEquals(Collections.<Artifact> emptySet(), dependents);
 
         verify(quasiFrameworkFactory, regionDigraph, framework);
