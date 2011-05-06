@@ -26,7 +26,7 @@ public class StubCompositeArtifact implements CompositeArtifact {
     private final Region region;
     
     public StubCompositeArtifact() {
-        this("test-name", "test-type", null);
+        this("test-type", "test-name", null);
     }
 
     public StubCompositeArtifact(String type, String name, Region region) {
