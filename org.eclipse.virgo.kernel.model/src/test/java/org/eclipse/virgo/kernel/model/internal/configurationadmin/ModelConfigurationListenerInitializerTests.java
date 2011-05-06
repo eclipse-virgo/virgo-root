@@ -39,8 +39,7 @@ public class ModelConfigurationListenerInitializerTests {
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
 
-    private final ModelConfigurationListenerInitializer initializer = new ModelConfigurationListenerInitializer(artifactRepository, bundleContext,
-        configurationAdmin);
+    private final ModelConfigurationListenerInitializer initializer = new ModelConfigurationListenerInitializer(artifactRepository, bundleContext, configurationAdmin);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {

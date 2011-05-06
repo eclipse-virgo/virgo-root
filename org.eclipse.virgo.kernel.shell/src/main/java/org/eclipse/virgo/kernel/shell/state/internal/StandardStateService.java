@@ -24,7 +24,6 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
@@ -43,25 +42,16 @@ import org.springframework.util.AntPathMatcher;
  */
 final public class StandardStateService implements StateService {
 
-    private static final String REGION_KERNEL = "org.eclipse.virgo.region.kernel";
-
     private final QuasiFrameworkFactory quasiFrameworkFactory;
 
     private final BundleContext bundleContext;
 
     private final RegionDigraph regionDigraph;
 
-    private final Region kernelRegion;
-
     public StandardStateService(QuasiFrameworkFactory quasiFrameworkFactory, BundleContext bundleContext, RegionDigraph regionDigraph) {
         this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.bundleContext = bundleContext;
         this.regionDigraph = regionDigraph;
-        this.kernelRegion = getKernelRegion(regionDigraph);
-    }
-
-    private Region getKernelRegion(RegionDigraph regionDigraph) {
-        return regionDigraph.getRegion(REGION_KERNEL);
     }
 
     /**
@@ -69,23 +59,7 @@ final public class StandardStateService implements StateService {
      */
     @Override
     public List<QuasiBundle> getAllBundles(File source) {
-        List<QuasiBundle> bundles = this.getQuasiFramework(source).getBundles();
-        if (source == null) {
-            List<QuasiBundle> userRegionBundles = new ArrayList<QuasiBundle>();
-            for (QuasiBundle bundle : bundles) {
-                long bundleId = bundle.getBundleId();
-                if (bundleId == 0L || !this.kernelRegion.equals(getRegion(bundleId))) {
-                    userRegionBundles.add(bundle);
-                }
-            }
-            return userRegionBundles;
-        } else {
-            return bundles;
-        }
-    }
-
-    private Region getRegion(long bundleId) {
-        return this.regionDigraph.getRegion(bundleId);
+        return this.getQuasiFramework(source).getBundles();
     }
 
     /**

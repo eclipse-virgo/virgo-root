@@ -14,20 +14,33 @@ package org.eclipse.virgo.kernel.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.model.Artifact;
-import org.eclipse.virgo.kernel.model.ArtifactState;
-import org.eclipse.virgo.kernel.model.CompositeArtifact;
 import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.osgi.framework.Version;
 
 public class StubCompositeArtifact implements CompositeArtifact {
 
+    private final String name;
+    
+    private final String type;
+    
+    private final Region region;
+    
+    public StubCompositeArtifact() {
+        this("test-name", "test-type", null);
+    }
+
+    public StubCompositeArtifact(String name, String type, Region region) {
+        this.name = name;
+        this.type = type;
+        this.region = region;
+    }
+    
     public Set<Artifact> getDependents() {
         throw new UnsupportedOperationException();
     }
 
     public String getName() {
-        return "test-name";
+        return name;
     }
 
     public ArtifactState getState() {
@@ -35,7 +48,7 @@ public class StubCompositeArtifact implements CompositeArtifact {
     }
 
     public String getType() {
-        return "test-type";
+        return type;
     }
 
     public Version getVersion() {
@@ -70,9 +83,8 @@ public class StubCompositeArtifact implements CompositeArtifact {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Region getRegion() {
-        return null;
+        return this.region;
     }
 
 }

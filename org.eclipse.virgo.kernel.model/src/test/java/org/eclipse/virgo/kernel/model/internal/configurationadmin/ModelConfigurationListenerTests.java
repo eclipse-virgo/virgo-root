@@ -39,7 +39,7 @@ public class ModelConfigurationListenerTests {
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final ServiceReference reference = new StubServiceRegistration(bundleContext, ConfigurationAdmin.class.getCanonicalName()).getReference();
+    private final ServiceReference<ConfigurationAdmin> reference = new StubServiceRegistration<ConfigurationAdmin>(bundleContext, ConfigurationAdmin.class.getCanonicalName()).getReference();
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
 
