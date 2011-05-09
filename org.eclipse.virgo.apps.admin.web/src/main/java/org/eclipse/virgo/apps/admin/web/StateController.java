@@ -63,6 +63,8 @@ public final class StateController {
 
     private static final String VERSION_NAME = "version";
 
+    private static final String REGION_NAME = "region";
+
     private final StateHolder stateInspectorService;
 	
     private final DumpListFormatterUtil dumpListFormatterUtil;
@@ -123,6 +125,7 @@ public final class StateController {
 		Long bundleId = ServletRequestUtils.getLongParameter(request, BUNDLE_ID_NAME);
         String name = ServletRequestUtils.getStringParameter(request, BUNDLE_NAME);
         String version = ServletRequestUtils.getStringParameter(request, VERSION_NAME);
+        String region = ServletRequestUtils.getStringParameter(request, REGION_NAME);
         String newState = ServletRequestUtils.getStringParameter(request, STATE_NAME);
 		Map<String, Object> model = new HashMap<String, Object>();
 		
@@ -130,8 +133,8 @@ public final class StateController {
 		try {
     		if(bundleId != null){
     		    bundleHolder = this.stateInspectorService.getBundle(newState, bundleId.longValue());
-    		} else if(name != null && version != null) {
-    		    bundleHolder = this.stateInspectorService.getBundle(newState, name, version);
+    		} else if(name != null && version != null && region != null) {
+    		    bundleHolder = this.stateInspectorService.getBundle(newState, name, version, region);
     		}
 		} catch(Exception e) {
 		    LOGGER.warn(String.format("Error while retrieving bundle '%d%s'", bundleId, name), e);

@@ -126,7 +126,7 @@ public class StandardStateHolderTests {
     @Test
     public void testGetBundleByNameExist() {
         this.stubStateService.setNotNullExpectations();
-        BundleHolder result = this.standardStateHolder.getBundle(TEST_DUMP_NAME, StubQuasiLiveBundle.TEST_NAME, StubQuasiLiveBundle.TEST_VERSION.toString());
+        BundleHolder result = this.standardStateHolder.getBundle(TEST_DUMP_NAME, StubQuasiLiveBundle.TEST_NAME, StubQuasiLiveBundle.TEST_VERSION.toString(), StubStateService.TEST_REGION_NAME);
         assertNotNull(result);
         assertEquals("fake.test.bundle", result.getSymbolicName());
     }
@@ -137,7 +137,7 @@ public class StandardStateHolderTests {
     @Test
     public void testGetBundleByNameNotExist() {
         this.stubStateService.setNotNullExpectations();
-        BundleHolder result = this.standardStateHolder.getBundle(TEST_DUMP_NAME, "nope", "nope");
+        BundleHolder result = this.standardStateHolder.getBundle(TEST_DUMP_NAME, "nope", "nope", "nope");
         assertNull(result);
     }
 
@@ -147,7 +147,7 @@ public class StandardStateHolderTests {
     @Test
     public void testGetBundleByNameNullDumpExists() {
         this.stubStateService.setNullExpectations();
-        BundleHolder result = this.standardStateHolder.getBundle(null, StubQuasiLiveBundle.TEST_NAME, StubQuasiLiveBundle.TEST_VERSION.toString());
+        BundleHolder result = this.standardStateHolder.getBundle(null, StubQuasiLiveBundle.TEST_NAME, StubQuasiLiveBundle.TEST_VERSION.toString(), StubStateService.TEST_REGION_NAME);
         assertNotNull(result);
         assertEquals(StubQuasiLiveBundle.TEST_NAME, result.getSymbolicName());
     }
@@ -158,7 +158,7 @@ public class StandardStateHolderTests {
     @Test
     public void testGetBundleByNameNullDumpNotExists() {
         this.stubStateService.setNullExpectations();
-        BundleHolder result = this.standardStateHolder.getBundle(null, "nope", "nope");
+        BundleHolder result = this.standardStateHolder.getBundle(null, "nope", "nope", StubStateService.TEST_REGION_NAME);
         assertNull(result);
     }
 

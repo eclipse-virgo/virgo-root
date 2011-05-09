@@ -44,7 +44,7 @@ public class StubStateHolder implements StateHolder {
         return null;
     }
 
-    public BundleHolder getBundle(String source, String name, String version) {
+    public BundleHolder getBundle(String source, String name, String version, String region) {
         return null;
     }
 

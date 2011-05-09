@@ -51,6 +51,8 @@ final class StandardStateHolder implements StateHolder {
 
     private static final String LIVE = "Live";
 
+    private static final Object KERNEL_REGION_NAME = "org.eclipse.virgo.region.kernel";
+
     private final StateService stateService;
 
     private final DumpLocator dumpLocator;
@@ -78,7 +80,7 @@ final class StandardStateHolder implements StateHolder {
         List<QuasiBundle> allBundles = this.stateService.getAllBundles(dumpDirectory);
         List<BundleHolder> heldBundles = new ArrayList<BundleHolder>();
         for (QuasiBundle quasiBundle : allBundles) {
-            if (quasiBundle != null) {
+            if (quasiBundle != null && !KERNEL_REGION_NAME.equals(this.stateService.getBundleRegionName(quasiBundle.getBundleId()))) {
                 heldBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor));
             }
         }
@@ -120,7 +122,7 @@ final class StandardStateHolder implements StateHolder {
     /**
      * {@inheritDoc}
      */
-    public BundleHolder getBundle(String source, String name, String version) {
+    public BundleHolder getBundle(String source, String name, String version, String region) {
         File dumpDirectory = null;
         if (source != null && !LIVE.equals(source)) {
             dumpDirectory = this.getDumpDirectory(source);
@@ -129,7 +131,7 @@ final class StandardStateHolder implements StateHolder {
         if (name != null && version != null) {
             List<QuasiBundle> allBundles = this.stateService.getAllBundles(dumpDirectory);
             for (QuasiBundle quasiBundle : allBundles) {
-                if (quasiBundle.getSymbolicName().equals(name) && quasiBundle.getVersion().toString().equals(version)) {
+                if (quasiBundle.getSymbolicName().equals(name) && quasiBundle.getVersion().toString().equals(version) && this.stateService.getBundleRegionName(quasiBundle.getBundleId()).equals(region)) {
                     result = quasiBundle;
                 }
             }

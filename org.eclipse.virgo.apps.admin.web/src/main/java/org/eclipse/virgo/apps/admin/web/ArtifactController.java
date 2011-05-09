@@ -62,6 +62,8 @@ public final class ArtifactController {
 
     private static final String VERSION = "version";
 
+    private static final String REGION = "region";
+
     private static final String PARENT = "parent";
     
     private final ArtifactService artifactService;
@@ -218,6 +220,7 @@ public final class ArtifactController {
         String type = ServletRequestUtils.getStringParameter(request, TYPE);
         String name = ServletRequestUtils.getStringParameter(request, NAME);
         String version = ServletRequestUtils.getStringParameter(request, VERSION);
+        String region = ServletRequestUtils.getStringParameter(request, REGION);
         String parent = ServletRequestUtils.getStringParameter(request, PARENT);
 
         String responseString;
@@ -226,7 +229,14 @@ public final class ArtifactController {
         } else if (type != null && name == null) {
             responseString = this.dojoTreeJsonFormatter.formatArtifactsOfType(parent, this.ramAccessorHelper.getArtifactsOfType(type));//Second level request
         } else if (type != null && name != null && version != null) {
-            ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(type, name, version);
+            ArtifactAccessor artifact;
+            if(region != null && region.length() != 0){
+                System.out.println("Getting with region " + region);
+                artifact = this.ramAccessorHelper.getArtifact(type, name, version, region);
+            } else {
+                System.out.println("Getting with no region");
+                artifact = this.ramAccessorHelper.getArtifact(type, name, version);
+            }
             this.decorateSpringProperties(artifact);
             responseString = this.dojoTreeJsonFormatter.formatArtifactDetails(parent, artifact);//All other requests
         } else {
@@ -251,7 +261,7 @@ public final class ArtifactController {
 
     private void decorateSpringProperties(ArtifactAccessor artifact) {
         if(BUNDLE.equals(artifact.getType())) {
-            BundleHolder bundleHolder = this.stateInspectorService.getBundle(null, artifact.getName(), artifact.getVersion());
+            BundleHolder bundleHolder = this.stateInspectorService.getBundle(null, artifact.getName(), artifact.getVersion(), "org.eclipse.virgo.region.user");
             if(bundleHolder != null) {
                 Bundle rawBundle = bundleHolder.getRawBundle();
                 if(rawBundle != null) {

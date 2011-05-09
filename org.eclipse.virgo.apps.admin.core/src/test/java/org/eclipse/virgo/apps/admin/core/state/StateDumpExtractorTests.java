@@ -25,8 +25,6 @@ import org.junit.Test;
 public class StateDumpExtractorTests {
     
     private final String DUMP_FOLDER_CONTENT = "testDumpWithContent"; 
-
-    private final String DUMP_FOLDER_NO_CONTENT = "testDumpWithNoContent"; 
     
     private final String DUMP_FOLDER_NOT_EXIST = "notHere"; 
     

@@ -30,6 +30,8 @@ final public class StubStateService implements StateService {
 
     public static final String TEST_PACKAGE_SEARCH = "com.foo.bar";
 
+    public static final String TEST_REGION_NAME = "myRegion";
+
     public static final String TEST_INSTALL_LOCATION = "src/test/resources";
     
     private static final long EXISTING_ID = 4;
@@ -63,6 +65,14 @@ final public class StubStateService implements StateService {
         this.checkNull(source);
         if(bundleId == EXISTING_ID){
             return new StubQuasiLiveBundle(EXISTING_ID, null);
+        }
+        return null;
+    }
+
+    @Override
+    public String getBundleRegionName(long bundleId) {
+        if(bundleId == EXISTING_ID){
+            return TEST_REGION_NAME;
         }
         return null;
     }

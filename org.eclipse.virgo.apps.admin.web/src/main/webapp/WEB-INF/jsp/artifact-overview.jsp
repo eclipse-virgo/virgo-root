@@ -55,8 +55,9 @@
 			requestType    = this.store.getValue(parentItem, "type");
 			requestName    = this.store.getValue(parentItem, "name");
 			requestVersion = this.store.getValue(parentItem, "version");
+			requestRegion = this.store.getValue(parentItem, "region");
 			requestParentId    = this.store.getValue(parentItem, "id");
-			this.store.fetch({ query: {parent: requestParentId, type: requestType, name: requestName, version: requestVersion}, onComplete: complete_cb, onError: error_cb});
+			this.store.fetch({ query: {parent: requestParentId, type: requestType, name: requestName, version: requestVersion, region: requestRegion}, onComplete: complete_cb, onError: error_cb});
 		} else if (this.store.hasAttribute(parentItem, "type")) {
 			requestType        = this.store.getValue(parentItem, "type");
 			requestParentId    = this.store.getValue(parentItem, "id");

@@ -60,9 +60,10 @@ public interface StateHolder {
      * @param source dump name
      * @param name of bundle
      * @param version of bundle
+     * @param region to look in
      * @return holder holding bundle
      */
-    public BundleHolder getBundle(String source, String name, String version);
+    public BundleHolder getBundle(String source, String name, String version, String region);
     
     /**
      * Returns the {@link ServiceHolder} that represents the service with

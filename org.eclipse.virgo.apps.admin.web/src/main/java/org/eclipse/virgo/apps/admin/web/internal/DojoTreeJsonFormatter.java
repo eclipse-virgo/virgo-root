@@ -86,7 +86,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
             
             if (artifacts.size() > 0) {
                 for (ArtifactAccessorPointer artifact : artifacts) {
-                    FormattingData fd = new FormattingData(sb, parent, artifact.getType(), artifact.getName(), artifact.getVersion());
+                    FormattingData fd = new FormattingData(sb, parent, artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getRegion());
                     renderComplexChild(fd, artifact.getState());
                 }
                 sb.deleteCharAt(sb.length() - 1);
@@ -101,7 +101,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
     public String formatArtifactDetails(final String parent, final ArtifactAccessor artifact) {
         StringBuilder sb = new StringBuilder();
         if(parent != null && artifact != null) {
-            FormattingData fd = new FormattingData(sb, parent, artifact.getType(), artifact.getName(), artifact.getVersion());
+            FormattingData fd = new FormattingData(sb, parent, artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getAttributes().get("Region").toString());
             
             if(BUNDLE_TYPE.equals(fd.type)) {
                 renderLinkChild(fd, String.format("View this %s artifact", fd.type), String.format(BUNDLE_LINK, fd.name, fd.version));
@@ -156,7 +156,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
             if(dependents.size() > 0) {
                 sb.append(",");
                 for (ArtifactAccessorPointer dependent : dependents) {
-                    fd = new FormattingData(sb, parent, dependent.getType(), dependent.getName(), dependent.getVersion());
+                    fd = new FormattingData(sb, parent, dependent.getType(), dependent.getName(), dependent.getVersion(), dependent.getRegion());
                     renderComplexChild(fd, dependent.getState());
                 }
                 sb.deleteCharAt(sb.length() - 1);
@@ -187,11 +187,12 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
     private void renderComplexChild(FormattingData fd, String state) {
         StringBuilder sb = fd.stringBuilder;
         sb.append("{");
-        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append("',");
+        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(fd.region).append("',");
         sb.append("label: '").append(fd.name).append("-").append(fd.version).append("',");
         sb.append("type: '").append(fd.type).append("',");
         sb.append("name: '").append(fd.name).append("',");
         sb.append("version: '").append(fd.version).append("',");
+        sb.append("region: '").append(fd.region).append("',");
         sb.append("state: '").append(state).append("',");
         sb.append("tooltip: '").append(fd.type).append(" artifact',");
         sb.append("children: []");
@@ -201,7 +202,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
     private void renderSimpleChild(FormattingData fd, String label) {
         StringBuilder sb = fd.stringBuilder;
         sb.append("{");
-        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(label).append("',");
+        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(fd.region).append(label).append("',");
         sb.append("label: '").append(label).append("'");
         sb.append("},");
     }
@@ -209,7 +210,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
     private void renderCustomIconChild(FormattingData fd, String label, String iconClass) {
         StringBuilder sb = fd.stringBuilder;
         sb.append("{");
-        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(label).append("',");
+        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(fd.region).append(label).append("',");
         sb.append("label: '").append(label).append("',");
         sb.append("icon: '").append(iconClass).append("'");
         sb.append("},");
@@ -218,7 +219,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
     private void renderLinkChild(FormattingData fd, String linkText, String link) {
         StringBuilder sb = fd.stringBuilder;
         sb.append("{");
-        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(linkText).append("',");
+        sb.append("id: '").append(fd.parentKey).append(fd.type).append(fd.name).append(fd.version).append(fd.region).append(linkText).append("',");
         sb.append("label: '").append(linkText).append("',");
         sb.append("link: '").append(link).append("'");
         sb.append("},");
@@ -240,13 +241,15 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
         final String type;
         final String name;
         final String version;
+        final String region;
 
-        public FormattingData(StringBuilder stringBuilder, String parentKey, String type, String name, String version) {
+        public FormattingData(StringBuilder stringBuilder, String parentKey, String type, String name, String version, String region) {
             this.stringBuilder = stringBuilder;
             this.parentKey = parentKey;
             this.type = type;
             this.name = name;
             this.version = version;
+            this.region = region;
         }
 
     }
