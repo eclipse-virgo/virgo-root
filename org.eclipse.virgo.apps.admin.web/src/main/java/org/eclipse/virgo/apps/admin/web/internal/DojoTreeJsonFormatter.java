@@ -49,7 +49,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
 
     private static final String CONFIG_TYPE = "configuration";
 
-    private static final String BUNDLE_LINK = "/admin/web/state/bundle.htm?name=%s&version=%s";
+    private static final String BUNDLE_LINK = "/admin/web/state/bundle.htm?name=%s&version=%s&region=%s";
 
     private static final String CONFIG_LINK = "/admin/web/config/overview.htm#%s";
     
@@ -104,7 +104,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
             FormattingData fd = new FormattingData(sb, parent, artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getAttributes().get("Region").toString());
             
             if(BUNDLE_TYPE.equals(fd.type)) {
-                renderLinkChild(fd, String.format("View this %s artifact", fd.type), String.format(BUNDLE_LINK, fd.name, fd.version));
+                renderLinkChild(fd, String.format("View this %s artifact", fd.type), String.format(BUNDLE_LINK, fd.name, fd.version, fd.region));
             } else if(CONFIG_TYPE.equals(fd.type)) {
                 renderLinkChild(fd, String.format("View this %s artifact", fd.type), String.format(CONFIG_LINK, fd.name));
             }

@@ -34,6 +34,8 @@ public interface BundleHolder extends Comparable<BundleHolder>{
     public String getSymbolicName();
 
     public String getState();
+    
+    public String getRegion();
 
     public boolean isResolved();
 

@@ -17,6 +17,7 @@ import org.eclipse.virgo.apps.admin.core.BundleHolder;
 import org.eclipse.virgo.apps.admin.core.state.StandardFailedResolutionHolder;
 import org.eclipse.virgo.apps.admin.core.stubs.StubModuleContextAccessor;
 import org.eclipse.virgo.apps.admin.core.stubs.StubQuasiResolutionFaliure;
+import org.eclipse.virgo.apps.admin.core.stubs.StubStateService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class StandardFailedResolutionHolderTests {
    
     @Before
     public void setUp(){
-        this.standardFailedResolutionHolder = new StandardFailedResolutionHolder(new StubQuasiResolutionFaliure("test", 5), new StubModuleContextAccessor());
+        this.standardFailedResolutionHolder = new StandardFailedResolutionHolder(new StubQuasiResolutionFaliure("test", 5), new StubModuleContextAccessor(), new StubStateService());
     }
     
     @Test

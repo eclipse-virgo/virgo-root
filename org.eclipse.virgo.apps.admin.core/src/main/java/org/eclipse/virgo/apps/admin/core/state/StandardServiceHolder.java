@@ -23,6 +23,7 @@ import org.eclipse.virgo.apps.admin.core.ServiceHolder;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
+import org.eclipse.virgo.kernel.shell.state.StateService;
 
 /**
  * <p>
@@ -42,12 +43,15 @@ final class StandardServiceHolder implements ServiceHolder {
     
     private final ModuleContextAccessor moduleContextAccessor;
 
-    public StandardServiceHolder(QuasiLiveService quasiLiveService, ModuleContextAccessor moduleContextAccessor) {
+    private final StateService stateService;
+
+    public StandardServiceHolder(QuasiLiveService quasiLiveService, ModuleContextAccessor moduleContextAccessor, StateService stateService) {
         if(quasiLiveService == null || moduleContextAccessor == null) {
             throw new IllegalArgumentException("QuasiLiveService and ModuleContextAccessor must not be null");
         }
         this.quasiLiveService = quasiLiveService;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.stateService = stateService;
     }
 
     /** 
@@ -71,7 +75,7 @@ final class StandardServiceHolder implements ServiceHolder {
         List<QuasiLiveBundle> consumers = this.quasiLiveService.getConsumers();
         List<BundleHolder> bundleHolders = new ArrayList<BundleHolder>();
         for(QuasiLiveBundle quasiLiveBundle : consumers) {
-            bundleHolders.add(new StandardBundleHolder(quasiLiveBundle, this.moduleContextAccessor));
+            bundleHolders.add(new StandardBundleHolder(quasiLiveBundle, this.moduleContextAccessor, this.stateService));
         }
         return bundleHolders;
     }
@@ -87,7 +91,7 @@ final class StandardServiceHolder implements ServiceHolder {
      * {@inheritDoc}
      */
     public BundleHolder getProvider() {
-        return new StandardBundleHolder(this.quasiLiveService.getProvider(), this.moduleContextAccessor);
+        return new StandardBundleHolder(this.quasiLiveService.getProvider(), this.moduleContextAccessor, this.stateService);
     }
 
     /**

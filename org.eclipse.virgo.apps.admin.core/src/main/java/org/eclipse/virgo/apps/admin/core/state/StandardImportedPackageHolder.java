@@ -20,6 +20,7 @@ import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.eclipse.virgo.kernel.shell.state.StateService;
 import org.eclipse.virgo.util.osgi.VersionRange;
 
 /**
@@ -38,10 +39,13 @@ final class StandardImportedPackageHolder implements ImportedPackageHolder {
     private final ModuleContextAccessor moduleContextAccessor;
     
     private final QuasiImportPackage importPackage;
+
+    private final StateService stateService;
     
-    public StandardImportedPackageHolder(QuasiImportPackage importPackage, ModuleContextAccessor moduleContextAccessor) {
+    public StandardImportedPackageHolder(QuasiImportPackage importPackage, ModuleContextAccessor moduleContextAccessor, StateService stateService) {
         this.importPackage = importPackage;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.stateService = stateService;
     }
 
     /** 
@@ -50,7 +54,7 @@ final class StandardImportedPackageHolder implements ImportedPackageHolder {
     public BundleHolder getImportingBundle() {
         QuasiBundle importingBundle = this.importPackage.getImportingBundle();
         if(importingBundle != null) {
-            return new StandardBundleHolder(importingBundle, this.moduleContextAccessor);
+            return new StandardBundleHolder(importingBundle, this.moduleContextAccessor, this.stateService);
         } 
         return null;
     }
@@ -76,7 +80,7 @@ final class StandardImportedPackageHolder implements ImportedPackageHolder {
     public ExportedPackageHolder getProvider() {
         QuasiExportPackage provider = this.importPackage.getProvider();
         if(provider != null) {
-            return new StandardExportedPackageHolder(provider, this.moduleContextAccessor);
+            return new StandardExportedPackageHolder(provider, this.moduleContextAccessor, this.stateService);
         }
         return null;
     }

@@ -38,6 +38,10 @@
 		<td>${bundle.bundleId}</td>
 	</tr>
 	<tr class="sublevel1-even">
+		<td>Region</td>
+		<td>${bundle.region}</td>
+	</tr>
+	<tr class="sublevel1-odd">
 		<td>Hosts/Fragments</td>
 		<td>
 			${hostsFragmentsMessage}
@@ -48,7 +52,7 @@
 	</tr>
 	<c:choose>
 		<c:when test="${state eq 'Live'}">
-			<tr class="sublevel1-odd">
+			<tr class="sublevel1-even">
 				<td>Spring powered</td>
 				<c:choose>
 					<c:when test="${empty bundle.springName}">
@@ -60,23 +64,23 @@
 				</c:choose>
 				
 			</tr>
-			<tr class="sublevel1-even">
+			<tr class="sublevel1-odd">
 				<td>State</td>
 				<td><c:choose><c:when test="${bundle.resolved}">${bundle.state}</c:when><c:otherwise><a href="<c:url value="resolve.htm?id=${bundle.bundleId}&state=${state}" />">${bundle.state}</a></c:otherwise></c:choose></td>
 			</tr>
 		</c:when>
 		<c:otherwise>
-			<tr class="sublevel1-odd">
+			<tr class="sublevel1-even">
 				<td>Spring powered</td>
 				<td>NA</td>
 			</tr>
-			<tr class="sublevel1-even">
+			<tr class="sublevel1-odd">
 				<td>State</td>
 				<td><c:choose><c:when test="${bundle.resolved}">Resolved</c:when><c:otherwise><a href="<c:url value="resolve.htm?id=${bundle.bundleId}&state=${state}" />">Unresolved</a></c:otherwise></c:choose></td>
 			</tr>
 		</c:otherwise>
 	</c:choose>
-	<tr class="sublevel1-odd">
+	<tr class="sublevel1-even">
 		<td>Bundle Location</td>
 		<td>${bundle.bundleLocation}</td>
 	</tr>

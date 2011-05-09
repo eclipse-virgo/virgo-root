@@ -22,6 +22,7 @@ import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.eclipse.virgo.kernel.shell.state.StateService;
 
 /**
  * <p>
@@ -39,9 +40,12 @@ final class StandardExportedPackageHolder implements ExportedPackageHolder {
     
     private final ModuleContextAccessor moduleContextAccessor;
 
-    public StandardExportedPackageHolder(QuasiExportPackage exportPackage, ModuleContextAccessor moduleContextAccessor) {
+    private final StateService stateService;
+
+    public StandardExportedPackageHolder(QuasiExportPackage exportPackage, ModuleContextAccessor moduleContextAccessor, StateService stateService) {
         this.exportPackage = exportPackage;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.stateService = stateService;
     }
 
     /** 
@@ -59,7 +63,7 @@ final class StandardExportedPackageHolder implements ExportedPackageHolder {
         List<ImportedPackageHolder> importedPackageHolders = new ArrayList<ImportedPackageHolder>();
         if(consumers != null) {
             for(QuasiImportPackage quasiImportPackage : consumers) {
-                importedPackageHolders.add(new StandardImportedPackageHolder(quasiImportPackage, this.moduleContextAccessor));
+                importedPackageHolders.add(new StandardImportedPackageHolder(quasiImportPackage, this.moduleContextAccessor, this.stateService));
             }
         }
         return importedPackageHolders;
@@ -71,7 +75,7 @@ final class StandardExportedPackageHolder implements ExportedPackageHolder {
     public BundleHolder getExportingBundle() {
         QuasiBundle exportingBundle = this.exportPackage.getExportingBundle();
         if(exportingBundle != null) {
-            return new StandardBundleHolder(exportingBundle, this.moduleContextAccessor) ;
+            return new StandardBundleHolder(exportingBundle, this.moduleContextAccessor, this.stateService) ;
         }
         return null;
     }

@@ -17,6 +17,7 @@ import org.eclipse.virgo.apps.admin.core.BundleHolder;
 import org.eclipse.virgo.apps.admin.core.RequiredBundleHolder;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
+import org.eclipse.virgo.kernel.shell.state.StateService;
 import org.eclipse.virgo.util.osgi.VersionRange;
 
 
@@ -36,16 +37,19 @@ final class StandardRequiredBundleHolder implements RequiredBundleHolder {
     
     private final ModuleContextAccessor moduleContextAccessor;
 
-    public StandardRequiredBundleHolder(QuasiRequiredBundle quasiRequiredBundle, ModuleContextAccessor moduleContextAccessor) {
+    private final StateService stateService;
+
+    public StandardRequiredBundleHolder(QuasiRequiredBundle quasiRequiredBundle, ModuleContextAccessor moduleContextAccessor, StateService stateService) {
         this.quasiRequiredBundle = quasiRequiredBundle;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.stateService = stateService;
     }
 
     /** 
      * {@inheritDoc}
      */
     public BundleHolder getProvider() {
-        return new StandardBundleHolder(this.quasiRequiredBundle.getProvider(), this.moduleContextAccessor);
+        return new StandardBundleHolder(this.quasiRequiredBundle.getProvider(), this.moduleContextAccessor, this.stateService);
     }
 
     /** 
@@ -59,7 +63,7 @@ final class StandardRequiredBundleHolder implements RequiredBundleHolder {
      * {@inheritDoc}
      */
     public BundleHolder getRequiringBundle() {
-        return new StandardBundleHolder(this.quasiRequiredBundle.getRequiringBundle(), this.moduleContextAccessor);
+        return new StandardBundleHolder(this.quasiRequiredBundle.getRequiringBundle(), this.moduleContextAccessor, this.stateService);
     }
 
     /** 

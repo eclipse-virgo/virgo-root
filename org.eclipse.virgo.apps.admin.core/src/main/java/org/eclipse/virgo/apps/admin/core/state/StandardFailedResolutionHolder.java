@@ -15,6 +15,7 @@ import org.eclipse.virgo.apps.admin.core.BundleHolder;
 import org.eclipse.virgo.apps.admin.core.FailedResolutionHolder;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
+import org.eclipse.virgo.kernel.shell.state.StateService;
 
 
 /**
@@ -34,14 +35,17 @@ final class StandardFailedResolutionHolder implements FailedResolutionHolder {
     
     private final QuasiResolutionFailure quasiResolutionFailure;
 
+    private final StateService stateService;
+
     /**
      * 
      * @param quasiResolutionFailure to be held
      * @param moduleContextAccessor used for {@link BundleHolder} creation
      */
-    public StandardFailedResolutionHolder(QuasiResolutionFailure quasiResolutionFailure, ModuleContextAccessor moduleContextAccessor) {
+    public StandardFailedResolutionHolder(QuasiResolutionFailure quasiResolutionFailure, ModuleContextAccessor moduleContextAccessor, StateService stateService) {
         this.quasiResolutionFailure = quasiResolutionFailure;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.stateService = stateService;
     }
 
     /** 
@@ -55,7 +59,7 @@ final class StandardFailedResolutionHolder implements FailedResolutionHolder {
      * {@inheritDoc}
      */
     public BundleHolder getUnresolvedBundle() {
-        return new StandardBundleHolder(this.quasiResolutionFailure.getUnresolvedQuasiBundle(), this.moduleContextAccessor);
+        return new StandardBundleHolder(this.quasiResolutionFailure.getUnresolvedQuasiBundle(), this.moduleContextAccessor, this.stateService);
     }
 
 }

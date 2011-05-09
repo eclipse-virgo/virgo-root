@@ -80,8 +80,8 @@ final class StandardStateHolder implements StateHolder {
         List<QuasiBundle> allBundles = this.stateService.getAllBundles(dumpDirectory);
         List<BundleHolder> heldBundles = new ArrayList<BundleHolder>();
         for (QuasiBundle quasiBundle : allBundles) {
-            if (quasiBundle != null && !KERNEL_REGION_NAME.equals(this.stateService.getBundleRegionName(quasiBundle.getBundleId()))) {
-                heldBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor));
+            if (quasiBundle != null && (!KERNEL_REGION_NAME.equals(this.stateService.getBundleRegionName(quasiBundle.getBundleId())) ||  0l == quasiBundle.getBundleId())) {
+                heldBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor, this.stateService));
             }
         }
         return heldBundles;
@@ -98,7 +98,7 @@ final class StandardStateHolder implements StateHolder {
         }
         List<QuasiLiveService> allServices = this.stateService.getAllServices(dumpDirectory);
         for (QuasiLiveService quasiLiveService : allServices) {
-            serviceHolders.add(new StandardServiceHolder(quasiLiveService, moduleContextAccessor));
+            serviceHolders.add(new StandardServiceHolder(quasiLiveService, moduleContextAccessor, this.stateService));
         }
         return serviceHolders;
     }
@@ -114,7 +114,7 @@ final class StandardStateHolder implements StateHolder {
 
         QuasiBundle bundle = stateService.getBundle(dumpDirectory, bundleId);
         if (bundle != null) {
-            return new StandardBundleHolder(bundle, this.moduleContextAccessor);
+            return new StandardBundleHolder(bundle, this.moduleContextAccessor, this.stateService);
         }
         return null;
     }
@@ -137,7 +137,7 @@ final class StandardStateHolder implements StateHolder {
             }
         }
         if (result != null) {
-            return new StandardBundleHolder(result, this.moduleContextAccessor);
+            return new StandardBundleHolder(result, this.moduleContextAccessor, this.stateService);
         }
         return null;
     }
@@ -152,7 +152,7 @@ final class StandardStateHolder implements StateHolder {
         }
         QuasiLiveService service = this.stateService.getService(dumpDirectory, serviceId);
         if (service != null) {
-            return new StandardServiceHolder(service, this.moduleContextAccessor);
+            return new StandardServiceHolder(service, this.moduleContextAccessor, this.stateService);
         }
         return null;
     }
@@ -192,7 +192,7 @@ final class StandardStateHolder implements StateHolder {
         List<FailedResolutionHolder> failedResolutionHolders = new ArrayList<FailedResolutionHolder>();
         if (resolverReport != null) {
             for (QuasiResolutionFailure quasiResolutionFailure : resolverReport) {
-                failedResolutionHolders.add(new StandardFailedResolutionHolder(quasiResolutionFailure, this.moduleContextAccessor));
+                failedResolutionHolders.add(new StandardFailedResolutionHolder(quasiResolutionFailure, this.moduleContextAccessor, this.stateService));
             }
         }
         return failedResolutionHolders;
@@ -210,7 +210,7 @@ final class StandardStateHolder implements StateHolder {
         List<BundleHolder> heldMatchingBundles = new ArrayList<BundleHolder>();
         for (QuasiBundle quasiBundle : matchingBundles) {
             if (quasiBundle != null) {
-                heldMatchingBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor));
+                heldMatchingBundles.add(new StandardBundleHolder(quasiBundle, this.moduleContextAccessor, this.stateService));
             }
         }
         return heldMatchingBundles;
@@ -242,7 +242,7 @@ final class StandardStateHolder implements StateHolder {
     private ImportedPackageHolder processImporters(QuasiBundle qBundle, String packageName) {
         for (QuasiImportPackage qImportPackage : qBundle.getImportPackages()) {
             if (qImportPackage.getPackageName().equals(packageName)) {
-                return new StandardImportedPackageHolder(qImportPackage, this.moduleContextAccessor);
+                return new StandardImportedPackageHolder(qImportPackage, this.moduleContextAccessor, this.stateService);
             }
         }
         return null;
@@ -251,7 +251,7 @@ final class StandardStateHolder implements StateHolder {
     private ExportedPackageHolder processExporters(QuasiBundle qBundle, String packageName) {
         for (QuasiExportPackage qExportPackage : qBundle.getExportPackages()) {
             if (qExportPackage.getPackageName().equals(packageName)) {
-                return new StandardExportedPackageHolder(qExportPackage, this.moduleContextAccessor);
+                return new StandardExportedPackageHolder(qExportPackage, this.moduleContextAccessor, this.stateService);
             }
         }
         return null;

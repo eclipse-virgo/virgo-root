@@ -31,6 +31,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
+import org.eclipse.virgo.kernel.shell.state.StateService;
 
 /**
  * <p>
@@ -49,12 +50,15 @@ final class StandardBundleHolder implements BundleHolder {
 
     private final QuasiBundle quasiBundle;
 
-    public StandardBundleHolder(QuasiBundle bundle, ModuleContextAccessor moduleContextAccessor) {
+    private final StateService stateService;
+
+    public StandardBundleHolder(QuasiBundle bundle, ModuleContextAccessor moduleContextAccessor, StateService stateService) {
         if(bundle == null || moduleContextAccessor == null) {
             throw new IllegalArgumentException("StandardBundleHolder must be provided with non-null QuasiBundle and ModuleContextAccessor.");
         }
         this.quasiBundle = bundle;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.stateService = stateService;
     }
 
     /** 
@@ -62,6 +66,13 @@ final class StandardBundleHolder implements BundleHolder {
      */
     public Long getBundleId() {
         return this.quasiBundle.getBundleId();
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public String getRegion(){
+        return this.stateService.getBundleRegionName(getBundleId());
     }
 
     /** 
@@ -156,7 +167,7 @@ final class StandardBundleHolder implements BundleHolder {
         List<ExportedPackageHolder> exportedPackageHolders = new ArrayList<ExportedPackageHolder>();
         List<QuasiExportPackage> exportPackages = quasiBundle.getExportPackages();
         for(QuasiExportPackage exportPackage : exportPackages) {
-            exportedPackageHolders.add(new StandardExportedPackageHolder(exportPackage, this.moduleContextAccessor));
+            exportedPackageHolders.add(new StandardExportedPackageHolder(exportPackage, this.moduleContextAccessor, this.stateService));
         }
         return exportedPackageHolders;
     }
@@ -168,7 +179,7 @@ final class StandardBundleHolder implements BundleHolder {
         List<ImportedPackageHolder> importedPackageHolders = new ArrayList<ImportedPackageHolder>();
         List<QuasiImportPackage> importPackages = quasiBundle.getImportPackages();
         for(QuasiImportPackage importPackage : importPackages) {
-            importedPackageHolders.add(new StandardImportedPackageHolder(importPackage, this.moduleContextAccessor));
+            importedPackageHolders.add(new StandardImportedPackageHolder(importPackage, this.moduleContextAccessor, this.stateService));
         }
         return importedPackageHolders;
     }
@@ -181,7 +192,7 @@ final class StandardBundleHolder implements BundleHolder {
         List<RequiredBundleHolder> requiredBundleHolders = new ArrayList<RequiredBundleHolder>();
         if(quasiRequiredBundles != null) {
             for(QuasiRequiredBundle quasiRequiredBundle : quasiRequiredBundles) {
-                requiredBundleHolders.add(new StandardRequiredBundleHolder(quasiRequiredBundle, this.moduleContextAccessor));
+                requiredBundleHolders.add(new StandardRequiredBundleHolder(quasiRequiredBundle, this.moduleContextAccessor, this.stateService));
             }
         }
         return requiredBundleHolders;
@@ -195,7 +206,7 @@ final class StandardBundleHolder implements BundleHolder {
         List<QuasiBundle> hosts = quasiBundle.getHosts();
         if(hosts != null) {
             for(QuasiBundle hostQuasiBundle : hosts) {
-                artifactHolders.add(new StandardBundleHolder(hostQuasiBundle, this.moduleContextAccessor));
+                artifactHolders.add(new StandardBundleHolder(hostQuasiBundle, this.moduleContextAccessor, this.stateService));
             }
         }
         return artifactHolders;
@@ -209,7 +220,7 @@ final class StandardBundleHolder implements BundleHolder {
         List<QuasiBundle> fragments = quasiBundle.getFragments();
         if(fragments != null) {
             for(QuasiBundle fragmentQuasiBundle : fragments) {
-                artifactHolders.add(new StandardBundleHolder(fragmentQuasiBundle, this.moduleContextAccessor));
+                artifactHolders.add(new StandardBundleHolder(fragmentQuasiBundle, this.moduleContextAccessor, this.stateService));
             }
         }
         return artifactHolders;
@@ -224,7 +235,7 @@ final class StandardBundleHolder implements BundleHolder {
             QuasiLiveBundle quasiLiveBundle = (QuasiLiveBundle) this.quasiBundle;
             List<QuasiLiveService> exportedServices = quasiLiveBundle.getExportedServices();
             for(QuasiLiveService quasiLiveService : exportedServices) {
-                serviceHolders.add(new StandardServiceHolder(quasiLiveService, this.moduleContextAccessor));
+                serviceHolders.add(new StandardServiceHolder(quasiLiveService, this.moduleContextAccessor, this.stateService));
             }
         }
         return serviceHolders;
@@ -239,7 +250,7 @@ final class StandardBundleHolder implements BundleHolder {
             QuasiLiveBundle quasiLiveBundle = (QuasiLiveBundle) this.quasiBundle;
             List<QuasiLiveService> importedServices = quasiLiveBundle.getImportedServices();
             for(QuasiLiveService quasiLiveService : importedServices) {
-                serviceHolders.add(new StandardServiceHolder(quasiLiveService, this.moduleContextAccessor));
+                serviceHolders.add(new StandardServiceHolder(quasiLiveService, this.moduleContextAccessor, this.stateService));
             }
         }
         return serviceHolders;

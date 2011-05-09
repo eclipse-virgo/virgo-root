@@ -17,7 +17,7 @@
 		<c:set var="titleString" value="Service ${service.serviceId} provided by bundle ${service.provider.bundleId} - ObjectClass ${service.formattedObjectClass}" />
 		<div dojoType="dijit.TitlePane" title="${titleString}" open="false">
 			<div class="consoleContentPaneSpace">
-				<p>Provider <a href="<c:url value="bundle.htm?id=${service.provider.bundleId}&state=${state}" />">${service.provider.bundleId}</a> ${service.provider.symbolicName}-${service.provider.version}</p>
+				<p>Provided by <a href="<c:url value="bundle.htm?id=${service.provider.bundleId}&state=${state}" />">${service.provider.bundleId}</a> ${service.provider.symbolicName}-${service.provider.version}</p>
 				<table id="service-properties">
 					<tr class="sublevel1-odd">
 						<th>Property</th>

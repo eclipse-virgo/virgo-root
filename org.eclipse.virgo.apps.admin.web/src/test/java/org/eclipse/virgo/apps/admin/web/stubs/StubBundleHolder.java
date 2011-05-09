@@ -50,6 +50,13 @@ public class StubBundleHolder implements BundleHolder {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getRegion() {
+        return "";
+    }
+    
     /** 
      * {@inheritDoc}
      */

@@ -17,6 +17,7 @@ import org.eclipse.virgo.apps.admin.core.BundleHolder;
 import org.eclipse.virgo.apps.admin.core.state.StandardRequiredBundleHolder;
 import org.eclipse.virgo.apps.admin.core.stubs.StubModuleContextAccessor;
 import org.eclipse.virgo.apps.admin.core.stubs.StubQuasiRequiredBundle;
+import org.eclipse.virgo.apps.admin.core.stubs.StubStateService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class StandardRequiredBundleHolderTests {
     
     @Before
     public void setup(){
-        this.standardRequiredBundleHolder = new StandardRequiredBundleHolder(new StubQuasiRequiredBundle("testBundle", 5, 6), new StubModuleContextAccessor());
+        this.standardRequiredBundleHolder = new StandardRequiredBundleHolder(new StubQuasiRequiredBundle("testBundle", 5, 6), new StubModuleContextAccessor(), new StubStateService());
     }
     
     /**

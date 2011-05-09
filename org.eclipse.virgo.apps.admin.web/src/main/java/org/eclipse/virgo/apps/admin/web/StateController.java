@@ -65,19 +65,19 @@ public final class StateController {
 
     private static final String REGION_NAME = "region";
 
-    private final StateHolder stateInspectorService;
+    private final StateHolder stateHolder;
 	
     private final DumpListFormatterUtil dumpListFormatterUtil;
     
 
 	/**
 	 * Simple constructor taking an {@link DumpInspectorService} instance to provide any data required to render requests
-	 * @param stateInspectorService for data to render requests
+	 * @param stateHolder for data to render requests
 	 * @param dumpListFormatterUtil for general list formatting
 	 */
     @Autowired
-	public StateController(StateHolder stateInspectorService, DumpListFormatterUtil dumpListFormatterUtil) {
-		this.stateInspectorService = stateInspectorService;
+	public StateController(StateHolder stateHolder, DumpListFormatterUtil dumpListFormatterUtil) {
+		this.stateHolder = stateHolder;
 	    this.dumpListFormatterUtil = dumpListFormatterUtil;
 	}
 
@@ -90,7 +90,7 @@ public final class StateController {
     @RequestMapping("/state/bundles.htm")
     public ModelAndView bundles(HttpServletRequest request) throws ServletRequestBindingException {
         String newState = ServletRequestUtils.getStringParameter(request, STATE_NAME);
-        List<BundleHolder> bundleHolders = this.stateInspectorService.getAllBundles(newState);
+        List<BundleHolder> bundleHolders = this.stateHolder.getAllBundles(newState);
         Collections.sort(bundleHolders);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("bundles", bundleHolders);
@@ -107,7 +107,7 @@ public final class StateController {
     @RequestMapping("/state/services.htm")
     public ModelAndView services(HttpServletRequest request) throws ServletRequestBindingException {
         String newState = ServletRequestUtils.getStringParameter(request, STATE_NAME);
-        List<ServiceHolder> serviceHolders = this.stateInspectorService.getAllServices(newState);
+        List<ServiceHolder> serviceHolders = this.stateHolder.getAllServices(newState);
         Collections.sort(serviceHolders);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("services", serviceHolders);
@@ -132,9 +132,9 @@ public final class StateController {
 		BundleHolder bundleHolder = null;
 		try {
     		if(bundleId != null){
-    		    bundleHolder = this.stateInspectorService.getBundle(newState, bundleId.longValue());
+    		    bundleHolder = this.stateHolder.getBundle(newState, bundleId.longValue());
     		} else if(name != null && version != null && region != null) {
-    		    bundleHolder = this.stateInspectorService.getBundle(newState, name, version, region);
+    		    bundleHolder = this.stateHolder.getBundle(newState, name, version, region);
     		}
 		} catch(Exception e) {
 		    LOGGER.warn(String.format("Error while retrieving bundle '%d%s'", bundleId, name), e);
@@ -162,7 +162,7 @@ public final class StateController {
         String newState = ServletRequestUtils.getStringParameter(request, STATE_NAME);
 		Map<String, Object> model = new HashMap<String, Object>();
 		if(packageName != null){
-		    PackagesCollection packages = this.stateInspectorService.getPackages(newState, packageName);
+		    PackagesCollection packages = this.stateHolder.getPackages(newState, packageName);
 		    model.put("importers", packages.getImported());
 		    model.put("exporters", packages.getExported());
     		model.put("title", String.format("Viewing package '%s'", packages.getPackageName()));
@@ -184,7 +184,7 @@ public final class StateController {
         String newState = ServletRequestUtils.getStringParameter(request, STATE_NAME);
         Map<String, Object> model = new HashMap<String, Object>();
         if(bundleId != null){
-            List<FailedResolutionHolder> failedResolutions = this.stateInspectorService.getResolverReport(newState, bundleId);
+            List<FailedResolutionHolder> failedResolutions = this.stateHolder.getResolverReport(newState, bundleId);
             if(failedResolutions.size() == 0){
                 model.put("title", String.format("No resolution faliures found for bundle '%s'", bundleId));
             } else {
@@ -210,7 +210,7 @@ public final class StateController {
         String newState = ServletRequestUtils.getStringParameter(request, STATE_NAME);
         Map<String, Object> model = new HashMap<String, Object>();
         if(term != null){        
-            List<BundleHolder> matchingBundles = this.stateInspectorService.search(newState, term);
+            List<BundleHolder> matchingBundles = this.stateHolder.search(newState, term);
             model.put("title", String.format("Search results for '%s'", term));
             model.put("bundles", matchingBundles);
         } else {
