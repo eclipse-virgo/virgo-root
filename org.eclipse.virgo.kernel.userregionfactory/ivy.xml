@@ -15,6 +15,7 @@
 
     <dependencies>
         <dependency org="org.eclipse.osgi" name='org.eclipse.osgi' rev='${org.eclipse.osgi}' conf='compile->compile' />
+        <dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='compile->compile' />
         <dependency org='org.eclipse.virgo.medic' name='org.eclipse.virgo.medic' rev='${org.eclipse.virgo.medic}' conf='aspects, compile->runtime'/>
         <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="compile->compile"/>
         <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="compile->compile"/>
