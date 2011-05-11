@@ -58,6 +58,11 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public ObjectName createAllArtifactsQuery() {
+        throw new UnsupportedOperationException();
+    }
+
     public ObjectName createArtifactVersionsQuery(String type, String name) {
         try {
             return new ObjectName("test:type=Model,artifact-type=" + type + ",name=" + name + ",*");

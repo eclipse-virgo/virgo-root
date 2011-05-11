@@ -94,7 +94,7 @@ public class JmxArtifactRepositoryListener implements ArtifactRepositoryListener
     }
 
     public void destroy() {
-        Set<ObjectName> objectNames = this.server.queryNames(this.artifactObjectNameCreator.createArtifactsQuery(), null);
+        Set<ObjectName> objectNames = this.server.queryNames(this.artifactObjectNameCreator.createAllArtifactsQuery(), null);
         for (ObjectName objectName : objectNames) {
             try {
                 this.server.unregisterMBean(objectName);

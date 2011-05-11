@@ -60,12 +60,20 @@ public interface RuntimeArtifactModelObjectNameCreator {
     ObjectName create(String type, String name, Version version, Region region);
 
     /**
-     * Creates a query {@link ObjectName} that can be used to enumerate all of the artifacts in the runtime artifact
-     * model
+     * Creates a query {@link ObjectName} that can be used to enumerate all of the user region artifacts in the runtime
+     * artifact model
      * 
      * @return An {@link ObjectName} that can be used for querying
      */
     ObjectName createArtifactsQuery();
+
+    /**
+     * Creates a query {@link ObjectName} that can be used to enumerate all of the artifacts in the runtime artifact models
+     * for both user and kernel regions
+     *
+     * @return An {@link ObjectName} that can be used for querying
+     */
+    ObjectName createAllArtifactsQuery();
 
     /**
      * Creates a query {@link ObjectName} that can be used to enumerate all of the artifacts of a given type in the

@@ -37,6 +37,8 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
 
     private static final String ARTIFACTS_FORMAT = "%s:type=Model,*";
 
+    private static final String ALL_ARTIFACTS_FORMAT = "%s:type=*Model,*";
+
     private static final String ARTIFACTS_OF_TYPE_FORMAT = "%s:type=Model,artifact-type=%s,*";
 
     private static final String ARTIFACTS_OF_TYPE_AND_NAME_FORMAT = "%s:type=Model,artifact-type=%s,name=%s,*";
@@ -103,6 +105,13 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      */
     public ObjectName createArtifactsQuery() {
         return createObjectName(String.format(ARTIFACTS_FORMAT, this.domain));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectName createAllArtifactsQuery() {
+        return createObjectName(String.format(ALL_ARTIFACTS_FORMAT, this.domain));
     }
 
     /**
