@@ -51,7 +51,7 @@ final class StandardStateHolder implements StateHolder {
 
     private static final String LIVE = "Live";
 
-    private static final Object KERNEL_REGION_NAME = "org.eclipse.virgo.region.kernel";
+    private static final Object KERNEL_REGION_NAME = "org.eclipse.equinox.region.kernel";
 
     private final StateService stateService;
 
