@@ -48,6 +48,7 @@
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="test->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.region" rev="${org.eclipse.equinox.region}" conf="test->runtime"/>
 		
 		<dependency org="org.springframework.webflow.samples" name="swf-booking-mvc" rev="${org.springframework.webflow}" conf="test->provided"/>
 		<dependency org="org.springframework.webflow.samples" name="swf-booking-faces" rev="${org.springframework.webflow}" conf="test->provided"/>
