@@ -14,9 +14,7 @@ package org.eclipse.virgo.kernel.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.model.Artifact;
-import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 import org.osgi.framework.Version;
 
 public class StubArtifactRepository implements RuntimeArtifactRepository {

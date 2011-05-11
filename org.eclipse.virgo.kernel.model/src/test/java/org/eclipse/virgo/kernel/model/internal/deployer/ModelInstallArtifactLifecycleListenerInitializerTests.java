@@ -20,22 +20,19 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Test;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.Version;
-
-
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.model.internal.deployer.ModelInstallArtifactLifecycleListenerInitializer;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.junit.Test;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.Version;
 
 public class ModelInstallArtifactLifecycleListenerInitializerTests {
 

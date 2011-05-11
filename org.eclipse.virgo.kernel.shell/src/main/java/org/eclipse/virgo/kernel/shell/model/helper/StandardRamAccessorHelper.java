@@ -185,7 +185,7 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
      * {@inheritDoc}
      */
     public ArtifactAccessor getArtifact(String type, String name, String version) {
-        String kernelRegion = "org.eclipse.virgo.region.kernel";
+        String kernelRegion = "org.eclipse.equinox.region.kernel";
         // should be a parameter, but note there is no region
         // in the user region mbeans (for backward compatibility)
         ArtifactAccessorPointer pointer = null;
@@ -209,7 +209,7 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
       * {@inheritDoc}
       */
     public ArtifactAccessor getArtifact(String type, String name, String version, String region) {
-        String kernelRegion = "org.eclipse.virgo.region.kernel";
+        String kernelRegion = "org.eclipse.equinox.region.kernel";
         // should be a parameter, but note there is no region
         // in the user region mbeans (for backward compatibility)
 

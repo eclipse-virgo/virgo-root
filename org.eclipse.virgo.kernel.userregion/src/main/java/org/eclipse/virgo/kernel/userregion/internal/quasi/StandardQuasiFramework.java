@@ -24,6 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
+import org.eclipse.equinox.region.RegionFilter;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
@@ -38,10 +41,6 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesExcept
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.hook.RegionResolverHookFactory;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
 import org.eclipse.virgo.repository.Repository;
@@ -132,7 +131,7 @@ final class StandardQuasiFramework implements QuasiFramework {
          * factory equivalent to the live hook factory. If the region digraph is disconnected (a reconstituted copy of a
          * live region digraph), this will produce a hook factory independent of the live hook factory.
          */
-        ResolverHookFactory resolverHookFactory = new RegionResolverHookFactory(this.regionDigraph);
+        ResolverHookFactory resolverHookFactory = this.regionDigraph.getResolverHookFactory();
         this.state.setResolverHookFactory(resolverHookFactory);
     }
 

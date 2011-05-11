@@ -11,18 +11,17 @@
 
 package org.eclipse.virgo.kernel.model.internal.bundle;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 
 /**
  * Implementation of {@link Artifact} that delegates to an OSGi native bundle

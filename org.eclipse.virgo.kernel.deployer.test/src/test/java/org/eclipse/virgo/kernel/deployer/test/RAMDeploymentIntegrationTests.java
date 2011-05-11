@@ -15,19 +15,18 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
+import org.eclipse.virgo.kernel.model.Artifact;
+import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
-import org.eclipse.virgo.kernel.model.Artifact;
-import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 /**
  * Test the interactions between the Runtime Artifact Model (RAM) and the deployer.

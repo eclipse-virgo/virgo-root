@@ -27,8 +27,8 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.InstallArtifactCommandFormatter;
 import org.eclipse.virgo.kernel.shell.internal.util.ArtifactRetriever;

@@ -14,21 +14,17 @@ package org.eclipse.virgo.kernel.model.internal.deployer;
 import static org.easymock.EasyMock.createMock;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
+import org.eclipse.equinox.region.RegionDigraph;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.model.internal.deployer.ModelInstallArtifactLifecycleListener;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-
-
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.junit.Test;
 
 public class ModelInstallArtifactLifecycleListenerTests {
 

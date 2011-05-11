@@ -41,5 +41,6 @@
 	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.stubs"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.context/3.0.0.RELEASE/org.springframework.context-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.context/3.0.0.RELEASE/org.springframework.context-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

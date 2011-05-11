@@ -21,7 +21,7 @@ Import-Package: javax.management;version="0",org.eclipse.virgo.kernel.
  core;version="[3.0.0,4)",org.eclipse.virgo.kernel.deployer.core;versi
  on="[3.0.0,4)",org.eclipse.virgo.kernel.osgi.framework;version="[3.0.
  0,4)",org.eclipse.virgo.kernel.osgi.quasi;version="[3.0.0,4)",org.ecl
- ipse.virgo.kernel.osgi.region;version="[3.0.0,4)",org.eclipse.virgo.k
+ ipse.equinox.region;version="1",org.eclipse.virgo.k
  ernel.osgicommand.helper;version="[3.0.0,4)",org.eclipse.virgo.util.i
  o;version="[3.0.0,4)",org.eclipse.virgo.util.osgi.manifest;version="[
  3.0.0,4)",org.junit;version="[4.7.0,5)",org.junit.runner;version="[4.

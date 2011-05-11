@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;

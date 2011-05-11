@@ -20,16 +20,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
+import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
+import org.eclipse.equinox.region.RegionDigraphVisitor;
+import org.eclipse.equinox.region.RegionFilter;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
-import org.junit.Test;
 
 
 public class NotifyingArtifactRepositoryTests {
@@ -143,6 +144,11 @@ public class NotifyingArtifactRepositoryTests {
         }
 
         public void visitSubgraph(RegionDigraphVisitor visitor) {
+        }
+
+        @Override
+        public RegionDigraph getRegionDigraph() {
+            return null;
         }
         
     }

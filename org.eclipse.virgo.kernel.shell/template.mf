@@ -21,6 +21,7 @@ Import-Template:
  org.osgi.util.*;version="0",
  org.osgi.service.cm.*;version="0",
  org.osgi.service.event.*;version="0",
+ org.eclipse.equinox.region.*;version="${org.eclipse.equinox.region:[=.=.=, =.+1)}",
  javax.management.*;version="0"
 Excluded-Imports: 
  org.eclipse.virgo.kernel.shell.*,

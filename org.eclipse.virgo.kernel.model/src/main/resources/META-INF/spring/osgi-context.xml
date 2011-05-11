@@ -41,6 +41,6 @@
 	
 	<reference id="applicationDeployer" interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer"/>
 	
-	<reference id="regionDigraph" interface="org.eclipse.virgo.kernel.osgi.region.RegionDigraph" />
+	<reference id="regionDigraph" interface="org.eclipse.equinox.region.RegionDigraph" />
 
 </beans:beans>

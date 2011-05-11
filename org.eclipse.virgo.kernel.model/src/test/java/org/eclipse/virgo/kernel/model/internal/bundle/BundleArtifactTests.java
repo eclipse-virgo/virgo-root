@@ -18,21 +18,18 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.model.internal.bundle.BundleArtifact;
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 public class BundleArtifactTests {
 

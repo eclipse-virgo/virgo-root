@@ -16,10 +16,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;

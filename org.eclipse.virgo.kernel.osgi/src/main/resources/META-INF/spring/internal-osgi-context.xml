@@ -21,9 +21,6 @@
 	<osgi:reference id="repository"
 		interface="org.eclipse.virgo.repository.Repository" />
 
-	<osgi:reference id="compositeBundleFactory"
-		interface="org.osgi.service.framework.CompositeBundleFactory" />
-
 	<osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin" />
 
 	<osgi:reference id="configAdmin"

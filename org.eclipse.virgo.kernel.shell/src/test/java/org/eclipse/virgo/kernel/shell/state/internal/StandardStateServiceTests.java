@@ -19,10 +19,10 @@ import java.io.File;
 import java.util.List;
 
 import org.easymock.EasyMock;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFrameworkFactory;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
@@ -72,7 +72,7 @@ public class StandardStateServiceTests {
         this.mockKernelRegion = EasyMock.createMock(Region.class);
         this.mockRegionDigraph = EasyMock.createMock(RegionDigraph.class);
         EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.anyLong())).andReturn(this.mockUserRegion).anyTimes();
-        EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.eq("org.eclipse.virgo.region.kernel"))).andReturn(this.mockKernelRegion).anyTimes();
+        EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.eq("org.eclipse.equinox.region.kernel"))).andReturn(this.mockKernelRegion).anyTimes();
         EasyMock.replay(this.mockUserRegion, this.mockKernelRegion, this.mockRegionDigraph);
         this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext, this.mockRegionDigraph);
     }

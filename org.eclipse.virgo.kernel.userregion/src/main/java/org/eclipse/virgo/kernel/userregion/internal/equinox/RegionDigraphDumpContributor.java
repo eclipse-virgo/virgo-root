@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.dump.Dump;
 import org.eclipse.virgo.medic.dump.DumpContributionFailedException;
