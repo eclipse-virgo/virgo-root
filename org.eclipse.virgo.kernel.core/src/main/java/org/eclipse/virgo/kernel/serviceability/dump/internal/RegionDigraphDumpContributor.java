@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal.equinox;
+package org.eclipse.virgo.kernel.serviceability.dump.internal;
 
 import java.io.File;
 import java.io.FileOutputStream;

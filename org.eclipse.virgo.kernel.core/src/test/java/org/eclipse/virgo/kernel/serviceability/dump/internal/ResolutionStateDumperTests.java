@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal.equinox;
+package org.eclipse.virgo.kernel.serviceability.dump.internal;
 
 import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertArrayEquals;
@@ -24,13 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.osgi.service.resolver.State;
-import org.junit.Test;
-
-import org.eclipse.virgo.kernel.userregion.internal.equinox.ResolutionStateDumper;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.StateWriter;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.SystemStateAccessor;
 import org.eclipse.virgo.util.io.PathReference;
 import org.eclipse.virgo.util.io.ZipUtils;
+import org.junit.Test;
 
 /**
  */

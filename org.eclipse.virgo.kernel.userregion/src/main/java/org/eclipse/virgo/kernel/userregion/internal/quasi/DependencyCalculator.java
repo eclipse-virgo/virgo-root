@@ -43,7 +43,6 @@ import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.ResolutionDumpContributor;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
@@ -66,6 +65,9 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class DependencyCalculator {
+
+    // The following literal must match ResolutionDumpContributor.RESOLUTION_STATE_KEY from kernel core.
+    private static final String RESOLUTION_STATE_KEY = "resolution.state";
 
     private static final String REGION_LOCATION_DELIMITER = "@";
 
@@ -392,7 +394,7 @@ public final class DependencyCalculator {
 
     private void generateDump(State state) {
         Map<String, Object> context = new HashMap<String, Object>();
-        context.put(ResolutionDumpContributor.RESOLUTION_STATE_KEY, state);
+        context.put(RESOLUTION_STATE_KEY, state);
         this.dumpGenerator.generateDump("resolutionFailure", context);
     }
 

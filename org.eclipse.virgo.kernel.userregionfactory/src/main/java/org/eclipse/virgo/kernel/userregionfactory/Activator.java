@@ -344,11 +344,6 @@ public final class Activator implements BundleActivator {
                 try {
                     bundle.start();
                 } catch (BundleException e) {
-                    // Give the resolution state dump contributor a chance to be registered.
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException _) {
-                    }
                     // Take state dump for diagnosis of resolution failures
                     this.dumpGenerator.generateDump("User region bundle failed to start", e);
                     throw new BundleException("Failed to start bundle " + bundle.getSymbolicName() + " " + bundle.getVersion(), e);

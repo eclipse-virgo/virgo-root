@@ -22,6 +22,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.EventAdmin;
 
 
+import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.virgo.kernel.StubConfigurationAdmin;
 import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.core.internal.CoreBundleActivator;
@@ -53,11 +54,13 @@ public class CoreBundleActivatorTests {
         StubBundleContext bundleContext = new StubBundleContext();
         StubComponentContext componentContext = new StubComponentContext(bundleContext);
         DumpGenerator dumpGenerator = createNiceMock(DumpGenerator.class);
+        PlatformAdmin platformAdmin = createNiceMock(PlatformAdmin.class);
         bundleContext.addFilter(StartupTracker.APPLICATION_CONTEXT_FILTER, FrameworkUtil.createFilter(StartupTracker.APPLICATION_CONTEXT_FILTER));
-        bundleContext.registerService(ConfigurationAdmin.class.getName(), new StubConfigurationAdmin(), null);
-        bundleContext.registerService(EventLogger.class.getName(), new MockEventLogger(), null);
-        bundleContext.registerService(EventAdmin.class.getName(), new StubEventAdmin(), null);
-        bundleContext.registerService(DumpGenerator.class.getName(), dumpGenerator, null);
+        bundleContext.registerService(ConfigurationAdmin.class, new StubConfigurationAdmin(), null);
+        bundleContext.registerService(EventLogger.class, new MockEventLogger(), null);
+        bundleContext.registerService(EventAdmin.class, new StubEventAdmin(), null);
+        bundleContext.registerService(DumpGenerator.class, dumpGenerator, null);
+        bundleContext.registerService(PlatformAdmin.class, platformAdmin, null);
         bundleContext.addProperty("org.eclipse.virgo.kernel.domain", "test");
         bundleContext.addProperty("org.eclipse.virgo.kernel.home", new File(".").getAbsolutePath());
 

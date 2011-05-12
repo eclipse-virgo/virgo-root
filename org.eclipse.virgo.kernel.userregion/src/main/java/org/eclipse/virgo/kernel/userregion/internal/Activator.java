@@ -37,15 +37,12 @@ import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.kernel.userregion.internal.dump.StandardDumpExtractor;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxHookRegistrar;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.RegionDigraphDumpContributor;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.ResolutionDumpContributor;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StandardPackageAdminUtil;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
-import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
 import org.eclipse.virgo.osgi.extensions.equinox.hooks.MetaInfResourceClassLoaderDelegateHook;
@@ -110,12 +107,6 @@ public class Activator implements BundleActivator {
         OsgiFramework osgiFramework = createOsgiFramework(context, packageAdmin, bundleTransformerHandler);
         this.registrationTracker.track(context.registerService(OsgiFramework.class.getName(), osgiFramework, null));
 
-        DumpContributor resolutionDumpContributor = createResolutionDumpContributor(context);
-        this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), resolutionDumpContributor, null));
-        
-        DumpContributor regionDigraphDumpContributor = createRegionDigraphDumpContributor(context);
-        this.registrationTracker.track(context.registerService(DumpContributor.class.getName(), regionDigraphDumpContributor, null));
-
         DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
         QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph, dumpExtractor);
         this.registrationTracker.track(context.registerService(QuasiFrameworkFactory.class.getName(), quasiFrameworkFactory, null));
@@ -144,14 +135,6 @@ public class Activator implements BundleActivator {
     private OsgiFramework createOsgiFramework(BundleContext context, PackageAdmin packageAdmin,
         TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
         return new EquinoxOsgiFramework(context, packageAdmin, bundleTransformerHandler);
-    }
-
-    private DumpContributor createResolutionDumpContributor(BundleContext bundleContext) {
-        return new ResolutionDumpContributor(bundleContext);
-    }
-
-    private DumpContributor createRegionDigraphDumpContributor(BundleContext bundleContext) {
-        return new RegionDigraphDumpContributor(bundleContext);
     }
     
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,

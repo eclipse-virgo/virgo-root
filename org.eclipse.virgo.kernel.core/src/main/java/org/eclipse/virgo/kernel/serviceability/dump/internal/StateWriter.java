@@ -9,26 +9,32 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal.equinox;
+package org.eclipse.virgo.kernel.serviceability.dump.internal;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.osgi.service.resolver.State;
 
 
 /**
- * A <code>SystemStateAccessor</code> provides access to the live system {@link State}.
+ * A <code>StateWriter</code> is used to write a {@link State} to disk.
  * 
  * <p />
  *
  * <strong>Concurrent Semantics</strong><br />
- *
- * Thread-safe.
- *
+ * Implementations must be thread-safe.
+ * 
  */
-interface SystemStateAccessor {
+public interface StateWriter {
     
     /**
-     * Returns the {@link State} for the system
-     * @return the system <code>State</code>.
+     * Writes the given <code>State</code> to the given <code>output</code> location.
+     * 
+     * @param state The <code>State</code> to write
+     * @param outputDir The directory to which it should be written.
+     * 
+     * @throws IOException if a failure occurs when writing the state
      */
-    State getSystemState();
+    void writeState(State state, File outputDir) throws IOException;
 }
