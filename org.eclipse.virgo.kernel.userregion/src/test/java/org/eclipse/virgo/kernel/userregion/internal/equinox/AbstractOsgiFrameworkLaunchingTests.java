@@ -21,15 +21,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.equinox.internal.region.StandardRegionDigraph;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.osgi.launch.Equinox;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.internal.StandardRegionDigraph;
 import org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean;
 import org.eclipse.virgo.kernel.services.work.WorkArea;
 import org.eclipse.virgo.kernel.userregion.internal.DumpExtractor;

@@ -29,7 +29,7 @@
 
     <osgi:service ref="modelAccessorHelper" interface="org.eclipse.virgo.kernel.shell.model.helper.RamAccessorHelper" />
     
-    <osgi:reference id="regionDigraph" interface="org.eclipse.virgo.kernel.osgi.region.RegionDigraph" />
+    <osgi:reference id="regionDigraph" interface="org.eclipse.equinox.region.RegionDigraph" />
     
 <!-- SERVICES FOR THE TYPE CONVERTERS -->
 

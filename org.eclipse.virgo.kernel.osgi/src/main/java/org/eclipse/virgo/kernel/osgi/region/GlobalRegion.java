@@ -9,17 +9,17 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.osgi.region.internal;
+package org.eclipse.virgo.kernel.osgi.region;
 
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
+import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
+import org.eclipse.equinox.region.RegionDigraphVisitor;
+import org.eclipse.equinox.region.RegionFilter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -99,6 +99,14 @@ final class GlobalRegion implements Region {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RegionDigraph getRegionDigraph(){
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */

@@ -14,11 +14,10 @@ package org.eclipse.virgo.kernel.shell.internal.commands;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.osgi.framework.Version;
-
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.osgi.framework.Version;
 
 public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeArtifactModelObjectNameCreator {
 
@@ -56,6 +55,11 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
     }
 
     public ObjectName createArtifactsQuery() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ObjectName createAllArtifactsQuery() {
         throw new UnsupportedOperationException();
     }
 

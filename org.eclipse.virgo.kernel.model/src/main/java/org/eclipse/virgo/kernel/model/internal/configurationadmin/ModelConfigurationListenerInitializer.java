@@ -16,6 +16,10 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
@@ -23,12 +27,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 /**
  * An initializer responsible for registering a {@link ModelConfigurationListener} and enumerating any existing

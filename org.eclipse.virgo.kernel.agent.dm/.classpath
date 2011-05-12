@@ -22,7 +22,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110504073214/org.eclipse.virgo.medic-3.0.0.D-20110504073214.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110512073827/org.eclipse.virgo.medic-3.0.0.D-20110512073827.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
@@ -42,5 +42,6 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-3.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/3.0.0.RELEASE/org.springframework.beans-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.event/1.2.100.v20110110/org.eclipse.equinox.event-1.2.100.v20110110.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

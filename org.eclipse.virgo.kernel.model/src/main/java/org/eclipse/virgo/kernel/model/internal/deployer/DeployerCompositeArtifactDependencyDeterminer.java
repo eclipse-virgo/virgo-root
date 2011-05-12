@@ -20,7 +20,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.Tree;

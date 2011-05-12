@@ -49,10 +49,6 @@
 	<osgi:reference id="importExpander"
 		interface="org.eclipse.virgo.kernel.osgi.framework.ImportExpander" />
 
-	<osgi:reference id="region"
-		interface="org.eclipse.virgo.kernel.osgi.region.Region"
-		filter="(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.user)" />
-
 	<!-- services -->
 	<osgi:service ref="moduleContextEventPublisher"
 		interface="org.eclipse.virgo.kernel.module.ModuleContextEventPublisher" />

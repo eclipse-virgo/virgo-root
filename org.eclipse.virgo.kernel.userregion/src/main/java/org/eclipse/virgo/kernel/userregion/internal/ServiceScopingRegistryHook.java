@@ -28,6 +28,7 @@ import org.osgi.framework.hooks.service.FindHook;
  * Threadsafe.
  * 
  */
+@SuppressWarnings("deprecation")
 final class ServiceScopingRegistryHook implements FindHook, EventHook {
 
     private final ServiceScopingStrategy serviceScopingStrategy;
@@ -37,11 +38,11 @@ final class ServiceScopingRegistryHook implements FindHook, EventHook {
     }
 
     @SuppressWarnings("unchecked")
-    public void find(BundleContext context, String name, String filter, boolean allServices, Collection references) {
+    public void find(BundleContext context, String name, String filter, boolean allServices, @SuppressWarnings("rawtypes") Collection references) {
         this.serviceScopingStrategy.scopeReferences(references, context, name, filter);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void event(ServiceEvent event, Collection contexts) {
         ServiceReference ref = event.getServiceReference();
         for (Iterator iterator = contexts.iterator(); iterator.hasNext();) {

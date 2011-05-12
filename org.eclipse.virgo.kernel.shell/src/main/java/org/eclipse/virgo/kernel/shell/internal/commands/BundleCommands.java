@@ -14,12 +14,12 @@ package org.eclipse.virgo.kernel.shell.internal.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.BundleInstallArtifactCommandFormatter;
 import org.eclipse.virgo.kernel.shell.state.StateService;

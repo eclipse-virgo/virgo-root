@@ -14,9 +14,9 @@ package org.eclipse.virgo.kernel.model.management.internal;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Version;
 
@@ -38,6 +38,8 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     private static final String GLOBAL_REGION_NAME = "global";
 
     private static final String ARTIFACTS_FORMAT = "%s:type=Model,*";
+
+    private static final String ALL_ARTIFACTS_FORMAT = "%s:type=*Model,*";
 
     private static final String ARTIFACTS_OF_TYPE_FORMAT = "%s:type=Model,artifact-type=%s,*";
 
@@ -104,6 +106,13 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      */
     public ObjectName createArtifactsQuery() {
         return createObjectName(String.format(ARTIFACTS_FORMAT, this.domain));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectName createAllArtifactsQuery() {
+        return createObjectName(String.format(ALL_ARTIFACTS_FORMAT, this.domain));
     }
 
     /**

@@ -30,7 +30,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

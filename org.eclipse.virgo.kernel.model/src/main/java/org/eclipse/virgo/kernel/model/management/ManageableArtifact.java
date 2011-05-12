@@ -16,7 +16,7 @@ import java.util.Map;
 import javax.management.MXBean;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 import org.osgi.framework.Version;
 
 /**

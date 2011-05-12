@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 import org.osgi.framework.Version;
 
 /**

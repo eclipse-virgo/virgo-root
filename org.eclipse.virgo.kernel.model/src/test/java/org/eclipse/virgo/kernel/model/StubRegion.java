@@ -16,10 +16,11 @@ package org.eclipse.virgo.kernel.model;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraphVisitor;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph.FilteredRegion;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
+import org.eclipse.equinox.region.RegionDigraphVisitor;
+import org.eclipse.equinox.region.RegionFilter;
+import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
@@ -112,6 +113,14 @@ public class StubRegion implements Region {
      */
     @Override
     public void connectRegion(Region headRegion, RegionFilter filter) throws BundleException {
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public RegionDigraph getRegionDigraph() {
+        return null;
     }
 
     /** 

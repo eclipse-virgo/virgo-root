@@ -19,10 +19,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
 import org.eclipse.virgo.kernel.model.StubRegion;
-import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.junit.Test;
 import org.osgi.framework.Version;
 

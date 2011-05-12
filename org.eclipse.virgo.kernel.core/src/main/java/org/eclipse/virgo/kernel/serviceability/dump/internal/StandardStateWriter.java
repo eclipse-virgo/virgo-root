@@ -9,14 +9,17 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal.equinox;
+package org.eclipse.virgo.kernel.serviceability.dump.internal;
 
-import org.eclipse.osgi.internal.baseadaptor.StateManager;
-import org.eclipse.osgi.service.resolver.PlatformAdmin;
+import java.io.File;
+import java.io.IOException;
+
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.osgi.service.resolver.StateObjectFactory;
+
 
 /**
- * Standard implementation of {@link SystemStateAccessor}.
+ * Standard implementation of {@link StateWriter}.
  * <p />
  *
  * <strong>Concurrent Semantics</strong><br />
@@ -24,18 +27,18 @@ import org.eclipse.osgi.service.resolver.State;
  * Thread-safe.
  *
  */
-final class StandardSystemStateAccessor implements SystemStateAccessor {
+class StandardStateWriter implements StateWriter {
     
-    private final PlatformAdmin platformAdmin;
-            
-    StandardSystemStateAccessor(PlatformAdmin platformAdmin) {
-        this.platformAdmin = platformAdmin;
+    private final StateObjectFactory factory;
+    
+    StandardStateWriter(StateObjectFactory factory) {
+        this.factory = factory;
     }
 
     /** 
-     * {@inheritDoc}
+     * {@inheritDoc} 
      */
-    public State getSystemState() {
-        return ((StateManager)this.platformAdmin).getSystemState();
+    public void writeState(State state, File output) throws IOException {
+        this.factory.writeState(state, output);
     }
 }

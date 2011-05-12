@@ -31,10 +31,13 @@ import org.eclipse.virgo.kernel.config.internal.KernelConfiguration;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.core.internal.blueprint.ApplicationContextDependencyMonitor;
+import org.eclipse.virgo.kernel.serviceability.dump.internal.RegionDigraphDumpContributor;
+import org.eclipse.virgo.kernel.serviceability.dump.internal.ResolutionDumpContributor;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.kernel.shim.scope.internal.StandardScopeFactory;
 import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
 import org.eclipse.virgo.kernel.shim.serviceability.internal.Slf4jTracingService;
+import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
@@ -96,12 +99,19 @@ public class CoreBundleActivator {
         
         DumpGenerator dumpGenerator = getRequiredService(context, DumpGenerator.class);
         
+        createAndRegisterStateDumpContributors(context);
+        
         this.startupTracker = new StartupTracker(context, configuration, configuration.getStartupWaitLimit(), bundleStartTracker, shutdown, dumpGenerator);
         this.startupTracker.start();
         
         initShimServices(context, eventLogger);
     }
     
+    private void createAndRegisterStateDumpContributors(BundleContext context) {
+        this.tracker.track(context.registerService(DumpContributor.class, new ResolutionDumpContributor(context), null));
+        this.tracker.track(context.registerService(DumpContributor.class, new RegionDigraphDumpContributor(context), null));
+    }
+
     private ApplicationContextDependencyMonitor createAndRegisterApplicationContextDependencyMonitor(BundleContext context, EventLogger eventLogger) {
         ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(1, new ThreadFactory() {            
             private AtomicLong threadCount = new AtomicLong(1);

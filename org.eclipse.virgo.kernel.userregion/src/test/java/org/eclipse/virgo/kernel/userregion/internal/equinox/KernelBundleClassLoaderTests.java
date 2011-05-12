@@ -43,7 +43,6 @@ public class KernelBundleClassLoaderTests extends AbstractOsgiFrameworkLaunching
 	 * @throws UnableToSatisfyDependenciesException 
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetResourcesStringFromBundle() throws Exception {
         Enumeration<URL> resources = this.dependant.getResources("/META-INF/GET_ME");

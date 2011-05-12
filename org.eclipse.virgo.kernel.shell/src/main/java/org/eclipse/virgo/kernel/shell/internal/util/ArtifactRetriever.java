@@ -18,11 +18,10 @@ import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.osgi.framework.Version;
-
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.osgi.framework.Version;
 
 /**
  * <p>

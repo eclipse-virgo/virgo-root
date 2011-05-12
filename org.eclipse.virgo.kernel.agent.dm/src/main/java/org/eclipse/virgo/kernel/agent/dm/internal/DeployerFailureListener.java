@@ -11,8 +11,8 @@
 
 package org.eclipse.virgo.kernel.agent.dm.internal;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

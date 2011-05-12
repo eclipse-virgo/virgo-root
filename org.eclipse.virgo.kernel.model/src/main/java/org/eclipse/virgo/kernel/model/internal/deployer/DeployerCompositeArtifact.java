@@ -16,7 +16,7 @@ import org.osgi.framework.BundleContext;
 
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.model.CompositeArtifact;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 
 /**
  * Implementation of {@link CompositeArtifact} that delegates to a Kernel {@link PlanInstallArtifact}

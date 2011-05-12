@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
 
 /**

@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal.equinox;
+package org.eclipse.virgo.kernel.serviceability.dump.internal;
 
 import java.io.File;
 
@@ -17,7 +17,6 @@ import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 import org.osgi.framework.BundleContext;
 
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.medic.dump.Dump;
 import org.eclipse.virgo.medic.dump.DumpContributionFailedException;
 import org.eclipse.virgo.medic.dump.DumpContributor;
@@ -33,12 +32,14 @@ import org.eclipse.virgo.medic.dump.DumpContributor;
  */
 public class ResolutionDumpContributor implements DumpContributor {
 
+    // The following literal must match DependencyCalculator.RESOLUTION_STATE_KEY in the kernel userregion bundle.
     public final static String RESOLUTION_STATE_KEY = "resolution.state";
 
     private final ResolutionStateDumper resolutionStateDumper;
 
     public ResolutionDumpContributor(BundleContext bundleContext) {
-        PlatformAdmin platformAdmin = OsgiFrameworkUtils.getService(bundleContext, PlatformAdmin.class).getService();
+        PlatformAdmin platformAdmin = bundleContext.getService(bundleContext.getServiceReference(PlatformAdmin.class));
+            //OsgiFrameworkUtils.getService(bundleContext, PlatformAdmin.class).getService();
         this.resolutionStateDumper = new ResolutionStateDumper(new StandardSystemStateAccessor(platformAdmin), new StandardStateWriter(platformAdmin.getFactory()));
     }
 

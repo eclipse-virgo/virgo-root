@@ -13,12 +13,11 @@ package org.eclipse.virgo.kernel.model.internal.deployer;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.osgi.framework.BundleContext;
-
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
-import org.eclipse.virgo.kernel.osgi.region.Region;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.osgi.framework.BundleContext;
 
 final class DeployerBundleArtifact extends DeployerArtifact implements BundleArtifact {
 

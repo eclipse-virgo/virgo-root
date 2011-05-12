@@ -28,10 +28,10 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-import org.eclipse.virgo.kernel.osgi.region.Region;
-import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilter;
-import org.eclipse.virgo.kernel.osgi.region.RegionFilterBuilder;
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
+import org.eclipse.equinox.region.RegionFilter;
+import org.eclipse.equinox.region.RegionFilterBuilder;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
@@ -65,6 +65,8 @@ import org.osgi.service.event.EventAdmin;
  * 
  */
 public final class Activator implements BundleActivator {
+
+    private static final String KERNEL_REGION_NAME = "org.eclipse.equinox.region.kernel";
 
     private static final String CLASS_LIST_SEPARATOR = ",";
 
@@ -189,7 +191,7 @@ public final class Activator implements BundleActivator {
     }
 
     private Region getKernelRegion(RegionDigraph regionDigraph) {
-        return regionDigraph.iterator().next();
+        return regionDigraph.getRegion(KERNEL_REGION_NAME);
     }
 
     private RegionFilter createKernelFilter(RegionDigraph digraph, BundleContext systemBundleContext, EventLogger eventLogger)
@@ -342,11 +344,6 @@ public final class Activator implements BundleActivator {
                 try {
                     bundle.start();
                 } catch (BundleException e) {
-                    // Give the resolution state dump contributor a chance to be registered.
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException _) {
-                    }
                     // Take state dump for diagnosis of resolution failures
                     this.dumpGenerator.generateDump("User region bundle failed to start", e);
                     throw new BundleException("Failed to start bundle " + bundle.getSymbolicName() + " " + bundle.getVersion(), e);
