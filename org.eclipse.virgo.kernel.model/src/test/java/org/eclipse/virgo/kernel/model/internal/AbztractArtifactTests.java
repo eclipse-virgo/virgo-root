@@ -30,8 +30,10 @@ import org.osgi.framework.Version;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
@@ -42,36 +44,43 @@ public class AbztractArtifactTests {
 
     private final AbstractArtifact artifact;
 
+    private final StubRegion region = new StubRegion("test-region");
+
     {
         bundleContext = new StubBundleContext();
         String filterString = String.format("(&(objectClass=%s)(artifactType=test-type))", DependencyDeterminer.class.getCanonicalName());
         bundleContext.addFilter(filterString, new TrueFilter(filterString));
-        artifact = new StubArtifact(bundleContext, "test-type", "test-name", Version.emptyVersion);
+        artifact = new StubArtifact(bundleContext, "test-type", "test-name", Version.emptyVersion, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new StubArtifact(null, "type", "name", Version.emptyVersion);
+        new StubArtifact(null, "type", "name", Version.emptyVersion, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullType() {
-        new StubArtifact(new StubBundleContext(), null, "name", Version.emptyVersion);
+        new StubArtifact(new StubBundleContext(), null, "name", Version.emptyVersion, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullName() {
-        new StubArtifact(new StubBundleContext(), "type", null, Version.emptyVersion);
+        new StubArtifact(new StubBundleContext(), "type", null, Version.emptyVersion, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullVersion() {
-        new StubArtifact(new StubBundleContext(), "type", "name", null);
+        new StubArtifact(new StubBundleContext(), "type", "name", null, region);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegion() {
+        new StubArtifact(new StubBundleContext(), "type", "name", Version.emptyVersion, null);
     }
 
     @Test(expected = RuntimeException.class)
     public void badFilter() {
-        new StubArtifact(new StubBundleContext(), "type", "name", Version.emptyVersion);
+        new StubArtifact(new StubBundleContext(), "type", "name", Version.emptyVersion, region);
     }
 
     @Test
@@ -87,6 +96,11 @@ public class AbztractArtifactTests {
     @Test
     public void getVersion() {
         assertEquals(Version.emptyVersion, artifact.getVersion());
+    }
+
+    @Test
+    public void getRegion() {
+        assertEquals("test-region", artifact.getRegion().getName());
     }
 
     @SuppressWarnings("unchecked")
@@ -121,11 +135,11 @@ public class AbztractArtifactTests {
     private static class StubArtifact extends AbstractArtifact {
 
         public StubArtifact(BundleContext bundleContext) {
-            super(bundleContext, "test-type", "test-name", Version.emptyVersion, null);
+            super(bundleContext, "test-type", "test-name", Version.emptyVersion, new StubRegion("test-region"));
         }
 
-        public StubArtifact(BundleContext bundleContext, String type, String name, Version version) {
-            super(bundleContext, type, name, version, null);
+        public StubArtifact(BundleContext bundleContext, String type, String name, Version version, Region region) {
+            super(bundleContext, type, name, version, region);
         }
 
         public ArtifactState getState() {

@@ -16,6 +16,7 @@
 		<constructor-arg ref="artifactRepository"/>
 		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="configurationAdmin"/>
+		<constructor-arg ref="globalRegion"/>
 	</bean>
 
 	<bean class="org.eclipse.virgo.kernel.model.internal.deployer.ModelInstallArtifactLifecycleListenerInitializer">
@@ -23,6 +24,7 @@
 		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="runtimeArtifactModel"/>
 		<constructor-arg ref="regionDigraph"/>
+		<constructor-arg ref="globalRegion"/>
 	</bean>
 
 	<bean id="bundleDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.bundle.BundleDependencyDeterminer">
@@ -31,9 +33,10 @@
 		<constructor-arg ref="regionDigraph"/>
 	</bean>
 
-	<bean id="deployerCompositeArtifactDependencyDeterminer"
-			class="org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifactDependencyDeterminer">
+	<bean id="deployerCompositeArtifactDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifactDependencyDeterminer">
 		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="userRegion"/>
+		<constructor-arg ref="globalRegion"/>
 	</bean>
 
 	<bean id="artifactRepository" class="org.eclipse.virgo.kernel.model.internal.NotifyingRuntimeArtifactRepository">

@@ -35,16 +35,8 @@ public class StubArtifactRepository implements RuntimeArtifactRepository {
 
     public Artifact getArtifact(String type, String name, Version version, Region region) {
         for (Artifact artifact : this.artifacts) {
-            if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)) {
-                if(artifact.getRegion() == null){
-                    if(region == null){
-                        return artifact;
-                    }
-                }else{
-                    if(artifact.getRegion().equals(region)){
-                        return artifact;
-                    }
-                }
+            if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version) && artifact.getRegion().equals(region)) {
+                return artifact;
             }
         }
         return null;

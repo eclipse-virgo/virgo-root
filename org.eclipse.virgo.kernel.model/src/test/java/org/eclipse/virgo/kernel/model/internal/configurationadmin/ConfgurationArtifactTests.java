@@ -21,6 +21,7 @@ import org.osgi.framework.InvalidSyntaxException;
 
 
 import org.eclipse.virgo.kernel.model.ArtifactState;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.configurationadmin.ConfigurationArtifact;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -38,22 +39,29 @@ public class ConfgurationArtifactTests {
     }
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
+    
+    private final StubRegion region = new StubRegion("test-region");
 
-    private final ConfigurationArtifact artifact = new ConfigurationArtifact(bundleContext, configurationAdmin, "test-pid");
+    private final ConfigurationArtifact artifact = new ConfigurationArtifact(bundleContext, configurationAdmin, "test-pid", region);
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ConfigurationArtifact(null, configurationAdmin, "test-pid");
+        new ConfigurationArtifact(null, configurationAdmin, "test-pid", region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullConfigurationAdmin() {
-        new ConfigurationArtifact(bundleContext, null, "test-pid");
+        new ConfigurationArtifact(bundleContext, null, "test-pid", region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ConfigurationArtifact(bundleContext, configurationAdmin, null);
+        new ConfigurationArtifact(bundleContext, configurationAdmin, null, region);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegion() {
+        new ConfigurationArtifact(bundleContext, configurationAdmin, "test-pid", null);
     }
 
     @Test

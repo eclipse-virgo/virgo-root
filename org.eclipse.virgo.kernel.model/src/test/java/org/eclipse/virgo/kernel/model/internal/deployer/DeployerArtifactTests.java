@@ -23,6 +23,7 @@ import org.osgi.framework.Version;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.ArtifactState;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerArtifact;
 
@@ -42,16 +43,23 @@ public class DeployerArtifactTests {
         bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final DeployerArtifact artifact = new DeployerArtifact(bundleContext, new StubInstallArtifact("bundle"));
+    private final StubRegion region = new StubRegion("test-region");
+    
+    private final DeployerArtifact artifact = new DeployerArtifact(bundleContext, new StubInstallArtifact("bundle"), region);
 
     @Test(expected = FatalAssertionException.class)
     public void testNullBundleContext() {
-        new DeployerArtifact(null, new StubInstallArtifact("bundle"));
+        new DeployerArtifact(null, new StubInstallArtifact("bundle"), region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void testNullInstallArtifact() {
-        new DeployerArtifact(this.bundleContext, null);
+        new DeployerArtifact(this.bundleContext, null, region);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void testNullRegion() {
+        new DeployerArtifact(this.bundleContext, new StubInstallArtifact("bundle"), null);
     }
 
     @Test
@@ -74,7 +82,7 @@ public class DeployerArtifactTests {
         expect(installArtifact.getState()).andReturn(State.UNINSTALLED);
         replay(installArtifact);
 
-        DeployerArtifact artifact1 = new DeployerArtifact(bundleContext, installArtifact);
+        DeployerArtifact artifact1 = new DeployerArtifact(bundleContext, installArtifact, region);
 
         assertEquals(ArtifactState.INITIAL, artifact1.getState());
         assertEquals(ArtifactState.INSTALLING, artifact1.getState());

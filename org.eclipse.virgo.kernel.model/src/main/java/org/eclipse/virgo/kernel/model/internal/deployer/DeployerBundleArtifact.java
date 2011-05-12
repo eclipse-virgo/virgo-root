@@ -23,7 +23,7 @@ final class DeployerBundleArtifact extends DeployerArtifact implements BundleArt
 
     private final BundleInstallArtifact installArtifact;
 
-    public DeployerBundleArtifact(@NonNull BundleContext bundleContext, @NonNull BundleInstallArtifact installArtifact, Region region) {
+    public DeployerBundleArtifact(@NonNull BundleContext bundleContext, @NonNull BundleInstallArtifact installArtifact, @NonNull Region region) {
         super(bundleContext, installArtifact, region);
         this.installArtifact = installArtifact;
     }

@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -106,6 +107,8 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private RuntimeArtifactRepository ram;
+    
+    private Region globalRegion;
 
     private static TestPlanArtifactInfo[] PARENTS;
 
@@ -121,9 +124,14 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     @Before
     public void setUp() throws Exception {
-        ServiceReference<RuntimeArtifactRepository> serviceReference = context.getServiceReference(RuntimeArtifactRepository.class);
-        if (serviceReference != null) {
-            this.ram = context.getService(serviceReference);
+        ServiceReference<RuntimeArtifactRepository> runtimeArtifactRepositoryServiceReference = context.getServiceReference(RuntimeArtifactRepository.class);
+        if (runtimeArtifactRepositoryServiceReference != null) {
+            this.ram = context.getService(runtimeArtifactRepositoryServiceReference);
+        }
+        
+        Collection<ServiceReference<Region>> regionServiceReferences = context.getServiceReferences(Region.class, "(org.eclipse.virgo.kernel.region.name=global)");
+        if (regionServiceReferences != null && regionServiceReferences.size() == 1) {
+            this.globalRegion = context.getService(regionServiceReferences.iterator().next());
         }
 
         globalBundleDeploymentIdentity = deploy(GLOBAL_BUNDLE_INFO);
@@ -364,7 +372,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         Artifact childArtifact;
         
         if (parent.isScoped()) {
-            childArtifact = getPlan(childPlan.getType(), model.getScopeName() + SCOPE_SEPARATOR + childPlan.getName(), childPlan.getVersion(), null);
+            childArtifact = getPlan(childPlan.getType(), model.getScopeName() + SCOPE_SEPARATOR + childPlan.getName(), childPlan.getVersion(), globalRegion);
         } else {
             childArtifact = getPlan(childPlan);
         }
@@ -383,7 +391,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private Artifact getPlan(TestPlanArtifactInfo plan) {
-        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), null);       
+        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), globalRegion);       
     }
     
     private Artifact getPlan(String type, String name, Version version, Region region) {
@@ -660,17 +668,14 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         return identity;
     }
 
-    public static TestPlanArtifactInfo createPlanFile(String planName, Version planVersion, boolean scoped, boolean atomic,
-        TestArtifactInfo... children) throws IOException {
+    public static TestPlanArtifactInfo createPlanFile(String planName, Version planVersion, boolean scoped, boolean atomic, TestArtifactInfo... children) throws IOException {
         StringBuffer planContent = new StringBuffer(1024);
         planContent.append(XML_HEADER);
-        planContent.append("<plan name=\"" + planName + "\" version=\"" + planVersion + "\" scoped=\"" + new Boolean(scoped) + "\" atomic=\""
-            + new Boolean(atomic) + "\" \n" + NAMESPACES + ">\n");
+        planContent.append("<plan name=\"" + planName + "\" version=\"" + planVersion + "\" scoped=\"" + new Boolean(scoped) + "\" atomic=\"" + new Boolean(atomic) + "\" \n" + NAMESPACES + ">\n");
 
         for (TestArtifactInfo childInfo : children) {
             Version childVersion = childInfo.getVersion();
-            planContent.append("    <artifact type=\"" + childInfo.getType() + "\" name=\"" + childInfo.getName() + "\" version=\"[" + childVersion
-                + ", " + childVersion + "]\"/>\n");
+            planContent.append("    <artifact type=\"" + childInfo.getType() + "\" name=\"" + childInfo.getName() + "\" version=\"[" + childVersion + ", " + childVersion + "]\"/>\n");
         }
 
         planContent.append("</plan>");

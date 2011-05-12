@@ -42,7 +42,7 @@ final class BundleArtifact extends AbstractArtifact {
 
     private final Bundle bundle;
     
-    public BundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, Region region) {
+    public BundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, @NonNull Region region) {
         super(bundleContext, TYPE, bundle.getSymbolicName(), bundle.getVersion(), region);
         this.packageAdminUtil = packageAdminUtil;
         this.bundle = bundle;

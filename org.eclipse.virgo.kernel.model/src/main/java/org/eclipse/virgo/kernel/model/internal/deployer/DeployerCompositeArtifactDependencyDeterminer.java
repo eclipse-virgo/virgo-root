@@ -20,6 +20,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
+import org.eclipse.equinox.region.Region;
 
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.Tree;
@@ -38,9 +39,15 @@ import org.eclipse.virgo.util.common.Tree;
 public final class DeployerCompositeArtifactDependencyDeterminer implements DependencyDeterminer {
 
     private final RuntimeArtifactRepository artifactRepository;
+    
+    private final Region globalRegion;
+    
+    private final Region userRegion;
 
-    public DeployerCompositeArtifactDependencyDeterminer(@NonNull RuntimeArtifactRepository artifactRepository) {
+    public DeployerCompositeArtifactDependencyDeterminer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull Region userRegion, @NonNull Region globalRegion) {
         this.artifactRepository = artifactRepository;
+        this.userRegion = userRegion;
+        this.globalRegion = globalRegion;
     }
 
     /**
@@ -55,7 +62,11 @@ public final class DeployerCompositeArtifactDependencyDeterminer implements Depe
         List<Tree<InstallArtifact>> children = ((DeployerCompositeArtifact) rootArtifact).getInstallArtifact().getTree().getChildren();
         for (Tree<InstallArtifact> child : children) {
             InstallArtifact artifact = child.getValue();
-            dependents.add(artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion(), rootArtifact.getRegion()));//Plans don't have a region so this only works as null will also return artifacts in regions
+            if(artifact.getType().equalsIgnoreCase("bundle")){
+                dependents.add(this.artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion(), this.userRegion));
+            }else{
+                dependents.add(this.artifactRepository.getArtifact(artifact.getType(), artifact.getName(), artifact.getVersion(), this.globalRegion));
+            }
         }
 
         return dependents;

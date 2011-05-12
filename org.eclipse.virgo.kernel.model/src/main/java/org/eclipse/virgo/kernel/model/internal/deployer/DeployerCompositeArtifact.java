@@ -16,6 +16,7 @@ import org.osgi.framework.BundleContext;
 
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.model.CompositeArtifact;
+import org.eclipse.equinox.region.Region;
 
 /**
  * Implementation of {@link CompositeArtifact} that delegates to a Kernel {@link PlanInstallArtifact}
@@ -30,8 +31,8 @@ final class DeployerCompositeArtifact extends DeployerArtifact implements Compos
 
     private final PlanInstallArtifact installArtifact;
 
-    public DeployerCompositeArtifact(@NonNull BundleContext bundleContext, @NonNull PlanInstallArtifact installArtifact) {
-        super(bundleContext, installArtifact);
+    public DeployerCompositeArtifact(@NonNull BundleContext bundleContext, @NonNull PlanInstallArtifact installArtifact, @NonNull Region region) {
+        super(bundleContext, installArtifact, region);
         this.installArtifact = installArtifact;
     }
 

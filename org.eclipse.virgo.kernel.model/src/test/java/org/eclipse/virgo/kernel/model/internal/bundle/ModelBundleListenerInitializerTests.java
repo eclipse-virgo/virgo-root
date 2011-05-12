@@ -12,12 +12,16 @@
 package org.eclipse.virgo.kernel.model.internal.bundle;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -31,6 +35,8 @@ import org.osgi.framework.Version;
 public class ModelBundleListenerInitializerTests {
 
     private final StubArtifactRepository artifactRepository = new StubArtifactRepository();
+    
+    private final StubRegion region = new StubRegion("test-region");
 
     private final PackageAdminUtil packageAdminUtil = createMock(PackageAdminUtil.class);
 
@@ -49,10 +55,10 @@ public class ModelBundleListenerInitializerTests {
         this.systemBundleContext.addInstalledBundle(bundle);
         String filterString = String.format("(&(objectClass=%s)(artifactType=bundle))", DependencyDeterminer.class.getCanonicalName());
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
+        expect(regionDigraph.getRegion(bundle)).andReturn(region).anyTimes();
     }
 
-    private final ModelBundleListenerInitializer initializer = new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil,
-        bundleContext, regionDigraph);
+    private final ModelBundleListenerInitializer initializer = new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, regionDigraph);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
@@ -76,17 +82,21 @@ public class ModelBundleListenerInitializerTests {
 
     @Test
     public void initialize() throws IOException, InvalidSyntaxException {
+        replay(this.regionDigraph);
         assertEquals(0, this.systemBundleContext.getBundleListeners().size());
         this.initializer.initialize();
         assertEquals(1, this.systemBundleContext.getBundleListeners().size());
         assertEquals(1, this.artifactRepository.getArtifacts().size());
+        verify(this.regionDigraph);
     }
 
     @Test
     public void destroy() throws IOException, InvalidSyntaxException {
+        replay(this.regionDigraph);
         this.initializer.initialize();
         assertEquals(1, this.systemBundleContext.getBundleListeners().size());
         this.initializer.destroy();
         assertEquals(0, this.systemBundleContext.getBundleListeners().size());
+        verify(this.regionDigraph);
     }
 }

@@ -35,6 +35,6 @@ public class DefaultArtifactObjectNameCreatorTests {
     public void success() {
         ObjectName objectName = creator.create(new StubCompositeArtifact());
         assertNotNull(objectName);
-        assertEquals("test-domain:artifact-type=test-type,name=test-name,type=Model,version=0.0.0", objectName.getCanonicalName());
+        assertEquals("test-domain:artifact-type=test-type,name=test-name,region=test-region,type=KernelModel,version=0.0.0", objectName.getCanonicalName());
     }
 }

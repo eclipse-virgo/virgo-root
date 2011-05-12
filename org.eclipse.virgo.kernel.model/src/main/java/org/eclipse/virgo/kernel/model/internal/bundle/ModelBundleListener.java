@@ -70,8 +70,7 @@ final class ModelBundleListener implements SynchronousBundleListener {
     private void processInstalled(BundleEvent event) {
         Bundle bundle = event.getBundle();
         Region region = this.regionDigraph.getRegion(bundle);
-        String regionName = region == null ? "?" : region.getName();
-        logger.info("Processing installed event for '{}:{}' in region '" + regionName + "'", bundle.getSymbolicName(), bundle.getVersion().toString());
+        logger.info("Processing installed event for '{}:{}' in region '{}'", new Object[] {bundle.getSymbolicName(), bundle.getVersion().toString(), region.getName()});
         this.artifactRepository.add(new BundleArtifact(bundleContext, packageAdminUtil, bundle, region));
     }
 

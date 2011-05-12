@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerArtifact;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifact;
@@ -33,16 +34,23 @@ public class DeployerCompositeArtifactTests {
         bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final DeployerCompositeArtifact artifact = new DeployerCompositeArtifact(bundleContext, new StubPlanInstallArtifact());
+    private final StubRegion region = new StubRegion("test-region");
+    
+    private final DeployerCompositeArtifact artifact = new DeployerCompositeArtifact(bundleContext, new StubPlanInstallArtifact(), region);
 
     @Test(expected = FatalAssertionException.class)
     public void testNullBundleContext() {
-        new DeployerArtifact(null, new StubPlanInstallArtifact());
+        new DeployerArtifact(null, new StubPlanInstallArtifact(), region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void testNullInstallArtifact() {
-        new DeployerArtifact(this.bundleContext, null);
+        new DeployerArtifact(this.bundleContext, null, region);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void testRegion() {
+        new DeployerArtifact(this.bundleContext, new StubPlanInstallArtifact(), null);
     }
 
     @Test

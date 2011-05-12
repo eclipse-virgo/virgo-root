@@ -56,7 +56,7 @@ public abstract class AbstractArtifact implements Artifact {
 
     private final Region region;
 
-    public AbstractArtifact(@NonNull BundleContext bundleContext, @NonNull String type, @NonNull String name, @NonNull Version version, Region region) {
+    public AbstractArtifact(@NonNull BundleContext bundleContext, @NonNull String type, @NonNull String name, @NonNull Version version, @NonNull Region region) {
         this.type = type;
         this.name = name;
         this.version = version;
