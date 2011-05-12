@@ -103,19 +103,17 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                     e.printStackTrace();
                 }
             }
-            unregisterVirgoMBeans();
+            unregisterVirgoMBeans(notifier);
             BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
         }
     }
 
-    private void unregisterVirgoMBeans() {
+    private void unregisterVirgoMBeans(RunNotifier notifier) {
         Set<ObjectName> objectNames = this.server.queryNames(this.searchObjectName, null);
 
         if (objectNames.size() == 0) {
             return;
         }
-
-        System.err.println("The mBeans " + objectNames + " were not unregistered.");
 
         for (ObjectName objectName : objectNames) {
             try {
@@ -124,6 +122,10 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                 jme.printStackTrace();
             }
         }
+
+        notifier.fireTestFailure(new Failure(getDescription(),
+                                             new IllegalStateException("The mBeans " + objectNames +
+                                                                       " were not unregistered.")));
     }
 
     private Bundle installAndStartTestBundle(BundleContext targetBundleContext) throws BundleException {
