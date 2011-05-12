@@ -52,7 +52,14 @@ final class StandardFailedResolutionHolder implements FailedResolutionHolder {
      * {@inheritDoc}
      */
     public String getDescription() {
-        return this.quasiResolutionFailure.getDescription();
+        return escapeAngleBrackets(this.quasiResolutionFailure.getDescription());
+    }
+    
+    private String escapeAngleBrackets(String unfriendlyHTML) {
+        String processed = unfriendlyHTML.replace("<", "&#60;");
+        processed = processed.replace(">", "&#62;");
+        processed = processed.replace("°", "&infin;");
+        return processed;
     }
 
     /** 
