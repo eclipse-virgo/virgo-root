@@ -19,6 +19,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifact;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifactDependencyDeterminer;
@@ -42,11 +43,25 @@ public class DeployerCompositeArtifactDependencyDeterminerTests {
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final DeployerCompositeArtifactDependencyDeterminer determiner = new DeployerCompositeArtifactDependencyDeterminer(artifactRepository);
+    private final StubRegion region1 = new StubRegion("test-region1");
+    
+    private final StubRegion region2 = new StubRegion("test-region2");
+    
+    private final DeployerCompositeArtifactDependencyDeterminer determiner = new DeployerCompositeArtifactDependencyDeterminer(artifactRepository, region1, region2);
 
     @Test(expected = FatalAssertionException.class)
     public void nullRepository() {
-        new DeployerCompositeArtifactDependencyDeterminer(null);
+        new DeployerCompositeArtifactDependencyDeterminer(null, region1, region2);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullUserRegion() {
+        new DeployerCompositeArtifactDependencyDeterminer(artifactRepository, null, region2);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullGlobalRegion() {
+        new DeployerCompositeArtifactDependencyDeterminer(artifactRepository, region1, null);
     }
 
     @Test
@@ -58,7 +73,7 @@ public class DeployerCompositeArtifactDependencyDeterminerTests {
     public void success() {
         StubPlanInstallArtifact installArtifact = new StubPlanInstallArtifact();
         installArtifact.getTree().addChild(new ThreadSafeArrayListTree<InstallArtifact>(new StubInstallArtifact()));
-		DeployerCompositeArtifact artifact = new DeployerCompositeArtifact(bundleContext, installArtifact);
+		DeployerCompositeArtifact artifact = new DeployerCompositeArtifact(bundleContext, installArtifact, region1);
         assertEquals(1, this.determiner.getDependents(artifact).size());
     }
 

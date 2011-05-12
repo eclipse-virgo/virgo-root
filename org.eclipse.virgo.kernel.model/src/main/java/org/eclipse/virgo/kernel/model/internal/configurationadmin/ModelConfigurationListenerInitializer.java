@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
@@ -52,11 +53,13 @@ public final class ModelConfigurationListenerInitializer {
 
     private final ConfigurationAdmin configurationAdmin;
 
-    public ModelConfigurationListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull BundleContext bundleContext,
-        @NonNull ConfigurationAdmin configurationAdmin) {
+    private final Region globalRegion;
+
+    public ModelConfigurationListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull BundleContext bundleContext, @NonNull ConfigurationAdmin configurationAdmin, @NonNull Region globalRegion) {
         this.artifactRepository = artifactRepository;
         this.bundleContext = bundleContext;
         this.configurationAdmin = configurationAdmin;
+        this.globalRegion = globalRegion;
     }
 
     /**
@@ -68,13 +71,13 @@ public final class ModelConfigurationListenerInitializer {
      */
     @PostConstruct
     public void initialize() throws IOException, InvalidSyntaxException {
-        ModelConfigurationListener configurationListener = new ModelConfigurationListener(artifactRepository, bundleContext, configurationAdmin);
+        ModelConfigurationListener configurationListener = new ModelConfigurationListener(artifactRepository, bundleContext, configurationAdmin, globalRegion);
         this.registrationTracker.track(this.bundleContext.registerService(ConfigurationListener.class.getCanonicalName(), configurationListener, null));
         Configuration[] configurations = this.configurationAdmin.listConfigurations(null);
         if (configurations != null) {
             for (Configuration configuration : configurations) {
                 try {
-                    this.artifactRepository.add(new ConfigurationArtifact(bundleContext, configurationAdmin, configuration.getPid()));
+                    this.artifactRepository.add(new ConfigurationArtifact(bundleContext, configurationAdmin, configuration.getPid(), globalRegion));
                 } catch (Exception e) {
                     logger.error(String.format("Exception adding configuration '%s' to the repository", configuration.getPid()), e);
                 }

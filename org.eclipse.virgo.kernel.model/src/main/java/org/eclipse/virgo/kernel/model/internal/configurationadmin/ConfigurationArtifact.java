@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -42,8 +43,8 @@ final class ConfigurationArtifact extends AbstractArtifact {
 
     private final String pid;
 
-    public ConfigurationArtifact(@NonNull BundleContext bundleContext, @NonNull ConfigurationAdmin configurationAdmin, @NonNull String pid) {
-        super(bundleContext, TYPE, pid, Version.emptyVersion, null);
+    public ConfigurationArtifact(@NonNull BundleContext bundleContext, @NonNull ConfigurationAdmin configurationAdmin, @NonNull String pid, @NonNull Region region) {
+        super(bundleContext, TYPE, pid, Version.emptyVersion, region);
         this.configurationAdmin = configurationAdmin;
         this.pid = pid;
     }

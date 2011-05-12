@@ -26,7 +26,7 @@ public class StubCompositeArtifact implements CompositeArtifact {
     private final Region region;
     
     public StubCompositeArtifact() {
-        this("test-type", "test-name", null);
+        this("test-type", "test-name", new StubRegion("test-region"));
     }
 
     public StubCompositeArtifact(String type, String name, Region region) {
@@ -55,6 +55,10 @@ public class StubCompositeArtifact implements CompositeArtifact {
         return Version.emptyVersion;
     }
 
+    public Region getRegion() {
+        return this.region;
+    }
+
     public boolean refresh() {
         throw new UnsupportedOperationException();
     }
@@ -81,10 +85,6 @@ public class StubCompositeArtifact implements CompositeArtifact {
 
     public Map<String, String> getProperties() {
         throw new UnsupportedOperationException();
-    }
-
-    public Region getRegion() {
-        return this.region;
     }
 
 }

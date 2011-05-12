@@ -13,4 +13,10 @@
 	
 	<context:property-placeholder properties-ref="kernelConfig"/>
 	
+	<osgi:service ref="globalRegion" interface="org.eclipse.virgo.kernel.osgi.region.Region" >
+		<osgi:service-properties>
+			<entry key="org.eclipse.virgo.kernel.region.name" value="global"/>
+		</osgi:service-properties>
+	</osgi:service>
+	
 </beans>

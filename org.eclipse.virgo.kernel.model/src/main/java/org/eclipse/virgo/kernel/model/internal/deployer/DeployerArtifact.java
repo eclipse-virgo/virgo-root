@@ -41,11 +41,6 @@ import org.osgi.framework.BundleContext;
 class DeployerArtifact extends AbstractArtifact {
 
     private final InstallArtifact installArtifact;
-
-    public DeployerArtifact(@NonNull BundleContext bundleContext, @NonNull InstallArtifact installArtifact) {
-        super(bundleContext, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
-        this.installArtifact = installArtifact;
-    }
     
     public DeployerArtifact(@NonNull BundleContext bundleContext, @NonNull InstallArtifact installArtifact, Region region) {
         super(bundleContext, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), region);

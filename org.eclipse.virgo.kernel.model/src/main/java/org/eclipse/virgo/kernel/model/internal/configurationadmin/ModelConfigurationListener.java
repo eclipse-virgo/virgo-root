@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.model.internal.configurationadmin;
 
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -44,11 +45,13 @@ final class ModelConfigurationListener implements ConfigurationListener {
 
     private final ConfigurationAdmin configurationAdmin;
 
-    public ModelConfigurationListener(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull BundleContext bundleContext,
-        @NonNull ConfigurationAdmin configurationAdmin) {
+    private final Region independentRegion;
+
+    public ModelConfigurationListener(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull BundleContext bundleContext, @NonNull ConfigurationAdmin configurationAdmin, @NonNull Region independentRegion) {
         this.artifactRepository = artifactRepository;
         this.bundleContext = bundleContext;
         this.configurationAdmin = configurationAdmin;
+        this.independentRegion = independentRegion;
     }
 
     /**
@@ -70,14 +73,14 @@ final class ModelConfigurationListener implements ConfigurationListener {
     private void processDelete(ConfigurationEvent event) {
         logger.info("Processing delete event for '{}'", event.getPid());
 
-        Artifact artifact = this.artifactRepository.getArtifact(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion, null);//Config will never be in a region
+        Artifact artifact = this.artifactRepository.getArtifact(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion, independentRegion);
         if (artifact instanceof ConfigurationArtifact) {
-            this.artifactRepository.remove(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion, null);//Config will never be in a region
+            this.artifactRepository.remove(ConfigurationArtifact.TYPE, event.getPid(), Version.emptyVersion, independentRegion);
         }
     }
 
     private ConfigurationArtifact createArtifact(ConfigurationEvent event) {
-        return new ConfigurationArtifact(this.bundleContext, this.configurationAdmin, event.getPid());
+        return new ConfigurationArtifact(this.bundleContext, this.configurationAdmin, event.getPid(), independentRegion);
     }
 
 }

@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
  * @see ArtifactRepositoryListener
  */
 public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifactRepository {
-    
-    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -103,33 +101,15 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
      */
     public Artifact getArtifact(String type, String name, Version version, Region region) {
         synchronized (this.monitor) {
-            Artifact fallBack = null;
             for (Artifact artifact : this.artifacts) {
-                if (artifact.getType().equals(type) && artifact.getName().equals(name) && artifact.getVersion().equals(version)){
-                    if(region == null){
-                        //Look everywhere because there is still plenty of code that doesn't know about regions
-                        if(artifact.getRegion() == null){
-                            return artifact;
-                        } else {
-                            //They might mean this artifact but don't know to give a region so return it if we don't find a better match
-                            String regionName = artifact.getRegion().getName();
-                            if(USER_REGION_NAME.equals(regionName)){
-                                //Give priority to the user region
-                                fallBack = artifact;
-                            } else if(fallBack == null) {
-                                //and only set it to the other (kernel) region if nothing has been set already
-                                fallBack = artifact;
-                            }
-                        }
-                    } else {
-                        //Otherwise only look in the requested region
-                        if(artifact.getRegion() != null && artifact.getRegion().equals(region)){
-                            return artifact;
-                        }
-                    }
+                if (artifact.getType().equals(type) && 
+                    artifact.getName().equals(name) && 
+                    artifact.getVersion().equals(version) &&
+                    artifact.getRegion().getName().equals(region.getName())){
+                    return artifact;
                 }
             }
-            return fallBack;
+            return null;
         }
     }
 

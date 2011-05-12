@@ -22,6 +22,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
@@ -56,12 +57,14 @@ public final class ModelInstallArtifactLifecycleListenerInitializer {
 
     private final RegionDigraph regionDigraph;
 
-    public ModelInstallArtifactLifecycleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository,
-        @NonNull BundleContext bundleContext, @NonNull RuntimeArtifactModel runtimeArtifactModel, @NonNull RegionDigraph regionDigraph) {
+    private final Region globalRegion;
+
+    public ModelInstallArtifactLifecycleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull BundleContext bundleContext, @NonNull RuntimeArtifactModel runtimeArtifactModel, @NonNull RegionDigraph regionDigraph, @NonNull Region globalRegion) {
         this.artifactRepository = artifactRepository;
         this.bundleContext = bundleContext;
         this.runtimeArtifactModel = runtimeArtifactModel;
         this.regionDigraph = regionDigraph;
+        this.globalRegion = globalRegion;
     }
 
     /**
@@ -70,20 +73,20 @@ public final class ModelInstallArtifactLifecycleListenerInitializer {
      */
     @PostConstruct
     public void initialize() {
-        ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(this.bundleContext, this.artifactRepository, this.regionDigraph);
+        ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(this.bundleContext, this.artifactRepository, this.regionDigraph, this.globalRegion);
         this.registrationTracker.track(this.bundleContext.registerService(InstallArtifactLifecycleListener.class.getCanonicalName(), listener, null));
         for (DeploymentIdentity deploymentIdentity : this.runtimeArtifactModel.getDeploymentIdentities()) {
             InstallArtifact installArtifact = this.runtimeArtifactModel.get(deploymentIdentity);
             try {
                 if (installArtifact instanceof PlanInstallArtifact) {
-                    this.artifactRepository.add(new DeployerCompositeArtifact(this.bundleContext, (PlanInstallArtifact) installArtifact));
+                    this.artifactRepository.add(new DeployerCompositeArtifact(this.bundleContext, (PlanInstallArtifact) installArtifact, this.globalRegion));
                 } else if (installArtifact instanceof BundleInstallArtifact) {
                     this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.regionDigraph.getRegion(USER_REGION_NAME));
                     BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
                     this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact, this.regionDigraph.getRegion(USER_REGION_NAME)));
                 } else {
                     this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
-                    this.artifactRepository.add(new DeployerArtifact(this.bundleContext, installArtifact));
+                    this.artifactRepository.add(new DeployerArtifact(this.bundleContext, installArtifact, this.globalRegion));
                 }
             } catch (Exception e) {
                 logger.error(String.format("Exception adding deployer artifact '%s:%s' to the repository", installArtifact.getName(),

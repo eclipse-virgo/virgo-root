@@ -24,6 +24,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListene
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.osgi.region.Region;
 import org.eclipse.virgo.kernel.osgi.region.RegionDigraph;
 
 /**
@@ -55,11 +56,13 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
 
     private final RegionDigraph regionDigraph;
 
-    public ModelInstallArtifactLifecycleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository,
-        @NonNull RegionDigraph regionDigraph) {
+    private final Region globalRegion;
+
+    public ModelInstallArtifactLifecycleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull RegionDigraph regionDigraph, @NonNull Region globalRegion) {
         this.bundleContext = bundleContext;
         this.artifactRepository = artifactRepository;
         this.regionDigraph = regionDigraph;
+        this.globalRegion = globalRegion;
     }
 
     /**
@@ -78,7 +81,7 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void addPlan(PlanInstallArtifact planInstallArtifact) {
-        this.artifactRepository.add(new DeployerCompositeArtifact(this.bundleContext, planInstallArtifact));
+        this.artifactRepository.add(new DeployerCompositeArtifact(this.bundleContext, planInstallArtifact, this.globalRegion));
     }
 
     private void addOrReplaceBundle(BundleInstallArtifact bundleInstallArtifact) {
@@ -90,7 +93,7 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void addArtifact(InstallArtifact installArtifact) {
-        this.artifactRepository.add(new DeployerArtifact(this.bundleContext, installArtifact));
+        this.artifactRepository.add(new DeployerArtifact(this.bundleContext, installArtifact, this.globalRegion));
     }
 
     /**
@@ -120,7 +123,7 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
         if(installArtifact instanceof BundleInstallArtifact){
             this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.regionDigraph.getRegion(USER_REGION_NAME));
         } else {
-            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), null);
+            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.globalRegion);
         }
     }
 

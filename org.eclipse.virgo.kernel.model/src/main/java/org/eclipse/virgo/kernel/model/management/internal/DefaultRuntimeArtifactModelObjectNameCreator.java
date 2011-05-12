@@ -35,6 +35,8 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
 
     private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
+    private static final String GLOBAL_REGION_NAME = "global";
+
     private static final String ARTIFACTS_FORMAT = "%s:type=Model,*";
 
     private static final String ARTIFACTS_OF_TYPE_FORMAT = "%s:type=Model,artifact-type=%s,*";
@@ -63,7 +65,7 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     public ObjectName create(@NonNull Artifact artifact) {
         Region region = artifact.getRegion();
         // Treat user region artifacts specially to preserve JMX compatibility with Virgo 2.1.0.
-        if (region == null || USER_REGION_NAME.equals(region.getName())) {
+        if (USER_REGION_NAME.equals(region.getName()) || GLOBAL_REGION_NAME.equals(region.getName()) ) {
             return create(artifact.getType(), artifact.getName(), artifact.getVersion());
         }
         return create(artifact.getType(), artifact.getName(), artifact.getVersion(), region);
@@ -73,8 +75,7 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      * {@inheritDoc}
      */
     public ObjectName create(String type, String name, Version version, Region region) {
-        String regionName = region == null ? "?" : region.getName();
-        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, type, name, version, regionName));
+        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, type, name, version, region.getName()));
     }
 
     /**

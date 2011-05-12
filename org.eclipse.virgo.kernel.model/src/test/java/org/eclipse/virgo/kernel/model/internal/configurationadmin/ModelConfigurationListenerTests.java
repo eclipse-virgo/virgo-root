@@ -20,6 +20,7 @@ import org.osgi.service.cm.ConfigurationEvent;
 
 
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.configurationadmin.ModelConfigurationListener;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -43,21 +44,28 @@ public class ModelConfigurationListenerTests {
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
 
-    private final ModelConfigurationListener listener = new ModelConfigurationListener(artifactRepository, bundleContext, configurationAdmin);
+    private final StubRegion region = new StubRegion("test-region");
+    
+    private final ModelConfigurationListener listener = new ModelConfigurationListener(artifactRepository, bundleContext, configurationAdmin, region);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelConfigurationListener(null, bundleContext, configurationAdmin);
+        new ModelConfigurationListener(null, bundleContext, configurationAdmin, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ModelConfigurationListener(artifactRepository, null, configurationAdmin);
+        new ModelConfigurationListener(artifactRepository, null, configurationAdmin, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullConfigurationAdmin() {
-        new ModelConfigurationListener(artifactRepository, bundleContext, null);
+        new ModelConfigurationListener(artifactRepository, bundleContext, null, region);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegion() {
+        new ModelConfigurationListener(artifactRepository, bundleContext, configurationAdmin, null);
     }
 
     @Test

@@ -42,5 +42,9 @@
 	<reference id="applicationDeployer" interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer"/>
 	
 	<reference id="regionDigraph" interface="org.eclipse.virgo.kernel.osgi.region.RegionDigraph" />
+	
+	<reference id="globalRegion" interface="org.eclipse.virgo.kernel.osgi.region.Region" filter="(org.eclipse.virgo.kernel.region.name=global)" />
+	
+	<reference id="userRegion" interface="org.eclipse.virgo.kernel.osgi.region.Region" filter="(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.user)" />
 
 </beans:beans>

@@ -20,6 +20,7 @@ import org.osgi.framework.InvalidSyntaxException;
 
 
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.configurationadmin.ModelConfigurationListenerInitializer;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -37,23 +38,30 @@ public class ModelConfigurationListenerInitializerTests {
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
+    private final StubRegion region = new StubRegion("test-region");
+
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
 
-    private final ModelConfigurationListenerInitializer initializer = new ModelConfigurationListenerInitializer(artifactRepository, bundleContext, configurationAdmin);
+    private final ModelConfigurationListenerInitializer initializer = new ModelConfigurationListenerInitializer(artifactRepository, bundleContext, configurationAdmin, region);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelConfigurationListenerInitializer(null, bundleContext, configurationAdmin);
+        new ModelConfigurationListenerInitializer(null, bundleContext, configurationAdmin, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ModelConfigurationListenerInitializer(artifactRepository, null, configurationAdmin);
+        new ModelConfigurationListenerInitializer(artifactRepository, null, configurationAdmin, region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullConfigurationAdmin() {
-        new ModelConfigurationListenerInitializer(artifactRepository, bundleContext, null);
+        new ModelConfigurationListenerInitializer(artifactRepository, bundleContext, null, region);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegion() {
+        new ModelConfigurationListenerInitializer(artifactRepository, bundleContext, configurationAdmin, null);
     }
 
     @Test
