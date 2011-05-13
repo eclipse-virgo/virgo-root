@@ -48,7 +48,6 @@ public class StandardQuasiParameterised implements QuasiParameterised {
      * 
      * @param importPackageSpecification
      */
-    @SuppressWarnings("unchecked")
     public StandardQuasiParameterised(ImportPackageSpecification importPackageSpecification) {
         this.attributes = normalise(importPackageSpecification.getAttributes());
         this.directives = normalise(importPackageSpecification.getDirectives());
@@ -66,7 +65,6 @@ public class StandardQuasiParameterised implements QuasiParameterised {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public StandardQuasiParameterised(ExportPackageDescription exportPackageDescription) {
         this.attributes = normalise(exportPackageDescription.getAttributes());
         this.directives = normalise(exportPackageDescription.getDirectives());    

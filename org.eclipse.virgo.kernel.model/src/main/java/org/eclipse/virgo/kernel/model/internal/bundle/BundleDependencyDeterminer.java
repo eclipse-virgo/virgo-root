@@ -81,7 +81,7 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
         for (QuasiBundle bundle : framework.getBundles()) {
             if (artifact.getName().equals(bundle.getSymbolicName()) && 
                 artifact.getVersion().equals(bundle.getVersion()) && 
-                artifact.getRegion().equals(this.regionDigraph.getRegion(bundle.getBundleId()))) {
+                artifact.getRegion().getName().equals(this.regionDigraph.getRegion(bundle.getBundleId()).getName())) {
                 return bundle;
             }
         }

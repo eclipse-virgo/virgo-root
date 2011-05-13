@@ -56,6 +56,7 @@ public class ClassLoadingSupportTests {
         RESULT_EXPORT_ARRAY.add(loadingBundle);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetBundlesLoadingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
@@ -79,9 +80,9 @@ public class ClassLoadingSupportTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testGetBundlesExportingPackage() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
+        @SuppressWarnings("unchecked")
         ServiceReference<PlatformAdmin> platformAdminServiceReference = createMock(ServiceReference.class);
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
@@ -112,11 +113,12 @@ public class ClassLoadingSupportTests {
         verify(platformAdmin, platformAdminServiceReference, bundle, bundleContext, bundleState, bundleDescription);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testTryToLoadClassFromBundle() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         expect((Class) bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
-        expect((Class) bundle.loadClass(CLASS_NAME + CLASS_NAME)).andReturn(null);
+        expect((Class<?>) bundle.loadClass(CLASS_NAME + CLASS_NAME)).andReturn(null);
         BundleContext bundleContext = createMock(BundleContext.class);
         expect(bundleContext.getBundle(BUNDLE_ID)).andReturn(bundle).times(2);
 

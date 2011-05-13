@@ -129,10 +129,9 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         try {
-            Class loadedClass = super.loadClass(name, resolve);
+            Class<?> loadedClass = super.loadClass(name, resolve);
             storeClassIfDriver(loadedClass);
             return loadedClass;
         } catch (ClassNotFoundException e) {
@@ -261,7 +260,6 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
         clearJdbcDrivers();
     }
     
-    @SuppressWarnings("unchecked")
     private void clearJdbcDrivers() {
         Set<Class<Driver>> localLoadedDriverClasses;
         synchronized (this.monitor) {
@@ -272,10 +270,10 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
             try {
                 Field writeDriversField = DriverManager.class.getDeclaredField("writeDrivers");
                 writeDriversField.setAccessible(true);
-                Vector writeDrivers = (Vector)writeDriversField.get(null);
-                
-                Iterator driverElements = writeDrivers.iterator();
-                
+                Vector<?> writeDrivers = (Vector<?>)writeDriversField.get(null);
+                    
+                Iterator<?> driverElements = writeDrivers.iterator();
+                    
                 while(driverElements.hasNext()) {
                     Object driverObj = driverElements.next();
                     Field driverField = driverObj.getClass().getDeclaredField("driver");
@@ -284,12 +282,11 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
                         driverElements.remove();
                     }
                 }
-                
-                Vector readDrivers = (Vector)writeDrivers.clone();                
+                    
+                Vector<?> readDrivers = (Vector<?>)writeDrivers.clone();                
                 Field readDriversField = DriverManager.class.getDeclaredField("readDrivers");
                 readDriversField.setAccessible(true);
                 readDriversField.set(null, readDrivers);
-                
             } catch (Exception e) {
                 LOGGER.warn("Failure when clearing JDBC drivers for " + this, e);
             }

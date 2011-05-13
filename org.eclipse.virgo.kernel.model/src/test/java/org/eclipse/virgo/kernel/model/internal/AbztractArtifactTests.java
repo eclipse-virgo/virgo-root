@@ -103,13 +103,12 @@ public class AbztractArtifactTests {
         assertEquals("test-region", artifact.getRegion().getName());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getDependents() {
         assertEquals(0, artifact.getDependents().size());
 
         DependencyDeterminer determiner = createMock(DependencyDeterminer.class);
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("artifactType", "test-type");
         bundleContext.registerService(DependencyDeterminer.class.getCanonicalName(), determiner, properties);
 

@@ -554,7 +554,6 @@ public final class ImportExpansionHandler implements ImportExpander {
      * @param bundle the bundle whose definition is required
      * @return the bundle definition or <code>null</code> if no definition can be created
      */
-    @SuppressWarnings("unchecked")
     private BundleManifest getBundleManifest(Bundle bundle) {
         return BundleManifestFactory.createBundleManifest(bundle.getHeaders());
     }

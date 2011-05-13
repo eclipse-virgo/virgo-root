@@ -65,7 +65,7 @@ class AbstractInstallArtifactCompleter implements CommandCompleter {
      * @param subcommand 
      * @param tokens 
      */
-    protected void filter(@SuppressWarnings("unused") Set<String> candidates, @SuppressWarnings("unused") String subcommand, @SuppressWarnings("unused") String... tokens) {
+    protected void filter(Set<String> candidates, String subcommand, String... tokens) {
     }
 
     private Set<String> versions(String name, String version) {

@@ -101,15 +101,16 @@ public class BundleDependencyDeterminerTests {
         expect(bundle2.getVersion()).andReturn(Version.emptyVersion);
         expect(bundle2.getBundleId()).andReturn(100l);
         expect(regionDigraph.getRegion(100l)).andReturn(regionB);
+        expect(regionB.getName()).andReturn("regionB-name").anyTimes();
         
         expect(bundle2.getImportPackages()).andReturn(new ArrayList<QuasiImportPackage>());
         
-        replay(quasiFrameworkFactory, regionDigraph, framework, bundle1, bundle2);
+        replay(quasiFrameworkFactory, regionDigraph, framework, bundle1, bundle2, regionB);
 
         Set<Artifact> dependents = this.determiner.getDependents(new StubCompositeArtifact("bundle", "bundle", regionB));
         assertEquals(Collections.<Artifact> emptySet(), dependents);
 
-        verify(quasiFrameworkFactory, regionDigraph, framework, bundle1, bundle2);
+        verify(quasiFrameworkFactory, regionDigraph, framework, bundle1, bundle2, regionB);
     }
     
     private List<QuasiBundle> getTestBundleSet(){

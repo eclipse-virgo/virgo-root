@@ -141,7 +141,6 @@ public class ServiceScopingStrategyTests {
         verify(this.scopeFactory, this.scopeServiceRepository, this.unscopedServiceReference);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testScopeReferencesUnscopedServiceUnscopedApplication() throws InvalidSyntaxException {
         setUpUnscopedServiceReference();
@@ -149,14 +148,13 @@ public class ServiceScopingStrategyTests {
         expect(this.scopeServiceRepository.scopeHasMatchingService(eq(SCOPE_NAME), eq(CLASS_NAME), eq(FILTER))).andReturn(false).anyTimes();
         replay(this.scopeFactory, this.scopeServiceRepository, this.unscopedServiceReference);
 
-        Collection references = new ShrinkableSet(this.unscopedServiceReference);
+        Collection<ServiceReference<?>> references = new ShrinkableSet(this.unscopedServiceReference);
         this.serviceScopingStrategy.scopeReferences(references, this.unscopedBundleContext, CLASS_NAME, FILTER);
         assertTrue(references.contains(this.unscopedServiceReference));
 
         verify(this.scopeFactory, this.scopeServiceRepository, this.unscopedServiceReference);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testScopeReferencesScopedServiceUnscopedApplication() throws InvalidSyntaxException {
         setUpScopedServiceReference();
@@ -164,14 +162,13 @@ public class ServiceScopingStrategyTests {
         expect(this.scopeServiceRepository.scopeHasMatchingService(eq(SCOPE_NAME), eq(CLASS_NAME), eq(FILTER))).andReturn(false).anyTimes();
         replay(this.scopeFactory, this.scopeServiceRepository, this.scopedServiceReference);
 
-        Collection references = new ShrinkableSet(this.scopedServiceReference);
+        Collection<ServiceReference<?>> references = new ShrinkableSet(this.scopedServiceReference);
         this.serviceScopingStrategy.scopeReferences(references, this.unscopedBundleContext, CLASS_NAME, FILTER);
         assertFalse(references.contains(this.unscopedServiceReference));
 
         verify(this.scopeFactory, this.scopeServiceRepository, this.scopedServiceReference);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testScopeReferencesScopedServiceInModelScopedApplication() throws InvalidSyntaxException {
         setUpScopedServiceReference();
@@ -179,14 +176,13 @@ public class ServiceScopingStrategyTests {
         expect(this.scopeServiceRepository.scopeHasMatchingService(eq(SCOPE_NAME), eq(CLASS_NAME), eq(FILTER))).andReturn(true).anyTimes();
         replay(this.scopeFactory, this.scopeServiceRepository, this.scopedServiceReference);
 
-        Collection references = new ShrinkableSet(this.scopedServiceReference);
+        Collection<ServiceReference<?>> references = new ShrinkableSet(this.scopedServiceReference);
         this.serviceScopingStrategy.scopeReferences(references, this.scopedBundleContext, CLASS_NAME, FILTER);
         assertTrue(references.contains(this.scopedServiceReference));
 
         verify(this.scopeFactory, this.scopeServiceRepository, this.scopedServiceReference);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testScopeReferencesScopedServiceNotInModelScopedApplication() throws InvalidSyntaxException {
         setUpScopedServiceReference();
@@ -194,14 +190,13 @@ public class ServiceScopingStrategyTests {
         expect(this.scopeServiceRepository.scopeHasMatchingService(eq(SCOPE_NAME), eq(CLASS_NAME), eq(FILTER))).andReturn(false).anyTimes();
         replay(this.scopeFactory, this.scopeServiceRepository, this.scopedServiceReference);
 
-        Collection references = new ShrinkableSet(this.scopedServiceReference);
+        Collection<ServiceReference<?>> references = new ShrinkableSet(this.scopedServiceReference);
         this.serviceScopingStrategy.scopeReferences(references, this.scopedBundleContext, CLASS_NAME, FILTER);
         assertTrue(references.contains(this.scopedServiceReference));
 
         verify(this.scopeFactory, this.scopeServiceRepository, this.scopedServiceReference);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testScopeReferencesUnscopedUnshadowedServiceScopedApplication() throws InvalidSyntaxException {
         setUpUnscopedServiceReference();
@@ -209,14 +204,13 @@ public class ServiceScopingStrategyTests {
         expect(this.scopeServiceRepository.scopeHasMatchingService(eq(SCOPE_NAME), eq(CLASS_NAME), eq(FILTER))).andReturn(false).anyTimes();
         replay(this.scopeFactory, this.scopeServiceRepository, this.unscopedServiceReference);
 
-        Collection references = new ShrinkableSet(this.unscopedServiceReference);
+        Collection<ServiceReference<?>> references = new ShrinkableSet(this.unscopedServiceReference);
         this.serviceScopingStrategy.scopeReferences(references, this.scopedBundleContext, CLASS_NAME, FILTER);
         assertTrue(references.contains(this.unscopedServiceReference));
 
         verify(this.scopeFactory, this.scopeServiceRepository, this.unscopedServiceReference);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testScopeReferencesUnscopedShadowedServiceScopedApplication() throws InvalidSyntaxException {
         setUpUnscopedServiceReference();
@@ -224,7 +218,7 @@ public class ServiceScopingStrategyTests {
         expect(this.scopeServiceRepository.scopeHasMatchingService(eq(SCOPE_NAME), eq(CLASS_NAME), eq(FILTER))).andReturn(true).anyTimes();
         replay(this.scopeFactory, this.scopeServiceRepository, this.unscopedServiceReference);
 
-        Collection references = new ShrinkableSet(this.unscopedServiceReference);
+        Collection<ServiceReference<?>> references = new ShrinkableSet(this.unscopedServiceReference);
         this.serviceScopingStrategy.scopeReferences(references, this.scopedBundleContext, CLASS_NAME, FILTER);
         assertFalse(references.contains(this.unscopedServiceReference));
 
