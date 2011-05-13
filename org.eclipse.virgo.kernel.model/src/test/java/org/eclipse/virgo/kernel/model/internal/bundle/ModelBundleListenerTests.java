@@ -86,13 +86,15 @@ public class ModelBundleListenerTests {
     @Test
     public void uninstalled() {
         replay(regionDigraph);
-        BundleEvent event1 = new BundleEvent(BundleEvent.INSTALLED, new StubBundle().setBundleContext(this.bundleContext));
+        StubBundle myBundle = new StubBundle().setBundleContext(this.bundleContext);
+        BundleEvent event1 = new BundleEvent(BundleEvent.INSTALLED, myBundle);
         this.listener.bundleChanged(event1);
         assertEquals(1, this.artifactRepository.getArtifacts().size());
-        BundleEvent event2 = new BundleEvent(BundleEvent.UNINSTALLED, new StubBundle().setBundleContext(this.bundleContext));
+        myBundle.setState(Bundle.UNINSTALLED);
+        BundleEvent event2 = new BundleEvent(BundleEvent.UNINSTALLED, myBundle);
         this.listener.bundleChanged(event2);
         assertEquals(0, this.artifactRepository.getArtifacts().size());
-        BundleEvent event3 = new BundleEvent(BundleEvent.UNINSTALLED, new StubBundle().setBundleContext(this.bundleContext));
+        BundleEvent event3 = new BundleEvent(BundleEvent.UNINSTALLED, myBundle);
         this.listener.bundleChanged(event3);
         assertEquals(0, this.artifactRepository.getArtifacts().size());
     }

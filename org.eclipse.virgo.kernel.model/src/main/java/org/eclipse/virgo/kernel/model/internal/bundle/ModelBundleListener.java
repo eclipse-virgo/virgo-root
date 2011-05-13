@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.model.internal.bundle;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.Artifact;
+import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
@@ -48,8 +49,7 @@ final class ModelBundleListener implements SynchronousBundleListener {
 
     private final RegionDigraph regionDigraph;
 
-    public ModelBundleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository,
-        @NonNull PackageAdminUtil packageAdminUtil, @NonNull RegionDigraph regionDigraph) {
+    public ModelBundleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil, @NonNull RegionDigraph regionDigraph) {
         this.bundleContext = bundleContext;
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
@@ -70,14 +70,25 @@ final class ModelBundleListener implements SynchronousBundleListener {
     private void processInstalled(BundleEvent event) {
         Bundle bundle = event.getBundle();
         Region region = this.regionDigraph.getRegion(bundle);
-        logger.info("Processing installed event for '{}:{}' in region '{}'", new Object[] {bundle.getSymbolicName(), bundle.getVersion().toString(), region.getName()});
+        logger.info("Processing installed event for bundle '{}:{}' in region '{}'", new Object[] {bundle.getSymbolicName(), bundle.getVersion().toString(), region.getName()});
         this.artifactRepository.add(new BundleArtifact(bundleContext, packageAdminUtil, bundle, region));
     }
 
     private void processUninstalled(BundleEvent event) {
         Bundle bundle = event.getBundle();
-        logger.info("Processing uninstalled event for '{}:{}'", bundle.getSymbolicName(), bundle.getVersion().toString());
-        this.artifactRepository.remove(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion(), this.regionDigraph.getRegion(bundle));
+        for (Artifact artifact : this.artifactRepository.getArtifacts()) {
+            if (artifact.getType().equals(BundleArtifact.TYPE) && 
+                artifact.getName().equals(bundle.getSymbolicName()) && 
+                artifact.getVersion().equals(bundle.getVersion()) ){
+                if(artifact instanceof BundleArtifact){
+                    BundleArtifact bundleArtifact = (BundleArtifact) artifact;
+                    if(ArtifactState.UNINSTALLED == bundleArtifact.getState()){
+                        this.artifactRepository.remove(bundleArtifact);
+                        logger.info("Processing uninstalled event for bundle '{}:{}' from region '{}'", new Object[] {bundleArtifact.getName(), bundleArtifact.getVersion().toString(), bundleArtifact.getRegion().getName()});
+                    }
+                }
+            }
+        }
     }
 
 }

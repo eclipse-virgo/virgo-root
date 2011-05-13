@@ -40,6 +40,15 @@ public interface RuntimeArtifactRepository {
      * Remove an {@link Artifact} from this repository. If the artifact is a bundle, it is only removed if the bundle is
      * in the user region.
      * 
+     * @param artifact The {@link Artifact} to remove
+     * @return <code>true</code> if this repository contained the specified {@link Artifact}
+     */
+    boolean remove(Artifact artifact);
+
+    /**
+     * Remove an {@link Artifact} from this repository. If the artifact is a bundle, it is only removed if the bundle is
+     * in the user region.
+     * 
      * @param type The type of the {@link Artifact} to remove
      * @param name The name of the {@link Artifact} to remove
      * @param version The {@link Version} of the {@link Artifact} to remove

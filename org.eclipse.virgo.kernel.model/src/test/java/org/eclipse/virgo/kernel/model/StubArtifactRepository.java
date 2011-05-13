@@ -25,6 +25,10 @@ public class StubArtifactRepository implements RuntimeArtifactRepository {
         return this.artifacts.add(artifact);
     }
 
+    public boolean remove(Artifact artifact) {
+        return this.remove(artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getRegion());
+    }
+
     public boolean remove(String type, String name, Version version, Region region) {
         return this.artifacts.remove(getArtifact(type, name, version, region));
     }

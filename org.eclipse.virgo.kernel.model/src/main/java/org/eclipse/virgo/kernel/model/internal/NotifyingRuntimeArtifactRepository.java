@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
     /**
      * {@inheritDoc}
      */
-    public boolean add(Artifact artifact) {
+    public boolean add(@NonNull Artifact artifact) {
         synchronized (this.monitor) {
             boolean result = this.artifacts.add(artifact);
             if (result) {
@@ -70,9 +71,8 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
     /**
      * {@inheritDoc}
      */
-    public boolean remove(String type, String name, Version version, Region region) {
+    public boolean remove(@NonNull Artifact artifact) {
         synchronized (this.monitor) {
-            Artifact artifact = getArtifact(type, name, version, region);
             boolean result = this.artifacts.remove(artifact);
             if (result) {
                 for (ArtifactRepositoryListener listener : listeners) {
@@ -84,6 +84,20 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
                 }
             }
             return result;
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean remove(@NonNull String type, @NonNull String name, @NonNull Version version, @NonNull Region region) {
+        synchronized (this.monitor) {
+            Artifact artifact = getArtifact(type, name, version, region);
+            if(artifact != null){
+                return remove(artifact);
+            } else {
+                return false;
+            }
         }
     }
 
@@ -99,7 +113,7 @@ public final class NotifyingRuntimeArtifactRepository implements RuntimeArtifact
     /**
      * {@inheritDoc}
      */
-    public Artifact getArtifact(String type, String name, Version version, Region region) {
+    public Artifact getArtifact(@NonNull String type, @NonNull String name, @NonNull Version version, @NonNull Region region) {
         synchronized (this.monitor) {
             for (Artifact artifact : this.artifacts) {
                 if (artifact.getType().equals(type) && 

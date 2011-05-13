@@ -77,7 +77,7 @@ public class NotifyingArtifactRepositoryTests {
         Artifact stubArtifact2 = new StubCompositeArtifact("foo2", "bar2", stubRegion2);
         this.artifactRepository.add(stubArtifact);
         this.artifactRepository.add(stubArtifact2);
-        Artifact retrieved = this.artifactRepository.getArtifact("foo", "bar", new Version("0.1.0"), null);
+        Artifact retrieved = this.artifactRepository.getArtifact("foo", "bar", new Version("0.1.0"), stubRegion1);
         assertNull(retrieved);
         retrieved = this.artifactRepository.getArtifact("foo", "bar", Version.emptyVersion, stubRegion1);
         assertEquals(stubArtifact, retrieved);
