@@ -9,13 +9,10 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.app.spring;
+package org.eclipse.virgo.kernel.module.internal;
 
 import java.util.Collection;
 
-import org.eclipse.virgo.kernel.module.KernelModuleContextAccessorFactory;
-import org.eclipse.virgo.kernel.module.ModuleContext;
-import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
@@ -25,9 +22,11 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
 import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
 
+import org.eclipse.virgo.kernel.module.ModuleContext;
+import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
+
 /**
- * {@link UserRegionModuleContextAccessor} accesses {@link ModuleContext ModuleContexts} in either the the user region or the kernel, but this class must
- * be loaded in the user region.
+ * {@link KernelModuleContextAccessor} accesses {@link ModuleContext ModuleContexts} in the kernel region.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -35,13 +34,7 @@ import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext
  * Thread safe.
  * 
  */
-final class UserRegionModuleContextAccessor implements ModuleContextAccessor {
-    
-    private final ModuleContextAccessor kernelModuleContextAccessor;
-
-    UserRegionModuleContextAccessor() {
-        this.kernelModuleContextAccessor = KernelModuleContextAccessorFactory.create();
-    }
+public final class KernelModuleContextAccessor implements ModuleContextAccessor {
 
     /**
      * {@inheritDoc}
@@ -58,7 +51,7 @@ final class UserRegionModuleContextAccessor implements ModuleContextAccessor {
                     for (ServiceReference<ApplicationContext> ref : refs) {
                         Object service = bundleContext.getService(ref);
                         try {
-                            // Avoid kernel region application contexts.
+                            // Avoid non-kernel region application contexts.
                             if (service instanceof ApplicationContext) {
                                 ApplicationContext appCtx = (ApplicationContext) service;
                                 if (appCtx instanceof ConfigurableOsgiBundleApplicationContext) {
@@ -77,8 +70,7 @@ final class UserRegionModuleContextAccessor implements ModuleContextAccessor {
                 Assert.isFalse(true, "Unexpected exception %s", e.getMessage());
             }
         }
-        // Try the kernel in case the bundle resides in the kernel region.
-        return this.kernelModuleContextAccessor.getModuleContext(bundle);
+        return null;
     }
 
 }
