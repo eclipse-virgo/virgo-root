@@ -25,16 +25,28 @@ import org.junit.Test;
 public class DefaultArtifactObjectNameCreatorTests {
 
     private final DefaultRuntimeArtifactModelObjectNameCreator creator = new DefaultRuntimeArtifactModelObjectNameCreator("test-domain");
-
+    
     @Test(expected = FatalAssertionException.class)
-    public void nullArtifact() {
-        creator.create(null);
+    public void nullModelArtifact() {
+        creator.createModel(null);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullArtifactModelArtifact() {
+        creator.createArtifactModel(null);
     }
 
     @Test
-    public void success() {
-        ObjectName objectName = creator.create(new StubCompositeArtifact());
+    public void successModel() {
+        ObjectName objectName = creator.createModel(new StubCompositeArtifact());
         assertNotNull(objectName);
-        assertEquals("test-domain:artifact-type=test-type,name=test-name,region=test-region,type=KernelModel,version=0.0.0", objectName.getCanonicalName());
+        assertEquals("test-domain:artifact-type=test-type,name=test-name,type=Model,version=0.0.0", objectName.getCanonicalName());
+    }
+
+    @Test
+    public void successArtifactModel() {
+        ObjectName objectName = creator.createArtifactModel(new StubCompositeArtifact());
+        assertNotNull(objectName);
+        assertEquals("test-domain:artifact-type=test-type,name=test-name,region=test-region,type=ArtifactModel,version=0.0.0", objectName.getCanonicalName());
     }
 }

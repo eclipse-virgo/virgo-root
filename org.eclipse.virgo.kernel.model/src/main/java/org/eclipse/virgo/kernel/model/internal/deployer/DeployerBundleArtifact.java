@@ -28,13 +28,25 @@ final class DeployerBundleArtifact extends DeployerArtifact implements BundleArt
         this.installArtifact = installArtifact;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void deleteEntry(String targetPath) {
         this.installArtifact.deleteEntry(targetPath);
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateEntry(String inputPath, String targetPath) {
         this.installArtifact.updateEntry(URI.create(inputPath), targetPath);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getBundleId() {
+        return this.installArtifact.getBundle().getBundleId();
     }
 
 }

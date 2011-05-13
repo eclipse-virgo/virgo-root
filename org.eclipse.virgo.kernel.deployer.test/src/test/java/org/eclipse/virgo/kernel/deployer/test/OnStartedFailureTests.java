@@ -75,7 +75,7 @@ public class OnStartedFailureTests extends AbstractRAMIntegrationTests {
         registerListener();
         
         try {
-            ManageableArtifact manageableArtifact = getManageableArtifact(deployed);
+            ManageableArtifact manageableArtifact = getManageableArtifact(deployed, new StubRegion("org.eclipse.virgo.region.user"));
             manageableArtifact.stop();
             
             try {

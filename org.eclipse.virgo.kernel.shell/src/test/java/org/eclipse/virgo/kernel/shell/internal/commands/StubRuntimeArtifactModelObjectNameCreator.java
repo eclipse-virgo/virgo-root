@@ -21,11 +21,15 @@ import org.osgi.framework.Version;
 
 public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeArtifactModelObjectNameCreator {
 
-    public ObjectName create(Artifact artifact) {
+    public ObjectName createModel(Artifact artifact) {
+        throw new UnsupportedOperationException();
+    }
+    
+    public ObjectName createArtifactModel(Artifact artifact) {
         throw new UnsupportedOperationException();
     }
 
-    public ObjectName create(String type, String name, Version version) {
+    public ObjectName createModel(String type, String name, Version version) {
         try {
             return new ObjectName("test:type=Model,artifact-type=" + type + ",name=" + name + ",version=" + version);
         } catch (MalformedObjectNameException e) {
@@ -35,10 +39,9 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
     }
 
     @Override
-    public ObjectName create(String type, String name, Version version, Region region) {
+    public ObjectName createArtifactModel(String type, String name, Version version, Region region) {
         try {
-            return new ObjectName("test:type=KernelModel,artifact-type=" + type + ",name=" + name + ",version=" + version + "region="
-                + region.getName());
+            return new ObjectName("test:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version + "region=" + region.getName());
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }

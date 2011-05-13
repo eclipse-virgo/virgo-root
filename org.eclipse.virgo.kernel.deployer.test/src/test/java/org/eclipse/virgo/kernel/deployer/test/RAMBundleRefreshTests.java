@@ -57,7 +57,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         copyToDeploy.delete(true);
         refresh.copy(copyToDeploy, true);
         
-        ManageableArtifact artifact = getManageableArtifact(deployed);
+        ManageableArtifact artifact = getManageableArtifact(deployed, new StubRegion("org.eclipse.virgo.region.user"));
         assertTrue(artifact.refresh());        
         assertEquals("ACTIVE", artifact.getState());
         
@@ -113,7 +113,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         copyToDeploy.delete(true);
         refresh.copy(copyToDeploy, true);
         
-        ManageableArtifact artifact = getManageableArtifact("bundle", "refresh", new Version(1,0,0));
+        ManageableArtifact artifact = getManageableArtifact("bundle", "refresh", new Version(1,0,0), new StubRegion("org.eclipse.virgo.region.user"));
         assertTrue(artifact.refresh());
         assertEquals("ACTIVE", artifact.getState());
         
@@ -151,7 +151,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         refreshTarget.delete(true);
         refreshSource.copy(refreshTarget, true);
         
-        ManageableArtifact artifact = getManageableArtifact("bundle", "bundle-refresh-1-refresh", new Version(1,0,0));
+        ManageableArtifact artifact = getManageableArtifact("bundle", "bundle-refresh-1-refresh", new Version(1,0,0), new StubRegion("org.eclipse.virgo.region.user"));
         assertTrue(artifact.refresh());
         assertEquals("ACTIVE", artifact.getState());
         
@@ -176,7 +176,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         assertEquals("no-bsn-no-version", deployed.getSymbolicName());
         assertEquals("0.0.0", deployed.getVersion());
                         
-        ManageableArtifact artifact = getManageableArtifact(deployed);
+        ManageableArtifact artifact = getManageableArtifact(deployed, new StubRegion("org.eclipse.virgo.region.user"));
         assertTrue(artifact.refresh());        
         assertEquals("ACTIVE", artifact.getState());
         
@@ -208,7 +208,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         copyToDeploy.delete(true);
         refresh.copy(copyToDeploy, true);
         
-        ManageableArtifact artifact = getManageableArtifact("bundle", "bundle-refresh-1-refresh", new Version(1,0,0));
+        ManageableArtifact artifact = getManageableArtifact("bundle", "bundle-refresh-1-refresh", new Version(1,0,0), new StubRegion("org.eclipse.virgo.region.user"));
         assertTrue(artifact.refresh());
         assertEquals("ACTIVE", artifact.getState());
         

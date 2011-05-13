@@ -24,6 +24,8 @@ import org.osgi.framework.Version;
  * The default implementation of {@link RuntimeArtifactModelObjectNameCreator}. This implementation creates names based
  * on the following pattern:
  * <p />
+ * <code>&lt;domain&gt;:type=ArtifactModel,artifact-type=&lt;type&gt;,name=&lt;name&gt;,version=&lt;version&gt;,region=&lt;region&gt;</code>
+ * and
  * <code>&lt;domain&gt;:type=Model,artifact-type=&lt;type&gt;,name=&lt;name&gt;,version=&lt;version&gt;</code>
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -32,10 +34,6 @@ import org.osgi.framework.Version;
  * 
  */
 public final class DefaultRuntimeArtifactModelObjectNameCreator implements RuntimeArtifactModelObjectNameCreator {
-
-    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
-
-    private static final String GLOBAL_REGION_NAME = "global";
 
     private static final String ARTIFACTS_FORMAT = "%s:type=Model,*";
 
@@ -47,7 +45,7 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
 
     private static final String ARTIFACT_FORMAT = "%s:type=Model,artifact-type=%s,name=%s,version=%s";
     
-    private static final String EXTENDED_ARTIFACT_FORMAT = "%s:type=KernelModel,artifact-type=%s,name=%s,version=%s,region=%s";
+    private static final String EXTENDED_ARTIFACT_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
 
     private static final String KEY_TYPE = "artifact-type";
 
@@ -64,27 +62,29 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     /**
      * {@inheritDoc}
      */
-    public ObjectName create(@NonNull Artifact artifact) {
-        Region region = artifact.getRegion();
-        // Treat user region artifacts specially to preserve JMX compatibility with Virgo 2.1.0.
-        if (USER_REGION_NAME.equals(region.getName()) || GLOBAL_REGION_NAME.equals(region.getName()) ) {
-            return create(artifact.getType(), artifact.getName(), artifact.getVersion());
-        }
-        return create(artifact.getType(), artifact.getName(), artifact.getVersion(), region);
+    public ObjectName createModel(@NonNull Artifact artifact) {
+        return createModel(artifact.getType(), artifact.getName(), artifact.getVersion());
     }
 
     /**
      * {@inheritDoc}
      */
-    public ObjectName create(String type, String name, Version version, Region region) {
-        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, type, name, version, region.getName()));
+    public ObjectName createArtifactModel(@NonNull Artifact artifact) {
+        return createArtifactModel(artifact.getType(), artifact.getName(), artifact.getVersion(), artifact.getRegion());
     }
 
     /**
      * {@inheritDoc}
      */
-    public ObjectName create(String type, String name, Version version) {
+    public ObjectName createModel(String type, String name, Version version) {
         return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, type, name, version));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ObjectName createArtifactModel(String type, String name, Version version, Region region) {
+        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, type, name, version, region.getName()));
     }
 
     /**

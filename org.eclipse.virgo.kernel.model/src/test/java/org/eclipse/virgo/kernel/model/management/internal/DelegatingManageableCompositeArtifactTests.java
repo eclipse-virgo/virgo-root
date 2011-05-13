@@ -31,12 +31,12 @@ public class DelegatingManageableCompositeArtifactTests {
 
     @Test(expected = FatalAssertionException.class)
     public void nullCreator() {
-        new DelegatingManageableCompositeArtifact(null, new StubCompositeArtifact());
+        new DelegatingManageableCompositeArtifact(null, new StubCompositeArtifact(), true);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifact() {
-        new DelegatingManageableCompositeArtifact(createMock(RuntimeArtifactModelObjectNameCreator.class), null);
+        new DelegatingManageableCompositeArtifact(createMock(RuntimeArtifactModelObjectNameCreator.class), null, true);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class DelegatingManageableCompositeArtifactTests {
         RuntimeArtifactModelObjectNameCreator creator = createMock(RuntimeArtifactModelObjectNameCreator.class);
         CompositeArtifact artifact = createMock(CompositeArtifact.class);
 
-        DelegatingManageableCompositeArtifact manageablePlanArtifact = new DelegatingManageableCompositeArtifact(creator, artifact);
+        DelegatingManageableCompositeArtifact manageablePlanArtifact = new DelegatingManageableCompositeArtifact(creator, artifact, true);
 
         expect(artifact.isAtomic()).andReturn(true);
         expect(artifact.isScoped()).andReturn(true);

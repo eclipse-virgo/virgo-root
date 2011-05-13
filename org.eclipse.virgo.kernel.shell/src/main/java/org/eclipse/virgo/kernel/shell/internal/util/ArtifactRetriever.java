@@ -66,7 +66,7 @@ public final class ArtifactRetriever<T extends ManageableArtifact> {
      * @throws InstanceNotFoundException
      */
     public T getArtifact(String name, Version version) throws InstanceNotFoundException {
-        return getArtifact(this.objectNameCreator.create(this.type, name, version));
+        return getArtifact(this.objectNameCreator.createModel(this.type, name, version));
     }
     
     /**
@@ -77,7 +77,7 @@ public final class ArtifactRetriever<T extends ManageableArtifact> {
      * @throws InstanceNotFoundException
      */
     public T getArtifact(String name, Version version, Region region) throws InstanceNotFoundException {
-        return getArtifact(this.objectNameCreator.create(this.type, name, version, region));
+        return getArtifact(this.objectNameCreator.createArtifactModel(this.type, name, version, region));
     }
 
     /**

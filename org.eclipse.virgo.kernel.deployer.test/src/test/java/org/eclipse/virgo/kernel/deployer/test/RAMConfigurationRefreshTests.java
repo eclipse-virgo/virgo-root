@@ -57,7 +57,7 @@ public class RAMConfigurationRefreshTests extends AbstractRAMIntegrationTests {
         copyToDeploy.delete();
         refresh.copy(copyToDeploy);
                 
-        ManageableArtifact artifact = getManageableArtifact(deployed);
+        ManageableArtifact artifact = getManageableArtifact(deployed, new StubRegion("global"));
         artifact.refresh();
         
         configuration = getConfiguration("test");
@@ -86,7 +86,7 @@ public class RAMConfigurationRefreshTests extends AbstractRAMIntegrationTests {
         propertiesToRefresh.delete();
         refresh.copy(propertiesToRefresh);                
         
-        ManageableArtifact artifact = getManageableArtifact("configuration", "test", new Version(0,0,0));
+        ManageableArtifact artifact = getManageableArtifact("configuration", "test", new Version(0,0,0), new StubRegion("global"));
         artifact.refresh();
         
         configuration = getConfiguration("test");
@@ -125,7 +125,7 @@ public class RAMConfigurationRefreshTests extends AbstractRAMIntegrationTests {
         configurationCopy.delete();
         refresh.copy(configurationCopy);
                 
-        ManageableArtifact artifact = getManageableArtifact("configuration", "test", new Version(0,0,0));
+        ManageableArtifact artifact = getManageableArtifact("configuration", "test", new Version(0,0,0), new StubRegion("global"));
         artifact.refresh();
         
         configuration = getConfiguration("test");

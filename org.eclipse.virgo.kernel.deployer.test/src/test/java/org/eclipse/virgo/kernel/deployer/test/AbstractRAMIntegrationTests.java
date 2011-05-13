@@ -17,6 +17,7 @@ import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
@@ -26,13 +27,13 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 
 public class AbstractRAMIntegrationTests extends AbstractDeployerIntegrationTest {
     
-    public ManageableArtifact getManageableArtifact(DeploymentIdentity deploymentIdentity) {
-        return getManageableArtifact(deploymentIdentity.getType(), deploymentIdentity.getSymbolicName(), new Version(deploymentIdentity.getVersion()));
+    public ManageableArtifact getManageableArtifact(DeploymentIdentity deploymentIdentity, Region region) {
+        return getManageableArtifact(deploymentIdentity.getType(), deploymentIdentity.getSymbolicName(), new Version(deploymentIdentity.getVersion()), region);
     }
     
-    public ManageableArtifact getManageableArtifact(String type, String name, Version version) {
+    public ManageableArtifact getManageableArtifact(String type, String name, Version version, Region region) {
         RuntimeArtifactModelObjectNameCreator objectNameCreator = OsgiFrameworkUtils.getService(this.kernelContext, RuntimeArtifactModelObjectNameCreator.class).getService();
-        ObjectName objectName = objectNameCreator.create(type, name, version);
+        ObjectName objectName = objectNameCreator.createArtifactModel(type, name, version, region);
         
         return getManageableArtifact(objectName);
     }

@@ -17,7 +17,6 @@ import java.util.Set;
 
 import javax.management.ObjectName;
 
-import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
@@ -41,9 +40,12 @@ class DelegatingManageableArtifact implements ManageableArtifact {
 
     private final Artifact artifact;
 
-    public DelegatingManageableArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull Artifact artifact) {
+    private final boolean newModel;
+
+    public DelegatingManageableArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull Artifact artifact, boolean newModel) {
         this.artifactObjectNameCreator = artifactObjectNameCreator;
         this.artifact = artifact;
+        this.newModel = newModel;
     }
 
     /**
@@ -85,12 +87,7 @@ class DelegatingManageableArtifact implements ManageableArtifact {
      * {@inheritDoc}
      */
     public String getRegion() {
-        Region region = this.artifact.getRegion();
-        if(region != null){
-        return region.toString();
-        } else {
-            return "";
-        }
+        return this.artifact.getRegion().getName();
     }
 
     /**
@@ -137,7 +134,11 @@ class DelegatingManageableArtifact implements ManageableArtifact {
     protected final ObjectName[] convertToObjectNames(Set<Artifact> artifacts) {
         Set<ObjectName> objectNames = new HashSet<ObjectName>(artifacts.size());
         for (Artifact artifact : artifacts) {
-            objectNames.add(artifactObjectNameCreator.create(artifact));
+            if(newModel){
+                objectNames.add(artifactObjectNameCreator.createArtifactModel(artifact));
+            } else {
+                objectNames.add(artifactObjectNameCreator.createModel(artifact));
+            }
         }
         return objectNames.toArray(new ObjectName[objectNames.size()]);
     }

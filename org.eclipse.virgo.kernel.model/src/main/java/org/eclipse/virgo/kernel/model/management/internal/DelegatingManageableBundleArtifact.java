@@ -32,18 +32,30 @@ final class DelegatingManageableBundleArtifact extends DelegatingManageableArtif
 
     private final BundleArtifact bundleArtifact;
 
-    public DelegatingManageableBundleArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator,
-        @NonNull BundleArtifact bundleArtifact) {
-        super(artifactObjectNameCreator, bundleArtifact);
+    public DelegatingManageableBundleArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull BundleArtifact bundleArtifact, boolean newModel) {
+        super(artifactObjectNameCreator, bundleArtifact, newModel);
         this.bundleArtifact = bundleArtifact;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void deleteEntry(String targetPath) {
         this.bundleArtifact.deleteEntry(targetPath);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateEntry(String inputPath, String targetPath) {
         this.bundleArtifact.updateEntry(inputPath, targetPath);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getBundleId() {
+        return this.bundleArtifact.getBundleId();
     }
 
 }

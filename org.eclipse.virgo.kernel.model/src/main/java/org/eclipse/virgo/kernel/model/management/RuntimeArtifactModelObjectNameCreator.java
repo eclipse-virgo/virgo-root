@@ -30,26 +30,35 @@ import org.osgi.framework.Version;
 public interface RuntimeArtifactModelObjectNameCreator {
 
     /**
-     * Create an {@link ObjectName} based on an input {@link Artifact}. Names generated from equal (
+     * Create an Model {@link ObjectName} based on an input {@link Artifact}. Names generated from equal (
      * {@link AbstractArtifact#equals(Object)}) {@link Artifact}s should be equal as well.
      * 
      * @param artifact The artifact to generate an {@link ObjectName} for
      * @return The {@link ObjectName} for the {@link Artifact}
      */
-    ObjectName create(Artifact artifact);
+    ObjectName createModel(Artifact artifact);
 
     /**
-     * Creates an {@link ObjectName} based on an input type, name, and version.
+     * Create an ArtifactModel {@link ObjectName} based on an input {@link Artifact}. Names generated from equal (
+     * {@link AbstractArtifact#equals(Object)}) {@link Artifact}s should be equal as well.
+     * 
+     * @param artifact The artifact to generate an {@link ObjectName} for
+     * @return The {@link ObjectName} for the {@link Artifact}
+     */
+    ObjectName createArtifactModel(Artifact artifact);
+
+    /**
+     * Creates a Model {@link ObjectName} based on an input type, name, and version.
      * 
      * @param type The type of the object to create an @{link ObjectName} for
      * @param name The name of the object to create an @{link ObjectName} for
      * @param version The version of the object to create an @{link ObjectName} for
      * @return An {@link ObjectName} for the runtime artifact represented by this type, name, and version
      */
-    ObjectName create(String type, String name, Version version);
+    ObjectName createModel(String type, String name, Version version);
 
     /**
-     * Creates an {@link ObjectName} based on an input type, name, version, and region.
+     * Creates an ArtifactModel {@link ObjectName} based on an input type, name, version, and region.
      * 
      * @param type The type of the object to create an @{link ObjectName} for
      * @param name The name of the object to create an @{link ObjectName} for
@@ -57,7 +66,7 @@ public interface RuntimeArtifactModelObjectNameCreator {
      * @param region The {@link Region} of the object to create an @{link ObjectName} for
      * @return An {@link ObjectName} for the runtime artifact represented by this type, name, version, and region
      */
-    ObjectName create(String type, String name, Version version, Region region);
+    ObjectName createArtifactModel(String type, String name, Version version, Region region);
 
     /**
      * Creates a query {@link ObjectName} that can be used to enumerate all of the user region artifacts in the runtime

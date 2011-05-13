@@ -47,7 +47,7 @@ public class JmxArtifactRepositoryListenerTests {
 
     @Test
     public void added() throws MalformedObjectNameException, NullPointerException {
-        expect(this.creator.create(isA(Artifact.class))).andReturn(new ObjectName("test:key=1"));
+        expect(this.creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("test:key=1"));
         replay(creator);
 
         int initial = this.server.getMBeanCount();
@@ -58,7 +58,7 @@ public class JmxArtifactRepositoryListenerTests {
 
     @Test
     public void removed() throws MalformedObjectNameException, NullPointerException {
-        expect(this.creator.create(isA(Artifact.class))).andReturn(new ObjectName("test:key=1")).times(2);
+        expect(this.creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("test:key=1")).times(2);
         replay(creator);
 
         this.listener.added(new StubCompositeArtifact());

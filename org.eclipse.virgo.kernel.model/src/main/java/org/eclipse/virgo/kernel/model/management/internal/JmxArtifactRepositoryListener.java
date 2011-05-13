@@ -43,6 +43,10 @@ import org.slf4j.LoggerFactory;
  */
 public class JmxArtifactRepositoryListener implements ArtifactRepositoryListener {
 
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
+
+    private static final String GLOBAL_REGION_NAME = "global";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
@@ -57,40 +61,22 @@ public class JmxArtifactRepositoryListener implements ArtifactRepositoryListener
      * {@inheritDoc}
      */
     public void added(Artifact artifact) {
-        ObjectName objectName = this.artifactObjectNameCreator.create(artifact);
-
-        try {
-            if (artifact instanceof CompositeArtifact) {
-                this.server.registerMBean(new DelegatingManageableCompositeArtifact(this.artifactObjectNameCreator, (CompositeArtifact) artifact),
-                    objectName);
-            } else if (artifact instanceof BundleArtifact) {
-                this.server.registerMBean(new DelegatingManageableBundleArtifact(this.artifactObjectNameCreator, (BundleArtifact) artifact),
-                    objectName);
-            } else {
-                this.server.registerMBean(new DelegatingManageableArtifact(this.artifactObjectNameCreator, artifact), objectName);
-            }
-        } catch (InstanceAlreadyExistsException e) {
-            logger.error(String.format("Unable to register '%s'", objectName.toString()), e);
-        } catch (MBeanRegistrationException e) {
-            logger.error(String.format("Unable to register '%s'", objectName.toString()), e);
-        } catch (NotCompliantMBeanException e) {
-            logger.error(String.format("Unable to register '%s'", objectName.toString()), e);
+        String regionName = artifact.getRegion().getName();
+        if (USER_REGION_NAME.equals(regionName) || GLOBAL_REGION_NAME.equals(regionName) ) {
+            publish(artifact, false);
         }
+        publish(artifact, true);
     }
 
     /**
      * {@inheritDoc}
      */
     public void removed(Artifact artifact) {
-        ObjectName objectName = this.artifactObjectNameCreator.create(artifact);
-
-        try {
-            this.server.unregisterMBean(objectName);
-        } catch (MBeanRegistrationException e) {
-            logger.error(String.format("Unable to unregister '%s'", objectName.toString()), e);
-        } catch (InstanceNotFoundException e) {
-            logger.error(String.format("Unable to unregister '%s'", objectName.toString()), e);
-        }
+        String regionName = artifact.getRegion().getName();
+        if (USER_REGION_NAME.equals(regionName) || GLOBAL_REGION_NAME.equals(regionName) ) {
+            retract(artifact, false);
+        } 
+        retract(artifact, true);
     }
 
     public void destroy() {
@@ -104,5 +90,48 @@ public class JmxArtifactRepositoryListener implements ArtifactRepositoryListener
                 // Swallow exception to allow others to proceed
             }
         }
+    }
+    
+    private void publish(Artifact artifact, boolean newModel){
+        ObjectName objectName = getModelObjectName(artifact, newModel);
+
+        try {
+            if (artifact instanceof CompositeArtifact) {
+                this.server.registerMBean(new DelegatingManageableCompositeArtifact(this.artifactObjectNameCreator, (CompositeArtifact) artifact, newModel), objectName);
+            } else if (artifact instanceof BundleArtifact) {
+                this.server.registerMBean(new DelegatingManageableBundleArtifact(this.artifactObjectNameCreator, (BundleArtifact) artifact, newModel), objectName);
+            } else {
+                this.server.registerMBean(new DelegatingManageableArtifact(this.artifactObjectNameCreator, artifact, newModel), objectName);
+            }
+        } catch (InstanceAlreadyExistsException e) {
+            logger.error(String.format("Unable to register '%s'", objectName.toString()), e);
+        } catch (MBeanRegistrationException e) {
+            logger.error(String.format("Unable to register '%s'", objectName.toString()), e);
+        } catch (NotCompliantMBeanException e) {
+            logger.error(String.format("Unable to register '%s'", objectName.toString()), e);
+        }
+    }
+    
+    
+    private void retract(Artifact artifact, boolean newModel){
+        ObjectName objectName = getModelObjectName(artifact, newModel);
+        
+        try {
+            this.server.unregisterMBean(objectName);
+        } catch (MBeanRegistrationException e) {
+            logger.error(String.format("Unable to unregister '%s'", objectName.toString()), e);
+        } catch (InstanceNotFoundException e) {
+            logger.error(String.format("Unable to unregister '%s'", objectName.toString()), e);
+        }
+    }
+    
+    private ObjectName getModelObjectName(Artifact artifact, boolean newModel){
+        ObjectName objectName;
+        if(newModel){
+            objectName = this.artifactObjectNameCreator.createArtifactModel(artifact);
+        } else {
+            objectName = this.artifactObjectNameCreator.createModel(artifact);
+        }
+        return objectName;
     }
 }

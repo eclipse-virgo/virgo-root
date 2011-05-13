@@ -66,7 +66,6 @@ final class BundleArtifact extends AbstractArtifact {
         } catch (BundleException e) {
             logger.error("Unable to update bundle '{}:{}'", this.bundle.getSymbolicName(), this.bundle.getVersion());
             throw new RuntimeException(String.format("Unable to update bundle '%s:%s'", this.bundle.getSymbolicName(), this.bundle.getVersion()), e);
-
         }
     }
 
@@ -79,7 +78,6 @@ final class BundleArtifact extends AbstractArtifact {
         } catch (BundleException e) {
             logger.error("Unable to start bundle '{}:{}'", this.bundle.getSymbolicName(), this.bundle.getVersion());
             throw new RuntimeException(String.format("Unable to start bundle '%s:%s'", this.bundle.getSymbolicName(), this.bundle.getVersion()), e);
-
         }
     }
 
@@ -92,7 +90,6 @@ final class BundleArtifact extends AbstractArtifact {
         } catch (BundleException e) {
             logger.error("Unable to stop bundle '{}:{}'", this.bundle.getSymbolicName(), this.bundle.getVersion());
             throw new RuntimeException(String.format("Unable to stop bundle '%s:%s'", this.bundle.getSymbolicName(), this.bundle.getVersion()), e);
-
         }
     }
 
@@ -104,8 +101,7 @@ final class BundleArtifact extends AbstractArtifact {
             this.bundle.uninstall();
         } catch (BundleException e) {
             logger.error("Unable to uninstall bundle '{}:{}'", this.bundle.getSymbolicName(), this.bundle.getVersion());
-            throw new RuntimeException(String.format("Unable to uninstall bundle '%s:%s'", this.bundle.getSymbolicName(), this.bundle.getVersion()),
-                e);
+            throw new RuntimeException(String.format("Unable to uninstall bundle '%s:%s'", this.bundle.getSymbolicName(), this.bundle.getVersion()), e);
         }
     }
 

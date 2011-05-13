@@ -20,8 +20,6 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.junit.Test;
 
-
-
 /**
  * Tests for refreshing a PAR via its entry in the runtime artifact model
  * 
@@ -37,7 +35,7 @@ public class RAMParRefreshTests extends AbstractRAMIntegrationTests {
     @Test
     public void refreshNotSupported() throws DeploymentException {
         DeploymentIdentity deployed = this.deployer.deploy(new File("src/test/resources/ram-par-refresh/refresh.par").toURI());
-        ManageableArtifact manageableArtifact = getManageableArtifact(deployed);
+        ManageableArtifact manageableArtifact = getManageableArtifact(deployed, new StubRegion("global"));
         assertFalse(manageableArtifact.refresh());        
     }
 

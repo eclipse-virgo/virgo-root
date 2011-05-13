@@ -40,12 +40,12 @@ public class DelegatingManageableArtifactTests {
 
     @Test(expected = FatalAssertionException.class)
     public void nullCreator() {
-        new DelegatingManageableArtifact(null, new StubCompositeArtifact());
+        new DelegatingManageableArtifact(null, new StubCompositeArtifact(), true);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifact() {
-        new DelegatingManageableArtifact(createMock(RuntimeArtifactModelObjectNameCreator.class), null);
+        new DelegatingManageableArtifact(createMock(RuntimeArtifactModelObjectNameCreator.class), null, true);
     }
 
     @Test
@@ -53,12 +53,12 @@ public class DelegatingManageableArtifactTests {
         RuntimeArtifactModelObjectNameCreator creator = createMock(RuntimeArtifactModelObjectNameCreator.class);
         Artifact artifact = createMock(Artifact.class);
 
-        DelegatingManageableArtifact manageableArtifact = new DelegatingManageableArtifact(creator, artifact);
+        DelegatingManageableArtifact manageableArtifact = new DelegatingManageableArtifact(creator, artifact, true);
 
         expect(artifact.getDependents()).andReturn(getArtifacts());
-        expect(creator.create(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value1"));
-        expect(creator.create(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value2"));
-        expect(creator.create(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value1"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value2"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3"));
         expect(artifact.getName()).andReturn("test-name");
         expect(artifact.getState()).andReturn(ArtifactState.ACTIVE);
         expect(artifact.getType()).andReturn("test-type");
