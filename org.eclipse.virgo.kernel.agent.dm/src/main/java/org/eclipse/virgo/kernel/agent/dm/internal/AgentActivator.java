@@ -69,10 +69,9 @@ public final class AgentActivator {
         this.registrationTracker.unregisterAll();
     }
 
-    @SuppressWarnings("unchecked")
     private <T> T getRequiredService(BundleContext context, Class<T> clazz) {
         T result = null;
-        ServiceReference ref = context.getServiceReference(clazz.getName());
+        ServiceReference<T> ref = context.getServiceReference(clazz);
         if (ref != null) {
             result = (T) context.getService(ref);
         }
@@ -82,8 +81,7 @@ public final class AgentActivator {
             // if (ref != null) {
             // context.ungetService(ref);
             // }
-            throw new IllegalStateException("Unable to access required service of type '" + clazz.getName() + "' from bundle '"
-                + context.getBundle().getSymbolicName() + "'");
+            throw new IllegalStateException("Unable to access required service of type '" + clazz.getName() + "' from bundle '" + context.getBundle().getSymbolicName() + "'");
         }
         return result;
     }
