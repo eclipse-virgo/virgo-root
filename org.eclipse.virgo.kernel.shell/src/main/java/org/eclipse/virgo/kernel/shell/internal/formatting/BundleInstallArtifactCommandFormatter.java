@@ -287,7 +287,6 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
         return lines;
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> formatHeaders(QuasiBundle bundle) {
         if (bundle == null) {
             return Arrays.asList("Unable to locate bundle");
