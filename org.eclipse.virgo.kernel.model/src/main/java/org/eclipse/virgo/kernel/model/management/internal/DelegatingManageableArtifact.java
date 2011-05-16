@@ -36,6 +36,10 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
  */
 class DelegatingManageableArtifact implements ManageableArtifact {
 
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
+
+    private static final String GLOBAL_REGION_NAME = "global";
+    
     private final RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator;
 
     private final Artifact artifact;
@@ -133,8 +137,10 @@ class DelegatingManageableArtifact implements ManageableArtifact {
      */
     protected final ObjectName[] convertToObjectNames(Set<Artifact> artifacts) {
         Set<ObjectName> objectNames = new HashSet<ObjectName>(artifacts.size());
+        String regionName;
         for (Artifact artifact : artifacts) {
-            if(newModel){
+            regionName = artifact.getRegion().getName();
+            if(newModel || (!USER_REGION_NAME.equals(regionName) && GLOBAL_REGION_NAME.equals(regionName)) ){
                 objectNames.add(artifactObjectNameCreator.createArtifactModel(artifact));
             } else {
                 objectNames.add(artifactObjectNameCreator.createModel(artifact));
