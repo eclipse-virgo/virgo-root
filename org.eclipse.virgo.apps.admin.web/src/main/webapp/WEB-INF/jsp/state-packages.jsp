@@ -61,7 +61,7 @@
 				<th>Import Directives</th>
 				<th>Import Attributes</th>
 			</tr>
-			<c:forEach var="import" items="${importers}" varStatus="loopStatus">
+			<c:forEach var="_import" items="${importers}" varStatus="loopStatus">
 	<!-- ROW COLOURING -->
 				<c:set var="rowStyle" value="odd" scope="page" />
 				<c:if test="${(loopStatus.index % 2) eq 0}">
@@ -69,17 +69,17 @@
 				</c:if>
 	<!-- DISPLAY THE NEXT ROW -->
 				<tr class="sublevel1-${rowStyle}">
-					<td><a href="<c:url value="bundle.htm?id=${import.importingBundle.bundleId}&state=${state}" />">${import.importingBundle.bundleId}</a></td>
-					<td>${import.importingBundle.symbolicName}</td>
-					<td>${import.importingBundle.version}</td>
-					<td>${import.versionConstraint}</td>
+					<td><a href="<c:url value="bundle.htm?id=${_import.importingBundle.bundleId}&state=${state}" />">${_import.importingBundle.bundleId}</a></td>
+					<td>${_import.importingBundle.symbolicName}</td>
+					<td>${_import.importingBundle.version}</td>
+					<td>${_import.versionConstraint}</td>
 					<td>
-						<c:forEach var="directive" items="${import.directives}">
+						<c:forEach var="directive" items="${_import.directives}">
 							${directive.key}:=${directive.value}<br/>
 						</c:forEach>
 					</td>
 					<td>
-						<c:forEach var="attribute" items="${import.attributes}">
+						<c:forEach var="attribute" items="${_import.attributes}">
 							${attribute.key}=${attribute.value}<br/>
 						</c:forEach>
 					</td>

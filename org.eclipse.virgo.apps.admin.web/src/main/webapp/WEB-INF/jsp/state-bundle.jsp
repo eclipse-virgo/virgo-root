@@ -97,14 +97,14 @@
 					<th>Import Directives</th>
 					<th>Import Attributes</th>
 				</tr>
-				<c:forEach var="import" items="${imports}" varStatus="loopStatus">
+				<c:forEach var="_import" items="${imports}" varStatus="loopStatus">
 		<!-- CREATE THE PROVIDER STRING -->
 					<c:choose>
-						<c:when test="${import.provider eq null}">
+						<c:when test="${_import.provider eq null}">
 							<c:set var="provider" value=""/>
 						</c:when>
 						<c:otherwise>
-							<c:set var="provider" value="${import.provider.exportingBundle.bundleId} (${import.provider.exportingBundle.symbolicName} - ${import.provider.exportingBundle.version})"/>
+							<c:set var="provider" value="${_import.provider.exportingBundle.bundleId} (${_import.provider.exportingBundle.symbolicName} - ${_import.provider.exportingBundle.version})"/>
 						</c:otherwise>
 					</c:choose>
 		<!-- ROW COLOURING -->
@@ -114,16 +114,16 @@
 					</c:if>
 		<!-- DISPLAY THE NEXT ROW -->
 					<tr class="sublevel1-${rowStyle}">
-						<td><a href="<c:url value="packages.htm?name=${import.packageName}&state=${state}" />">${import.packageName}</a></td>
-						<td>${import.versionConstraint}</td>
-						<td><a href="<c:url value="bundle.htm?id=${import.provider.exportingBundle.bundleId}&state=${state}" />">${provider}</a></td>
+						<td><a href="<c:url value="packages.htm?name=${_import.packageName}&state=${state}" />">${_import.packageName}</a></td>
+						<td>${_import.versionConstraint}</td>
+						<td><a href="<c:url value="bundle.htm?id=${_import.provider.exportingBundle.bundleId}&state=${state}" />">${provider}</a></td>
 						<td>
-							<c:forEach var="directive" items="${import.directives}">
+							<c:forEach var="directive" items="${_import.directives}">
 								${directive.key}:=${directive.value}<br/>
 							</c:forEach>
 						</td>
 						<td>
-							<c:forEach var="attribute" items="${import.attributes}">
+							<c:forEach var="attribute" items="${_import.attributes}">
 								${attribute.key}=${attribute.value}<br/>
 							</c:forEach>
 						</td>
