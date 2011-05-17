@@ -69,6 +69,8 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 	
 	private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
+	private static final String RESERVED_SYSTEM_BUNDLE_NAME = "system.bundle";
+
 	private static final long REFRESH_RESTART_WAIT_PERIOD = 60;
 
     private final Object monitor = new Object();
@@ -239,7 +241,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     private boolean isFragmentOnSystemBundle() {
         String fragmentHost = this.bundleManifest.getFragmentHost().getBundleSymbolicName();
         if (fragmentHost != null) {
-            return fragmentHost.equals(EQUINOX_SYSTEM_BUNDLE_NAME);
+            return fragmentHost.equals(EQUINOX_SYSTEM_BUNDLE_NAME) || fragmentHost.equals(RESERVED_SYSTEM_BUNDLE_NAME);
         }
         return false;
     }
