@@ -41,7 +41,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
 
     private static final String STATE = "State";
 
-    private static final String SPRING = "spring-powered";
+    private static final String SPRING = "Spring";
 
     private static final String SCOPED_ATOMIC = "scoped-atomic";
 

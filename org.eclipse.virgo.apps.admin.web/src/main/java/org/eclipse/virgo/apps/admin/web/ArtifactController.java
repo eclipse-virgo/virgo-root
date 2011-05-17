@@ -76,7 +76,7 @@ public final class ArtifactController {
 
     private final StateHolder stateInspectorService;
     
-    private static final String SPRING = "spring-powered";
+    private static final String SPRING = "Spring";
     
     private static final String BUNDLE = "bundle";
 
@@ -231,10 +231,8 @@ public final class ArtifactController {
         } else if (type != null && name != null && version != null) {
             ArtifactAccessor artifact;
             if(region != null && region.length() != 0){
-                System.out.println("Getting with region " + region);
                 artifact = this.ramAccessorHelper.getArtifact(type, name, version, region);
             } else {
-                System.out.println("Getting with no region");
                 artifact = this.ramAccessorHelper.getArtifact(type, name, version);
             }
             this.decorateSpringProperties(artifact);
