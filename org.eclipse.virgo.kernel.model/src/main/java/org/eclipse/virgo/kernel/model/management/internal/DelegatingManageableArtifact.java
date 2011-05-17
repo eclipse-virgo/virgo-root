@@ -135,12 +135,12 @@ class DelegatingManageableArtifact implements ManageableArtifact {
      * @param artifacts The {@link Artifact}s to convert
      * @return The {@link ObjectName}s converted to
      */
-    protected final ObjectName[] convertToObjectNames(Set<Artifact> artifacts) {
+    private final ObjectName[] convertToObjectNames(Set<Artifact> artifacts) {
         Set<ObjectName> objectNames = new HashSet<ObjectName>(artifacts.size());
         String regionName;
         for (Artifact artifact : artifacts) {
             regionName = artifact.getRegion().getName();
-            if(newModel || (!USER_REGION_NAME.equals(regionName) && GLOBAL_REGION_NAME.equals(regionName)) ){
+            if(newModel || (!USER_REGION_NAME.equals(regionName) && !GLOBAL_REGION_NAME.equals(regionName)) ){
                 objectNames.add(artifactObjectNameCreator.createArtifactModel(artifact));
             } else {
                 objectNames.add(artifactObjectNameCreator.createModel(artifact));
