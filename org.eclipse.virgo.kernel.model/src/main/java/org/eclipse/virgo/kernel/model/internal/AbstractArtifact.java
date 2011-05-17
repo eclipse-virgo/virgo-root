@@ -97,7 +97,7 @@ public abstract class AbstractArtifact implements Artifact {
      * {@inheritDoc}
      */
     @Override
-    public Region getRegion() {
+    public final Region getRegion() {
         return this.region;
     }
 

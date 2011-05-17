@@ -68,7 +68,7 @@ public final class BundleDependencyDeterminer implements DependencyDeterminer {
             QuasiExportPackage provider = importPackage.getProvider();
             if (provider != null) {
                 QuasiBundle bundle = provider.getExportingBundle();
-                Artifact artifact = artifactRepository.getArtifact(BundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion(), this.regionDigraph.getRegion(bundle.getBundleId()));
+                Artifact artifact = artifactRepository.getArtifact(NativeBundleArtifact.TYPE, bundle.getSymbolicName(), bundle.getVersion(), this.regionDigraph.getRegion(bundle.getBundleId()));
                 artifacts.add(artifact);
             }
         }

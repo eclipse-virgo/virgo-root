@@ -71,17 +71,17 @@ final class ModelBundleListener implements SynchronousBundleListener {
         Bundle bundle = event.getBundle();
         Region region = this.regionDigraph.getRegion(bundle);
         logger.info("Processing installed event for bundle '{}:{}' in region '{}'", new Object[] {bundle.getSymbolicName(), bundle.getVersion().toString(), region.getName()});
-        this.artifactRepository.add(new BundleArtifact(bundleContext, packageAdminUtil, bundle, region));
+        this.artifactRepository.add(new NativeBundleArtifact(bundleContext, packageAdminUtil, bundle, region));
     }
 
     private void processUninstalled(BundleEvent event) {
         Bundle bundle = event.getBundle();
         for (Artifact artifact : this.artifactRepository.getArtifacts()) {
-            if (artifact.getType().equals(BundleArtifact.TYPE) && 
+            if (artifact.getType().equals(NativeBundleArtifact.TYPE) && 
                 artifact.getName().equals(bundle.getSymbolicName()) && 
                 artifact.getVersion().equals(bundle.getVersion()) ){
-                if(artifact instanceof BundleArtifact){
-                    BundleArtifact bundleArtifact = (BundleArtifact) artifact;
+                if(artifact instanceof NativeBundleArtifact){
+                    NativeBundleArtifact bundleArtifact = (NativeBundleArtifact) artifact;
                     if(ArtifactState.UNINSTALLED == bundleArtifact.getState()){
                         this.artifactRepository.remove(bundleArtifact);
                         logger.info("Processing uninstalled event for bundle '{}:{}' from region '{}'", new Object[] {bundleArtifact.getName(), bundleArtifact.getVersion().toString(), bundleArtifact.getRegion().getName()});

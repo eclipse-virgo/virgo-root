@@ -113,7 +113,7 @@ class DeployerArtifact extends AbstractArtifact {
     /**
      * {@inheritDoc}
      */
-    public final Map<String, String> getProperties() {
+    public Map<String, String> getProperties() {
         Set<String> propertyNames = this.installArtifact.getPropertyNames();
         Map<String, String> result = new HashMap<String, String>(propertyNames.size());
         for (String propertyName : propertyNames) {
