@@ -48,21 +48,21 @@ public class BundleArtifactTests {
         expect(this.region.getName()).andReturn("test.region").anyTimes();
     }
 
-    private final AbstractArtifact artifact = new BundleArtifact(bundleContext, packageAdminUtil, bundle, this.region);
+    private final AbstractArtifact artifact = new NativeBundleArtifact(bundleContext, packageAdminUtil, bundle, this.region);
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new BundleArtifact(null, packageAdminUtil, bundle, this.region);
+        new NativeBundleArtifact(null, packageAdminUtil, bundle, this.region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullPackageAdminUtil() {
-        new BundleArtifact(bundleContext, null, bundle, this.region);
+        new NativeBundleArtifact(bundleContext, null, bundle, this.region);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundle() {
-        new BundleArtifact(bundleContext, packageAdminUtil, null, this.region);
+        new NativeBundleArtifact(bundleContext, packageAdminUtil, null, this.region);
     }
 
     @Test

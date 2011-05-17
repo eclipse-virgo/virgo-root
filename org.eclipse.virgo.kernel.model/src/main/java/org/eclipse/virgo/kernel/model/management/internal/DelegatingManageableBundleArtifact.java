@@ -51,11 +51,4 @@ final class DelegatingManageableBundleArtifact extends DelegatingManageableArtif
         this.bundleArtifact.updateEntry(inputPath, targetPath);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public long getBundleId() {
-        return this.bundleArtifact.getBundleId();
-    }
-
 }
