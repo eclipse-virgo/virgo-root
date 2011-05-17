@@ -69,7 +69,7 @@ public final class ModelBundleListenerInitializer {
         // Find bundles that the listener has almost certainly missed.
         for (Bundle bundle : systemBundleContext.getBundles()) {
             try {
-                this.artifactRepository.add(new BundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle, this.regionDigraph.getRegion(bundle)));
+                this.artifactRepository.add(new NativeBundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle, this.regionDigraph.getRegion(bundle)));
             } catch (Exception e) {
                 this.logger.error(String.format("Exception adding bundle '%s:%s' to the repository", bundle.getSymbolicName(),
                     bundle.getVersion().toString()), e);

@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
+import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.model.management.internal.DelegatingManageableArtifact;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -53,14 +54,16 @@ public class DelegatingManageableArtifactTests {
         RuntimeArtifactModelObjectNameCreator creator = createMock(RuntimeArtifactModelObjectNameCreator.class);
         Artifact artifact = createMock(Artifact.class);
 
-        DelegatingManageableArtifact manageableArtifact = new DelegatingManageableArtifact(creator, artifact, true);
+        DelegatingManageableArtifact manageableArtifact = new DelegatingManageableArtifact(creator, artifact, false);
 
         expect(artifact.getDependents()).andReturn(getArtifacts());
         expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value1"));
         expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value2"));
         expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3"));
+        expect(creator.createModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3,region=global"));
         expect(artifact.getName()).andReturn("test-name");
         expect(artifact.getState()).andReturn(ArtifactState.ACTIVE);
+        expect(artifact.getRegion()).andReturn(new StubRegion("test-region"));
         expect(artifact.getType()).andReturn("test-type");
         expect(artifact.getVersion()).andReturn(Version.emptyVersion);
         expect(artifact.getProperties()).andReturn(Collections.<String, String> emptyMap());
@@ -70,9 +73,10 @@ public class DelegatingManageableArtifactTests {
         artifact.uninstall();
         replay(creator, artifact);
 
-        assertEquals(3, manageableArtifact.getDependents().length);
+        assertEquals(4, manageableArtifact.getDependents().length);
         manageableArtifact.getName();
         assertEquals("ACTIVE", manageableArtifact.getState());
+        assertEquals("test-region", manageableArtifact.getRegion());
         assertEquals("test-type", manageableArtifact.getType());
         assertEquals("0.0.0", manageableArtifact.getVersion());
         assertEquals(0, manageableArtifact.getProperties().size());
@@ -89,6 +93,7 @@ public class DelegatingManageableArtifactTests {
         for (int i = 0; i < 3; i++) {
             artifacts.add(new StubCompositeArtifact());
         }
+        artifacts.add(new StubCompositeArtifact("foo", "bar", new StubRegion("global")));
         return artifacts;
     }
 }

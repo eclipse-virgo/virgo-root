@@ -11,6 +11,10 @@
 
 package org.eclipse.virgo.kernel.model.internal.bundle;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
@@ -24,7 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link Artifact} that delegates to an OSGi native bundle
+ * Implementation of {@link Artifact} that delegates to an OSGi native bundle, this is in comparison 
+ * to a {@link DeployerBundleArtifact} which delegates to a Kernel {@link InstallArtifact}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -32,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * Threadsafe
  * 
  */
-final class BundleArtifact extends AbstractArtifact {
+final class NativeBundleArtifact extends AbstractArtifact {
 
     static final String TYPE = "bundle";
 
@@ -42,7 +47,7 @@ final class BundleArtifact extends AbstractArtifact {
 
     private final Bundle bundle;
     
-    public BundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, @NonNull Region region) {
+    public NativeBundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, @NonNull Region region) {
         super(bundleContext, TYPE, bundle.getSymbolicName(), bundle.getVersion(), region);
         this.packageAdminUtil = packageAdminUtil;
         this.bundle = bundle;
@@ -55,6 +60,16 @@ final class BundleArtifact extends AbstractArtifact {
         return mapBundleState(this.bundle.getState());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("BundleId", String.valueOf(this.bundle.getBundleId()));
+        properties.put("Location", this.bundle.getLocation());
+        return Collections.unmodifiableMap(properties);
+    }
+    
     /**
      * {@inheritDoc}
      */

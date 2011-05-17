@@ -43,10 +43,4 @@ public interface ManageableBundleArtifact extends ManageableArtifact {
      */
     void deleteEntry(String targetPath);
     
-    /**
-     * Gets the id of this bundle
-     *  
-     * @return long id of this bundle
-     */
-    long getBundleId();
 }

@@ -12,6 +12,9 @@
 package org.eclipse.virgo.kernel.model.internal.deployer;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
@@ -45,8 +48,13 @@ final class DeployerBundleArtifact extends DeployerArtifact implements BundleArt
     /**
      * {@inheritDoc}
      */
-    public long getBundleId() {
-        return this.installArtifact.getBundle().getBundleId();
+    public final Map<String, String> getProperties() {
+        Map<String, String> parentProperties = super.getProperties();
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.putAll(parentProperties);
+        properties.put("BundleId", String.valueOf(this.installArtifact.getBundle().getBundleId()));
+        properties.put("Location", this.installArtifact.getBundle().getLocation());
+        return Collections.unmodifiableMap(properties);
     }
-
+    
 }
