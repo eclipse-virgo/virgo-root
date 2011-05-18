@@ -41,7 +41,7 @@ public class StandardSpringContextAccessor implements SpringContextAccessor {
             String symbolicName = bundle.getSymbolicName();
             try {
                 ServiceReference<?>[] refs = bundleContext.getAllServiceReferences(APPLICATION_CONTEXT_CLASS_NAME, "(Bundle-SymbolicName=" + symbolicName + ")");
-                if (refs.length > 0) {
+                if (refs != null && refs.length > 0) {
                     return true;
                 }
             } catch (InvalidSyntaxException e) {
