@@ -18,7 +18,6 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.eclipse.virgo.apps.admin.web.internal.DojoTreeFormatter;
-import org.eclipse.virgo.kernel.module.ModuleContext;
-import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.shell.model.helper.ArtifactAccessor;
 import org.eclipse.virgo.kernel.shell.model.helper.RamAccessorHelper;
 import org.eclipse.virgo.apps.admin.core.ArtifactService;
-import org.eclipse.virgo.apps.admin.core.BundleHolder;
-import org.eclipse.virgo.apps.admin.core.StateHolder;
 
 /**
  * <p>
@@ -72,14 +67,6 @@ public final class ArtifactController {
     
     private final RamAccessorHelper ramAccessorHelper;
 
-    private final ModuleContextAccessor moduleContextAccessor;
-
-    private final StateHolder stateInspectorService;
-    
-    private static final String SPRING = "Spring";
-    
-    private static final String BUNDLE = "bundle";
-
     /**
      * Simple constructor taking an {@link ArtifactService} instance to provide any data required to render requests
      * 
@@ -90,12 +77,10 @@ public final class ArtifactController {
      * @param ramAccessorHelper assistance
      */
     @Autowired
-    public ArtifactController(ArtifactService artifactService, DojoTreeFormatter dojoTreeJsonFormatter, ModuleContextAccessor moduleContextAccessor, StateHolder stateInspectorService, RamAccessorHelper ramAccessorHelper) {
+    public ArtifactController(ArtifactService artifactService, DojoTreeFormatter dojoTreeJsonFormatter, RamAccessorHelper ramAccessorHelper) {
         this.artifactService = artifactService;
         this.dojoTreeJsonFormatter = dojoTreeJsonFormatter;
-        this.stateInspectorService = stateInspectorService;
         this.ramAccessorHelper = ramAccessorHelper;
-        this.moduleContextAccessor = moduleContextAccessor;
         
     }
 
@@ -235,7 +220,6 @@ public final class ArtifactController {
             } else {
                 artifact = this.ramAccessorHelper.getArtifact(type, name, version);
             }
-            this.decorateSpringProperties(artifact);
             responseString = this.dojoTreeJsonFormatter.formatArtifactDetails(parent, artifact);//All other requests
         } else {
             throw new IllegalArgumentException(String.format("Cannot service request with parameters: %s", request.getQueryString()));
@@ -255,21 +239,6 @@ public final class ArtifactController {
         PrintWriter writer = response.getWriter();
         writer.write(sb.toString());
         writer.flush();
-    }
-
-    private void decorateSpringProperties(ArtifactAccessor artifact) {
-        if(BUNDLE.equals(artifact.getType())) {
-            BundleHolder bundleHolder = this.stateInspectorService.getBundle(null, artifact.getName(), artifact.getVersion(), "org.eclipse.virgo.region.user");
-            if(bundleHolder != null) {
-                Bundle rawBundle = bundleHolder.getRawBundle();
-                if(rawBundle != null) {
-                    ModuleContext moduleContext = this.moduleContextAccessor.getModuleContext(rawBundle);
-                    if(moduleContext != null) {
-                        artifact.getAttributes().put(SPRING, moduleContext.getDisplayName());
-                    }
-                }
-            }
-        }
     }
 
 }

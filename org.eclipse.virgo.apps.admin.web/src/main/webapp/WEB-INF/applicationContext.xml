@@ -11,8 +11,6 @@
     
     <osgi:reference id="stateHolder" interface="org.eclipse.virgo.apps.admin.core.StateHolder"/>
     
-    <osgi:reference id="moduleContextAccessor" interface="org.eclipse.virgo.kernel.module.ModuleContextAccessor"/>
-    
 	<osgi:reference id="configAdmin" interface="org.osgi.service.cm.ConfigurationAdmin" />
 	
 </beans>

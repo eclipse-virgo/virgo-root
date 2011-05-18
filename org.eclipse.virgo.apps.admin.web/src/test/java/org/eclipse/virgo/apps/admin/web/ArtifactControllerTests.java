@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.virgo.apps.admin.web.ArtifactController;
-import org.eclipse.virgo.apps.admin.web.stubs.StubApplicationManagerService;
+import org.eclipse.virgo.apps.admin.web.stubs.StubArtifactService;
 import org.eclipse.virgo.apps.admin.web.stubs.StubDojoTreeFormatter;
-import org.eclipse.virgo.apps.admin.web.stubs.StubModuleContextAccessor;
 import org.eclipse.virgo.apps.admin.web.stubs.StubRamAccessorHelper;
-import org.eclipse.virgo.apps.admin.web.stubs.StubStateHolder;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -49,7 +47,7 @@ public class ArtifactControllerTests {
     
 	private ArtifactController artifactController;
 	
-	private ArtifactService stubApplicationManagerService = new StubApplicationManagerService();
+	private ArtifactService stubApplicationManagerService = new StubArtifactService();
 
     private MockMultipartHttpServletRequest request;
     
@@ -57,7 +55,7 @@ public class ArtifactControllerTests {
     
 	@Before
 	public void setup() {
-        this.artifactController = new ArtifactController(this.stubApplicationManagerService, new StubDojoTreeFormatter(), new StubModuleContextAccessor(), new StubStateHolder(), stubRamAccessorHelper);		
+        this.artifactController = new ArtifactController(this.stubApplicationManagerService, new StubDojoTreeFormatter(), stubRamAccessorHelper);		
 		this.request = new MockMultipartHttpServletRequest();
 		this.responce = new MockHttpServletResponse();
 	}

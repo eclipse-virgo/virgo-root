@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Import-Package: org.junit,org.springframework.mock.web;version="[2.5.6
+ ,4)"
+

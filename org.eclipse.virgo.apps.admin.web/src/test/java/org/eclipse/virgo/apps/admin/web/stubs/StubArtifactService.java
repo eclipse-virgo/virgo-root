@@ -20,7 +20,7 @@ import org.eclipse.virgo.apps.admin.core.ArtifactService;
  * Test Stub for testing
  * 
  */
-public class StubApplicationManagerService implements ArtifactService{
+public class StubArtifactService implements ArtifactService{
 
     public String deploy(File stagedFile) {
         return "Deploy";
