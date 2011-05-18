@@ -77,7 +77,8 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * @param repositoryName the name of the source repository, or <code>null</code> if the artifact is not from a
      *        repository
      */
-    protected AbstractInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage, @NonNull ArtifactStateMonitor artifactStateMonitor, String repositoryName, EventLogger eventLogger) {
+    protected AbstractInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage,
+        @NonNull ArtifactStateMonitor artifactStateMonitor, String repositoryName, EventLogger eventLogger) {
         this.identity = identity;
         this.artifactStorage = artifactStorage;
         this.artifactStateMonitor = artifactStateMonitor;
@@ -208,10 +209,10 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         doStart(stateMonitorSignal);
     }
 
-    protected final AbortableSignal createStateMonitorSignal(AbortableSignal signal){
-    	return new StateMonitorSignal(signal);
+    protected final AbortableSignal createStateMonitorSignal(AbortableSignal signal) {
+        return new StateMonitorSignal(signal);
     }
-    
+
     private final class StateMonitorSignal implements AbortableSignal {
 
         private final AbortableSignal signal;
@@ -248,7 +249,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         /**
          * {@inheritDoc}
          */
-		public void signalAborted() {
+        public void signalAborted() {
             asyncStartAborted();
             try {
                 stop();
@@ -256,7 +257,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
                 AbstractInstallArtifact.this.logger.error("Stop aborted", de);
             }
             AbstractInstallArtifact.signalAbortion(this.signal);
-		}
+        }
 
     }
 
@@ -324,19 +325,17 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     public void stop() throws DeploymentException {
         // Only stop if ACTIVE or STARTING.
         if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
-            if (this.getState().equals(State.ACTIVE)) {
-                pushThreadContext();
+            pushThreadContext();
+            try {
+                this.artifactStateMonitor.onStopping(this);
                 try {
-                    this.artifactStateMonitor.onStopping(this);
-                    try {
-                        doStop();
-                        this.artifactStateMonitor.onStopped(this);
-                    } catch (DeploymentException e) {
-                        this.artifactStateMonitor.onStopFailed(this, e);
-                    }
-                } finally {
-                    popThreadContext();
+                    doStop();
+                    this.artifactStateMonitor.onStopped(this);
+                } catch (DeploymentException e) {
+                    this.artifactStateMonitor.onStopFailed(this, e);
                 }
+            } finally {
+                popThreadContext();
             }
         }
     }
@@ -350,7 +349,8 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * {@inheritDoc}
      */
     public void uninstall() throws DeploymentException {
-        if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED) || getState().equals(State.INSTALLED)) {
+        if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED)
+            || getState().equals(State.INSTALLED)) {
             pushThreadContext();
             try {
                 if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
