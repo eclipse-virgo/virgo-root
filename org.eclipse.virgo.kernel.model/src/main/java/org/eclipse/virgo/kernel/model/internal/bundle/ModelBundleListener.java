@@ -16,6 +16,7 @@ import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.model.internal.SpringContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
@@ -49,11 +50,14 @@ final class ModelBundleListener implements SynchronousBundleListener {
 
     private final RegionDigraph regionDigraph;
 
-    public ModelBundleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil, @NonNull RegionDigraph regionDigraph) {
+    private final SpringContextAccessor springContextAccessor;
+
+    public ModelBundleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil, @NonNull RegionDigraph regionDigraph, @NonNull SpringContextAccessor springContextAccessor) {
         this.bundleContext = bundleContext;
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
         this.regionDigraph = regionDigraph;
+        this.springContextAccessor = springContextAccessor;
     }
 
     /**
@@ -71,7 +75,7 @@ final class ModelBundleListener implements SynchronousBundleListener {
         Bundle bundle = event.getBundle();
         Region region = this.regionDigraph.getRegion(bundle);
         logger.info("Processing installed event for bundle '{}:{}' in region '{}'", new Object[] {bundle.getSymbolicName(), bundle.getVersion().toString(), region.getName()});
-        this.artifactRepository.add(new NativeBundleArtifact(bundleContext, packageAdminUtil, bundle, region));
+        this.artifactRepository.add(new NativeBundleArtifact(this.bundleContext, this.packageAdminUtil, bundle, region, this.springContextAccessor));
     }
 
     private void processUninstalled(BundleEvent event) {

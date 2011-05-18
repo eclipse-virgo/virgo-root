@@ -19,16 +19,21 @@ import java.util.Map;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
+import org.eclipse.virgo.kernel.model.internal.SpringContextAccessor;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 final class DeployerBundleArtifact extends DeployerArtifact implements BundleArtifact {
 
     private final BundleInstallArtifact installArtifact;
+    
+    private SpringContextAccessor springContextAccessor;
 
-    public DeployerBundleArtifact(@NonNull BundleContext bundleContext, @NonNull BundleInstallArtifact installArtifact, @NonNull Region region) {
+    public DeployerBundleArtifact(@NonNull BundleContext bundleContext, @NonNull BundleInstallArtifact installArtifact, @NonNull Region region, @NonNull SpringContextAccessor springContextAccessor) {
         super(bundleContext, installArtifact, region);
         this.installArtifact = installArtifact;
+        this.springContextAccessor = springContextAccessor;
     }
 
     /**
@@ -52,8 +57,9 @@ final class DeployerBundleArtifact extends DeployerArtifact implements BundleArt
         Map<String, String> parentProperties = super.getProperties();
         Map<String, String> properties = new HashMap<String, String>();
         properties.putAll(parentProperties);
-        properties.put("BundleId", String.valueOf(this.installArtifact.getBundle().getBundleId()));
-        properties.put("Location", this.installArtifact.getBundle().getLocation());
+        Bundle bundle = this.installArtifact.getBundle();
+        properties.put("BundleId", String.valueOf(bundle.getBundleId()));
+        properties.put("Spring", String.valueOf(this.springContextAccessor.isSpringPowered(bundle)));
         return Collections.unmodifiableMap(properties);
     }
     

@@ -19,6 +19,7 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
+import org.eclipse.virgo.kernel.model.internal.SpringContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
@@ -46,11 +47,14 @@ final class NativeBundleArtifact extends AbstractArtifact {
     private final PackageAdminUtil packageAdminUtil;
 
     private final Bundle bundle;
+
+    private final SpringContextAccessor springContextAccessor;
     
-    public NativeBundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, @NonNull Region region) {
+    public NativeBundleArtifact(@NonNull BundleContext bundleContext, @NonNull PackageAdminUtil packageAdminUtil, @NonNull Bundle bundle, @NonNull Region region, @NonNull SpringContextAccessor springContextAccessor) {
         super(bundleContext, TYPE, bundle.getSymbolicName(), bundle.getVersion(), region);
         this.packageAdminUtil = packageAdminUtil;
         this.bundle = bundle;
+        this.springContextAccessor = springContextAccessor;
     }
 
     /**
@@ -66,7 +70,7 @@ final class NativeBundleArtifact extends AbstractArtifact {
     public Map<String, String> getProperties() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("BundleId", String.valueOf(this.bundle.getBundleId()));
-        properties.put("Location", this.bundle.getLocation());
+        properties.put("Spring", String.valueOf(this.springContextAccessor.isSpringPowered(bundle)));
         return Collections.unmodifiableMap(properties);
     }
     

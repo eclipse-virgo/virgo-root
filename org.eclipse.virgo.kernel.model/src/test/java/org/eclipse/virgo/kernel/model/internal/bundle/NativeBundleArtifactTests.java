@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.ArtifactState;
+import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
@@ -31,13 +32,15 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
-public class BundleArtifactTests {
+public class NativeBundleArtifactTests {
 
     private final PackageAdminUtil packageAdminUtil = createMock(PackageAdminUtil.class);
 
     private final StubBundle bundle = new StubBundle();
 
     private final StubBundleContext bundleContext;
+    
+    private final StubSpringContextAccessor springContextAccessor = new StubSpringContextAccessor();
     
     private final Region region = createMock(Region.class);
 
@@ -48,21 +51,31 @@ public class BundleArtifactTests {
         expect(this.region.getName()).andReturn("test.region").anyTimes();
     }
 
-    private final AbstractArtifact artifact = new NativeBundleArtifact(bundleContext, packageAdminUtil, bundle, this.region);
+    private final AbstractArtifact artifact = new NativeBundleArtifact(this.bundleContext, this.packageAdminUtil, this.bundle, this.region, this.springContextAccessor);
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new NativeBundleArtifact(null, packageAdminUtil, bundle, this.region);
+        new NativeBundleArtifact(null, packageAdminUtil, bundle, this.region, this.springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullPackageAdminUtil() {
-        new NativeBundleArtifact(bundleContext, null, bundle, this.region);
+        new NativeBundleArtifact(bundleContext, null, bundle, this.region, this.springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundle() {
-        new NativeBundleArtifact(bundleContext, packageAdminUtil, null, this.region);
+        new NativeBundleArtifact(bundleContext, packageAdminUtil, null, this.region, this.springContextAccessor);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullRegion() {
+        new NativeBundleArtifact(bundleContext, packageAdminUtil, bundle, null, this.springContextAccessor);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullSpringContextAccessor() {
+        new NativeBundleArtifact(bundleContext, packageAdminUtil, bundle, this.region, null);
     }
 
     @Test

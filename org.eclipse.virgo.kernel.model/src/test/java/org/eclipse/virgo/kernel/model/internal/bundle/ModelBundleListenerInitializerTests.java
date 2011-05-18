@@ -22,6 +22,7 @@ import java.io.IOException;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubRegion;
+import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -40,6 +41,8 @@ public class ModelBundleListenerInitializerTests {
 
     private final PackageAdminUtil packageAdminUtil = createMock(PackageAdminUtil.class);
 
+    private final StubSpringContextAccessor springContextAccessor = new StubSpringContextAccessor();
+    
     private final StubBundleContext bundleContext;
 
     private final StubBundleContext systemBundleContext;
@@ -58,26 +61,31 @@ public class ModelBundleListenerInitializerTests {
         expect(regionDigraph.getRegion(bundle)).andReturn(region).anyTimes();
     }
 
-    private final ModelBundleListenerInitializer initializer = new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, regionDigraph);
+    private final ModelBundleListenerInitializer initializer = new ModelBundleListenerInitializer(this.artifactRepository, this.packageAdminUtil, this.bundleContext, this.regionDigraph, this.springContextAccessor);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelBundleListenerInitializer(null, packageAdminUtil, bundleContext, regionDigraph);
+        new ModelBundleListenerInitializer(null, packageAdminUtil, bundleContext, regionDigraph, this.springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullPackageAdminUtil() {
-        new ModelBundleListenerInitializer(artifactRepository, null, bundleContext, regionDigraph);
+        new ModelBundleListenerInitializer(artifactRepository, null, bundleContext, regionDigraph, this.springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullKernelBundleContext() {
-        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, null, regionDigraph);
+        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, null, regionDigraph, this.springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullRegionDigraph() {
-        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, null);
+        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, null, this.springContextAccessor);
+    }
+
+    @Test(expected = FatalAssertionException.class)
+    public void nullSpringContextAccessor() {
+        new ModelBundleListenerInitializer(artifactRepository, packageAdminUtil, bundleContext, regionDigraph, null);
     }
 
     @Test

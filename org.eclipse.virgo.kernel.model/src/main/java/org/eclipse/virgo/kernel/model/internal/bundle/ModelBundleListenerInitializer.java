@@ -16,6 +16,7 @@ import javax.annotation.PreDestroy;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.kernel.model.internal.SpringContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
@@ -49,12 +50,15 @@ public final class ModelBundleListenerInitializer {
 
     private final RegionDigraph regionDigraph;
 
-    public ModelBundleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil, @NonNull BundleContext kernelBundleContext, @NonNull RegionDigraph regionDigraph) {
+    private final SpringContextAccessor springContextAccessor;
+
+    public ModelBundleListenerInitializer(@NonNull RuntimeArtifactRepository artifactRepository, @NonNull PackageAdminUtil packageAdminUtil, @NonNull BundleContext kernelBundleContext, @NonNull RegionDigraph regionDigraph, @NonNull SpringContextAccessor springContextAccessor) {
         this.artifactRepository = artifactRepository;
         this.packageAdminUtil = packageAdminUtil;
         this.kernelBundleContext = kernelBundleContext;
-        this.bundleListener = new ModelBundleListener(kernelBundleContext, artifactRepository, packageAdminUtil, regionDigraph);
+        this.bundleListener = new ModelBundleListener(kernelBundleContext, artifactRepository, packageAdminUtil, regionDigraph, springContextAccessor);
         this.regionDigraph = regionDigraph;
+        this.springContextAccessor = springContextAccessor;
     }
 
     /**
@@ -69,7 +73,7 @@ public final class ModelBundleListenerInitializer {
         // Find bundles that the listener has almost certainly missed.
         for (Bundle bundle : systemBundleContext.getBundles()) {
             try {
-                this.artifactRepository.add(new NativeBundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle, this.regionDigraph.getRegion(bundle)));
+                this.artifactRepository.add(new NativeBundleArtifact(this.kernelBundleContext, this.packageAdminUtil, bundle, this.regionDigraph.getRegion(bundle), this.springContextAccessor));
             } catch (Exception e) {
                 this.logger.error(String.format("Exception adding bundle '%s:%s' to the repository", bundle.getSymbolicName(),
                     bundle.getVersion().toString()), e);

@@ -12,6 +12,9 @@
 package org.eclipse.virgo.kernel.model.internal.deployer;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.reset;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.equinox.region.RegionDigraph;
@@ -19,12 +22,14 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubRegion;
+import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ModelInstallArtifactLifecycleListenerTests {
@@ -33,6 +38,10 @@ public class ModelInstallArtifactLifecycleListenerTests {
     
     private final RegionDigraph regionDigraph = createMock(RegionDigraph.class);
 
+    private final StubSpringContextAccessor springContextAccessor = new StubSpringContextAccessor();
+
+    private final StubRegion region = new StubRegion("test-region");
+    
     private final StubBundleContext bundleContext;
     {
         this.bundleContext = new StubBundleContext();
@@ -41,29 +50,39 @@ public class ModelInstallArtifactLifecycleListenerTests {
         String filterString2 = String.format("(&(objectClass=%s)(artifactType=plan))", DependencyDeterminer.class.getCanonicalName());
         this.bundleContext.addFilter(filterString2, new TrueFilter(filterString2));
     }
+
+    private final ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, regionDigraph, region, springContextAccessor);
+
+    @Before
+    public void setUp(){
+        reset(this.regionDigraph);
+        expect(this.regionDigraph.getRegion("global")).andReturn(region).anyTimes();
+        replay(this.regionDigraph);
+    }
     
-    private final StubRegion region = new StubRegion("test-region");
-
-    private final ModelInstallArtifactLifecycleListener listener = new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, regionDigraph, region);
-
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ModelInstallArtifactLifecycleListener(null, artifactRepository, regionDigraph, region);
+        new ModelInstallArtifactLifecycleListener(null, artifactRepository, regionDigraph, region, springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelInstallArtifactLifecycleListener(bundleContext, null, regionDigraph, region);
+        new ModelInstallArtifactLifecycleListener(bundleContext, null, regionDigraph, region, springContextAccessor);
     }
     
     @Test(expected = FatalAssertionException.class)
     public void nullRegionDigraph() {
-        new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, null, region);
+        new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, null, region, springContextAccessor);
     }
     
     @Test(expected = FatalAssertionException.class)
     public void nullRegion() {
-        new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, regionDigraph, null);
+        new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, regionDigraph, null, springContextAccessor);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullSpringContextAccessor() {
+        new ModelInstallArtifactLifecycleListener(bundleContext, artifactRepository, regionDigraph, region, null);
     }
 
     @Test

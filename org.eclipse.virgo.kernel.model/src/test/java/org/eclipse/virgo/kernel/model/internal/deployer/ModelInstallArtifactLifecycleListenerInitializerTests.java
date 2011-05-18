@@ -15,6 +15,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
@@ -25,12 +26,14 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubRegion;
+import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
@@ -43,6 +46,10 @@ public class ModelInstallArtifactLifecycleListenerInitializerTests {
     
     private final RegionDigraph regionDigraph = createMock(RegionDigraph.class);
 
+    private final StubSpringContextAccessor springContextAccessor = new StubSpringContextAccessor();
+    
+    private final StubRegion region = new StubRegion("test-region");
+    
     private final StubBundleContext bundleContext;
     {
         this.bundleContext = new StubBundleContext();
@@ -51,35 +58,49 @@ public class ModelInstallArtifactLifecycleListenerInitializerTests {
         String filterString2 = String.format("(&(objectClass=%s)(artifactType=plan))", DependencyDeterminer.class.getCanonicalName());
         this.bundleContext.addFilter(filterString2, new TrueFilter(filterString2));
     }
-    
-    private final StubRegion region = new StubRegion("test-region");
 
-    private final ModelInstallArtifactLifecycleListenerInitializer initializer = new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, region);
+    @Before
+    public void setUp(){
+        reset(this.regionDigraph);
+        expect(this.regionDigraph.getRegion("global")).andReturn(region).anyTimes();
+        replay(this.regionDigraph);
+    }
+    
+    private final ModelInstallArtifactLifecycleListenerInitializer initializer = new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, region, springContextAccessor);
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
-        new ModelInstallArtifactLifecycleListenerInitializer(null, bundleContext, runtimeArtifactModel, regionDigraph, region);
+        new ModelInstallArtifactLifecycleListenerInitializer(null, bundleContext, runtimeArtifactModel, regionDigraph, region, springContextAccessor);
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullBundleContext() {
-        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, null, runtimeArtifactModel, regionDigraph, region);
+        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, null, runtimeArtifactModel, regionDigraph, region, springContextAccessor);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullRuntimeArtifactModel() {
+        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, null, regionDigraph, region, springContextAccessor);
     }
     
     @Test(expected = FatalAssertionException.class)
     public void nullRegionDigraph() {
-        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, null, region);
+        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, null, region, springContextAccessor);
     }
     
     @Test(expected = FatalAssertionException.class)
     public void nullRegion() {
-        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, null);
+        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, null, springContextAccessor);
+    }
+    
+    @Test(expected = FatalAssertionException.class)
+    public void nullSpringContextAccessor() {
+        new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, region, null);
     }
 
     @Test
     public void initialize() throws IOException, InvalidSyntaxException {
-        expect(this.runtimeArtifactModel.getDeploymentIdentities()).andReturn(
-            new DeploymentIdentity[] { new StubDeploymentIdentity("plan"), new StubDeploymentIdentity("bundle") });
+        expect(this.runtimeArtifactModel.getDeploymentIdentities()).andReturn(new DeploymentIdentity[] { new StubDeploymentIdentity("plan"), new StubDeploymentIdentity("bundle") });
         expect(this.runtimeArtifactModel.get(isA(DeploymentIdentity.class))).andReturn(new StubInstallArtifact("bundle"));
         expect(this.runtimeArtifactModel.get(isA(DeploymentIdentity.class))).andReturn(new StubPlanInstallArtifact());
         replay(this.runtimeArtifactModel);
