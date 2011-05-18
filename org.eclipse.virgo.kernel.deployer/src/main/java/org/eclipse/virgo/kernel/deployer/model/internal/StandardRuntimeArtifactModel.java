@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.deployer.model.internal;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,8 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
 
     private static final String URI_PATH_SEPARATOR = "/";
 
+    private static final String SCHEME_FILE = "file";
+
     private final Object monitor = new Object();
 
     private final Map<URI, InstallArtifact> artifactByUri = new HashMap<URI, InstallArtifact>();
@@ -61,8 +65,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     /**
      * {@inheritDoc}
      */
-    public DeploymentIdentity add(@NonNull URI location, @NonNull InstallArtifact installArtifact) throws DuplicateFileNameException,
-        DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
+    public DeploymentIdentity add(@NonNull URI location, @NonNull InstallArtifact installArtifact) throws DuplicateFileNameException, DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
         synchronized (this.monitor) {
 
             // Check the precondition and throw an exception if it is violated.
@@ -82,15 +85,15 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     }
 
     private void checkLocation(URI location, InstallArtifact installArtifact) throws DuplicateLocationException {
-        if (this.artifactByUri.containsKey(location)) {
-            InstallArtifact clashingArtifact = this.artifactByUri.get(location);
+        if (this.artifactByUri.containsKey(getCanonicalFileLocation(location))) {
+            InstallArtifact clashingArtifact = getArtifactByUri(location);
             throw new DuplicateLocationException(getClashMessage(location, installArtifact, clashingArtifact));
         }
     }
 
     private void checkFileName(URI location, InstallArtifact installArtifact, String fileName) throws DuplicateFileNameException {
         if (this.uriByFileName.containsKey(fileName)) {
-            InstallArtifact clashingArtifact = this.artifactByUri.get(this.uriByFileName.get(fileName));
+            InstallArtifact clashingArtifact = getArtifactByUri(this.uriByFileName.get(fileName));
             throw new DuplicateFileNameException(getClashMessage(location, installArtifact, clashingArtifact));
         }
     }
@@ -98,7 +101,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     private void checkDeploymentIdentity(URI location, InstallArtifact installArtifact, DeploymentIdentity deploymentIdentity)
         throws DuplicateDeploymentIdentityException {
         if (this.uriByIdentity.containsKey(deploymentIdentity)) {
-            InstallArtifact clashingArtifact = this.artifactByUri.get(this.uriByIdentity.get(deploymentIdentity));
+            InstallArtifact clashingArtifact = getArtifactByUri(this.uriByIdentity.get(deploymentIdentity));
             throw new DuplicateDeploymentIdentityException(getClashMessage(location, installArtifact, clashingArtifact));
         }
     }
@@ -127,7 +130,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     public InstallArtifact get(@NonNull DeploymentIdentity deploymentIdentity) {
         synchronized (this.monitor) {
             URI location = this.uriByIdentity.get(deploymentIdentity);
-            return location == null ? null : this.artifactByUri.get(location);
+            return location == null ? null : getArtifactByUri(location);
         }
     }
 
@@ -136,7 +139,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
      */
     public InstallArtifact get(@NonNull URI location) {
         synchronized (this.monitor) {
-            return this.artifactByUri.get(location);
+            return getArtifactByUri(location);
         }
     }
 
@@ -170,7 +173,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
                 return null;
             }
 
-            InstallArtifact installArtifact = this.artifactByUri.get(location);
+            InstallArtifact installArtifact = getArtifactByUri(location);
             Assert.notNull(installArtifact,
                 "Broken invariant: artifactByUri is missing an entry for URI '%s' but this URI is present in uriByIdentity for '%s'", location,
                 deploymentIdentity);
@@ -185,15 +188,32 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     }
 
     private void updateState(URI location, InstallArtifact installArtifact, String fileName, DeploymentIdentity deploymentIdentity) {
-        this.artifactByUri.put(location, installArtifact);
+        this.artifactByUri.put(getCanonicalFileLocation(location), installArtifact);
         this.uriByIdentity.put(deploymentIdentity, location);
         this.uriByFileName.put(fileName, location);
     }
 
     private void removeState(DeploymentIdentity deploymentIdentity, URI location, String fileName) {
-        this.artifactByUri.remove(location);
+        this.artifactByUri.remove(getCanonicalFileLocation(location));
         this.uriByIdentity.remove(deploymentIdentity);
         this.uriByFileName.remove(fileName);
     }
-
+    
+    private InstallArtifact getArtifactByUri(URI uri){
+        return this.artifactByUri.get(getCanonicalFileLocation(uri));
+    }
+    
+    private URI getCanonicalFileLocation(URI uri){
+        if (SCHEME_FILE.equals(uri.getScheme())) {  
+            File file = new File(uri);
+            try {
+                return file.getCanonicalFile().toURI();
+            } catch (IOException e) {
+                
+                return uri;
+            } 
+        } else {
+            return uri;
+        }
+    }
 }
