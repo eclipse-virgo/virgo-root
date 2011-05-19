@@ -207,10 +207,9 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
         if (SCHEME_FILE.equals(uri.getScheme())) {  
             File file = new File(uri);
             try {
-                return file.getCanonicalFile().toURI();
+                return new URI(file.getCanonicalPath());
             } catch (IOException e) {
-                
-                return uri;
+                return new URI(file.getAbsolutePath());
             } 
         } else {
             return uri;

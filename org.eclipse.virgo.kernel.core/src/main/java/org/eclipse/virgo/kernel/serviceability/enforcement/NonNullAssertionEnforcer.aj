@@ -61,6 +61,7 @@ public final aspect NonNullAssertionEnforcer {
         Assert.notNull(argValue, "Argument [2] cannot be null");
     }
 
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     before(Object argValue) : executingOperationWithNonNullThirdParameter(argValue) {
         Assert.notNull(argValue, "Argument [3] cannot be null");
     }
