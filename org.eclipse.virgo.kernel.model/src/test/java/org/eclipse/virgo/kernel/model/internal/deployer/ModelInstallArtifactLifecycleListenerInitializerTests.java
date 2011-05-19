@@ -59,6 +59,8 @@ public class ModelInstallArtifactLifecycleListenerInitializerTests {
         this.bundleContext.addFilter(filterString2, new TrueFilter(filterString2));
     }
 
+    private final ModelInstallArtifactLifecycleListenerInitializer initializer = new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, region, springContextAccessor);
+
     @Before
     public void setUp(){
         reset(this.regionDigraph);
@@ -66,8 +68,6 @@ public class ModelInstallArtifactLifecycleListenerInitializerTests {
         replay(this.regionDigraph);
     }
     
-    private final ModelInstallArtifactLifecycleListenerInitializer initializer = new ModelInstallArtifactLifecycleListenerInitializer(artifactRepository, bundleContext, runtimeArtifactModel, regionDigraph, region, springContextAccessor);
-
     @Test(expected = FatalAssertionException.class)
     public void nullArtifactRepository() {
         new ModelInstallArtifactLifecycleListenerInitializer(null, bundleContext, runtimeArtifactModel, regionDigraph, region, springContextAccessor);

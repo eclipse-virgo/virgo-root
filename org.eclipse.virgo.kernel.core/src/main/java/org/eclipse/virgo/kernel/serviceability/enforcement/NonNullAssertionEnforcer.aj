@@ -49,6 +49,10 @@ public final aspect NonNullAssertionEnforcer {
         !serviceability() && 
         (execution(* *(*, *, *, *, @NonNull (*), ..)) || preinitialization(*.new(*, *, *, *, @NonNull (*), ..))) && args(*, *, *, *, obj, ..);
 
+    pointcut executingOperationWithNonNullSixthParameter(Object obj) :
+        !serviceability() && 
+        (execution(* *(*, *, *, *, *, @NonNull (*), ..)) || preinitialization(*.new(*, *, *, *, *, @NonNull (*), ..))) && args(*, *, *, *, *, obj, ..);
+
     before(Object argValue) : executingOperationWithNonNullFirstParameter(argValue) {
         Assert.notNull(argValue, "Argument [1] cannot be null");
     }
@@ -69,5 +73,10 @@ public final aspect NonNullAssertionEnforcer {
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(Object argValue) : executingOperationWithNonNullFifthParameter(argValue) {
         Assert.notNull(argValue, "Argument [5] cannot be null");
+    }
+
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    before(Object argValue) : executingOperationWithNonNullSixthParameter(argValue) {
+        Assert.notNull(argValue, "Argument [6] cannot be null");
     }
 }

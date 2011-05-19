@@ -14,6 +14,7 @@
 package org.eclipse.virgo.kernel.model.internal;
 
 import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -35,7 +36,7 @@ public class StandardSpringContextAccessor implements SpringContextAccessor {
      * {@inheritDoc}
      */
     @Override
-    public boolean isSpringPowered(Bundle bundle){
+    public boolean isSpringPowered(@NonNull Bundle bundle){
         BundleContext bundleContext = bundle.getBundleContext();
         if (bundleContext != null) {
             String symbolicName = bundle.getSymbolicName();
