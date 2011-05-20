@@ -66,7 +66,7 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
 
     private static final String ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=Model,artifact-type=%s,name=%s,version=%s";
 
-    private static final String REGION_ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=KernelModel,artifact-type=%s,name=%s,version=%s,region=%s";
+    private static final String REGION_ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
 
     public StandardRamAccessorHelper() {
     }

@@ -69,7 +69,7 @@ final class NativeBundleArtifact extends AbstractArtifact {
      */
     public Map<String, String> getProperties() {
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("BundleId", String.valueOf(this.bundle.getBundleId()));
+        properties.put("Bundle Id", String.valueOf(this.bundle.getBundleId()));
         properties.put("Spring", String.valueOf(this.springContextAccessor.isSpringPowered(bundle)));
         return Collections.unmodifiableMap(properties);
     }

@@ -58,7 +58,7 @@ final class DeployerBundleArtifact extends DeployerArtifact implements BundleArt
         Map<String, String> properties = new HashMap<String, String>();
         properties.putAll(parentProperties);
         Bundle bundle = this.installArtifact.getBundle();
-        properties.put("BundleId", String.valueOf(bundle.getBundleId()));
+        properties.put("Bundle Id", String.valueOf(bundle.getBundleId()));
         properties.put("Spring", String.valueOf(this.springContextAccessor.isSpringPowered(bundle)));
         return Collections.unmodifiableMap(properties);
     }

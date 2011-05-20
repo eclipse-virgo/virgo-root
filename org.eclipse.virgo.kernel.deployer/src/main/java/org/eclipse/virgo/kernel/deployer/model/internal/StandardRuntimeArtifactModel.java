@@ -12,9 +12,7 @@
 package org.eclipse.virgo.kernel.deployer.model.internal;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
