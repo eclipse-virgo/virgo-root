@@ -43,6 +43,8 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
 
     private static final String SPRING = "Spring";
 
+    private static final String USER_INSTALLED = "user.installed";
+
     private static final String SCOPED_ATOMIC = "scoped-atomic";
 
     private static final String BUNDLE_TYPE = "bundle";
@@ -119,7 +121,7 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
                     key  = attribute.getKey();
                     value = attribute.getValue().toString();
                     if(!"false".equals(value)) {
-                        if(SPRING.equalsIgnoreCase(key) || SCOPED.equalsIgnoreCase(key) || ATOMIC.equalsIgnoreCase(key) || SCOPED_ATOMIC.equalsIgnoreCase(key)) {
+                        if(SCOPED.equalsIgnoreCase(key) || ATOMIC.equalsIgnoreCase(key) || SCOPED_ATOMIC.equalsIgnoreCase(key)) {
                             renderCustomIconChild(fd, key, key);
                         } else if("true".equalsIgnoreCase(value)) {
                             renderSimpleChild(fd, key);
@@ -140,12 +142,18 @@ final class DojoTreeJsonFormatter implements DojoTreeFormatter {
                 for (Entry<String, String> attribute : propertiesEntrySet) {
                     key  = attribute.getKey();
                     value = attribute.getValue();
-                    if ("org.eclipse.virgo.web.contextPath".equalsIgnoreCase(key)) {
-                        renderLinkChild(fd, String.format("%s: %s", key, value), value);
-                    } else if("true".equalsIgnoreCase(value)) {
-                        renderSimpleChild(fd, key);
-                    } else {
-                        renderSimpleChild(fd, String.format("%s: %s", key, value));
+                    if(!"false".equals(value)) {
+                        if ("org.eclipse.virgo.web.contextPath".equalsIgnoreCase(key)) {
+                            renderLinkChild(fd, String.format("%s: %s", key, value), value);
+                        } else if(SPRING.equalsIgnoreCase(key)){
+                            renderCustomIconChild(fd, key, key);
+                        } else if(USER_INSTALLED.equalsIgnoreCase(key)){
+                            renderSimpleChild(fd, "User installed");
+                        } else if("true".equalsIgnoreCase(value)) {
+                            renderSimpleChild(fd, key);
+                        } else {
+                            renderSimpleChild(fd, String.format("%s: %s", key, value));
+                        }
                     }
                 }
                 sb.deleteCharAt(sb.length() - 1);
