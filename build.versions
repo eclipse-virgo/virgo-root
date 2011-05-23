@@ -14,7 +14,7 @@ org.eclipse.virgo.util=3.0.0.M04
 org.slf4j=1.6.1
 org.slf4j.spi=1.6.1
 org.springframework.osgi=1.2.1
-org.springframework=3.0.0.RELEASE
+org.springframework=3.0.5.RELEASE
 
 # Test
 org.springframework.old=2.5.6.SEC01
