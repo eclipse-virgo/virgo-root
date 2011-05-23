@@ -29,10 +29,13 @@ public final class DummyManagableArtifact implements ManageableArtifact {
 
     private final String name;
 
-    public DummyManagableArtifact(String type, String name, String version) {
+    private final String region;
+
+    public DummyManagableArtifact(String type, String name, String version, String region) {
         this.type = type;
         this.name = name;
         this.version = version;
+        this.region = region;
     }
 
     public void start() {
@@ -78,7 +81,7 @@ public final class DummyManagableArtifact implements ManageableArtifact {
     }
 
     public String getRegion() {
-        return "testRegion";
+        return region;
     }
 
 }

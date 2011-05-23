@@ -64,9 +64,7 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
 
     private static final String OPERATION_FAIL = "An error occurred during the %s operation";
 
-    private static final String ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=Model,artifact-type=%s,name=%s,version=%s";
-
-    private static final String REGION_ARTIFACT_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
+    private static final String ARTIFACT_MODEL_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
 
     public StandardRamAccessorHelper() {
     }
@@ -74,35 +72,35 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
     /**
      * {@inheritDoc}
      */
-    public String start(String type, String name, String version) {
-        return performOperation(type, name, version, "start");
+    public String start(String type, String name, String version, String region) {
+        return performOperation(type, name, version, region, "start");
     }
 
     /**
      * {@inheritDoc}
      */
-    public String stop(String type, String name, String version) {
-        return performOperation(type, name, version, "stop");
+    public String stop(String type, String name, String version, String region) {
+        return performOperation(type, name, version, region, "stop");
     }
 
     /**
      * {@inheritDoc}
      */
-    public String uninstall(String type, String name, String version) {
-        return performOperation(type, name, version, "uninstall");
+    public String uninstall(String type, String name, String version, String region) {
+        return performOperation(type, name, version, region, "uninstall");
     }
 
     /**
      * {@inheritDoc}
      */
-    public String refresh(String type, String name, String version) {
-        return performOperation(type, name, version, "refresh");
+    public String refresh(String type, String name, String version, String region) {
+        return performOperation(type, name, version, region, "refresh");
     }
 
-    private String performOperation(String type, String name, String version, String operationName) {
+    private String performOperation(String type, String name, String version, String region, String operationName) {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-            ObjectName objectName = new ObjectName(String.format(ARTIFACT_MBEAN_QUERY, type, name, version));
+            ObjectName objectName = new ObjectName(String.format(ARTIFACT_MODEL_MBEAN_QUERY, type, name, version, region));
             mBeanServer.invoke(objectName, operationName, new Object[0], new String[0]);
             return String.format(OPERATION_SUCSESS, operationName);
         } catch (Exception e) {
@@ -119,7 +117,7 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
         List<String> types = new ArrayList<String>();
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-            Set<ObjectName> objectNames = mBeanServer.queryNames(new ObjectName("org.eclipse.virgo.kernel:type=Model,*"), null);
+            Set<ObjectName> objectNames = mBeanServer.queryNames(new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,*"), null);
             for (ObjectName objectName : objectNames) {
                 String type = objectName.getKeyProperty("artifact-type");
                 if (!(type == null || types.contains(type))) {
@@ -153,7 +151,7 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
         List<ArtifactAccessorPointer> artifacts = new ArrayList<ArtifactAccessorPointer>();
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-            Set<ObjectName> objectNames = mBeanServer.queryNames(new ObjectName(String.format("org.eclipse.virgo.kernel:type=Model,artifact-type=%s,*", type)), null);
+            Set<ObjectName> objectNames = mBeanServer.queryNames(new ObjectName(String.format("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,*", type)), null);
             for (ObjectName objectName : objectNames) {
                 ArtifactAccessorPointer pointer = buildArtifactAccessorPointer(objectName);
                 if (pointer != null) {
@@ -171,56 +169,15 @@ final public class StandardRamAccessorHelper implements RamAccessorHelper {
         }
         return artifacts;
     }
-
-    /*
-     * Partial temporary workaround for bug 342458. Need to add the region to the dojo tree so it can be passed
-     * in as a parameter. Meanwhile if the artifact isn't found in the user region portion of JMX, try the
-     * kernel portion. This is not a proper fix as some artifacts appear in both user region and kernel and this
-     * algorithm will sometimes wrongly return the user region artifact rather than the kernel artifacts.
-     * Perhaps this is worse than a NPE, but it's only temporary and at least it proves the underlying JMX
-     * structure.
-     */
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ArtifactAccessor getArtifact(String type, String name, String version) {
-        String kernelRegion = "org.eclipse.equinox.region.kernel";
-        // should be a parameter, but note there is no region
-        // in the user region mbeans (for backward compatibility)
-        ArtifactAccessorPointer pointer = null;
-        ObjectName objectName = null;
-        try {
-            objectName = new ObjectName(String.format(ARTIFACT_MBEAN_QUERY, type, name, version));
-            pointer = buildArtifactAccessorPointer(objectName);
-            if(pointer == null){
-                objectName = new ObjectName(String.format(REGION_ARTIFACT_MBEAN_QUERY, type, name, version, kernelRegion));
-                pointer = buildArtifactAccessorPointer(objectName);
-            }
-        } catch (MalformedObjectNameException e) {
-            LOGGER.warn("Unexpected error while trying to read the Runtime Artifact Model MBeans", e);
-        } catch (NullPointerException e) {
-            LOGGER.warn("Unexpected error while trying to read the Runtime Artifact Model MBeans", e);
-        }
-        return getArtifact(pointer, objectName);
-    }
         
     /**
       * {@inheritDoc}
       */
     public ArtifactAccessor getArtifact(String type, String name, String version, String region) {
-        String kernelRegion = "org.eclipse.equinox.region.kernel";
-        // should be a parameter, but note there is no region
-        // in the user region mbeans (for backward compatibility)
-
         ArtifactAccessorPointer pointer = null;
         ObjectName objectName = null;
         try {
-            if(kernelRegion.equals(region)){
-                objectName = new ObjectName(String.format(REGION_ARTIFACT_MBEAN_QUERY, type, name, version, region));
-            } else {
-                objectName = new ObjectName(String.format(ARTIFACT_MBEAN_QUERY, type, name, version));
-            }
+            objectName = new ObjectName(String.format(ARTIFACT_MODEL_MBEAN_QUERY, type, name, version, region));
             pointer = buildArtifactAccessorPointer(objectName);
         } catch (MalformedObjectNameException e) {
             LOGGER.warn("Unexpected error while trying to read the Runtime Artifact Model MBeans", e);

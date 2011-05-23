@@ -42,13 +42,17 @@ public class StandardRamAccessorHelperTests {
 
     private static final String VERSION = "test.version";
 
+    private static final String REGION = "test.region";
+
     private static final String TYPE_EXISTS = "test.type.exists";
 
     private static final String NAME_EXISTS = "test.name.exists";
 
     private static final String VERSION_EXISTS = "test.version.exists";
 
-    private static final String ARTIFACT_MBEAN_FORMAT = "org.eclipse.virgo.kernel:type=Model,artifact-type=%s,name=%s,version=%s";
+    private static final String REGION_EXISTS = "test.region.exists";
+
+    private static final String ARTIFACT_MBEAN_FORMAT = "org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
     
     private RamAccessorHelper ramAccessorHelper;
     
@@ -58,9 +62,9 @@ public class StandardRamAccessorHelperTests {
     @Before
     public void setUp() throws Exception {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName(String.format(ARTIFACT_MBEAN_FORMAT, TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS));
+        ObjectName objectName = new ObjectName(String.format(ARTIFACT_MBEAN_FORMAT, TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS));
         if(!mBeanServer.isRegistered(objectName)) {
-            DummyManagableArtifact dummyManagableArtifact = new DummyManagableArtifact(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS);
+            DummyManagableArtifact dummyManagableArtifact = new DummyManagableArtifact(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS);
             mBeanServer.registerMBean(dummyManagableArtifact, objectName);
             AttributeList attributeList = new AttributeList();
             attributeList.add(new Attribute("type", TYPE_EXISTS));
@@ -76,7 +80,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testStart() {        
-        String message = this.ramAccessorHelper.start(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS);
+        String message = this.ramAccessorHelper.start(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS);
         assertNotNull(message);
         assertTrue(message.contains("successful"));
         assertTrue(message.contains("start"));
@@ -87,7 +91,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testStop() {
-        String message = this.ramAccessorHelper.stop(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS);
+        String message = this.ramAccessorHelper.stop(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS);
         assertNotNull(message);
         assertTrue(message.contains("successful"));
         assertTrue(message.contains("stop"));
@@ -98,7 +102,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testUninstall() {
-        String message = this.ramAccessorHelper.uninstall(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS);
+        String message = this.ramAccessorHelper.uninstall(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS);
         assertNotNull(message);
         assertTrue(message.contains("successful"));
         assertTrue(message.contains("uninstall"));
@@ -109,7 +113,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testUpdateAndRefresh() {
-        String message = this.ramAccessorHelper.refresh(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS);
+        String message = this.ramAccessorHelper.refresh(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS);
         assertNotNull(message);
         assertTrue(message.contains("successful"));
         assertTrue(message.contains("refresh"));
@@ -120,7 +124,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testStartFail() {
-        String message = this.ramAccessorHelper.start(TYPE, NAME, VERSION);
+        String message = this.ramAccessorHelper.start(TYPE, NAME, VERSION, REGION);
         assertNotNull(message);
         assertTrue(message.contains("error"));
         assertTrue(message.contains("start"));
@@ -131,7 +135,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testStopFail() {
-        String message = this.ramAccessorHelper.stop(TYPE, NAME, VERSION);
+        String message = this.ramAccessorHelper.stop(TYPE, NAME, VERSION, REGION);
         assertNotNull(message);
         assertTrue(message.contains("error"));
         assertTrue(message.contains("stop"));
@@ -142,7 +146,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testUninstallFail() {
-        String message = this.ramAccessorHelper.uninstall(TYPE, NAME, VERSION);
+        String message = this.ramAccessorHelper.uninstall(TYPE, NAME, VERSION, REGION);
         assertNotNull(message);
         assertTrue(message.contains("error"));
         assertTrue(message.contains("uninstall"));
@@ -153,7 +157,7 @@ public class StandardRamAccessorHelperTests {
      */
     @Test
     public void testUpdateAndRefreshFail() {
-        String message = this.ramAccessorHelper.refresh(TYPE, NAME, VERSION);
+        String message = this.ramAccessorHelper.refresh(TYPE, NAME, VERSION, REGION);
         assertNotNull(message);
         assertTrue(message.contains("error"));
         assertTrue(message.contains("refresh"));
@@ -184,7 +188,7 @@ public class StandardRamAccessorHelperTests {
 
     @Test
     public void testGetArtifactExist() {
-        ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS);
+        ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(TYPE_EXISTS, NAME_EXISTS, VERSION_EXISTS, REGION_EXISTS);
         assertNotNull(artifact);
         assertEquals(TYPE_EXISTS, artifact.getType());
         assertEquals(NAME_EXISTS, artifact.getName());
@@ -193,7 +197,7 @@ public class StandardRamAccessorHelperTests {
 
     @Test
     public void testGetArtifactNotExist() {
-        ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(TYPE, NAME, VERSION);
+        ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(TYPE, NAME, VERSION, REGION);
         assertNull(artifact);
     }
     

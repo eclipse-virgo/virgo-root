@@ -33,7 +33,7 @@ public interface RamAccessorHelper {
      * @param version 
      * @return a response string indicating success or failure
      */
-    public String start(String type, String name, String version);
+    public String start(String type, String name, String version, String region);
 
     /**
      * Stop the Artifact with the given type, name and version.
@@ -42,7 +42,7 @@ public interface RamAccessorHelper {
      * @param version 
      * @return a response string indicating success or failure
      */
-    public String stop(String type, String name, String version);
+    public String stop(String type, String name, String version, String region);
 
     /**
      * Uninstall the Artifact with the given type, name and version.
@@ -51,7 +51,7 @@ public interface RamAccessorHelper {
      * @param version 
      * @return a response string indicating success or failure
      */
-    public String uninstall(String type, String name, String version);
+    public String uninstall(String type, String name, String version, String region);
 
     /**
      * Refresh the Artifact with the given type, name and version.
@@ -60,7 +60,7 @@ public interface RamAccessorHelper {
      * @param version 
      * @return a response string indicating success or failure
      */
-    public String refresh(String type, String name, String version);
+    public String refresh(String type, String name, String version, String region);
 
     /**
      * Return a list of all the types of the user installed artifacts in the system.
@@ -86,17 +86,6 @@ public interface RamAccessorHelper {
      * @return list of {@link ArtifactAccessorPointer}s of given type
      */
     public List<ArtifactAccessorPointer> getAllArtifactsOfType(String type);
-
-    /**
-     * Return a representation of the requested artifact as an {@link ArtifactAccessor}. If no such artifact exists null
-     * may be returned.
-     * 
-     * @param type of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
-     * @param name of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
-     * @param version of {@link org.eclipse.virgo.kernel.model.Artifact artifact}
-     * @return an {@link ArtifactAccessor} for the identified artifact, or <code>null</code> if there isn't one
-     */
-    public ArtifactAccessor getArtifact(String type, String name, String version);
 
     /**
      * Return a representation of the requested artifact as an {@link ArtifactAccessor}. If no such artifact exists null
