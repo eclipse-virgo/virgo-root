@@ -1,12 +1,12 @@
 # Compile
-org.eclipse.virgo.kernel=3.0.0.D-20110519140651
+org.eclipse.virgo.kernel=3.0.0.D-20110523132701
 org.eclipse.virgo.repository=3.0.0.D-20110512074254
 org.eclipse.virgo.util=3.0.0.M04
 org.eclipse.virgo.medic=3.0.0.D-20110512073827
 javax.servlet=2.5.0
 org.eclipse.osgi=3.7.0.v20110224
 org.eclipse.equinox.event=1.2.100.v20110110
-org.springframework=3.0.0.RELEASE
+org.springframework=3.0.5.RELEASE
 org.springframework.osgi=1.2.1
 org.eclipse.gemini.web=1.2.0.M03
 org.aspectj=1.6.6.RELEASE
