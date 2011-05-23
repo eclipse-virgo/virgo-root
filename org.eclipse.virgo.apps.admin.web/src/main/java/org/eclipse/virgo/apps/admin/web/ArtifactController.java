@@ -140,8 +140,9 @@ public final class ArtifactController {
         String type = ServletRequestUtils.getRequiredStringParameter(request, TYPE);
         String name = ServletRequestUtils.getRequiredStringParameter(request, NAME);
         String version = ServletRequestUtils.getRequiredStringParameter(request, VERSION);
+        String region = ServletRequestUtils.getRequiredStringParameter(request, REGION);
 
-        String msg = this.ramAccessorHelper.start(type, name, version);
+        String msg = this.ramAccessorHelper.start(type, name, version, region);
         return new ModelAndView("artifact-overview").addObject("result", msg);
     }
 
@@ -156,8 +157,9 @@ public final class ArtifactController {
         String type = ServletRequestUtils.getRequiredStringParameter(request, TYPE);
         String name = ServletRequestUtils.getRequiredStringParameter(request, NAME);
         String version = ServletRequestUtils.getRequiredStringParameter(request, VERSION);
+        String region = ServletRequestUtils.getRequiredStringParameter(request, REGION);
 
-        String msg = this.ramAccessorHelper.stop(type, name, version);
+        String msg = this.ramAccessorHelper.stop(type, name, version, region);
         return new ModelAndView("artifact-overview").addObject("result", msg);
     }
 
@@ -172,8 +174,9 @@ public final class ArtifactController {
         String type = ServletRequestUtils.getRequiredStringParameter(request, TYPE);
         String name = ServletRequestUtils.getRequiredStringParameter(request, NAME);
         String version = ServletRequestUtils.getRequiredStringParameter(request, VERSION);
+        String region = ServletRequestUtils.getRequiredStringParameter(request, REGION);
 
-        String msg = this.ramAccessorHelper.uninstall(type, name, version);
+        String msg = this.ramAccessorHelper.uninstall(type, name, version, region);
         return new ModelAndView("artifact-overview").addObject("result", msg);
     }
 
@@ -188,8 +191,9 @@ public final class ArtifactController {
         String type = ServletRequestUtils.getRequiredStringParameter(request, TYPE);
         String name = ServletRequestUtils.getRequiredStringParameter(request, NAME);
         String version = ServletRequestUtils.getRequiredStringParameter(request, VERSION);
+        String region = ServletRequestUtils.getRequiredStringParameter(request, REGION);
 
-        String msg = this.ramAccessorHelper.refresh(type, name, version);
+        String msg = this.ramAccessorHelper.refresh(type, name, version, region);
         return new ModelAndView("artifact-overview").addObject("result", msg);
     }
 
@@ -214,12 +218,7 @@ public final class ArtifactController {
         } else if (type != null && name == null) {
             responseString = this.dojoTreeJsonFormatter.formatArtifactsOfType(parent, this.ramAccessorHelper.getArtifactsOfType(type));//Second level request
         } else if (type != null && name != null && version != null) {
-            ArtifactAccessor artifact;
-            if(region != null && region.length() != 0){
-                artifact = this.ramAccessorHelper.getArtifact(type, name, version, region);
-            } else {
-                artifact = this.ramAccessorHelper.getArtifact(type, name, version);
-            }
+            ArtifactAccessor artifact = this.ramAccessorHelper.getArtifact(type, name, version, region);
             responseString = this.dojoTreeJsonFormatter.formatArtifactDetails(parent, artifact);//All other requests
         } else {
             throw new IllegalArgumentException(String.format("Cannot service request with parameters: %s", request.getQueryString()));

@@ -39,14 +39,6 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     /** 
      * {@inheritDoc}
      */
-    public ArtifactAccessor getArtifact(String type, String name, String version) {
-        this.lastCalled = "getArtifact";
-        return new StubArtifactAccessorAndPointer(type, name, version, "region", "state");
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
     public ArtifactAccessor getArtifact(String type, String name, String version, String region) {
         this.lastCalled = "getArtifact";
         return new StubArtifactAccessorAndPointer(type, name, version, region, "state");
@@ -73,7 +65,7 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     /** 
      * {@inheritDoc}
      */
-    public String refresh(String type, String name, String version) {
+    public String refresh(String type, String name, String version, String region) {
         this.lastCalled = "refresh";
         return "refresh";
     }
@@ -81,7 +73,7 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     /** 
      * {@inheritDoc}
      */
-    public String start(String type, String name, String version) {
+    public String start(String type, String name, String version, String region) {
         this.lastCalled = "start";
         return "start";
     }
@@ -89,7 +81,7 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     /** 
      * {@inheritDoc}
      */
-    public String stop(String type, String name, String version) {
+    public String stop(String type, String name, String version, String region) {
         this.lastCalled = "stop";
         return "stop";
     }
@@ -97,7 +89,7 @@ final public class StubRamAccessorHelper implements RamAccessorHelper {
     /** 
      * {@inheritDoc}
      */
-    public String uninstall(String type, String name, String version) {
+    public String uninstall(String type, String name, String version, String region) {
         this.lastCalled = "uninstall";
         return "uninstall";
     }

@@ -90,6 +90,7 @@ public class ArtifactControllerTests {
         this.request.addParameter("type", "dummyType");
         this.request.addParameter("name", "dummyName");
         this.request.addParameter("version", "dummyVersion");
+        this.request.addParameter("region", "dummyRegion");
         ModelAndView mav = this.artifactController.actionStart(request);
         assertEquals("artifact-overview", mav.getViewName());
         Map<String, Object> model = mav.getModel();
@@ -106,6 +107,7 @@ public class ArtifactControllerTests {
         this.request.addParameter("type", "dummyType");
         this.request.addParameter("name", "dummyName");
         this.request.addParameter("version", "dummyVersion");
+        this.request.addParameter("region", "dummyRegion");
         ModelAndView mav = this.artifactController.actionStop(request);
         assertEquals("artifact-overview", mav.getViewName());
         Map<String, Object> model = mav.getModel();
@@ -122,6 +124,7 @@ public class ArtifactControllerTests {
         this.request.addParameter("type", "dummyType");
         this.request.addParameter("name", "dummyName");
         this.request.addParameter("version", "dummyVersion");
+        this.request.addParameter("region", "dummyRegion");
         ModelAndView mav = this.artifactController.actionRefresh(request);
         assertEquals("artifact-overview", mav.getViewName());
         Map<String, Object> model = mav.getModel();
@@ -138,6 +141,7 @@ public class ArtifactControllerTests {
         this.request.addParameter("type", "dummyType");
         this.request.addParameter("name", "dummyName");
         this.request.addParameter("version", "dummyVersion");
+        this.request.addParameter("region", "dummyRegion");
         ModelAndView mav = this.artifactController.actionUninstall(request);
         assertEquals("artifact-overview", mav.getViewName());
         Map<String, Object> model = mav.getModel();

@@ -169,7 +169,8 @@
 		content: {
 			type: treeStore.getValue(lastItem, "type"),
 			name: treeStore.getValue(lastItem, "name"),
-			version: treeStore.getValue(lastItem, "version")
+			version: treeStore.getValue(lastItem, "version"),
+			region: treeStore.getValue(lastItem, "region")
 			},
 		handle: function () {
 				location = "/admin/web/artifact/overview.htm";
