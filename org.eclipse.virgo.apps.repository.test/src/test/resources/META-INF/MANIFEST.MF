@@ -1,16 +1,36 @@
 Manifest-Version: 1.0
 Export-Package: config;version="3.0.0",config.management;version="3.0.
- 0",hosted;version="3.0.0",org.eclipse.virgo.apps.repository.test;vers
- ion="3.0.0";uses:="org.eclipse.virgo.util.io,org.junit,org.junit.runn
- er",watched;version="3.0.0"
+ 0",hosted;version="3.0.0",org.eclipse.virgo.apps.repository.core;vers
+ ion="3.0.0";uses:="javax.management",org.eclipse.virgo.apps.repositor
+ y.core.internal;version="3.0.0";uses:="javax.management,org.eclipse.g
+ emini.web.core,org.eclipse.virgo.apps.repository.core,org.eclipse.vir
+ go.kernel.services.work,org.eclipse.virgo.medic.eventlog,org.eclipse.
+ virgo.medic.log,org.eclipse.virgo.repository,org.eclipse.virgo.reposi
+ tory.codec,org.eclipse.virgo.util.math,org.osgi.framework,org.slf4j",
+ org.eclipse.virgo.apps.repository.test;version="3.0.0";uses:="org.ecl
+ ipse.virgo.util.io,org.junit,org.junit.runner,org.osgi.service.event"
+ ,watched;version="3.0.0"
 Bundle-Vendor: SpringSource Inc.
-Bundle-ClassPath: .,b.jar,c.jar,hosted/a.jar,b.jar,c.jar,hosted/a.jar
+Bundle-ClassPath: .,b.jar,c.jar,hosted/a.jar,b.jar,c.jar,hosted/a.jar,
+ org.eclipse.virgo.apps.repository.core-3.0.0.BUILD-20110524102346.jar
 Bundle-Version: 3.0.0
 Tool: Bundlor 1.0.0.RELEASE
 Bundle-Name: Hosted Provisioning Repository Test
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.repository.test
-Import-Package: org.eclipse.virgo.kernel.deployer.core;version="[3.0.0
- ,4)",org.eclipse.virgo.util.io;version="[3.0.0,4)",org.junit;version=
- "[4.7.0,5)",org.junit.runner;version="[4.7.0,5)"
+Import-Package: javax.management;version="0",org.aspectj.lang;version=
+ "[1.6.6,2)",org.aspectj.lang.reflect;version="[1.6.6,2)",org.aspectj.
+ runtime.reflect;version="[1.6.6,2)",org.eclipse.gemini.web.core;versi
+ on="[1.2.0,2)",org.eclipse.virgo.kernel.deployer.core;version="[3.0.0
+ ,4)",org.eclipse.virgo.kernel.serviceability.dump;version="[3.0.0,4)"
+ ,org.eclipse.virgo.kernel.services.work;version="[3.0.0,4)",org.eclip
+ se.virgo.medic.eventlog;version="[3.0.0,4)",org.eclipse.virgo.medic.l
+ og;version="[3.0.0,4)",org.eclipse.virgo.repository;version="[3.0.0,4
+ )",org.eclipse.virgo.repository.codec;version="[3.0.0,4)",org.eclipse
+ .virgo.repository.configuration;version="[3.0.0,4)",org.eclipse.virgo
+ .util.io;version="[3.0.0,4)",org.eclipse.virgo.util.jmx;version="[3.0
+ .0,4)",org.eclipse.virgo.util.math;version="[3.0.0,4)",org.eclipse.vi
+ rgo.util.osgi;version="[3.0.0,4)",org.junit;version="[4.7.0,5)",org.j
+ unit.runner;version="[4.7.0,5)",org.osgi.framework;version="0",org.os
+ gi.service.event,org.slf4j;version="0"
 

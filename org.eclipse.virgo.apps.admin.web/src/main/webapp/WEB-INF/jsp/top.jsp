@@ -6,13 +6,13 @@
 <head>
 	<title>Virgo Admin Console</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-	<link rel="shortcut icon" href="<c:url value="/resources/images/favicon.ico"             />" />
-	<link rel="stylesheet" href="<c:url value="/resources/js/dijit/themes/tundra/tundra.css" />" type="text/css" />
-	<link rel="stylesheet" href="<c:url value="/resources/styles/main.css"                   />" type="text/css" />
-	<link rel="stylesheet" href="<c:url value="/resources/styles/local.css"                  />" type="text/css" />
-	<link rel="stylesheet" href="<c:url value="/resources/styles/print.css"                  />" type="text/css" media="print" />
-	<script type="text/javascript" src="<c:url value="/resources/js/dojo/dojo.js"            />" djConfig="parseOnLoad: true, baseUrl: '../../resources/js/dojo/'"></script>
-	<script type="text/javascript" src="<c:url value="/resources/js/dojo/virgo-dojo.js"      />" djConfig="parseOnLoad: true, baseUrl: '../../resources/js/dojo/'"></script>
+	<link rel="shortcut icon" href="<c:url value="/images/favicon.ico"             />" />
+	<link rel="stylesheet" href="<c:url value="/js/dijit/themes/tundra/tundra.css" />" type="text/css" />
+	<link rel="stylesheet" href="<c:url value="/styles/main.css"                   />" type="text/css" />
+	<link rel="stylesheet" href="<c:url value="/styles/local.css"                  />" type="text/css" />
+	<link rel="stylesheet" href="<c:url value="/styles/print.css"                  />" type="text/css" media="print" />
+	<script type="text/javascript" src="<c:url value="/js/dojo/dojo.js"            />" djConfig="parseOnLoad: true, baseUrl: '../../resources/js/dojo/'"></script>
+	<script type="text/javascript" src="<c:url value="/js/dojo/virgo-dojo.js"      />" djConfig="parseOnLoad: true, baseUrl: '../../resources/js/dojo/'"></script>
 
 </head>
 

@@ -41,8 +41,7 @@
 		<dependency org="org.springframework" name="org.springframework.beans" rev="${org.springframework}" conf="provided->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.web" rev="${org.springframework}" conf="provided->runtime"/>
         <dependency org="org.springframework" name="org.springframework.web.servlet" rev="${org.springframework}" conf="provided->runtime"/>
-		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="provided->runtime"/>		
-		<dependency org="org.springframework.webflow" name="org.springframework.js" rev="${org.springframework.js}" conf="provided->runtime"/>	
+		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="provided->runtime"/>
         <dependency org="org.slf4j" name="com.springsource.slf4j.api" rev="${org.slf4j}" conf="provided->runtime"/>
 		<!-- === TEST ====================================================== -->
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>

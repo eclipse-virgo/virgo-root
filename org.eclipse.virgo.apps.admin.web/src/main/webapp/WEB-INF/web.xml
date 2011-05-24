@@ -33,16 +33,6 @@
 		<servlet-name>admin</servlet-name>
 		<url-pattern>/web/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>ResourceServlet</servlet-name>
-		<servlet-class>org.springframework.js.resource.ResourceServlet</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>ResourceServlet</servlet-name>
-		<url-pattern>/resources/*</url-pattern>
-	</servlet-mapping>
 
 	<!-- SECURITY CONFIG -->
 
