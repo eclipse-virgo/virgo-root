@@ -24,7 +24,8 @@ public class ExtendedClassNotFoundException extends ClassNotFoundException {
 
     private static final long serialVersionUID = 6045566593339869456L;
 
-    private final ClassLoader classLoader;
+    // Do not attempt to serialise the class loader as it is probably not serialisable.
+    private final transient ClassLoader classLoader;
 
     public ExtendedClassNotFoundException(ClassLoader classLoader, ClassNotFoundException cause) {
         super(cause.getMessage() + " in " + classLoader, cause);
