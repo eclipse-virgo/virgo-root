@@ -19,8 +19,8 @@
 
 	<dependencies>
 		<dependency org="javax.activation" name="com.springsource.javax.activation" rev="${javax.activation}" conf="test->runtime"/>
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="test->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="test->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jsp.jstl}" conf="test->runtime"/>
 		<dependency org="javax.portlet" name="com.springsource.javax.portlet" rev="${javax.portlet}" conf="test->runtime"/>
 		<dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>

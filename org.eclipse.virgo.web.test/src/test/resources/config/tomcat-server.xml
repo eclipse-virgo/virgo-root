@@ -24,10 +24,7 @@
  
   <!--Initialize Jasper prior to webapps are loaded. Documentation at /docs/jasper-howto.html-->
   <Listener className="org.apache.catalina.core.JasperListener" />
-  
-  <!-- JMX Support for the Tomcat server. Documentation at /docs/non-existent.html-->
-  <Listener className="org.apache.catalina.mbeans.ServerLifecycleListener" />
-  
+
   <Listener className="org.eclipse.virgo.web.tomcat.support.ServerLifecycleLoggingListener"/>
   
   <!-- A "Service" is a collection of one or more "Connectors" that share
@@ -71,7 +68,7 @@
            Note: XML Schema validation will not work with Xerces 2.2.
        -->
       <Host name="localhost" deployOnStartup="false" autoDeploy="false"
-            unpackWARs="true" xmlValidation="false" xmlNamespaceAware="false">
+            unpackWARs="false" createDirs="false">
 			<Listener className="org.eclipse.virgo.web.tomcat.support.ApplicationNameTrackingListener"/>
       </Host>
     </Engine>

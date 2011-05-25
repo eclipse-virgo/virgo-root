@@ -23,6 +23,10 @@ public final class ApplicationNameTrackingValve extends ValveBase  {
 
     private final ApplicationNameTrackingDelegate delegate = ApplicationNameTrackingDelegate.getInstance();
 
+    public ApplicationNameTrackingValve() {
+        super(true);
+    }
+    
     @Override
     public void invoke(Request request, Response response) throws IOException, ServletException {
         delegate.setApplicationNameForContextPath(request.getContextPath());

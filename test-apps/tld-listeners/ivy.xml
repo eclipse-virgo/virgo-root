@@ -8,7 +8,7 @@
 	<publications>
 	</publications>
 	<dependencies>
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="${javax.servlet}" conf="compile->runtime"/>
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="compile->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="compile->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="compile->runtime"/>
 	</dependencies>
 </ivy-module>

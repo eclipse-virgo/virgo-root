@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -65,7 +65,7 @@ public class SessionListenerAppNameTests extends AbstractWebIntegrationTests {
 		assertTrue(getApplicationName().startsWith("listenertest"));
 
 		this.appDeployer.undeploy(deploymentIdentity);
-		assertGetRequest(context, "hello.jsp", SC_BAD_REQUEST, null);
+		assertGetRequest(context, "hello.jsp", SC_NOT_FOUND, null);
 	}
 
 	private int getSessionCount() throws Exception {

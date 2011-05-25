@@ -55,7 +55,6 @@ final class FindResourceDelegatingClassLoader extends ClassLoader {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Enumeration<URL> findResources(String name) throws IOException {
         Vector<URL> resources = new Vector<URL>();
         

@@ -12,6 +12,7 @@
 package org.eclipse.virgo.web.test;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.Assert.assertEquals;
@@ -225,7 +226,7 @@ public abstract class AbstractWebIntegrationTests {
         }
 
         for (String resource : resources) {
-            assertGetRequest(context, resource, SC_BAD_REQUEST);
+            assertGetRequest(context, resource, SC_NOT_FOUND);
         }
     }
 
@@ -255,7 +256,7 @@ public abstract class AbstractWebIntegrationTests {
         }
 
         for (String resource : expectations.keySet()) {
-            assertGetRequest(context, resource, SC_BAD_REQUEST, null);
+            assertGetRequest(context, resource, SC_NOT_FOUND, null);
         }
     }
 

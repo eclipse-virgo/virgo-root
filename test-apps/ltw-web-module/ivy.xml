@@ -15,7 +15,7 @@
 	</publications>
 
 	<dependencies>
-        <dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="2.5.0" conf="provided->compile"/>
+        <dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->compile"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
         <dependency org="org.springframework" name="org.springframework.beans" rev="${org.springframework}" conf="provided->compile"/>
         <dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="provided->compile"/>

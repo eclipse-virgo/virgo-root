@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 import java.io.File;
@@ -48,6 +48,6 @@ public class WarDirectoryDeploymentTests extends AbstractWebIntegrationTests {
 
         hotUnDeploy(deployed);
 
-        assertGetRequest("hellowebdir", "index.jsp", SC_BAD_REQUEST);
+        assertGetRequest("hellowebdir", "index.jsp", SC_NOT_FOUND);
     }
 }

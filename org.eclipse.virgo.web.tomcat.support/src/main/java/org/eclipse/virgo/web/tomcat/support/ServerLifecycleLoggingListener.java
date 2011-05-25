@@ -75,7 +75,7 @@ public final class ServerLifecycleLoggingListener implements LifecycleListener {
         }
 
         Service[] services = server.findServices();
-        if (Lifecycle.INIT_EVENT.equals(type)) {
+        if (Lifecycle.BEFORE_INIT_EVENT.equals(type)) {
             checkConnectorPortsAvailable(services);
         }
         propagateListeners(event, services);
@@ -93,12 +93,10 @@ public final class ServerLifecycleLoggingListener implements LifecycleListener {
     private void propagateListeners(LifecycleEvent event, Service[] services) {
         String type = event.getType();
         for (Service service : services) {
-            if (service instanceof Lifecycle) {
-                if (Lifecycle.BEFORE_START_EVENT.equals(type)) {
-                    ((Lifecycle) service).addLifecycleListener(this);
-                } else if (Lifecycle.AFTER_STOP_EVENT.equals(type)) {
-                    ((Lifecycle) service).removeLifecycleListener(this);
-                }
+            if (Lifecycle.BEFORE_START_EVENT.equals(type)) {
+                ((Lifecycle) service).addLifecycleListener(this);
+            } else if (Lifecycle.AFTER_STOP_EVENT.equals(type)) {
+                ((Lifecycle) service).removeLifecycleListener(this);
             }
         }
     }
