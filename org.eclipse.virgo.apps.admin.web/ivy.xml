@@ -28,8 +28,8 @@
 		<!-- === PROVIDED-RUNTIME =========================================== -->
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="provided->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="provided->runtime"/>
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="provided->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="provided->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jstl}" conf="provided->runtime"/>
         <dependency org="org.apache.taglibs" name="com.springsource.org.apache.taglibs.standard" rev="${org.apache.taglibs.standard}" conf="provided->runtime"/>
         <dependency org="org.apache.xmlcommons" name="com.springsource.org.apache.xmlcommons" rev="${org.apache.xmlcommons}" conf="provided->runtime"/>

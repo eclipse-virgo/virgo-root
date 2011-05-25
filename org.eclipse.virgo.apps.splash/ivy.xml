@@ -18,8 +18,8 @@
 
     <dependencies>
         <!-- === PROVIDED-RUNTIME =========================================== -->
-        <dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
-        <dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="provided->runtime"/>
+        <dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
+        <dependency org="javax.servlet" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="provided->runtime"/>
         <dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jstl}" conf="provided->runtime"/>
         <dependency org="org.apache.taglibs" name="com.springsource.org.apache.taglibs.standard" rev="${org.apache.taglibs.standard}" conf="provided->runtime"/>
         <dependency org="org.springframework" name="org.springframework.web" rev="${org.springframework}" conf="provided->runtime"/>
