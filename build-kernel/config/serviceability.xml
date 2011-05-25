@@ -17,7 +17,7 @@
 					<MaxFileSize>10MB</MaxFileSize>
 				</triggeringPolicy>
 				<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-					<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-28.28thread %-64.64logger{64} %X{medic.eventCode} %msg %ex%n</Pattern>
+					<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %-28.28thread %-64.64logger{64} %X{medic.eventCode} %msg %ex%n</Pattern>
 				</encoder>
 			</appender>
 		</sift>
@@ -34,7 +34,7 @@
 			<MaxFileSize>10MB</MaxFileSize>
 		</triggeringPolicy>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-28.28thread %-64.64logger{64} %X{medic.eventCode} %msg %ex%n</Pattern>
+			<Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %-28.28thread %-64.64logger{64} %X{medic.eventCode} %msg %ex%n</Pattern>
 		</encoder>
 	</appender>
 
