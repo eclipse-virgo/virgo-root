@@ -20,7 +20,7 @@
     	<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
     	<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
 
-		<dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
+		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.dbcp" rev="${commons.dbcp}" conf="test->runtime" />
 		<dependency org="org.aopalliance" name="com.springsource.org.aopalliance" rev="${org.aopalliance}" conf="test->runtime" />
 		
