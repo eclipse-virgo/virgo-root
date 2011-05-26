@@ -22,6 +22,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.service.cm.ConfigurationListener;
+import org.osgi.service.log.LogService;
+import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.dump.impl.DumpContributorPublisher;
@@ -56,9 +58,9 @@ import org.eclipse.virgo.medic.log.impl.logback.DelegatingContextSelector;
 import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
+import org.eclipse.virgo.medic.log.osgi.OSGiLogServiceImpl;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
-@SuppressWarnings("deprecation")
 public final class MedicActivator implements BundleActivator {
 
     private static final String LOGGER_NAME_SYSERR = "System.err";
@@ -98,11 +100,11 @@ public final class MedicActivator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
     	ConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(context);   
-    	this.registrationTracker.track(context.registerService(ConfigurationListener.class.getName(), configurationProvider, null));
-
+        this.registrationTracker.track(context.registerService(ConfigurationListener.class.getName(), configurationProvider, null));
     	logStart(context, configurationProvider);
     	eventLogStart(context);
     	dumpStart(context, configurationProvider);
+        this.registrationTracker.track(context.registerService(LogService.class.getName(), new OSGiLogServiceImpl(LoggerFactory.getLogger(LogService.class)), null));
     }
 
     public void stop(BundleContext context) throws Exception {
@@ -236,7 +238,7 @@ public final class MedicActivator implements BundleActivator {
         return new SecurityManagerExecutionStackAccessor();
     }
 
-    private void logStop(@SuppressWarnings("unused") BundleContext context) {
+    private void logStop(BundleContext context) {
     	
     	System.setProperty(PROPERTY_LOGBACK_CONTEXT_SELECTOR, DEFAULT_CONTEXT_SELECTOR);
     	
