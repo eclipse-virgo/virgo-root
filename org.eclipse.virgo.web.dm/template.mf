@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.virgo.web.dm
 Bundle-Version: 3.0.0
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
- javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
+ javax.servlet.*;version="${javax.servlet:[-1.5.=, +1)}",
  org.apache.commons.logging.*;version="${org.apache.commons.logging:[=.=.=, +1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
  org.osgi.framework.*;version="0",
