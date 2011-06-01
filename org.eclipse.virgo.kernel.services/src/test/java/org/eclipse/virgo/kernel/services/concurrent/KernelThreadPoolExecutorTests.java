@@ -65,6 +65,7 @@ public class KernelThreadPoolExecutorTests extends AbstractExecutorTests {
 
         });
         latch.await();
+        Thread.sleep(100);
         assertEquals(0, executor.getCompletedTaskCount());
     }
 
