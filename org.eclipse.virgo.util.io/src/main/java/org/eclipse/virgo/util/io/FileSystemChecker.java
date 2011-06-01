@@ -243,7 +243,7 @@ public final class FileSystemChecker {
         for (FileSystemListener listener : this.listeners) {
             try {
                 listener.onChange(file, event);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (logger!=null) {
                     logger.warn("Listener threw exception for event " + event, e);
                 }
