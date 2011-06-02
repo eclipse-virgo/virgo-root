@@ -14,11 +14,10 @@ package org.eclipse.virgo.web.core.internal;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.gemini.web.core.WebContainer;
 import org.eclipse.virgo.web.core.WebApplicationRegistry;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * Simple data structure that holds all the services needed from web deployment.
- * 
- * 
  */
 final class WebDeploymentEnvironment {
 
@@ -28,23 +27,30 @@ final class WebDeploymentEnvironment {
 
     private final WebBundleManifestTransformer manifestTransformer;
 
+    private final ConfigurationAdmin configAdmin;
+
     public WebDeploymentEnvironment(WebContainer webContainer, WebApplicationRegistry applicationRegistry,
-        WebBundleManifestTransformer manifestTransformer) {
+        WebBundleManifestTransformer manifestTransformer, ConfigurationAdmin configAdmin) {
         this.webContainer = webContainer;
         this.applicationRegistry = applicationRegistry;
         this.manifestTransformer = manifestTransformer;
+        this.configAdmin = configAdmin;
     }
 
     public WebContainer getWebContainer() {
-        return webContainer;
+        return this.webContainer;
     }
 
     public WebApplicationRegistry getApplicationRegistry() {
-        return applicationRegistry;
+        return this.applicationRegistry;
     }
 
     public WebBundleManifestTransformer getManifestTransformer() {
-        return manifestTransformer;
+        return this.manifestTransformer;
+    }
+
+    public ConfigurationAdmin getConfigAdmin() {
+        return this.configAdmin;
     }
 
 }

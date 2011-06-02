@@ -16,9 +16,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.Locale;
 
 import org.osgi.framework.Constants;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +43,19 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  */
 final class WebBundleTransformer implements Transformer {
 
+    private static final String WEB_CONFIGURATION_PID = "org.eclipse.virgo.web";
+
+    private static final String PROPERTY_WAB_HEADERS = "WABHeaders";
+
+    private static final String PROPERTY_VALUE_WAB_HEADERS_STRICT = "strict";
+
+    private static final String PROPERTY_VALUE_WAB_HEADERS_DEFAULTED = "defaulted";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final WebDeploymentEnvironment environment;
+
+    private final boolean strictWABHeaders;
 
     static final String WEB_BUNDLE_MODULE_TYPE = "web-bundle";
 
@@ -54,6 +67,34 @@ final class WebBundleTransformer implements Transformer {
 
     WebBundleTransformer(WebDeploymentEnvironment environment) {
         this.environment = environment;
+        this.strictWABHeaders = getStrictWABHeadersConfiguration(environment.getConfigAdmin(), this.logger);
+    }
+
+    private static boolean getStrictWABHeadersConfiguration(ConfigurationAdmin configAdmin, Logger logger) {
+        boolean strictWABHeaders = false;
+
+        try {
+            Configuration config = configAdmin.getConfiguration(WEB_CONFIGURATION_PID, null);
+            if (config != null) {
+                @SuppressWarnings("unchecked")
+                Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();
+                if (properties != null) {
+                    String wabHeadersPropertyValue = properties.get(PROPERTY_WAB_HEADERS);
+                    if (wabHeadersPropertyValue != null) {
+                        if (PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
+                            strictWABHeaders = true;
+                        } else if (!PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {
+                            logger.error("Property '%s' in configuration '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS,
+                                WEB_CONFIGURATION_PID, wabHeadersPropertyValue });
+                        }
+                    }
+                }
+            }
+        } catch (IOException _) {
+            // ignore
+        }
+
+        return strictWABHeaders;
     }
 
     /**
@@ -165,11 +206,13 @@ final class WebBundleTransformer implements Transformer {
         try {
             BundleManifest bundleManifest = bundleArtifact.getBundleManifest();
             if (bundleManifest.getModuleType() == null || "web".equalsIgnoreCase(bundleManifest.getModuleType())) {
-            	bundleManifest.setHeader("SpringSource-DefaultWABHeaders", "true");
+                if (!this.strictWABHeaders) {
+                    bundleManifest.setHeader("SpringSource-DefaultWABHeaders", "true");
+                }
                 bundleManifest.setModuleType(WEB_BUNDLE_MODULE_TYPE);
-                boolean webBundle = /*WebContainerUtils.*/ isWebApplicationBundle(bundleManifest);
+                boolean webBundle = /* WebContainerUtils. */isWebApplicationBundle(bundleManifest);
                 InstallationOptions installationOptions = new InstallationOptions(Collections.<String, String> emptyMap());
-                installationOptions.setDefaultWABHeaders(true);
+                installationOptions.setDefaultWABHeaders(!this.strictWABHeaders);
                 this.environment.getManifestTransformer().transform(bundleManifest, getSourceUrl(bundleArtifact), installationOptions, webBundle);
             } else {
                 logger.debug("Bundle '{}' version '{}' is not being transformed as it already has a Module-Type of '{}'", new Object[] {
@@ -193,7 +236,7 @@ final class WebBundleTransformer implements Transformer {
             throw new DeploymentException("Install artifact '" + installArtifact + "' has a null source URI");
         }
     }
-    
+
     // Following methods temporarily copied from WebContainerUtils
     /**
      * Determines whether the given manifest represents a web application bundle. According to the R4.2 Enterprise

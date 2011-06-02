@@ -9,6 +9,7 @@
 	<reference id="transformer" interface="org.eclipse.gemini.web.core.WebBundleManifestTransformer"/>	
 	<reference id="framework" interface="org.eclipse.virgo.kernel.osgi.framework.OsgiFramework" />
 	<reference id="eventLogger" interface="org.eclipse.virgo.medic.eventlog.EventLogger"/>
+	<reference id="configAdmin" interface="org.osgi.service.cm.ConfigurationAdmin"/>
 	
 	<service ref="registry" interface="org.eclipse.virgo.web.core.WebApplicationRegistry"/>
 	
@@ -22,6 +23,7 @@
 		<beans:constructor-arg ref="webContainer"/>
 		<beans:constructor-arg ref="transformer"/>
 		<beans:constructor-arg ref="registry"/>
+		<beans:constructor-arg ref="configAdmin"/>
 	</beans:bean>
 	
 	<beans:bean id="registry" class="org.eclipse.virgo.web.core.internal.StandardWebApplicationRegistry"/>

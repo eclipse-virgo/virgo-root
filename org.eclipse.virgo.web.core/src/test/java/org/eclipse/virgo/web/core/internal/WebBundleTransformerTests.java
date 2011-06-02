@@ -33,6 +33,7 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardBundleManifest;
 import org.junit.Test;
 import org.osgi.framework.Version;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 public class WebBundleTransformerTests {
     
@@ -42,7 +43,9 @@ public class WebBundleTransformerTests {
     
     private WebBundleManifestTransformer manifestTransformer = createMock(WebBundleManifestTransformer.class);
     
-    private WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer);
+    private ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
+    
+    private WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin);
     
     private WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
     
