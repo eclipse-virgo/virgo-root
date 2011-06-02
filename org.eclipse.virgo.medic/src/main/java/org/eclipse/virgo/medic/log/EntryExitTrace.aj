@@ -39,13 +39,16 @@ public aspect EntryExitTrace pertypewithin(*) {
 
 	pointcut logback() : within(ch.qos.logback..*) || within(org.slf4j.impl..*);
 
+    // avoid common methods with little benefit of entry/exit trace logging
 	pointcut setter() : execution(* set*(..));
-
 	pointcut getter() : execution(* get*(..));
+	pointcut hashCode() : execution(public int hashCode());
+	pointcut equals() : execution(public boolean equals(Object));
+	pointcut toString() : execution(public String toString());
 
-	pointcut debugCandidate() : execution(public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !webClassLoading() && !logback();
+	pointcut debugCandidate() : execution(public * *(..)) && !setter() && !getter() && !hashCode() && !equals() && !toString() && !medic() && !util() && !repository() && !kernelUserRegion() && !webClassLoading() && !logback();
 
-	pointcut traceCandidate() : execution(!public * *(..)) && !setter() && !getter() && !medic() && !util() && !repository() && !kernelUserRegion() && !webClassLoading() && !logback();
+	pointcut traceCandidate() : execution(!public * *(..)) && !setter() && !getter() && !hashCode() && !equals() && !toString() && !medic() && !util() && !repository() && !kernelUserRegion() && !webClassLoading() && !logback();
 
 	before() : debugCandidate() {
 		getLogger(thisJoinPointStaticPart).debug("{} {}", ">",
