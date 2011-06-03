@@ -167,7 +167,7 @@ public class WebBundleTransformerTests {
         
         verify(manifestTransformer);
         
-        assertEquals("true", bundleManifest.getHeader("org.eclipse.gemini.web-DefaultWABHeaders"));
+        assertEquals("true", bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
     
     @Test
@@ -200,7 +200,7 @@ public class WebBundleTransformerTests {
         
         verify(manifestTransformer, configAdmin, config);
         
-        assertNull(bundleManifest.getHeader("org.eclipse.gemini.web-DefaultWABHeaders"));
+        assertNull(bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
     
     @Test
@@ -233,7 +233,7 @@ public class WebBundleTransformerTests {
         
         verify(manifestTransformer, configAdmin, config);
         
-        assertEquals("true", bundleManifest.getHeader("org.eclipse.gemini.web-DefaultWABHeaders"));
+        assertEquals("true", bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
     
     public void assertManifestTransformations(BundleManifest bundleManifest, String expectedModuleType) {

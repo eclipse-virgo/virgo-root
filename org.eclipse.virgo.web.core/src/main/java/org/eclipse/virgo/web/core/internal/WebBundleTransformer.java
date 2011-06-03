@@ -43,7 +43,7 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  */
 final class WebBundleTransformer implements Transformer {
 
-    private static final String HEADER_DEFAULT_WAB_HEADERS = "org.eclipse.gemini.web-DefaultWABHeaders";
+    private static final String HEADER_DEFAULT_WAB_HEADERS = "org-eclipse-gemini-web-DefaultWABHeaders";
 
     private static final String WEB_CONFIGURATION_PID = "org.eclipse.virgo.web";
 
