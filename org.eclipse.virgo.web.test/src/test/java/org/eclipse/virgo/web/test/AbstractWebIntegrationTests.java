@@ -64,6 +64,8 @@ public abstract class AbstractWebIntegrationTests {
 
     private static final long HOT_DEPLOY_TIMEOUT = 30000;
 
+    private static final long WEB_PLAN_INSTALL_TIMEOUT = 5*60*1000; // 5 minutes
+
 	private static final String CURRENT_VERSION = "3.0.0";
 
     protected final List<String> deployedWebApps = new ArrayList<String>();
@@ -369,8 +371,8 @@ public abstract class AbstractWebIntegrationTests {
                 Thread.sleep(100);
             } catch (InstanceNotFoundException _) {
             }
-            if (System.currentTimeMillis() - startTime > 30000000) {
-                throw new RuntimeException("Web plan did not start within 30 seconds");
+            if (System.currentTimeMillis() - startTime > WEB_PLAN_INSTALL_TIMEOUT) {
+                throw new RuntimeException("Web plan did not start within " + (WEB_PLAN_INSTALL_TIMEOUT / 1000) + " seconds.");
             }
         }
     }
