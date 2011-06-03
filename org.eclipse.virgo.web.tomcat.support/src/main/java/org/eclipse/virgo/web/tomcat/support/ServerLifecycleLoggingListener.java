@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.web.tomcat.support;
 
+import java.net.InetAddress;
+
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
@@ -102,7 +104,8 @@ public final class ServerLifecycleLoggingListener implements LifecycleListener {
     }
 
     private void checkPortAvailability(Connector connector) {
-        String hostName = (String) connector.getProperty("address");
+        Object address = connector.getProperty("address");
+        String hostName = (address != null) ? ((InetAddress) address).getHostAddress() : null;
         if (hostName == null) {
             if (!NetUtils.isPortAvailable(connector.getPort())) {
                 this.eventLogger.log(TomcatLogEvents.PORT_IN_USE, connector.getPort());
