@@ -24,6 +24,7 @@
 		<beans:constructor-arg ref="transformer"/>
 		<beans:constructor-arg ref="registry"/>
 		<beans:constructor-arg ref="configAdmin"/>
+		<beans:constructor-arg ref="eventLogger"/>
 	</beans:bean>
 	
 	<beans:bean id="registry" class="org.eclipse.virgo.web.core.internal.StandardWebApplicationRegistry"/>

@@ -30,6 +30,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -47,9 +48,11 @@ public class WebBundleLifecycleListenerTests {
     private WebBundleManifestTransformer manifestTransformer = createMock(WebBundleManifestTransformer.class);
 
     private ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
+    
+    private EventLogger eventLogger = createMock(EventLogger.class);
 
     private WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, webApplicationRegistry, manifestTransformer,
-        configAdmin);
+        configAdmin, eventLogger);
 
     private StubBundleContext bundleContext = new StubBundleContext();
 

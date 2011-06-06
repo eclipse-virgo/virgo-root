@@ -31,6 +31,7 @@ import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.Tree;
 import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -69,11 +70,11 @@ final class WebBundleTransformer implements Transformer {
 
     WebBundleTransformer(WebDeploymentEnvironment environment) {
         this.environment = environment;
-        this.strictWABHeaders = getStrictWABHeadersConfiguration(environment.getConfigAdmin(), this.logger);
+        this.strictWABHeaders = getStrictWABHeadersConfiguration(environment.getConfigAdmin(), this.logger, environment.getEventLogger());
     }
 
-    private static boolean getStrictWABHeadersConfiguration(ConfigurationAdmin configAdmin, Logger logger) {
-        boolean strictWABHeaders = false;
+    private static boolean getStrictWABHeadersConfiguration(ConfigurationAdmin configAdmin, Logger logger, EventLogger eventLogger) {
+        boolean strictWABHeaders = true;
 
         try {
             Configuration config = configAdmin.getConfiguration(WEB_CONFIGURATION_PID, null);
@@ -83,9 +84,10 @@ final class WebBundleTransformer implements Transformer {
                 if (properties != null) {
                     String wabHeadersPropertyValue = properties.get(PROPERTY_WAB_HEADERS);
                     if (wabHeadersPropertyValue != null) {
-                        if (PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
-                            strictWABHeaders = true;
-                        } else if (!PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {
+                        if (PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {
+                            strictWABHeaders = false;
+                            eventLogger.log(WebLogEvents.DEFAULTING_WAB_HEADERS);
+                        } else if (!PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
                             logger.error("Property '%s' in configuration '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS,
                                 WEB_CONFIGURATION_PID, wabHeadersPropertyValue });
                         }

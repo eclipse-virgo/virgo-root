@@ -32,6 +32,7 @@ import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
 import org.eclipse.virgo.util.common.Tree;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -42,200 +43,207 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 public class WebBundleTransformerTests {
-    
+
     private StubWebContainer webContainer = new StubWebContainer();
-    
+
     private StubWebApplicationRegistry applicationRegistry = new StubWebApplicationRegistry();
-    
+
     private WebBundleManifestTransformer manifestTransformer = createMock(WebBundleManifestTransformer.class);
-    
+
     private ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
-    
-    private WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin);
-    
+
+    private EventLogger eventLogger = createMock(EventLogger.class);
+
+    private WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin,
+        eventLogger);
+
     private WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
-    
+
     @Test
     public void transformation() throws IOException, DeploymentException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
-               
+
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
-        
+
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
-        
+
         manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
-        
+
         replay(manifestTransformer);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer);
-        
+
         assertManifestTransformations(bundleManifest, "web-bundle");
     }
-    
+
     @Test
-    public void nonBundleInstallArtifactTransformation() throws DeploymentException {                
-        InstallArtifact installArtifact = TestUtils.createInstallArtifact("foo", new Version(1,0,0), new File("location"), URI.create("file:/bar"));
-        
+    public void nonBundleInstallArtifactTransformation() throws DeploymentException {
+        InstallArtifact installArtifact = TestUtils.createInstallArtifact("foo", new Version(1, 0, 0), new File("location"), URI.create("file:/bar"));
+
         replay(manifestTransformer);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer);
     }
-    
+
     @Test
     public void nonWarBundleInstallArtifactTransformation() throws DeploymentException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.jar");
-        
+
         URI sourceUri = URI.create("file:/bar");
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, new File("location"), bundleManifest);
-        
+
         replay(manifestTransformer);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer);
-        
+
         assertManifestTransformations(bundleManifest, null);
     }
-    
+
     @Test
     public void bundleWithWebContextPathTransformation() throws DeploymentException, IOException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.setHeader("Web-ContextPath", "/foo");
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.jar");
-        
+
         File sourceFile = new File("/foo.jar");
         URI sourceUri = sourceFile.toURI();
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
-        
+
         manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
-        
+
         replay(manifestTransformer);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer);
-        
+
         assertManifestTransformations(bundleManifest, "web-bundle");
     }
-    
+
     @Test
     public void ignoreWebBundlesWithExistingModuleType() throws DeploymentException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
         bundleManifest.setModuleType("web-slice");
-        
+
         URI sourceUri = URI.create("file:/bar");
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, new File("location"), bundleManifest);
-        
+
         replay(manifestTransformer);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer);
-        
+
         assertManifestTransformations(bundleManifest, "web-slice");
     }
-    
+
     @Test
     public void testWABHeaderDefaulting() throws IOException, DeploymentException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
-               
+
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
-        
+
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
-        
+
         manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
-        
+
         replay(manifestTransformer);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer);
-        
-        assertEquals("true", bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
+
+        assertNull(bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
-    
+
     @Test
     public void testWABHeaderStrictProcessing() throws IOException, DeploymentException {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         Configuration config = createMock(Configuration.class);
-        expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String)isNull())).andReturn(config);
+        expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String) isNull())).andReturn(config);
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("WABHeaders", "strict");
         expect(config.getProperties()).andReturn(properties);
-        
-        WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin);
-        
+        EventLogger eventLogger = createMock(EventLogger.class);
+
+        WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin,
+            eventLogger);
+
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
-               
+
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
-        
+
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
-        
+
         manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
-        
+
         replay(manifestTransformer, configAdmin, config);
-        
+
         WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer, configAdmin, config);
-        
+
         assertNull(bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
-    
+
     @Test
     public void testWABHeaderExplicitDefaultProcessing() throws IOException, DeploymentException {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         Configuration config = createMock(Configuration.class);
-        expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String)isNull())).andReturn(config);
+        expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String) isNull())).andReturn(config);
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("WABHeaders", "defaulted");
         expect(config.getProperties()).andReturn(properties);
-        
-        WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin);
-        
+        EventLogger eventLogger = createMock(EventLogger.class);
+
+        WebDeploymentEnvironment environment = new WebDeploymentEnvironment(webContainer, applicationRegistry, manifestTransformer, configAdmin,
+            eventLogger);
+
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
-               
+
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
-        
+
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
-        
+
         manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
-        
+
         replay(manifestTransformer, configAdmin, config);
-        
+
         WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
-        
+
         Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
         webBundleTransformer.transform(installTree, null);
-        
+
         verify(manifestTransformer, configAdmin, config);
-        
+
         assertEquals("true", bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
-    
+
     public void assertManifestTransformations(BundleManifest bundleManifest, String expectedModuleType) {
         assertEquals(expectedModuleType, bundleManifest.getHeader("Module-Type"));
     }

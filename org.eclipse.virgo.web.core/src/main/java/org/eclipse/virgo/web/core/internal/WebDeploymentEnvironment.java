@@ -13,6 +13,7 @@ package org.eclipse.virgo.web.core.internal;
 
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.gemini.web.core.WebContainer;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.web.core.WebApplicationRegistry;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -29,12 +30,15 @@ final class WebDeploymentEnvironment {
 
     private final ConfigurationAdmin configAdmin;
 
+    private final EventLogger eventLogger;
+
     public WebDeploymentEnvironment(WebContainer webContainer, WebApplicationRegistry applicationRegistry,
-        WebBundleManifestTransformer manifestTransformer, ConfigurationAdmin configAdmin) {
+        WebBundleManifestTransformer manifestTransformer, ConfigurationAdmin configAdmin, EventLogger eventLogger) {
         this.webContainer = webContainer;
         this.applicationRegistry = applicationRegistry;
         this.manifestTransformer = manifestTransformer;
         this.configAdmin = configAdmin;
+        this.eventLogger = eventLogger;
     }
 
     public WebContainer getWebContainer() {
@@ -51,6 +55,10 @@ final class WebDeploymentEnvironment {
 
     public ConfigurationAdmin getConfigAdmin() {
         return this.configAdmin;
+    }
+    
+    public EventLogger getEventLogger() {
+        return this.eventLogger;
     }
 
 }

@@ -30,7 +30,8 @@ public enum WebLogEvents implements LogEvent {
     STOPPING_WEB_BUNDLE(2, Level.INFO), //
     STOPPED_WEB_BUNDLE(3, Level.INFO), //
     WEB_BUNDLE_FAILED_CONTEXT_PATH_USED(4, Level.ERROR), //
-    WEB_BUNDLE_FAILED(5, Level.ERROR);
+    WEB_BUNDLE_FAILED(5, Level.ERROR), //
+    DEFAULTING_WAB_HEADERS(6, Level.WARNING);
 
     private static final String PREFIX = "WE";
 
