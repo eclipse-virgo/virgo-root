@@ -56,7 +56,7 @@ final class WatchTask implements Runnable {
 
             try {
                 this.checker.check();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 logger.error("Error watching directory '{}'", e, this.watchDir.getAbsolutePath());
             }
         }
