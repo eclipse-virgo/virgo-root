@@ -304,7 +304,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
             if(blockingSignal.isAborted()){
                 this.eventLogger.log(DeployerLogEvents.START_ABORTED, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
             } else if (!complete) {
-                this.eventLogger.log(DeployerLogEvents.START_TIMED_OUT, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion());
+                this.eventLogger.log(DeployerLogEvents.START_TIMED_OUT, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
             }
         } else {
             // Completion messages will have been issued if complete, so ignore return value.
