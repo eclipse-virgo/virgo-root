@@ -77,7 +77,7 @@
 		dojo.attr(newNode, "dojoattachpoint", "iconNode");
 		dojo.attr(newNode, "alt", "");
 		dojo.attr(newNode, "title", iconClass);
-		dojo.attr(newNode, "src", "../../resources/js/dojo/resources/blank.gif");
+		dojo.attr(newNode, "src", "../../js/dojo/resources/blank.gif");
 		dojo.attr(newNode, "role", "presentation");
 		return newNode;
 	}
