@@ -11,8 +11,8 @@
 	<link rel="stylesheet" href="<c:url value="/styles/main.css"                   />" type="text/css" />
 	<link rel="stylesheet" href="<c:url value="/styles/local.css"                  />" type="text/css" />
 	<link rel="stylesheet" href="<c:url value="/styles/print.css"                  />" type="text/css" media="print" />
-	<script type="text/javascript" src="<c:url value="/js/dojo/dojo.js"            />" djConfig="parseOnLoad: true, baseUrl: '../../resources/js/dojo/'"></script>
-	<script type="text/javascript" src="<c:url value="/js/dojo/virgo-dojo.js"      />" djConfig="parseOnLoad: true, baseUrl: '../../resources/js/dojo/'"></script>
+	<script type="text/javascript" src="<c:url value="/js/dojo/dojo.js"            />" djConfig="parseOnLoad: true, baseUrl: '../../js/dojo/'"></script>
+	<script type="text/javascript" src="<c:url value="/js/dojo/virgo-dojo.js"      />" djConfig="parseOnLoad: true, baseUrl: '../../js/dojo/'"></script>
 
 </head>
 
