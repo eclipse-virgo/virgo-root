@@ -117,8 +117,11 @@ public enum HeaderTokenKind {
     }
 
     public static boolean canBeTreatedAsIdentifier(HeaderToken t) {
-        return t.getKind() == IDENTIFIER || t.getKind().canBeTreatedAsToken
-            && (t.firstCharIsLetter() || Character.isJavaIdentifierStart(t.firstChar()));
+        return t.getKind() == IDENTIFIER || t.getKind().canBeTreatedAsToken;
+        
+        //remove check for number-starting packages to align with Equinox's header parser behavior
+        // this can be enabled at a later point if required
+        //    && (t.firstCharIsLetter() || Character.isJavaIdentifierStart(t.firstChar()));
     }
 
     public static boolean canBeTreatedAsToken(HeaderToken token) {
