@@ -27,14 +27,14 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.web.core"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/3.0.0.D-20110603095500/org.eclipse.virgo.util.math-3.0.0.D-20110603095500.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/2.0.0.BUILD-20110603145554/org.eclipse.gemini.web.tomcat-2.0.0.BUILD-20110603145554.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.gemini.web/org.eclipse.gemini.web.tomcat/2.0.0.BUILD-20110603145554/org.eclipse.gemini.web.tomcat-sources-2.0.0.BUILD-20110603145554.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.D-20110609133547/org.eclipse.virgo.kernel.osgi-3.0.0.D-20110609133547.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.D-20110609133547/org.eclipse.virgo.kernel.osgi-sources-3.0.0.D-20110609133547.jar">
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.D-20110614124556/org.eclipse.virgo.kernel.osgi-3.0.0.D-20110614124556.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.0.0.D-20110614124556/org.eclipse.virgo.kernel.osgi-sources-3.0.0.D-20110614124556.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.0.0.D-20110603095500/org.eclipse.virgo.util.io-3.0.0.D-20110603095500.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.0.0.D-20110603095500/org.eclipse.virgo.util.io-sources-3.0.0.D-20110603095500.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110603100219/org.eclipse.virgo.medic-3.0.0.D-20110603100219.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110603100219/org.eclipse.virgo.medic-sources-3.0.0.D-20110603100219.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.D-20110609133547/org.eclipse.virgo.kernel.core-3.0.0.D-20110609133547.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.D-20110609133547/org.eclipse.virgo.kernel.core-sources-3.0.0.D-20110609133547.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110614123549/org.eclipse.virgo.medic-3.0.0.D-20110614123549.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.0.0.D-20110614123549/org.eclipse.virgo.medic-sources-3.0.0.D-20110614123549.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.D-20110614124556/org.eclipse.virgo.kernel.core-3.0.0.D-20110614124556.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.0.0.D-20110614124556/org.eclipse.virgo.kernel.core-sources-3.0.0.D-20110614124556.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
