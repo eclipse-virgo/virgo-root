@@ -24,6 +24,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
 import org.osgi.service.cm.ConfigurationListener;
+import org.osgi.service.log.LogReaderService;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 
@@ -48,9 +49,11 @@ public class MedicActivatorTests {
         bundleContext.addProperty("org.eclipse.virgo.suppress.heap.dumps", "false");
         
         PackageAdmin packageAdmin = createNiceMock(PackageAdmin.class);
-        replay(packageAdmin);
+        LogReaderService logReaderService = createNiceMock(LogReaderService.class);
+        replay(packageAdmin, logReaderService);
         
-        bundleContext.registerService(PackageAdmin.class.getName(), packageAdmin, null);
+        bundleContext.registerService(PackageAdmin.class, packageAdmin, null);
+        bundleContext.registerService(LogReaderService.class, logReaderService, null);
 
         bundleActivator.start(bundleContext);
         assertServiceListenerCount(bundleContext, 1);
@@ -66,7 +69,7 @@ public class MedicActivatorTests {
 
         bundleActivator.stop(bundleContext);      
         
-        assertEquals(1, bundleContext.getServiceRegistrations().size());
+        assertEquals(2, bundleContext.getServiceRegistrations().size());
     }        
 
     @Test

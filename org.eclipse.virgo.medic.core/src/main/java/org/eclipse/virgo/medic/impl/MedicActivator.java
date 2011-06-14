@@ -21,7 +21,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceFactory;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationListener;
+import org.osgi.service.log.LogReaderService;
 import org.osgi.service.log.LogService;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +60,7 @@ import org.eclipse.virgo.medic.log.impl.logback.DelegatingContextSelector;
 import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
-import org.eclipse.virgo.medic.log.osgi.OSGiLogServiceImpl;
+import org.eclipse.virgo.medic.log.osgi.OSGiLogServiceListener;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 public final class MedicActivator implements BundleActivator {
@@ -104,11 +106,14 @@ public final class MedicActivator implements BundleActivator {
     	logStart(context, configurationProvider);
     	eventLogStart(context);
     	dumpStart(context, configurationProvider);
-        this.registrationTracker.track(context.registerService(LogService.class.getName(), new OSGiLogServiceImpl(LoggerFactory.getLogger(LogService.class)), null));
+    	
+    	ServiceReference<LogReaderService> logReaderReference = context.getServiceReference(LogReaderService.class);
+    	LogReaderService logReader = context.getService(logReaderReference);
+        logReader.addLogListener(new OSGiLogServiceListener(LoggerFactory.getLogger(LogService.class)));
+        context.ungetService(logReaderReference);
     }
 
     public void stop(BundleContext context) throws Exception {
-    	
     	this.registrationTracker.unregisterAll();
     	
         dumpStop();                	    	    	

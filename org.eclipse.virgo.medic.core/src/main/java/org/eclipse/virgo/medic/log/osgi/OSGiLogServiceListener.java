@@ -13,7 +13,8 @@
 
 package org.eclipse.virgo.medic.log.osgi;
 
-import org.osgi.framework.ServiceReference;
+import org.osgi.service.log.LogEntry;
+import org.osgi.service.log.LogListener;
 import org.osgi.service.log.LogService;
 import org.slf4j.Logger;
 
@@ -25,19 +26,38 @@ import org.slf4j.Logger;
  * <strong>Concurrent Semantics</strong><br />
  * TODO Document concurrent semantics of EquinoxLogServiceImpl
  */
-public class OSGiLogServiceImpl implements LogService {
+public class OSGiLogServiceListener implements LogListener {
     
     private final Logger logger;
     
-    public OSGiLogServiceImpl(Logger logger) {
+    public OSGiLogServiceListener(Logger logger) {
         this.logger = logger;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void log(int level, String message) {
+	@Override
+	public void logged(LogEntry entry) {
+		if(entry.getException() == null){
+			this.log(entry.getLevel(), formatMessage(entry));
+		} else {
+			this.log(entry.getLevel(), formatMessage(entry), entry.getException());
+		}
+	}
+	
+	private String formatMessage(LogEntry entry){
+		String message = entry.getMessage();
+		if(entry.getServiceReference() != null){
+			message = String.format("{Service %s}: %s", entry.getServiceReference().getProperty("service.id").toString(), message);
+		}
+		if(entry.getBundle() != null){
+			message = String.format("{Bundle %s-%s}: %s", entry.getBundle().getSymbolicName(), entry.getBundle().getVersion().toString(), message);
+		}
+		return message;
+	}
+
+    private void log(int level, String message) {
         switch (level) {
             case LogService.LOG_DEBUG : 
                 this.logger.debug(message); 
@@ -57,11 +77,7 @@ public class OSGiLogServiceImpl implements LogService {
         } 
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void log(int level, String message, Throwable exception) {
+    private void log(int level, String message, Throwable exception) {
         switch (level) {
             case LogService.LOG_DEBUG : 
                 this.logger.debug(message, exception); 
@@ -79,26 +95,6 @@ public class OSGiLogServiceImpl implements LogService {
                 this.logger.error(String.format("Log Message of unknown severity %d: %s", level, message), exception);
                 break;
         } 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void log(ServiceReference sr, int level, String message) {
-        this.log(level, String.format("{Service %s}: %s", getServiceDescription(sr), message));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void log(ServiceReference sr, int level, String message, Throwable exception) {
-        this.log(level, String.format("{Service %s}: %s", getServiceDescription(sr), message), exception);
-    }
-
-    private String getServiceDescription(ServiceReference<?> sr){
-        return sr.getProperty("service.id").toString();
     }
     
 }
