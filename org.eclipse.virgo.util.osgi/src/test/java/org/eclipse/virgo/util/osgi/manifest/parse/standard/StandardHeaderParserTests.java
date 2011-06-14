@@ -381,8 +381,9 @@ public class StandardHeaderParserTests extends TestCase {
         checkPackageHeaderFailure("a.b.c;a:=", HeaderProblemKind.UNEXPECTEDLY_OOD_AT_ARGUMENT_VALUE);
         checkPackageHeaderFailure("a.b.c;a:= ", HeaderProblemKind.UNEXPECTEDLY_OOD_AT_ARGUMENT_VALUE);
         checkPackageHeaderFailure("  a.b.c ;  a := ", HeaderProblemKind.UNEXPECTEDLY_OOD_AT_ARGUMENT_VALUE);
-        checkPackageHeaderFailure("co23.45o", HeaderProblemKind.EXPECTED_IDENTIFIER);
-        checkPackageHeaderFailure("1", HeaderProblemKind.EXPECTED_IDENTIFIER);
+        //verify number-starting packages don't generate an ERROR - Equinox style.
+        checkPackageHeader("co23.45o");
+        checkPackageHeader("1");
         checkPackageHeaderFailure("a. b", HeaderProblemKind.ILLEGAL_SPACE);
         checkPackageHeaderFailure("a.   b", HeaderProblemKind.ILLEGAL_SPACE);
     }
@@ -841,6 +842,17 @@ public class StandardHeaderParserTests extends TestCase {
                     fail("Did not find problem " + expected[0].getCode() + " in exception text:\n" + msg);
                 }
             }
+        }
+    }
+    
+    private void checkPackageHeader(String header) {
+        StandardHeaderParser parser = new StandardHeaderParser(tlogger);
+        try {
+            parser.parsePackageHeader(header, "test");
+            assertFalse(parser.foundProblems(Severity.ERROR));
+        } catch (BundleManifestParseException bmpe) {
+            System.out.println(bmpe.getMessage());
+            fail("Unexpected exception: " + bmpe.getMessage());
         }
     }
 

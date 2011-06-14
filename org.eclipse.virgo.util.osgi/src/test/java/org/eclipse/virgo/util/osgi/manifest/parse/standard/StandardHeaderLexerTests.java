@@ -303,7 +303,7 @@ public class StandardHeaderLexerTests extends TestCase {
 
 		HeaderToken token123 = stream.next();
 
-		assertFalse(HeaderTokenKind.canBeTreatedAsIdentifier(token123));
+		assertTrue(HeaderTokenKind.canBeTreatedAsIdentifier(token123));
 
 	}
 
