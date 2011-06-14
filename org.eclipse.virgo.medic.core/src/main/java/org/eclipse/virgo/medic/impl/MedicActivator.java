@@ -86,6 +86,8 @@ public final class MedicActivator implements BundleActivator {
     private volatile LogBackEventLoggerFactory eventLoggerFactory;
 
     private volatile DumpContributorPublisher dumpContributorPublisher;
+	
+	private volatile ServiceReference<LogReaderService> logReaderReference;
 
     private volatile PrintStream sysOut;
     
@@ -107,15 +109,14 @@ public final class MedicActivator implements BundleActivator {
     	eventLogStart(context);
     	dumpStart(context, configurationProvider);
     	
-    	ServiceReference<LogReaderService> logReaderReference = context.getServiceReference(LogReaderService.class);
-    	LogReaderService logReader = context.getService(logReaderReference);
+    	this.logReaderReference = context.getServiceReference(LogReaderService.class);
+    	LogReaderService logReader = context.getService(this.logReaderReference);
         logReader.addLogListener(new OSGiLogServiceListener(LoggerFactory.getLogger(LogService.class)));
-        context.ungetService(logReaderReference);
     }
 
     public void stop(BundleContext context) throws Exception {
     	this.registrationTracker.unregisterAll();
-    	
+        context.ungetService(this.logReaderReference);
         dumpStop();                	    	    	
         logStop(context);
     }
