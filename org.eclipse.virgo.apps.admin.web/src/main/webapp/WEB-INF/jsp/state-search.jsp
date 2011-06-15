@@ -45,7 +45,7 @@
 							<c:when test="${state eq 'Live'}">			
 								<tr class="sublevel1-${rowStyle}">
 									<td id="bundle-id"><a href="<c:url value="bundle.htm?id=${bundle.bundleId}&state=${state}" />">${bundle.bundleId}</a></td>
-									<td id="bundle-spring" class="table-icon"><c:if test="${!empty bundle.springName}"><img src="<c:url value="/resources/images/spring.png"/>" height="16" width ="16" alt="S" /></c:if></td>
+									<td id="bundle-spring" class="table-icon"><c:if test="${!empty bundle.springName}"><img src="<c:url value="/images/spring.png"/>" height="16" width ="16" alt="S" /></c:if></td>
 									<td id="bundle-name">${bundle.symbolicName}</td>
 									<td id="bundle-version">${bundle.version}</td>
 							    	<td id="bundle-resolved">
