@@ -24,10 +24,10 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
 import org.osgi.service.cm.ConfigurationListener;
-import org.osgi.service.log.LogReaderService;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 
+import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -49,11 +49,11 @@ public class MedicActivatorTests {
         bundleContext.addProperty("org.eclipse.virgo.suppress.heap.dumps", "false");
         
         PackageAdmin packageAdmin = createNiceMock(PackageAdmin.class);
-        LogReaderService logReaderService = createNiceMock(LogReaderService.class);
+        ExtendedLogReaderService logReaderService = createNiceMock(ExtendedLogReaderService.class);
         replay(packageAdmin, logReaderService);
         
         bundleContext.registerService(PackageAdmin.class, packageAdmin, null);
-        bundleContext.registerService(LogReaderService.class, logReaderService, null);
+        bundleContext.registerService(ExtendedLogReaderService.class, logReaderService, null);
 
         bundleActivator.start(bundleContext);
         assertServiceListenerCount(bundleContext, 1);
@@ -76,6 +76,11 @@ public class MedicActivatorTests {
     public void copeWithNullsDuringStop() throws Exception {
         BundleActivator bundleActivator = new MedicActivator();
         BundleContext context = new StubBundleContext(new StubBundle());
+        
+        ExtendedLogReaderService logReaderService = createNiceMock(ExtendedLogReaderService.class);
+        replay(logReaderService);
+        context.registerService(ExtendedLogReaderService.class, logReaderService, null);
+        
         bundleActivator.stop(context);
     }
 

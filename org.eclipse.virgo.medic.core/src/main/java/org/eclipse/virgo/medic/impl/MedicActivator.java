@@ -23,10 +23,10 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationListener;
-import org.osgi.service.log.LogReaderService;
 import org.osgi.service.log.LogService;
 import org.slf4j.LoggerFactory;
 
+import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.dump.impl.DumpContributorPublisher;
 import org.eclipse.virgo.medic.dump.impl.StandardDumpContributorResolver;
@@ -61,6 +61,7 @@ import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
 import org.eclipse.virgo.medic.log.osgi.OSGiLogServiceListener;
+import org.eclipse.virgo.medic.log.osgi.VirgoLogFilter;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 public final class MedicActivator implements BundleActivator {
@@ -87,7 +88,7 @@ public final class MedicActivator implements BundleActivator {
 
     private volatile DumpContributorPublisher dumpContributorPublisher;
 	
-	private volatile ServiceReference<LogReaderService> logReaderReference;
+	private volatile ServiceReference<ExtendedLogReaderService> logReaderReference;
 
     private volatile PrintStream sysOut;
     
@@ -109,14 +110,17 @@ public final class MedicActivator implements BundleActivator {
     	eventLogStart(context);
     	dumpStart(context, configurationProvider);
     	
-    	this.logReaderReference = context.getServiceReference(LogReaderService.class);
-    	LogReaderService logReader = context.getService(this.logReaderReference);
-        logReader.addLogListener(new OSGiLogServiceListener(LoggerFactory.getLogger(LogService.class)));
+    	this.logReaderReference = context.getServiceReference(ExtendedLogReaderService.class);
+    	ExtendedLogReaderService logReader = context.getService(this.logReaderReference);
+        logReader.addLogListener(new OSGiLogServiceListener(LoggerFactory.getLogger(LogService.class)), new VirgoLogFilter());
     }
 
     public void stop(BundleContext context) throws Exception {
     	this.registrationTracker.unregisterAll();
-        context.ungetService(this.logReaderReference);
+    	ServiceReference<ExtendedLogReaderService> localLogReaderReference = this.logReaderReference;
+    	if(localLogReaderReference != null){
+    		context.ungetService(localLogReaderReference);
+    	}
         dumpStop();                	    	    	
         logStop(context);
     }

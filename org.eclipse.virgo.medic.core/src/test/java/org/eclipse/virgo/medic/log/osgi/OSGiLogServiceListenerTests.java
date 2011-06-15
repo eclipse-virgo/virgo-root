@@ -24,6 +24,7 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubServiceReference;
 import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
  * 
  *  OSGiLogServiceImplTests
  */
+@Ignore
 public class OSGiLogServiceListenerTests {
 
     private static final String TEST_MESSAGE = "Danger Will Robinson, Danger!!!";

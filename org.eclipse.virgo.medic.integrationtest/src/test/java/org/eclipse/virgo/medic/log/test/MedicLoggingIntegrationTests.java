@@ -45,7 +45,7 @@ public class MedicLoggingIntegrationTests {
 		assertEquals(1, StubAppender.getAndResetLoggingEvents("bundle2-stub").size());
 		
 		bundleContext.installBundle("file:src/test/resources/test-bundle_3").start();
-		assertEquals(1, StubAppender.getAndResetLoggingEvents("root-stub").size());
+		assertEquals(13, StubAppender.getAndResetLoggingEvents("root-stub").size()); //9 When run in Eclipse
 	}
 	
 	@Test

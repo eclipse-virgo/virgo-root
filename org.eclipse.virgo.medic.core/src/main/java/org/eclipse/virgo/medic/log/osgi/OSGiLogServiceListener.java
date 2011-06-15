@@ -47,7 +47,7 @@ public class OSGiLogServiceListener implements LogListener {
 	}
 	
 	private String formatMessage(LogEntry entry){
-		String message = entry.getMessage();
+		String message = String.format("[%s] %s", this.getLevel(entry.getLevel()), entry.getMessage());
 		if(entry.getServiceReference() != null){
 			message = String.format("{Service %s}: %s", entry.getServiceReference().getProperty("service.id").toString(), message);
 		}
@@ -95,6 +95,21 @@ public class OSGiLogServiceListener implements LogListener {
                 this.logger.error(String.format("Log Message of unknown severity %d: %s", level, message), exception);
                 break;
         } 
+    }
+    
+    private String getLevel(int level){
+        switch (level) {
+	        case LogService.LOG_DEBUG : 
+	            return "Debug";
+	        case LogService.LOG_INFO : 
+	            return "Info";
+	        case LogService.LOG_WARNING : 
+	            return "Warning";
+	        case LogService.LOG_ERROR : 
+	            return "Error";
+	        default :
+	            return "Unknown";
+	    } 	
     }
     
 }
