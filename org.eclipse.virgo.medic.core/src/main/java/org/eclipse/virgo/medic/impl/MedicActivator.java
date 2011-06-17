@@ -61,7 +61,6 @@ import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
 import org.eclipse.virgo.medic.log.osgi.OSGiLogServiceListener;
-import org.eclipse.virgo.medic.log.osgi.VirgoLogFilter;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 public final class MedicActivator implements BundleActivator {
@@ -112,7 +111,7 @@ public final class MedicActivator implements BundleActivator {
     	
     	this.logReaderReference = context.getServiceReference(ExtendedLogReaderService.class);
     	ExtendedLogReaderService logReader = context.getService(this.logReaderReference);
-        logReader.addLogListener(new OSGiLogServiceListener(LoggerFactory.getLogger(LogService.class)), new VirgoLogFilter());
+        logReader.addLogListener(new OSGiLogServiceListener(LoggerFactory.getLogger(LogService.class)));
     }
 
     public void stop(BundleContext context) throws Exception {

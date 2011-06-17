@@ -24,7 +24,6 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubServiceReference;
 import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
  * 
  *  OSGiLogServiceImplTests
  */
-@Ignore
 public class OSGiLogServiceListenerTests {
 
     private static final String TEST_MESSAGE = "Danger Will Robinson, Danger!!!";
@@ -46,9 +44,9 @@ public class OSGiLogServiceListenerTests {
     
     private static final ServiceReference<Object> SERVICE_REF = new StubServiceReference<Object>(3l, 3, new StubServiceRegistration<Object>(new StubBundleContext(BUNDLE), "org.eclipse.virgo.not.here"));
 
-    private static final String SERVICE_PREFIX = "{Service 3}: ";
+    private static final String SERVICE_PREFIX = "Service 3, ";
     
-    private static final String BUNDLE_PREFIX = "{Bundle org.eclipse.virgo.not.here-0.0.0}: ";
+    private static final String BUNDLE_PREFIX = "Bundle org.eclipse.virgo.not.here_0.0.0, ";
     
     private static final String INVALID_PREFIX = "Log Message of unknown severity 99: ";
     

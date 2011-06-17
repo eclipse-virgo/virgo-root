@@ -47,12 +47,12 @@ public class OSGiLogServiceListener implements LogListener {
 	}
 	
 	private String formatMessage(LogEntry entry){
-		String message = String.format("[%s] %s", this.getLevel(entry.getLevel()), entry.getMessage());
+		String message = entry.getMessage();
 		if(entry.getServiceReference() != null){
-			message = String.format("{Service %s}: %s", entry.getServiceReference().getProperty("service.id").toString(), message);
+			message = String.format("Service %s, %s", entry.getServiceReference().getProperty("service.id").toString(), message);
 		}
 		if(entry.getBundle() != null){
-			message = String.format("{Bundle %s-%s}: %s", entry.getBundle().getSymbolicName(), entry.getBundle().getVersion().toString(), message);
+			message = String.format("Bundle %s_%s, %s", entry.getBundle().getSymbolicName(), entry.getBundle().getVersion().toString(), message);
 		}
 		return message;
 	}
@@ -95,21 +95,6 @@ public class OSGiLogServiceListener implements LogListener {
                 this.logger.error(String.format("Log Message of unknown severity %d: %s", level, message), exception);
                 break;
         } 
-    }
-    
-    private String getLevel(int level){
-        switch (level) {
-	        case LogService.LOG_DEBUG : 
-	            return "Debug";
-	        case LogService.LOG_INFO : 
-	            return "Info";
-	        case LogService.LOG_WARNING : 
-	            return "Warning";
-	        case LogService.LOG_ERROR : 
-	            return "Error";
-	        default :
-	            return "Unknown";
-	    } 	
     }
     
 }
