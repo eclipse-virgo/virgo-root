@@ -56,6 +56,8 @@
 		
 		<dependency name='org.eclipse.virgo.repository' rev='${org.eclipse.virgo.repository}' conf='compile->compile' org='org.eclipse.virgo.repository'/>
 		
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.userregion" rev="latest.integration" conf="compile->compile"/>
+		
 		<override org="org.springframework" rev="${org.springframework}"/>
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		

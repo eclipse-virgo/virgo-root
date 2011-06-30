@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
+import org.eclipse.virgo.kernel.core.ConfigurationExporter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.IterableEnumeration;
 import org.eclipse.virgo.util.common.StringUtils;
@@ -46,6 +48,10 @@ final class ConfigurationPublisher {
 
     private final PropertiesSource[] sources;
 
+    private final static String KERNEL_REGION_CONFIGURATION_PID = KernelConfigurationPropertiesSource.KERNEL_CONFIGURATION_PID;
+    
+    private final static String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
+
     ConfigurationPublisher(ConfigurationAdmin configAdmin, PropertiesSource... sources) {
         this.configAdmin = configAdmin;
         this.sources = (sources == null ? new PropertiesSource[0] : sources);
@@ -60,8 +66,20 @@ final class ConfigurationPublisher {
                 }
             }
         }
-
     }
+    
+    void registerConfigurationExporterService(@NonNull BundleContext context) throws IOException {
+    	ConfigurationExporter configurationExporter = createConfigurationExporterService();
+        context.registerService(ConfigurationExporter.class, configurationExporter, null);
+    }
+
+	private ConfigurationExporter createConfigurationExporterService() throws IOException {
+		Configuration kernelregionConfiguration = this.configAdmin.getConfiguration(KERNEL_REGION_CONFIGURATION_PID);
+    	Configuration userregionConfiguration = this.configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID);
+    	
+        ConfigurationExporter configurationExporter = new StandardConfigurationExporter(userregionConfiguration, kernelregionConfiguration);
+		return configurationExporter;
+	}
 
     @SuppressWarnings("unchecked")
     private void populateConfigurationWithProperties(@NonNull String pid, @NonNull Properties properties) throws IOException {

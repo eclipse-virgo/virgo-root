@@ -178,6 +178,9 @@ rem ------------------------------
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.authentication.file="%CONFIG_DIR%\org.eclipse.virgo.kernel.users.properties" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djava.io.tmpdir="%TMP_DIR%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.home="%KERNEL_HOME%" 
+      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.equinox.console.jaas.file="%CONFIG_DIR%/store"
+      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dssh.server.keystore="%CONFIG_DIR%/hostkey.ser" 
+      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dgosh.args="--nointeractive" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -classpath "%CLASSPATH%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% org.eclipse.virgo.osgi.launcher.Launcher 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -config "%KERNEL_HOME%\lib\org.eclipse.virgo.kernel.launch.properties" 

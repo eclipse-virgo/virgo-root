@@ -275,7 +275,6 @@
 	<beans:bean id="configInstallArtifactTreeFactory"
 		class="org.eclipse.virgo.kernel.install.artifact.internal.ConfigInstallArtifactTreeFactory">
 		<beans:constructor-arg ref="bundleContext" />
-		<beans:constructor-arg ref="configAdmin" />
 		<beans:constructor-arg ref="eventLogger" />
 	</beans:bean>
 

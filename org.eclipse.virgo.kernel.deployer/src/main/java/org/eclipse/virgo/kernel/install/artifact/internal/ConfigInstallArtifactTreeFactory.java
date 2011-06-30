@@ -14,8 +14,6 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.service.cm.ConfigurationAdmin;
-
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
@@ -47,9 +45,9 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
 
     private final EventLogger eventLogger;
 
-    ConfigInstallArtifactTreeFactory(BundleContext bundleContext, ConfigurationAdmin configurationAdmin, EventLogger eventLogger) {
+    ConfigInstallArtifactTreeFactory(BundleContext bundleContext, EventLogger eventLogger) {
         this.bundleContext = bundleContext;
-        this.lifecycleEngine = new ConfigLifecycleEngine(configurationAdmin);
+        this.lifecycleEngine = new ConfigLifecycleEngine(bundleContext);
         this.eventLogger = eventLogger;
     }
 

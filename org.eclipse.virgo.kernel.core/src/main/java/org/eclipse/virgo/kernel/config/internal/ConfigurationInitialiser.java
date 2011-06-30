@@ -67,6 +67,7 @@ public final class ConfigurationInitialiser {
             new CommandLinePropertiesSource(context, eventLogger) };
         ConfigurationPublisher configPublisher = new ConfigurationPublisher(configAdmin, sources);
         configPublisher.publishConfigurations();
+        configPublisher.registerConfigurationExporterService(context);
     }
 
     private void initializeDumpContributor(BundleContext context, ConfigurationAdmin configAdmin) {

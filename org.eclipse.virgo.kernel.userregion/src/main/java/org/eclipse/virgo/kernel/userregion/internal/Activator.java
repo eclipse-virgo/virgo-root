@@ -15,13 +15,16 @@ import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
+import org.eclipse.virgo.kernel.core.ConfigurationExporter;
 import org.eclipse.virgo.kernel.core.Shutdown;
+import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
@@ -80,6 +83,10 @@ public class Activator implements BundleActivator {
     private static final String PROPERTY_USER_REGION_ARTIFACTS = "initialArtifacts";
 
     private static final String PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS = "commandLineArtifacts";
+    
+    private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
+    
+    private static final String KERNEL_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel";
 
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
@@ -89,6 +96,7 @@ public class Activator implements BundleActivator {
      * {@inheritDoc}
      */
     public void start(BundleContext context) throws Exception {
+    	publishConfigurations(context);
         ResolutionFailureDetective rfd = createResolutionFailureDetective(context);
         Repository repository = getPotentiallyDelayedService(context, Repository.class);
         PackageAdmin packageAdmin = getPotentiallyDelayedService(context, PackageAdmin.class);
@@ -125,7 +133,31 @@ public class Activator implements BundleActivator {
         this.registrationTracker.track(context.registerService(ModuleContextAccessor.class.getName(), new EmptyModuleContextAccessor(), properties));
 
         scheduleInitialArtifactDeployerCreation(context, eventLogger);
+        
+        context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
     }
+    
+    /**
+     * This method gets the kernel and user regions configurations from the kernel region and publishes them in the
+     * configuration admin in the user region.
+     * @throws Exception
+     */
+    private void publishConfigurations(BundleContext context) throws Exception {
+    	ConfigurationExporter configurationExporter = getPotentiallyDelayedService(context, ConfigurationExporter.class);
+		ConfigurationAdmin admin = getPotentiallyDelayedService(context, ConfigurationAdmin.class);
+
+		try {
+			publishConfigurationFromKernelRegion(configurationExporter.getUserRegionConfigurationProperties(), admin.getConfiguration(USER_REGION_CONFIGURATION_PID));
+			publishConfigurationFromKernelRegion(configurationExporter.getKernelRegionConfigurationProperties(), admin.getConfiguration(KERNEL_REGION_CONFIGURATION_PID));
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to publish required configurations. Startup sequence can't continue", e);
+		}
+    }
+
+	@SuppressWarnings("rawtypes")
+	private void publishConfigurationFromKernelRegion(Dictionary configurationProperties, Configuration config) throws IOException {
+		config.update(configurationProperties);
+	}
 
     private ResolutionFailureDetective createResolutionFailureDetective(BundleContext context) {
         PlatformAdmin platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class).getService();
@@ -241,8 +273,6 @@ public class Activator implements BundleActivator {
 
     private static final class InitialArtifactDeployerCreatingRunnable implements Runnable {
 
-        private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
-
         private final BundleContext context;
 
         private final EventLogger eventLogger;
@@ -300,6 +330,7 @@ public class Activator implements BundleActivator {
                 throw new RuntimeException("Failed to read region artifact configuration", ioe);
             }
         }
+ 
     }
 
     private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass) throws TimeoutException, InterruptedException {
@@ -328,4 +359,5 @@ public class Activator implements BundleActivator {
         Thread.sleep(100);
         return (System.currentTimeMillis() - before);
     }
+  
 }
