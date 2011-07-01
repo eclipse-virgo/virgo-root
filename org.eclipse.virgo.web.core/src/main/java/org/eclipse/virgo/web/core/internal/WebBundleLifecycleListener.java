@@ -122,6 +122,7 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
                 webApplication.start();
                 
                 this.classLoaderDelegateHook.addWebApplication(webApplication, bundle);
+                
                 String contextPath = getContextPath(webApplication);
                 getApplicationRegistry().registerWebApplication(contextPath, getApplicationName(installArtifact));
                 installArtifact.setProperty("org.eclipse.virgo.web.contextPath", contextPath);
@@ -151,8 +152,15 @@ final class WebBundleLifecycleListener extends InstallArtifactLifecycleListenerS
     public void onStopping(InstallArtifact installArtifact) {
         WebApplication webApplication = this.webApplications.remove(installArtifact);
         if (webApplication != null) {
-            webApplication.stop();
+            BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact)installArtifact;
+            Bundle bundle = bundleInstallArtifact.getBundle();
+            
             getApplicationRegistry().unregisterWebApplication(getContextPath(webApplication));
+            
+            this.classLoaderDelegateHook.removeWebApplication(bundle);
+            
+            webApplication.stop();
+            
             this.webBundleInstallArtifacts.remove(((BundleInstallArtifact)installArtifact).getBundle());
         }
     }
