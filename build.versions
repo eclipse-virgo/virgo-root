@@ -10,7 +10,7 @@ org.aspectj=1.6.6.RELEASE
 # Test
 org.junit=4.7.0
 org.easymock=2.3.0
-org.eclipse.virgo.test=3.0.0.D-20110617120331
-org.eclipse.virgo.teststubs=3.0.0.M05
-org.eclipse.virgo.util=3.0.0.D-20110617115833
-org.eclipse.virgo.osgi=3.0.0.D-20110617115519
+org.eclipse.virgo.test=3.0.0.M06
+org.eclipse.virgo.teststubs=3.0.0.M06
+org.eclipse.virgo.util=3.0.0.M06
+org.eclipse.virgo.osgi=3.0.0.M06
