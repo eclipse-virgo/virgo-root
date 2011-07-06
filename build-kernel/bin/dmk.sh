@@ -165,7 +165,7 @@ then
 		# Ensure that the tmp directory exists
 		mkdir -p $TMP_DIR
 	
-		cd $KERNEL_HOME; $JAVA_HOME/bin/java \
+		cd $KERNEL_HOME; exec $JAVA_HOME/bin/java \
 			$JAVA_OPTS \
 			$DEBUG_OPTS \
 			$JMX_OPTS \
@@ -245,7 +245,7 @@ then
 
 	OTHER_ARGS+=" -jmxport $JMX_PORT"
 
-	$JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
+	exec $JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
 		-classpath $CLASSPATH \
 		-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 		-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
