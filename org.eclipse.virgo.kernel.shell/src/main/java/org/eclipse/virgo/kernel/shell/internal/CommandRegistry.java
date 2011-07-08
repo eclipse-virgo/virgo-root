@@ -94,7 +94,9 @@ public final class CommandRegistry {
     private void serviceUnregistering(ServiceReference<?> serviceReference) {
         synchronized (this.monitor) {
             List<CommandDescriptor> commandDescriptorsForService = this.commandDescriptorsByService.remove(serviceReference);
-            this.commandDescriptors.removeAll(commandDescriptorsForService);
+            if (commandDescriptorsForService != null) {
+                this.commandDescriptors.removeAll(commandDescriptorsForService);
+            }
         }
     }
 
