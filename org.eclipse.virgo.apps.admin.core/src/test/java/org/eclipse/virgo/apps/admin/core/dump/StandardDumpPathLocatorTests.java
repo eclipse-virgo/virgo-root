@@ -11,16 +11,21 @@
 
 package org.eclipse.virgo.apps.admin.core.dump;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfigurationAdmin;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.eclipse.virgo.apps.admin.core.dump.StandardDumpPathLocator;
-import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration;
-import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfigurationAdmin;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.Version;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  */
@@ -43,17 +48,30 @@ public class StandardDumpPathLocatorTests {
     private static final String TEST_DUMP_CONTENT_STATE = "osgi.zip";
     
     private StandardDumpPathLocator standardDumpPathLocator;
+
+	private StubBundleContext context;
+
+	private StubBundleContext systemBundleContext;
+
+	private ServiceRegistration<ConfigurationAdmin> registerService;
     
     @Before
     public void setUp() throws Exception {
-        StubConfigurationAdmin stubConfigurationAdmin = new StubConfigurationAdmin();
-        StubConfiguration createConfiguration = stubConfigurationAdmin.createConfiguration(CONFIG_POINT);
-        createConfiguration.addProperty(CONFIG_PROPERTY, TEST_DUMPS_FOLDER);
-        this.standardDumpPathLocator = new StandardDumpPathLocator(stubConfigurationAdmin);
+    	StubConfigurationAdmin stubConfigurationAdmin = new StubConfigurationAdmin();
+        stubConfigurationAdmin.createConfiguration(CONFIG_POINT).addProperty(CONFIG_PROPERTY, TEST_DUMPS_FOLDER);
+        
+        this.context = new StubBundleContext();
+        StubBundle systemBundle = new StubBundle(0l, "org.osgi.framework", new Version("4.2"),"");
+        systemBundleContext = new StubBundleContext(systemBundle);
+        systemBundle.setBundleContext(systemBundleContext);
+        registerService = systemBundleContext.registerService(ConfigurationAdmin.class, stubConfigurationAdmin, null);
+        
+		this.context.addInstalledBundle(systemBundle);
+		this.standardDumpPathLocator = new StandardDumpPathLocator(this.context);
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void testNullConstructor(){
+    public void testNullConstructor() throws InvalidSyntaxException{
         this.standardDumpPathLocator = new StandardDumpPathLocator(null);
     }
 
@@ -65,8 +83,10 @@ public class StandardDumpPathLocatorTests {
     }
 
     @Test
-    public void testGetDumpDirectoryNoConfig() {
-        this.standardDumpPathLocator = new StandardDumpPathLocator(new StubConfigurationAdmin());
+    public void testGetDumpDirectoryNoConfig() throws InvalidSyntaxException {
+    	this.systemBundleContext.removeRegisteredService(registerService);
+        systemBundleContext.registerService(ConfigurationAdmin.class, new StubConfigurationAdmin(), null);
+        this.standardDumpPathLocator = new StandardDumpPathLocator(this.context);
         File dumpDirectory = this.standardDumpPathLocator.getDumpDirectory();
         assertNull(dumpDirectory);
     }

@@ -13,8 +13,13 @@ package org.eclipse.virgo.apps.admin.core.dump;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Dictionary;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -38,13 +43,26 @@ final class StandardDumpPathLocator implements DumpPathLocator{
     
     private static final String CONFIG_PROPERTY = "dump.root.directory";
 
-    private final ConfigurationAdmin configurationAdmin;
+    private ConfigurationAdmin configurationAdmin = null;
     
-    public StandardDumpPathLocator(ConfigurationAdmin configurationAdmin) {
-        if(configurationAdmin == null){
-            throw new IllegalArgumentException("Configuration Admin must not be null.");
-        }
-        this.configurationAdmin = configurationAdmin;
+    public StandardDumpPathLocator(BundleContext context) throws InvalidSyntaxException {
+    	if(context == null){
+    		throw new IllegalArgumentException("Context must not be null");
+    	}
+    	Bundle bundle = context.getBundle(0);
+		BundleContext bundleContext = bundle.getBundleContext();
+		Collection<ServiceReference<ConfigurationAdmin>> serviceReferences = bundleContext.getServiceReferences(ConfigurationAdmin.class, null);
+    	long lowestBundle = Long.MAX_VALUE;
+    	ServiceReference<ConfigurationAdmin> ref = null;
+    	for (ServiceReference<ConfigurationAdmin> serviceReference : serviceReferences) {
+    		if(serviceReference.getBundle().getBundleId() < lowestBundle){
+    			lowestBundle = serviceReference.getBundle().getBundleId();
+    			ref = serviceReference;
+    		}
+		}
+    	if(ref != null){
+    		this.configurationAdmin = context.getBundle(0).getBundleContext().getService(ref);
+    	}
     }
     
     /**
@@ -87,7 +105,6 @@ final class StandardDumpPathLocator implements DumpPathLocator{
 
     @SuppressWarnings("unchecked")
     private String getDumpConfigValue(){
-        String result = null;
         try {
             Configuration configurations = this.configurationAdmin.getConfiguration(CONFIG_POINT);
             Dictionary<String, String> properties = configurations.getProperties();
@@ -97,7 +114,7 @@ final class StandardDumpPathLocator implements DumpPathLocator{
         } catch (IOException e) {
             // no-op
         }
-        return result;
+        return null;
     }
 
 }

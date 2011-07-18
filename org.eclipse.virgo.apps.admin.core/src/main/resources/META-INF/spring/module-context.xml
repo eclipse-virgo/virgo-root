@@ -13,7 +13,7 @@
 <!-- DUMP INSPECTOR -->
 
 	<bean id="dumpPathLocator" class="org.eclipse.virgo.apps.admin.core.dump.StandardDumpPathLocator">
-		<constructor-arg ref="configAdmin"/>
+		<constructor-arg ref="bundleContext"/>
 	</bean>
 
     <bean id="dumpInspectorService" class="org.eclipse.virgo.apps.admin.core.dump.StandardDumpInspectorService">

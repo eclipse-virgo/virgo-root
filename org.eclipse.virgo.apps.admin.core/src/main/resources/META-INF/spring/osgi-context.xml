@@ -26,8 +26,4 @@
 
     <osgi:service ref="stateHolder" interface="org.eclipse.virgo.apps.admin.core.StateHolder"/>
 
-<!-- CONFIGURATION ADMIN -->
-
-	<osgi:reference id="configAdmin" interface="org.osgi.service.cm.ConfigurationAdmin" />
-
 </beans>
