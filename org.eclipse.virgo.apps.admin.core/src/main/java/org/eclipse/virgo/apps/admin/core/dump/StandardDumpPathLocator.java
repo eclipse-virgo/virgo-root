@@ -12,16 +12,14 @@
 package org.eclipse.virgo.apps.admin.core.dump;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Dictionary;
+import java.lang.management.ManagementFactory;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.openmbean.CompositeDataSupport;
+import javax.management.openmbean.TabularDataSupport;
+
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 
 /**
@@ -39,37 +37,29 @@ final class StandardDumpPathLocator implements DumpPathLocator{
 
     private final static String FILE_SEPARATOR = System.getProperty("file.separator");
     
-    private static final String CONFIG_POINT = "org.eclipse.virgo.medic";
-    
     private static final String CONFIG_PROPERTY = "dump.root.directory";
 
-    private ConfigurationAdmin configurationAdmin = null;
+    private static final String MEDIC_MBEAN_QUERY = "org.eclipse.virgo.kernel:type=Configuration,name=org.eclipse.virgo.medic";
+
+	private String dumpConfigValue;
     
-    public StandardDumpPathLocator(BundleContext context) throws InvalidSyntaxException {
-    	if(context == null){
-    		throw new IllegalArgumentException("Context must not be null");
-    	}
-    	Bundle bundle = context.getBundle(0);
-		BundleContext bundleContext = bundle.getBundleContext();
-		Collection<ServiceReference<ConfigurationAdmin>> serviceReferences = bundleContext.getServiceReferences(ConfigurationAdmin.class, null);
-    	long lowestBundle = Long.MAX_VALUE;
-    	ServiceReference<ConfigurationAdmin> ref = null;
-    	for (ServiceReference<ConfigurationAdmin> serviceReference : serviceReferences) {
-    		if(serviceReference.getBundle().getBundleId() < lowestBundle){
-    			lowestBundle = serviceReference.getBundle().getBundleId();
-    			ref = serviceReference;
-    		}
-		}
-    	if(ref != null){
-    		this.configurationAdmin = context.getBundle(0).getBundleContext().getService(ref);
-    	}
+    public StandardDumpPathLocator() throws InvalidSyntaxException {
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        try {
+            Object attribute = mBeanServer.getAttribute(new ObjectName(MEDIC_MBEAN_QUERY), "Properties");
+            TabularDataSupport table = (TabularDataSupport) attribute;
+            CompositeDataSupport composite = (CompositeDataSupport) table.get(new Object[]{CONFIG_PROPERTY});
+            this.dumpConfigValue = composite.get("value").toString();
+        } catch (Exception e) {
+            //no-op
+        }
     }
     
     /**
      * {@inheritDoc}
      */
     public File getDumpDirectory(){
-        String path = this.getDumpConfigValue();
+        String path = this.dumpConfigValue;
         if(path != null){
             File dumpDir = new File(path);
             if(dumpDir.exists() && dumpDir.isDirectory()){
@@ -83,7 +73,7 @@ final class StandardDumpPathLocator implements DumpPathLocator{
      * {@inheritDoc}
      */
     public File getDumpFolder(String folderName){
-        String path = String.format("%s%s%s", this.getDumpConfigValue(), FILE_SEPARATOR, folderName);
+        String path = String.format("%s%s%s", this.dumpConfigValue, FILE_SEPARATOR, folderName);
         File dumpDir = new File(path);
         if(dumpDir.exists() && dumpDir.isDirectory()){
             return dumpDir;
@@ -95,24 +85,10 @@ final class StandardDumpPathLocator implements DumpPathLocator{
      * {@inheritDoc}
      */
     public File getDumpEntryFile(String folderName, String fileName){
-        String path = String.format("%s%s%s%s%s", this.getDumpConfigValue(), FILE_SEPARATOR, folderName, FILE_SEPARATOR, fileName);
+        String path = String.format("%s%s%s%s%s", this.dumpConfigValue, FILE_SEPARATOR, folderName, FILE_SEPARATOR, fileName);
         File dumpEntry = new File(path);
         if(dumpEntry.exists() && dumpEntry.isFile()){
             return dumpEntry;
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private String getDumpConfigValue(){
-        try {
-            Configuration configurations = this.configurationAdmin.getConfiguration(CONFIG_POINT);
-            Dictionary<String, String> properties = configurations.getProperties();
-            if(properties != null){
-                return properties.get(CONFIG_PROPERTY);
-            }
-        } catch (IOException e) {
-            // no-op
         }
         return null;
     }
