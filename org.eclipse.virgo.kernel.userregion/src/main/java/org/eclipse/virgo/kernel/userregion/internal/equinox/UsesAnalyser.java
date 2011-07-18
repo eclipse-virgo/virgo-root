@@ -38,37 +38,37 @@ import org.eclipse.virgo.util.math.Sets;
  */
 public final class UsesAnalyser {
 
-       public AnalysedUsesConflict[] getUsesConflicts(State state, ResolverError usesError) {
+    public AnalysedUsesConflict[] getUsesConflicts(State state, ResolverError usesError) {
         VersionConstraint constraint = usesError.getUnsatisfiedConstraint();
-        
+
         List<AnalysedUsesConflict> analysedUsesConflicts = new ArrayList<AnalysedUsesConflict>();
-        
+
         if (constraint instanceof ImportPackageSpecification) {
             ImportPackageSpecification rootImport = (ImportPackageSpecification) constraint;
-            Map<String, Set<SourcedPackage>> directPackages = generateExportPackagesVisibleInFailedBundle(state, rootImport); 
-            
+            Map<String, Set<SourcedPackage>> directPackages = generateExportPackagesVisibleInFailedBundle(state, rootImport);
+
             for (ExportPackageDescription exportPackage : getResolvedCandidateExports(state, rootImport)) {
-                Map<String, Set<SourcedPackage>> usedPackages = generateExportPackagesUsedViaExportPackage(state, exportPackage); 
+                Map<String, Set<SourcedPackage>> usedPackages = generateExportPackagesUsedViaExportPackage(state, exportPackage);
                 analysedUsesConflicts.addAll(findConflictingExports(usedPackages, directPackages));
             }
-            
+
             if (analysedUsesConflicts.isEmpty()) {
                 // be more aggressive
                 for (ExportPackageDescription exportPackage : getUnresolvedCandidateExports(state, rootImport)) {
-                    Map<String, Set<SourcedPackage>> usedPackages = generateExportPackagesUsedViaExportPackage(state, exportPackage); 
+                    Map<String, Set<SourcedPackage>> usedPackages = generateExportPackagesUsedViaExportPackage(state, exportPackage);
                     analysedUsesConflicts.addAll(findConflictingExports(usedPackages, directPackages));
                 }
             }
         }
         return analysedUsesConflicts.toArray(new AnalysedUsesConflict[analysedUsesConflicts.size()]);
     }
-    
+
     public ResolverError[] getUsesResolverErrors(State state, BundleDescription bundle) {
         ResolverError[] errors = state.getResolverErrors(bundle);
-        if (errors!=null) {
+        if (errors != null) {
             List<ResolverError> usesErrors = new ArrayList<ResolverError>(errors.length);
             for (ResolverError re : errors) {
-                if (re.getType()==ResolverError.IMPORT_PACKAGE_USES_CONFLICT) {
+                if (re.getType() == ResolverError.IMPORT_PACKAGE_USES_CONFLICT) {
                     usesErrors.add(re);
                 }
             }
@@ -76,14 +76,15 @@ public final class UsesAnalyser {
         }
         return null;
     }
-    
-    private List<AnalysedUsesConflict> findConflictingExports(Map<String, Set<SourcedPackage>> usedPackages, Map<String, Set<SourcedPackage>> directPackages) {
+
+    private List<AnalysedUsesConflict> findConflictingExports(Map<String, Set<SourcedPackage>> usedPackages,
+        Map<String, Set<SourcedPackage>> directPackages) {
         List<AnalysedUsesConflict> usesConflicts = new ArrayList<AnalysedUsesConflict>();
-        Set<String> packagesInCommon = Sets.<String>intersection(usedPackages.keySet(), directPackages.keySet());
+        Set<String> packagesInCommon = Sets.<String> intersection(usedPackages.keySet(), directPackages.keySet());
         for (String packageName : packagesInCommon) {
             Set<SourcedPackage> allUsed = usedPackages.get(packageName);
             Set<SourcedPackage> allWired = directPackages.get(packageName);
-            
+
             for (SourcedPackage sourcedPackage : allUsed) {
                 UsedBySourcedPackage usedSourced = (UsedBySourcedPackage) sourcedPackage;
                 if (!exportDescriptionOccursIn(usedSourced.getSource(), allWired)) {
@@ -98,7 +99,8 @@ public final class UsesAnalyser {
 
     private static final boolean exportDescriptionOccursIn(ExportPackageDescription source, Set<SourcedPackage> allWired) {
         for (SourcedPackage w : allWired) {
-            if (w.getSource().equals(source)) return true;
+            if (w.getSource().equals(source))
+                return true;
         }
         return false;
     }
@@ -106,7 +108,7 @@ public final class UsesAnalyser {
     private Map<String, Set<SourcedPackage>> generateExportPackagesUsedViaExportPackage(State state, ExportPackageDescription exportPackage) {
         Map<String, Set<SourcedPackage>> usedPackages = new HashMap<String, Set<SourcedPackage>>();
         Set<String> knownPackages = new HashSet<String>();
-        
+
         addUsedImportedPackages(state, usedPackages, exportPackage, exportPackage, knownPackages);
         return usedPackages;
     }
@@ -114,31 +116,31 @@ public final class UsesAnalyser {
     private Map<String, Set<SourcedPackage>> generateExportPackagesVisibleInFailedBundle(State state, ImportPackageSpecification rootImport) {
         BundleDescription failedBundle = rootImport.getBundle();
         Map<String, Set<SourcedPackage>> directPackages = getOtherImportedPackages(state, rootImport);
-        
+
         Map<String, Set<SourcedPackage>> additionalPackages = new HashMap<String, Set<SourcedPackage>>();
-        
+
         // here we add all the exports visible through transitive uses
         Set<Entry<String, Set<SourcedPackage>>> keys = directPackages.entrySet();
-        
+
         Set<String> knownPackages = new HashSet<String>();
-        
+
         for (Entry<String, Set<SourcedPackage>> key : keys) {
             for (SourcedPackage sp : key.getValue()) {
                 ExportPackageDescription source = sp.getSource();
                 addUsedImportedPackages(state, additionalPackages, source, source, knownPackages);
             }
         }
-        
+
         directPackages.putAll(additionalPackages);
         directPackages.putAll(getExportedPackages(failedBundle));
         return directPackages;
     }
 
     private ExportPackageDescription[] getResolvedCandidateExports(State state, ImportPackageSpecification rootImport) {
-        List<ExportPackageDescription> exports = new ArrayList<ExportPackageDescription>(); 
-     
+        List<ExportPackageDescription> exports = new ArrayList<ExportPackageDescription>();
+
         BundleDescription[] bundles = state.getResolvedBundles();
-        if (bundles!=null) {
+        if (bundles != null) {
             for (BundleDescription bundle : bundles) {
                 for (ExportPackageDescription exportPackage : bundle.getExportPackages()) {
                     if (rootImport.isSatisfiedBy(exportPackage)) {
@@ -147,17 +149,17 @@ public final class UsesAnalyser {
                 }
             }
         }
-        
+
         return exports.toArray(new ExportPackageDescription[exports.size()]);
     }
 
     private ExportPackageDescription[] getUnresolvedCandidateExports(State state, ImportPackageSpecification rootImport) {
-        List<ExportPackageDescription> exports = new ArrayList<ExportPackageDescription>(); 
-     
+        List<ExportPackageDescription> exports = new ArrayList<ExportPackageDescription>();
+
         BundleDescription[] resolvedBundles = state.getResolvedBundles();
 
         BundleDescription[] bundles = state.getBundles();
-        if (bundles!=null) {
+        if (bundles != null) {
             for (BundleDescription bundle : bundles) {
                 if (notInArray(bundle, resolvedBundles)) {
                     for (ExportPackageDescription exportPackage : bundle.getExportPackages()) {
@@ -168,57 +170,61 @@ public final class UsesAnalyser {
                 }
             }
         }
-        
+
         return exports.toArray(new ExportPackageDescription[exports.size()]);
     }
 
     private static final boolean notInArray(BundleDescription bundle, BundleDescription[] resolvedBundles) {
-        if (resolvedBundles==null) return true;
+        if (resolvedBundles == null)
+            return true;
         for (BundleDescription b : resolvedBundles) {
-            if (b==bundle) {
+            if (b == bundle) {
                 return false;
             }
         }
         return true;
     }
 
-    private void addUsedImportedPackages(State state, Map<String, Set<SourcedPackage>> packages, ExportPackageDescription exportPackage, ExportPackageDescription topDependency, Set<String> knownPackages) {
+    private void addUsedImportedPackages(State state, Map<String, Set<SourcedPackage>> packages, ExportPackageDescription exportPackage,
+        ExportPackageDescription topDependency, Set<String> knownPackages) {
         String[] packageNames = (String[]) exportPackage.getDirective(Constants.USES_DIRECTIVE);
-        if (packageNames!=null) {
+        if (packageNames != null) {
             BundleDescription bundle = exportPackage.getExporter();
-            
+
             ExportPackageDescription[] allExports = bundle.getExportPackages();
             ImportPackageSpecification[] allImports = bundle.getImportPackages();
             ExportPackageDescription[] allResolvedImports = bundle.getResolvedImports();
 
             for (String packageName : packageNames) {
                 ExportPackageDescription localExport = findExportPackageDescriptionInArray(allExports, packageName);
-                if (null!=localExport) {
+                if (null != localExport) {
                     addSourcedPackageToMapSet(packages, packageName, new UsedBySourcedPackage(topDependency, localExport));
                 }
-                
-                ExportPackageDescription localResolvedImport = findExportPackageDescriptionInArray(allResolvedImports, packageName);
-                if (null!=localResolvedImport) {
-                    if (!knownPackages.contains(packageName)) {
+
+                if (!knownPackages.contains(packageName)) {
+                    ExportPackageDescription localResolvedImport = findExportPackageDescriptionInArray(allResolvedImports, packageName);
+                    if (null != localResolvedImport) {
                         knownPackages.add(packageName);
                         addSourcedPackageToMapSet(packages, packageName, new UsedBySourcedPackage(topDependency, localResolvedImport));
                         addUsedImportedPackages(state, packages, localResolvedImport, topDependency, knownPackages);
-                    }
-                } else {
-                    ImportPackageSpecification anImport = findImportPackageSpecificationInArray(allImports, packageName);
-                    if (anImport!=null) {
-                        ExportPackageDescription[] matchingExports = getCandidateExports(state, anImport);
-                        for (ExportPackageDescription matchingExport : matchingExports) {
-                            knownPackages.add(packageName);
-                            addSourcedPackageToMapSet(packages, packageName, new UsedBySourcedPackage(topDependency, matchingExport));
-                            addUsedImportedPackages(state, packages, matchingExport, topDependency, knownPackages);
+                    } else {
+                        ImportPackageSpecification anImport = findImportPackageSpecificationInArray(allImports, packageName);
+                        if (anImport != null) {
+                            ExportPackageDescription[] matchingExports = getCandidateExports(state, anImport);
+                            if (matchingExports.length != 0) {
+                                knownPackages.add(packageName);
+                                for (ExportPackageDescription matchingExport : matchingExports) {
+                                    addSourcedPackageToMapSet(packages, packageName, new UsedBySourcedPackage(topDependency, matchingExport));
+                                    addUsedImportedPackages(state, packages, matchingExport, topDependency, knownPackages);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     }
-    
+
     private static final ImportPackageSpecification findImportPackageSpecificationInArray(ImportPackageSpecification[] allImports, String packageName) {
         for (ImportPackageSpecification ips : allImports) {
             if (packageName.equals(ips.getName())) {
@@ -230,7 +236,7 @@ public final class UsesAnalyser {
 
     private static final void addSourcedPackageToMapSet(Map<String, Set<SourcedPackage>> packages, String packageName, SourcedPackage sourcedPackage) {
         Set<SourcedPackage> sourcedSet = packages.get(packageName);
-        if (sourcedSet==null) {
+        if (sourcedSet == null) {
             sourcedSet = new HashSet<SourcedPackage>();
         }
         sourcedSet.add(sourcedPackage);
@@ -248,15 +254,15 @@ public final class UsesAnalyser {
 
     private Map<String, Set<SourcedPackage>> getOtherImportedPackages(State state, ImportPackageSpecification rootImport) {
         BundleDescription bundle = rootImport.getBundle();
-        
+
         Map<String, Set<SourcedPackage>> packages = new HashMap<String, Set<SourcedPackage>>();
 
         ImportPackageSpecification[] importSpecifications = bundle.getImportPackages();
         for (ImportPackageSpecification importSpecification : importSpecifications) {
-            if (rootImport!=importSpecification) {
+            if (rootImport != importSpecification) {
                 if (!Constants.RESOLUTION_OPTIONAL.equals(importSpecification.getDirective(Constants.RESOLUTION_DIRECTIVE))) {
                     ExportPackageDescription[] exportPackages = getCandidateExports(state, importSpecification);
-                    for (ExportPackageDescription exportPackage : exportPackages ) {
+                    for (ExportPackageDescription exportPackage : exportPackages) {
                         addSourcedPackageToMapSet(packages, exportPackage.getName(), new ImportedSourcedPackage(rootImport, exportPackage));
                     }
                 }
@@ -267,26 +273,25 @@ public final class UsesAnalyser {
 
     private ExportPackageDescription[] getCandidateExports(State state, ImportPackageSpecification importSpecification) {
         ExportPackageDescription[] pkgs = getResolvedCandidateExports(state, importSpecification);
-        if (pkgs.length==0) pkgs = getUnresolvedCandidateExports(state, importSpecification);
+        if (pkgs.length == 0)
+            pkgs = getUnresolvedCandidateExports(state, importSpecification);
         return pkgs;
     }
 
     private Map<String, Set<SourcedPackage>> getExportedPackages(BundleDescription bundle) {
         ExportPackageDescription[] packageArray = bundle.getExportPackages();
         Map<String, Set<SourcedPackage>> packages = new HashMap<String, Set<SourcedPackage>>();
-        if (packageArray!=null)
-        for (ExportPackageDescription exportPackage : packageArray) {
-            addSourcedPackageToMapSet(packages, exportPackage.getName(), new SourcedPackage(exportPackage));
-        }
+        if (packageArray != null)
+            for (ExportPackageDescription exportPackage : packageArray) {
+                addSourcedPackageToMapSet(packages, exportPackage.getName(), new SourcedPackage(exportPackage));
+            }
         return packages;
     }
 
     private final static String stringOf(ExportPackageDescription source) {
         BundleDescription bundle = source.getSupplier();
         StringBuilder sb = new StringBuilder("'");
-        sb.append(source.getName())
-          .append("_").append(source.getVersion())
-          .append("' in bundle ").append(stringOf(bundle));
+        sb.append(source.getName()).append("_").append(source.getVersion()).append("' in bundle ").append(stringOf(bundle));
         return sb.toString();
     }
 
@@ -325,70 +330,85 @@ public final class UsesAnalyser {
     public static enum CollisionReason {
         DISJOINT_VERSION_RANGES, ATTRIBUTE_MISMATCH
     }
-    
+
     private static class SourcedPackage {
+
         private final ExportPackageDescription source;
+
         public SourcedPackage(ExportPackageDescription source) {
             this.source = source;
         }
+
         public String toString() {
             return stringOf(this.source);
         }
+
         public ExportPackageDescription getSource() {
             return this.source;
         }
     }
-    
+
     private static final class ImportedSourcedPackage extends SourcedPackage {
+
         private final ImportPackageSpecification rootImport;
+
         public ImportedSourcedPackage(ImportPackageSpecification rootImport, ExportPackageDescription source) {
             super(source);
             this.rootImport = rootImport;
         }
+
         public String toString() {
             StringBuilder sb = new StringBuilder(super.toString());
             sb.append(" imported by bundle ").append(stringOf(this.rootImport.getBundle()));
             return sb.toString();
         }
     }
-        
+
     private static final class UsedBySourcedPackage extends SourcedPackage {
+
         private final ExportPackageDescription usedBy;
+
         public UsedBySourcedPackage(ExportPackageDescription usedBy, ExportPackageDescription source) {
             super(source);
             this.usedBy = usedBy;
         }
+
         public String toString() {
             StringBuilder sb = new StringBuilder(super.toString());
             sb.append(" used by ").append(stringOf(this.usedBy));
             return sb.toString();
         }
+
         public ExportPackageDescription getUsedBy() {
             return this.usedBy;
         }
     }
-  
+
     public static final class AnalysedUsesConflict {
+
         private final UsedBySourcedPackage usedPackage;
+
         private final SourcedPackage resolvedPackage;
+
         private AnalysedUsesConflict(UsedBySourcedPackage used, SourcedPackage resolved) {
             this.usedPackage = used;
             this.resolvedPackage = resolved;
         }
+
         public String[] getConflictStatement() {
-            return new String[]
-                { "package        " + this.usedPackage.toString()
-                , "conflicts with " + this.resolvedPackage.toString()
-                };
+            return new String[] { "package        " + this.usedPackage.toString(), "conflicts with " + this.resolvedPackage.toString() };
         }
+
         public ExportPackageDescription getConflictingPackage() {
-            return this.usedPackage==null ? null : this.usedPackage.getSource();
+            return this.usedPackage == null ? null : this.usedPackage.getSource();
         }
+
         public ExportPackageDescription getUsesRootPackage() {
-            return this.usedPackage==null ? null : this.usedPackage.getUsedBy();
+            return this.usedPackage == null ? null : this.usedPackage.getUsedBy();
         }
+
         public ExportPackageDescription getPackage() {
-            return this.resolvedPackage==null ? null : this.resolvedPackage.getSource();
+            return this.resolvedPackage == null ? null : this.resolvedPackage.getSource();
         }
     }
 }
