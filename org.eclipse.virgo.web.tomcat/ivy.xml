@@ -13,6 +13,7 @@
 
 	<publications>
 		<artifact name="org.eclipse.virgo.web.tomcat" type="plan" ext="plan"/>
+		<artifact name="org.eclipse.virgo.web" type="configuration" ext="properties"/>
 	</publications>
 
 	<dependencies>
