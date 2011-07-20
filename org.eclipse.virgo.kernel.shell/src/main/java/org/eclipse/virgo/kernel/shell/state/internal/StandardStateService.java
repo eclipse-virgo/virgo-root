@@ -84,7 +84,7 @@ final public class StandardStateService implements StateService {
     public List<QuasiLiveService> getAllServices(File source) {
         List<QuasiLiveService> quasiLiveServices = new ArrayList<QuasiLiveService>();
         if (source == null) {
-            SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
+            SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework());
             for (Entry<Long, QuasiLiveService> serviceEntry : services.entrySet()) {
                 quasiLiveServices.add(serviceEntry.getValue());
             }
@@ -106,6 +106,7 @@ final public class StandardStateService implements StateService {
             allServiceReferences = this.bundleContext.getAllServiceReferences(null, null);
         } catch (InvalidSyntaxException e) {
             // Will not happen
+            return services;
         }
         for (ServiceReference<?> serviceReference : allServiceReferences) {
             QuasiLiveService service = new StandardQuasiLiveService(quasiFramework, serviceReference);
@@ -120,7 +121,7 @@ final public class StandardStateService implements StateService {
     @Override
     public QuasiLiveService getService(File source, long serviceId) {
         if (source == null) {
-            SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework(source));
+            SortedMap<Long, QuasiLiveService> services = getServicesSortedMap(this.getQuasiFramework());
             return services.get(serviceId);
         }
         return null;
@@ -182,9 +183,13 @@ final public class StandardStateService implements StateService {
         return matchingBundles;
     }
 
+    private QuasiFramework getQuasiFramework() {
+        return new StandardQuasiLiveFramework(this.quasiFrameworkFactory.create(), this.bundleContext);
+    }
+
     private QuasiFramework getQuasiFramework(File source) {
         if (source == null) {
-            return new StandardQuasiLiveFramework(this.quasiFrameworkFactory.create(), this.bundleContext);
+            return getQuasiFramework();
         } else {
             try {
                 return this.quasiFrameworkFactory.create(source);

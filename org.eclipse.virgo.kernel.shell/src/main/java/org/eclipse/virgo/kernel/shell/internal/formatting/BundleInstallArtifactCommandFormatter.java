@@ -437,7 +437,7 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
 
         @Override
         public boolean equals(Object obj) {
-            return getId().equals(((ArtifactHolder) obj).getId());
+            return obj instanceof ArtifactHolder && getId().equals(((ArtifactHolder) obj).getId());
         }
     }
 }
