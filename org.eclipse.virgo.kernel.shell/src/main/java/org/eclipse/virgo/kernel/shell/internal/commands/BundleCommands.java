@@ -50,9 +50,9 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     public BundleCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator, StateService stateService,
         ModuleContextAccessor moduleContextAccessor, RegionDigraph regionDigraph) {
-        super(TYPE, objectNameCreator, new BundleInstallArtifactCommandFormatter(stateService, moduleContextAccessor), ManageableArtifact.class, regionDigraph);
+        super(TYPE, objectNameCreator, new BundleInstallArtifactCommandFormatter(regionDigraph, stateService, moduleContextAccessor), ManageableArtifact.class, regionDigraph);
         this.stateService = stateService;
-        this.formatter = new BundleInstallArtifactCommandFormatter(stateService, moduleContextAccessor);
+        this.formatter = new BundleInstallArtifactCommandFormatter(regionDigraph, stateService, moduleContextAccessor);
     }
 
     @Command("examine")

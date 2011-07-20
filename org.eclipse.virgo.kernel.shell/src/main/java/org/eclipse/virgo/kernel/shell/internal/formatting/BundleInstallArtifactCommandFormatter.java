@@ -20,11 +20,14 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.module.ModuleContext;
@@ -59,6 +62,8 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
     private static final int VERSION_COLUMN_MIN_WIDTH = VERSION_COLUMN_NAME.length();
 
     private static final String STATE_COLUMN_NAME = "State";
+    
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
     /**
      * longest state name from {@link BundleArtifact#mapBundleState()}
@@ -68,10 +73,13 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
     private final StateService stateService;
 
     private final ModuleContextAccessor moduleContextAccessor;
+    
+    private final Region userRegion;
 
-    public BundleInstallArtifactCommandFormatter(StateService stateService, ModuleContextAccessor moduleContextAccessor) {
+    public BundleInstallArtifactCommandFormatter(RegionDigraph regionDigraph, StateService stateService, ModuleContextAccessor moduleContextAccessor) {
         this.stateService = stateService;
         this.moduleContextAccessor = moduleContextAccessor;
+        this.userRegion = regionDigraph.getRegion(USER_REGION_NAME);
     }
 
     public List<String> formatList(List<ManageableArtifact> artifacts) {
@@ -309,7 +317,7 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
         List<ArtifactHolder> artifactHolders = new ArrayList<ArtifactHolder>(artifacts.size());
 
         List<QuasiBundle> bundles = this.stateService.getAllBundles(null);
-
+        
         for (ManageableArtifact artifact : artifacts) {
             ArtifactHolder artifactHolder = getArtifactHolder(artifact, bundles);
             if (artifactHolder != null) {
@@ -322,8 +330,9 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
 
     private ArtifactHolder getArtifactHolder(ManageableArtifact artifact, List<QuasiBundle> bundles) {
         Version v = new Version(artifact.getVersion());
+        Set<Long> bundleIds = userRegion.getBundleIds();
         for (QuasiBundle bundle : bundles) {
-            if (bundle.getSymbolicName().equals(artifact.getName()) && bundle.getVersion().equals(v)) {
+            if (bundle.getSymbolicName().equals(artifact.getName()) && bundle.getVersion().equals(v) && bundleIds.contains(bundle.getBundleId())) {
                 return new ArtifactHolder(artifact, bundle, moduleContextAccessor);
             }
         }
