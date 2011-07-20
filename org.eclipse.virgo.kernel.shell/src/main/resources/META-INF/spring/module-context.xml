@@ -110,7 +110,6 @@
 		<constructor-arg>
 			<list>
 				<bean class="org.eclipse.virgo.kernel.shell.internal.AnnotationBasedCommandResolver"/>
-				<bean class="org.eclipse.virgo.kernel.shell.internal.ServicePropertyCommandResolver"/>
 			</list>
 		</constructor-arg>
 	</bean>
