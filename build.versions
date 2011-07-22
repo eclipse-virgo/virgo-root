@@ -5,7 +5,7 @@ org.eclipse.equinox.util=1.0.200.v20100503
 org.eclipse.equinox.ds=1.3.0.v20110124-0830
 org.eclipse.equinox.cm=1.0.300.v20101204
 org.eclipse.equinox.region=1.0.0.v20110503
-org.eclipse.equinox.console.supportability=1.0.0.N20110626-2000
+org.eclipse.equinox.console.supportability=1.0.0.20110722
 org.aspectj=1.6.6.RELEASE
 org.eclipse.osgi=3.7.0.v20110224
 org.eclipse.virgo.medic=3.0.0.M06
@@ -16,7 +16,7 @@ org.slf4j=1.6.1
 org.slf4j.spi=1.6.1
 org.springframework.osgi=1.2.1
 org.springframework=3.0.5.RELEASE
-org.apache.felix.gogo=0.8.0.v201105062003
+org.apache.felix.gogo=0.8.0.v201107131313
 com.springsource.org.apache.mina.core=2.0.2
 com.springsource.org.apache.sshd.core=0.5.0
 
