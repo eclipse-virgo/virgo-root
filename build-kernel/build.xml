@@ -54,6 +54,8 @@
 
 		<ivy:resolve resolveId="copy.path" file="${basedir}/kernel-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/lib/kernel/[artifact]-[revision].[ext]" conf="lib-kernel" type="jar"/>
+		<!-- Workaround for the issue that exclude does not work properly for Equinox in kernel-ivy.xml -->
+		<delete file="${package.output.dir}/lib/kernel/org.eclipse.osgi-${org.eclipse.osgi}.jar"/>
 		
 		<ivy:resolve resolveId="copy.path" file="${basedir}/kernel-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/repository/ext/[artifact]-[revision].[ext]" conf="repository-ext" type="jar"/>

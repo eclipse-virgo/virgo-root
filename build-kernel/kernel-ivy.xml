@@ -36,7 +36,7 @@
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="repository-ext->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>
 		
-		
+		<!-- The exclude of Equinox (org="org.eclipse.osgi" module="org.eclipse.osgi") does not work. See build.xml for a workaround. -->
 		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
 		<exclude org="org.eclipse.virgo.util" conf="repository-ext"/>
 		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.extensions.equinox"/>
