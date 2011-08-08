@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="http://ivyrep.jayasoft.org/ivy-doc.xsl"?>
-<ivy-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd" version="1.3">
+<ivy-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd" version="2.0">
 
 	<info organisation="org.eclipse.virgo" module="${ant.project.name}" />
 
 	<configurations>
 		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
 		<conf name="lib-kernel" visibility="public" description="Dependencies to be packaged in lib/kernel"/>
-		<conf name="repository-ext" visibility="public" description="Dependencies to be packaged in repository/ext"/>
 	</configurations>
 
 	<dependencies>
-		<!-- lib/kernel -->	
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="latest.integration" conf="lib-kernel->runtime"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="lib-kernel->runtime"/>
-        <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.userregionfactory" rev="latest.integration" conf="lib-kernel->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="lib-kernel->runtime"/>
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="lib-kernel->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="lib-kernel->runtime"/>
@@ -27,20 +23,11 @@
 		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo}" conf="lib-kernel->runtime" />
 		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="lib-kernel->runtime" />
 		<dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="lib-kernel->runtime" />
-
-		<!-- repository-ext -->
-		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
-		<dependency org="org.springframework.osgi" name="org.springframework.osgi.extender" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
-		<dependency org="org.springframework.osgi" name="org.springframework.osgi.io" rev="${org.springframework.osgi}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>
 		
 		<!-- The exclude of Equinox (org="org.eclipse.osgi" module="org.eclipse.osgi") does not work. 
 		This is due to the transitive dependency from org.eclipse.virgo.osgi.equinox on org.eclipse.osgi
 		See build.xml for a workaround. -->
 		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
-		<exclude org="org.eclipse.virgo.util" conf="repository-ext"/>
 		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.extensions.equinox"/>
 		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.launcher"/>
 		<exclude org="org.aspectj" module="com.springsource.org.aspectj.runtime"/>
