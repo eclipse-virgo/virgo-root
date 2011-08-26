@@ -16,7 +16,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
@@ -34,8 +35,13 @@ import org.osgi.framework.BundleContext;
 public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegrationTest {
     private static final String SHELL_COMMANDS_BUNDLE_NAME = "org.eclipse.virgo.kernel.osgicommand";
     private static final String CLASSLOADING_PACKAGE = "org.eclipse.virgo.kernel.osgicommand.helper";
+
     private static final String TEST_CLASS_NAME = ClassLoadingHelperIntegrationTests.class.getName();
     private static final String TEST_CLASS_PACKAGE = ClassLoadingHelperIntegrationTests.class.getPackage().getName();
+
+    private static final String TEST_CLASS_NAME_PATH = TEST_CLASS_NAME.replace(".", "/");
+    private static final String TEST_CLASS_PACKAGE_PATH = TEST_CLASS_PACKAGE.replace(".", "/");
+
     private final String FRAMEWORK_CLASS_PACKAGE = BundleContext.class.getPackage().getName();
     private final String FRAMEWORK_CLASS_NAME = BundleContext.class.getName();
 
@@ -59,7 +65,7 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
             }
         }
         
-        assertNotNull("No bundles with symbolic name [" + SHELL_COMMANDS_BUNDLE_NAME + "] found in bundles " + context.getBundles(),
+        assertNotNull("No bundles with symbolic name [" + SHELL_COMMANDS_BUNDLE_NAME + "] found in bundles " + Arrays.toString(context.getBundles()),
                       this.shellCommandsBundle);
 
         // get this bundle
@@ -89,6 +95,24 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
     }
 
     @Test
+    public void testGetBundlesContainingResource() throws Exception {
+        final String CONTAINS_ERROR_MESSAGE = "Bundle [%s] is returned as bundle that contains the test class [%s]. The returned set of bundles is %s";
+        final String DOES_NOT_CONTAIN_ERROR_MESSAGE = "Bundle [%s] is not returned as bundle that contains the test class [%s]. The returned set of bundles is %s";
+        final String RESOURCE_NOT_FOUND = "Bundle [%s] is returned as bundle that contains the test class [%s], but the returned URLs [%s] doesn't seem to have it.";
+
+        // Check which bundles contain this class
+        Map<Bundle, List<String>> result = ClassLoadingHelper.getBundlesContainingResource(context, TEST_CLASS_NAME + "*");
+        assertFalse(String.format(CONTAINS_ERROR_MESSAGE, SHELL_COMMANDS_BUNDLE_NAME, TEST_CLASS_NAME, Arrays.toString(result.keySet().toArray())),
+                    result.containsKey(shellCommandsBundle));
+        assertTrue(String.format(DOES_NOT_CONTAIN_ERROR_MESSAGE, currentBundle.getSymbolicName(), TEST_CLASS_NAME, Arrays.toString(result.keySet().toArray())),
+                   result.containsKey(currentBundle));
+
+        // Check the resources contained in the bundles
+        assertTrue(String.format(RESOURCE_NOT_FOUND, currentBundle.getSymbolicName(), TEST_CLASS_NAME, result.toString().contains(TEST_CLASS_NAME_PATH)),
+                   result.toString().contains(TEST_CLASS_NAME_PATH));
+    }
+
+    @Test
     public void testGetBundlesLoadingClassMethod() throws Exception {
         final String CAN_LOAD_ERROR_MESSAGE = "Bundle [%s] is returned as bundle that can load the test class [%s]. The returned set of bundles is %s";
         final String CANNOT_LOAD_ERROR_MESSAGE = "Bundle [%s] is not returned as bundle that can load the test class [%s]. The returned set of bundles is %s";
@@ -96,7 +120,7 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
         final String NON_ORIGINATING_ERROR_MESSAGE = "Bundle [%s] is not returned as originating bundle for class [%s]. The returned set of bundles is %s";
 
         // Check which bundles can load this class
-        HashMap<Bundle, Bundle> result = ClassLoadingHelper.getBundlesLoadingClass(context, TEST_CLASS_NAME);
+        Map<Bundle, Bundle> result = ClassLoadingHelper.getBundlesLoadingClass(context, TEST_CLASS_NAME);
         assertFalse(String.format(CAN_LOAD_ERROR_MESSAGE, SHELL_COMMANDS_BUNDLE_NAME, TEST_CLASS_NAME, Arrays.toString(result.keySet().toArray())),
                     result.containsKey(shellCommandsBundle));
         assertFalse(String.format(ORIGINATING_ERROR_MESSAGE, SHELL_COMMANDS_BUNDLE_NAME, TEST_CLASS_NAME, Arrays.toString(result.values().toArray())),

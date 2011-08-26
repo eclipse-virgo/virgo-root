@@ -21,10 +21,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
@@ -37,8 +35,13 @@ public class ClassLoadingSupportTests {
 
     private static final long BUNDLE_ID = 1234;
     private static final String BUNDLE_SYMBOLIC_NAME = "test";
+
     private static final String CLASS_NAME = ClassLoadingSupportTests.class.getName();
     private static final String CLASS_PACKAGE = ClassLoadingSupportTests.class.getPackage().getName();
+
+    private static final String SIMPLE_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1);
+    private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
+    private static final String CLASS_PACKAGE_PATH = CLASS_PACKAGE.replace(".", "/");
 
     private static final Map<List<String>, List<String>> RESULT_ORIGIN_LOAD_MAP = new HashMap<List<String>, List<String>>(2);
     private static final List<List<String>> RESULT_EXPORT_ARRAY = new ArrayList<List<String>>(1);
@@ -54,6 +57,28 @@ public class ClassLoadingSupportTests {
 
         RESULT_ORIGIN_LOAD_MAP.put(loadingBundle, originBundle);
         RESULT_EXPORT_ARRAY.add(loadingBundle);
+    }
+
+    @Test
+    public void testGetBundlesContainingResource() throws Exception {
+        Bundle bundle = createMock(Bundle.class);
+        BundleContext bundleContext = createMock(BundleContext.class);
+        Enumeration<URL> urlEnum = this.getClass().getClassLoader().getResources(CLASS_NAME_PATH);
+
+        expect(bundle.findEntries(CLASS_PACKAGE_PATH, SIMPLE_CLASS_NAME + "*", true)).andReturn(urlEnum);
+        expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
+        expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
+        expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
+
+        replay(bundle, bundleContext);
+
+        ClassLoadingSupport support = new ClassLoadingSupport(bundleContext);
+
+        Map<List<String>, List<String>> map = support.getBundlesContainingResource(CLASS_NAME + "*");
+        assertEquals("More than one test URL found in the result " + map, 1, map.size());
+        assertTrue("Test URL not found in the result: " + map, map.toString().contains(CLASS_NAME_PATH));
+
+        verify(bundle, bundleContext);
     }
 
     @SuppressWarnings("rawtypes")
@@ -131,5 +156,4 @@ public class ClassLoadingSupportTests {
 
         verify(bundle, bundleContext);
     }
-
 }

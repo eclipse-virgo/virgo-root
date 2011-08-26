@@ -20,6 +20,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+import java.net.URL;
+import java.util.Enumeration;
+
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,8 +34,13 @@ public class ClassLoadingCommandProviderTests {
 
     private static final long BUNDLE_ID = 1234;
     private static final String BUNDLE_SYMBOLIC_NAME = "test";
+
     private static final String CLASS_NAME = ClassLoadingCommandProviderTests.class.getName();
     private static final String CLASS_PACKAGE = ClassLoadingCommandProviderTests.class.getPackage().getName();
+
+    private static final String SIMPLE_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1);
+    private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
+    private static final String CLASS_PACKAGE_PATH = CLASS_PACKAGE.replace(".", "/");
 
     @Test
     public void testCommandsWithNoClass() throws Exception {
@@ -62,18 +70,17 @@ public class ClassLoadingCommandProviderTests {
         verify(bundle, bundleContext);
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
     public void testClHasWithExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
         StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
+        Enumeration<URL> urlEnum = this.getClass().getClassLoader().getResources(CLASS_NAME_PATH);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
+        expect(bundle.findEntries(CLASS_PACKAGE_PATH, SIMPLE_CLASS_NAME + "*", true)).andReturn(urlEnum);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
-        expect(bundleContext.getBundle(0)).andReturn(bundle); // system bundle is also our mockup
         commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(bundle, bundleContext);
@@ -84,8 +91,8 @@ public class ClassLoadingCommandProviderTests {
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
-        assertTrue("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE + "]",
-                   output.contains("" + CLASS_PACKAGE));
+        assertTrue("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE_PATH + "]",
+                   output.contains("" + CLASS_PACKAGE_PATH));
         assertTrue("Command output [" + output + "] does not contain bundle ID [" + BUNDLE_ID + "]",
                    output.contains("" + BUNDLE_ID));
         assertTrue("Command output [" + output + "] does not contain bundle symbolic name [" + BUNDLE_SYMBOLIC_NAME + "]",
@@ -100,7 +107,7 @@ public class ClassLoadingCommandProviderTests {
         BundleContext bundleContext = createMock(BundleContext.class);
         StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
-        expect(bundle.loadClass(CLASS_NAME)).andReturn(null); // class does not exist
+        expect(bundle.findEntries(CLASS_PACKAGE_PATH, SIMPLE_CLASS_NAME + "*", true)).andReturn(null); // class does not exist
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
         commandInterpreter.setArguments(new String[]{CLASS_NAME});
 

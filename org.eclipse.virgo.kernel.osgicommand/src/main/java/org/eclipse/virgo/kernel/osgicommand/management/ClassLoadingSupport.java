@@ -15,10 +15,7 @@ import org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * MBean for class loading queries
@@ -29,6 +26,19 @@ public class ClassLoadingSupport implements ClassLoadingSupportMBean {
 
     public ClassLoadingSupport(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public Map<List<String>, List<String>> getBundlesContainingResource(String resourcePattern) {
+        Map<Bundle, List<String>> resources = ClassLoadingHelper.getBundlesContainingResource(this.bundleContext, resourcePattern);
+
+        Map<List<String>, List<String>> result = new HashMap<List<String>, List<String>>();
+
+        for (Map.Entry<Bundle, List<String>> entry: resources.entrySet()) {
+            result.put(getBundleInformation(entry.getKey()), entry.getValue());
+        }
+
+        return result;
     }
 
     @Override

@@ -19,7 +19,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-import java.util.HashMap;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Helper for class loading supporting commands
@@ -42,7 +43,7 @@ public class ClassLoadingHelper {
 
         ExportPackageDescription[] exportDescriptions = bundleDescription.getSelectedExports();
         for (ExportPackageDescription exportDescription : exportDescriptions) {
-            if (exportDescription.getName().equals(classPackage))
+            if (exportDescription.getName().equals(convertToPackageFormat(classPackage)))
                 return true;
         }
 
@@ -57,11 +58,11 @@ public class ClassLoadingHelper {
      * @param className     Fully qualified class name (in the form &lt;package&gt;.&lt;class name&gt;)
      * @return Map between the bundles that can load the class and the bundle that provides it in each case
      */
-    public static HashMap<Bundle, Bundle> getBundlesLoadingClass(BundleContext bundleContext, String className) {
+    public static Map<Bundle, Bundle> getBundlesLoadingClass(BundleContext bundleContext, String className) {
         Bundle[] bundles = bundleContext.getBundles();
         HashMap<Bundle, Bundle> foundBundles = new HashMap<Bundle, Bundle>();
         for (Bundle bundle : bundles) {
-            Bundle originBundle = originBundleOfClass(className, bundleContext, bundle);
+            Bundle originBundle = getOriginBundleOfClass(className, bundleContext, bundle);
             if (originBundle != null) {
                 foundBundles.put(bundle, originBundle);
             }
@@ -72,13 +73,13 @@ public class ClassLoadingHelper {
 
     /**
      * Find the originating bundle of a class loaded by a bundle
-     * 
-     * @param className Fully qualified class name (in the form &lt;package&gt;.&lt;class name&gt; name)
+     *
+     * @param className     Fully qualified class name (in the form &lt;package&gt;.&lt;class name&gt; name)
      * @param bundleContext Bundle context for interaction with the OSGi framework
      * @param loadingBundle Bundle instance to load class from
      * @return originating {@link Bundle} or null if it cannot be loaded by <code>testBundle</code>
      */
-    private static Bundle originBundleOfClass(String className, BundleContext bundleContext, Bundle loadingBundle) {
+    public static Bundle getOriginBundleOfClass(String className, BundleContext bundleContext, Bundle loadingBundle) {
         Class<?> clasz = tryToLoadClass(className, loadingBundle);
         Bundle originBundle = null;
         if (clasz != null) {
@@ -103,11 +104,27 @@ public class ClassLoadingHelper {
             return null;
 
         try {
-            return bundle.loadClass(className);
+            return bundle.loadClass(convertToPackageFormat(className));
         } catch (ClassNotFoundException e) {
             // do nothing - if the class is not found we don't care
         }
         return null;
+    }
+
+    public static String convertToPackageFormat(String className) {
+        if (className == null)
+            return null;
+
+        // Convert from resource /a/b/c/d.class to package format a.b.c.d
+        className = className.replace("/", ".");
+        if (className.startsWith(".")) {
+            className = className.substring(1);
+        }
+        if (className.endsWith(".class")) {
+            className = className.substring(0, className.length() - 6);
+        }
+
+        return className;
     }
 
     /**
@@ -119,7 +136,7 @@ public class ClassLoadingHelper {
      * @return Map between the bundle that can load the class (key) and the one that provides it (value)
      * @throws IllegalArgumentException if there is no bundle with such name/id
      */
-    public static HashMap<Bundle, Bundle> getBundlesLoadingClass(BundleContext bundleContext, String className, String bundle) throws IllegalArgumentException {
+    public static Map<Bundle, Bundle> getBundlesLoadingClass(BundleContext bundleContext, String className, String bundle) throws IllegalArgumentException {
         HashMap<Bundle, Bundle> result = new HashMap<Bundle, Bundle>();
         long id = Long.MIN_VALUE;
         try {
@@ -132,9 +149,9 @@ public class ClassLoadingHelper {
             Bundle testBundle = bundleContext.getBundle(id);
             if (testBundle == null)
                 throw new IllegalArgumentException("Bundle with ID [" + id + "] not found");
-            
-            Bundle originBundle = originBundleOfClass(className, bundleContext, testBundle);
-            if (originBundle !=null) {
+
+            Bundle originBundle = getOriginBundleOfClass(className, bundleContext, testBundle);
+            if (originBundle != null) {
                 result.put(testBundle, originBundle);
             }
         } else {
@@ -145,10 +162,46 @@ public class ClassLoadingHelper {
                 throw new IllegalArgumentException("Bundle with symbolic name [" + bundle + "] not found");
 
             for (Bundle testBundle : bundles) {
-                Bundle originBundle = originBundleOfClass(className, bundleContext, testBundle);
-                if (originBundle !=null) {
+                Bundle originBundle = getOriginBundleOfClass(className, bundleContext, testBundle);
+                if (originBundle != null) {
                     result.put(testBundle, originBundle);
                 }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns all bundles that contain a class
+     *
+     * @param bundleContext   Bundle context for interaction with the OSGi framework
+     * @param resourcePattern Search pattern in the form &lt;package&gt;/&lt;class name&gt;. The pattern can contain wildcards
+     * @return Map between the bundle (key) and the URL(s) of the resources (value)
+     */
+    public static Map<Bundle, List<String>> getBundlesContainingResource(BundleContext bundleContext, String resourcePattern) {
+        Map<Bundle, List<String>> result = new HashMap<Bundle, List<String>>();
+
+        String packageName = "/";
+        resourcePattern = resourcePattern.replace(".", "/");
+
+        int index = resourcePattern.lastIndexOf("/");
+        if (index != -1) {
+            packageName = resourcePattern.substring(0, index);
+            resourcePattern = resourcePattern.substring(index + 1);
+        }
+
+        Bundle[] bundles = bundleContext.getBundles();
+        for (Bundle bundle : bundles) {
+            Enumeration<URL> foundURLs = bundle.findEntries(packageName, resourcePattern, true);
+            if (foundURLs != null) {
+                ArrayList<URL> foundEntries = Collections.list(foundURLs);
+                List<String> urlList = new ArrayList<String>(foundEntries.size());
+                for (URL bundleURL : foundEntries) {
+                    urlList.add(bundleURL.getFile());
+                }
+
+                result.put(bundle, urlList);
             }
         }
 

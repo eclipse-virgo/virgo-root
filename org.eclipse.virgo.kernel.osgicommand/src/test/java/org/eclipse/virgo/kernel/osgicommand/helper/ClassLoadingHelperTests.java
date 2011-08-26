@@ -10,15 +10,6 @@
  ******************************************************************************/
 package org.eclipse.virgo.kernel.osgicommand.helper;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
-
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
@@ -28,6 +19,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 /**
  * Class for unit testing {@link ClassLoadingHelper}
@@ -40,7 +34,7 @@ public class ClassLoadingHelperTests {
     private static final String CLASS_NAME = ClassLoadingHelperTests.class.getName();
     private static final String CLASS_PACKAGE = ClassLoadingHelperTests.class.getPackage().getName();
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
     public void testIsMissingPackageExported() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
@@ -65,7 +59,7 @@ public class ClassLoadingHelperTests {
         verify(platformAdmin, platformAdminServiceReference, bundle, bundleContext, bundleState, bundleDescription);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
     public void testIsExistingPackageExported() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
@@ -133,7 +127,7 @@ public class ClassLoadingHelperTests {
     public void testTryToLoadExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class) bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
 
         replay(bundle);
 
@@ -165,7 +159,7 @@ public class ClassLoadingHelperTests {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
+        expect((Class) bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingHelperTests.class);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
         expect(bundleContext.getBundle(0)).andReturn(bundle);
 
@@ -177,7 +171,7 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
     public void testGetBundleLoadingMissingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
@@ -198,7 +192,7 @@ public class ClassLoadingHelperTests {
         verify(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
     public void testGetBundleByNameLoadingExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
@@ -236,6 +230,12 @@ public class ClassLoadingHelperTests {
                    ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME, "" + BUNDLE_ID).size() != 0);
 
         verify(bundle, bundleContext);
+    }
+
+    @Test
+    public void testConvertToPackageFormat() throws Exception {
+        String pathFormat = "/" + CLASS_NAME.replace(".", "/") + ".class";
+        assertEquals("Path to resource [" + pathFormat + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToPackageFormat(pathFormat));
     }
 
 }

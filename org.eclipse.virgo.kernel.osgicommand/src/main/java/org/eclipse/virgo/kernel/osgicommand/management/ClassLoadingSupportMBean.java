@@ -22,6 +22,16 @@ public interface ClassLoadingSupportMBean {
     /**
      * Returns list with all bundles that can load a class and the origin bundle
      *
+     * @param resourcePattern Resource pattern (package.class) to search for. The pattern may contain wildcard (*)
+     * @return Mapping between the bundle that contains the resource (possibly provided by fragment bundle) and the
+     *         resource URLs found in the bundle. The bundle information list contain the bundle ID and
+     *         symbolic name.
+     */
+    Map<List<String>, List<String>> getBundlesContainingResource(String resourcePattern);
+
+    /**
+     * Returns list with all bundles that can load a class and the origin bundle
+     *
      * @param className Fully qualified class name (package.class) to load
      * @return Mapping between the bundle that can load the class (possibly delegating to another bundle) and the
      *         origin bundle that actually performs the loading. The bundle information list contain the bundle ID and

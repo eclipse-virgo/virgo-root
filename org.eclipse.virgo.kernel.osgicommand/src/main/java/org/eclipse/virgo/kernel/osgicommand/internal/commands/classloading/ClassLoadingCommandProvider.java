@@ -17,7 +17,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,22 +43,18 @@ public class ClassLoadingCommandProvider implements CommandProvider {
             return;
         }
 
-        HashMap<Bundle, Bundle> foundBundles = ClassLoadingHelper.getBundlesLoadingClass(bundleContext, className);
+        // ensure we are searching for all possible matches
+        if (!className.contains("*")) {
+            className = className + "*";
+        }
+
+        Map<Bundle, List<String>> foundBundles = ClassLoadingHelper.getBundlesContainingResource(bundleContext, className);
         if (foundBundles.size() == 0) {
-            interpreter.println("No bundle contains class [" + className + "]");
+            interpreter.println("No bundle contains [" + className + "]");
             return;
         }
 
-        // build a set with all bundles that contain the class, eliminating repeating ones
-        HashSet<Bundle> uniqueBundles = new HashSet<Bundle>(foundBundles.values());
-
-        // build output map
-        HashMap<Long, String> outputBundles = new HashMap<Long, String>();
-        for (Bundle bundle : uniqueBundles) {
-            outputBundles.put(bundle.getBundleId(), bundle.getSymbolicName());
-        }
-
-        outputFoundBundles(interpreter, "Bundles containing [" + className + "]:", outputBundles);
+        outputBundlesAndResources(interpreter, "Bundles containing [" + className + "]:", foundBundles);
     }
 
     /**
@@ -74,7 +70,7 @@ public class ClassLoadingCommandProvider implements CommandProvider {
         }
         String bundle = interpreter.nextArgument();
 
-        HashMap<Bundle, Bundle> foundBundles;
+        Map<Bundle, Bundle> foundBundles;
         if (bundle == null) {
             foundBundles = ClassLoadingHelper.getBundlesLoadingClass(bundleContext, className);
         } else {
@@ -90,7 +86,7 @@ public class ClassLoadingCommandProvider implements CommandProvider {
             return;
         }
 
-        outputFoundBundlesAndRelations(interpreter, "Successfully loaded [" + className + "] " + ((bundle != null) ? "using class loader from:" : "from:"), foundBundles, "exported by");
+        outputFoundBundlesAndRelations(interpreter, "Successfully loaded [" + className + "] " + ((bundle != null) ? "using class loader from:" : "from:"), foundBundles, "provided by");
     }
 
     /**
@@ -130,19 +126,8 @@ public class ClassLoadingCommandProvider implements CommandProvider {
             return;
         }
 
-        outputFoundBundles(interpreter, "Bundles exporting [" + className + "]:", foundBundles);
-    }
-
-    /**
-     * Outputs a list with all found bundles
-     *
-     * @param interpreter  CommandInterpreter instance for output to the console
-     * @param message      Message to print before the list
-     * @param foundBundles A map with ID and bundle details
-     */
-    private void outputFoundBundles(CommandInterpreter interpreter, String message, HashMap<Long, String> foundBundles) {
         interpreter.println();
-        interpreter.println(message);
+        interpreter.println("Bundles exporting [" + className + "]:");
         for (Map.Entry<Long, String> entry : foundBundles.entrySet()) {
             interpreter.println("  " + entry.getKey() + "\t" + entry.getValue());
         }
@@ -156,24 +141,56 @@ public class ClassLoadingCommandProvider implements CommandProvider {
      * @param foundBundles A map with ID and bundle details
      * @param relation     Relation between the bundles
      */
-    private void outputFoundBundlesAndRelations(CommandInterpreter interpreter, String message, HashMap<Bundle, Bundle> foundBundles, String relation) {
+    private void outputFoundBundlesAndRelations(CommandInterpreter interpreter, String message, Map<Bundle, Bundle> foundBundles, String relation) {
         interpreter.println();
         interpreter.println(message);
+
         for (Map.Entry<Bundle, Bundle> entry : foundBundles.entrySet()) {
             Bundle testBundle = entry.getKey();
             Bundle originalBundle = entry.getValue();
             if (testBundle.equals(originalBundle)) {
-                interpreter.println("  " + testBundle.getBundleId() + "\t" + testBundle.getSymbolicName());
+                interpreter.println("  " + bundleToString(testBundle, false));
             } else {
-                interpreter.println("  " + testBundle.getBundleId() + "\t" + testBundle.getSymbolicName());
+                interpreter.println("  " + bundleToString(testBundle, false));
                 if (relation != null)
-                    interpreter.println("  " + "\t\t[" + relation + " " + originalBundle.getBundleId() + " " + originalBundle.getSymbolicName() + "]");
+                    interpreter.println("  \t\t[" + relation + " " + bundleToString(originalBundle, true) + "]");
             }
         }
     }
 
+    /**
+     * Outputs a list with all found bundles
+     *
+     * @param interpreter     CommandInterpreter instance for output to the console
+     * @param message         Message to print before the list
+     * @param foundBundles    A map with Bundle and found resources
+     */
+    private void outputBundlesAndResources(CommandInterpreter interpreter, String message, Map<Bundle, List<String>> foundBundles) {
+        interpreter.println();
+        interpreter.println(message);
+
+        for (Map.Entry<Bundle, List<String>> bundleListEntry : foundBundles.entrySet()) {
+            interpreter.println("  " + bundleToString(bundleListEntry.getKey(), false));
+
+            for (String resource : bundleListEntry.getValue()) {
+                interpreter.println("  \t\t" + resource);
+            }
+        }
+    }
+
+    /**
+     * Provides String representation of a Bundle
+     *
+     * @param b     See {@link org.osgi.framework.Bundle}
+     * @param space Separate ID and symbolic name with space instead of tab character
+     * @return String containing ID and symbolic name of the bundle
+     */
+    private String bundleToString(Bundle b, boolean space) {
+        return b.getBundleId() + (space ? " " : "\t") + b.getSymbolicName();
+    }
+
     public String getHelp() {
-        StringBuffer help = new StringBuffer();
+        StringBuilder help = new StringBuilder();
         help.append("---");
         help.append("Classloading Commands");
         help.append("---");
