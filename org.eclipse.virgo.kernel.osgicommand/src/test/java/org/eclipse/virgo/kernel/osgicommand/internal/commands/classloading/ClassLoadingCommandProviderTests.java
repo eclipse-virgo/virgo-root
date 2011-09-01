@@ -38,7 +38,7 @@ public class ClassLoadingCommandProviderTests {
     private static final String CLASS_NAME = ClassLoadingCommandProviderTests.class.getName();
     private static final String CLASS_PACKAGE = ClassLoadingCommandProviderTests.class.getPackage().getName();
 
-    private static final String SIMPLE_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1);
+    private static final String SHORT_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1) + ".class";
     private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
     private static final String CLASS_PACKAGE_PATH = CLASS_PACKAGE.replace(".", "/");
 
@@ -77,7 +77,8 @@ public class ClassLoadingCommandProviderTests {
         StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
         Enumeration<URL> urlEnum = this.getClass().getClassLoader().getResources(CLASS_NAME_PATH);
 
-        expect(bundle.findEntries(CLASS_PACKAGE_PATH, SIMPLE_CLASS_NAME + "*", true)).andReturn(urlEnum);
+        expect(bundle.findEntries("/", SHORT_CLASS_NAME, true)).andReturn(urlEnum);
+        expect(bundle.findEntries("/", CLASS_NAME_PATH, true)).andReturn(null); // class not found in root
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
@@ -90,7 +91,7 @@ public class ClassLoadingCommandProviderTests {
         String output = commandInterpreter.getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
-                   output.contains("" + CLASS_NAME));
+                   output.contains("" + CLASS_NAME_PATH));
         assertTrue("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE_PATH + "]",
                    output.contains("" + CLASS_PACKAGE_PATH));
         assertTrue("Command output [" + output + "] does not contain bundle ID [" + BUNDLE_ID + "]",
@@ -107,7 +108,8 @@ public class ClassLoadingCommandProviderTests {
         BundleContext bundleContext = createMock(BundleContext.class);
         StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
-        expect(bundle.findEntries(CLASS_PACKAGE_PATH, SIMPLE_CLASS_NAME + "*", true)).andReturn(null); // class does not exist
+        expect(bundle.findEntries("/", SHORT_CLASS_NAME, true)).andReturn(null); // class does not exist
+        expect(bundle.findEntries("/", CLASS_NAME_PATH, true)).andReturn(null); // class does not exist
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
         commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
@@ -118,9 +120,9 @@ public class ClassLoadingCommandProviderTests {
         String output = commandInterpreter.getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
-                   output.contains("" + CLASS_NAME));
+                   output.contains("" + CLASS_NAME_PATH));
         assertTrue("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE + "]",
-                   output.contains("" + CLASS_PACKAGE));
+                   output.contains("" + CLASS_PACKAGE_PATH));
         assertFalse("Command output [" + output + "] contains bundle ID [" + BUNDLE_ID + "]",
                     output.contains("" + BUNDLE_ID));
         assertFalse("Command output [" + output + "] contains bundle symbolic name [" + BUNDLE_SYMBOLIC_NAME + "]",

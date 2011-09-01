@@ -233,9 +233,15 @@ public class ClassLoadingHelperTests {
     }
 
     @Test
-    public void testConvertToPackageFormat() throws Exception {
+    public void testConvertToClassName() throws Exception {
         String pathFormat = "/" + CLASS_NAME.replace(".", "/") + ".class";
-        assertEquals("Path to resource [" + pathFormat + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToPackageFormat(pathFormat));
+        assertEquals("Path to resource [" + pathFormat + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToClassName(pathFormat));
+    }
+
+    @Test
+    public void testConvertToResourcePath() throws Exception {
+        String pathFormat = CLASS_NAME.replace(".", "/") + ".class";
+        assertEquals("Class name [" + CLASS_NAME + "] not converted properly", pathFormat, ClassLoadingHelper.convertToResourcePath(CLASS_NAME));
     }
 
 }

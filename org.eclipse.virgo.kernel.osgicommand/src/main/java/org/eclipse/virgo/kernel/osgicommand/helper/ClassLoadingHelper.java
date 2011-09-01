@@ -43,7 +43,7 @@ public class ClassLoadingHelper {
 
         ExportPackageDescription[] exportDescriptions = bundleDescription.getSelectedExports();
         for (ExportPackageDescription exportDescription : exportDescriptions) {
-            if (exportDescription.getName().equals(convertToPackageFormat(classPackage)))
+            if (exportDescription.getName().equals(convertToClassName(classPackage)))
                 return true;
         }
 
@@ -104,27 +104,53 @@ public class ClassLoadingHelper {
             return null;
 
         try {
-            return bundle.loadClass(convertToPackageFormat(className));
+            return bundle.loadClass(convertToClassName(className));
         } catch (ClassNotFoundException e) {
             // do nothing - if the class is not found we don't care
         }
         return null;
     }
 
-    public static String convertToPackageFormat(String className) {
-        if (className == null)
+    /**
+     * Converts resource path (/javax/servlet/Servlet.class) to class name (javax.servlet.Servlet)
+     *
+     * @param resourcePath Path to the resource
+     * @return Class name
+     */
+    public static String convertToClassName(String resourcePath) {
+        if (resourcePath == null)
             return null;
 
-        // Convert from resource /a/b/c/d.class to package format a.b.c.d
-        className = className.replace("/", ".");
-        if (className.startsWith(".")) {
-            className = className.substring(1);
+        resourcePath = resourcePath.replace("/", ".");
+        if (resourcePath.startsWith(".")) {
+            resourcePath = resourcePath.substring(1);
         }
-        if (className.endsWith(".class")) {
-            className = className.substring(0, className.length() - 6);
+        if (resourcePath.endsWith(".class")) {
+            resourcePath = resourcePath.substring(0, resourcePath.length() - 6);
         }
 
-        return className;
+        return resourcePath;
+    }
+
+    /**
+     * Convert from package to path format (javax.servlet.Servlet --> javax/servlet/Servlet.class)
+     *
+     * @param className Class name
+     * @return Path to a resource
+     */
+    public static String convertToResourcePath(String className) {
+       if (className == null)
+           return null;
+
+        String result = className;
+        if (!className.contains("/") && !className.contains("*")) {
+            if (className.endsWith(".class")) {
+                result = className.substring(0, className.length() - 6);
+            }
+            return result.replace(".", "/") + ".class";
+        }
+
+        return result;
     }
 
     /**
@@ -182,30 +208,62 @@ public class ClassLoadingHelper {
     public static Map<Bundle, List<String>> getBundlesContainingResource(BundleContext bundleContext, String resourcePattern) {
         Map<Bundle, List<String>> result = new HashMap<Bundle, List<String>>();
 
-        String packageName = "/";
-        resourcePattern = resourcePattern.replace(".", "/");
-
-        int index = resourcePattern.lastIndexOf("/");
-        if (index != -1) {
-            packageName = resourcePattern.substring(0, index);
-            resourcePattern = resourcePattern.substring(index + 1);
-        }
-
         Bundle[] bundles = bundleContext.getBundles();
         for (Bundle bundle : bundles) {
-            Enumeration<URL> foundURLs = bundle.findEntries(packageName, resourcePattern, true);
-            if (foundURLs != null) {
-                ArrayList<URL> foundEntries = Collections.list(foundURLs);
-                List<String> urlList = new ArrayList<String>(foundEntries.size());
-                for (URL bundleURL : foundEntries) {
-                    urlList.add(bundleURL.getFile());
-                }
-
-                result.put(bundle, urlList);
+            List<String> entries = findEntries(bundle, resourcePattern);
+            if (entries != null && entries.size() != 0) {
+                result.put(bundle, entries);
             }
         }
 
         return result;
+    }
+
+    /**
+     * Returns a list with bundle entries matching a resource pattern
+     *
+     * @param bundle Bundle to scan for entries
+     * @param resourcePattern Pattern used for matching
+     * @return List with found entries
+     */
+    private static List<String> findEntries(Bundle bundle, String resourcePattern) {
+        HashSet<String> urls = new HashSet<String>();
+
+        int index = resourcePattern.lastIndexOf("/");
+        if (index != -1) {
+            String resourcePath = resourcePattern.substring(0, index);
+            String resourceEntity = resourcePattern.substring(index + 1);
+            // Search the whole bundle for entity starting from the root. We need this since "the pattern is only
+            // matched against the last element of the entry path" as stated in findEntries JavaDoc. This means that
+            // web bundle that packages a class in WEB-INF/classes will not be found by findEntries since the path is
+            // prepended with WEB-INF/classes. Therefore we search for a class everywhere in the bundle and then
+            // filter the result.
+            addURLs(urls, bundle.findEntries("/", resourceEntity, true), resourcePath);
+        }
+
+        // Search the root of the bundle for entity matching the specified pattern
+        addURLs(urls, bundle.findEntries("/", resourcePattern, true), null);
+        return new ArrayList<String>(urls);
+    }
+
+    /**
+     * Adds all found resources eliminating the duplicates or the ones that do not contain the requested path
+     *
+     * @param urls      Result set with URLs as string
+     * @param foundURLs Enumeration to scan
+     * @param path      Expected path of the entities. The entities are not put in the result set unless they contain
+     *                  this path.
+     */
+    private static void addURLs(HashSet<String> urls, Enumeration<URL> foundURLs, String path) {
+        if (foundURLs != null) {
+            while (foundURLs.hasMoreElements()) {
+                String url = foundURLs.nextElement().getFile();
+                if (path != null && !url.contains(path)) {
+                    continue;
+                }
+                urls.add(url);
+            }
+        }
     }
 
 }

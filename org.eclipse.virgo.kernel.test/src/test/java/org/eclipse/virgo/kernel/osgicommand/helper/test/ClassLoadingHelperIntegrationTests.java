@@ -40,7 +40,6 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
     private static final String TEST_CLASS_PACKAGE = ClassLoadingHelperIntegrationTests.class.getPackage().getName();
 
     private static final String TEST_CLASS_NAME_PATH = TEST_CLASS_NAME.replace(".", "/");
-    private static final String TEST_CLASS_PACKAGE_PATH = TEST_CLASS_PACKAGE.replace(".", "/");
 
     private final String FRAMEWORK_CLASS_PACKAGE = BundleContext.class.getPackage().getName();
     private final String FRAMEWORK_CLASS_NAME = BundleContext.class.getName();
@@ -101,7 +100,7 @@ public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegratio
         final String RESOURCE_NOT_FOUND = "Bundle [%s] is returned as bundle that contains the test class [%s], but the returned URLs [%s] doesn't seem to have it.";
 
         // Check which bundles contain this class
-        Map<Bundle, List<String>> result = ClassLoadingHelper.getBundlesContainingResource(context, TEST_CLASS_NAME + "*");
+        Map<Bundle, List<String>> result = ClassLoadingHelper.getBundlesContainingResource(context, TEST_CLASS_NAME_PATH + ".class");
         assertFalse(String.format(CONTAINS_ERROR_MESSAGE, SHELL_COMMANDS_BUNDLE_NAME, TEST_CLASS_NAME, Arrays.toString(result.keySet().toArray())),
                     result.containsKey(shellCommandsBundle));
         assertTrue(String.format(DOES_NOT_CONTAIN_ERROR_MESSAGE, currentBundle.getSymbolicName(), TEST_CLASS_NAME, Arrays.toString(result.keySet().toArray())),

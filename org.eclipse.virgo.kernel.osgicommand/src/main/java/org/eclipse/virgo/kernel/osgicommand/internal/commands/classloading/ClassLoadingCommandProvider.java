@@ -43,10 +43,7 @@ public class ClassLoadingCommandProvider implements CommandProvider {
             return;
         }
 
-        // ensure we are searching for all possible matches
-        if (!className.contains("*")) {
-            className = className + "*";
-        }
+        className = ClassLoadingHelper.convertToResourcePath(className);
 
         Map<Bundle, List<String>> foundBundles = ClassLoadingHelper.getBundlesContainingResource(bundleContext, className);
         if (foundBundles.size() == 0) {
@@ -161,9 +158,9 @@ public class ClassLoadingCommandProvider implements CommandProvider {
     /**
      * Outputs a list with all found bundles
      *
-     * @param interpreter     CommandInterpreter instance for output to the console
-     * @param message         Message to print before the list
-     * @param foundBundles    A map with Bundle and found resources
+     * @param interpreter  CommandInterpreter instance for output to the console
+     * @param message      Message to print before the list
+     * @param foundBundles A map with Bundle and found resources
      */
     private void outputBundlesAndResources(CommandInterpreter interpreter, String message, Map<Bundle, List<String>> foundBundles) {
         interpreter.println();

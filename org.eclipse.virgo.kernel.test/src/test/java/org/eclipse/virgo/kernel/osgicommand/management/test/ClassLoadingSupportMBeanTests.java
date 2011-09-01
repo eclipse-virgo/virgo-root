@@ -44,7 +44,7 @@ public class ClassLoadingSupportMBeanTests extends AbstractKernelIntegrationTest
     private static final String CLASS_NAME = ClassLoadingSupportMBeanTests.class.getName();
     private static final String PACKAGE_NAME = ClassLoadingSupportMBeanTests.class.getPackage().getName();
 
-    private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/");
+    private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
 
     private static final String SYSTEM_PACKAGE_NAME = "org.osgi.framework";
 
@@ -53,10 +53,10 @@ public class ClassLoadingSupportMBeanTests extends AbstractKernelIntegrationTest
     @SuppressWarnings("unchecked")
     public void testGetBundlesContainingResource() throws JMException {
         Map<List<String>, List<String>> result = (Map<List<String>, List<String>>) mBeanServer.invoke(objectName, "getBundlesContainingResource",
-                                                                                                      new Object[]{CLASS_NAME + "*"},
+                                                                                                      new Object[]{CLASS_NAME_PATH},
                                                                                                       new String[]{String.class.getName()});
-        assertEquals("Incorrect number of bundles " + result + " contain the test class [" + CLASS_NAME + "]", 1, result.size());
-        assertTrue("Bundles " + result + " do not contain class [" + CLASS_NAME + "]",
+        assertEquals("Incorrect number of bundles " + result + " contain the test class [" + CLASS_NAME_PATH + "]", 1, result.size());
+        assertTrue("Bundles " + result + " do not contain class [" + CLASS_NAME_PATH + "]",
                    containsBundleSymbolicName(result.keySet(), super.context.getBundle().getSymbolicName()));
         assertTrue("Bundle " + super.context.getBundle().getSymbolicName() + " does not contain resource [" + CLASS_NAME_PATH + "]",
                    result.toString().contains(CLASS_NAME_PATH));

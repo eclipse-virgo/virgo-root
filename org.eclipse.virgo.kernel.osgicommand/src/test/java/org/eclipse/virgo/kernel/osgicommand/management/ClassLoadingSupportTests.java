@@ -39,9 +39,8 @@ public class ClassLoadingSupportTests {
     private static final String CLASS_NAME = ClassLoadingSupportTests.class.getName();
     private static final String CLASS_PACKAGE = ClassLoadingSupportTests.class.getPackage().getName();
 
-    private static final String SIMPLE_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1);
+    private static final String SHORT_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1) + ".class";
     private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
-    private static final String CLASS_PACKAGE_PATH = CLASS_PACKAGE.replace(".", "/");
 
     private static final Map<List<String>, List<String>> RESULT_ORIGIN_LOAD_MAP = new HashMap<List<String>, List<String>>(2);
     private static final List<List<String>> RESULT_EXPORT_ARRAY = new ArrayList<List<String>>(1);
@@ -65,7 +64,8 @@ public class ClassLoadingSupportTests {
         BundleContext bundleContext = createMock(BundleContext.class);
         Enumeration<URL> urlEnum = this.getClass().getClassLoader().getResources(CLASS_NAME_PATH);
 
-        expect(bundle.findEntries(CLASS_PACKAGE_PATH, SIMPLE_CLASS_NAME + "*", true)).andReturn(urlEnum);
+        expect(bundle.findEntries("/", SHORT_CLASS_NAME, true)).andReturn(urlEnum);
+        expect(bundle.findEntries("/", CLASS_NAME_PATH, true)).andReturn(null); // not found in the root
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
@@ -74,7 +74,7 @@ public class ClassLoadingSupportTests {
 
         ClassLoadingSupport support = new ClassLoadingSupport(bundleContext);
 
-        Map<List<String>, List<String>> map = support.getBundlesContainingResource(CLASS_NAME + "*");
+        Map<List<String>, List<String>> map = support.getBundlesContainingResource(CLASS_NAME_PATH);
         assertEquals("More than one test URL found in the result " + map, 1, map.size());
         assertTrue("Test URL not found in the result: " + map, map.toString().contains(CLASS_NAME_PATH));
 
