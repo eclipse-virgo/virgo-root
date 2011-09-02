@@ -32,6 +32,7 @@ public class ClassLoadingHelperTests {
     private static final long BUNDLE_ID = 1234;
     private static final String BUNDLE_SYMBOLIC_NAME = "test";
     private static final String CLASS_NAME = ClassLoadingHelperTests.class.getName();
+    private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
     private static final String CLASS_PACKAGE = ClassLoadingHelperTests.class.getPackage().getName();
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -234,14 +235,14 @@ public class ClassLoadingHelperTests {
 
     @Test
     public void testConvertToClassName() throws Exception {
-        String pathFormat = "/" + CLASS_NAME.replace(".", "/") + ".class";
-        assertEquals("Path to resource [" + pathFormat + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToClassName(pathFormat));
+        assertEquals("Path to resource [" + CLASS_NAME_PATH + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToClassName(CLASS_NAME_PATH));
+        assertEquals("Path to resource [" + CLASS_NAME + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToClassName(CLASS_NAME));
     }
 
     @Test
     public void testConvertToResourcePath() throws Exception {
-        String pathFormat = CLASS_NAME.replace(".", "/") + ".class";
-        assertEquals("Class name [" + CLASS_NAME + "] not converted properly", pathFormat, ClassLoadingHelper.convertToResourcePath(CLASS_NAME));
+        assertEquals("Class name [" + CLASS_NAME + "] not converted properly", CLASS_NAME_PATH, ClassLoadingHelper.convertToResourcePath(CLASS_NAME));
+        assertEquals("Class name [" + CLASS_NAME_PATH + "] not converted properly", CLASS_NAME_PATH, ClassLoadingHelper.convertToResourcePath(CLASS_NAME_PATH));
     }
 
 }
