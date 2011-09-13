@@ -49,4 +49,33 @@ public class DefaultArtifactObjectNameCreatorTests {
         assertNotNull(objectName);
         assertEquals("test-domain:artifact-type=test-type,name=test-name,region=test-region,type=ArtifactModel,version=0.0.0", objectName.getCanonicalName());
     }
+
+    @Test
+ 	public void createArtifactsOfTypeQuery() throws Exception {
+ 		ObjectName artifactsOfTypeQuery = creator.createArtifactsOfTypeQuery("test-type");
+ 		assertNotNull(artifactsOfTypeQuery);
+ 		assertEquals("test-domain:artifact-type=test-type,type=Model,*", artifactsOfTypeQuery.getCanonicalName());
+ 	}
+
+     @Test
+ 	public void artifactsQuery() throws Exception {
+ 		ObjectName artifactsQuery = creator.createArtifactsQuery();
+ 		assertNotNull(artifactsQuery);
+ 		assertEquals("test-domain:type=Model,*", artifactsQuery.getCanonicalName());
+ 	}
+
+     @Test
+ 	public void artifactVersionQuery() throws Exception {
+ 		ObjectName artifactsVersionQuery = creator.createArtifactVersionsQuery("test-type", "test-name");
+ 		assertNotNull(artifactsVersionQuery);
+ 		assertEquals("test-domain:artifact-type=test-type,name=test-name,type=Model,*", artifactsVersionQuery.getCanonicalName());
+ 	}
+
+     @Test
+ 	public void allArtifactsQuery() throws Exception {
+ 		ObjectName artifactsQuery = creator.createAllArtifactsQuery();
+ 		assertNotNull(artifactsQuery);
+ 		assertEquals("test-domain:type=*Model,*", artifactsQuery.getCanonicalName());
+ 	}
+
 }

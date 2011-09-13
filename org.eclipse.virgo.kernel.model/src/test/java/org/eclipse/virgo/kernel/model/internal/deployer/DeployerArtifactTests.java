@@ -12,14 +12,23 @@
 package org.eclipse.virgo.kernel.model.internal.deployer;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.notNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.Test;
 import org.osgi.framework.Version;
 
+import org.easymock.IAnswer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.ArtifactState;
@@ -28,6 +37,7 @@ import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerArtifact;
 
 
+import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.KernelException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
@@ -99,13 +109,63 @@ public class DeployerArtifactTests {
     }
 
     @Test
-    public void start() throws KernelException {
-        this.artifact.start();
+    public void startSuccessful() throws KernelException, DeploymentException {
+    	InstallArtifact installArtifact = createMock(InstallArtifact.class);
+
+        expect(installArtifact.getType()).andReturn("bundle");
+        expect(installArtifact.getName()).andReturn("test-bundle");
+        expect(installArtifact.getVersion()).andReturn(new Version("1.0.0"));
+        installArtifact.start((AbortableSignal) notNull());
+        expectLastCall().andAnswer(new IAnswer<Object>() {
+            public Object answer() {
+                AbortableSignal signal = (AbortableSignal) getCurrentArguments()[0];
+                signal.signalSuccessfulCompletion();
+                return null;
+            }
+        });
+        replay(installArtifact);
+        
+        DeployerArtifact artifact = new DeployerArtifact(bundleContext, installArtifact, region);
+        artifact.start();
+
+        verify(installArtifact);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void startAborted() throws KernelException, DeploymentException {
+    	InstallArtifact installArtifact = createMock(InstallArtifact.class);
+    	
+    	expect(installArtifact.getType()).andReturn("bundle");
+    	expect(installArtifact.getName()).andReturn("test-bundle");
+    	expect(installArtifact.getVersion()).andReturn(new Version("1.0.0"));
+    	installArtifact.start((AbortableSignal) notNull());
+    	expectLastCall().andAnswer(new IAnswer<Object>() {
+    		public Object answer() {
+    			AbortableSignal signal = (AbortableSignal) getCurrentArguments()[0];
+    			signal.signalAborted();
+    			return null;
+    		}
+    	});
+    	replay(installArtifact);
+    	
+        DeployerArtifact artifact = new DeployerArtifact(bundleContext, installArtifact, region);
+    	artifact.start();
     }
 
     @Test
     public void stop() throws DeploymentException {
-        this.artifact.stop();
+    	InstallArtifact installArtifact = createMock(InstallArtifact.class);
+
+    	expect(installArtifact.getType()).andReturn("bundle");
+    	expect(installArtifact.getName()).andReturn("test-bundle");
+    	expect(installArtifact.getVersion()).andReturn(new Version("1.0.0"));
+    	installArtifact.stop();
+    	replay(installArtifact);
+
+    	DeployerArtifact artifact = new DeployerArtifact(bundleContext, installArtifact, region);
+        artifact.stop();
+
+        verify(installArtifact);
     }
 
     @Test
@@ -120,6 +180,32 @@ public class DeployerArtifactTests {
 
     @Test
     public void getProperties() throws DeploymentException {
-        this.artifact.getProperties();
+    	InstallArtifact installArtifact = createMock(InstallArtifact.class);
+
+    	expect(installArtifact.getType()).andReturn("bundle");
+    	expect(installArtifact.getName()).andReturn("test-bundle");
+    	expect(installArtifact.getVersion()).andReturn(new Version("1.0.0"));
+    	@SuppressWarnings("serial")
+		Set<String> names = new HashSet<String>() {{
+    		add("foo");
+    		add("bar");
+    		add("deleted");
+    	}};
+    	expect(installArtifact.getPropertyNames()).andReturn(names);
+    	expect(installArtifact.getProperty(eq("foo"))).andReturn("FOO");
+    	expect(installArtifact.getProperty(eq("bar"))).andReturn("BAR");
+		expect(installArtifact.getProperty(eq("deleted"))).andReturn(null);
+
+		replay(installArtifact);
+
+    	DeployerArtifact artifact = new DeployerArtifact(bundleContext, installArtifact, region);
+        Map<String, String> properties = artifact.getProperties();
+
+        assertEquals("null values should be omitted.", 2, properties.size());
+        assertEquals("FOO", properties.get("foo"));
+        assertEquals("BAR", properties.get("bar"));
+
+        verify(installArtifact);
     }
+
 }
