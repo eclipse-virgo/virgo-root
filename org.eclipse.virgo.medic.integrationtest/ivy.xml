@@ -19,13 +19,14 @@
 	<dependencies>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.api" rev="${org.slf4j}" conf="compile->runtime"/>
+        <dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
 		
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="latest.integration" conf="aspects->runtime"/>
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="aspects->runtime"/>
 		
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.common" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
-     	<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		
 		
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
