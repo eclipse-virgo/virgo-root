@@ -36,21 +36,6 @@ public interface ImportedBundle extends Imported {
     void setBundleSymbolicName(String bundleSymbolicName) throws IllegalArgumentException;
 
     /**
-     * Returns the value of the import's <code>sharing</code> directive. If no such directive is specified the
-     * default value of {@link Sharing#AUTOMATIC} is returned.
-     * 
-     * @return the value of the import's sharing directive.
-     */
-    Sharing getSharing();
-    
-    /**
-     * Sets the value of the import's <code>sharing</code> directive.
-     * 
-     * @param sharing the value of the import's sharing directive
-     */
-    void setSharing(Sharing sharing);
-
-    /**
      * Returns <code>true</code> if the import's <code>import-scope</code> directive is present and has 
      * a value of <code>application</code>, otherwise <code>false</code> is returned.
      * 

@@ -14,22 +14,14 @@ package org.eclipse.virgo.util.osgi.manifest.internal;
 import java.util.List;
 
 import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
-import org.eclipse.virgo.util.osgi.manifest.Sharing;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderParser;
-
 
 /**
  * <strong>Concurrent Semantics</strong><br />
  * Not thread-safe.
  */
 class StandardImportedBundle extends BaseImported implements ImportedBundle {
-
-    private static final String SHARING_SHARE = "share";
-
-    private static final String SHARING_CLONE = "clone";
-
-    private static final String SHARING_DIRECTIVE = "sharing";
 
     private static final String IMPORT_SCOPE_APPLICATION = "application";
 
@@ -65,20 +57,6 @@ class StandardImportedBundle extends BaseImported implements ImportedBundle {
     /**
      * {@inheritDoc}
      */
-    public Sharing getSharing() {
-        String value = getDirectives().get(SHARING_DIRECTIVE);
-        if (SHARING_SHARE.equals(value)) {
-            return Sharing.SHARE;
-        } else if (SHARING_CLONE.equals(value)) {
-            return Sharing.CLONE;
-        } else {
-            return Sharing.AUTOMATIC;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void setApplicationImportScope(boolean applicationImportScope) {
         if (applicationImportScope) {
             getDirectives().put(IMPORT_SCOPE_DIRECTIVE, IMPORT_SCOPE_APPLICATION);
@@ -97,25 +75,4 @@ class StandardImportedBundle extends BaseImported implements ImportedBundle {
         this.name = bundleSymbolicName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setSharing(Sharing sharing) {
-        if (sharing == null) {
-            getDirectives().remove(SHARING_DIRECTIVE);
-            return;
-        }
-        
-        switch (sharing) {
-            case CLONE:
-                getDirectives().put(SHARING_DIRECTIVE, SHARING_CLONE);
-                break;
-            case SHARE:
-                getDirectives().put(SHARING_DIRECTIVE, SHARING_SHARE);
-                break;
-            default:
-                getDirectives().remove(SHARING_DIRECTIVE);
-                break;
-        }
-    }
 }

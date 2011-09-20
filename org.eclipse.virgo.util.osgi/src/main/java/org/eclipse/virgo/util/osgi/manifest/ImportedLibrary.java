@@ -35,19 +35,5 @@ public interface ImportedLibrary extends Imported {
      * @throws IllegalArgumentException if librarySymbolicName is <code>null</code>
      */
     void setLibrarySymbolicName(String librarySymbolicName) throws IllegalArgumentException;
-    
-    /**
-     * Returns the value of the import's <code>sharing</code> directive. If no such directive is specified the
-     * default value of {@link Sharing#AUTOMATIC} is returned.
-     * 
-     * @return the value of the import's sharing directive.
-     */
-    Sharing getSharing();
-    
-    /**
-     * Sets the value of the import's <code>sharing</code> directive.
-     * 
-     * @param sharing the value of the import's sharing directive
-     */
-    void setSharing(Sharing sharing);
+
 }
