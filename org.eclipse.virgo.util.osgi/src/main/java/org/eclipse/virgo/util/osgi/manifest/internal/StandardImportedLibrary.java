@@ -12,7 +12,6 @@
 package org.eclipse.virgo.util.osgi.manifest.internal;
 
 import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
-import org.eclipse.virgo.util.osgi.manifest.Sharing;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderParser;
 
@@ -24,13 +23,7 @@ import org.eclipse.virgo.util.osgi.manifest.parse.HeaderParser;
  */
 public class StandardImportedLibrary extends BaseImported implements ImportedLibrary {
     
-    private static final String SHARING_SHARE = "share";
-    
-    private static final String SHARING_CLONE = "clone";
-    
-    private static final String SHARING_DIRECTIVE = "sharing";
-
-    StandardImportedLibrary(HeaderParser parser, String name) {
+     StandardImportedLibrary(HeaderParser parser, String name) {
         super(parser, name);
     }
 
@@ -59,39 +52,4 @@ public class StandardImportedLibrary extends BaseImported implements ImportedLib
         this.name = librarySymbolicName;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
-    public Sharing getSharing() {
-        String value = getDirectives().get(SHARING_DIRECTIVE);
-        if (SHARING_SHARE.equals(value)) {
-            return Sharing.SHARE;
-        } else if (SHARING_CLONE.equals(value)) {
-            return Sharing.CLONE;
-        } else {
-            return Sharing.AUTOMATIC;
-        }
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
-    public void setSharing(Sharing sharing) {
-        if (sharing == null) {
-            getDirectives().remove(SHARING_DIRECTIVE);
-            return;
-        }
-        
-        switch (sharing) {
-            case CLONE: 
-                getDirectives().put(SHARING_DIRECTIVE, SHARING_CLONE);
-                break;
-            case SHARE:
-                getDirectives().put(SHARING_DIRECTIVE, SHARING_SHARE);
-                break;
-            default:
-                getDirectives().remove(SHARING_DIRECTIVE);
-                break;       
-        }   
-    }
 }

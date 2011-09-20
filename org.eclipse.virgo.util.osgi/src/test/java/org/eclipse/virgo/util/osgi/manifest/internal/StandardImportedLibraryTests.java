@@ -20,8 +20,6 @@ import java.util.List;
 import org.eclipse.virgo.util.osgi.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
-import org.eclipse.virgo.util.osgi.manifest.Sharing;
-import org.eclipse.virgo.util.osgi.manifest.internal.StandardImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;
 import org.junit.Test;
 
@@ -37,7 +35,6 @@ private StubHeaderParser parser = new StubHeaderParser();
         assertEquals(Resolution.MANDATORY, importedLibrary.getResolution());
         assertTrue(importedLibrary.getAttributes().isEmpty());
         assertTrue(importedLibrary.getDirectives().isEmpty());
-        assertEquals(Sharing.AUTOMATIC, importedLibrary.getSharing());
         assertEquals(VersionRange.NATURAL_NUMBER_RANGE, importedLibrary.getVersion());
         assertEquals("foo", importedLibrary.getLibrarySymbolicName());
     }
@@ -54,25 +51,6 @@ private StubHeaderParser parser = new StubHeaderParser();
         
         importedLibrary.setResolution(null);
         assertEquals(Resolution.MANDATORY, importedLibrary.getResolution());
-        assertEquals("foo", importedLibrary.toParseString());
-    }
-    
-    @Test
-    public void sharingDirective() {
-        importedLibrary.setSharing(Sharing.CLONE);
-        assertEquals(Sharing.CLONE, importedLibrary.getSharing());
-        assertEquals("foo;sharing:=\"clone\"", importedLibrary.toParseString());
-        
-        importedLibrary.setSharing(Sharing.AUTOMATIC);
-        assertEquals(Sharing.AUTOMATIC, importedLibrary.getSharing());
-        assertEquals("foo", importedLibrary.toParseString());
-        
-        importedLibrary.setSharing(Sharing.SHARE);
-        assertEquals(Sharing.SHARE, importedLibrary.getSharing());
-        assertEquals("foo;sharing:=\"share\"", importedLibrary.toParseString());         
-        
-        importedLibrary.setSharing(null);
-        assertEquals(Sharing.AUTOMATIC, importedLibrary.getSharing());
         assertEquals("foo", importedLibrary.toParseString());
     }
     
