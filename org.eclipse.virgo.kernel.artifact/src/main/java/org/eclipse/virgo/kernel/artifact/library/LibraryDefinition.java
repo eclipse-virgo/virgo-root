@@ -30,11 +30,7 @@ public interface LibraryDefinition {
     
     public static final String LIBRARY_TYPE = "library";
 
-    enum Sharing {
-        SHAREABLE, NON_SHAREABLE
-    }
-
-    /**
+     /**
      * Gets the symbolic name of the library.
      * 
      * @return the library's symbolic name
@@ -63,13 +59,6 @@ public interface LibraryDefinition {
      * @return the library's version.
      */
     Version getVersion();
-
-    /**
-     * Gets the sharing setting of the library.
-     * 
-     * @return the sharing setting.
-     */
-    Sharing getSharing();
 
     /**
      * Gets the bundles in this library.

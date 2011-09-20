@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 
-import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.artifact.library.LibraryDefinition.Sharing;
 import org.eclipse.virgo.kernel.artifact.library.internal.ArtifactDescriptorLibraryDefinition;
 import org.eclipse.virgo.repository.ArtifactBridge;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
@@ -41,6 +38,7 @@ import org.eclipse.virgo.util.osgi.manifest.parse.HeaderParserFactory;
 import org.eclipse.virgo.util.parser.manifest.ManifestContents;
 import org.eclipse.virgo.util.parser.manifest.ManifestParser;
 import org.eclipse.virgo.util.parser.manifest.RecoveringManifestParser;
+import org.osgi.framework.Version;
 
 public class LibraryBridge implements ArtifactBridge {
 
@@ -59,8 +57,6 @@ public class LibraryBridge implements ArtifactBridge {
     private static final String DEFAULT_LIBRARY_VERSION = "0";
 
     public static final String RAW_HEADER_PREFIX = "RAW_HEADER:";
-
-    public static final String SHARING_DIRECTIVE = "sharing";
 
     private static final String VERSION_ATTRIBUTE = "version";
 
@@ -134,19 +130,9 @@ public class LibraryBridge implements ArtifactBridge {
 
         String symbolicName = symbolicNameDeclaration.getNames().get(0);
 
-        Sharing sharing;
-
-        String sharingString = symbolicNameDeclaration.getDirectives().get(SHARING_DIRECTIVE);
-        if (sharingString != null) {
-            sharing = Sharing.valueOf(sharingString.toUpperCase(Locale.ENGLISH));
-        } else {
-            sharing = Sharing.SHAREABLE;
-        }
-
         AttributeBuilder attBuilder = new AttributeBuilder();
         attBuilder.setName(LIBRARY_SYMBOLICNAME);
         attBuilder.setValue(symbolicName);
-        attBuilder.putProperties(SHARING_DIRECTIVE, sharing.toString().toLowerCase(Locale.ENGLISH));
 
         builder.addAttribute(attBuilder.build());
         return symbolicName;
@@ -184,7 +170,6 @@ public class LibraryBridge implements ArtifactBridge {
             if (importedBundle.isApplicationImportScope()) {
                 attBuilder.putProperties(IMPORT_SCOPE_DIRECTIVE, "application");
             }
-            attBuilder.putProperties(SHARING_DIRECTIVE, importedBundle.getSharing().toString().toLowerCase(Locale.ENGLISH));
 
             builder.addAttribute(attBuilder.build());
         }

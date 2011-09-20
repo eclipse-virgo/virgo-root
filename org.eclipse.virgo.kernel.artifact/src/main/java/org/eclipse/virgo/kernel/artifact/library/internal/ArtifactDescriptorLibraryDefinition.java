@@ -13,18 +13,14 @@ package org.eclipse.virgo.kernel.artifact.library.internal;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-
-import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.artifact.library.LibraryDefinition;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
+import org.osgi.framework.Version;
 
 public final class ArtifactDescriptorLibraryDefinition implements LibraryDefinition {
 
@@ -37,8 +33,6 @@ public final class ArtifactDescriptorLibraryDefinition implements LibraryDefinit
     private final Version version;
 
     private final String symbolicName;
-
-    private final Sharing sharing;
 
     private final List<ImportedBundle> importedBundles;
 
@@ -66,20 +60,7 @@ public final class ArtifactDescriptorLibraryDefinition implements LibraryDefinit
         Attribute symbolicNameAttribute = symbolicNameSet.iterator().next();
 
         this.symbolicName = symbolicNameAttribute.getValue();
-
-        Map<String, Set<String>> symbolicNameProperties = symbolicNameAttribute.getProperties();
-
-        Sharing sharing = Sharing.SHAREABLE;
-
-        for (Entry<String, Set<String>> property : symbolicNameProperties.entrySet()) {
-            if (LibraryBridge.SHARING_DIRECTIVE.equals(property.getKey())) {
-                sharing = Sharing.valueOf(property.getValue().iterator().next().toUpperCase(Locale.ENGLISH));
-                break;
-            }
-        }
-
-        this.sharing = sharing;
-
+       
         String importBundleHeader = artifactDescriptor.getAttribute(LibraryBridge.RAW_HEADER_PREFIX + LibraryBridge.IMPORT_BUNDLE).iterator().next().getValue();
 
         this.importedBundles = LibraryBridge.parseImportBundle(importBundleHeader);
@@ -95,10 +76,6 @@ public final class ArtifactDescriptorLibraryDefinition implements LibraryDefinit
 
     public String getName() {
         return this.name;
-    }
-
-    public Sharing getSharing() {
-        return this.sharing;
     }
 
     public String getSymbolicName() {
