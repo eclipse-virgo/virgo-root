@@ -113,7 +113,7 @@ final class ImportExpandingTransformer implements Transformer {
         } catch (UnableToSatisfyDependenciesException e) {
             installEnvironment.getInstallLog().log(this, "Unsatisfied dependencies in %s: %s", bundleInstallArtifacts.toString(),
                 e.getFailureDescription());
-            throw new DeploymentException("Unsatisfied dependency detected when expanding imports for " + bundleInstallArtifacts, e);
+            throw new DeploymentException(e.getMessage(), e);
         }
     }
 }
