@@ -25,6 +25,7 @@ public class BundleResolutionTests extends AbstractEquinoxLaunchingTests {
         framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.env/target/classes").toURI().toString()).start();
         framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.parser.manifest/target/classes").toURI().toString()).start();
         framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.osgi/target/classes").toURI().toString()).start();
+        framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.osgi.manifest/target/classes").toURI().toString()).start();
     }
 
     @Override

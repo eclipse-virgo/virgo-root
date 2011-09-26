@@ -9,6 +9,7 @@
 		<pathelement location="../org.eclipse.virgo.util.io"/>
 		<pathelement location="../org.eclipse.virgo.util.parser.manifest"/>
 		<pathelement location="../org.eclipse.virgo.util.osgi"/>
+		<pathelement location="../org.eclipse.virgo.util.osgi.manifest"/>		
 	</path>
 
 	<path id="bundles">
