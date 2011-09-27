@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  */

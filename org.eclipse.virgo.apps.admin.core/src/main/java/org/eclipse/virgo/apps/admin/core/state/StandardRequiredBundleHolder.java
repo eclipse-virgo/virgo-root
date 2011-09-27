@@ -18,7 +18,7 @@ import org.eclipse.virgo.apps.admin.core.RequiredBundleHolder;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.shell.state.StateService;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 
 /**

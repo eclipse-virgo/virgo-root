@@ -25,7 +25,7 @@ import org.eclipse.virgo.apps.repository.core.HostedRepositoryInfo;
 import org.eclipse.virgo.apps.repository.core.RepositoryIndex;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.Repository;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
