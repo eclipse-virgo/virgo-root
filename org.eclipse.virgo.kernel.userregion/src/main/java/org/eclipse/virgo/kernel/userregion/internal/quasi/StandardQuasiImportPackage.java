@@ -23,7 +23,7 @@ import org.eclipse.osgi.service.resolver.StateHelper;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * {@link StandardQuasiImportPackage} is the default implementation of {@link QuasiImportPackage}.

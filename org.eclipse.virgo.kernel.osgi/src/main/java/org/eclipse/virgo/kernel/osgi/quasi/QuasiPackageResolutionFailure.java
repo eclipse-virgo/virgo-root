@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.osgi.quasi;
 
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * {@link QuasiPackageResolutionFailure} describes a failure to resolve a package import of a {@link QuasiBundle} in a

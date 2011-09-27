@@ -13,7 +13,7 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiPackageUsesResolutionFailure;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * <p>

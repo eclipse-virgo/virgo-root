@@ -26,7 +26,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 
 /**

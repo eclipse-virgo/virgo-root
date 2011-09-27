@@ -45,7 +45,7 @@ import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestP
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective.ResolverErrorsHolder;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.common.StringUtils;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

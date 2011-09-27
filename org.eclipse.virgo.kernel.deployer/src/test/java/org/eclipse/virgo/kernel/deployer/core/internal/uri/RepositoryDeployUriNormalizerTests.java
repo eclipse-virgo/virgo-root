@@ -34,7 +34,7 @@ import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 public class RepositoryDeployUriNormalizerTests {
 
