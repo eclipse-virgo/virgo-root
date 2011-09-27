@@ -46,7 +46,7 @@ import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.configuration.ExternalStorageRepositoryConfiguration;
 import org.eclipse.virgo.repository.internal.external.ExternalStorageRepository;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 public class ExternalStorageRepositoryTests {
 

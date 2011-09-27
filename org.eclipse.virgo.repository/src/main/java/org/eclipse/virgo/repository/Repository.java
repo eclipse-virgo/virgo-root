@@ -14,7 +14,7 @@ package org.eclipse.virgo.repository;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * A <code>Repository</code> contains {@link ArtifactDescriptor}s that can be queried by searching

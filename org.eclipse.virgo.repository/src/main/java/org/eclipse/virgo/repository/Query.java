@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.virgo.repository.internal.RepositoryUtils;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * A <code>Query</code> is created by a {@link Repository} and is used to obtain a <code>Set</code> of

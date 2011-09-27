@@ -39,7 +39,7 @@ import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
 import org.eclipse.virgo.repository.internal.management.StandardExternalStorageRepositoryInfo;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
 import org.eclipse.virgo.util.io.FileSystemUtils;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * <strong>Concurrent Semantics</strong><br />
