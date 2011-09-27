@@ -25,7 +25,7 @@ import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.StandardTrackedPackageImportsFactory;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.TrackedPackageImports;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.TrackedPackageImportsFactory;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;

@@ -20,7 +20,7 @@ import org.eclipse.osgi.service.resolver.StateHelper;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * {@link StandardQuasiRequiredBundle} is the default implementation of {@link QuasiRequiredBundle}.

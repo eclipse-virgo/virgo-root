@@ -19,7 +19,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiBundle;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiRequiredBundle;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  */

@@ -19,7 +19,7 @@ import java.util.Map;
 import org.osgi.framework.Version;
 
 import org.eclipse.virgo.util.common.StringUtils;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ExportedPackage;

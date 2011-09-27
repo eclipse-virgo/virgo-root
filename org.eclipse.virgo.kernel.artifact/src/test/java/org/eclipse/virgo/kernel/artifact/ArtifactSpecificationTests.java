@@ -20,7 +20,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 
 public class ArtifactSpecificationTests {

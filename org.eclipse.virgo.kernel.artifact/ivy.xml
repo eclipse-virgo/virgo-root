@@ -14,6 +14,7 @@
 
     <dependencies>
     	<dependency org="org.eclipse.virgo.repository" name="org.eclipse.virgo.repository" rev="${org.eclipse.virgo.repository}" conf="compile->compile" />
+    	<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi.manifest" rev="${org.eclipse.virgo.util}" conf="compile->compile"/>
 
     	<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
     	<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>

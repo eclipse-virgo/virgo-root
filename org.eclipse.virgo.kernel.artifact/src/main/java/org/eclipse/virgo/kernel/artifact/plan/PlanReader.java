@@ -34,7 +34,7 @@ import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.internal.PlanReaderEntityResolver;
 import org.eclipse.virgo.kernel.artifact.plan.internal.PlanReaderErrorHandler;
 import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * A reader that takes a URI and transforms it into a {@link PlanDescriptor} metadata artifact

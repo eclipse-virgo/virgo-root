@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.osgi.quasi;
 
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * <p>

@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.artifact;
 import java.util.Collections;
 import java.util.Map;
 
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * An <code>ArtifactSpecification</code> is a reference to an artifact by type, name and version <i>range</i>.
