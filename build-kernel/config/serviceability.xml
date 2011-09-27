@@ -1,5 +1,7 @@
 <configuration>
 
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
+
 	<appender name="SIFTED_LOG_FILE" class="ch.qos.logback.classic.sift.SiftingAppender">
 		<discriminator>
 			<Key>applicationName</Key>

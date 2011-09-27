@@ -48,19 +48,20 @@
 		<dependency org="javax.el" name="javax.el" rev="${javax.el}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
-		
+		<dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
+
 		<dependency name='org.eclipse.virgo.repository' rev='${org.eclipse.virgo.repository}' conf='compile->compile' org='org.eclipse.virgo.repository'/>
-		
+
 		<!-- Explicitly listed for 2.5.6.A specific test -->
 		<dependency org="org.springframework" name="org.springframework.beans" rev="2.5.6.A" conf="additional,test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.core" rev="2.5.6.A" conf="additional,test->runtime"/>
-		
+
 		<!-- Prevent Xerces from being on the classpath to work around Java bug 6723276 during integration testing -->
-        <exclude org="org.apache.xerces"/> 
+		<exclude org="org.apache.xerces"/>
 
 		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 		<override org="org.eclipse.virgo.osgi" rev="${org.eclipse.virgo.osgi}"/>
-		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>		
+		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		
 	</dependencies>
 
