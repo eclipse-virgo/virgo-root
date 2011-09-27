@@ -9,6 +9,4 @@ Import-Template:
  org.osgi.*;version="0",
  org.slf4j.*;version="${org.slf4j:[=.=.=, +1)}"
 Excluded-Exports: 
- org.eclipse.virgo.util.osgi.internal.*,
- org.eclipse.virgo.util.osgi.manifest.internal.*,
- org.eclipse.virgo.util.osgi.manifest.parse.standard.*
+ org.eclipse.virgo.util.osgi.internal.*
