@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.Version;
 
 /**
