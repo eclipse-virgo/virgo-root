@@ -17,6 +17,11 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
@@ -25,6 +30,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.log.LogService;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
@@ -120,7 +126,7 @@ public final class MedicActivator implements BundleActivator {
     	if(localLogReaderReference != null){
     		context.ungetService(localLogReaderReference);
     	}
-        dumpStop();                	    	    	
+        dumpStop();
         logStop(context);
     }
 
@@ -143,7 +149,7 @@ public final class MedicActivator implements BundleActivator {
         }
     }
      
-	private void logStart(BundleContext context, ConfigurationProvider configurationProvider) throws ConfigurationPublicationFailedException {    	    	
+	private void logStart(BundleContext context, ConfigurationProvider configurationProvider) throws ConfigurationPublicationFailedException {
 
         StandardContextSelectorDelegate delegate = createContextSelectorDelegate(context);
         this.registrationTracker.track(context.registerService(BundleListener.class.getName(), delegate, null));
@@ -169,19 +175,21 @@ public final class MedicActivator implements BundleActivator {
         System.setOut(delegatingSysOut);
         System.setErr(delegatingSysErr);
         
-        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {                	        	
+        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
         	publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE, context);
             publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT, context);
         	
         	System.setOut(wrapPrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
         }
         
-        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {            
+        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
             publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE, context);
             publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR, context);
             
         	System.setErr(wrapPrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
         }
+
+        configureJavaLogging(Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER)));
     }
     
     private PrintStream wrapPrintStream(PrintStream printStream, String loggerName, LoggingLevel loggingLevel, ExecutionStackAccessor stackAccessor, ConfigurationProvider configurationProvider, String configurationProperty) {
@@ -272,5 +280,22 @@ public final class MedicActivator implements BundleActivator {
     private LogBackEventLoggerFactory createFactory(BundleContext context) {
         BundleSearchingPropertyResourceBundleResolver resourceBundleResolver = new BundleSearchingPropertyResourceBundleResolver();
         return new LogBackEventLoggerFactory(resourceBundleResolver, new StandardLocaleResolver(), context.getBundle());
+    }
+
+    private void configureJavaLogging(boolean enableConsoleHandler) {
+        SLF4JBridgeHandler.install();
+
+        // remove console handler from root logger?
+        if (enableConsoleHandler) {
+            return;
+        }
+
+        Logger rootLogger = Logger.getLogger("");
+        Handler[] handlers = rootLogger.getHandlers();
+        for (Handler handler: handlers) {
+            if (handler instanceof ConsoleHandler) {
+                rootLogger.removeHandler(handler);
+            }
+        }
     }
 }

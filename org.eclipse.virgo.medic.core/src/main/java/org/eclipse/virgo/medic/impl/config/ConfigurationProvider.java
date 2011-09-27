@@ -27,5 +27,7 @@ public interface ConfigurationProvider {
     
     public static final String KEY_LOG_DUMP_PATTERN = "log.dump.pattern";
 
+    public static final String KEY_ENABLE_JUL_CONSOLE_HANDLER = "log.jul.consoleHandler";
+
     Dictionary<String, String> getConfiguration();
 }

@@ -54,7 +54,7 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     	}
     }
     
-    private void setPropertiesFromConfigurationAdmin(ServiceReference<ConfigurationAdmin> configAdminReference) {        
+    private void setPropertiesFromConfigurationAdmin(ServiceReference<ConfigurationAdmin> configAdminReference) {
     	ConfigurationAdmin configurationAdmin = this.bundleContext.getService(configAdminReference);
         
         if (configurationAdmin != null) {
@@ -86,7 +86,7 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         return configuration;
     }    
     
-    private final class MedicConfigurationListener implements ConfigurationListener {    	    
+    private final class MedicConfigurationListener implements ConfigurationListener {
     	@SuppressWarnings("unchecked")
         public void configurationEvent(ConfigurationEvent configEvent) {
 			if (CONFIG_ADMIN_PID.equals(configEvent.getPid()) && configEvent.getType() == ConfigurationEvent.CM_UPDATED) {
