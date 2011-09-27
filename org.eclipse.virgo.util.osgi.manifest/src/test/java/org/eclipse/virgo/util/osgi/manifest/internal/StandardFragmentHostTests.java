@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.virgo.util.osgi.manifest.FragmentHost;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.FragmentHost.Extension;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardFragmentHost;
 import org.junit.Test;

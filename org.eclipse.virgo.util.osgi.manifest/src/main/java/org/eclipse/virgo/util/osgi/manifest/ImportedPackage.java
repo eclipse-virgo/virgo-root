@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.util.osgi.manifest;
 
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * Represents a single entry in a bundle's <code>Import-Package</code> header.

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import org.eclipse.virgo.util.osgi.manifest.RequiredBundle;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.RequiredBundle.Visibility;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardRequiredBundle;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.virgo.util.osgi.manifest.DynamicallyImportedPackage;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardDynamicallyImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;
 import org.junit.Test;

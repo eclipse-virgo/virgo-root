@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.util.osgi.manifest.internal;
+package org.eclipse.virgo.util.osgi.manifest;
 
 import org.osgi.framework.Version;
 

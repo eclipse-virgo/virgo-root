@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
 import org.eclipse.virgo.util.osgi.manifest.Sharing;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;
 import org.junit.Test;
