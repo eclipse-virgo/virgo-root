@@ -25,7 +25,7 @@
 	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.services" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
 	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shell" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="provided->compile"/>
-		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi" rev="${org.eclipse.virgo.util}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi.manifest" rev="${org.eclipse.virgo.util}" conf="provided->compile"/>
 		<!-- === RUNTIME-DEFAULT =========================================== -->
 
 		<!-- === PROVIDED-RUNTIME =========================================== -->
