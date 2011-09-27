@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.util.osgi.manifest;
 
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 
 /**

@@ -13,6 +13,7 @@ package org.eclipse.virgo.util.osgi.manifest.internal;
 
 import org.eclipse.virgo.util.osgi.manifest.Imported;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderParser;
 import org.osgi.framework.Constants;
 

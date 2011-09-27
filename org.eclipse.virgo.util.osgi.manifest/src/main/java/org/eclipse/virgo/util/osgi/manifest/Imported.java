@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.util.osgi.manifest;
 
-import org.eclipse.virgo.util.osgi.manifest.internal.VersionRange;
 
 /**
  * A common interface for the entries in the three import headers: <code>Import-Package</code>, <code>Import-Bundle</code>, and
