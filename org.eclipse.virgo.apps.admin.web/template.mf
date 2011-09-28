@@ -7,16 +7,16 @@ Bundle-ClassPath: WEB-INF/classes
 Web-ContextPath: /admin
 Import-Template: 
  javax.management.*;version=0,
- javax.servlet.*;version="${javax.servlet:[-1.5.=,+1)}",
+ javax.servlet.*;version="${javax.servlet:[2.0.0,+1)}",
  javax.xml.stream.*;version=0,
  org.eclipse.virgo.apps.admin.*;version="${version:[=.=.=, =.=.+1)}",
- org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[-1,+1)}",
- org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[-1,+1)}",
- org.eclipse.virgo.web.*;version="${org.eclipse.virgo.web:[-1,+1)}",
+ org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=,+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=,+1)}",
+ org.eclipse.virgo.web.*;version="${org.eclipse.virgo.web:[=.=,+1)}",
  org.osgi.framework.*;version=0,
  org.osgi.service.cm.*;version=0,
  org.slf4j;version="${org.slf4j:[=.=.=,+1)}",
- org.springframework.*;version="${org.springframework:[2.5.6,+1)}"
+ org.springframework.*;version="${org.springframework:[=.=,+1)}"
 Require-TldBundle: org.apache.taglibs.standard.glassfish
 Import-Package: 
  org.apache.taglibs.standard;version="[1.1.2,2.0.0)",
@@ -42,18 +42,18 @@ Import-Package:
  org.apache.taglibs.standard.tag.rt.xml;version="[1.1.2,2.0.0)",
  org.apache.taglibs.standard.tei;version="[1.1.2,2.0.0)",
  org.apache.taglibs.standard.tlv;version="[1.1.2,2.0.0)",
- javax.servlet.jsp.jstl.core;version="${javax.servlet.jsp.jstl:[=.-1.=,+1)}",
- org.eclipse.virgo.web.dm;version="${org.eclipse.virgo.web:[=,+1)}",
- org.springframework.beans.factory.xml;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.context.config;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.context.support;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.context.support;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.multipart.commons;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.servlet.handler;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.servlet.mvc;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.servlet.mvc.annotation;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.servlet.support;version="${org.springframework:[2.5.6,+1)}",
- org.springframework.web.servlet.view;version="${org.springframework:[2.5.6,+1)}"
+ javax.servlet.jsp.jstl.core;version="${javax.servlet.jsp.jstl:[2.0.0,+1)}",
+ org.eclipse.virgo.web.dm;version="${org.eclipse.virgo.web:[=.=,+1)}",
+ org.springframework.beans.factory.xml;version="${org.springframework:[=.=,+1)}",
+ org.springframework.context.config;version="${org.springframework:[=.=,+1)}",
+ org.springframework.context.support;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.context.support;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.multipart.commons;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.servlet.handler;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.servlet.mvc;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.servlet.mvc.annotation;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.servlet.support;version="${org.springframework:[=.=,+1)}",
+ org.springframework.web.servlet.view;version="${org.springframework:[=.=,+1)}"
 Excluded-Exports: *
 Excluded-Imports: org.junit,
   org.eclipse.virgo.teststubs.*,
