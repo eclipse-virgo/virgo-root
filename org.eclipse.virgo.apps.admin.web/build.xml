@@ -4,20 +4,5 @@
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/wab/default.xml"/>
-	<import file="${basedir}/../virgo-build/wab/quality.xml"/>
-	
-	<target name="test" depends="jsTest, quality-wab.test.do" />
-	
-	<target name="jsTest" depends="jsTestRunner" />
-	
-	<target name="jsTestRunner" description="Launch the Dojo DOH test feature">
-		<script language="javascript" src="jsTestRunner.js"> <![CDATA[
-			project = self.getProject();
-			msg = runTests(project);
-			echo = project.createTask("echo");
-			jsTest.addTask(echo);
-			echo.setMessage(msg);
-		]]> </script>
-	</target>
 	
 </project>
