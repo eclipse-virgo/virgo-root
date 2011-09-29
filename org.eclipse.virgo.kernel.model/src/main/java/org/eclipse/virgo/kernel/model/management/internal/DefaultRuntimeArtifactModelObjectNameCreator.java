@@ -77,28 +77,28 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      * {@inheritDoc}
      */
     public ObjectName createModel(String type, String name, Version version) {
-        return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, type, name, version));
+        return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString())));
     }
 
     /**
      * {@inheritDoc}
      */
     public ObjectName createArtifactModel(String type, String name, Version version, Region region) {
-        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, type, name, version, region.getName()));
+        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString()), this.quoteValueIfNeeded(region.getName())));
     }
 
     /**
      * {@inheritDoc}
      */
     public ObjectName createArtifactsOfTypeQuery(String type) {
-        return createObjectName(String.format(ARTIFACTS_OF_TYPE_FORMAT, this.domain, type));
+        return createObjectName(String.format(ARTIFACTS_OF_TYPE_FORMAT, this.domain, this.quoteValueIfNeeded(type)));
     }
 
     /**
      * {@inheritDoc}
      */
     public ObjectName createArtifactVersionsQuery(String type, String name) {
-        return createObjectName(String.format(ARTIFACTS_OF_TYPE_AND_NAME_FORMAT, this.domain, type, name));
+        return createObjectName(String.format(ARTIFACTS_OF_TYPE_AND_NAME_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name)));
     }
 
     /**
@@ -134,6 +134,13 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      */
     public String getVersion(ObjectName objectName) {
         return objectName.getKeyProperty(KEY_VERSION);
+    }
+    
+    private String quoteValueIfNeeded(String value){
+    	if(value.contains(":") || value.contains(",") || value.contains("=") || value.contains("\"")){
+    		value = String.format("%s%s%s", "\"", value.replace("\"", "\\\""), "\"");
+    	}
+    	return value;
     }
 
     private ObjectName createObjectName(String objectName) {

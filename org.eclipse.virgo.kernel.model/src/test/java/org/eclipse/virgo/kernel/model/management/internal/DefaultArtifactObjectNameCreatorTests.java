@@ -57,6 +57,13 @@ public class DefaultArtifactObjectNameCreatorTests {
  		assertEquals("test-domain:artifact-type=test-type,type=Model,*", artifactsOfTypeQuery.getCanonicalName());
  	}
 
+    @Test
+ 	public void createArtifactsOfTypeQueryQuoting() throws Exception {
+ 		ObjectName artifactsOfTypeQuery = creator.createArtifactsOfTypeQuery("test:type");
+ 		assertNotNull(artifactsOfTypeQuery);
+ 		assertEquals("test-domain:artifact-type=\"test:type\",type=Model,*", artifactsOfTypeQuery.getCanonicalName());
+ 	}
+
      @Test
  	public void artifactsQuery() throws Exception {
  		ObjectName artifactsQuery = creator.createArtifactsQuery();
