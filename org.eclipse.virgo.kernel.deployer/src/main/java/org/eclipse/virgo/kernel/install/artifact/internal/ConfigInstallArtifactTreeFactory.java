@@ -58,7 +58,7 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
         Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
             ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
-            InstallArtifact configInstallArtifact = new ConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
+            InstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
                 this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger);
             return constructInstallTree(configInstallArtifact);
         } else {

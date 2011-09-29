@@ -16,12 +16,13 @@ import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.kernel.install.artifact.ConfigInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**
- * {@link ConfigInstallArtifact} is an {@link InstallArtifact} for a configuration properties file.
+ * {@link StandardConfigInstallArtifact} is an {@link InstallArtifact} for a configuration properties file.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -29,7 +30,7 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
  * This class is thread safe.
  * 
  */
-final class ConfigInstallArtifact extends AbstractInstallArtifact {
+final class StandardConfigInstallArtifact extends AbstractInstallArtifact implements ConfigInstallArtifact {
 
     private final StartEngine startEngine;
 
@@ -40,7 +41,7 @@ final class ConfigInstallArtifact extends AbstractInstallArtifact {
     /**
      * @throws DeploymentException  
      */
-    ConfigInstallArtifact(@NonNull ArtifactIdentity identity, 
+    StandardConfigInstallArtifact(@NonNull ArtifactIdentity identity, 
     			@NonNull ArtifactStorage artifactStorage, 
     			@NonNull StartEngine startEngine,
     			@NonNull RefreshEngine refreshEngine, 

@@ -12,6 +12,10 @@
 package org.eclipse.virgo.kernel.model.internal.configurationadmin;
 
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
@@ -19,6 +23,7 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +59,31 @@ final class ConfigurationArtifact extends AbstractArtifact {
      */
     public ArtifactState getState() {
         return ArtifactState.ACTIVE;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<String, String>(super.getProperties());
+        try {
+            Configuration configuration = this.configurationAdmin.getConfiguration(this.pid, null);
+            Dictionary dictionary = configuration.getProperties();
+            Enumeration keys = dictionary.keys();
+            while (keys.hasMoreElements()) {
+                Object key = keys.nextElement();
+                if (key instanceof String) {
+                    Object value = dictionary.get(key);
+                    if (value instanceof String) {
+                        properties.put((String)key, (String)value);
+                    }
+                }
+            }
+        } catch (IOException _) {
+            // Default to superclass behaviour
+        }
+        return properties;
     }
 
     /**

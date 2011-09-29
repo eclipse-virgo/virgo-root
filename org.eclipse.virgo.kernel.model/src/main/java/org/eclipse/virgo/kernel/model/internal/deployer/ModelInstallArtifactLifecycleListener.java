@@ -15,6 +15,7 @@ import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.ConfigInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
@@ -79,9 +80,15 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
             addPlan((PlanInstallArtifact) installArtifact);
         } else if (installArtifact instanceof BundleInstallArtifact) {
             addOrReplaceBundle((BundleInstallArtifact) installArtifact);
-        } else {
+        } else if (installArtifact instanceof ConfigInstallArtifact) {
+            addConfiguration((ConfigInstallArtifact) installArtifact);
+        }else {
             addArtifact(installArtifact);
         }
+    }
+
+    private void addConfiguration(ConfigInstallArtifact configInstallArtifact) {
+        this.artifactRepository.add(new DeployerConfigArtifact(this.bundleContext, configInstallArtifact, this.globalRegion));
     }
 
     private void addPlan(PlanInstallArtifact planInstallArtifact) {
