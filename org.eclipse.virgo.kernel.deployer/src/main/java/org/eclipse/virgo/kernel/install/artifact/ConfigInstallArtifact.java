@@ -11,13 +11,18 @@
 
 package org.eclipse.virgo.kernel.install.artifact;
 
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * {@link ConfigInstallArtifact} is a marker interface to identify configuration install artifacts.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
- * TODO Document concurrent semantics of ConfigInstallArtifact
+ * Implementations of this interface must be thread safe.
  */
 public interface ConfigInstallArtifact extends InstallArtifact {
+    
+    Properties getProperties() throws IOException;
 
 }

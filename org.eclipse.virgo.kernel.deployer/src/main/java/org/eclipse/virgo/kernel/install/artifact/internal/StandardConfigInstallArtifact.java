@@ -12,7 +12,11 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -38,9 +42,8 @@ final class StandardConfigInstallArtifact extends AbstractInstallArtifact implem
 
     private final StopEngine stopEngine;
 
-    /**
-     * @throws DeploymentException  
-     */
+    private final ConfigurationDeployer configurationDeployer;
+
     StandardConfigInstallArtifact(@NonNull ArtifactIdentity identity, 
     			@NonNull ArtifactStorage artifactStorage, 
     			@NonNull StartEngine startEngine,
@@ -48,12 +51,13 @@ final class StandardConfigInstallArtifact extends AbstractInstallArtifact implem
     			@NonNull StopEngine stopEngine, 
     			@NonNull ArtifactStateMonitor artifactStateMonitor,
     			String repositoryName, 
-    			EventLogger eventLogger) throws DeploymentException {
+    			EventLogger eventLogger, ConfigurationDeployer configurationDeployer) throws DeploymentException {
         super(identity, artifactStorage, artifactStateMonitor, repositoryName, eventLogger);
 
         this.startEngine = startEngine;
         this.refreshEngine = refreshEngine;
         this.stopEngine = stopEngine;
+        this.configurationDeployer = configurationDeployer;
     }
 
     /**
@@ -95,6 +99,14 @@ final class StandardConfigInstallArtifact extends AbstractInstallArtifact implem
             signalFailure(signal, e);
             throw e;
         }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Properties getProperties() throws IOException {
+        return this.configurationDeployer.getConfiguration(getName());
     }
 
 }
