@@ -24,6 +24,7 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
 import org.eclipse.virgo.util.common.Tree;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * {@link ConfigInstallArtifactTreeFactory} is an {@link InstallArtifactTreeFactory} for configuration properties file
@@ -44,14 +45,15 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
     private final ConfigLifecycleEngine lifecycleEngine;
 
     private final EventLogger eventLogger;
+    
+    private final Object monitor = new Object();
 
-    private final ConfigurationDeployer configurationDeployer;
+    private ConfigurationDeployer configurationDeployer;
 
-    ConfigInstallArtifactTreeFactory(BundleContext bundleContext, EventLogger eventLogger, ConfigurationDeployer configurationDeployer) {
+    ConfigInstallArtifactTreeFactory(BundleContext bundleContext, EventLogger eventLogger) {
         this.bundleContext = bundleContext;
         this.lifecycleEngine = new ConfigLifecycleEngine(bundleContext);
         this.eventLogger = eventLogger;
-        this.configurationDeployer = configurationDeployer;
     }
 
     /**
@@ -60,12 +62,23 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
     public Tree<InstallArtifact> constructInstallArtifactTree(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
         Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
+            ConfigurationDeployer configDeployer = obtainConfigurationDeployer();
             ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
             InstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
-                this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configurationDeployer);
+                this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configDeployer);
             return constructInstallTree(configInstallArtifact);
         } else {
             return null;
+        }
+    }
+
+    private ConfigurationDeployer obtainConfigurationDeployer() {
+        synchronized (this.monitor) {
+            if (this.configurationDeployer == null) {
+                ServiceReference<ConfigurationDeployer> serviceReference = this.bundleContext.getServiceReference(ConfigurationDeployer.class);
+                this.configurationDeployer = this.bundleContext.getService(serviceReference);
+            }
+            return this.configurationDeployer;
         }
     }
 
