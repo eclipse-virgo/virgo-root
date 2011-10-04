@@ -16,12 +16,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
+import javax.management.openmbean.CompositeDataSupport;
+import javax.management.openmbean.TabularDataSupport;
 
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
@@ -36,7 +37,11 @@ import org.osgi.framework.ServiceReference;
  */
 public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
 
-    private static final String JMX_URL = "service:jmx:rmi:///jndi/rmi://localhost:9875/jmxrmi";
+    private static final String CONFIGURATION_VERSION = "0.0.0";
+
+    private static final String CONFIGURATION_NAME = "t";
+
+    private static final String CONFIGURATION_TYPE = "configuration";
 
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
@@ -64,10 +69,20 @@ public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
 
         DeploymentIdentity deploymentIdentity = this.appDeployer.deploy(file.toURI());
 
-        assertDeploymentIdentityEquals(deploymentIdentity, "t.properties", "configuration", "t", "0");
-        
-        assertArtifactState("configuration", "t", "0", "ACTIVE");
+        assertDeploymentIdentityEquals(deploymentIdentity, "t.properties", CONFIGURATION_TYPE, CONFIGURATION_NAME, "0");
 
+        assertArtifactState(CONFIGURATION_TYPE, CONFIGURATION_NAME, CONFIGURATION_VERSION, "ACTIVE");
+
+        TabularDataSupport attribute = (TabularDataSupport) getMBeanServerConnection().getAttribute(
+            getObjectName(CONFIGURATION_TYPE, CONFIGURATION_NAME, CONFIGURATION_VERSION), "Properties");
+        assertEquals("b", getStringValue(attribute, "a"));
+        assertEquals("d", getStringValue(attribute, "c"));
+    }
+
+    private String getStringValue(TabularDataSupport attribute, String key) {
+        Object[] keys = { key };
+        CompositeDataSupport cds = (CompositeDataSupport) attribute.get(keys);
+        return (String) cds.get("value");
     }
 
     private void assertArtifactState(String type, String name, String version, String state) throws MalformedObjectNameException, IOException,
@@ -87,21 +102,7 @@ public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
     }
 
     private static MBeanServerConnection getMBeanServerConnection() throws Exception {
-        // String serverDir = null;
-        // String[] creds = { "admin", "springsource" };
-        // Map<String, String[]> env = new HashMap<String, String[]>();
-        //
-        // File testExpanded = new File("./../org.eclipse.virgo.server.svt/target/test-expanded/");
-        // for (File mainDir : testExpanded.listFiles()) {
-        // if (mainDir.isDirectory()) {
-        // serverDir = new File(mainDir.toURI()).getCanonicalPath();
-        // }
-        // }
-        // env.put(JMXConnector.CREDENTIALS, creds);
-        // System.setProperty("javax.net.ssl.trustStore", serverDir + KEYSTORE);
-        // System.setProperty("javax.net.ssl.trustStorePassword", KEYPASSWORD);
-        JMXServiceURL url = new JMXServiceURL(JMX_URL);
-        return JMXConnectorFactory.connect(url, null /* env */).getMBeanServerConnection();
+        return ManagementFactory.getPlatformMBeanServer();
     }
 
 }
