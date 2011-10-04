@@ -12,16 +12,21 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.kernel.install.artifact.ConfigInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**
- * {@link ConfigInstallArtifact} is an {@link InstallArtifact} for a configuration properties file.
+ * {@link StandardConfigInstallArtifact} is an {@link InstallArtifact} for a configuration properties file.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -29,7 +34,7 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
  * This class is thread safe.
  * 
  */
-final class ConfigInstallArtifact extends AbstractInstallArtifact {
+final class StandardConfigInstallArtifact extends AbstractInstallArtifact implements ConfigInstallArtifact {
 
     private final StartEngine startEngine;
 
@@ -37,22 +42,22 @@ final class ConfigInstallArtifact extends AbstractInstallArtifact {
 
     private final StopEngine stopEngine;
 
-    /**
-     * @throws DeploymentException  
-     */
-    ConfigInstallArtifact(@NonNull ArtifactIdentity identity, 
+    private final ConfigurationDeployer configurationDeployer;
+
+    StandardConfigInstallArtifact(@NonNull ArtifactIdentity identity, 
     			@NonNull ArtifactStorage artifactStorage, 
     			@NonNull StartEngine startEngine,
     			@NonNull RefreshEngine refreshEngine, 
     			@NonNull StopEngine stopEngine, 
     			@NonNull ArtifactStateMonitor artifactStateMonitor,
     			String repositoryName, 
-    			EventLogger eventLogger) throws DeploymentException {
+    			EventLogger eventLogger, ConfigurationDeployer configurationDeployer) throws DeploymentException {
         super(identity, artifactStorage, artifactStateMonitor, repositoryName, eventLogger);
 
         this.startEngine = startEngine;
         this.refreshEngine = refreshEngine;
         this.stopEngine = stopEngine;
+        this.configurationDeployer = configurationDeployer;
     }
 
     /**
@@ -94,6 +99,14 @@ final class ConfigInstallArtifact extends AbstractInstallArtifact {
             signalFailure(signal, e);
             throw e;
         }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Properties getProperties() throws IOException {
+        return this.configurationDeployer.getConfiguration(getName());
     }
 
 }

@@ -26,4 +26,12 @@ public interface ConfigurationDeployer {
 	 * @throws IOException - if the operation isn't successful
 	 */
 	void deleteConfiguration(@NonNull String pid) throws IOException;
+	
+	/**
+	 * Gets the configuration with the specified pid in the implementor's config admin
+	 * @param pid - the pid of the published configuration
+	 * @return the configuration properties or null if the pid is not associated with any properties
+	 * @throws IOException - if the operations isn't successful
+	 */
+	Properties getConfiguration(@NonNull String pid) throws IOException;
 }
