@@ -7,7 +7,7 @@ Bundle-ClassPath: WEB-INF/classes
 Web-ContextPath: /admin
 Import-Template: 
  javax.management.*;version=0,
- javax.servlet.*;version="${javax.servlet:[2.0.0,+1)}",
+ javax.servlet.*;version="${javax.servlet:[2.5.0,+1)}",
  javax.xml.stream.*;version=0,
  org.eclipse.virgo.apps.admin.*;version="${version:[=.=.=, =.=.+1)}",
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=,+1)}",
@@ -42,7 +42,7 @@ Import-Package:
  org.apache.taglibs.standard.tag.rt.xml;version="[1.1.2,2.0.0)",
  org.apache.taglibs.standard.tei;version="[1.1.2,2.0.0)",
  org.apache.taglibs.standard.tlv;version="[1.1.2,2.0.0)",
- javax.servlet.jsp.jstl.core;version="${javax.servlet.jsp.jstl:[2.0.0,+1)}",
+ javax.servlet.jsp.jstl.core;version="${javax.servlet.jsp.jstl:[=.=.=,+1)}",
  org.eclipse.virgo.web.dm;version="${org.eclipse.virgo.web:[=.=,+1)}",
  org.springframework.beans.factory.xml;version="${org.springframework:[=.=,+1)}",
  org.springframework.context.config;version="${org.springframework:[=.=,+1)}",
