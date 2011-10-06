@@ -18,7 +18,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -41,6 +46,15 @@ import org.osgi.service.cm.ManagedServiceFactory;
  *
  */
 public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegrationTest {
+
+    private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+    private static String getTimestamp() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        String timestamp = "[" + TIMESTAMP_FORMAT.format(calendar.getTime()) + "]";
+        return timestamp;
+    }
 
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
@@ -84,6 +98,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
 
         @Override
         public void updated(String pid, Dictionary properties) throws ConfigurationException {
+            System.out.println(getTimestamp() + " updated pid '" + pid + "' with properties '" + properties + "'");
             this.updateCallCount.incrementAndGet();
             this.properties = properties;
         }
@@ -124,7 +139,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         assertNotNull(deploymentIdentity);
 
         // let it deploy
-        Thread.sleep(1000);
+        sleep(1000);
 
         assertEquals(1, countFactoryConfigurations("test.factory.pid.a"));
         assertEquals(1, service.updateCount());
@@ -137,7 +152,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         this.appDeployer.undeploy(deploymentIdentity);
 
         // give time for events to percolate
-        Thread.sleep(1000);
+        sleep(1000);
 
         assertEquals(0, countFactoryConfigurations("test.factory.pid.a"));
         assertEquals(1, service.updateCount());
@@ -145,7 +160,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
 
         // now lets make sure that we can deploy it again
         deploymentIdentity = this.appDeployer.deploy(configurationFile.toURI());
-        Thread.sleep(1000);
+        sleep(1000);
         assertEquals(1, countFactoryConfigurations("test.factory.pid.a"));
         assertEquals(2, service.updateCount());
         assertEquals(1, service.deleteCount());
@@ -179,7 +194,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             assertEquals(0, countFactoryConfigurations(factoryPid));
 
             // copy file to hot deploy location
-            hotDeployConfiguration.store(new FileOutputStream(target), "no comment");
+            writePropertiesFile(hotDeployConfiguration, target, "no comment");
 
             ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             assertEquals(1, countFactoryConfigurations(factoryPid));
@@ -232,12 +247,11 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             // make sure that we are starting off with a clean slate
             assertEquals(0, countFactoryConfigurations(factoryPid));
 
-            // copy file to hot deploy location
-            hotDeployConfiguration.store(new FileOutputStream(target), "initial");
+            writePropertiesFile(hotDeployConfiguration, target, "initial");
 
             ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             // let events propagate
-            Thread.sleep(100);
+            sleep(1000);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(0, service.deleteCount());
@@ -250,12 +264,12 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             // update configuration
             hotDeployConfiguration.setProperty("prop2", "22");
             // save updated configuration
-            hotDeployConfiguration.store(new FileOutputStream(target), "updated");
+            writePropertiesFile(hotDeployConfiguration, target, "updated");
 
             // let events propagate and update happen
-            Thread.sleep(6000);
+            sleep(2001);
             assertEquals(1, countFactoryConfigurations(factoryPid));
-            assertEquals(2, service.updateCount());
+            assertEquals(2, service.updateCount()); // This takes several seconds to change from 1 to 2
             assertEquals(0, service.deleteCount());
 
             propertiesFromService = service.getProperties();
@@ -275,6 +289,18 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
                 target.delete();
             }
         }
+    }
+    
+    private static void sleep(long millis) throws InterruptedException {
+        System.out.println(getTimestamp() + " entered sleep(" + millis + ")");
+        Thread.sleep(millis);
+        System.out.println(getTimestamp() + " exited sleep(" + millis + ")");
+    }
+
+    private void writePropertiesFile(final Properties hotDeployConfiguration, File target, String comment) throws IOException, FileNotFoundException {
+        FileOutputStream stream = new FileOutputStream(target);
+        hotDeployConfiguration.store(stream, comment);
+        stream.close();
     }
 
     @Test
@@ -314,11 +340,11 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             assertEquals(0, countFactoryConfigurations(factoryPid));
 
             // copy file to hot deploy location
-            configOne.store(new FileOutputStream(targetOne), "initial");
+            writePropertiesFile(configOne, targetOne, "initial");
 
             ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             // let events propagate
-            Thread.sleep(100);
+            sleep(100);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(0, service.deleteCount());
@@ -329,8 +355,8 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             assertEquals("prop1", propertiesFromService.get("prop1"));
             assertEquals("1", propertiesFromService.get("prop2"));
 
-            configTwo.store(new FileOutputStream(targetTwo), "initial");
-            Thread.sleep(3000);
+            writePropertiesFile(configTwo, targetTwo, "initial");
+            sleep(2002);
             assertEquals(2, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount());
             assertEquals(0, service.deleteCount());
