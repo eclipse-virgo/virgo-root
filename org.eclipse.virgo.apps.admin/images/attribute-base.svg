@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="744.09448"
+   height="1052.3622"
+   id="svg2"
+   style="enable-background:new"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="attribute-base.svg">
+  <metadata
+     id="metadata41">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1023"
+     inkscape:window-height="1077"
+     id="namedview39"
+     showgrid="false"
+     inkscape:zoom="0.89702957"
+     inkscape:cx="394.34305"
+     inkscape:cy="659.95595"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer2" />
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective43" />
+    <linearGradient
+       id="linearGradient3731">
+      <stop
+         id="stop3733"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3735"
+         style="stop-color:#002f5e;stop-opacity:1;"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3642">
+      <stop
+         id="stop3644"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3646"
+         style="stop-color:#ffffff;stop-opacity:0.66666669"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="267.85715"
+       y1="265.21933"
+       x2="350"
+       y2="142.36218"
+       id="linearGradient3656"
+       xlink:href="#linearGradient3642"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       color-interpolation-filters="sRGB"
+       id="filter3690">
+      <feGaussianBlur
+         id="feGaussianBlur3692"
+         stdDeviation="2.3132272" />
+    </filter>
+    <linearGradient
+       x1="267.85715"
+       y1="265.21933"
+       x2="350"
+       y2="142.36218"
+       id="linearGradient3721"
+       xlink:href="#linearGradient3642"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       cx="247.79221"
+       cy="222.81673"
+       r="130"
+       fx="247.79221"
+       fy="222.81673"
+       id="radialGradient3769"
+       xlink:href="#linearGradient3731"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.3246752,-1.1224867e-8,4.7270711e-8,0.65038354,-80.451981,60.56274)" />
+    <radialGradient
+       cx="247.79221"
+       cy="222.81673"
+       r="130"
+       fx="247.79221"
+       fy="222.81673"
+       id="radialGradient2852"
+       xlink:href="#linearGradient3731"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.3246752,-1.1224867e-8,4.7270711e-8,0.65038354,-80.451981,60.56274)" />
+  </defs>
+  <g
+     id="layer2"
+     style="display:inline">
+    <path
+       d="m 425.71429,474.50504 a 67.85714,49.285713 0 1 1 -135.71428,0 67.85714,49.285713 0 1 1 135.71428,0 z"
+       transform="matrix(1.6210572,0,0,-2.2338745,-271.1069,1229.8469)"
+       id="path3658"
+       style="opacity:0.4;fill:#6e6e6e;fill-opacity:1;stroke:none;filter:url(#filter3690)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 420,187.36218 a 130,66.428574 0 1 1 -260,0 130,66.428574 0 1 1 260,0 z"
+       transform="matrix(0.84615385,0,0,-1.6559139,44.615384,472.61783)"
+       id="path3628"
+       style="fill:#002f5e;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 350.00001,203.79076 a 82.14286,61.42857 0 1 1 -164.28572,0 82.14286,61.42857 0 1 1 164.28572,0 z"
+       transform="matrix(1.0956521,0,0,-1.4651163,-3.4782483,460.93934)"
+       id="path3638"
+       style="fill:url(#linearGradient3656);fill-opacity:1;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 425.71429,474.50504 a 67.85714,49.285713 0 1 1 -135.71428,0 67.85714,49.285713 0 1 1 135.71428,0 z"
+       transform="matrix(1.6210572,0,0,-2.2338745,-271.1069,1579.8469)"
+       id="path3715"
+       style="opacity:0.4;fill:#6e6e6e;fill-opacity:1;stroke:none;filter:url(#filter3690)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 420,187.36218 a 130,66.428574 0 1 1 -260,0 130,66.428574 0 1 1 260,0 z"
+       transform="matrix(0.84615385,0,0,-1.6559139,44.615384,822.61783)"
+       id="path3717"
+       style="fill:#002f5e;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 350.00001,203.79076 a 82.14286,61.42857 0 1 1 -164.28572,0 82.14286,61.42857 0 1 1 164.28572,0 z"
+       transform="matrix(1.0956521,0,0,-1.4651163,-3.4782483,810.93934)"
+       id="path3719"
+       style="fill:url(#linearGradient3721);fill-opacity:1;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 425.71429,474.50504 a 67.85714,49.285713 0 1 1 -135.71428,0 67.85714,49.285713 0 1 1 135.71428,0 z"
+       transform="matrix(0.65309346,0,0,-0.90281701,88.941269,1222.5748)"
+       id="path3723"
+       style="opacity:0.4;fill:#6e6e6e;fill-opacity:1;stroke:none;filter:url(#filter3690)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <path
+       d="m 420,187.36218 a 130,66.428574 0 1 1 -260,0 130,66.428574 0 1 1 260,0 z"
+       transform="matrix(0.34089947,0,0,-0.66923511,216.13984,916.54194)"
+       id="path3725"
+       style="fill:url(#radialGradient2852);fill-opacity:1;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <use
+       transform="matrix(0.41506223,0,0,0.41506223,249.6836,510.62116)"
+       id="use3739"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#path3723"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <use
+       transform="matrix(0.41506223,0,0,0.41506223,249.6836,510.62116)"
+       id="use3741"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#path3725"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <use
+       transform="matrix(1.25,0,0,1.25,-217.54274,-184.04453)"
+       id="use3745"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3739"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <use
+       transform="matrix(1.25,0,0,1.25,-217.54274,-184.04453)"
+       id="use3747"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3741"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <use
+       transform="matrix(0.50000002,0,0,0.50000002,123.20942,302.54307)"
+       id="use3749"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3745"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <use
+       transform="matrix(0.50000002,0,0,0.50000002,123.20942,302.54307)"
+       id="use3751"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3747"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-atomic.png"
+       inkscape:export-xdpi="9.7590504"
+       inkscape:export-ydpi="9.7590504" />
+    <path
+       d="m 425.71429,474.50504 a 67.85714,49.285713 0 1 1 -135.71428,0 67.85714,49.285713 0 1 1 135.71428,0 z"
+       transform="matrix(0.50839605,0,0,-0.70058785,122.01588,834.78872)"
+       id="path3753"
+       style="opacity:0.4;fill:#6e6e6e;fill-opacity:1;stroke:none;filter:url(#filter3690)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <path
+       d="m 420,187.36218 a 130,66.428574 0 1 1 -260,0 130,66.428574 0 1 1 260,0 z"
+       transform="matrix(0.26537082,0,0,-0.51932782,221.03273,597.30649)"
+       id="path3755"
+       style="fill:url(#radialGradient3769);fill-opacity:1;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <use
+       transform="matrix(0.32282617,0,0,0.32282617,247.20952,281.65712)"
+       id="use3757"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#path3723"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <use
+       transform="matrix(0.32282617,0,0,0.32282617,247.20952,281.65712)"
+       id="use3759"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#path3725"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <use
+       transform="matrix(0.97222217,0,0,0.97222217,-116.36903,-254.71696)"
+       id="use3761"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3739"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <use
+       transform="matrix(0.97222217,0,0,0.97222217,-116.36903,-254.71696)"
+       id="use3763"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3741"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <use
+       transform="matrix(0.3888889,0,0,0.3888889,147.65875,125.46653)"
+       id="use3765"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3745"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+    <use
+       transform="matrix(0.3888889,0,0,0.3888889,147.65875,125.46653)"
+       id="use3767"
+       x="0"
+       y="0"
+       width="744.09448"
+       height="1052.3622"
+       xlink:href="#use3747"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-scoped-atomic.png"
+       inkscape:export-xdpi="6.6122451"
+       inkscape:export-ydpi="6.6122451" />
+  </g>
+</svg>

@@ -1,11 +1,12 @@
 /* 
- * MAIN CSS
+ *  Local style information for the Virgo Splash Screen
  *
- * All styles for the screen, other than color-specific styles,
- * should be included here.  
+ *  Contains both style and colour information.
  *
- * COMMON STYLES
+ *  Christopher Frost - March 2010
+ *
  */
+ 
 body {
 	font: 12px Helvetica, Arial, "Bitstream Vera Sans", sans-serif;
 	background-color: #dfdfdf;
@@ -15,39 +16,6 @@ body {
 	margin: auto;
 	width: 800px;
 	color: #333;
-}
-
-/*
- * HEADER STYLES
- */
-#header {
-	background: #fff url(../images/header-right.png) no-repeat scroll right top;
-	width: 100%;
-	height: 100px;
-}
-
-#name-and-company {
-	background: transparent url(../images/header-left.png) no-repeat top left;
-	width: 100%;
-	height: 100px;
-	top: 0px;
-	left: 0px;
-}
-
-#site-name {
-	background: transparent url(../images/header-title-left.png) no-repeat scroll center center;
-	height: 100px;
-	width: 345px;
-}
-
-#site-name a, #site-name a:hover {
-	height: 60px;
-	width: 190px;
-}
-
-#company-name a, #site-name a:hover {
-	height: 60px;
-	width: 190px;
 }
 
 /*
@@ -65,24 +33,6 @@ h2 {
 	font-size: 1.2em;
 	padding: 10px 0 2px 0;
 	color: #002E62;
-}
-
-h3 {
-	font-size: 1em;
-	padding: 8px 0 5px 0;
-	color: #002E62;
-}
-
-h4 {
-	font-size: 1em;
-	padding-top: 8px;
-	color: #333;
-}
-
-h5 {
-	font-size: 1em;
-	padding-top: 6px;
-	color: #333;
 }
 
 /*
@@ -189,68 +139,6 @@ a:active, a.active {
 }
 
 /*
- * TABLE STYLES
- */
-table {
-	border-spacing: 0;
-	margin: 0;
-	border-collapse: collapse;
-	color:#666;
-}
-
-th {
-	height: 19px;
-	text-align: left;
-	font-weight: bold;
-	margin: 0;
-	padding: 3px 6px 0 6px;
-	line-height: 19px;
-	color:#333;
-}
- 
-.bordered-table {
-	border:1px solid #BAD9EC;
-}
-
-.bordered-table th {
-	background-image: url(../images/table-header-background.png);
-	background-repeat: repeat-x;
-	white-space: nowrap;
-	border-bottom: 1px solid #BAD9EC;
-}
-
-td {
-	margin: 0;
-	padding: 4px 6px 4px 6px;
-	vertical-align: top;
-}
-
-td.table-icon {
-	padding-top: 2px;
-	padding-bottom: 1px;
-}
-
-.sublevel1-odd {
-	background:#fff;
-}
- 
-.sublevel1-even {
-	background:#E8F6FF;
-}
-
-.two-tables {
-	width:100%;
-}
-
-.two-tables .left {
-	float:left;
-}
-
-.two-tables .right {
-	float:right;
-}
-
-/*
  * FOOTER STYLES
  */
 #footer-wrapper {
@@ -292,4 +180,44 @@ td.table-icon {
 #footer-left a, #footer-right a {
     color: #999;
     text-decoration:none;
+}
+ 
+#mini-header, #mini-header-left, #mini-header-right {
+	height: 7px;
+	width: 7px;
+	margin: 0px;
+	padding: 0px;
+}
+
+#mini-header {
+	width: 100%;
+	background-color: #002e62; 
+}
+
+#mini-header-left {
+	background-image: url(../images/mini-header-left.png); 
+	background-repeat: no-repeat; 
+	background-position: left top;
+	float: left;
+}
+
+#mini-header-right {
+	background-image: url(../images/mini-header-right.png); 
+	background-repeat: no-repeat scroll; 
+	background-position: right top;
+	float: right;
+}
+ 
+#splash-container{
+	display: block;
+	margin: 30px auto;
+	width: 500px;
+}
+ 
+#version-text {
+ 	text-align: right;
+	font-size: 30px;
+	font-family: arial;
+	text-align: right;
+	color: #848589;
 }
