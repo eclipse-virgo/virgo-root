@@ -22,6 +22,7 @@ import org.eclipse.virgo.apps.admin.web.stubs.common.Server;
 import org.eclipse.virgo.apps.admin.web.stubs.moo.Element;
 import org.eclipse.virgo.apps.admin.web.stubs.moo.Fx;
 import org.eclipse.virgo.apps.admin.web.stubs.moo.HtmlTable;
+import org.eclipse.virgo.apps.admin.web.stubs.moo.Spinner;
 import org.eclipse.virgo.apps.admin.web.stubs.browser.Window;
 import org.eclipse.virgo.apps.admin.web.stubs.common.Util;
 import org.eclipse.virgo.apps.admin.web.stubs.moo.Request;
@@ -44,6 +45,8 @@ public abstract class AbstractJSTests {
 	
 	protected static String dollarLookup = "";
 	
+	protected static ScriptableObject dollarLookupToReturn = null;
+	
 	protected Util commonUtil;
 	
 	protected Server commonServer;
@@ -60,6 +63,7 @@ public abstract class AbstractJSTests {
 		ScriptableObject.defineClass(SCOPE, HtmlTable.class);
 		ScriptableObject.defineClass(SCOPE, Request.class);
 		ScriptableObject.defineClass(SCOPE, Fx.class);
+		ScriptableObject.defineClass(SCOPE, Spinner.class);
 		ScriptableObject.defineClass(SCOPE, Element.class);
 		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
 		
@@ -77,6 +81,9 @@ public abstract class AbstractJSTests {
 	
 	public static Object dollar(Object name){
 		dollarLookup = (String) Context.jsToJava(name, String.class);
+		if(dollarLookupToReturn != null){
+			return dollarLookupToReturn;
+		}
 		return name;
 	}
 	

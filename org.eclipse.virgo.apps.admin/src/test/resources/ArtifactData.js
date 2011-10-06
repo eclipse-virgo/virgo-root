@@ -8,28 +8,20 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-package org.eclipse.virgo.apps.admin.web;
-
-import java.io.IOException;
-
-import javax.script.ScriptException;
-
-import org.junit.Test;
 
 /**
- * 
- *
+ * Test object for use when testing the Artifact page JavaScript
  */
-public class DumpsJSTests extends AbstractJSTests {
-	
-	@Test
-	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
-		addCommonObjects();
-		readFile("src/main/webapp/js/dumps.js");
 
-		invokePageInit();
-		
-		//assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
-	}
+
+var Data = function() {
 	
-}
+	this.value = {};
+
+	this.value.each = function(mbeansProcessingFunction){
+		
+	};		
+	
+	this.value.Properties = {};
+	
+};
