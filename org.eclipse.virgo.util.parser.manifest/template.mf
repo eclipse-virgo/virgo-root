@@ -2,6 +2,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Java Manifest Parser
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.parser.manifest
-Bundle-Version: $version
+Bundle-Version: ${version}
 Excluded-Exports: 
  org.eclipse.virgo.util.parser.manifest.internal.*
