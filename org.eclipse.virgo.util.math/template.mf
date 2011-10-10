@@ -2,4 +2,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Mathematical Utility Code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.math
-Bundle-Version: $version
+Bundle-Version: ${version}
