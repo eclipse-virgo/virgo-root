@@ -93,12 +93,7 @@ public class PlanResolver implements Transformer {
                 return planInstallArtifact.getName() + SCOPE_SEPARATOR + versionToShortString(planInstallArtifact.getVersion());
             }
         }
-        Tree<InstallArtifact> tree = installArtifact.getTree();
-        Tree<InstallArtifact> parent = tree.getParent();
-        if (parent != null) {
-            return getArtifactScopeName(parent.getValue());
-        }
-        return null;
+        return installArtifact.getScopeName();
     }
 
     private static String versionToShortString(Version version) {
