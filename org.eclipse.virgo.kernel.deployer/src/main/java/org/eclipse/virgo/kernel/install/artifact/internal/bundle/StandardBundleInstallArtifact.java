@@ -460,6 +460,9 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     }
 
     private PlanInstallArtifact getScopedAncestor() {
+        // TODO: when the Tree is generalised to a DAG, a bundle can belong to at most one scoped ancestor in which case any unscoped
+        // ancestors it belongs to must be descendents of the scoped ancestor. So it is sufficient to search one line of ancestors
+        // looking for a scope ancestor.
         Tree<InstallArtifact> ancestor = getTree().getParent();
         
         while (ancestor != null) {

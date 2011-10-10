@@ -194,6 +194,7 @@ public class AtomicInstallArtifactLifecycleListenerTests {
         Tree<InstallArtifact> tree = artifact.getTree();
         if (tree != null) {
             Tree<InstallArtifact> parent = tree.getParent();
+            // TODO: when the Tree is generalised to a DAG, this testcase can assume the DAG is still a tree in structure because the testcase constructs the tree.
             if (parent != null) {
                 return (StubInstallArtifact) parent.getValue();
             }

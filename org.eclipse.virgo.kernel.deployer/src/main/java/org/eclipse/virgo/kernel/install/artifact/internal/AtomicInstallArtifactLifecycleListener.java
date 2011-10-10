@@ -12,7 +12,9 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,52 +35,52 @@ import org.eclipse.virgo.util.common.Tree;
  * Thread-safe
  * 
  */
-public final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
+final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public void onStarting(InstallArtifact installArtifact) throws DeploymentException {
         logger.debug("Processing atomic starting event for {}", installArtifact);
 
-        InstallArtifact atomicParent = getAtomicParent(installArtifact);
-        if (atomicParent != null) {
+        for (InstallArtifact atomicParent : getAtomicParents(installArtifact)) {
             if (aChildIsRefreshing(atomicParent)) {
                 logger.info("Atomic starting event not propagated from {} as a child of {} is refreshing.", installArtifact, atomicParent);
             } else {
                 logger.info("Propagating atomic starting event from {} to {}", installArtifact, atomicParent);
                 atomicParent.start();
             }
-        } else {
-            logger.info("No atomic parent of {} to propagate starting event to", installArtifact);
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public void onStartFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
         logger.debug("Processing atomic start failed (stop) event for {}", installArtifact);
 
-        InstallArtifact atomicParent = getAtomicParent(installArtifact);
-
-        if (atomicParent != null) {
+        for (InstallArtifact atomicParent : getAtomicParents(installArtifact)) {
             if (aChildIsRefreshing(atomicParent)) {
                 logger.info("Atomic start failed event not propagated from {} as a child of {} is refreshing.", installArtifact, atomicParent);
             } else {
                 logger.info("Propagating atomic start failed (stop) event from {} to {}", installArtifact, atomicParent);
                 atomicParent.stop();
             }
-            } else {
-            logger.info("No atomic parent of {} to propagate start failed (stop) event to", installArtifact);
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public void onStopped(InstallArtifact installArtifact) {
         logger.debug("Processing atomic stopped event for {}", installArtifact);
 
-        InstallArtifact atomicParent = getAtomicParent(installArtifact);
-
-        if (atomicParent != null) {
+        for (InstallArtifact atomicParent : getAtomicParents(installArtifact)) {
             if (aChildIsRefreshing(atomicParent)) {
                 logger.info("Atomic stopped event not propagated from {} as a child of {} is refreshing.", installArtifact, atomicParent);
             } else {
@@ -86,35 +88,37 @@ public final class AtomicInstallArtifactLifecycleListener extends InstallArtifac
                 try {
                     atomicParent.stop();
                 } catch (DeploymentException e) {
-                    logger.warn("Unable to propagate stopped event to the atomic root due to an exception", e);
+                    logger.warn("Unable to propagate stopped event to an atomic root due to an exception", e);
                 }
             }
-        } else {
-	        logger.info("No atomic parent of {} to propagate stopped event to", installArtifact);
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public void onUninstalled(InstallArtifact installArtifact) throws DeploymentException {
         logger.debug("Processing atomic uninstalled event for {}", installArtifact);
 
-        InstallArtifact atomicParent = getAtomicParent(installArtifact);
-
-        if (atomicParent != null) {
+        for (InstallArtifact atomicParent : getAtomicParents(installArtifact)) {
             if (aChildIsRefreshing(atomicParent)) {
                 logger.info("Atomic uninstalled event not propagated from {} as a child of {} is refreshing.", installArtifact, atomicParent);
             } else {
                 logger.info("Propagating atomic uninstalled event from {} to {}", installArtifact, atomicParent);
                 atomicParent.uninstall();
             }
-            } else {
-            logger.info("No atomic parent of {} to propagate uninstalled event to", installArtifact);
         }
     }
 
-    private InstallArtifact getAtomicParent(InstallArtifact installArtifact) {
-        InstallArtifact parent = getParentInstallArtifact(installArtifact);
-        return isAtomicInstallArtifact(parent) ? parent : null;
+    private Set<InstallArtifact> getAtomicParents(InstallArtifact installArtifact) {
+        Set<InstallArtifact> atomicParents = new HashSet<InstallArtifact>();
+        for (InstallArtifact parent : getParentInstallArtifacts(installArtifact)) {
+            if (isAtomicInstallArtifact(parent)) {
+                atomicParents.add(parent);
+            }
+        }
+        return atomicParents;
     }
 
     /**
@@ -132,21 +136,23 @@ public final class AtomicInstallArtifactLifecycleListener extends InstallArtifac
     }
 
     /**
-     * Get the parent {@link InstallArtifact} in the {@link Tree} associated with the {@link InstallArtifact}, if there
+     * Get the parent {@link InstallArtifact}s in the {@link Tree} associated with the {@link InstallArtifact}, if there
      * is one.
      * 
-     * @param installArtifact to find the parent of
-     * @return the parent artifact in the tree, or null if there isn't one
+     * @param installArtifact to find the parents of
+     * @return the parent artifacts in the tree, never <code>null</code>
+     * TODO: Tree->DAG changes, resulting in sometimes returning more than one element in the set
      */
-    private static final InstallArtifact getParentInstallArtifact(InstallArtifact installArtifact) {
+    private static final Set<InstallArtifact> getParentInstallArtifacts(InstallArtifact installArtifact) {
+        Set<InstallArtifact> parentInstallArtifacts = new HashSet<InstallArtifact>();
         Tree<InstallArtifact> iaTree = installArtifact.getTree();
         if (iaTree != null) {
             iaTree = iaTree.getParent();
             if (iaTree != null) {
-                return iaTree.getValue();
+                parentInstallArtifacts.add(iaTree.getValue());
             }
         }
-        return null;
+        return parentInstallArtifacts;
     }
     
     /**
