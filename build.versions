@@ -1,10 +1,10 @@
-org.eclipse.virgo.util=3.1.0.D-20110927204747
+org.eclipse.virgo.util=3.1.0.D-20111011121247
 org.aspectj=1.6.6.RELEASE
 org.slf4j=1.6.1
 org.eclipse.osgi=3.7.0.v20110613
 org.apache.commons.httpclient=3.1.0
-org.eclipse.virgo.medic=3.1.0.D-20110927205820
+org.eclipse.virgo.medic=3.1.0.D-20111011121800
 
 org.junit=4.7.0
 org.easymock=2.3.0
-org.eclipse.virgo.teststubs=3.1.0.D-20110921083459
+org.eclipse.virgo.teststubs=3.1.0.D-20111011120826
