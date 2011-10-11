@@ -10,7 +10,7 @@ Import-Template:
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
  org.osgi.framework.*;version="0",
  org.osgi.service.cm.*;version="0",
- org.springframework.*;version="${org.springframework:[2.5.6, =.+1)}",
+ org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
  javax.xml.*;version="0",
  org.xml.*;version="0",
  org.w3c.*;version="0"
