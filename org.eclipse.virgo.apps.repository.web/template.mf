@@ -9,7 +9,7 @@ Web-ContextPath: org.eclipse.virgo.apps.repository
 Import-Template: 
  org.eclipse.virgo.apps.repository.*;version="${version:[=.=.=, =.=.+1)}",
  javax.servlet.*;version="${javax.servlet:[2.5.0,+1)}",
- org.springframework.*;version="${org.springframework:[=.=, +1)}",
+ org.springframework.*;version="${org.springframework:[2.5.6, +1)}":[=.=, +1)}",
  org.osgi.framework.*;version="0"
 Import-Package: 
  org.springframework.web.context;version="${org.springframework:[=.=, +1)}",
