@@ -1,8 +1,8 @@
 # Compile
-org.eclipse.virgo.kernel=3.1.0.D-20111006143824
-org.eclipse.virgo.repository=3.1.0.D-20110927210611
-org.eclipse.virgo.util=3.1.0.D-20110927204747
-org.eclipse.virgo.medic=3.1.0.D-20110927205820
+org.eclipse.virgo.kernel=3.1.0.D-20111011122509
+org.eclipse.virgo.repository=3.1.0.D-20111011122142
+org.eclipse.virgo.util=3.1.0.D-20111011121247
+org.eclipse.virgo.medic=3.1.0.D-20111011121800
 javax.servlet=3.0.0.v201103241009
 org.eclipse.osgi=3.7.0.v20110613
 org.eclipse.equinox.event=1.2.100.v20110110
@@ -15,9 +15,9 @@ org.slf4j.spi=1.6.1
 
 # Test
 com.dumbster=1.6.0
-org.eclipse.virgo.osgi=3.1.0.D-20110921083649
-org.eclipse.virgo.teststubs=3.1.0.D-20110921083459
-org.eclipse.virgo.test=3.1.0.D-20110927205524
+org.eclipse.virgo.osgi=3.1.0.D-20111011121016
+org.eclipse.virgo.teststubs=3.1.0.D-20111011120826
+org.eclipse.virgo.test=3.1.0.D-20111011121620
 javax.activation=1.1.1
 javax.jms=1.1.0
 javax.mail=1.4.0
