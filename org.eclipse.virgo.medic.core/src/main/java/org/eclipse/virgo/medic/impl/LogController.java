@@ -144,12 +144,9 @@ public class LogController implements ConfigurationChangeListener {
     public void logStart() throws ConfigurationPublicationFailedException {
         Dictionary<String, String> configuration = configurationProvider.getConfiguration();
 
-        updateLogConfiguration(configuration);
-
         SLF4JBridgeHandler.install();
-        if (!Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {
-            disableJulConsoleHandler();
-        }
+
+        updateLogConfiguration(configuration);
     }
 
     public void logStop() {
@@ -275,14 +272,7 @@ public class LogController implements ConfigurationChangeListener {
     @Override
     public void configurationChanged(ConfigurationProvider provider) {
         Dictionary<String, String> configuration = configurationProvider.getConfiguration();
-
         updateLogConfiguration(configuration);
-
-        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {
-            enableJulConsoleLogger();
-        } else {
-            disableJulConsoleHandler();
-        }
     }
 
     private synchronized void updateLogConfiguration(Dictionary<String, String> configuration) {
@@ -318,6 +308,12 @@ public class LogController implements ConfigurationChangeListener {
                 sysErrRegistration = null;
             }
             System.setErr(delegatingSysErr);
+        }
+
+        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {
+            enableJulConsoleLogger();
+        } else {
+            disableJulConsoleHandler();
         }
     }
 }
