@@ -43,7 +43,7 @@ final class BundleThreadContextManager {
 
     private final OsgiFramework osgi;
 
-    private final Bundle contextBundle;
+    private final Bundle threadContextBundle;
 
     private final String scopeName;
 
@@ -65,10 +65,16 @@ final class BundleThreadContextManager {
         }
     };
 
-    public BundleThreadContextManager(@NonNull OsgiFramework osgi, @NonNull Bundle contextBundle, String scopeName,
+    /**
+     * @param osgi
+     * @param threadContextBundle the bundle whose class loader is to be used as a TCCL
+     * @param scopeName
+     * @param tracingService
+     */
+    public BundleThreadContextManager(@NonNull OsgiFramework osgi, @NonNull Bundle threadContextBundle, String scopeName,
         @NonNull TracingService tracingService) {
         this.osgi = osgi;
-        this.contextBundle = contextBundle;
+        this.threadContextBundle = threadContextBundle;
         this.scopeName = scopeName;
         this.tracingService = tracingService;
     }
@@ -101,12 +107,12 @@ final class BundleThreadContextManager {
         ClassLoader oldContextClassLoader = currentThread.getContextClassLoader();
         this.contextClassLoaderStack.get().push(oldContextClassLoader);
 
-        int state = this.contextBundle.getState();
+        int state = this.threadContextBundle.getState();
 
         if (state != Bundle.INSTALLED && state != Bundle.UNINSTALLED) {
             ClassLoader newContextClassLoader = null;
             try {
-                newContextClassLoader = this.osgi.getBundleClassLoader(this.contextBundle);
+                newContextClassLoader = this.osgi.getBundleClassLoader(this.threadContextBundle);
             } catch (BundleClassLoaderUnavailableException _) {
                 this.logger.info("Bundle class loader not available, it may not be resolved");
             }
@@ -114,7 +120,7 @@ final class BundleThreadContextManager {
                 currentThread.setContextClassLoader(newContextClassLoader);
                 this.logger.info("Thread context class loader '{}' pushed and set to '{}'", oldContextClassLoader, newContextClassLoader);
             } else {
-                this.logger.info("Thread context class loader not found for bundle '{}'", this.contextBundle.getSymbolicName());
+                this.logger.info("Thread context class loader not found for bundle '{}'", this.threadContextBundle.getSymbolicName());
             }
         }
     }

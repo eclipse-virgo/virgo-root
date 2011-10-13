@@ -11,14 +11,6 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.BundleListener;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
-
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.core.BundleUtils;
@@ -26,10 +18,20 @@ import org.eclipse.virgo.kernel.core.KernelException;
 import org.eclipse.virgo.kernel.core.Signal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactState;
+import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.util.common.Tree;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
 
 /**
  * {@link StandardBundleDriver} monitors the state of a bundle and keeps the associated {@link ArtifactState} up to
@@ -43,39 +45,43 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  */
 final class StandardBundleDriver implements BundleDriver {
 
+    private static final String SYNTHETIC_CONTEXT_SUFFIX = "-synthetic.context";
+
     private final Object monitor = new Object();
 
     private final BundleStarter bundleStarter;
-    
+
     private final TracingService tracingService;
 
     private final PackageAdminUtil packageAdminUtil;
-    
+
     private final BundleContext bundleContext;
-    
+
     private final OsgiFramework osgi;
-    
+
     private final ArtifactStateMonitor artifactStateMonitor;
-    
+
     private volatile BundleThreadContextManager threadContextManager;
 
     private volatile StandardBundleInstallArtifact installArtifact;
-    
+
     private volatile BundleDriverBundleListener bundleListener;
-    
+
     private Bundle bundle;
-    
+
     private final String applicationTraceName;
-   
+
     /**
      * Creates a {@link StandardBundleDriver} for the given {@link Bundle} and {@link ArtifactState}.
+     * 
      * @param osgiFramework framework
      * @param bundleContext context
      * @param bundleStarter to start bundles
      * @param tracingService to trace bundle operations
      * @param packageAdminUtil utilities for package administration
      */
-    StandardBundleDriver(OsgiFramework osgiFramework, BundleContext bundleContext, BundleStarter bundleStarter, TracingService tracingService, PackageAdminUtil packageAdminUtil, String scopeName, ArtifactStateMonitor artifactStateMonitor) {
+    StandardBundleDriver(OsgiFramework osgiFramework, BundleContext bundleContext, BundleStarter bundleStarter, TracingService tracingService,
+        PackageAdminUtil packageAdminUtil, String scopeName, ArtifactStateMonitor artifactStateMonitor) {
         this.osgi = osgiFramework;
         this.bundleContext = bundleContext;
         this.tracingService = tracingService;
@@ -91,17 +97,17 @@ final class StandardBundleDriver implements BundleDriver {
 
     public void setBundle(Bundle bundle) {
         BundleListener bundleListener = null;
-        
+
         synchronized (this.monitor) {
-            if (this.bundle == null) {
+            if (getThreadContextBundle() == null) {
                 this.bundle = bundle;
-                if (this.bundle != null) {
-                    this.bundleListener = new BundleDriverBundleListener(this.installArtifact, this.bundle, this.artifactStateMonitor);
+                if (getThreadContextBundle() != null) {
+                    this.bundleListener = new BundleDriverBundleListener(this.installArtifact, getThreadContextBundle(), this.artifactStateMonitor);
                     bundleListener = this.bundleListener;
                 }
             }
         }
-        
+
         if (bundleListener != null) {
             this.bundleContext.addBundleListener(bundleListener);
         }
@@ -133,10 +139,37 @@ final class StandardBundleDriver implements BundleDriver {
     private void ensureThreadContextManager() {
         synchronized (this.monitor) {
             if (this.threadContextManager == null) {
-                this.threadContextManager = new BundleThreadContextManager(this.osgi, this.bundle, this.applicationTraceName, this.tracingService);
+                this.threadContextManager = new BundleThreadContextManager(this.osgi, getThreadContextBundle(), this.applicationTraceName,
+                    this.tracingService);
             }
         }
-    }    
+    }
+
+    private Bundle getThreadContextBundle() {
+        if (this.installArtifact != null) {
+            Tree<InstallArtifact> tree = this.installArtifact.getTree();
+            Tree<InstallArtifact> parent = tree.getParent();
+            while (parent != null) {
+                InstallArtifact parentArtifact = parent.getValue();
+                if (parentArtifact instanceof PlanInstallArtifact) {
+                    PlanInstallArtifact parentPlan = (PlanInstallArtifact) (parentArtifact);
+                    if (parentPlan.isScoped()) {
+                        String syntheticContextBundleSymbolicName = parentPlan.getScopeName() + SYNTHETIC_CONTEXT_SUFFIX;
+                        for (Tree<InstallArtifact> scopedPlanChild : parent.getChildren()) {
+                            InstallArtifact scopedPlanChildArtifact = scopedPlanChild.getValue();
+                            if (scopedPlanChildArtifact instanceof BundleInstallArtifact
+                                && syntheticContextBundleSymbolicName.equals(scopedPlanChildArtifact.getName())) {
+                                BundleInstallArtifact syntheticContextBundleArtifact = (BundleInstallArtifact) scopedPlanChildArtifact;
+                                return syntheticContextBundleArtifact.getBundle();
+                            }
+                        }
+                    }
+                }
+                parent = parent.getParent();
+            }
+        }
+        return this.bundle;
+    }
 
     /**
      * {@inheritDoc}
@@ -179,13 +212,13 @@ final class StandardBundleDriver implements BundleDriver {
             signal.signalFailure(e);
         }
     }
-    
+
     private static void signalSuccessfulCompletion(Signal signal) {
         if (signal != null) {
             signal.signalSuccessfulCompletion();
         }
     }
-    
+
     public void syncStart(int options) throws KernelException {
         Bundle bundle = obtainLocalBundle();
 
@@ -203,10 +236,10 @@ final class StandardBundleDriver implements BundleDriver {
 
     private Bundle obtainLocalBundle() {
         synchronized (this.monitor) {
-            if (this.bundle == null) {
+            if (getThreadContextBundle() == null) {
                 throw new IllegalStateException("bundle not set");
             }
-            return this.bundle;
+            return getThreadContextBundle();
         }
     }
 
@@ -263,7 +296,7 @@ final class StandardBundleDriver implements BundleDriver {
      */
     public void uninstall() throws DeploymentException {
         Bundle bundle = obtainLocalBundle();
-        
+
         pushThreadContext();
         try {
             bundle.uninstall();
@@ -272,18 +305,18 @@ final class StandardBundleDriver implements BundleDriver {
         } finally {
             popThreadContext();
         }
-        
+
         BundleListener localBundleListener = this.bundleListener;
         this.bundleListener = null;
-        
+
         if (localBundleListener != null) {
             this.bundleContext.removeBundleListener(localBundleListener);
         }
-        
-        this.packageAdminUtil.synchronouslyRefreshPackages(new Bundle[] {bundle});
+
+        this.packageAdminUtil.synchronouslyRefreshPackages(new Bundle[] { bundle });
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public void trackStart(AbortableSignal signal) {
