@@ -33,7 +33,8 @@ public final class ServiceRegistrationTracker {
 
     /**
      * Tracks the supplied {@link ServiceRegistration}. This <code>ServiceRegistration</code> will be
-     * {@link ServiceRegistration#unregister unregistered} during {@link #unregisterAll()}.
+     * {@link ServiceRegistration#unregister unregistered} during {@link #unregisterAll()} or 
+     * {@link #unregister()}.
      * 
      * @param registration the <code>ServiceRegistration</code> to track.
      */
@@ -44,6 +45,16 @@ public final class ServiceRegistrationTracker {
             }
             this.registrations.add(registration);
         }
+    }
+
+    /**
+     * Safely unregisters a tracked <code>ServiceRegistration</code>.
+     */
+    public void unregister(ServiceRegistration<?> registration) {
+        synchronized (this.monitor) {
+            this.registrations.remove(registration);
+        }
+        registration.unregister();
     }
 
     /**
