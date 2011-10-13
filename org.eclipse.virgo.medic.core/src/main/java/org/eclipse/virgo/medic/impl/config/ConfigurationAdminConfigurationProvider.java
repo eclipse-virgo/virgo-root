@@ -13,8 +13,10 @@ package org.eclipse.virgo.medic.impl.config;
 
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Hashtable;
 
+import org.eclipse.virgo.util.common.SynchronizedCollection;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
@@ -34,8 +36,11 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     
 	private volatile Dictionary<String,String> configuration = DEFAULT_CONFIG;
 
+    private HashSet<ConfigurationChangeListener> listeners;
+
     public ConfigurationAdminConfigurationProvider(BundleContext context) {
         this.bundleContext = context;
+        this.listeners = new HashSet<ConfigurationChangeListener>();
         initialisePropertiesFromConfigurationAdmin();
     }
 
@@ -76,6 +81,8 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         } else {
         	this.configuration = DEFAULT_CONFIG;
         }
+
+        notifyListeners();
     }
 
     private static Dictionary<String, String> createDefaultConfiguration() {
@@ -85,7 +92,21 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         configuration.put(KEY_LOG_WRAP_SYSERR, Boolean.toString(Boolean.TRUE));
         return configuration;
     }    
-    
+
+    public void addChangeListener(ConfigurationChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public boolean removeChangeListener(ConfigurationChangeListener listener) {
+        return listeners.remove(listener);
+    }
+
+    private void notifyListeners() {
+        for (Object listener: listeners.toArray()) {
+            ((ConfigurationChangeListener) listener).configurationChanged(this);
+        }
+    }
+
     private final class MedicConfigurationListener implements ConfigurationListener {
     	@SuppressWarnings("unchecked")
         public void configurationEvent(ConfigurationEvent configEvent) {
