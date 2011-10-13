@@ -11,31 +11,46 @@
 
 package org.eclipse.virgo.util.osgi;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
-import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.junit.Test;
 import org.osgi.framework.ServiceRegistration;
+
+import static org.easymock.EasyMock.*;
 
 
 public class ServiceRegistrationTrackerTests {
 
     @Test
     public void testTrackAndUnregister() {
-        
+        ServiceRegistration<?> registration = createServiceRegistration();
+
+        replay(registration);
+
+        ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
+        tracker.track(registration);
+        tracker.unregister(registration);
+
+        verify(registration);
+    }
+
+    @Test
+    public void testTrackAndUnregisterAll() {
+        ServiceRegistration<?> registration1 = createServiceRegistration();
+        ServiceRegistration<?> registration2 = createServiceRegistration();
+        replay(registration1, registration2);
+
+        ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
+        tracker.track(registration1);
+        tracker.track(registration2);
+        tracker.unregisterAll();
+
+        verify(registration1, registration2);
+    }
+
+    private ServiceRegistration<?> createServiceRegistration() {
         ServiceRegistration<?> registration = createMock(ServiceRegistration.class);
         registration.unregister();
         expectLastCall();
-        
-        replay(registration);
-        
-        ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
-        tracker.track(registration);
-        tracker.unregisterAll();
-        
-        verify(registration);
+        return registration;
     }
+
 }
