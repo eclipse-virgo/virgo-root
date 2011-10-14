@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.deployer.test;
 import java.io.File;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,6 +29,7 @@ import org.junit.Test;
  * For the source of the PAR and "global" bundle, see test-apps/synthetic-tccl. Instructions for building are in
  * README.TXT.
  */
+@Ignore("Bug 360965 - Avoid Spring DM overriding TCCL of scoped applications")
 public class SyntheticContextTCCLIntegrationTests extends AbstractDeployerIntegrationTest {
 
     @Test
