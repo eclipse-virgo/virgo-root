@@ -99,10 +99,10 @@ final class StandardBundleDriver implements BundleDriver {
         BundleListener bundleListener = null;
 
         synchronized (this.monitor) {
-            if (getThreadContextBundle() == null) {
+            if (this.bundle == null) {
                 this.bundle = bundle;
-                if (getThreadContextBundle() != null) {
-                    this.bundleListener = new BundleDriverBundleListener(this.installArtifact, getThreadContextBundle(), this.artifactStateMonitor);
+                if (this.bundle != null) {
+                    this.bundleListener = new BundleDriverBundleListener(this.installArtifact, this.bundle, this.artifactStateMonitor);
                     bundleListener = this.bundleListener;
                 }
             }
@@ -154,7 +154,7 @@ final class StandardBundleDriver implements BundleDriver {
                 if (parentArtifact instanceof PlanInstallArtifact) {
                     PlanInstallArtifact parentPlan = (PlanInstallArtifact) (parentArtifact);
                     if (parentPlan.isScoped()) {
-                        String syntheticContextBundleSymbolicName = parentPlan.getScopeName() + SYNTHETIC_CONTEXT_SUFFIX;
+                        String syntheticContextBundleSymbolicName = this.installArtifact.getScopeName() + SYNTHETIC_CONTEXT_SUFFIX;
                         for (Tree<InstallArtifact> scopedPlanChild : parent.getChildren()) {
                             InstallArtifact scopedPlanChildArtifact = scopedPlanChild.getValue();
                             if (scopedPlanChildArtifact instanceof BundleInstallArtifact
@@ -163,6 +163,7 @@ final class StandardBundleDriver implements BundleDriver {
                                 return syntheticContextBundleArtifact.getBundle();
                             }
                         }
+                        break;
                     }
                 }
                 parent = parent.getParent();
@@ -236,10 +237,10 @@ final class StandardBundleDriver implements BundleDriver {
 
     private Bundle obtainLocalBundle() {
         synchronized (this.monitor) {
-            if (getThreadContextBundle() == null) {
+            if (this.bundle == null) {
                 throw new IllegalStateException("bundle not set");
             }
-            return getThreadContextBundle();
+            return this.bundle;
         }
     }
 
