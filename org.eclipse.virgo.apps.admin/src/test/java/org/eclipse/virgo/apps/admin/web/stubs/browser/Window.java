@@ -26,4 +26,8 @@ public class Window {
 		
 	}
 
+	public void log(String msg){
+		System.out.println(msg);
+	}
+	
 }

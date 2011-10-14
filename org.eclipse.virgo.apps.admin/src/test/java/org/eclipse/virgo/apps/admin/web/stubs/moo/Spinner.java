@@ -42,6 +42,9 @@ public class Spinner extends ParentStub {
 	public void jsFunction_hide(Boolean showFx){
 	}
 
+	public void jsFunction_position(){
+	}
+
 	public void jsFunction_addEvent(String name, ScriptableObject function){
 	}
 	

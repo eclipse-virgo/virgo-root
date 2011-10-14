@@ -24,9 +24,15 @@ public class Element extends ParentStub {
 
 	private static final long serialVersionUID = 1L;
 	
-	private String name;
+	private String appendedText;
 
 	private Set<String> class_names = new HashSet<String>();
+	
+	private boolean submitCalled = false;
+	
+	private static Object injectedInto;
+	
+	private static Set<String> constructedElements = new HashSet<String>();
 	
 	/**
 	 * Prototype constructor
@@ -38,19 +44,31 @@ public class Element extends ParentStub {
 	 * JavaScript Constructor
 	 */
 	public Element(ScriptableObject name) {
-		this.name = (String) Context.jsToJava(name, String.class);
+		constructedElements.add((String) Context.jsToJava(name, String.class));
 	}
 	
 	public void jsFunction_addClass(String className){
 		this.class_names.add(className);
 	}
 	
+	public void jsFunction_removeClass(String className){
+		this.class_names.remove(className);
+	}
+	
 	public void jsFunction_set(String property, Object propertyValues){
+		
+	}
+	
+	public void jsFunction_setProperty(String property, Object propertyValues){
 		
 	}
 	
 	public void jsFunction_replaces(Element oldElement){
 		
+	}
+	
+	public void jsFunction_submit(){
+		this.submitCalled = true;
 	}
 
 	public boolean jsFunction_hasClass(String className){
@@ -58,25 +76,53 @@ public class Element extends ParentStub {
 	}
 	
 	public void jsFunction_inject(Object intoThisOtherElement){
+		injectedInto = intoThisOtherElement;
+	}
+
+	public void jsFunction_reveal(){
+		
+	}
+
+	public void jsFunction_empty(){
 		
 	}
 	
-	public void jsFunction_reveal(){
-		
+	public void jsFunction_appendText(String text){
+		this.appendedText = text;
 	}
 	
 	public void jsFunction_destroy(Object oldElement){
 		
 	}
 	
+	public ScriptableObject[] jsFunction_getChildren(){
+		return new ScriptableObject[]{this};
+	}
+	
+	public ScriptableObject jsGet_firstChild(){
+		return this;
+	}
+	
 	// Test methods
 	
-	public String getName(){
-		return this.name;
+	public static Set<String> getNames(){
+		return constructedElements;
 	}
 	
 	public Set<String> getClassNames(){
 		return this.class_names;
+	}
+	
+	public String getAppendedTest(){
+		return this.appendedText;
+	}
+
+	public static Object getInjectedInto() {
+		return injectedInto;
+	}
+	
+	public boolean isSubmitted(){
+		return this.submitCalled;
 	}
 	
 }

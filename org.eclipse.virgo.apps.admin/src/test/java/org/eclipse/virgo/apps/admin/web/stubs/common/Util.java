@@ -23,6 +23,8 @@ public class Util {
 	
 	private boolean pageReady = false;
 	
+	public static int fxTime = 200;
+	
 	public Util(ScriptableObject SCOPE) {
 		this.SCOPE = SCOPE;
 	}
@@ -38,7 +40,7 @@ public class Util {
 	}
 	
 	public Object readObjectName(Object mbean){
-		return Context.javaToJS("objectName", SCOPE);	
+		return mbean;	
 	}
 	
 	public void loadScript(Object scriptName, Object async){

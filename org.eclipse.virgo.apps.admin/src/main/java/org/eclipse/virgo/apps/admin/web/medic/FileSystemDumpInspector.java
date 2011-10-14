@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- *
+ * Utility class for the viewing of produced Dumps.
+ * 
+ * This class is thread safe
  */
 public class FileSystemDumpInspector implements DumpInspector {
 

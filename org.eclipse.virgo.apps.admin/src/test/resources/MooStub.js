@@ -18,6 +18,20 @@ Function.prototype.bind = function(bind){
 	return this;
 };
 
-Object.prototype.each = function(object, someFunction){
+Object.prototype.each = function(object, someFunction, scope){
 
+};
+
+String.prototype.capitalize = function(){
+	return this;
+};
+
+Array.prototype.contains = function(something){
+	return false;
+};
+
+Array.prototype.each = function(someFunction, scope){
+	for (var i = 0, l = this.length; i < l; i++){
+		if (i in this) someFunction.call(scope, this[i], i, this);
+	}
 };

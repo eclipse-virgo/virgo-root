@@ -17,6 +17,7 @@ import javax.management.MXBean;
 
 /**
  * 
+ * Implementations should be thread safe
  *
  */
 @MXBean

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web.stubs.moo;
 
+import org.eclipse.virgo.apps.admin.web.stubs.common.Util;
+
 import junit.framework.Assert;
 
 import sun.org.mozilla.javascript.internal.Context;
@@ -57,7 +59,11 @@ public class Fx extends ParentStub {
 		Fx.global_scope = scope;
 	}
 
-	public void jsFunction_dissolve(){
+	public ScriptableObject jsFunction_dissolve(){
+		return this;
+	}
+	
+	public void jsFunction_toggle(){
 	}
 	
 	/**
@@ -67,6 +73,7 @@ public class Fx extends ParentStub {
 	 * @return
 	 */
 	public static ScriptableObject jsStaticFunction_Reveal(ScriptableObject element, ScriptableObject options){
+		Assert.assertEquals(Util.fxTime, Context.jsToJava(ScriptableObject.getProperty(options, "duration"), Integer.class));
 		Function fObj = (Function) Fx.global_scope.get(Fx.class.getSimpleName(), Fx.global_scope);
 		if (fObj instanceof Function) {
 		    Function constructor = (Function)fObj;

@@ -46,18 +46,19 @@ public abstract class AbstractJSTests {
 	protected static String dollarLookup = "";
 	
 	protected static ScriptableObject dollarLookupToReturn = null;
+
+	protected static String alertMsg;
 	
-	protected Util commonUtil;
+	protected Util commonUtil = null;
 	
-	protected Server commonServer;
-	
-	protected Window window;
+	protected Server commonServer = null;
 	
 	@BeforeClass
 	public static void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
 		//printEngine();
 		CONTEXT = Context.enter();
 		SCOPE = CONTEXT.initStandardObjects();
+		dollarLookupToReturn = null;
 
 		//Create the browser environment
 		ScriptableObject.defineClass(SCOPE, HtmlTable.class);
@@ -67,11 +68,13 @@ public abstract class AbstractJSTests {
 		ScriptableObject.defineClass(SCOPE, Element.class);
 		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
 		
-		//Add in constructed objects
+		//Add in constructed objects and extensions
 		CONTEXT.evaluateReader(SCOPE, new FileReader("src/test/resources/MooStub.js"), "src/test/resources/MooStub.js", 0, null); 
-		
+
 		FunctionObject dollarFunction = new FunctionObject("$", AbstractJSTests.class.getDeclaredMethod("dollar", Object.class), SCOPE);
 		ScriptableObject.putProperty(SCOPE, dollarFunction.getFunctionName(), dollarFunction);
+		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), SCOPE);
+		ScriptableObject.putProperty(SCOPE, alertFunction.getFunctionName(), alertFunction);
 	}
 	
 	@AfterClass
@@ -85,6 +88,10 @@ public abstract class AbstractJSTests {
 			return dollarLookupToReturn;
 		}
 		return name;
+	}
+	
+	public static void alert(String msg){
+		alertMsg = msg;
 	}
 	
 	protected final Object addObject(Object object, String name){

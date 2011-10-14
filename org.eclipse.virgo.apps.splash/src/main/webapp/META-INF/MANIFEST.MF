@@ -6,6 +6,6 @@ Bundle-Name: Splash Screen
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.splash
 Web-ContextPath: /
-Import-Package: javax.servlet;version="[3.0.0,3.1)",javax.servlet.http
- ;version="[3.0.0,3.1)",org.slf4j;version="[1.6.1,2)"
+Import-Package: javax.servlet;version="[2.5.0,4)",javax.servlet.http;v
+ ersion="[2.5.0,4)",org.slf4j;version="[1.6.1,2)"
 

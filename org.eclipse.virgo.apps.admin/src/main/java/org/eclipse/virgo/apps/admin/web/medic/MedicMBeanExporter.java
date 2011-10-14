@@ -23,6 +23,13 @@ import javax.management.ObjectName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * 
+ * 
+ * This class is Thread Safe
+ *
+ */
 public class MedicMBeanExporter {
 	
     private final Logger logger = LoggerFactory.getLogger(MedicMBeanExporter.class);
@@ -33,6 +40,10 @@ public class MedicMBeanExporter {
 	
     private final List<ObjectInstance> mBeans = new ArrayList<ObjectInstance>();
 
+    /**
+     * 
+     * @param serverHome
+     */
 	public MedicMBeanExporter(String serverHome) {
 		try {
 			ObjectName dumpMBeanName = new ObjectName(String.format("%s:type=Medic,name=DumpInspector", DOMAIN));
@@ -42,6 +53,9 @@ public class MedicMBeanExporter {
 		} 
 	}
 	
+	/**
+	 * 
+	 */
 	public void close(){
 		for(ObjectInstance mBean : mBeans){
 			try {
