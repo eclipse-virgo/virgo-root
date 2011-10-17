@@ -35,5 +35,7 @@
 	<bean id="serviceProxyRetryDisabler" class="org.eclipse.virgo.kernel.dmfragment.internal.ServiceProxyRetryDisablingBundleListener">
  	    <constructor-arg ref="bundleContext"/>
  	</bean>
+ 	
+ 	<bean id="applicationContextCreator" class="org.eclipse.virgo.kernel.dmfragment.internal.KernelOsgiApplicationContextCreator" />
 	
 </beans>
