@@ -71,7 +71,7 @@
            Note: XML Schema validation will not work with Xerces 2.2.
        -->
       <Host name="localhost" deployOnStartup="false" autoDeploy="false"
-            unpackWARs="true" xmlValidation="false" xmlNamespaceAware="false">
+            unpackWARs="false" appBase="" createDirs="false">
 			<Listener className="org.eclipse.virgo.web.tomcat.support.ApplicationNameTrackingListener"/>
       </Host>
     </Engine>
