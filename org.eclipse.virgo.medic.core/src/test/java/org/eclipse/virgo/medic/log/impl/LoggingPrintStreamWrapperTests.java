@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.eclipse.virgo.medic.impl.config.ConfigurationChangeListener;
 import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
 import org.eclipse.virgo.medic.log.impl.ExecutionStackAccessor;
 import org.eclipse.virgo.medic.log.impl.LoggingPrintStreamWrapper;
@@ -30,18 +31,17 @@ import org.junit.Test;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
-
 public class LoggingPrintStreamWrapperTests {
-        
+
     private PrintStream wrapper;
 
 	@Test
     public void test() {
 		produceOutput(this.wrapper);
-		
+
 		List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
         assertEquals(22, loggingEvents.size());
-        
+
         assertEquals("abcdefghij", loggingEvents.get(0).getMessage());
         assertEquals("Three strings", loggingEvents.get(1).getMessage());
         assertEquals("last one on a new line.", loggingEvents.get(2).getMessage());
@@ -65,24 +65,24 @@ public class LoggingPrintStreamWrapperTests {
         assertEquals("A string with a", loggingEvents.get(20).getMessage());
         assertEquals("new line in it.", loggingEvents.get(21).getMessage());
 	}
-	
+
 	@Test
-	public void testOutputWithinLoggingCode() {		
+	public void testOutputWithinLoggingCode() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(baos);        
+        PrintStream printStream = new PrintStream(baos);
 		PrintStream wrapper = new LoggingPrintStreamWrapper(printStream, getClass().getName(), new ExecutionStackAccessor() {
-			
+
 			public Class<?>[] getExecutionStack() {
 				return new Class[] {Logger.class};
 			}
 		}, new StubConfigurationProvider(), "theProperty");
-		
+
 		produceOutput(wrapper);
-		
+
 		List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
 		assertEquals(0, loggingEvents.size());
 	}
-	
+
 	private void produceOutput(PrintStream printStream) {
         printStream.append('a');
         printStream.append("bcd");
@@ -113,49 +113,49 @@ public class LoggingPrintStreamWrapperTests {
         printStream.println(new Object() {@Override public String toString() { return "toString";}});
         printStream.println("A string with a\nnew line in it.");
 	}
-    
+
     @Test
-    public void testByteArrayHandling() {                
+    public void testByteArrayHandling() {
         String string = "Some text to be turned into bytes.";
         String stringWithNewLine = string + "\n";
         byte[] stringBytes = stringWithNewLine.getBytes();
-        
-        wrapper.write(stringBytes, 0, stringBytes.length);  
-        
+
+        wrapper.write(stringBytes, 0, stringBytes.length);
+
         List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
         assertEquals(1, loggingEvents.size());
-        
+
         assertEquals("Some text to be turned into bytes.", loggingEvents.get(0).getMessage());
     }
-    
+
     @Test
-    public void testSingleByteHandling() {                
+    public void testSingleByteHandling() {
         String string = "Some text to be turned into bytes.";
         byte[] stringBytes = string.getBytes();
-        
+
         for (byte b: stringBytes) {
             wrapper.write(b);
         }
         wrapper.println();
-        
+
         List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
         assertEquals(1, loggingEvents.size());
-        
+
         assertEquals("Some text to be turned into bytes.", loggingEvents.get(0).getMessage());
     }
-    
+
     @Test
     public void testPrintNullString(){
-        
+
         String imNull = null;
-        
+
         wrapper.println(imNull);
         wrapper.print(imNull);
         wrapper.println();
-        
+
         List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
         assertEquals(2, loggingEvents.size());
-        
+
         assertEquals("null", loggingEvents.get(0).getMessage());
         assertEquals("null", loggingEvents.get(1).getMessage());
     }
@@ -166,11 +166,11 @@ public class LoggingPrintStreamWrapperTests {
         PrintStream printStream = new PrintStream(baos);
         this.wrapper = new LoggingPrintStreamWrapper(printStream, getClass().getName(), new SecurityManagerExecutionStackAccessor(), new StubConfigurationProvider(), "theProperty");
 	}
-	
+
 	private final class StubConfigurationProvider implements ConfigurationProvider {
-		
+
 		private final Properties configuration;
-		
+
 		private StubConfigurationProvider() {
 			this.configuration = new Properties();
 			this.configuration.setProperty("theProperty", "true");
@@ -179,6 +179,15 @@ public class LoggingPrintStreamWrapperTests {
 		@SuppressWarnings("unchecked")
 		public Dictionary getConfiguration() {
 			return this.configuration;
-		}		
+		}
+
+        public void addChangeListener(ConfigurationChangeListener listener) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean removeChangeListener(ConfigurationChangeListener listener) {
+            throw new UnsupportedOperationException();
+        }
+
 	}
 }
