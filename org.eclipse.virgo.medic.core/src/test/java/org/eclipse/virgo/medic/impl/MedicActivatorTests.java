@@ -11,48 +11,51 @@
 
 package org.eclipse.virgo.medic.impl;
 
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertServiceListenerCount;
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertServiceRegistrationCount;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
+import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertServiceListenerCount;
+import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertServiceRegistrationCount;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
 
-import org.junit.Test;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleListener;
-import org.osgi.service.cm.ConfigurationListener;
-import org.osgi.service.packageadmin.PackageAdmin;
-
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
-import org.eclipse.virgo.medic.impl.MedicActivator;
 import org.eclipse.virgo.medic.log.DelegatingPrintStream;
 import org.eclipse.virgo.medic.log.LoggingConfigurationPublisher;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
+import org.junit.Test;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleListener;
+import org.osgi.service.cm.ConfigurationListener;
 
-@SuppressWarnings("deprecation")
+
 public class MedicActivatorTests {
+	
+    private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
     @Test
     public void startAndStop() throws Exception {
         BundleActivator bundleActivator = new MedicActivator();
         StubBundleContext bundleContext = new StubBundleContext().addFilter(new ObjectClassFilter(DumpContributor.class));
         bundleContext.addProperty("org.eclipse.virgo.suppress.heap.dumps", "false");
+        bundleContext.addProperty("org.eclipse.virgo.kernel.home", "src/test/resources/testDumps");
         
-        PackageAdmin packageAdmin = createNiceMock(PackageAdmin.class);
         ExtendedLogReaderService logReaderService = createNiceMock(ExtendedLogReaderService.class);
-        replay(packageAdmin, logReaderService);
+        replay(logReaderService);
         
-        bundleContext.registerService(PackageAdmin.class, packageAdmin, null);
         bundleContext.registerService(ExtendedLogReaderService.class, logReaderService, null);
 
         bundleActivator.start(bundleContext);
@@ -67,9 +70,13 @@ public class MedicActivatorTests {
         assertServiceRegistrationCount(bundleContext, ConfigurationListener.class, 1);
         assertServiceRegistrationCount(bundleContext, BundleListener.class, 1);
 
-        bundleActivator.stop(bundleContext);      
+        assertTrue(this.server.isRegistered(new ObjectName("org.eclipse.virgo.kernel:type=Medic,name=DumpInspector")));
         
-        assertEquals(2, bundleContext.getServiceRegistrations().size());
+        bundleActivator.stop(bundleContext);
+        
+        assertFalse(this.server.isRegistered(new ObjectName("org.eclipse.virgo.kernel:type=Medic,name=DumpInspector")));
+        
+        assertEquals(1, bundleContext.getServiceRegistrations().size());
     }        
 
     @Test

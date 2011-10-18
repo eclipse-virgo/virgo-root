@@ -19,7 +19,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.osgi.framework.BundleActivator;
@@ -67,6 +66,7 @@ import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
 import org.eclipse.virgo.medic.log.osgi.OSGiLogServiceListener;
+import org.eclipse.virgo.medic.management.MedicMBeanExporter;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 public final class MedicActivator implements BundleActivator {
@@ -86,6 +86,8 @@ public final class MedicActivator implements BundleActivator {
 	private static final String PROPERTY_LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
 	
 	private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
+	
+	private MedicMBeanExporter medicMBeanExporter;
 
     private volatile StandardDumpGenerator dumpGenerator;
 
@@ -122,6 +124,7 @@ public final class MedicActivator implements BundleActivator {
 
     public void stop(BundleContext context) throws Exception {
     	this.registrationTracker.unregisterAll();
+    	
     	ServiceReference<ExtendedLogReaderService> localLogReaderReference = this.logReaderReference;
     	if(localLogReaderReference != null){
     		context.ungetService(localLogReaderReference);
@@ -131,16 +134,20 @@ public final class MedicActivator implements BundleActivator {
     }
 
     private void dumpStart(BundleContext context, ConfigurationProvider configurationProvider) {
-        
         this.dumpGenerator = new StandardDumpGenerator(new StandardDumpContributorResolver(context), configurationProvider, this.eventLoggerFactory.createEventLogger(context.getBundle()));
         this.registrationTracker.track(context.registerService(DumpGenerator.class.getName(), this.dumpGenerator, null));
 
         this.dumpContributorPublisher = new DumpContributorPublisher(context);
-        this.dumpContributorPublisher.publishDumpContributors();               
+        this.dumpContributorPublisher.publishDumpContributors();         
+        
+		this.medicMBeanExporter = new MedicMBeanExporter(configurationProvider, this.dumpGenerator);
     }
 
     private void dumpStop() {        
-        if (this.dumpGenerator != null) {
+    	if(this.medicMBeanExporter != null){
+    		this.medicMBeanExporter.close();
+    	}
+    	if (this.dumpGenerator != null) {
             this.dumpGenerator.close();
         }
 
@@ -150,7 +157,6 @@ public final class MedicActivator implements BundleActivator {
     }
      
 	private void logStart(BundleContext context, ConfigurationProvider configurationProvider) throws ConfigurationPublicationFailedException {
-
         StandardContextSelectorDelegate delegate = createContextSelectorDelegate(context);
         this.registrationTracker.track(context.registerService(BundleListener.class.getName(), delegate, null));
         DelegatingContextSelector.setDelegate(delegate);

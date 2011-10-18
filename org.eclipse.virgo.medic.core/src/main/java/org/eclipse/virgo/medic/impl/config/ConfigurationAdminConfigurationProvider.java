@@ -25,8 +25,6 @@ import org.osgi.service.cm.ConfigurationListener;
 public final class ConfigurationAdminConfigurationProvider implements ConfigurationProvider, ConfigurationListener {
 
     private static final String CONFIG_ADMIN_PID = "org.eclipse.virgo.medic";
-    
-    private static final String CONFIG_ADMIN_SERVICE_NAME = "org.osgi.service.cm.ConfigurationAdmin";
 
     private static final Dictionary<String, String> DEFAULT_CONFIG = createDefaultConfiguration();
 
@@ -44,9 +42,8 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     }
 
     
-    @SuppressWarnings("unchecked")
 	private void initialisePropertiesFromConfigurationAdmin() {
-    	ServiceReference<ConfigurationAdmin> configAdminReference = (ServiceReference<ConfigurationAdmin>)this.bundleContext.getServiceReference(CONFIG_ADMIN_SERVICE_NAME);
+    	ServiceReference<ConfigurationAdmin> configAdminReference = this.bundleContext.getServiceReference(ConfigurationAdmin.class);
     	
     	if (configAdminReference != null) {
     		this.bundleContext.registerService(ConfigurationListener.class.getName(), new MedicConfigurationListener(), null);
@@ -61,8 +58,8 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
             try {
 				Configuration configuration = configurationAdmin.getConfiguration(CONFIG_ADMIN_PID, null);
                 
-				@SuppressWarnings("unchecked")
-                Dictionary<String,String> properties = configuration.getProperties();
+                @SuppressWarnings("unchecked")
+				Dictionary<String,String> properties = configuration.getProperties();
                 
                 if (properties == null) {
                 	properties = DEFAULT_CONFIG; 
@@ -87,8 +84,9 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     }    
     
     private final class MedicConfigurationListener implements ConfigurationListener {
-    	@SuppressWarnings("unchecked")
-        public void configurationEvent(ConfigurationEvent configEvent) {
+    	
+        @SuppressWarnings("unchecked")
+		public void configurationEvent(ConfigurationEvent configEvent) {
 			if (CONFIG_ADMIN_PID.equals(configEvent.getPid()) && configEvent.getType() == ConfigurationEvent.CM_UPDATED) {
 				setPropertiesFromConfigurationAdmin((ServiceReference<ConfigurationAdmin>)configEvent.getReference());
 			}			
