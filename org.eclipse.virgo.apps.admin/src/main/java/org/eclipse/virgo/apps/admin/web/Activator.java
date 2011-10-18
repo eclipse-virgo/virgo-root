@@ -14,7 +14,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.eclipse.virgo.apps.admin.web.internal.AdminHttpContext;
-import org.eclipse.virgo.apps.admin.web.medic.MedicMBeanExporter;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -66,15 +65,11 @@ public class Activator implements BundleActivator {
 
 	private BundleContext context;
 
-	private MedicMBeanExporter medicMBeanExporter;
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		this.context = context;		
 		
 		Activator.serverHome = this.context.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME);
-		
-		medicMBeanExporter = new MedicMBeanExporter(Activator.serverHome);
 		
 		Activator.contextPath = this.context.getBundle().getHeaders().get("Web-ContextPath");
 		this.httpServiceTracker = new ServiceTracker<HttpService, HttpService>(context, HttpService.class, new HttpServiceTrackerCustomizer(context));
@@ -90,7 +85,6 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		this.httpServiceTracker.close();
 		this.urlEncoderServiceTracker.close();
-		this.medicMBeanExporter.close();
 	}
 	
 	private void registerWithHttpService(){
