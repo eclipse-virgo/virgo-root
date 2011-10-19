@@ -25,6 +25,9 @@
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="aspects->runtime"/>
 		
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.common" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.math" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		
