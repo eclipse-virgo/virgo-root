@@ -11,7 +11,6 @@
 package org.eclipse.virgo.medic.management;
 
 import java.lang.management.ManagementFactory;
-import java.util.Dictionary;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;

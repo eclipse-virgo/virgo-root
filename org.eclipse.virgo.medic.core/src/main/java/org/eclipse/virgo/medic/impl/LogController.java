@@ -31,7 +31,6 @@ import org.eclipse.virgo.medic.log.impl.logback.DelegatingContextSelector;
 import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
-import org.eclipse.virgo.medic.management.MedicMBeanExporter;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
@@ -79,15 +78,15 @@ public class LogController implements ConfigurationChangeListener {
 
     private volatile ConsoleHandler javaConsoleHandler;
     
-    private PrintStream delegatingSysOut = new StandardDelegatingPrintStream(System.out);
+    private DelegatingPrintStream delegatingSysOut = new StandardDelegatingPrintStream(System.out);
 
-    private PrintStream delegatingSysErr = new StandardDelegatingPrintStream(System.err);
+    private DelegatingPrintStream delegatingSysErr = new StandardDelegatingPrintStream(System.err);
 
-    private ServiceRegistration<?> delegatingSysOutRegistration;
-    private ServiceRegistration<?> delegatingSysErrRegistration;
+    private ServiceRegistration<DelegatingPrintStream> delegatingSysOutRegistration;
+    private ServiceRegistration<DelegatingPrintStream> delegatingSysErrRegistration;
 
-    private ServiceRegistration<?> sysOutRegistration;
-    private ServiceRegistration<?> sysErrRegistration;
+    private ServiceRegistration<PrintStream> sysOutRegistration;
+    private ServiceRegistration<PrintStream> sysErrRegistration;
 
     private static final List<String> DEFAULT_LOGGING_PACKAGES = Arrays.asList(//
             "org.apache.commons.logging",//
@@ -112,7 +111,7 @@ public class LogController implements ConfigurationChangeListener {
         DelegatingContextSelector.setDelegate(delegate);
 
         StandardLoggingConfigurationPublisher loggingConfigurationPublisher = new StandardLoggingConfigurationPublisher(bundleContext);
-        registrationTracker.track(bundleContext.registerService(LoggingConfigurationPublisher.class.getName(), loggingConfigurationPublisher, null));
+        registrationTracker.track(bundleContext.registerService(LoggingConfigurationPublisher.class, loggingConfigurationPublisher, null));
 
         publishDefaultConfigurationIfAvailable(bundleContext, loggingConfigurationPublisher);
 
@@ -126,7 +125,7 @@ public class LogController implements ConfigurationChangeListener {
 
     public DumpGenerator dumpStart() {
         this.dumpGenerator = new StandardDumpGenerator(new StandardDumpContributorResolver(bundleContext), configurationProvider, this.eventLoggerFactory.createEventLogger(bundleContext.getBundle()));
-        registrationTracker.track(bundleContext.registerService(DumpGenerator.class.getName(), this.dumpGenerator, null));
+        registrationTracker.track(bundleContext.registerService(DumpGenerator.class, this.dumpGenerator, null));
 
         this.dumpContributorPublisher = new DumpContributorPublisher(bundleContext);
         this.dumpContributorPublisher.publishDumpContributors();
@@ -190,7 +189,7 @@ public class LogController implements ConfigurationChangeListener {
     public void eventLogStart() {
         this.eventLoggerFactory = createFactory(bundleContext);
         ServiceFactory<EventLogger> serviceFactory = new EventLoggerServiceFactory(this.eventLoggerFactory);
-        registrationTracker.track(bundleContext.registerService(EventLoggerFactory.class.getName(), this.eventLoggerFactory, null));
+        registrationTracker.track(bundleContext.registerService(EventLoggerFactory.class, this.eventLoggerFactory, null));
         registrationTracker.track(bundleContext.registerService(EventLogger.class.getName(), serviceFactory, null));
     }
 
@@ -199,22 +198,21 @@ public class LogController implements ConfigurationChangeListener {
         return wrapper;
     }
 
-    private ServiceRegistration<?> publishPrintStream(PrintStream printStream, String name) {
-        Hashtable<String, String> properties = new Hashtable<String, String>();
+    private ServiceRegistration<PrintStream> publishPrintStream(PrintStream printStream, String name) {
+    	Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
 
-        ServiceRegistration<?> registration = bundleContext.registerService(PrintStream.class.getName(), printStream, properties);
+        ServiceRegistration<PrintStream> registration = bundleContext.registerService(PrintStream.class, printStream, properties);
         registrationTracker.track(registration);
 
         return registration;
     }
 
-    private ServiceRegistration<?> publishDelegatingPrintStream(PrintStream printStream, String name) {
-        Hashtable<String, String> properties = new Hashtable<String, String>();
+    private ServiceRegistration<DelegatingPrintStream> publishDelegatingPrintStream(DelegatingPrintStream printStream, String name) {
+    	Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
 
-        String[] classes = new String[]{DelegatingPrintStream.class.getName()};
-        ServiceRegistration<?> delegatingPrintStreamRegistration = bundleContext.registerService(classes, printStream, properties);
+        ServiceRegistration<DelegatingPrintStream> delegatingPrintStreamRegistration = bundleContext.registerService(DelegatingPrintStream.class, printStream, properties);
         registrationTracker.track(delegatingPrintStreamRegistration);
 
         return delegatingPrintStreamRegistration;
@@ -293,7 +291,7 @@ public class LogController implements ConfigurationChangeListener {
                 registrationTracker.unregister(sysOutRegistration);
                 sysOutRegistration = null;
             }
-            System.setOut(delegatingSysOut);
+            System.setOut((PrintStream)delegatingSysOut);
         }
 
         if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
@@ -310,7 +308,7 @@ public class LogController implements ConfigurationChangeListener {
                 registrationTracker.unregister(sysErrRegistration);
                 sysErrRegistration = null;
             }
-            System.setErr(delegatingSysErr);
+            System.setErr((PrintStream)delegatingSysErr);
         }
 
         if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {

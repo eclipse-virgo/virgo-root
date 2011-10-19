@@ -49,12 +49,11 @@ public class LogControllerTests {
     private final StubBundleContext bundleContext = new StubBundleContext();
 
     @Test
-    @SuppressWarnings("unchecked")
     public void loggingWithWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
@@ -79,12 +78,11 @@ public class LogControllerTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void loggingWithNonWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "false");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "false");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
@@ -106,12 +104,11 @@ public class LogControllerTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void changeFromWrappedToNonWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
@@ -137,12 +134,11 @@ public class LogControllerTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void loggingWithEnabledJULConsoleHandler() throws IOException, ConfigurationPublicationFailedException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
 
@@ -159,12 +155,11 @@ public class LogControllerTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void loggingWithDisabledJULConsoleHandler() throws IOException, ConfigurationPublicationFailedException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER, "false");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
 
@@ -180,10 +175,10 @@ public class LogControllerTests {
         verify(configurationAdmin, configuration);
     }
 
-    private void checkPublishedStreamServices(Class registeredClass, Class serviceClass, String... streamNames) throws InvalidSyntaxException {
+    private void checkPublishedStreamServices(Class<?> registeredClass, Class<?> serviceClass, String... streamNames) throws InvalidSyntaxException {
         ServiceReference<?> serviceReferences[] = this.bundleContext.getServiceReferences(registeredClass.getName(), null);
 
-        for (ServiceReference reference : serviceReferences) {
+        for (ServiceReference<?> reference : serviceReferences) {
             String streamName = (String) reference.getProperty("org.eclipse.virgo.medic.log.printStream");
 
             boolean foundMatch = checkForMatchingNames(streamName, streamNames);
@@ -206,8 +201,8 @@ public class LogControllerTests {
         return foundMatch;
     }
 
-    private ServiceRegistration createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary properties, int times) throws IOException {
-        ServiceRegistration serviceRegistration = this.bundleContext.registerService(ConfigurationAdmin.class.getName(), configurationAdmin, null);
+    private ServiceRegistration<?> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, String> properties, int times) throws IOException {
+        ServiceRegistration<?> serviceRegistration = this.bundleContext.registerService(ConfigurationAdmin.class.getName(), configurationAdmin, null);
 
         expect(configurationAdmin.getConfiguration("org.eclipse.virgo.medic", null)).andReturn(configuration).times(times);
         expect(configuration.getProperties()).andReturn(properties).times(times);

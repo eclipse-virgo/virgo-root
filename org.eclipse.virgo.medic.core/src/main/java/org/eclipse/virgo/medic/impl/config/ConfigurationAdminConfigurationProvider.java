@@ -16,7 +16,6 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.eclipse.virgo.util.common.SynchronizedCollection;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
