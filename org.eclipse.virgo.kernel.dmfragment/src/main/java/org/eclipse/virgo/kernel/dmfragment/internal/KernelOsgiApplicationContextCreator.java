@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.dmfragment.internal;
 
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.DelegatedExecutionOsgiBundleApplicationContext;
+import org.springframework.osgi.context.support.OsgiBundleXmlApplicationContext;
 import org.springframework.osgi.extender.support.DefaultOsgiApplicationContextCreator;
 
 /**
@@ -30,6 +31,10 @@ final class KernelOsgiApplicationContextCreator extends DefaultOsgiApplicationCo
     @Override
     public DelegatedExecutionOsgiBundleApplicationContext createApplicationContext(BundleContext bundleContext) throws Exception {
         DelegatedExecutionOsgiBundleApplicationContext applicationContext = super.createApplicationContext(bundleContext);
+        if (applicationContext instanceof OsgiBundleXmlApplicationContext) {
+            OsgiBundleXmlApplicationContext osgiBundleXmlApplicationContext = (OsgiBundleXmlApplicationContext) applicationContext;
+            osgiBundleXmlApplicationContext.setContextClassLoaderProvider(new KernelOsgiContextClassLoaderProvider(osgiBundleXmlApplicationContext.getBundle()));
+        }
         return applicationContext;
     }
 
