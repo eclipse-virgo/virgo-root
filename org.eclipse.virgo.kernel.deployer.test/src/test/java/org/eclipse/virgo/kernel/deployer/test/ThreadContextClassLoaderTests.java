@@ -22,12 +22,12 @@ import org.junit.Test;
  * context class loader.
  * 
  */
-@Ignore("[DMS-2880] All tests ignored")
+@Ignore("Bug 361635")
 public class ThreadContextClassLoaderTests extends AbstractParTests {
     
     private static final String BUNDLE_A_SYMBOLIC_NAME = "tccltest-1-BundleA";
 
-    @Ignore("[DMS-2880] Fails as Spring-DM replaces TCCL with bundle's classloader during start processing")
+    @Ignore("Bug 361635")
     @Test public void testThreadContextClassLoader() throws Throwable {
         File file = new File("src/test/resources/tccltest.par");
         deploy(file);
