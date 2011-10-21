@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: Admin Console Web Bundle
+Bundle-Name: Virgo Admin Console
 Bundle-Version: ${version}
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.admin.web
@@ -14,5 +14,7 @@ Import-Template:
  org.osgi.framework.*;version="0",
  org.osgi.service.*;version="0",
  org.osgi.util.tracker.*;version="0",
- javax.management;version="0"
+ javax.management;version="0",
+ javax.security.*;version="0",
+ org.eclipse.osgi.internal.signedcontent;version="0"
 Excluded-Exports: *

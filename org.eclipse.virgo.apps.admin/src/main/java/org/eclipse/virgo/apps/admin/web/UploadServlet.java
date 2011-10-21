@@ -38,6 +38,12 @@ public class UploadServlet extends HttpServlet {
 	
 	private static final Logger log = LoggerFactory.getLogger(UploadServlet.class);
 
+	private final String serverHome;
+
+	public UploadServlet(String serverHome) {
+		this.serverHome = serverHome;
+	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		FileItemFactory factory = new DiskFileItemFactory();
@@ -49,7 +55,7 @@ public class UploadServlet extends HttpServlet {
 				if (!fileItem.isFormField()) {
 					String name = fileItem.getName();
 					if(name != null && name.length() > 0){
-						File uploadedFile = new File(String.format("%s%s/%s", Activator.serverHome, PICKUP_DIR, name));
+						File uploadedFile = new File(String.format("%s%s/%s", this.serverHome, PICKUP_DIR, name));
 						fileItem.write(uploadedFile);
 						log.warn(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
 					}

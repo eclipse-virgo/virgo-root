@@ -31,9 +31,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110613/org.eclipse.osgi-3.7.0.v20110613.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110224/org.eclipse.osgi-sources-3.7.0.v20110224.jar"/>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110613/org.eclipse.osgi-3.7.0.v20110613.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110613/org.eclipse.osgi-sources-3.7.0.v20110613.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110110/org.eclipse.osgi.services-3.3.0.v20110110.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110110/org.eclipse.osgi.services-sources-3.3.0.v20110110.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.fileupload/1.2.1/com.springsource.org.apache.commons.fileupload-1.2.1.jar" sourcepath="/APPS_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.fileupload/1.2.1/com.springsource.org.apache.commons.fileupload-sources-1.2.1.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.jolokia/org.jolokia.osgi/1.0.0/org.jolokia.osgi-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/Users/cgfrost/Downloads/equinox-SDK-3.7/plugins/org.eclipse.equinox.security_1.1.0.v20110502.jar" sourcepath="/Users/cgfrost/Downloads/equinox-SDK-3.7/plugins/org.eclipse.equinox.security.source_1.1.0.v20110502.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

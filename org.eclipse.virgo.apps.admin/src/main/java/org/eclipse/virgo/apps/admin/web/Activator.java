@@ -51,8 +51,6 @@ public class Activator implements BundleActivator {
 
 	protected static String contextPath = null;
 	
-	public static String serverHome;
-	
 	private ServiceTracker<HttpService, HttpService> httpServiceTracker;
 	
 	private ServiceTracker<URLStreamHandlerService, URLStreamHandlerService> urlEncoderServiceTracker;
@@ -67,9 +65,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		this.context = context;		
-		
-		Activator.serverHome = this.context.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME);
+		this.context = context;
 		
 		Activator.contextPath = this.context.getBundle().getHeaders().get("Web-ContextPath");
 		this.httpServiceTracker = new ServiceTracker<HttpService, HttpService>(context, HttpService.class, new HttpServiceTrackerCustomizer(context));
@@ -96,10 +92,10 @@ public class Activator implements BundleActivator {
 					initParams.put(ContentServlet.CONTENT_SERVLET_SUFFIX, ".html");
 					AdminHttpContext adminHttpContext = new AdminHttpContext(this.context.getBundle());
 					ContentServlet contentServlet = new ContentServlet();
-					this.registeredHttpService.registerServlet(Activator.contextPath, new IndexServlet(contentServlet), initParams, adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath, new IndexServlet(contentServlet), null, adminHttpContext);
 					this.registeredHttpService.registerServlet(Activator.contextPath + Activator.contentContextPath, contentServlet, initParams, adminHttpContext);
 					this.registeredHttpService.registerServlet(Activator.contextPath + Activator.resourcesContextPath, new ResourceServlet(), null, adminHttpContext);
-					this.registeredHttpService.registerServlet(Activator.contextPath + Activator.uploadContextPath, new UploadServlet(), null, adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath + Activator.uploadContextPath, new UploadServlet(this.context.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME)), null, adminHttpContext);
 //					this.registeredHttpService.registerServlet(this.contextPathJolokia, new JolokiaServlet(), null, null);
 					this.isRegister = true;
 					log.info("Admin console registered to HttpService: " + Activator.contextPath);
