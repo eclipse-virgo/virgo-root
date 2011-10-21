@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2011 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   VMware Inc. - initial contribution
+ *   VMware Inc. - initial contribution (ThreadSafeArrayListTreeTests.java)
+ *   EclipseSource - reworked from generic tree to DAG (Bug 358697)
  *******************************************************************************/
 
 package org.eclipse.virgo.util.common;
