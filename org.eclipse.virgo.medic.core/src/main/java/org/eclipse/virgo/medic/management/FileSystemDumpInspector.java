@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.medic.dump.DumpGenerator;
+import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
 import org.eclipse.virgo.util.io.FileSystemUtils;;
 
 /**
@@ -32,24 +33,25 @@ import org.eclipse.virgo.util.io.FileSystemUtils;;
 public class FileSystemDumpInspector implements DumpInspector {
 
     private final Logger logger = LoggerFactory.getLogger(FileSystemDumpInspector.class);
-	
-    private final File dumpDirectory;
 
 	private final DumpGenerator generator;
+
+	private final ConfigurationProvider configurationProvider;
     
     /**
      * 
      * 
      */
-    public FileSystemDumpInspector(DumpGenerator generator, String dumpDir) {
+    public FileSystemDumpInspector(DumpGenerator generator, ConfigurationProvider configurationProvider) {
 		this.generator = generator;
-		this.dumpDirectory = new File(dumpDir);
+		this.configurationProvider = configurationProvider;
 	}
 	
 	@Override
 	public String[] getDumps() throws IOException {
-		if(this.dumpDirectory.exists() && this.dumpDirectory.isDirectory()){
-			return FileSystemUtils.list(this.dumpDirectory, this.logger);
+		File dumpDir = getDumpDirectory();
+		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
+			return FileSystemUtils.list(dumpDir, this.logger);
 		} else {
 			return new String[0];
 		}
@@ -57,14 +59,15 @@ public class FileSystemDumpInspector implements DumpInspector {
 	
 	@Override
 	public String[] getDumpEntries(String dumpId) throws IOException {
-		File dumpDir = new File(this.dumpDirectory, dumpId);
-		String[] items;
-		if(dumpDir.exists() && dumpDir.isDirectory()){
-			items = FileSystemUtils.list(dumpDir, this.logger);
-		} else {
-			items = new String[0];
+		if(dumpId == null){
+			return new String[0];
 		}
-		return items;
+		File dumpDir = new File(getDumpDirectory(), dumpId);
+		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
+			return FileSystemUtils.list(dumpDir, this.logger);
+		} else {
+			return new String[0];
+		}
 	}
 
 	@Override
@@ -73,28 +76,31 @@ public class FileSystemDumpInspector implements DumpInspector {
 			return new String[0];
 		}
 		List<String> lines = new ArrayList<String>();
-		File dumpEntry = new File(this.dumpDirectory, dumpId + File.separatorChar + entryName);
-		if(dumpEntry != null){
-			LineNumberReader reader = null;
-			try {
-				reader = new LineNumberReader(new FileReader(dumpEntry));
-				while (reader.ready()){
-					String rawLine = reader.readLine();
-					if(rawLine != null){
-						lines.add(this.escapeAngleBrackets(rawLine));
-					}
-				}
-				reader.close();
-			} catch (IOException e) {
-				logger.error("Error while reading dump file " + dumpEntry.getPath(), e);
+		File dumpDir = getDumpDirectory();
+		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
+			File dumpEntry = new File(dumpDir, dumpId + File.separatorChar + entryName);
+			if(dumpEntry != null){
+				LineNumberReader reader = null;
 				try {
-					if(reader != null){
-						reader.close();
+					reader = new LineNumberReader(new FileReader(dumpEntry));
+					while (reader.ready()){
+						String rawLine = reader.readLine();
+						if(rawLine != null){
+							lines.add(this.escapeAngleBrackets(rawLine));
+						}
 					}
-				} catch (IOException e1) {
-					// no-op to close stream
+					reader.close();
+				} catch (IOException e) {
+					logger.error("Error while reading dump file " + dumpEntry.getPath(), e);
+					try {
+						if(reader != null){
+							reader.close();
+						}
+					} catch (IOException e1) {
+						// no-op to close stream
+					}
+					// no-op just return the default null value and let the js deal with it
 				}
-				// no-op just return the default null value and let the js deal with it
 			}
 		}
 		return lines.toArray(new String[lines.size()]);
@@ -107,12 +113,24 @@ public class FileSystemDumpInspector implements DumpInspector {
 
 	@Override
 	public void delete(String dumpId) {
-		File root = new File(this.dumpDirectory, dumpId);
-		if(root.exists() && root.isDirectory()){
-			FileSystemUtils.deleteRecursively(root);
+		File dumpDir = getDumpDirectory();
+		if(dumpDir.exists() && dumpDir.isDirectory()){
+			File root = new File(dumpDir, dumpId);
+			if(root.exists() && root.isDirectory()){
+				FileSystemUtils.deleteRecursively(root);
+			}
 		}
 	}
 
+	private File getDumpDirectory(){
+		String dumpDirectory = configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
+		File dumpDir = new File(dumpDirectory);
+		if(dumpDir.exists() && dumpDir.isDirectory()){
+			return dumpDir;
+		}
+		return null;
+	}
+	
 	private String escapeAngleBrackets(String unfriendlyMarkup) {
 		String processed = unfriendlyMarkup.replace("<", "&#60;");
 		processed = processed.replace(">", "&#62;");

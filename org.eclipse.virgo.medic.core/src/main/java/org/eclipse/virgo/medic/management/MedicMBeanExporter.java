@@ -45,8 +45,7 @@ public class MedicMBeanExporter {
 	public MedicMBeanExporter(ConfigurationProvider configurationProvider, DumpGenerator dumpGenerator) {
 		try {
 			ObjectName dumpMBeanName = new ObjectName(String.format("%s:type=Medic,name=DumpInspector", DOMAIN));
-			String dumpDirectory = configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
-			registeredMBean = this.server.registerMBean(new FileSystemDumpInspector(dumpGenerator, dumpDirectory), dumpMBeanName);
+			registeredMBean = this.server.registerMBean(new FileSystemDumpInspector(dumpGenerator, configurationProvider), dumpMBeanName);
 		} catch (Exception e) {
 			logger.error("Unable to register the DumpInspectorMBean", e);
 		} 

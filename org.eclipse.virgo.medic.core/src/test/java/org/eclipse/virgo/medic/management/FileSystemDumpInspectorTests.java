@@ -10,8 +10,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.eclipse.virgo.medic.dump.DumpGenerator;
+import org.eclipse.virgo.medic.impl.config.ConfigurationChangeListener;
+import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +28,24 @@ public class FileSystemDumpInspectorTests {
 	@Before
 	public void setup() {
 		this.dumpGenerator = createMock(DumpGenerator.class);
-		this.fileSystemDumpInspector = new FileSystemDumpInspector(dumpGenerator, "src/test/resources/testDumps/serviceability/dump");
+		this.fileSystemDumpInspector = new FileSystemDumpInspector(dumpGenerator, new ConfigurationProvider() {
+			
+			@Override
+			public boolean removeChangeListener(ConfigurationChangeListener listener) {
+				return false;
+			}
+			
+			@Override
+			public Dictionary<String, String> getConfiguration() {
+				Dictionary<String, String> props = new Hashtable<String, String>();
+				props.put(KEY_DUMP_ROOT_DIRECTORY, "src/test/resources/testDumps/serviceability/dump");
+				return props;
+			}
+			
+			@Override
+			public void addChangeListener(ConfigurationChangeListener listener) {
+			}
+		});
 	}
 	
 	@Test
