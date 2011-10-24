@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for class loading commands
  */
+@SuppressWarnings("deprecation")
 public class ClassLoadingCommandProviderTests {
 
     private static final long BUNDLE_ID = 1234;

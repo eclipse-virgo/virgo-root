@@ -153,8 +153,7 @@ public class Activator implements BundleActivator {
 		}
     }
 
-	@SuppressWarnings("rawtypes")
-	private void publishConfigurationFromKernelRegion(Dictionary configurationProperties, Configuration config) throws IOException {
+	private void publishConfigurationFromKernelRegion(Dictionary<?, ?> configurationProperties, Configuration config) throws IOException {
 		config.update(configurationProperties);
 	}
 
