@@ -24,6 +24,13 @@ import javax.management.MXBean;
 public interface DumpInspector {
 	
 	/**
+	 * Return the currently configured dump directory
+	 * 
+	 * @return 
+	 */
+	String getConfiguredDumpDirectory();
+	
+	/**
 	 * An array of the available dump ids
 	 * 
 	 * @return array of dump ids

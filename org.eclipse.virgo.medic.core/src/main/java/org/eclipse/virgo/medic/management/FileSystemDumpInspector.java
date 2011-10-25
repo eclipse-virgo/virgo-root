@@ -49,6 +49,11 @@ public class FileSystemDumpInspector implements DumpInspector {
 	}
 	
 	@Override
+	public String getConfiguredDumpDirectory() {
+		return configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
+	}
+    
+	@Override
 	public String[] getDumps() throws IOException {
 		File dumpDir = getDumpDirectory();
 		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
@@ -114,7 +119,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 					} catch (IOException e1) {
 						// no-op to close stream
 					}
-					// no-op just return the default null value and let the js deal with it
+					// no-op just return the default empty value and let the js deal with it
 				}
 			}
 		}
@@ -129,7 +134,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 	@Override
 	public void delete(String dumpId) {
 		File dumpDir = getDumpDirectory();
-		if(dumpDir.exists() && dumpDir.isDirectory()){
+		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
 			File root = new File(dumpDir, dumpId);
 			if(root.exists() && root.isDirectory()){
 				FileSystemUtils.deleteRecursively(root);
