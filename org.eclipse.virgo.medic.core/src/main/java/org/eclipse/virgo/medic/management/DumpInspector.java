@@ -24,7 +24,7 @@ import javax.management.MXBean;
 public interface DumpInspector {
 	
 	/**
-	 * A list of the available dump names
+	 * An array of the available dump ids
 	 * 
 	 * @return array of dump ids
 	 * @throws IOException
@@ -33,13 +33,15 @@ public interface DumpInspector {
 	String[] getDumps() throws IOException, ParseException;
 	
 	/**
-	 * A list of the available dump items for the given dump
+	 * An array of the available dump items for the given dump with each array 
+	 * containing an array in the order of display name, bean to use for displaying 
+	 * the item (optional). When not given, this bean should be used.
 	 * 
 	 * @param dumpId
 	 * @return array of dump entries
 	 * @throws IOException
 	 */
-	String[] getDumpEntries(String dumpId) throws IOException;
+	String[][] getDumpEntries(String dumpId) throws IOException;
 	
 	/**
 	 * Return the requested dump item as an array of Strings, one per line

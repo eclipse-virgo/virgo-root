@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,15 +59,29 @@ public class FileSystemDumpInspector implements DumpInspector {
 	}
 	
 	@Override
-	public String[] getDumpEntries(String dumpId) throws IOException {
+	public String[][] getDumpEntries(String dumpId) throws IOException {
 		if(dumpId == null){
-			return new String[0];
+			return new String[0][];
 		}
 		File dumpDir = new File(getDumpDirectory(), dumpId);
 		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
-			return FileSystemUtils.list(dumpDir, this.logger);
+			List<String> dumpItems = Arrays.asList(FileSystemUtils.list(dumpDir, this.logger));
+			if(dumpItems.contains("osgi.zip") && dumpItems.contains("region.digraph")){
+				dumpItems.add("OSGi state");
+			}
+			dumpItems.remove("osgi.zip");
+			dumpItems.remove("region.digraph");
+			String[][] result = new String[dumpItems.size()][];
+			for(int i = 0; i < dumpItems.size(); i++) {
+				if("OSGi state".equals(dumpItems.get(i))){
+					result[i] = new String[]{dumpItems.get(i), "StateDumpInspector"};
+				}else{
+					result[i] = new String[]{dumpItems.get(i), "DumpInspector"};
+				}
+			}
+			return result;
 		} else {
-			return new String[0];
+			return new String[0][];
 		}
 	}
 

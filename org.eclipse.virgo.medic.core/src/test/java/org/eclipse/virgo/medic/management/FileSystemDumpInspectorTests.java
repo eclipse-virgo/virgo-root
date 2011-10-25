@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,14 +58,14 @@ public class FileSystemDumpInspectorTests {
 	
 	@Test
 	public void testGetDumpEntries() throws IOException {
-		String[] dumpEntries = fileSystemDumpInspector.getDumpEntries("testDump");
+		String[][] dumpEntries = fileSystemDumpInspector.getDumpEntries("testDump");
 		assertTrue(dumpEntries.length == 1);
-		assertEquals("Unexpected dump found" + dumpEntries[0], "testDumpItem.txt", dumpEntries[0]);
+		assertArrayEquals("Unexpected dump found" + dumpEntries[0], new String[]{"testDumpItem.txt", "DumpInspector"}, dumpEntries[0]);
 	}
 	
 	@Test
 	public void testGetDumpEntriesNotThere() throws IOException {
-		String[] dumpEntries = fileSystemDumpInspector.getDumpEntries("notHere");
+		String[][] dumpEntries = fileSystemDumpInspector.getDumpEntries("notHere");
 		assertTrue(dumpEntries.length == 0);
 	}
 	
