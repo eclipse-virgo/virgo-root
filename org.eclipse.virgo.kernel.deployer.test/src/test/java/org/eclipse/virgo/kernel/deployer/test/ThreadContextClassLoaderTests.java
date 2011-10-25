@@ -14,7 +14,6 @@ package org.eclipse.virgo.kernel.deployer.test;
 import java.io.File;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -22,12 +21,10 @@ import org.junit.Test;
  * context class loader.
  * 
  */
-@Ignore("Bug 361635")
 public class ThreadContextClassLoaderTests extends AbstractParTests {
     
     private static final String BUNDLE_A_SYMBOLIC_NAME = "tccltest-1-BundleA";
 
-    @Ignore("Bug 361635")
     @Test public void testThreadContextClassLoader() throws Throwable {
         File file = new File("src/test/resources/tccltest.par");
         deploy(file);
