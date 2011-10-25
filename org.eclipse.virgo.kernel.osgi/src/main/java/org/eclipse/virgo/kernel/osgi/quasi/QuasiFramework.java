@@ -8,7 +8,6 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-
 package org.eclipse.virgo.kernel.osgi.quasi;
 
 import java.net.URI;

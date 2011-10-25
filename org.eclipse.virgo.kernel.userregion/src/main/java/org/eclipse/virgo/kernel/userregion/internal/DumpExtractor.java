@@ -27,6 +27,10 @@ import java.util.zip.ZipException;
  */
 public interface DumpExtractor {
 
+	public final static String STATE_DUMP_FILE_NAME = "osgi.zip";
+	
+	public final static String REGION_DIGRAPH_FILE_NAME = "region.digraph";
+	
     /**
      * Returns an unzipped version of the state dump zip file from the given dump directory.
      * 

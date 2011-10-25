@@ -42,6 +42,7 @@ import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StandardPackageAdminUtil;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
+import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpMBeanExporter;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
@@ -91,6 +92,8 @@ public class Activator implements BundleActivator {
 
     private volatile EquinoxHookRegistrar hookRegistrar;
 
+	private StateDumpMBeanExporter stateDumpMBeanExorter;
+
     /**
      * {@inheritDoc}
      */
@@ -134,6 +137,7 @@ public class Activator implements BundleActivator {
         scheduleInitialArtifactDeployerCreation(context, eventLogger);
         
         context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
+        this.stateDumpMBeanExorter = new StateDumpMBeanExporter(quasiFrameworkFactory);
     }
     
     /**
@@ -224,8 +228,14 @@ public class Activator implements BundleActivator {
      */
     public void stop(BundleContext context) throws Exception {
         this.registrationTracker.unregisterAll();
-        EquinoxHookRegistrar hookRegistrar = this.hookRegistrar;
 
+        StateDumpMBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
+        if(localStateDumpMBeanExporter != null){
+        	localStateDumpMBeanExporter.close();
+        	this.stateDumpMBeanExorter = null;
+        }
+
+        EquinoxHookRegistrar hookRegistrar = this.hookRegistrar;
         if (hookRegistrar != null) {
             hookRegistrar.destroy();
             this.hookRegistrar = null;

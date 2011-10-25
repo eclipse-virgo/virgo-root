@@ -48,7 +48,7 @@ public final class StandardDumpExtractor implements DumpExtractor {
      * {@inheritDoc}
      */
     public File getStateDump(File dump) throws ZipException, IOException {
-        File stateDumpZipFile = getDumpFile(dump, "osgi.zip");
+        File stateDumpZipFile = getDumpFile(dump, STATE_DUMP_FILE_NAME);
 
         return unzip(stateDumpZipFile);
     }
@@ -77,7 +77,7 @@ public final class StandardDumpExtractor implements DumpExtractor {
     }
 
     public File getRegionDigraphDump(File dump) throws IOException {
-        return getDumpFile(dump, "region.digraph");
+        return getDumpFile(dump, REGION_DIGRAPH_FILE_NAME);
     }
 
 }
