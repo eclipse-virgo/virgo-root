@@ -79,7 +79,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 			String[][] result = new String[dumpItems.size()][];
 			for(int i = 0; i < dumpItems.size(); i++) {
 				if("OSGi state".equals(dumpItems.get(i))){
-					result[i] = new String[]{dumpItems.get(i), "StateDumpInspector"};
+					result[i] = new String[]{dumpItems.get(i), "StateDumpInspector", getConfiguredDumpDirectory() + File.separatorChar + dumpId};
 				}else{
 					result[i] = new String[]{dumpItems.get(i), "DumpInspector"};
 				}
