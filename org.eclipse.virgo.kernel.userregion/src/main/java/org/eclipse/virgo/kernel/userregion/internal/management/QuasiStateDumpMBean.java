@@ -36,8 +36,8 @@ public class QuasiStateDumpMBean implements StateDumpMBean {
 	}
 
 	@Override
-	public String[] getSummary(String dumpId){
-		File dumpDir = new File(dumpId);
+	public String[] getSummary(String dumpPath){
+		File dumpDir = new File(dumpPath);
 		if(dumpDir.exists() && dumpDir.isDirectory()){
 			QuasiFramework quasiFramework;
 			try {

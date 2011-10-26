@@ -374,13 +374,10 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     private void startBundle(Bundle bundle) throws BundleException {
         if (!isFragmentBundle(bundle)) {
-            String bundleActivationPolicy = (String) bundle.getHeaders().get(Constants.BUNDLE_ACTIVATIONPOLICY);
-            if (bundleActivationPolicy == null) {
-                try {
-                    bundle.start();
-                } catch (BundleException be) {
-                    throw new BundleException("Failed to start bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "'", be);
-                }
+            try {
+                bundle.start();
+            } catch (BundleException be) {
+                throw new BundleException("Failed to start bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "'", be);
             }
         }
     }
