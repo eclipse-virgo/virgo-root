@@ -41,7 +41,7 @@ public class QuasiStateDumpMBean implements StateDumpMBean {
 		if(dumpDir.exists() && dumpDir.isDirectory()){
 			QuasiFramework quasiFramework;
 			try {
-				quasiFramework = this.quasiFrameworkFactory.create(new File(dumpDir.getParent()));
+				quasiFramework = this.quasiFrameworkFactory.create(dumpDir);
 			} catch (ZipException e) {
 				return new String[]{"Unable to extract the state dump: " + e.getMessage()};
 			} catch (IOException e) {
@@ -52,13 +52,21 @@ public class QuasiStateDumpMBean implements StateDumpMBean {
 			List<String> lines = new ArrayList<String>();
 			for(QuasiBundle bundle: bundles){
 				if(!bundle.isResolved()){
-					lines.add(String.format("Bundle: %s-%s", bundle.getSymbolicName(), bundle.getVersion().toString()));
+					lines.add(String.format("Bundle: %s_%s", bundle.getSymbolicName(), bundle.getVersion().toString()));
+					File bundleFile = bundle.getBundleFile();
+					if(bundleFile != null){
+						lines.add(String.format("From location: %s", bundleFile.getPath()));
+					}
 					for(QuasiResolutionFailure fail: quasiFramework.diagnose(bundle.getBundleId())){
 						lines.add(INDENT + fail.getDescription());
 						lines.add("");
 					}
-					lines.add("");
 				}
+			}
+			if(lines.size() > 0){
+				lines.remove(lines.size() - 1);
+			} else {
+				lines.add("All Bundles were resolved at the time of this state dump.");
 			}
 			return lines.toArray(new String[lines.size()]);
 		}

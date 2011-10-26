@@ -48,11 +48,9 @@ public class QuasiStateDumpMBeanTests {
 		for (String string : summary) {
 			System.out.println(string);
 		}
-		assertEquals(4, summary.length);
-		assertEquals("Bundle: foo-0.0.0", summary[0]);
+		assertEquals(2, summary.length);
+		assertEquals("Bundle: foo_0.0.0", summary[0]);
 		assertEquals("    Description", summary[1]);
-		assertEquals("", summary[2]);
-		assertEquals("", summary[3]);
 	}
 	
 }
