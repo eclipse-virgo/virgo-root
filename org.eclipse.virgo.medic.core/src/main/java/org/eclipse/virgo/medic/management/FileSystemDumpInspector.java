@@ -33,6 +33,8 @@ import org.eclipse.virgo.util.io.FileSystemUtils;;
  */
 public class FileSystemDumpInspector implements DumpInspector {
 
+	private static final String OSGI_STATE_STRING = "OSGi-state";
+	
     private final Logger logger = LoggerFactory.getLogger(FileSystemDumpInspector.class);
 
 	private final DumpGenerator generator;
@@ -70,18 +72,18 @@ public class FileSystemDumpInspector implements DumpInspector {
 		}
 		File dumpDir = new File(getDumpDirectory(), dumpId);
 		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
-			List<String> dumpItems = Arrays.asList(FileSystemUtils.list(dumpDir, this.logger));
+			List<String> dumpItems = new ArrayList<String>(Arrays.asList(FileSystemUtils.list(dumpDir, this.logger)));
 			if(dumpItems.contains("osgi.zip") && dumpItems.contains("region.digraph")){
-				dumpItems.add("OSGi state");
+				dumpItems.add(OSGI_STATE_STRING);
 			}
 			dumpItems.remove("osgi.zip");
 			dumpItems.remove("region.digraph");
 			String[][] result = new String[dumpItems.size()][];
 			for(int i = 0; i < dumpItems.size(); i++) {
-				if("OSGi state".equals(dumpItems.get(i))){
-					result[i] = new String[]{dumpItems.get(i), "StateDumpInspector", getConfiguredDumpDirectory() + File.separatorChar + dumpId};
+				if(OSGI_STATE_STRING.equals(dumpItems.get(i))){
+					result[i] = new String[]{dumpItems.get(i), "StateDumpInspector/getSummary/" + getConfiguredDumpDirectory().replace("/", "!/") + "!/" + dumpId};
 				}else{
-					result[i] = new String[]{dumpItems.get(i), "DumpInspector"};
+					result[i] = new String[]{dumpItems.get(i), "DumpInspector/getDumpEntry/" + dumpId + "/" + dumpItems.get(i)};
 				}
 			}
 			return result;
@@ -132,7 +134,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 	}
 
 	@Override
-	public void delete(String dumpId) {
+	public void deleteDump(String dumpId) {
 		File dumpDir = getDumpDirectory();
 		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
 			File root = new File(dumpDir, dumpId);

@@ -60,7 +60,7 @@ public class FileSystemDumpInspectorTests {
 	public void testGetDumpEntries() throws IOException {
 		String[][] dumpEntries = fileSystemDumpInspector.getDumpEntries("testDump");
 		assertTrue(dumpEntries.length == 1);
-		assertArrayEquals("Unexpected dump found" + dumpEntries[0], new String[]{"testDumpItem.txt", "DumpInspector"}, dumpEntries[0]);
+		assertArrayEquals(new String[]{"testDumpItem.txt", "DumpInspector/getDumpEntry/testDump/testDumpItem.txt"}, dumpEntries[0]);
 	}
 	
 	@Test
@@ -97,7 +97,7 @@ public class FileSystemDumpInspectorTests {
 		File deleteMe = new File("src/test/resources/testDumps/serviceability/dump/deleteMe");
 		deleteMe.mkdir();
 		assertTrue(deleteMe.exists() && deleteMe.isDirectory());
-		fileSystemDumpInspector.delete("deleteMe");
+		fileSystemDumpInspector.deleteDump("deleteMe");
 		assertFalse(deleteMe.exists());
 	}
 

@@ -70,5 +70,5 @@ public interface DumpInspector {
 	 * 
 	 * @param dumpId
 	 */
-	void delete(String dumpId);
+	void deleteDump(String dumpId);
 }
