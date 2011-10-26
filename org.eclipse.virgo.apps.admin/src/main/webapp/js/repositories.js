@@ -63,6 +63,7 @@ TabManager = {
 					rows: rows,
 					selectable: true,
 					sortable: true,
+					sortIndex: 1,
 					zebra: true
 				});
 				$('repository-pannel').empty();

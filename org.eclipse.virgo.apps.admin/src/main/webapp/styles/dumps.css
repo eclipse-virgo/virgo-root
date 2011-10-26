@@ -9,9 +9,12 @@
  */
  
 #side-bar {
-    padding-top: 0;
     position: absolute;
-    width: 200px;
+    width: 250px;
+}
+
+#side-bar h2 {
+	margin-top: 0px;
 }
 
 #dumps, #dump-items {
@@ -24,8 +27,25 @@
 	line-height: 19px;
 }
 
-.dump:hover, .dump-item:hover {
+.dump .label, .dump .delete {
+	display: inline;
+}
+	
+.dump .delete {
+	margin-left: 25px;
 	cursor: pointer;
+	color: transparent;
+}
+
+.dump:hover .delete {
+	color: #666666;
+}
+
+.dump .label:hover, .dump-item:hover {
+	cursor: pointer;
+}
+
+.dump:hover, .dump-item:hover {
 	background-color: #BAD9EC;
 }
 
@@ -34,7 +54,7 @@
 }
 
 #dump-item-content {
-    margin: 26px 0 0 262px;
+    margin: 26px 0 0 312px;
     max-width: 69%;
     min-height: 550px;
     display: inline-block;

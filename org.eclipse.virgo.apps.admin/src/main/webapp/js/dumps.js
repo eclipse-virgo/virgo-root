@@ -13,90 +13,127 @@
  * Scripts to be loaded in to the head of the dumps view
  */
 function pageinit(){
+	dumpViewer = new DumpViewer();
+	dumpViewer.displayDumps();
 	new Request.JSON({
-		url: Util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
+		url: Util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
 		method: 'get',
 		onSuccess: function (responseJSON){
-			dumpViewer = new DumpViewer();
-			dumpViewer.renderDumps(responseJSON.value);
+			setDumpDirectory(responseJSON.value);
 		}
 	}).send();
+}
+
+function setDumpDirectory(json) {
+	$('dumpLocation').appendText("Location: " + json);
 }
 
 var DumpViewer = function(){
 
 	this.dumps = [];
 		
-	this.renderDumps = function(json){
+	this.displayDumps = function(){
+		$('dumps').empty();
+		new Request.JSON({
+			url: Util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
+			method: 'get',
+			onSuccess: function (responseJSON){
+				this.displayDumpsResponse(responseJSON.value);
+			}.bind(this)
+		}).send();
+	};
+	
+	this.displayDumpsResponse = function(json){
 		if(json && json.length > 0){
 			json.each(function(item){
 				var dumpListItem = new Element('li.dump');
 				dumpListItem.set('id', item );
-				dumpListItem.appendText(item);
-				dumpListItem.set('onClick', 'dumpViewer.renderDumpItems("' + item + '")');
+				new Element('div.label').appendText(item).set('onClick', 'dumpViewer.displayDumpEntries("' + item + '")').inject(dumpListItem);
+				new Element('div.delete').appendText("Delete").set('onClick', 'dumpViewer.deleteDump("' + item + '")').inject(dumpListItem);
 				dumpListItem.inject($('dumps'));
 			}, this);
 		} else {
 			var dumpListItem = new Element('li');
-			dumpListItem.appendText('No dumps found');
+			dumpListItem.appendText('No dumps found.');
 			dumpListItem.inject($('dumps'));
 		}
 		Util.pageReady();
 	};
-	
 
-	this.renderDumpItems = function(id){
+	this.displayDumpEntries = function(id){
 		$('dumps').getChildren().each(function(dump){dump.removeClass('selected-item');});
 		$(id).addClass('selected-item');
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntryNames/' + id, 
+			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + id, 
 			method: 'get',
 			onSuccess: function (responseJSON){
-				this.renderDumpItemsResponse(responseJSON.value, id);
+				this.displayDumpEntriesResponse(responseJSON.value, id);
 			}.bind(this)
 		}).send();
 	};
 	
-	this.renderDumpItemsResponse = function(json, id){
+	this.displayDumpEntriesResponse = function(json, id){
 		$('dump-items').empty();
 		$('dump-item-content').empty();
 		if(json && json.length > 0){
 			json.each(function(item){
-				var dumpListItem = new Element('li.dump-item');
-				dumpListItem.set('id', id + item );
-				dumpListItem.appendText(item);
-				dumpListItem.set('onClick', 'dumpViewer.displayDumpItem("' + id + '","' + item + '")');
-				dumpListItem.inject($('dump-items'));
-				if('summary.txt' == item){
-					this.displayDumpItem(id, item);
+				var dumpEntryListItem = new Element('li.dump-item');
+				dumpEntryListItem.set('id', id + item[0]);
+				new Element('div.label').appendText(item[0]).set('onClick', 'dumpViewer.displayDumpEntry("' + id + item[0] + '","' + item[1] + '")').inject(dumpEntryListItem);
+				dumpEntryListItem.inject($('dump-items'));
+				if('summary.txt' == item[0]){
+					this.displayDumpEntry(id + item[0], item[1]);
 				}
 			}, this);
 		} else {
-			var dumpListItem = new Element('li');
-			dumpListItem.appendText('No entries found');
-			dumpListItem.inject($('dump-items'));
+			var dumpEntryListItem = new Element('li');
+			dumpEntryListItem.appendText('No dump entries found.');
+			dumpEntryListItem.inject($('dump-items'));
 		}
 	};
 	
-	this.displayDumpItem = function(id, item){
+	this.displayDumpEntry = function(id, queryString){
 		$('dump-items').getChildren().each(function(dump){dump.removeClass('selected-item');});
-		$(id + item).addClass('selected-item');
+		$(id).addClass('selected-item');
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntry/' + id + "/" + item, 
+			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + queryString, 
 			method: 'get',
 			onSuccess: function (responseJSON){
-				this.displayDumpItemResponse(responseJSON.value);
+				this.displayDumpEntryResponse(responseJSON.value);
 			}.bind(this)
 		}).send();
 	};
 	
-	this.displayDumpItemResponse = function(json){
+	this.displayDumpEntryResponse = function(json){
 		$('dump-item-content').empty();
 		json.each(function(item){
 			var dumpListItem = new Element('div.dump-file-line');
 			dumpListItem.appendText(item);
 			dumpListItem.inject($('dump-item-content'));
 		}, this);
+	};
+	
+	this.createDump = function(){
+		new Request.JSON({
+			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
+			method: 'get',
+			onSuccess: function (responseJSON){
+				this.displayDumps();
+			}.bind(this)
+		}).send();
+	};
+
+	this.deleteDump = function(dumpId){
+		new Request.JSON({
+			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' + dumpId, 
+			method: 'get',
+			onSuccess: function (responseJSON){
+				$('dump-items').empty();
+				$('dump-item-content').empty();
+				this.displayDumps();
+				alert("Dump with id " + dumpId + " has been deleted.");
+			}.bind(this)
+		}).send();
 	};
 	
 };
