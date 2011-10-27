@@ -30,8 +30,8 @@ function setDumpDirectory(json) {
 
 var DumpViewer = function(){
 
-	this.dumps = [];
-		
+	this.selectedDump = null;
+	
 	this.displayDumps = function(){
 		$('dumps').empty();
 		new Request.JSON({
@@ -39,6 +39,13 @@ var DumpViewer = function(){
 			method: 'get',
 			onSuccess: function (responseJSON){
 				this.displayDumpsResponse(responseJSON.value);
+				if(this.selectedDump){
+					$(this.selectedDump).addClass('selected-item');
+				}else{
+					this.selectedDump = null;
+					$('dump-items').empty();
+					$('dump-item-content').empty();
+				}
 			}.bind(this)
 		}).send();
 	};
@@ -63,6 +70,7 @@ var DumpViewer = function(){
 	this.displayDumpEntries = function(id){
 		$('dumps').getChildren().each(function(dump){dump.removeClass('selected-item');});
 		$(id).addClass('selected-item');
+		this.selectedDump = id;
 		new Request.JSON({
 			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + id, 
 			method: 'get',
@@ -128,8 +136,9 @@ var DumpViewer = function(){
 			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' + dumpId, 
 			method: 'get',
 			onSuccess: function (responseJSON){
-				$('dump-items').empty();
-				$('dump-item-content').empty();
+				if(dumpId == this.selectedDump){
+					this.selectedDump = null;
+				}
 				this.displayDumps();
 				alert("Dump with id " + dumpId + " has been deleted.");
 			}.bind(this)

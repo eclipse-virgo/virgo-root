@@ -26,22 +26,23 @@
 #dumps li, #dump-items li{
 	line-height: 19px;
 }
-
-.dump .label, .dump .delete {
+	
+.dump .label, .dump-item .label {
 	display: inline;
 }
 	
 .dump .delete {
-	margin-left: 25px;
+	margin: 0 19px;
 	cursor: pointer;
 	color: transparent;
+	float: right;
 }
 
 .dump:hover .delete {
 	color: #666666;
 }
 
-.dump .label:hover, .dump-item:hover {
+.dump .label:hover, .dump-item .label:hover {
 	cursor: pointer;
 }
 
