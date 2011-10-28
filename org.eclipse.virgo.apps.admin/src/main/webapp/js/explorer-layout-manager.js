@@ -82,8 +82,8 @@ function LayoutManager(bundles, key, arrows) {
 					"getProperties(long)", this.servicesInUse);
 
 			// Requests for bundle Ids and properties
-			Util.doBulkQuery(requestBundleIds, this.getIdsFromServicesInUse.bind(this), null);
-			Util.doBulkQuery(requestProperties, this.getPropsFromServicesInUse.bind(this), null);
+			util.doBulkQuery(requestBundleIds, this.getIdsFromServicesInUse.bind(this), null);
+			util.doBulkQuery(requestProperties, this.getPropsFromServicesInUse.bind(this), null);
 
 		} else if (type == 'RegisteredServices') {
 			// Get service Ids
@@ -96,8 +96,8 @@ function LayoutManager(bundles, key, arrows) {
 					"getProperties(long)", this.registeredServices);
 
 			// Requests for bundle Ids and properties
-			Util.doBulkQuery(requestBundleIds, this.getIdsFromRegisteredServices.bind(this), null);
-			Util.doBulkQuery(requestProperties, this.getPropsFromRegisteredServices.bind(this), null);
+			util.doBulkQuery(requestBundleIds, this.getIdsFromRegisteredServices.bind(this), null);
+			util.doBulkQuery(requestProperties, this.getPropsFromRegisteredServices.bind(this), null);
 		}
 	};
 
@@ -460,7 +460,7 @@ function LayoutManager(bundles, key, arrows) {
 		});
 
 		el.onmouseover = function(e) {
-			Util.tooltip(el, text);
+			util.tooltip(el, text);
 		};
 	};
 

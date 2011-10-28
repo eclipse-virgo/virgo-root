@@ -25,18 +25,17 @@ window.addEvent('domready', function() {
 
 var Util = function(){
 	
-	fxTime: 200;
+	this.fxTime = 200;
 		
-	queryHash: undefined; //Global so any page scripts can just grab query vars
+	this.queryHash = undefined; //Global so any page scripts can just grab query vars
 
-	pageLocation: undefined;
+	this.pageLocation = undefined;
 	
 	this.start = function(){
 		this.spinner = new Spinner('content', {destroyOnHide: false, maskMargins: true});
 		this.spinner.addEvent('hide', function(){this.destroy();});
 		this.spinner.show(true);
-		var queryString = window.location.href.slice(window.location.href.indexOf('?') + 1);	
-		this.queryHash = queryString.parseQueryString();
+		this.queryHash = window.location.href.slice(window.location.href.indexOf('?') + 1).parseQueryString();
 		if(location.hash){
 			this.pageLocation = location.hash.replace("#", "");
 		}
@@ -153,8 +152,6 @@ var ObjectName = function(domain, properties, objectName){
 // SERVERS GUI SECTION
 
 var Servers = function(){
-		
-	this.servers = [];
 
 	this.open = false;
 	
@@ -162,12 +159,12 @@ var Servers = function(){
 	 * This takes the server string in the URL and sets the servers ServersDisplay.servers to an array of ip address.
 	 */
 	this.loadServers = function() {
-		this.display = new Fx.Reveal($('servers'), {duration: 300}).dissolve();
+		this.display = new Fx.Reveal($('servers'), {duration: util.fxTime}).dissolve();
 		var rows;
 		if(util.queryHash.s){
 			rows = util.queryHash.s.split(',');
-			if(!rows.contains(getCurrentHost())){
-				rows.push(getCurrentHost());
+			if(!rows.contains(util.getCurrentHost())){
+				rows.push(util.getCurrentHost());
 			}
 		} else {
 			rows = [util.getCurrentHost()];
@@ -207,14 +204,14 @@ var Servers = function(){
 
 // SERVERS
 
-Server = {
+var Server = function(){
 		
 	/**
 	 * Request an overview of the current server.
 	 * 
 	 * @param callback - a function to call with the retrieved server overview data
 	 */
-	getServerOverview: function(callback){
+	this.getServerOverview = function(callback){
 		var request = [{
 				"type": "version"
 			},{
@@ -240,7 +237,7 @@ Server = {
 			}];
 		
 		util.doBulkQuery(request, callback, this.formatter); 
-	},
+	};
 	
 	/* **************** START PRIVATE METHODS **************** */
 
@@ -249,12 +246,12 @@ Server = {
  	 * 
  	 * @param data - the raw JSON to build the table rows from
  	 */
-	formatter: function(data){
+	this.formatter = function(data){
 		var virgo = ["Virgo", data[0].value.info.version];
 		var web = ["Web Container", data[0].value.info.extraInfo.type.capitalize()];
 		var runtime = ["Runtime", data[3].value + ' - ' +  data[4].value + ' (' + data[5].value + ')'];
 		var os = ["Operating System", data[1].value + ' (' + data[2].value + ')'];
 		return [virgo, web, os, runtime];
-	}
+	};
 
 };

@@ -164,7 +164,7 @@ var Explorer = {
 							+ "<strong>Region:</strong> " + bundle.Region + " <br />"
 							+ "<strong>State:</strong> " + bundle.State + "<br />"
 							+ "<strong>Location:</strong> " + bundle.Location + "<br />";
-			Util.tooltip(this.bundles[key].visual['text'].node, tooltipTxt);
+			util.tooltip(this.bundles[key].visual['text'].node, tooltipTxt);
 
 			// Add event handlers
 			this.bundles[key].visual['set'].dblclick(function() {

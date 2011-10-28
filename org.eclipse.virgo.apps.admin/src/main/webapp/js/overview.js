@@ -25,6 +25,6 @@ function pageinit() {
 		util.pageReady();
 	};
 	
-	server.getServerOverview(renderOverviewTable);
+	new Server().getServerOverview(renderOverviewTable);
 	
 }
