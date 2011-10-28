@@ -15,7 +15,7 @@
 function pageinit(){
 		
 	new Request.JSON({
-		url: Util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Repository,*', 
+		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Repository,*', 
 		method: 'get',
 		onSuccess: function (responseJSON, responseText){
 			TabManager.renderRepositoryMBeans(responseJSON.value);
@@ -29,7 +29,7 @@ TabManager = {
 		mbeans.each(function(item, index){
 			var button = new Element('div.button');
 			new Element('div.button-cap-left-blue').inject(button);
-			new Element('div.button-text').inject(button).appendText(Util.readObjectName(item).get('name'));
+			new Element('div.button-text').inject(button).appendText(util.readObjectName(item).get('name'));
 			new Element('div.button-cap-right-blue').inject(button);
 			button.inject($('repository-controls'));
 			button.store('mBean', item);
@@ -38,7 +38,7 @@ TabManager = {
 				button.fireEvent('click');
 			}
 		}, this);
-		Util.pageReady();
+		util.pageReady();
 	},
 	
 	display: function(event){
@@ -47,7 +47,7 @@ TabManager = {
 		});
 		this.addClass('button-selected');
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/read/' + this.retrieve('mBean'), 
+			url: util.getCurrentHost() + '/jolokia/read/' + this.retrieve('mBean'), 
 			method: 'get',
 			onSuccess: function (responseJSON, responseText){
 				
@@ -81,7 +81,7 @@ TabManager = {
 		}];
 		
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia', 
+			url: util.getCurrentHost() + '/jolokia', 
 			method: 'post',
 			data: JSON.encode(request),
 			onSuccess: function(responseJSON){

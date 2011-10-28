@@ -14,7 +14,7 @@
  */
 function pageinit(){
 	new Request.JSON({
-		url: Util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Configuration,*', 
+		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Configuration,*', 
 		method: 'get',
 		onSuccess: function (responseJSON){
 			configurationViewer = new ConfigurationViewer();
@@ -30,17 +30,17 @@ var ConfigurationViewer = function(){
 	this.renderConfigurationMBeans = function(mbeans){
 		
 		mbeans.each(function(item, index){
-			var objectName = Util.readObjectName(item);
+			var objectName = util.readObjectName(item);
 			var label = this.getConfigurationLabel(objectName.get('name'), $('config-list'));
 			label.firstChild.set('onclick', "configurationViewer.configs[" + index + "].toggle()");
 			var config = new Configuration(objectName, label);
-			if(Util.pageLocation && Util.pageLocation == objectName.get('name')){
+			if(util.pageLocation && util.pageLocation == objectName.get('name')){
 				config.toggle();
 			}
 			this.configs[index] = config;
 		}.bind(this));
 	
-		Util.pageReady();
+		util.pageReady();
 	};
 	
 	// Private methods
@@ -82,7 +82,7 @@ var Configuration = function(objectName, label){
 		this.setPlusMinusIcon('loader-small.gif', 'spinnerIcon');
 		if(isClosed){
 			new Request.JSON({
-				url: Util.getCurrentHost() + '/jolokia/read/' + this.objectName.toString, 
+				url: util.getCurrentHost() + '/jolokia/read/' + this.objectName.toString, 
 				method: 'get',
 				onSuccess: this.createTable.bind(this)
 			}).send();
@@ -120,7 +120,7 @@ var Configuration = function(objectName, label){
 			zebra: true
 		});
 		propertiesTable.inject(tableHolder);
-		tableHolder.set('reveal', {duration: Util.fxTime});
+		tableHolder.set('reveal', {duration: util.fxTime});
 		tableHolder.reveal();	
 		this.setPlusMinusIcon('tree-icons/minus.png', 'minus');
 	};
@@ -135,6 +135,6 @@ var Configuration = function(objectName, label){
 function getIconElement(icon){
 	var imageElement = new Element('div');
 	imageElement.addClass('tree-icon');
-	imageElement.set('styles', {'background': 'url("' + Util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center'});
+	imageElement.set('styles', {'background': 'url("' + util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center'});
 	return imageElement;
 };

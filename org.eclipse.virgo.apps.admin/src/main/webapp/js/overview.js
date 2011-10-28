@@ -22,9 +22,9 @@ function pageinit() {
 			zebra: true
 		}).replaces($('server-overview'));
 		
-		Util.pageReady();
+		util.pageReady();
 	};
 	
-	Server.getServerOverview(renderOverviewTable);
+	server.getServerOverview(renderOverviewTable);
 	
 }

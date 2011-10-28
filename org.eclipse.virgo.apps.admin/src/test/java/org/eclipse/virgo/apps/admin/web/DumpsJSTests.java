@@ -14,7 +14,15 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
+import junit.framework.Assert;
+
+import org.eclipse.virgo.apps.admin.web.stubs.moo.Element;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import sun.org.mozilla.javascript.internal.Context;
+import sun.org.mozilla.javascript.internal.Function;
+import sun.org.mozilla.javascript.internal.ScriptableObject;
 
 /**
  * 
@@ -22,11 +30,21 @@ import org.junit.Test;
  */
 public class DumpsJSTests extends AbstractJSTests {
 	
+	@BeforeClass
+	public static void setup(){
+		Function fObj = (Function) SCOPE.get(Element.class.getSimpleName(), SCOPE);
+		if (fObj instanceof Function) {
+		    Function constructor = (Function)fObj;
+			dollarLookupToReturn = (ScriptableObject) constructor.construct(Context.getCurrentContext(), constructor.getParentScope(), new Object[]{"testElement"});
+		} else {
+			Assert.fail("Element constructor not found");
+		}
+	}
+	
 	@Test
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
 		readFile("src/main/webapp/js/dumps.js");
-
 		invokePageInit();
 		
 		//assertTrue("Page ready has not been called", this.commonUtil.isPageReady());

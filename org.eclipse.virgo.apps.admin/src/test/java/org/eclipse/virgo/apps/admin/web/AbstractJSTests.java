@@ -106,9 +106,9 @@ public abstract class AbstractJSTests {
 	
 	protected final void addCommonObjects(){
 		this.commonUtil = new Util(SCOPE);
-		addObject(commonUtil, "Util");
+		addObject(commonUtil, "util");
 		this.commonServer = new Server();
-		addObject(commonServer, "Server");
+		addObject(commonServer, "server");
 	}
 	
 	protected final void invokePageInit() throws ScriptException, NoSuchMethodException{

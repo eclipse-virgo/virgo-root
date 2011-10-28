@@ -12,10 +12,10 @@
 *******************************************************************************/
 
 function pageinit() {
-	Util.loadScript('raphael-1.5.2', false);
-	Util.loadScript('explorer-layout-manager', false);
+	util.loadScript('raphael-1.5.2', false);
+	util.loadScript('explorer-layout-manager', false);
 	Explorer.init();
-	Util.pageReady();
+	util.pageReady();
 }
 
 /**
@@ -34,7 +34,7 @@ var Explorer = {
 			'div' : null
 		};
 		this.jsonRequest = new Request.JSON({
-			url : Util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
+			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
 			method : 'get',
 			onSuccess : function(responseJSON, responseText) {
 				Explorer.bundleConfig(responseJSON);
@@ -68,7 +68,7 @@ var Explorer = {
 	bundleConfig : function(responseJson) {
 		var kernelBundles, userBundles;
 		new Request.JSON({
-			url : Util.getCurrentHost() + "/jolokia/read/org.eclipse.equinox.region.domain:type=Region,*",
+			url : util.getCurrentHost() + "/jolokia/read/org.eclipse.equinox.region.domain:type=Region,*",
 			method : 'get',
 			onSuccess : function(JSON) {
 				Object.each(JSON.value, function(value, key) {

@@ -16,7 +16,7 @@ function pageinit(){
 	dumpViewer = new DumpViewer();
 	dumpViewer.displayDumps();
 	new Request.JSON({
-		url: Util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
+		url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
 		method: 'get',
 		onSuccess: function (responseJSON){
 			setDumpDirectory(responseJSON.value);
@@ -35,7 +35,7 @@ var DumpViewer = function(){
 	this.displayDumps = function(){
 		$('dumps').empty();
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
+			url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
 			method: 'get',
 			onSuccess: function (responseJSON){
 				this.displayDumpsResponse(responseJSON.value);
@@ -64,7 +64,7 @@ var DumpViewer = function(){
 			dumpListItem.appendText('No dumps found.');
 			dumpListItem.inject($('dumps'));
 		}
-		Util.pageReady();
+		util.pageReady();
 	};
 
 	this.displayDumpEntries = function(id){
@@ -72,7 +72,7 @@ var DumpViewer = function(){
 		$(id).addClass('selected-item');
 		this.selectedDump = id;
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + id, 
+			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + id, 
 			method: 'get',
 			onSuccess: function (responseJSON){
 				this.displayDumpEntriesResponse(responseJSON.value, id);
@@ -104,7 +104,7 @@ var DumpViewer = function(){
 		$('dump-items').getChildren().each(function(dump){dump.removeClass('selected-item');});
 		$(id).addClass('selected-item');
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + queryString, 
+			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + queryString, 
 			method: 'get',
 			onSuccess: function (responseJSON){
 				this.displayDumpEntryResponse(responseJSON.value);
@@ -123,7 +123,7 @@ var DumpViewer = function(){
 	
 	this.createDump = function(){
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
+			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
 			method: 'get',
 			onSuccess: function (responseJSON){
 				this.displayDumps();
@@ -133,7 +133,7 @@ var DumpViewer = function(){
 
 	this.deleteDump = function(dumpId){
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' + dumpId, 
+			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' + dumpId, 
 			method: 'get',
 			onSuccess: function (responseJSON){
 				if(dumpId == this.selectedDump){

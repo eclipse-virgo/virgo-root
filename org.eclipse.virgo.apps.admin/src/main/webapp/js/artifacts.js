@@ -15,12 +15,12 @@
 function pageinit(){
 	uploadManager = new UploadManager();
 	new Request.JSON({
-		url: Util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
+		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
 		method: 'get',
 		onSuccess: function (responseJSON, responseText){
 			tree = new Tree();
 			tree.setup(responseJSON.value, 'type');
-			Util.pageReady();
+			util.pageReady();
 		}
 	}).send();
 }
@@ -42,7 +42,7 @@ var Tree = function(mbeans) {
 	this.setup = function (mbeans, filter){
 		var filterMatches = new Array();
 		mbeans.each(function(mbean){
-			var artifact = new Artifact(Util.readObjectName(mbean));
+			var artifact = new Artifact(util.readObjectName(mbean));
 			var artifactFilterValue = artifact[filter];
 			if(!filterMatches.contains(artifactFilterValue)){
 				filterMatches.push(artifactFilterValue);
@@ -69,7 +69,7 @@ var Tree = function(mbeans) {
 	this.reRenderWithFilter = function (filter){
 		$('artifacts-tree').empty();
 		new Request.JSON({
-			url: Util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
+			url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
 			method: 'get',
 			onSuccess: function (responseJSON, responseText){
 				this.setup(responseJSON.value, filter);
@@ -97,7 +97,7 @@ var Tree = function(mbeans) {
 		this.getIconElement('loader-small.gif').replaces(children[0].firstChild);// Set the plus/minus icon
 		if(children.length == 1){//It's closed	
 			new Request.JSON({
-				url: Util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
+				url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
 				method: 'get',
 				onSuccess: function (responseJSON, responseText){
 					this.renderTopLevelRequest(responseJSON.value, parent, filter);
@@ -122,10 +122,10 @@ var Tree = function(mbeans) {
 		this.getIconElement('loader-small.gif').replaces(children[0].firstChild);// Set the plus/minus icon
 		if(children.length == 1){//It's closed	
 			new Request.JSON({ 
-				url: Util.getCurrentHost() + '/jolokia/read/' + objectName,
+				url: util.getCurrentHost() + '/jolokia/read/' + objectName,
 				method: 'get',
 				onSuccess: function(responseJSON, responseText){
-					this.renderArtifactRequest(responseJSON.value, Util.readObjectName(objectName), parent);
+					this.renderArtifactRequest(responseJSON.value, util.readObjectName(objectName), parent);
 					this.getIconElement('tree-icons/minus.png').replaces(children[0].firstChild);// Set the plus/minus icon
 				}.bind(this)
 			}).send();
@@ -141,14 +141,14 @@ var Tree = function(mbeans) {
 	 */
 	this.doArtifactOperation = function(objectName, operation){
 		new Request({ 
-			url: Util.getCurrentHost() + '/jolokia/exec/' + objectName + '/' + operation,
+			url: util.getCurrentHost() + '/jolokia/exec/' + objectName + '/' + operation,
 			method: 'get',
 			onSuccess: function(response){
 				new Request.JSON({ 
-					url: Util.getCurrentHost() + '/jolokia/read/' + objectName,
+					url: util.getCurrentHost() + '/jolokia/read/' + objectName,
 					method: 'get',
 					onSuccess: function(responseJSON, responseText){
-						this.renderOperationResult(responseJSON, Util.readObjectName(objectName));
+						this.renderOperationResult(responseJSON, util.readObjectName(objectName));
 					}.bind(this)
 				}).send();
 			}.bind(this)
@@ -184,13 +184,13 @@ var Tree = function(mbeans) {
 		var parentElement = $(parent);
 		var fxContainer = new Element('div.fx-container');
 		json.each(function(mbean){
-			var artifact = new Artifact(Util.readObjectName(mbean));
+			var artifact = new Artifact(util.readObjectName(mbean));
 			if(artifact[filter] == parent){
 				this.getArtifactLabel(artifact, parent).inject(fxContainer);
 			}
 		}, this);
 		fxContainer.inject(parentElement);
-		fxContainer.set('reveal', {duration: Util.fxTime});
+		fxContainer.set('reveal', {duration: util.fxTime});
 		fxContainer.reveal();
 	};
 	
@@ -210,7 +210,7 @@ var Tree = function(mbeans) {
 		var artifactControlBar = this.getArtifactControlBar(fullArtifact);
 		if(fullArtifact.type == 'configuration'){
 			var configControl = new Element('a.artifact-control');
-			configControl.set('href', Util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
+			configControl.set('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
 			configControl.appendText('View');
 			configControl.inject(artifactControlBar);
 		}
@@ -231,7 +231,7 @@ var Tree = function(mbeans) {
 				}
 			} else {
 				if(key == 'Bundle Id'){
-					this.getArtifactAttribute(key + ': ' + value, null, Util.getCurrentHost() + '/content/explorer#' + value).inject(fxContainer);
+					this.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/explorer#' + value).inject(fxContainer);
 				} else {
 					this.getArtifactAttribute(key + ': ' + value).inject(fxContainer);
 				}
@@ -244,7 +244,7 @@ var Tree = function(mbeans) {
 		}, this);
 
 		fxContainer.inject(parentElement);
-		fxContainer.set('reveal', {duration: Util.fxTime});
+		fxContainer.set('reveal', {duration: util.fxTime});
 		fxContainer.reveal();	
 	};
 	
@@ -338,7 +338,7 @@ var Tree = function(mbeans) {
 	 */
 	this.getIconElement = function(iconName){
 		var imageElement = new Element('div.tree-icon');
-		imageElement.set('styles', {'background': 'url("' + Util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center'});
+		imageElement.set('styles', {'background': 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center'});
 		return imageElement;
 	};
 	
@@ -374,7 +374,7 @@ var FullArtifact = function(metaData, objectName) {
 	
 	this.dependents = [];
 	metaData['Dependents'].each(function(item){
-		this.dependents.push(Util.readObjectName(item.objectName));
+		this.dependents.push(util.readObjectName(item.objectName));
 	}, this);
 	
 	this.properties = {};
@@ -405,7 +405,7 @@ var FullArtifact = function(metaData, objectName) {
 
 var UploadManager = function() {
 
-	this.display = new Fx.Reveal($('upload-manager'), {duration: Util.fxTime}).dissolve();
+	this.display = new Fx.Reveal($('upload-manager'), {duration: util.fxTime}).dissolve();
 	
 	this.spinner = new Spinner('upload-manager');
 	

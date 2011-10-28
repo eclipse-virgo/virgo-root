@@ -14,6 +14,6 @@
  */
 function pageinit(){
 	
-	Util.pageReady();
+	util.pageReady();
 	
 }
