@@ -51,8 +51,6 @@ public abstract class AbstractJSTests {
 	
 	protected Util commonUtil = null;
 	
-	protected Server commonServer = null;
-	
 	@BeforeClass
 	public static void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
 		//printEngine();
@@ -66,6 +64,7 @@ public abstract class AbstractJSTests {
 		ScriptableObject.defineClass(SCOPE, Fx.class);
 		ScriptableObject.defineClass(SCOPE, Spinner.class);
 		ScriptableObject.defineClass(SCOPE, Element.class);
+		ScriptableObject.defineClass(SCOPE, Server.class);
 		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
 		
 		//Add in constructed objects and extensions
@@ -107,8 +106,6 @@ public abstract class AbstractJSTests {
 	protected final void addCommonObjects(){
 		this.commonUtil = new Util(SCOPE);
 		addObject(commonUtil, "util");
-		this.commonServer = new Server();
-		addObject(commonServer, "server");
 	}
 	
 	protected final void invokePageInit() throws ScriptException, NoSuchMethodException{
@@ -120,13 +117,5 @@ public abstract class AbstractJSTests {
 			Assert.fail("pageinit function not found");
 		}		
 	}
-	
-//	private static void printEngine(){
-//		ScriptEngineManager engineManager = new ScriptEngineManager();
-//		ScriptEngine engine = engineManager.getEngineByName("rhino");
-//
-//		System.out.println(String.format("Running on %s-%s", engine.getFactory().getEngineName(), engine.getFactory().getEngineVersion()));
-//		System.out.println(String.format("Language %s-%s", engine.getFactory().getLanguageName(), engine.getFactory().getLanguageVersion()));
-//	}
 
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
+import org.eclipse.virgo.apps.admin.web.stubs.common.Server;
 import org.eclipse.virgo.apps.admin.web.stubs.moo.HtmlTable;
 import org.junit.Test;
 import sun.org.mozilla.javascript.internal.Function;
@@ -40,7 +41,7 @@ public class OverviewJSTests extends AbstractJSTests {
 
 		invokePageInit();
 		
-		Function callback = this.commonServer.getCallbackFunction();
+		Function callback = Server.getCallbackFunction();
 		Object[] args = new Object[]{new String[]{"TestRowData"}};
 		callback.call(CONTEXT, SCOPE, SCOPE, args);
 		

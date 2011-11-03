@@ -10,29 +10,33 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web.stubs.common;
 
+import org.eclipse.virgo.apps.admin.web.stubs.moo.ParentStub;
+
 import sun.org.mozilla.javascript.internal.Function;
 
 /**
  * 
  *
  */
-public class Server {
+public class Server extends ParentStub{
 
-	private Function callbackFunction;
+	private static final long serialVersionUID = 1L;
+	
+	private static Function callbackFunction;
 	
 	public Server() {
 	}
 	
 	// Stub methods
 
-	public void getServerOverview(Function callbackFunction){
-		this.callbackFunction = callbackFunction;
+	public void jsFunction_getServerOverview(Function callbackFunction){
+		Server.callbackFunction = callbackFunction;
 	}
 	
 	// Test methods
 
-	public Function getCallbackFunction() {
-		return callbackFunction;
+	public static Function getCallbackFunction() {
+		return Server.callbackFunction;
 	}
 	
 }
