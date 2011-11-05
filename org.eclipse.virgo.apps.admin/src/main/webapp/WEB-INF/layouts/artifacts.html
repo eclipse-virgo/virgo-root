@@ -35,6 +35,9 @@
 	<div class="button-container">
 		<div class="control-cap-left"></div>
 		<div class="controls">
+			<div id="upload-toggle-button" class="button" onclick="uploadManager.toggle()">
+				<div class="button-cap-left-blue"></div><div class="button-text">Upload Artifact(s)</div><div class="button-cap-right-blue"></div>
+			</div>
 			<div class="control-text">
 				Top level
 			</div>
@@ -43,12 +46,6 @@
 			</div>
 			<div id="region-filter-button" class="button" onclick="tree.reRenderWithFilter('region')">
 				<div class="button-cap-left-blue"></div><div class="button-text">Region</div><div class="button-cap-right-blue"></div>
-			</div>
-			<div class="control-text">
-				<input type="checkbox" name="user.installed" value="UserInstalled" onclick="" />Filter User Installed.
-			</div>
-			<div id="upload-toggle-button" class="button" onclick="uploadManager.toggle()">
-				<div class="button-cap-left-blue"></div><div class="button-text">Upload Artifact(s)</div><div class="button-cap-right-blue"></div>
 			</div>
 		</div>
 		<div class="control-cap-right"></div>
