@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build-nano" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<path id="unit.test.bundles">
+		<pathelement location="../org.eclipse.virgo.nano.build.p2"/>
+    </path>
+
+	<path id="bundles">
+		<path refid="unit.test.bundles" />
+	</path>
+
+	<property file="${basedir}/../build.properties"/>
+	<property file="${basedir}/../build.versions"/>
+	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
+	
+	<target name="package" depends="ivy.init">
+		<delete dir="${basedir}/p2" quiet="true"/>
+		<mkdir dir="${basedir}/p2"/>
+		
+		<delete dir="${package.output.dir}" quiet="true"/>
+		<mkdir dir="${package.output.dir}"/>
+		
+		<!-- Prepare the minimal p2 publishing client -->
+		<ivy:resolve resolveId="copy.path" file="${basedir}/p2runtime-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${basedir}/p2/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
+		
+		<ivy:resolve resolveId="copy.path" file="${basedir}/p2build-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${basedir}/p2/[artifact]_[revision].[ext]" conf="p2-build" type="jar"/>
+		
+		<copy todir="${basedir}/p2/configuration" failonerror="false">
+			<fileset dir="${basedir}/p2_resources" excludes="keystore"/>
+			<filterset>
+				<filter token="SIMPLE.CONFIG.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
+			</filterset>
+		</copy>
+		<echo message="Building bundles.info for the minimal p2 client"/>
+		<java jar="${basedir}/p2/org.eclipse.virgo.nano.build.p2_${bundle.version}.jar" fork="true" taskname="BundlesInfoBuilder" failonerror="true" maxmemory="256m">
+			<arg value="${basedir}"/>
+		</java>
+		
+		<!-- Assemble artifacts -->
+		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${package.dir}/zip/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
+		
+		<mkdir dir="${package.dir}/zip/config"/>
+		<mkdir dir="${package.dir}/zip/pickup"/>
+		
+		<echo file="${package.dir}/zip/lib/.version"
+				message="virgo.nano.version=${bundle.version}&#xa;"/>
+		
+		<copy todir="${package.dir}/zip" failonerror="false">
+			<fileset dir="${basedir}/resources"/>
+		</copy>
+		
+		<copy todir="${package.dir}/zip/bin" failonerror="false">
+			<fileset dir="${basedir}/bin"/>
+		</copy>
+
+		<copy todir="${package.dir}/zip/lib" failonerror="false">
+			<fileset dir="${basedir}/lib"/>
+		</copy>
+		
+		<copy todir="${package.dir}/zip/config" failonerror="false">
+			<fileset dir="${basedir}/config" excludes="keystore"/>
+		</copy>
+		
+		<copy file="${basedir}/config/keystore" todir="${package.dir}/zip/config" failonerror="false"/>
+		
+		<!-- zip the published Virgo repositories and configuration data -->
+		<zip destfile="${target.dir}/assembly/binary/nano_zipped_resources">
+			<zipfileset dir="${package.dir}/zip"/>
+		</zip>
+		
+		<!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
+		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
+
+		<ivy:resolve resolveId="copy.path" file="${basedir}/p2runtime-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
+		
+		<delete dir="${package.dir}/zip" quiet="true"/>
+		
+		<!-- execute repository publisher -->
+		<echo message="Publishing Virgo Nano features in p2 repository" />
+		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <sysproperty key="opId" value="1"/>
+			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-source" value="${target.dir}/assembly"/>
+            <sysproperty key="-configs" value="all.all.all"/>
+            <sysproperty key="-publishArtifacts" value=""/>
+		</java>
+        
+        <echo message="Publishing Virgo Nano binaries in p2 repository" />
+		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <sysproperty key="opId" value="2"/>
+			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-source" value="${target.dir}/assembly"/>
+            <sysproperty key="-configs" value="all.all.all"/>
+            <sysproperty key="-publishArtifacts" value=""/>
+            <sysproperty key="-append" value=""/>
+            <sysproperty key="-chmod" value="startup.sh@bin#755,dmk.sh@bin#755,checkJava.sh@bin#755,jconsole.sh@bin#755,setupClasspath.sh@bin#755,shutdown.sh@bin#755,org.eclipse.virgo.kernel.jmxremote.access.properties@config#600"/>
+		</java>
+		
+		
+		<!-- execute product install 
+		<echo message="Installing Virgo product to get the final assembly of Virgo kernel" />
+		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2ProductInstall" failonerror="true" maxmemory="256m">
+			<sysproperty key="operationType" value="installKernel"/>
+			<sysproperty key="repository" value="file:${target.dir}/repository"/>
+			<sysproperty key="destination" value="${package.output.dir}"/>
+			<sysproperty key="installIU" value="virgo.product"/>
+			<sysproperty key="profile" value="VIRGO.kernel"/>
+            			<sysproperty key="" value="chmod.bin.location=${package.dir}/zip/bin;chmod.bin.permissions=755;chmod.jmx.location=${package.dir}/zip/config/org.eclipse.virgo.kernel.jmxremote.access.properties;chmod.jmx.permissions=600"/>
+		</java>
+		
+		<mkdir dir="${artifacts.dir}"/>
+		<zip destfile="${package.output.file}">
+			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}">
+				<exclude name="${package.basename}/bin/*.sh"/>
+				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			</zipfileset>
+		</zip>-->
+	</target>
+</project>

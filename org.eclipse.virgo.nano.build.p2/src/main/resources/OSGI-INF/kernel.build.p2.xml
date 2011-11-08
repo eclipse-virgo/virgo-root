@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"
+	 immediate="true" name="Virgo Nano Publisher">
+	<implementation
+		class="org.eclipse.virgo.nano.p2.build.RepositoryPublisher" />
+		
+	<reference name="IProvisioningAgent"
+		interface="org.eclipse.equinox.p2.core.IProvisioningAgent"
+		policy="static"/>
+</scr:component>
