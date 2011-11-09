@@ -15,9 +15,9 @@
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.authentication" rev="${org.eclipse.virgo.kernel}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
-		
-		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>		
-        <exclude org="org.eclipse.osgi" module="org.eclipse.equinox.launcher"/>	
+        <dependency org="org.eclipse.osgi" name="org.eclipse.equinox.launcher" rev="${org.eclipse.equinox.launcher}" conf="lib->runtime"/>
+
+		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
 	</dependencies>
 
 </ivy-module>

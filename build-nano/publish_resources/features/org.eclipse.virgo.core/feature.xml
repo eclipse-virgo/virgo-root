@@ -1,0 +1,31 @@
+<feature id="org.eclipse.virgo.core" label="Virgo Core" version="1.0.0.qualifier" provider-name="Virgo">
+	<description url="http://www.eclipse.org/virgo/">
+		This feature provides the Core features of a Virgo OSGi container such as enhanced supportability and deployment mechanisms
+	</description>
+	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
+	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
+	
+	<plugin id="org.eclipse.virgo.kernel.core" version="0.0.0"/>
+	<plugin id="com.springsource.org.apache.mina.core" version="0.0.0"/>
+	<plugin id="com.springsource.org.apache.sshd.core" version="0.0.0"/>
+	<plugin id="org.apache.felix.gogo.command" version="0.0.0"/>
+	<plugin id="org.apache.felix.gogo.runtime" version="0.0.0"/>
+	<plugin id="org.apache.felix.gogo.shell" version="0.0.0"/>
+	<plugin id="com.springsource.org.aspectj.weaver" version="0.0.0"/>
+	<plugin id="org.eclipse.equinox.console.supportability" version="0.0.0"/>
+	<plugin id="com.springsource.slf4j.api" version="0.0.0"/>
+	<plugin id="com.springsource.slf4j.bridge" version="0.0.0"/>
+	<plugin id="com.springsource.slf4j.org.apache.commons.logging" version="0.0.0"/>
+	<plugin id="com.springsource.org.aopalliance" version="0.0.0"/>
+	<plugin id="org.eclipse.equinox.region" version="0.0.0"/>
+	<plugin id="org.eclipse.virgo.medic" version="0.0.0"/>
+	<plugin id="org.eclipse.virgo.medic.core" version="0.0.0"/>
+	<plugin id="org.eclipse.equinox.cm" version="0.0.0"/>
+	<plugin id="org.eclipse.osgi.services" version="0.0.0"/>
+	<plugin id="org.eclipse.equinox.event" version="0.0.0"/>
+    <plugin id="nano_zipped_resources" version="0.0.0"/>
+	
+    <requires>
+      <import feature="org.eclipse.virgo.ds" version="0.0.0"/>
+    </requires>
+</feature>

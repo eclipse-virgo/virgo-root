@@ -1,0 +1,13 @@
+<feature id="org.eclipse.virgo.springdm" label="Virgo Spring DM" version="1.0.0.qualifier" provider-name="Virgo">
+	<description url="http://www.eclipse.org/virgo/">
+		This feature provides a package of Virgo Spring DM modules
+	</description>
+	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
+	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
+	
+	<plugin id="org.springframework.osgi.core" version="0.0.0"/>
+	<plugin id="org.springframework.osgi.extender" version="0.0.0"/>
+	<plugin id="org.springframework.osgi.io" version="0.0.0"/>
+    
+    <plugin id="tooling.org.springframework.osgi.extender" version="0.0.0"/>
+</feature>

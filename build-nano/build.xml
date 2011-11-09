@@ -28,7 +28,7 @@
 		<ivy:retrieve resolveId="copy.path" pattern="${basedir}/p2/[artifact]_[revision].[ext]" conf="p2-build" type="jar"/>
 		
 		<copy todir="${basedir}/p2/configuration" failonerror="false">
-			<fileset dir="${basedir}/p2_resources" excludes="keystore"/>
+			<fileset dir="${basedir}/p2build_resources" excludes="keystore"/>
 			<filterset>
 				<filter token="SIMPLE.CONFIG.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
 			</filterset>
@@ -70,6 +70,8 @@
 		<zip destfile="${target.dir}/assembly/binary/nano_zipped_resources">
 			<zipfileset dir="${package.dir}/zip"/>
 		</zip>
+        
+        <delete dir="${package.dir}/zip" quiet="true"/>
 		
 		<!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
 		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="true"/>
@@ -77,15 +79,22 @@
 
 		<ivy:resolve resolveId="copy.path" file="${basedir}/p2runtime-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
-		
-		<delete dir="${package.dir}/zip" quiet="true"/>
+        
+        <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
+        
+        <copy todir="${target.dir}/assembly/features" failonerror="false">
+			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
+		</copy>
+        
+        <property name="p2.products.location" value="${basedir}/publish_resources/products"/>
 		
 		<!-- execute repository publisher -->
-		<echo message="Publishing Virgo Nano features in p2 repository" />
+		<echo message="Publishing Virgo Nano features and bundles in p2 repository" />
 		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
             <!--jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
-            <sysproperty key="opId" value="1"/>
+            <sysproperty key="operationId" value="FEATURES_AND_BUNDLES_PUBLISH"/>
 			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
 			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
 			<sysproperty key="-source" value="${target.dir}/assembly"/>
@@ -97,7 +106,7 @@
 		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
             <!--jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
-            <sysproperty key="opId" value="2"/>
+            <sysproperty key="operationId" value="BINARY_PUBLISH"/> 
 			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
 			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
 			<sysproperty key="-source" value="${target.dir}/assembly"/>
@@ -106,8 +115,51 @@
             <sysproperty key="-append" value=""/>
             <sysproperty key="-chmod" value="startup.sh@bin#755,dmk.sh@bin#755,checkJava.sh@bin#755,jconsole.sh@bin#755,setupClasspath.sh@bin#755,shutdown.sh@bin#755,org.eclipse.virgo.kernel.jmxremote.access.properties@config#600"/>
 		</java>
-		
-		
+        
+        <echo message="Publishing Virgo Nano product in p2 repository" />
+		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <sysproperty key="operationId" value="PRODUCT_PUBLISH"/>
+			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-productFile" value="${p2.products.location}/nano/nano.product"/>
+            <sysproperty key="-configs" value="all.all.all"/>
+            <sysproperty key="-publishArtifacts" value=""/>
+            <sysproperty key="-append" value=""/>
+            <sysproperty key="-flavor" value="tooling"/>
+		</java>
+        
+        <echo message="Publishing Virgo Nano Web product in p2 repository" />
+		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <sysproperty key="operationId" value="PRODUCT_PUBLISH"/>
+			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-productFile" value="${p2.products.location}/nanoweb/nanoweb.product"/>
+            <sysproperty key="-configs" value="all.all.all"/>
+            <sysproperty key="-publishArtifacts" value=""/>
+            <sysproperty key="-append" value=""/>
+            <sysproperty key="-flavor" value="tooling"/>
+		</java>
+        
+        <echo message="Publishing Virgo Nano With Web p2 product in p2 repository" />
+		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <sysproperty key="operationId" value="PRODUCT_PUBLISH"/>
+			<sysproperty key="-metadataRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-artifactRepository" value="file:${target.dir}/repository"/>
+			<sysproperty key="-productFile" value="${p2.products.location}/nanoweb-with-p2/nanoweb-with-p2.product"/>
+            <sysproperty key="-configs" value="all.all.all"/>
+            <sysproperty key="-publishArtifacts" value=""/>
+            <sysproperty key="-append" value=""/>
+            <sysproperty key="-flavor" value="tooling"/>
+		</java>
+        
+        <delete dir="${target.dir}/assembly" quiet="true"/>
+
 		<!-- execute product install 
 		<echo message="Installing Virgo product to get the final assembly of Virgo kernel" />
 		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2ProductInstall" failonerror="true" maxmemory="256m">

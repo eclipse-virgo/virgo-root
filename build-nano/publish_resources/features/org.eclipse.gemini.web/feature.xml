@@ -1,0 +1,15 @@
+<feature id="org.eclipse.gemini.web" label="Gemini Web feature" version="1.0.0.qualifier" provider-name="Virgo">
+	<description url="http://www.eclipse.org/virgo/">
+		This feature provides a package of Virgo Util bundles
+	</description>
+	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
+	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
+	
+	<plugin id="org.eclipse.gemini.web.tomcat" version="0.0.0"/>
+    <plugin id="org.eclipse.gemini.web.extender" version="0.0.0"/>
+    <plugin id="org.eclipse.gemini.web.core" version="0.0.0"/>
+    
+    <plugin id="tooling.org.eclipse.gemini.web.tomcat" version="0.0.0"/>
+    <plugin id="tooling.org.eclipse.gemini.web.extender" version="0.0.0"/>
+    <plugin id="tooling.org.eclipse.gemini.web.core" version="0.0.0"/>
+</feature>

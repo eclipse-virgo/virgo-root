@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Virgo Nano Web With p2" uid="nanoweb-with-p2.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+   
+   <vm>
+   </vm>
+
+   <plugins>
+   		<plugin id="nano.product" version="0.0.0"/>
+   </plugins>
+
+   <features>
+	  <feature id="org.eclipse.virgo.p2.provisioning" version="0.0.0"/>
+   </features>
+
+</product>

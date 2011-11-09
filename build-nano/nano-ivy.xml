@@ -12,6 +12,12 @@
 	<dependencies>
 		<!-- nano runtime -->	
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.kernel}" conf="nano-runtime->runtime"/>
+        <dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo}" conf="nano-runtime->runtime" />
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo}" conf="nano-runtime->runtime" />
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo}" conf="nano-runtime->runtime" />
+		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="nano-runtime->runtime"/>
+		<dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="nano-runtime->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.supportability" rev="${org.eclipse.equinox.console.supportability}" conf="nano-runtime->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="nano-runtime->runtime"/>
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="nano-runtime->runtime"/>

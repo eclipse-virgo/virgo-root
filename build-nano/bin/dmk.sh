@@ -164,7 +164,7 @@ then
 		TMP_DIR=$KERNEL_HOME/work/tmp
 		# Ensure that the tmp directory exists
 		mkdir -p $TMP_DIR
-	
+
 		cd $KERNEL_HOME; exec $JAVA_HOME/bin/java \
 			$JAVA_OPTS \
 			$DEBUG_OPTS \
@@ -176,16 +176,16 @@ then
 			-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
 			-Djava.io.tmpdir=$TMP_DIR \
 			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
+			-Dorg.eclipse.virgo.kernel.config=$CONFIG_DIR \
             -Dorg.eclipse.equinox.console.jaas.file="$CONFIG_DIR/store" \
+			-Dosgi.java.profile="file:$KERNEL_HOME/lib/java6-server.profile" \
+            -Declipse.ignoreApp=true \
+            -Dosgi.install.area=$KERNEL_HOME \
             -Dssh.server.keystore="$CONFIG_DIR/hostkey.ser" \
             -Dgosh.args="--nointeractive" \
-			-classpath $CLASSPATH \
-			org.eclipse.virgo.osgi.launcher.Launcher \
-	    		-config $KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties \
-			-Forg.eclipse.virgo.kernel.home=$KERNEL_HOME \
-			-Forg.eclipse.virgo.kernel.config=$CONFIG_DIR \
-			-Fosgi.configuration.area=$KERNEL_HOME/work/osgi/configuration \
-			-Fosgi.java.profile="file:$KERNEL_HOME/lib/java6-server.profile" \
+            -classpath $CLASSPATH \
+			org.eclipse.equinox.launcher.Main \
+            -noExit \
 			$LAUNCH_OPTS \
 			$ADDITIONAL_ARGS
 	fi
