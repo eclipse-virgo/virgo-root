@@ -14,15 +14,16 @@
 package org.eclipse.virgo.kernel.osgicommand;
 
 import java.lang.management.ManagementFactory;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.eclipse.osgi.framework.console.CommandProvider;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-import org.eclipse.virgo.kernel.osgicommand.internal.OsgiKernelShellCommand;
+import org.eclipse.virgo.kernel.osgicommand.internal.GogoKernelShellCommand;
 import org.eclipse.virgo.kernel.osgicommand.internal.commands.classloading.ClassLoadingCommandProvider;
 import org.eclipse.virgo.kernel.osgicommand.management.ClassLoadingSupport;
 import org.eclipse.virgo.kernel.shell.CommandExecutor;
@@ -40,13 +41,18 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class Activator implements BundleActivator {
 
+    private static final String KERNEL_SHELL_COMMAND = "vsh";
+
+    private static final String[] KERNEL_SHELL_SUBCOMMANDS = new String[] { "bundle", "config", "install", "packages", "par", "plan", "service",
+        "shutdown" };
+
     private static final int COMMAND_EXECUTOR_SERVICE_WAIT = 20 * 1000; // 20 seconds
 
     private static final int SERVICE_WAIT_PAUSE = 100; // 100 milliseconds
 
     private static final String PROVIDER_NAME = "org.eclipse.osgi.framework.console.CommandProvider"; //$NON-NLS-1$
 
-    private ServiceRegistration<?> providerRegistration = null;
+    private ServiceRegistration<?> providerRegistration;
 
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
@@ -60,6 +66,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
+        // Equinox console bindings
         boolean registerCommands = true;
         try {
             Class.forName(PROVIDER_NAME);
@@ -82,10 +89,11 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        // Equinox console bindings
         if (this.providerRegistration != null) {
             this.providerRegistration.unregister();
+            this.providerRegistration = null;
         }
-        this.providerRegistration = null;
 
         this.registrationTracker.unregisterAll();
 
@@ -147,8 +155,12 @@ public class Activator implements BundleActivator {
                 return; // TODO: report this failure -- but where?
             }
 
-            this.registrationTracker.track(this.context.registerService(CommandProvider.class.getName(), new OsgiKernelShellCommand(commandExecutor),
-                null));
+            // Gogo binding
+            Dictionary<String, Object> properties = new Hashtable<String, Object>();
+            properties.put(org.apache.felix.service.command.CommandProcessor.COMMAND_SCOPE, KERNEL_SHELL_COMMAND);
+            properties.put(org.apache.felix.service.command.CommandProcessor.COMMAND_FUNCTION, KERNEL_SHELL_SUBCOMMANDS);
+            this.registrationTracker.track(context.registerService(GogoKernelShellCommand.class, new GogoKernelShellCommand(commandExecutor),
+                properties));
         }
     }
 }

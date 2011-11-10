@@ -22,6 +22,8 @@
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
+		
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
