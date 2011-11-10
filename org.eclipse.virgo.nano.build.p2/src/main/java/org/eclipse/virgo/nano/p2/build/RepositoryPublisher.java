@@ -31,6 +31,12 @@ public class RepositoryPublisher {
 	};
 	
 	public void activate(ComponentContext context) {
+	    try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 		try {
 		    OpId operation = OpId.valueOf(System.getProperty(OPERATION_ID));
 			switch (operation) {
