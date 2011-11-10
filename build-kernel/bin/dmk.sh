@@ -178,7 +178,6 @@ then
 			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
             -Dorg.eclipse.equinox.console.jaas.file="$CONFIG_DIR/store" \
             -Dssh.server.keystore="$CONFIG_DIR/hostkey.ser" \
-            -Dgosh.args="--nointeractive" \
 			-classpath $CLASSPATH \
 			org.eclipse.virgo.osgi.launcher.Launcher \
 	    		-config $KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties \
