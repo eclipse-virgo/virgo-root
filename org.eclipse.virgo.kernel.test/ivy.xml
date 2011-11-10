@@ -23,11 +23,16 @@
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		
 		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
+		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="test->runtime" />
+        <dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="test->runtime" />
 		
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.supportability" rev="${org.eclipse.equinox.console.supportability}" conf="test->runtime" />
 
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
