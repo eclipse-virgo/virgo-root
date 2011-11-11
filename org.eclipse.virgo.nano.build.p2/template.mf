@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Kernel P2 Builder
 Bundle-Version: 3.0.0
 Main-Class: org.eclipse.virgo.nano.p2.build.Main
-Service-Component: OSGI-INF/kernel.build.p2.xml
-Bundle-SymbolicName: org.eclipse.virgo.nano.build.p2
+Bundle-SymbolicName: org.eclipse.virgo.nano.build.p2;singleton:=true
 Import-Template: org.eclipse.equinox.internal.p2.*;version="0",
  org.eclipse.equinox.p2.publisher;version="0",
  org.eclipse.equinox.p2.publisher.eclipse;version="0",

@@ -31,6 +31,7 @@
 			<fileset dir="${basedir}/p2build_resources" excludes="keystore"/>
 			<filterset>
 				<filter token="SIMPLE.CONFIG.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
+                <filter token="ECLIPSE.OSGI.VERSION" value="${org.eclipse.osgi}"/>
 			</filterset>
 		</copy>
 		<echo message="Building bundles.info for the minimal p2 client"/>
@@ -91,7 +92,107 @@
 		
 		<!-- execute repository publisher -->
 		<echo message="Publishing Virgo Nano features and bundles in p2 repository" />
-		<java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
+        <java jar="${basedir}/p2/org.eclipse.equinox.launcher_${org.eclipse.equinox.launcher}.jar" fork="true" taskname="p2bundles" failonerror="true" maxmemory="256m">
+            <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher"/>
+            <arg line="-metadataRepository file:${target.dir}/repository"/>
+            <arg line="-artifactRepository file:${target.dir}/repository"/>
+            <arg line="-source ${target.dir}/assembly"/>
+            <arg line="-publishArtifacts"/>
+            <arg line="-configs all.all.all"/>
+        </java>
+        
+        <echo message="Publishing Virgo Nano binaries in p2 repository" />
+        <java jar="${basedir}/p2/org.eclipse.equinox.launcher_${org.eclipse.equinox.launcher}.jar" fork="true" taskname="p2bundles" failonerror="true" maxmemory="256m">
+            <arg line="-application org.eclipse.virgo.nano.p2.build.BinaryPublisherApplication"/>
+            <arg line="-metadataRepository file:${target.dir}/repository"/>
+            <arg line="-artifactRepository file:${target.dir}/repository"/>
+            <arg line="-source ${target.dir}/assembly"/>
+            <arg line="-publishArtifacts"/>
+            <arg line="-append"/>
+            <arg line="-chmod startup.sh@bin#755,dmk.sh@bin#755,checkJava.sh@bin#755,jconsole.sh@bin#755,setupClasspath.sh@bin#755,shutdown.sh@bin#755,org.eclipse.virgo.kernel.jmxremote.access.properties@config#600"/>
+            <arg line="-configs all.all.all"/>
+        </java>
+        
+		
+     </target>   
+    
+        <!--P2 publishing properties-->
+    <property name="publishing.dir" value="${basedir}/target/repository"/>
+    <property name="distro.res" value="${basedir}/distro_resources"/>
+    <property name="p2.repo.url" value="file:///${publishing.dir}"/>
+    <property name="product.file" value="${basedir}/org.eclipse.virgo.kernel.product"/>
+    <property name="lib.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.product"/>
+    <property name="lib.kernel.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.kernel.product"/>
+    <property name="repository.ext.product.file" value="${basedir}/org.eclipse.virgo.kernel.repository.ext.product"/>
+    
+    <target name="p2.publish" depends="p2.extract-publisher"
+            description="Publishes bundles, features and product">
+        <java jar="${p2.launcher.jar}" fork="true" taskname="p2bundles" failonerror="true" maxmemory="256m">
+            <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher"/>
+            <arg line="-metadataRepository ${p2.repo.url}"/>
+            <arg line="-artifactRepository ${p2.repo.url}"/>
+            <arg line="-bundles ${package.output.dir}/lib,${package.output.dir}/repository/ext"/>
+            <arg line="-publishArtifacts"/>
+            <arg line="-configs all"/>
+        </java>
+
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.buildId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
+
+        <scp todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}/" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}">
+            <fileset dir="${publishing.dir}"/>
+        </scp>
+        
+        
+        
+        <!-- <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java>
+             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${lib.product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java>
+             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${lib.kernel.product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java>
+             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
+                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
+                 <arg line="-metadataRepository ${p2.repo.url}"/>
+                 <arg line="-artifactRepository ${p2.repo.url}"/>
+                 <arg line="-productFile ${repository.ext.product.file}"/>
+                 <arg line="-append"/>
+                 <arg line="-publishArtifacts"/>
+                 <arg line="-flavor tooling"/>
+                 <arg line="-configs all"/>
+             </java> -->
+             <delete dir="${p2.publishing.dir}" excludes="p2agent.zip" includeemptydirs="true" quiet="true"/>
+             
+             <java jar="${basedir}/p2/org.eclipse.osgi_${org.eclipse.osgi}.jar" fork="true" taskname="p2RepositoryPublishing" failonerror="true" maxmemory="256m">
             <!--jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
             <sysproperty key="operationId" value="FEATURES_AND_BUNDLES_PUBLISH"/>
@@ -159,6 +260,7 @@
 		</java>
         
         <delete dir="${target.dir}/assembly" quiet="true"/>
+    </target>
 
 		<!-- execute product install 
 		<echo message="Installing Virgo product to get the final assembly of Virgo kernel" />
@@ -180,5 +282,5 @@
 				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>-->
-	</target>
+	
 </project>
