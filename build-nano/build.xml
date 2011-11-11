@@ -164,8 +164,15 @@
         <delete dir="${target.dir}/assembly" quiet="true"/>
 		
      </target>
-     
-     <target name="p2.publish" depends="package" description="Publishes repository to build.eclipse.org">
+    
+    <target name="p2.publish" depends="package" description="Publishes repository to build.eclipse.org">
+        
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.buildId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="rmdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"
+                failonerror="false"/>
      
         <sshexec host="build.eclipse.org" 
                 username="${eclipse.buildId}" 
