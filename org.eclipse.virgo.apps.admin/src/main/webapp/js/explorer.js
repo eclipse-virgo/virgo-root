@@ -12,7 +12,7 @@
 *******************************************************************************/
 
 function pageinit() {
-	util.loadScript('raphael-1.5.2', false);
+	util.loadScript('raphael', false);
 	util.loadScript('explorer-layout-manager', false);
 	Explorer.init();
 	util.pageReady();
@@ -136,9 +136,7 @@ var Explorer = {
 		this.arrows = new Object();
 		this.bundles = new Object();
 		this.bundles.widest = 0;
-		Object.each(bundleObj, function(value, jsonKey) {
-
-			var key = jsonKey.substr(1, jsonKey.length - 2);
+		Object.each(bundleObj, function(value, key) {
 			var coords = this.getNextCoords(i);
 			var bundle = this.setBundleRegion(kernelIds, userIds, value);
 

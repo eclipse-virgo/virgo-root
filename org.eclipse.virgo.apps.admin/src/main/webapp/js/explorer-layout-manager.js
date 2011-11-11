@@ -11,7 +11,7 @@
 *******************************************************************************/
 
 function LayoutManager(bundles, key, arrows) {
-
+	
 	/**
 	 * Fields
 	 */
@@ -25,15 +25,16 @@ function LayoutManager(bundles, key, arrows) {
 	 * @param bundles (Object) - The main bundles object
 	 * @param bundleKey (string) - Key of currently selected bundle
 	 */
-	this.setServiceRelations = function(bundles, bundleKey) {
+	this.setServiceRelations = function() {
+		
 		this.inUseArrReady = false;
 		this.inUsePropsReady = false;
 		this.regArrReady = false;
 		this.regPropsReady = false;
 
 		// Get bundle Ids and properties from service Ids
-		this.getServices(bundles, bundleKey, 'ServicesInUse');
-		this.getServices(bundles, bundleKey, 'RegisteredServices');
+		this.getServices('ServicesInUse');
+		this.getServices('RegisteredServices');
 
 		var future = function() {
 			// Check return of bundle Ids and properties
@@ -42,17 +43,16 @@ function LayoutManager(bundles, key, arrows) {
 
 				// Merge bundle Id and property Objects
 				this.servicesInUseAll = this.mergeIdAndProperties(this.servicesInUseArr, this.servicesInUseProps);
-				this.registeredServicesAll = this.mergeIdAndProperties(this.registeredServicesArr,
-						this.registeredServicesProps);
+				this.registeredServicesAll = this.mergeIdAndProperties(this.registeredServicesArr, this.registeredServicesProps);
 
 				// Give bundles serviceStates and service properties
-				this.orderBundles(this.servicesInUseAll, this.registeredServicesAll, bundleKey, function() {
+				this.orderBundles(this.servicesInUseAll, this.registeredServicesAll, function() {
 
 					// Position bundles on canvas
-					this.positionServices(bundleKey, function() {
+					this.positionServices(function() {
 
 						// arrows and arrow events
-						this.drawRelationships(bundleKey);
+						this.drawRelationships();
 					}.bind(this));
 				}.bind(this));
 			}
@@ -69,17 +69,15 @@ function LayoutManager(bundles, key, arrows) {
 	 * @param bundleKey (string) - Key of currently selected bundle
 	 * @param type (string) - Type of service to query
 	 */
-	this.getServices = function(bundles, bundleKey, type) {
+	this.getServices = function(type) {
 
 		if (type == 'ServicesInUse') {
 			// Get service Ids
-			this.servicesInUse = bundles[bundleKey].bundle[type];
+			this.servicesInUse = this.bundles[this.key].bundle[type];
 
 			// Prepare for JSON
-			var requestBundleIds = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5",
-					"getBundleIdentifier(long)", this.servicesInUse);
-			var requestProperties = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5",
-					"getProperties(long)", this.servicesInUse);
+			var requestBundleIds = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5", "getBundleIdentifier(long)", this.servicesInUse);
+			var requestProperties = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5", "getProperties(long)", this.servicesInUse);
 
 			// Requests for bundle Ids and properties
 			util.doBulkQuery(requestBundleIds, this.getIdsFromServicesInUse.bind(this), null);
@@ -87,13 +85,11 @@ function LayoutManager(bundles, key, arrows) {
 
 		} else if (type == 'RegisteredServices') {
 			// Get service Ids
-			this.registeredServices = bundles[bundleKey].bundle[type];
+			this.registeredServices = this.bundles[this.key].bundle[type];
 
 			// Prepare for JSON
-			var requestBundleIds = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5",
-					"getUsingBundles(long)", this.registeredServices);
-			var requestProperties = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5",
-					"getProperties(long)", this.registeredServices);
+			var requestBundleIds = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5", "getUsingBundles(long)", this.registeredServices);
+			var requestProperties = this.getRequestArr("EXEC", "osgi.core:type=serviceState,version=1.5", "getProperties(long)", this.registeredServices);
 
 			// Requests for bundle Ids and properties
 			util.doBulkQuery(requestBundleIds, this.getIdsFromRegisteredServices.bind(this), null);
@@ -204,64 +200,58 @@ function LayoutManager(bundles, key, arrows) {
 	 * 
 	 * @param servicesInUse (Array) - Bundle Ids and properties of servicesInUse
 	 * @param registeredServices (Array) - Bundle Ids and properties of registeredServices
-	 * @param selectedKey (string) - Bundle Id of selected bundle
 	 * @param callback (Function) - To call when finished
 	 */
-	this.orderBundles = function(servicesInUse, registeredServices, selectedKey, callback) {
+	this.orderBundles = function(servicesInUse, registeredServices, callback) {
 		var inUseCount = 0, inUseWidth = 0, regCount = 0, regWidth = 0, xMargin = 10;
+		
+		var bundlesOrdered = {};
+		bundlesOrdered.bundles = {};
+		
 		Object.each(this.bundles, function(bundleValue, bundleKey) {
+			if(bundleKey != 'widest' && bundleKey != 'lastAdded'){
+				
+				bundlesOrdered.bundles[bundleKey] = bundleValue;
+				
+				// if selected bundle
+				if (bundleKey + "" == this.key) {
+					bundleValue.service.serviceState = "selected";
 
-			// if selected bundle
-			if (bundleKey + "" == selectedKey) {
-				bundleValue.service.serviceState = "selected";
-
-				// if serviceInUse
-			} else if (Object.contains(this.servicesInUseArr, bundleKey)) {
-				// Assign serviceState and properties
-				bundleValue = this.setServiceAttributes(bundleValue, bundleKey, "inUse", servicesInUse);
-				// Add width of bundle plus xMargin
-				inUseWidth += bundleValue.visual['set'].getBBox().width + xMargin;
-				// Increase count
-				inUseCount++;
-
-				// if registeredService
-			} else if (Object.contains(this.registeredServicesArr, bundleKey)) {
-				// Assign serviceState and properties
-				bundleValue = this.setServiceAttributes(bundleValue, bundleKey, "registered", registeredServices);
-				// Add width of bundle plus xMargin
-				regWidth += bundleValue.visual['set'].getBBox().width + xMargin;
-				// Increase count
-				regCount++;
-
-				// if none of the above
-			} else {
-				bundleValue.service.serviceState = "hide";
+					// if serviceInUse
+				} else if (Object.contains(this.servicesInUseArr, bundleKey)) {
+					// Assign serviceState and properties
+					bundleValue = this.setServiceAttributes(bundleValue, bundleKey, "inUse", servicesInUse);
+					// Add width of bundle plus xMargin
+					inUseWidth += bundleValue.visual['set'].getBBox().width + xMargin;
+					// Increase count
+					inUseCount++;
+	
+					// if registeredService
+				} else if (Object.contains(this.registeredServicesArr, bundleKey)) {
+					// Assign serviceState and properties
+					bundleValue = this.setServiceAttributes(bundleValue, bundleKey, "registered", registeredServices);
+					// Add width of bundle plus xMargin
+					regWidth += bundleValue.visual['set'].getBBox().width + xMargin;
+					// Increase count
+					regCount++;
+	
+					// if none of the above
+				} else {
+					bundleValue.service.serviceState = "hide";
+				}
 			}
 		}, this);
 
-		this.bundlesOrdered = this.addStats(inUseWidth, inUseCount, regWidth, regCount);
+		bundlesOrdered.inUseWidth = inUseWidth;// Width of all serviceInUse bundles
+		bundlesOrdered.inUseCount = inUseCount;// Number of all servicesInUse
+		bundlesOrdered.regWidth = regWidth;// Width of all registeredService bundles
+		bundlesOrdered.regCount = regCount;// Number of all registeredServices
+		this.bundlesOrdered = bundlesOrdered;
+		
 		callback();
 	};
 
-	/**
-	 * Add the stats to an Object
-	 * 
-	 * @param inUseWidth (number) - Width of all serviceInUse bundles
-	 * @param inUseCount (number) - Number of all servicesInUse
-	 * @param regWidth (number) - Width of all registeredService bundles
-	 * @param regCount (number) - Number of all registeredServices
-	 * @returns (Object)
-	 */
-	this.addStats = function(inUseWidth, inUseCount, regWidth, regCount) {
-		var bundlesOrdered = {};
-		bundlesOrdered.bundles = this.bundles;
-		bundlesOrdered.inUseWidth = inUseWidth;
-		bundlesOrdered.inUseCount = inUseCount;
-		bundlesOrdered.regWidth = regWidth;
-		bundlesOrdered.regCount = regCount;
 
-		return bundlesOrdered;
-	};
 
 	/**
 	 * Sets the serviceState and properties for that bundle
@@ -359,10 +349,9 @@ function LayoutManager(bundles, key, arrows) {
 	 * Positions the bundles on the canvas, resets the canvas size, removes previous arrows if they exist, Delays
 	 * callback to allow for the animating of bundles
 	 * 
-	 * @param selectedKey (string) - Bundle Id for the selected bundle
 	 * @param callback (Function) - To be called when finished
 	 */
-	this.positionServices = function(selectedKey, callback) {
+	this.positionServices = function(callback) {
 
 		var bundles = this.bundlesOrdered.bundles;
 		this.resizeCanvas();
@@ -375,74 +364,73 @@ function LayoutManager(bundles, key, arrows) {
 
 		var xMargin = 10;
 		Object.each(bundles, function(bundleValue, bundleKey) {
-
-			if (bundleValue.service['serviceState'] == "selected") {
-				bundleValue.visual['set'].show();
-				var distance = this.distancesTo(bundleValue.visual['set'], centerCoords['x']- (bundleValue.visual['set'].getBBox().width / 2), centerCoords['y']);
-				this.moveShape(bundleValue.visual['set'], distance['x'], distance['y']);
-
-			} else if (bundleValue.service['serviceState'] == "inUse") {
-				bundleValue.visual['set'].show();
-				var distance = this.distancesTo(bundleValue.visual['set'], xStart["inUse"], centerCoords['y'] - 100);
-				this.moveShape(bundleValue.visual['set'], distance['x'], distance['y']);
-				// Sort next x coord
-				xStart["inUse"] += bundleValue.visual['set'].getBBox().width + xMargin;
-
-			} else if (bundleValue.service['serviceState'] == "registered") {
-				bundleValue.visual['set'].show();
-				var distance = this.distancesTo(bundleValue.visual['set'], xStart["reg"], centerCoords['y'] + 100);
-				this.moveShape(bundleValue.visual['set'], distance['x'], distance['y']);
-				// Sort next x coord
-				xStart["reg"] += bundleValue.visual['set'].getBBox().width + xMargin;
-
-			} else if (bundleValue.service['serviceState'] == "hide") {
-				bundleValue.visual['set'].hide();
+			if(bundleKey != 'widest' && bundleKey != 'lastAdded') {
+				if (bundleValue.service['serviceState'] == "selected") {
+					bundleValue.visual['set'].show();
+					var distance = this.distancesTo(bundleValue.visual['set'], centerCoords['x']- (bundleValue.visual['set'].getBBox().width / 2), centerCoords['y']);
+					this.moveShape(bundleValue.visual['set'], distance['x'], distance['y']);
+	
+				} else if (bundleValue.service['serviceState'] == "inUse") {
+					bundleValue.visual['set'].show();
+					var distance = this.distancesTo(bundleValue.visual['set'], xStart["inUse"], centerCoords['y'] - 100);
+					this.moveShape(bundleValue.visual['set'], distance['x'], distance['y']);
+					// Sort next x coord
+					xStart["inUse"] += bundleValue.visual['set'].getBBox().width + xMargin;
+	
+				} else if (bundleValue.service['serviceState'] == "registered") {
+					bundleValue.visual['set'].show();
+					var distance = this.distancesTo(bundleValue.visual['set'], xStart["reg"], centerCoords['y'] + 100);
+					this.moveShape(bundleValue.visual['set'], distance['x'], distance['y']);
+					// Sort next x coord
+					xStart["reg"] += bundleValue.visual['set'].getBBox().width + xMargin;
+	
+				} else if (bundleValue.service['serviceState'] == "hide") {
+					bundleValue.visual['set'].hide();
+				}
 			}
 		}, this);
 
 		// Allow time for animations before drawing relationships
-		callback.delay('550');
+		callback.delay('0');
 
 	};
 
 	/**
 	 * Draws arrows from servicesInUse to selected and from selected to registeredServices
 	 * 
-	 * @param selectedKey (string) - Bundle Id for selected bundle
 	 */
-	this.drawRelationships = function(selectedKey) {
+	this.drawRelationships = function() {
 		var bundles = this.bundlesOrdered.bundles, arrows = this.arrows, centerCoords = this.findCenter();
 
-		var inUseSpaceSelected = bundles[selectedKey].visual['set'].getBBox().width / this.bundlesOrdered.inUseCount;
-		var regSpaceSelected = bundles[selectedKey].visual['set'].getBBox().width / this.bundlesOrdered.regCount;
-		var selectedLeft = centerCoords['x'] - (bundles[selectedKey].visual['set'].getBBox().width / 2);
+		var inUseSpaceSelected = bundles[this.key].visual['set'].getBBox().width / this.bundlesOrdered.inUseCount;
+		var regSpaceSelected = bundles[this.key].visual['set'].getBBox().width / this.bundlesOrdered.regCount;
+		var selectedLeft = centerCoords['x'] - (bundles[this.key].visual['set'].getBBox().width / 2);
 
 		var inUseCount = 0, regCount = 0;
 
-		Object.each(bundles, function(value, key) {
-
-			if (value.service['serviceState'] == "inUse") {
-				var inUseEndX = selectedLeft + (inUseCount * inUseSpaceSelected) + (inUseSpaceSelected / 2);
-				var xInUseMid = value.visual['rect'].getBBox().x + (value.visual['rect'].getBBox().width / 2);
-				var yInUseTop = 150 + value.visual['set'].getBBox().height;
-				arrows[key] = this.arrow(xInUseMid, yInUseTop, inUseEndX, centerCoords['y']);
-				this.addArrowEventHandler(arrows[key]['head'].node, value.service['properties']);
-				this.addArrowEventHandler(arrows[key]['overLine'].node, value.service['properties']);
-				this.addArrowEventHandler(arrows[key]['underLine'].node, value.service['properties']);
-
-				inUseCount++;
-
-			} else if (value.service['serviceState'] == "registered") {
-				var regEndX = selectedLeft + (regCount * regSpaceSelected) + (regSpaceSelected / 2);
-				var xRegMid = value.visual['rect'].attr("x") + (value.visual['rect'].attr("width") / 2);
-				var yRegTop = centerCoords['y'] + 100;
-
-				arrows[key] = this.arrow(regEndX, centerCoords['y']
-						+ bundles[selectedKey].visual['set'].getBBox().height, xRegMid, yRegTop);
-				this.addArrowEventHandler(arrows[key]['head'].node, value.service['properties']);
-				this.addArrowEventHandler(arrows[key]['overLine'].node, value.service['properties']);
-				this.addArrowEventHandler(arrows[key]['underLine'].node, value.service['properties']);
-				regCount++;
+		Object.each(bundles, function(bundleValue, bundleKey) {
+			if(bundleKey != 'widest' && bundleKey != 'lastAdded') {
+				if (bundleValue.service['serviceState'] == "inUse") {
+					var inUseEndX = selectedLeft + (inUseCount * inUseSpaceSelected) + (inUseSpaceSelected / 2);
+					var xInUseMid = bundleValue.visual['rect'].getBBox().x + (bundleValue.visual['rect'].getBBox().width / 2);
+					var yInUseTop = 150 + bundleValue.visual['set'].getBBox().height;
+					arrows[bundleKey] = this.arrow(xInUseMid, yInUseTop, inUseEndX, centerCoords['y']);
+					this.addArrowEventHandler(arrows[bundleKey]['head'].node, bundleValue.service['properties']);
+					this.addArrowEventHandler(arrows[bundleKey]['overLine'].node, bundleValue.service['properties']);
+					this.addArrowEventHandler(arrows[bundleKey]['underLine'].node, bundleValue.service['properties']);
+					inUseCount++;
+	
+				} else if (bundleValue.service['serviceState'] == "registered") {
+					var regEndX = selectedLeft + (regCount * regSpaceSelected) + (regSpaceSelected / 2);
+					var xRegMid = bundleValue.visual['rect'].attr("x") + (bundleValue.visual['rect'].attr("width") / 2);
+					var yRegTop = centerCoords['y'] + 100;
+	
+					arrows[bundleKey] = this.arrow(regEndX, centerCoords['y'] + bundles[this.key].visual['set'].getBBox().height, xRegMid, yRegTop);
+					this.addArrowEventHandler(arrows[bundleKey]['head'].node, bundleValue.service['properties']);
+					this.addArrowEventHandler(arrows[bundleKey]['overLine'].node, bundleValue.service['properties']);
+					this.addArrowEventHandler(arrows[bundleKey]['underLine'].node, bundleValue.service['properties']);
+					regCount++;
+				}
 			}
 		}, this);
 	};
@@ -522,9 +510,7 @@ function LayoutManager(bundles, key, arrows) {
 	 * @param y (number) - y offset of destination
 	 */
 	this.moveShape = function(el, x, y) {
-		el.animate({
-			'translation' : x + "," + y
-		}, 500);
+		el.transform('t' + x + ',' + y);
 	};
 
 	/**
@@ -547,6 +533,6 @@ function LayoutManager(bundles, key, arrows) {
 	/**
 	 * Start layout
 	 */
-	this.setServiceRelations(this.bundles, this.key);
+	this.setServiceRelations();
 	
 };

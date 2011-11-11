@@ -24,13 +24,13 @@ public class Element extends ParentStub {
 
 	private static final long serialVersionUID = 1L;
 	
-	private String appendedText;
+	private String appendedText = null;
 
 	private Set<String> class_names = new HashSet<String>();
 	
 	private boolean submitCalled = false;
 	
-	private static Object injectedInto;
+	private static Object injectedInto = null;
 	
 	private static Set<String> constructedElements = new HashSet<String>();
 	
@@ -113,7 +113,7 @@ public class Element extends ParentStub {
 		return this.class_names;
 	}
 	
-	public String getAppendedTest(){
+	public String getAppendedText(){
 		return this.appendedText;
 	}
 

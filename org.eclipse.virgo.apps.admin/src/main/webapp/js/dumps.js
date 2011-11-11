@@ -51,15 +51,20 @@ var DumpViewer = function(){
 	};
 	
 	this.displayDumpsResponse = function(json){
+		window.log(json);
 		if(json && json.length > 0){
+			window.log('foo');
 			json.each(function(item){
+				window.log('foo');
 				var dumpListItem = new Element('li.dump');
 				dumpListItem.set('id', item );
 				new Element('div.label').appendText(item).set('onClick', 'dumpViewer.displayDumpEntries("' + item + '")').inject(dumpListItem);
 				new Element('div.delete').appendText("Delete").set('onClick', 'dumpViewer.deleteDump("' + item + '")').inject(dumpListItem);
+				window.log('foo');
 				dumpListItem.inject($('dumps'));
 			}, this);
 		} else {
+			window.log('bar');
 			var dumpListItem = new Element('li');
 			dumpListItem.appendText('No dumps found.');
 			dumpListItem.inject($('dumps'));
@@ -83,6 +88,7 @@ var DumpViewer = function(){
 	this.displayDumpEntriesResponse = function(json, id){
 		$('dump-items').empty();
 		$('dump-item-content').empty();
+		window.log(json);
 		if(json && json.length > 0){
 			json.each(function(item){
 				var dumpEntryListItem = new Element('li.dump-item');
@@ -114,11 +120,13 @@ var DumpViewer = function(){
 	
 	this.displayDumpEntryResponse = function(json){
 		$('dump-item-content').empty();
-		json.each(function(item){
-			var dumpListItem = new Element('div.dump-file-line');
-			dumpListItem.appendText(item);
-			dumpListItem.inject($('dump-item-content'));
-		}, this);
+		if(json && json.length > 0){
+			json.each(function(item){
+				var dumpListItem = new Element('div.dump-file-line');
+				dumpListItem.appendText(item);
+				dumpListItem.inject($('dump-item-content'));
+			}, this);
+		}
 	};
 	
 	this.createDump = function(){
