@@ -172,13 +172,15 @@
                 keyfile="${key.file}" 
                 passphrase="${passphrase}"
                 command="rmdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"
-                failonerror="false"/>
+                failonerror="false"
+                trust="true"/>
      
         <sshexec host="build.eclipse.org" 
                 username="${eclipse.buildId}" 
                 keyfile="${key.file}" 
                 passphrase="${passphrase}"
-                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
+                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"
+                trust="true"/>
 
         <scp todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}/" 
                 keyfile="${key.file}"
