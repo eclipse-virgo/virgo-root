@@ -172,21 +172,37 @@
                 keyfile="${key.file}" 
                 passphrase="${passphrase}"
                 command="rmdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"
-                failonerror="false"
-                trust="true"/>
+                failonerror="false"/>
      
         <sshexec host="build.eclipse.org" 
                 username="${eclipse.buildId}" 
                 keyfile="${key.file}" 
                 passphrase="${passphrase}"
-                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"
-                trust="true"/>
+                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
 
         <scp todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}/" 
                 keyfile="${key.file}"
                 passphrase="${passphrase}">
             <fileset dir="${publishing.dir}"/>
         </scp>
+        
+    </target>
+    
+    <target name="ci.p2.publish" depends="package" description="Publishes repository to build.eclipse.org">
+        
+        <exec executable="rmdir" failonerror="false">
+            <arg value="-pv"/>
+            <arg value="/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
+        </exec>
+        
+        <exec executable="mkdir">
+            <arg value="-pv"/>
+            <arg value="/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
+        </exec>
+        
+        <copy toDir="/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}">
+            <fileset dir="${publishing.dir}"/>
+        </copy>
         
     </target>
 	
