@@ -22,10 +22,11 @@ var Location = function() {
 
 var DataOne = function() {
 
-	window.log('DataOne');
-	this.length = 1;
+	this.value = {};
 	
-	this.each = function(processingFunction){
+	this.value.length = 1;
+	
+	this.value.each = function(processingFunction){
 		processingFunction('sampleItem');
 	};	
 
@@ -33,9 +34,11 @@ var DataOne = function() {
 
 var DataTwo = function() {
 
-	this.length = 1;
+	this.value = {};
 	
-	this.each = function(processingFunction){
+	this.value.length = 1;
+	
+	this.value.each = function(processingFunction){
 		processingFunction(['sampleItem1', 'sampleItem2']);
 	};	
 

@@ -55,8 +55,8 @@ public class Element extends ParentStub {
 		this.class_names.remove(className);
 	}
 	
-	public void jsFunction_set(String property, Object propertyValues){
-		
+	public ScriptableObject jsFunction_set(String property, Object propertyValues){
+		return this;
 	}
 	
 	public void jsFunction_setProperty(String property, Object propertyValues){
@@ -87,8 +87,9 @@ public class Element extends ParentStub {
 		
 	}
 	
-	public void jsFunction_appendText(String text){
+	public ScriptableObject jsFunction_appendText(String text){
 		this.appendedText = text;
+		return this;
 	}
 	
 	public void jsFunction_destroy(Object oldElement){

@@ -12,8 +12,6 @@ package org.eclipse.virgo.apps.admin.web;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -64,43 +62,45 @@ public class DumpsJSTests extends AbstractJSTests {
 		assertEquals("Location: Testing", dollar.getAppendedText());
 	}
 
-//	@Test
-//	public void testDisplayDumps() throws IOException {
-//		addCommonObjects();
-//		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
-//		ScriptableObject.callMethod(dumpViewer, "displayDumps", new Object[]{});
-//
-//		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
-//		Scriptable construct = jsonData.construct(CONTEXT, dumpViewer, Context.emptyArgs);
-//		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
-//
-//		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
-//		assertEquals("dumps", dollarLookup);
-//		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
-//	}
+	@Test
+	public void testDisplayDumps() throws IOException {
+		addCommonObjects();
+		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
+		ScriptableObject.callMethod(dumpViewer, "displayDumps", new Object[]{});
+
+		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
+		Scriptable construct = jsonData.construct(CONTEXT, dumpViewer, Context.emptyArgs);
+		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
+		
+		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
+		assertEquals("dump-item-content", dollarLookup);
+		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+	}
 	
-//	@Test
-//	public void testDisplayDumpEntries(){
-//		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
-//		ScriptableObject.callMethod(dumpViewer, "displayDumpEntries", new Object[]{"testId"});
-//
-//		Function jsonData = (Function) SCOPE.get("DataTwo", SCOPE);
-//		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-//		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct, "testId"});
-//		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
-//		assertEquals("dump-items", dollarLookup);
-//	}
-//	
-//	@Test
-//	public void testDisplayDumpEntry(){
-//		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
-//		ScriptableObject.callMethod(dumpViewer, "displayDumpEntry", new Object[]{"testId", "testQueryString"});
-//
-//		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
-//		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-//		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
-//		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
-//		assertEquals("dump-item-content", dollarLookup);
-//	}
+	@Test
+	public void testDisplayDumpEntries(){
+		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
+		ScriptableObject.callMethod(dumpViewer, "displayDumpEntries", new Object[]{"testId"});
+
+		Function jsonData = (Function) SCOPE.get("DataTwo", SCOPE);
+		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
+		
+		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
+		assertEquals("dump-items", dollarLookup);
+	}
+	
+	@Test
+	public void testDisplayDumpEntry(){
+		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
+		ScriptableObject.callMethod(dumpViewer, "displayDumpEntry", new Object[]{"testId", "testQueryString"});
+
+		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
+		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
+		
+		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
+		assertEquals("dump-item-content", dollarLookup);
+	}
 	
 }
