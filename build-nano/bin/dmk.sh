@@ -131,10 +131,20 @@ then
 
 	if [ "$CLEAN_FLAG" ]
 	then
-		rm -rf $KERNEL_HOME/work
-		rm -rf $KERNEL_HOME/serviceability
+        rm -rf $KERNEL_HOME/work
+        rm -rf $KERNEL_HOME/serviceability
 
-		LAUNCH_OPTS="$LAUNCH_OPTS -Fosgi.clean=true"
+        mkdir $KERNEL_HOME/tmp
+        cp $KERNEL_HOME/configuration/config.ini $KERNEL_HOME/tmp
+        cp $KERNEL_HOME/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info $KERNEL_HOME/tmp
+        rm -rf $KERNEL_HOME/configuration
+        mkdir $KERNEL_HOME/configuration
+        mkdir $KERNEL_HOME/configuration/org.eclipse.equinox.simpleconfigurator
+        cp $KERNEL_HOME/tmp/config.ini $KERNEL_HOME/configuration/config.ini
+        cp $KERNEL_HOME/tmp/bundles.info $KERNEL_HOME/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info
+        rm -rf $KERNEL_HOME/tmp
+
+        LAUNCH_OPTS="$LAUNCH_OPTS -clean" #equivalent to setting osgi.clean to "true"
 	fi
 	
 	if [ "$SHELL_FLAG" ]
