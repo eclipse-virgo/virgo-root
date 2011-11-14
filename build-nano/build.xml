@@ -181,17 +181,9 @@
         
     </target>
     
-    <target name="ci.publish.nightly" depends="package" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudsn only!">
+    <target name="ci.publish.nightly" depends="package" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudson only!">
         
-        <exec executable="rmdir" failonerror="false">
-            <arg value="-pv"/>
-            <arg value="${nightly.updatesite.dir}"/>
-        </exec>
-        
-        <exec executable="mkdir">
-            <arg value="-pv"/>
-            <arg value="${nightly.updatesite.dir}"/>
-        </exec>
+        <delete dir="${nightly.updatesite.dir}"/>
         
         <copy toDir="${nightly.updatesite.dir}">
             <fileset dir="${publishing.dir}"/>
