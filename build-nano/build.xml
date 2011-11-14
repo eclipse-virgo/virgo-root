@@ -165,7 +165,7 @@
 		
      </target>
     
-    <target name="p2.publish" depends="package" description="Publishes repository to build.eclipse.org">
+    <target name="p2.publish" depends="package" description="Publishes dev repository to build.eclipse.org">
         
         <sshexec host="build.eclipse.org" 
                 username="${eclipse.buildId}" 
@@ -181,19 +181,19 @@
         
     </target>
     
-        <target name="ci.publish.nightly" depends="package" description="Publishes repository to build.eclipse.org">
+    <target name="ci.publish.nightly" depends="package" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudsn only!">
         
         <exec executable="rmdir" failonerror="false">
             <arg value="-pv"/>
-            <arg value="/home/data/httpd/download.eclipse.org/virgo/update-site/nightly"/>
+            <arg value="${nightly.updatesite.dir}"/>
         </exec>
         
         <exec executable="mkdir">
             <arg value="-pv"/>
-            <arg value="/home/data/httpd/download.eclipse.org/virgo/update-site/nightly"/>
+            <arg value="${nightly.updatesite.dir}"/>
         </exec>
         
-        <copy toDir="/home/data/httpd/download.eclipse.org/virgo/update-site/nightly">
+        <copy toDir="${nightly.updatesite.dir}">
             <fileset dir="${publishing.dir}"/>
         </copy>
         
