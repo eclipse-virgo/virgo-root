@@ -196,7 +196,8 @@ rem ------------------------------
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.config="%CONFIG_DIR%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Declipse.ignoreApp="true" 
 	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.install.area="%KERNEL_HOME%" 
-      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dgosh.args="--nointeractive" 
+      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dgosh.args="--nointeractive"
+      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.frameworkClassPath="%FWCLASSPATH%"
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -classpath "%CLASSPATH%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% org.eclipse.equinox.launcher.Main
 	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -noExit

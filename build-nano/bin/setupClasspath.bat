@@ -22,8 +22,10 @@ if "%CLASSPATH%" == "" (
 
 rem Remove leading semi-colon if present
 if "%CLASSPATH:~0,1%"==";" set CLASSPATH=%CLASSPATH:~1%
+if "%FWCLASSPATH:~0,1%"=="," set FWCLASSPATH=%FWCLASSPATH:~1%
 exit /B 0
 
 :AppendToClasspath
   set CLASSPATH=%CLASSPATH%;%~1
+  set FWCLASSPATH=%FWCLASSPATH%,file:///%~1
   goto :eof

@@ -8,6 +8,7 @@ exit 1
 fi
 
 CLASSPATH=
+FWCLASSPATH=
 
 #  Create the classpath for bootstrapping the Server from all the JARs in lib
 for file in $KERNEL_HOME/lib/*
@@ -15,6 +16,7 @@ do
 if [[ $file == *.jar ]]
 then
 CLASSPATH=$CLASSPATH:$KERNEL_HOME/lib/${file##*/}
+FWCLASSPATH=$FWCLASSPATH,file:$KERNEL_HOME/lib/${file##*/}
 fi
 done
 
@@ -22,6 +24,7 @@ done
 for file in $KERNEL_HOME/plugins/org.eclipse.osgi_*.jar
 do
 CLASSPATH=$CLASSPATH:$KERNEL_HOME/plugins/${file##*/}
+FWCLASSPATH=$FWCLASSPATH,file:$KERNEL_HOME/plugins/${file##*/}
 done
 
 #  Append the console.supportability jar to the classpath to enable ssh
