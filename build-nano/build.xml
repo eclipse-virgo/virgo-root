@@ -180,5 +180,24 @@
         </scp>
         
     </target>
+    
+        <target name="ci.publish.nightly" depends="package" description="Publishes repository to build.eclipse.org">
+        
+        <exec executable="rmdir" failonerror="false">
+            <arg value="-pv"/>
+            <arg value="/home/data/httpd/download.eclipse.org/virgo/update-site/nightly"/>
+        </exec>
+        
+        <exec executable="mkdir">
+            <arg value="-pv"/>
+            <arg value="/home/data/httpd/download.eclipse.org/virgo/update-site/nightly"/>
+        </exec>
+        
+        <copy toDir="/home/data/httpd/download.eclipse.org/virgo/update-site/nightly">
+            <fileset dir="${publishing.dir}"/>
+        </copy>
+        
+    </target>
+
 	
 </project>
