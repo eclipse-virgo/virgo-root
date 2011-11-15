@@ -143,17 +143,14 @@ rem ------------------------------
       rmdir /Q /S "%KERNEL_HOME%\serviceability"
       rmdir /Q /S "%KERNEL_HOME%\work"
       
-      mkdir "%KERNEL_HOME%\tmp"
-	  cp "%KERNEL_HOME%\configuration\config.ini" "%KERNEL_HOME%\tmp"
-      cp "%KERNEL_HOME%\configuration\org.eclipse.equinox.simpleconfigurator\bundles.info" "%KERNEL_HOME%\tmp"
-      rmdir /Q /S "%KERNEL_HOME%\configuration"
-      mkdir "%KERNEL_HOME%\configuration"
-      mkdir "%KERNEL_HOME%\configuration\org.eclipse.equinox.simpleconfigurator"
-      cp "%KERNEL_HOME%\tmp\config.ini" "%KERNEL_HOME%\configuration\config.ini"
-      cp "%KERNEL_HOME%\tmp\bundles.info" "%KERNEL_HOME%\configuration\org.eclipse.equinox.simpleconfigurator\bundles.info"
-      rmdir /Q /S "%KERNEL_HOME%\tmp"
+	  for /f %%f in ('dir /b "%KERNEL_HOME%\configuration"') do (
+		if not "%%f"=="config.ini" (
+		  if not "%%f"=="org.eclipse.equinox.simpleconfigurator" (
+			rmdir /Q /S "%KERNEL_HOME%\configuration\%%f"
+		  )
+		)
+	  )
       set LAUNCH_OPTS=%LAUNCH_OPTS% -clean
-
     )
 
   rem do Shell work:
