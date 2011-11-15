@@ -402,12 +402,15 @@ td {
 	vertical-align: top;
 }
 
+.button:hover > .button-text {
+	color: #002F5E;
+}
+
 .button-selected > .button-text{
 	color: #0095CA;
 }
 
 .button:hover > div {
-	color: #002F5E;
 	background: #FFFFFF;
 }
 

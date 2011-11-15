@@ -13,10 +13,116 @@
 
 function pageinit() {
 	util.loadScript('raphael', false);
-	util.loadScript('explorer-layout-manager', false);
-	Explorer.init();
+	
+	layoutmanager = new Layout();
+	dataManager = new GeminiDataSource(layoutmanager);
+	
+	//util.loadScript('explorer-layout-manager', false);
+	//Explorer.init();
 	util.pageReady();
 }
+
+var GeminiDataSource = function(layout){
+
+	this.layout = layout;
+
+	this.display = function(type){
+		if(type == 'bundles') {
+			$('view-bundles-button').addClass('button-selected');
+			$('view-services-button').removeClass('button-selected');
+			$('view-packages-button').removeClass('button-selected');
+		} else if(type == 'services'){
+			$('view-services-button').addClass('button-selected');
+			$('view-bundles-button').removeClass('button-selected');
+			$('view-packages-button').removeClass('button-selected');
+		} else {
+			$('view-packages-button').addClass('button-selected');
+			$('view-bundles-button').removeClass('button-selected');
+			$('view-services-button').removeClass('button-selected');
+		}
+	};
+	
+	this.showDefault = function(){
+		new Request.JSON({
+			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
+			method : 'get',
+			onSuccess : function(responseJSON) {
+				this.renderBundles(responseJSON.value);
+			}
+		}).send();
+	};
+	
+	//Start private methods
+
+	this.renderBundles = function(json){
+	
+	};
+
+};
+
+var Layout = function(){
+
+	this.bundles = {};
+	
+	this.shuffle = function(focusId, inIds, outIds){
+	
+	};
+	
+	this.addBundle = function(bundle){
+		this.bundles[budle.id] = bundle;
+	};
+	
+	this.removeBundle = function(id){
+		this.bundles[id].hide();
+		this.bundles[id] = undefined;
+	};
+	
+	this.clear = function(){
+		Object.each(this.bundles, function(value){
+			value.hide();
+		});
+		this.bundles = {};
+	};
+	
+	this.hide = function(id){
+		this.bundles[id].hide();
+	};
+
+};
+
+var Bundle = function(name, version, region, id, state, location){
+
+	//Data about the bundle
+	this.name = name;
+	this.version = version;
+	this.region = region;
+	this.id = id;
+	this.state = state;
+	this.location = location;
+	
+	//Display attributes
+	this.bundleHeight = 25;
+	this.bundlexMargin = 10;
+	this.x = -1;
+	this.y = -1;
+	
+	//Display objects
+	var rect = this.canvas.rect(x, y, 1, bundleBgHeight, 5).attr({
+		fill : "90-#dfdfdf-#fff",
+		stroke : "#ccc"
+	});
+	var text = this.canvas.text(x + this.bundlexMargin, y + this.bundleHeight / 2, "[" + this.id + "]" + this.name + " " + this.version + " " + this.state).attr({
+		"text-anchor" : "start",
+		"font" : "10px Arial"
+	});
+	
+	this.hide = function(){
+		
+	};
+
+	//Start private methods
+
+};
 
 /**
  * The main Explorer class for bundle creation and assigning event handlers.
