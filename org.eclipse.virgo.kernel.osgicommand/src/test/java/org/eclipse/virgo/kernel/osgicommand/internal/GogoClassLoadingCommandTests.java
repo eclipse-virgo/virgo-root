@@ -36,13 +36,13 @@ import static org.junit.Assert.assertTrue;
  * Unit tests for class loading commands
  */
 @SuppressWarnings("deprecation")
-public class ClassLoadingCommandProviderTests {
+public class GogoClassLoadingCommandTests {
 
     private static final long BUNDLE_ID = 1234;
     private static final String BUNDLE_SYMBOLIC_NAME = "test";
 
-    private static final String CLASS_NAME = ClassLoadingCommandProviderTests.class.getName();
-    private static final String CLASS_PACKAGE = ClassLoadingCommandProviderTests.class.getPackage().getName();
+    private static final String CLASS_NAME = GogoClassLoadingCommandTests.class.getName();
+    private static final String CLASS_PACKAGE = GogoClassLoadingCommandTests.class.getPackage().getName();
 
     private static final String SHORT_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1) + ".class";
     private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
@@ -134,7 +134,7 @@ public class ClassLoadingCommandProviderTests {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(GogoClassLoadingCommandTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
@@ -192,7 +192,7 @@ public class ClassLoadingCommandProviderTests {
         PackageAdmin packageAdmin = createMock(PackageAdmin.class);
         ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(GogoClassLoadingCommandTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundle(0)).andReturn(bundle); // system bundle is also our mockup
@@ -224,7 +224,7 @@ public class ClassLoadingCommandProviderTests {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
 
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(GogoClassLoadingCommandTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundle(0)).andReturn(bundle); // system bundle is also our mockup
@@ -325,7 +325,7 @@ public class ClassLoadingCommandProviderTests {
 
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID).times(2);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
-        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
+        expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(GogoClassLoadingCommandTests.class);
         expect(bundleContext.getServiceReference(PlatformAdmin.class)).andReturn(platformAdminServiceReference);
         expect(bundleContext.getService(platformAdminServiceReference)).andReturn(platformAdmin);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});

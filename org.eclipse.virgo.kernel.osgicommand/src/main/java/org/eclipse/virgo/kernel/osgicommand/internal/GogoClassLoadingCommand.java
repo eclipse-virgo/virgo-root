@@ -36,12 +36,8 @@ public class GogoClassLoadingCommand {
      * Lists all bundles that contain a class
      * 
      */
-    @Descriptor("lists all bundles that contain a class with the specified name")
-    public void clhas(@Descriptor("fully qualified class name") String className) {
-        if (extractPackage(className) == null) {
-            return;
-        }
-
+    @Descriptor("list all bundles that contain a class or resource with the specified name")
+    public void clhas(@Descriptor("class or resource name") String className) {
         className = ClassLoadingHelper.convertToResourcePath(className);
 
         Map<Bundle, List<String>> foundBundles = ClassLoadingHelper.getBundlesContainingResource(bundleContext, className);
@@ -53,24 +49,24 @@ public class GogoClassLoadingCommand {
         outputBundlesAndResources("Bundles containing [" + className + "]:", foundBundles);
     }
 
-    @Descriptor("lists all bundles that can load the specified class")
+    @Descriptor("list all bundles that can load the specified class")
     public void clload(@Descriptor("fully qualified class name") String className) {
         doClload(className, null);
     }
 
-    @Descriptor("tries to load the specified class using the specified bundle")
+    @Descriptor("try to load the specified class using the specified bundle")
     public void clload(@Descriptor("fully qualified class name") String className, @Descriptor("bundle symbolic name") String bundleName) {
         doClload(className, bundleName);
     }
 
-    @Descriptor("tries to load the specified class using the specified bundle")
+    @Descriptor("try to load the specified class using the specified bundle")
     public void clload(@Descriptor("fully qualified class name") String className, @Descriptor("  bundle id") long bundleId) {
         doClload(className, String.valueOf(bundleId));
     }
 
     private void doClload(String className, String bundle) {
         if (extractPackage(className) == null) {
-            return;
+            System.out.println("Warning: the class name [" + className + "] has no package and is assumed to belong to the default package");
         }
 
         Map<Bundle, Bundle> foundBundles;
@@ -97,11 +93,12 @@ public class GogoClassLoadingCommand {
      * Lists all bundles that export a class
      * 
      */
-    @Descriptor("lists all bundles that export a class with the specified name")
+    @Descriptor("list all bundles that export a class with the specified name")
     public void clexport(@Descriptor("fully qualified class name") String className) {
         String classPackage = extractPackage(className);
 
         if (classPackage == null) {
+            System.out.println("The class name [" + className + "] contains no package");
             return;
         }
 
@@ -130,14 +127,8 @@ public class GogoClassLoadingCommand {
     }
 
     private String extractPackage(String className) {
-        String classPackage = null;
         int index = className.lastIndexOf(".");
-        if (index == -1) {
-            System.out.println("The class name [" + className + "] contains no package");
-        } else {
-            classPackage = className.substring(0, index);
-        }
-        return classPackage;
+        return index == -1 ? null : className.substring(0, index);        
     }
 
     /**
