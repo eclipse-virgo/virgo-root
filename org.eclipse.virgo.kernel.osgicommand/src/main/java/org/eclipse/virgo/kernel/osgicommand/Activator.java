@@ -1,5 +1,5 @@
 /*******************************************************************************
- * This file is part of the Virgo Web Server.
+ * This file is part of the Virgo Kernel.
  *
  * Copyright (c) 2010 VMware Inc.
  * All rights reserved. This program and the accompanying materials
@@ -23,8 +23,8 @@ import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
+import org.eclipse.virgo.kernel.osgicommand.internal.GogoClassLoadingCommand;
 import org.eclipse.virgo.kernel.osgicommand.internal.GogoKernelShellCommand;
-import org.eclipse.virgo.kernel.osgicommand.internal.commands.classloading.ClassLoadingCommandProvider;
 import org.eclipse.virgo.kernel.osgicommand.management.ClassLoadingSupport;
 import org.eclipse.virgo.kernel.shell.CommandExecutor;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
@@ -33,11 +33,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * {@link BundleActivator} for the osgi.console command extension bundle
- * <p/>
+ * {@link BundleActivator} for the Gogo shell command bundle.
  * <p/>
  * <strong>Concurrent Semantics</strong><br />
- * thread-safe
+ * Not thread safe.
  */
 public class Activator implements BundleActivator {
 
@@ -46,13 +45,11 @@ public class Activator implements BundleActivator {
     private static final String[] KERNEL_SHELL_SUBCOMMANDS = new String[] { "bundle", "config", "install", "packages", "par", "plan", "service",
         "shutdown" };
 
+    private static final String[] CLASS_LOADING_SUBCOMMANDS = new String[] { "clhas", "clload", "clexport" };
+
     private static final int COMMAND_EXECUTOR_SERVICE_WAIT = 20 * 1000; // 20 seconds
 
     private static final int SERVICE_WAIT_PAUSE = 100; // 100 milliseconds
-
-    private static final String PROVIDER_NAME = "org.eclipse.osgi.framework.console.CommandProvider"; //$NON-NLS-1$
-
-    private ServiceRegistration<?> providerRegistration;
 
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
@@ -60,24 +57,20 @@ public class Activator implements BundleActivator {
 
     private final ObjectName classLoadingObjectName;
 
+    private ServiceRegistration<GogoClassLoadingCommand> classLoadingCommandRegistration;
+
     public Activator() throws MalformedObjectNameException {
         this.classLoadingObjectName = new ObjectName("org.eclipse.virgo.kernel:type=Classloading");
     }
 
     @Override
     public void start(BundleContext context) throws Exception {
-        // Equinox console bindings
-        boolean registerCommands = true;
-        try {
-            Class.forName(PROVIDER_NAME);
-        } catch (ClassNotFoundException e) {
-            registerCommands = false;
-        }
-
-        if (registerCommands) {
-            ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(context);
-            this.providerRegistration = context.registerService(PROVIDER_NAME, provider, null);
-        }
+        // Gogo binding
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        properties.put(org.apache.felix.service.command.CommandProcessor.COMMAND_SCOPE, KERNEL_SHELL_COMMAND);
+        properties.put(org.apache.felix.service.command.CommandProcessor.COMMAND_FUNCTION, CLASS_LOADING_SUBCOMMANDS);
+        this.classLoadingCommandRegistration = context.registerService(GogoClassLoadingCommand.class, new GogoClassLoadingCommand(context),
+            properties);
 
         this.server.registerMBean(new ClassLoadingSupport(context), this.classLoadingObjectName);
 
@@ -89,10 +82,10 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        // Equinox console bindings
-        if (this.providerRegistration != null) {
-            this.providerRegistration.unregister();
-            this.providerRegistration = null;
+        // Gogo binding
+        if (this.classLoadingCommandRegistration != null) {
+            this.classLoadingCommandRegistration.unregister();
+            this.classLoadingCommandRegistration = null;
         }
 
         this.registrationTracker.unregisterAll();

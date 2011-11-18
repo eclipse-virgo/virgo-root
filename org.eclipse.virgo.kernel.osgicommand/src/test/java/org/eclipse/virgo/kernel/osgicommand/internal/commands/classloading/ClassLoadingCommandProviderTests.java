@@ -14,12 +14,17 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.virgo.kernel.osgicommand.internal.GogoClassLoadingCommand;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.Enumeration;
 
@@ -42,33 +47,27 @@ public class ClassLoadingCommandProviderTests {
     private static final String SHORT_CLASS_NAME = CLASS_NAME.substring(CLASS_NAME.lastIndexOf(".") + 1) + ".class";
     private static final String CLASS_NAME_PATH = CLASS_NAME.replace(".", "/") + ".class";
     private static final String CLASS_PACKAGE_PATH = CLASS_PACKAGE.replace(".", "/");
-
-    @Test
-    public void testCommandsWithNoClass() throws Exception {
-        Bundle bundle = createMock(Bundle.class);
-        BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
-
-        commandInterpreter.setArguments(new String[]{null});
-
-        replay(bundle, bundleContext);
-
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clhas(commandInterpreter);
-        provider._clload(commandInterpreter);
-        provider._clexport(commandInterpreter);
-        String output = commandInterpreter.getOutput();
-
-        assertFalse("Command output [" + output + "] contains class name [" + CLASS_NAME + "]",
-                    output.contains("" + CLASS_NAME));
-        assertFalse("Command output [" + output + "] contains class package [" + CLASS_PACKAGE + "]",
-                    output.contains("" + CLASS_PACKAGE));
-        assertFalse("Command output [" + output + "] contains bundle ID [" + BUNDLE_ID + "]",
-                    output.contains("" + BUNDLE_ID));
-        assertFalse("Command output [" + output + "] contains bundle symbolic name [" + BUNDLE_SYMBOLIC_NAME + "]",
-                    output.contains(BUNDLE_SYMBOLIC_NAME));
-
-        verify(bundle, bundleContext);
+    private ByteArrayOutputStream baos;
+    private PrintStream oldOut;
+    private PrintStream output;
+    
+    @Before
+    public void before() {
+        this.oldOut = System.out;
+        this.baos = new ByteArrayOutputStream();
+        this.output = new PrintStream(baos);
+        System.setOut(this.output);
+    }
+    
+    private String getOutput() {
+        this.output.flush();
+        String output = new String(baos.toByteArray());
+        return output;
+    }
+    
+    @After
+    public void after() {
+        System.setOut(this.oldOut);
     }
 
     @Test
@@ -87,9 +86,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clhas(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clhas(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME_PATH));
@@ -101,6 +100,7 @@ public class ClassLoadingCommandProviderTests {
                    output.contains(BUNDLE_SYMBOLIC_NAME));
 
         verify(bundle, bundleContext);
+        
     }
 
     @Test
@@ -116,9 +116,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clhas(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clhas(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME_PATH));
@@ -148,9 +148,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clload(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clload(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -176,9 +176,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clload(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clload(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -212,9 +212,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clload(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clload(CLASS_NAME, BUNDLE_SYMBOLIC_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -244,9 +244,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clload(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clload(CLASS_NAME, BUNDLE_ID);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -272,9 +272,9 @@ public class ClassLoadingCommandProviderTests {
 
         replay(bundle, bundleContext);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clload(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clload(CLASS_NAME, BUNDLE_ID);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -283,32 +283,6 @@ public class ClassLoadingCommandProviderTests {
         assertTrue("Command output [" + output + "] does not contain bundle ID [" + BUNDLE_ID + "]",
                    output.contains("" + BUNDLE_ID));
         assertFalse("Command output [" + output + "] contains bundle symbolic name [" + BUNDLE_SYMBOLIC_NAME + "]",
-                    output.contains(BUNDLE_SYMBOLIC_NAME));
-
-        verify(bundle, bundleContext);
-    }
-
-    @Test
-    public void testClExportWithNoPackage() throws Exception {
-        Bundle bundle = createMock(Bundle.class);
-        BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
-
-        commandInterpreter.setArguments(new String[]{""});
-
-        replay(bundle, bundleContext);
-
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clexport(commandInterpreter);
-        String output = commandInterpreter.getOutput();
-
-        assertFalse("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
-                    output.contains("" + CLASS_NAME));
-        assertFalse("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE + "]",
-                    output.contains("" + CLASS_PACKAGE));
-        assertFalse("Command output [" + output + "] does not contain bundle ID [" + BUNDLE_ID + "]",
-                    output.contains("" + BUNDLE_ID));
-        assertFalse("Command output [" + output + "] does not contain bundle symbolic name [" + BUNDLE_SYMBOLIC_NAME + "]",
                     output.contains(BUNDLE_SYMBOLIC_NAME));
 
         verify(bundle, bundleContext);
@@ -337,9 +311,9 @@ public class ClassLoadingCommandProviderTests {
         replay(platformAdmin, platformAdminServiceReference,
                bundle, bundleContext, bundleState, bundleDescription);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clexport(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clexport(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -382,9 +356,9 @@ public class ClassLoadingCommandProviderTests {
                bundle, bundleContext, bundleState, bundleDescription,
                exportPackageDescription);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clexport(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clexport(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
@@ -428,9 +402,9 @@ public class ClassLoadingCommandProviderTests {
                bundle, bundleContext, bundleState, bundleDescription,
                exportPackageDescription);
 
-        ClassLoadingCommandProvider provider = new ClassLoadingCommandProvider(bundleContext);
-        provider._clexport(commandInterpreter);
-        String output = commandInterpreter.getOutput();
+        GogoClassLoadingCommand command = new GogoClassLoadingCommand(bundleContext);
+        command.clexport(CLASS_NAME);
+        String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]",
                    output.contains("" + CLASS_NAME));
