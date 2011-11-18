@@ -19,11 +19,7 @@ import org.apache.felix.service.command.Descriptor;
 /**
  * {@link GogoKernelShellCommand} binds the vsh commands to the Gogo shell.
  * <p />
- * 
- * @see org.eclipse.virgo.kernel.osgicommand.Activator#KERNEL_SHELL_SUBCOMMANDS List of kernel shell subcommands
- *      <p />
- *      <strong>Concurrent Semantics</strong><br />
- *      Thread safe.
+ * Thread safe.
  */
 public final class GogoKernelShellCommand {
 
@@ -167,7 +163,7 @@ public final class GogoKernelShellCommand {
         doOp(PLAN_OP, op, argList);
 
     }
-    
+
     /*
      * Service commands
      */
@@ -178,8 +174,7 @@ public final class GogoKernelShellCommand {
     }
 
     @Descriptor("examine a service in the service registry")
-    public void service(@Descriptor("operation (examine)") String op,
-        @Descriptor("  service id") long serviceId) {
+    public void service(@Descriptor("operation (examine)") String op, @Descriptor("  service id") long serviceId) {
         doService(op, String.valueOf(serviceId));
     }
 
@@ -187,7 +182,7 @@ public final class GogoKernelShellCommand {
         doOp(SERVICE_OP, op, argList);
 
     }
-    
+
     /*
      * Install command
      */
@@ -222,7 +217,7 @@ public final class GogoKernelShellCommand {
             e.printStackTrace(System.out);
         }
     }
-    
+
     private void doOp(String op, String argList) {
         String args = concatArgs(op, argList);
         try {

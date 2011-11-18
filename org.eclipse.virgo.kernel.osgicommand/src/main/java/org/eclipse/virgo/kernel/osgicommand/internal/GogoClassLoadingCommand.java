@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.felix.service.command.Descriptor;
 import org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -24,8 +25,6 @@ import org.osgi.framework.BundleContext;
  * Class loading commands for supportability and diagnostics
  */
 public class GogoClassLoadingCommand {
-
-    public static final String NEW_LINE = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private BundleContext bundleContext;
 
@@ -37,8 +36,12 @@ public class GogoClassLoadingCommand {
      * Lists all bundles that contain a class
      * 
      */
-    public void clhas(String className) {
-        
+    @Descriptor("lists all bundles that contain a class with the specified name")
+    public void clhas(@Descriptor("fully qualified class name") String className) {
+        if (extractPackage(className) == null) {
+            return;
+        }
+
         className = ClassLoadingHelper.convertToResourcePath(className);
 
         Map<Bundle, List<String>> foundBundles = ClassLoadingHelper.getBundlesContainingResource(bundleContext, className);
@@ -49,21 +52,27 @@ public class GogoClassLoadingCommand {
 
         outputBundlesAndResources("Bundles containing [" + className + "]:", foundBundles);
     }
-    
-    public void clload(String className) {
+
+    @Descriptor("lists all bundles that can load the specified class")
+    public void clload(@Descriptor("fully qualified class name") String className) {
         doClload(className, null);
     }
-    
-    public void clload(String className, String bundleName) {
+
+    @Descriptor("tries to load the specified class using the specified bundle")
+    public void clload(@Descriptor("fully qualified class name") String className, @Descriptor("bundle symbolic name") String bundleName) {
         doClload(className, bundleName);
     }
-    
-    public void clload(String className, long bundleId) {
+
+    @Descriptor("tries to load the specified class using the specified bundle")
+    public void clload(@Descriptor("fully qualified class name") String className, @Descriptor("  bundle id") long bundleId) {
         doClload(className, String.valueOf(bundleId));
     }
 
     private void doClload(String className, String bundle) {
-        
+        if (extractPackage(className) == null) {
+            return;
+        }
+
         Map<Bundle, Bundle> foundBundles;
         if (bundle == null) {
             foundBundles = ClassLoadingHelper.getBundlesLoadingClass(bundleContext, className);
@@ -80,22 +89,21 @@ public class GogoClassLoadingCommand {
             return;
         }
 
-        outputFoundBundlesAndRelations("Successfully loaded [" + className + "] "
-            + ((bundle != null) ? "using class loader from:" : "from:"), foundBundles, "provided by");
+        outputFoundBundlesAndRelations("Successfully loaded [" + className + "] " + ((bundle != null) ? "using class loader from:" : "from:"),
+            foundBundles, "provided by");
     }
 
     /**
      * Lists all bundles that export a class
      * 
      */
-    public void clexport(String className) {
-        // Check if the class has a package
-        int index = className.lastIndexOf(".");
-        if (index == -1) {
-            System.out.println("The class name [" + className + "] contains no package");
+    @Descriptor("lists all bundles that export a class with the specified name")
+    public void clexport(@Descriptor("fully qualified class name") String className) {
+        String classPackage = extractPackage(className);
+
+        if (classPackage == null) {
             return;
         }
-        String classPackage = className.substring(0, index);
 
         Bundle[] bundles = bundleContext.getBundles();
         HashMap<Long, String> foundBundles = new HashMap<Long, String>();
@@ -119,6 +127,17 @@ public class GogoClassLoadingCommand {
         for (Map.Entry<Long, String> entry : foundBundles.entrySet()) {
             System.out.println("  " + entry.getKey() + "\t" + entry.getValue());
         }
+    }
+
+    private String extractPackage(String className) {
+        String classPackage = null;
+        int index = className.lastIndexOf(".");
+        if (index == -1) {
+            System.out.println("The class name [" + className + "] contains no package");
+        } else {
+            classPackage = className.substring(0, index);
+        }
+        return classPackage;
     }
 
     /**
@@ -173,20 +192,6 @@ public class GogoClassLoadingCommand {
      */
     private String bundleToString(Bundle b, boolean space) {
         return b.getBundleId() + (space ? " " : "\t") + b.getSymbolicName();
-    }
-
-    public String getHelp() {
-        StringBuilder help = new StringBuilder();
-        help.append("---");
-        help.append("Classloading Commands");
-        help.append("---");
-        help.append(NEW_LINE);
-        help.append("\tclhas <class name> - lists all bundles that contain a class with the specified name.").append(NEW_LINE);
-        help.append(
-            "\tclload <class name> [<bundle id> | <bundle name>]- lists all bundles that can load a class or tries to load the class with specified bundle.").append(
-            NEW_LINE);
-        help.append("\tclexport <class name> - lists all bundles that export a class with the specified name.").append(NEW_LINE);
-        return help.toString();
     }
 
 }

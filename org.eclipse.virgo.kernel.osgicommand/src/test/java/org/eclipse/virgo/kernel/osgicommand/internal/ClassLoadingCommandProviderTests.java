@@ -8,7 +8,7 @@
  * Contributors:
  *    Hristo Iliev, SAP AG - initial contribution
  ******************************************************************************/
-package org.eclipse.virgo.kernel.osgicommand.internal.commands.classloading;
+package org.eclipse.virgo.kernel.osgicommand.internal;
 
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
@@ -74,7 +74,6 @@ public class ClassLoadingCommandProviderTests {
     public void testClHasWithExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
         Enumeration<URL> urlEnum = this.getClass().getClassLoader().getResources(CLASS_NAME_PATH);
 
         expect(bundle.findEntries("/", SHORT_CLASS_NAME, true)).andReturn(urlEnum);
@@ -82,7 +81,6 @@ public class ClassLoadingCommandProviderTests {
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(bundle, bundleContext);
 
@@ -107,12 +105,10 @@ public class ClassLoadingCommandProviderTests {
     public void testClHasWithNonExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect(bundle.findEntries("/", SHORT_CLASS_NAME, true)).andReturn(null); // class does not exist
         expect(bundle.findEntries("/", CLASS_NAME_PATH, true)).andReturn(null); // class does not exist
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(bundle, bundleContext);
 
@@ -137,14 +133,12 @@ public class ClassLoadingCommandProviderTests {
     public void testClLoadWithExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
         expect(bundleContext.getBundle(0)).andReturn(bundle); // system bundle is also our mockup
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(bundle, bundleContext);
 
@@ -168,11 +162,9 @@ public class ClassLoadingCommandProviderTests {
     public void testClLoadWithNonExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect(bundle.loadClass(CLASS_NAME)).andReturn(null);
         expect(bundleContext.getBundles()).andReturn(new Bundle[]{bundle});
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(bundle, bundleContext);
 
@@ -199,7 +191,6 @@ public class ClassLoadingCommandProviderTests {
         BundleContext bundleContext = createMock(BundleContext.class);
         PackageAdmin packageAdmin = createMock(PackageAdmin.class);
         ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
@@ -208,7 +199,6 @@ public class ClassLoadingCommandProviderTests {
         expect(bundleContext.getServiceReference(PackageAdmin.class)).andReturn(packageAdminServiceReference);
         expect(bundleContext.getService(packageAdminServiceReference)).andReturn(packageAdmin);
         expect(packageAdmin.getBundles(BUNDLE_SYMBOLIC_NAME, null)).andReturn(new Bundle[]{bundle});
-        commandInterpreter.setArguments(new String[]{CLASS_NAME, BUNDLE_SYMBOLIC_NAME});
 
         replay(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
 
@@ -233,14 +223,12 @@ public class ClassLoadingCommandProviderTests {
     public void testClLoadWithBundleIdAndExistingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect((Class)bundle.loadClass(CLASS_NAME)).andReturn(ClassLoadingCommandProviderTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
         expect(bundleContext.getBundle(0)).andReturn(bundle); // system bundle is also our mockup
         expect(bundleContext.getBundle(BUNDLE_ID)).andReturn(bundle);
-        commandInterpreter.setArguments(new String[]{CLASS_NAME, "" + BUNDLE_ID});
 
         replay(bundle, bundleContext);
 
@@ -264,11 +252,9 @@ public class ClassLoadingCommandProviderTests {
     public void testClLoadWithBundleIdAndMissingClass() throws Exception {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect(bundle.loadClass(CLASS_NAME)).andReturn(null);
         expect(bundleContext.getBundle(BUNDLE_ID)).andReturn(bundle);
-        commandInterpreter.setArguments(new String[]{CLASS_NAME, "" + BUNDLE_ID});
 
         replay(bundle, bundleContext);
 
@@ -297,7 +283,6 @@ public class ClassLoadingCommandProviderTests {
         BundleContext bundleContext = createMock(BundleContext.class);
         State bundleState = createMock(State.class);
         BundleDescription bundleDescription = createMock(BundleDescription.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
         expect(bundleContext.getServiceReference(PlatformAdmin.class)).andReturn(platformAdminServiceReference);
@@ -306,7 +291,6 @@ public class ClassLoadingCommandProviderTests {
         expect(bundleDescription.getSelectedExports()).andReturn(new ExportPackageDescription[]{}); // nothing exported
         expect(platformAdmin.getState(false)).andReturn(bundleState);
         expect(bundleState.getBundle(BUNDLE_ID)).andReturn(bundleDescription);
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(platformAdmin, platformAdminServiceReference,
                bundle, bundleContext, bundleState, bundleDescription);
@@ -338,7 +322,6 @@ public class ClassLoadingCommandProviderTests {
         State bundleState = createMock(State.class);
         BundleDescription bundleDescription = createMock(BundleDescription.class);
         ExportPackageDescription exportPackageDescription = createMock(ExportPackageDescription.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID).times(2);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
@@ -350,7 +333,6 @@ public class ClassLoadingCommandProviderTests {
         expect(bundleDescription.getSelectedExports()).andReturn(new ExportPackageDescription[]{exportPackageDescription});
         expect(platformAdmin.getState(false)).andReturn(bundleState);
         expect(bundleState.getBundle(BUNDLE_ID)).andReturn(bundleDescription);
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(platformAdmin, platformAdminServiceReference,
                bundle, bundleContext, bundleState, bundleDescription,
@@ -384,7 +366,6 @@ public class ClassLoadingCommandProviderTests {
         State bundleState = createMock(State.class);
         BundleDescription bundleDescription = createMock(BundleDescription.class);
         ExportPackageDescription exportPackageDescription = createMock(ExportPackageDescription.class);
-        StubCommandInterpreter commandInterpreter = new StubCommandInterpreter();
 
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID).times(2);
         expect(bundle.getSymbolicName()).andReturn(BUNDLE_SYMBOLIC_NAME);
@@ -396,7 +377,6 @@ public class ClassLoadingCommandProviderTests {
         expect(bundleDescription.getSelectedExports()).andReturn(new ExportPackageDescription[]{exportPackageDescription});
         expect(platformAdmin.getState(false)).andReturn(bundleState);
         expect(bundleState.getBundle(BUNDLE_ID)).andReturn(bundleDescription);
-        commandInterpreter.setArguments(new String[]{CLASS_NAME});
 
         replay(platformAdmin, platformAdminServiceReference,
                bundle, bundleContext, bundleState, bundleDescription,
