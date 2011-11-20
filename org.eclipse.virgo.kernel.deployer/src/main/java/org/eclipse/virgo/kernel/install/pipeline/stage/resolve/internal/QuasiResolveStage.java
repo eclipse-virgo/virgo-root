@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,21 +7,21 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
 
 import java.util.List;
 
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * {@link QuasiResolveStage} is a {@link PipelineStage} which attempts to resolve the side state.
@@ -37,7 +37,7 @@ public final class QuasiResolveStage implements PipelineStage {
     /**
      * {@inheritDoc}
      */
-    public void process(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException, UnableToSatisfyBundleDependenciesException {
+    public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException, UnableToSatisfyBundleDependenciesException {
         QuasiFramework quasiFramework = installEnvironment.getQuasiFramework();
         List<QuasiResolutionFailure> resolutionFailures = quasiFramework.resolve();
         if (!resolutionFailures.isEmpty()) {

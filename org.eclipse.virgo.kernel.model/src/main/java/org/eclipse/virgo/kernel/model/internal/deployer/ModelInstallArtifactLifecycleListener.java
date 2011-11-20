@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * An existing artifact with the same type, name, and version as the incoming artifact is not replaced except in the
  * case of a bundle. An existing {@link BundleArtifact} is replaced by an incoming {@link DeployerBundleArtifact}. This
  * prevents the RAM being corrupted if an attempt it made to install an artifact which belongs to an existing install
- * tree. See {@link TreeRestrictingInstallArtifactLifecycleListener}.
+ * tree. See {@link GraphRestrictingInstallArtifactLifecycleListener}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />

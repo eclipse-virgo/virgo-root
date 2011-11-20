@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,17 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * {@link PipelineStage} is a stage of a {@link Pipeline}.
@@ -31,13 +31,13 @@ import org.eclipse.virgo.util.common.Tree;
 public interface PipelineStage {
 
     /**
-     * Pass the given install tree through this pipeline stage.
+     * Pass the given install graph through this pipeline stage.
      * 
-     * @param installTree the tree to be processed
+     * @param installGraph the graph to be processed
      * @param installEnvironment the processing environment common to all stages in a pipeline
      * @throws DeploymentException if a failure occurred
      * @throws UnableToSatisfyBundleDependenciesException if a bundle's dependencies cannot be satisfied
      */
-    void process(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException, UnableToSatisfyBundleDependenciesException;
+    void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException, UnableToSatisfyBundleDependenciesException;
 
 }

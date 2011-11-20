@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.internal;
@@ -23,27 +24,25 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
-import org.eclipse.virgo.kernel.install.pipeline.internal.StandardPipeline;
 import org.eclipse.virgo.kernel.install.pipeline.stage.AbstractPipelineStage;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  */
 public class StandardPipelineTests {
 
-    private Tree<InstallArtifact> installTree;
+    private GraphNode<InstallArtifact> installGraph;
 
     private InstallEnvironment installEnvironment;
 
@@ -54,7 +53,7 @@ public class StandardPipelineTests {
     private class TestPipelineStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) {
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) {
             StandardPipelineTests.this.stageTrace.add(this);
         }
 
@@ -76,8 +75,8 @@ public class StandardPipelineTests {
         }
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) {
-            super.doProcessTree(installTree, installEnvironment);
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) {
+            super.doProcessGraph(installGraph, installEnvironment);
             this.pipeline.appendStage(this.extraStage);
         }
 
@@ -85,7 +84,8 @@ public class StandardPipelineTests {
 
     @Before
     public void setUp() {
-        this.installTree = new ThreadSafeArrayListTree<InstallArtifact>(null);
+    		DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        this.installGraph = dag.createRootNode(null);
         this.installEnvironment = createMock(InstallEnvironment.class);
         this.installLog = createMock(InstallLog.class);
         this.stageTrace = new ArrayList<PipelineStage>();
@@ -113,7 +113,7 @@ public class StandardPipelineTests {
         replayMocks();
 
         Pipeline p = new StandardPipeline();
-        p.process(installTree, installEnvironment);
+        p.process(installGraph, installEnvironment);
 
         verifyMocks();
         resetMocks();
@@ -141,7 +141,7 @@ public class StandardPipelineTests {
         p.appendStage(ps2);
         expectedStageTrace.add(ps2);
 
-        p.process(installTree, installEnvironment);
+        p.process(installGraph, installEnvironment);
 
         assertEquals(expectedStageTrace, this.stageTrace);
 
@@ -174,7 +174,7 @@ public class StandardPipelineTests {
         p.appendStage(ps1);
         expectedStageTrace.add(ps1);
 
-        p.process(installTree, installEnvironment);
+        p.process(installGraph, installEnvironment);
 
         assertEquals(expectedStageTrace, this.stageTrace);
 
@@ -218,7 +218,7 @@ public class StandardPipelineTests {
         parent.appendStage(child1);
         parent.appendStage(child2);
 
-        parent.process(installTree, installEnvironment);
+        parent.process(installGraph, installEnvironment);
 
         assertEquals(expectedStageTrace, this.stageTrace);
 
@@ -257,7 +257,7 @@ public class StandardPipelineTests {
         expectedStageTrace.add(ps4);
         expectedStageTrace.add(ps5);
 
-        p.process(installTree, installEnvironment);
+        p.process(installGraph, installEnvironment);
 
         assertEquals(expectedStageTrace, this.stageTrace);
 

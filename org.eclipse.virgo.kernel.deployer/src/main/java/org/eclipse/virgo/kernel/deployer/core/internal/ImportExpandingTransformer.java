@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
@@ -17,19 +18,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
-import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
-import org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.BundleInstallArtifactGatheringTreeVisitor;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
+import org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.BundleInstallArtifactGatheringGraphVisitor;
+import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
+import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 /**
@@ -54,38 +54,38 @@ final class ImportExpandingTransformer implements Transformer {
     /**
      * {@inheritDoc}
      */
-    public void transform(Tree<InstallArtifact> installTree, final InstallEnvironment installEnvironment) throws DeploymentException {
-        installTree.visit(new ImportExpandingTreeVisitor(installEnvironment));
+    public void transform(GraphNode<InstallArtifact> installGraph, final InstallEnvironment installEnvironment) throws DeploymentException {
+        installGraph.visit(new ImportExpandingGraphVisitor(installEnvironment));
     }
 
-    private final class ImportExpandingTreeVisitor implements ExceptionThrowingTreeVisitor<InstallArtifact, DeploymentException> {
+    private final class ImportExpandingGraphVisitor implements ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, DeploymentException> {
 
         private final InstallEnvironment installEnvironment;
 
-        ImportExpandingTreeVisitor(InstallEnvironment installEnvironment) {
+        ImportExpandingGraphVisitor(InstallEnvironment installEnvironment) {
             this.installEnvironment = installEnvironment;
         }
 
         /**
          * {@inheritDoc}
          */
-        public boolean visit(Tree<InstallArtifact> tree) throws DeploymentException {
-            if (tree.getValue() instanceof PlanInstallArtifact) {
-                PlanInstallArtifact planInstallArtifact = (PlanInstallArtifact) tree.getValue();
+        public boolean visit(GraphNode<InstallArtifact> graph) throws DeploymentException {
+            if (graph.getValue() instanceof PlanInstallArtifact) {
+                PlanInstallArtifact planInstallArtifact = (PlanInstallArtifact) graph.getValue();
                 if (planInstallArtifact.isScoped()) {
-                    expandImportsOfBundlesInScopedPlan(tree, this.installEnvironment);
+                    expandImportsOfBundlesInScopedPlan(graph, this.installEnvironment);
                     return false;
                 }
-            } else if (tree.getValue() instanceof BundleInstallArtifact) {
-                expandImports(Collections.singleton((BundleInstallArtifact) tree.getValue()), this.installEnvironment);
+            } else if (graph.getValue() instanceof BundleInstallArtifact) {
+                expandImports(Collections.singleton((BundleInstallArtifact) graph.getValue()), this.installEnvironment);
             }
             return true;
         }
     }
 
-    void expandImportsOfBundlesInScopedPlan(Tree<InstallArtifact> planTree, InstallEnvironment installEnvironment) throws DeploymentException {
-        BundleInstallArtifactGatheringTreeVisitor visitor = new BundleInstallArtifactGatheringTreeVisitor();
-        planTree.visit(visitor);
+    void expandImportsOfBundlesInScopedPlan(GraphNode<InstallArtifact> planGraph, InstallEnvironment installEnvironment) throws DeploymentException {
+        BundleInstallArtifactGatheringGraphVisitor visitor = new BundleInstallArtifactGatheringGraphVisitor();
+        planGraph.visit(visitor);
         expandImports(visitor.getChildBundles(), installEnvironment);
     }
 

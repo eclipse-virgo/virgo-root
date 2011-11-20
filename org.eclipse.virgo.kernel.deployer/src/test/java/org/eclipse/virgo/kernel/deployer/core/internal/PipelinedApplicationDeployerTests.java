@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
@@ -28,7 +29,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.event.DeploymentListener;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeInclosure;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -41,7 +42,7 @@ public class PipelinedApplicationDeployerTests {
 
     private PipelinedApplicationDeployer pipelinedApplicationDeployer;
     private Pipeline pipeline;
-    private InstallArtifactTreeInclosure installArtifactTreeInclosure;
+    private InstallArtifactGraphInclosure installArtifactTreeInclosure;
     private InstallEnvironmentFactory installEnvironmentFactory;
     private RuntimeArtifactModel ram;
     private DeploymentListener deploymentListener;
@@ -54,7 +55,7 @@ public class PipelinedApplicationDeployerTests {
     @Before
     public void setup() {
         pipeline = createMock(Pipeline.class);
-        installArtifactTreeInclosure = createMock(InstallArtifactTreeInclosure.class);
+        installArtifactTreeInclosure = createMock(InstallArtifactGraphInclosure.class);
         installEnvironmentFactory = createMock(InstallEnvironmentFactory.class);
         ram = createMock(RuntimeArtifactModel.class);
         deploymentListener = createMock(DeploymentListener.class);

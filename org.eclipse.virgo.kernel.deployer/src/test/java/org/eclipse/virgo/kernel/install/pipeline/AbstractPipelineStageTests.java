@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline;
@@ -20,19 +21,18 @@ import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.kernel.install.pipeline.stage.AbstractPipelineStage;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  */
@@ -40,7 +40,7 @@ public class AbstractPipelineStageTests {
     
     private boolean processed;
     
-    private Tree<InstallArtifact> installTree;
+    private GraphNode<InstallArtifact> installGraph;
     
     private InstallEnvironment installEnvironment;
     
@@ -49,7 +49,7 @@ public class AbstractPipelineStageTests {
     private final class TestPipelineStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) {
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) {
             AbstractPipelineStageTests.this.processed = true;
         }
         
@@ -62,7 +62,8 @@ public class AbstractPipelineStageTests {
     @Before
     public void setUp() {
         this.processed = false;
-        this.installTree = new ThreadSafeArrayListTree<InstallArtifact>(null);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        this.installGraph = dag.createRootNode(null);
         this.installEnvironment = createMock(InstallEnvironment.class);
         this.installLog = createMock(InstallLog.class);
     }
@@ -90,7 +91,7 @@ public class AbstractPipelineStageTests {
         
         PipelineStage ps = new TestPipelineStage();
         assertEquals(false, this.processed);
-        ps.process(installTree, installEnvironment);
+        ps.process(installGraph, installEnvironment);
         assertEquals(true, this.processed);
         
         verifyMocks();

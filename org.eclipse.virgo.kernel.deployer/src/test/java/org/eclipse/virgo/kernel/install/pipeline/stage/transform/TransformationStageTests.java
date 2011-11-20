@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform;
@@ -18,21 +19,18 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.ServiceRegistration;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.TransformationStage;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * TODO Document TransformationStageTests
@@ -45,7 +43,7 @@ import org.eclipse.virgo.util.common.Tree;
  */
 public class TransformationStageTests {
 
-    private Tree<InstallArtifact> installTree;
+    private GraphNode<InstallArtifact> installGraph;
 
     private InstallEnvironment installEnvironment;
 
@@ -62,7 +60,7 @@ public class TransformationStageTests {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {        
-        this.installTree = createMock(Tree.class);
+        this.installGraph = createMock(GraphNode.class);
         this.transformer1 = createMock(Transformer.class);
         this.transformer2 = createMock(Transformer.class);
         this.transformationStage = new TransformationStage(bundleContext);
@@ -76,26 +74,26 @@ public class TransformationStageTests {
 
     @Test
     public void transformation() throws DeploymentException, UnableToSatisfyBundleDependenciesException {
-        this.transformer1.transform(this.installTree, this.installEnvironment);
-        this.transformer2.transform(this.installTree, this.installEnvironment);
-        this.transformer2.transform(this.installTree, this.installEnvironment);
+        this.transformer1.transform(this.installGraph, this.installEnvironment);
+        this.transformer2.transform(this.installGraph, this.installEnvironment);
+        this.transformer2.transform(this.installGraph, this.installEnvironment);
 
         replay(this.transformer1, this.transformer2, this.installEnvironment, this.installLog);
         
-        this.transformationStage.process(this.installTree, this.installEnvironment);
+        this.transformationStage.process(this.installGraph, this.installEnvironment);
         
         ServiceRegistration<Transformer> registration1 = this.bundleContext.registerService(Transformer.class, this.transformer1, null);
         ServiceRegistration<Transformer> registration2= this.bundleContext.registerService(Transformer.class, this.transformer2, null);
         
-        this.transformationStage.process(this.installTree, this.installEnvironment);
+        this.transformationStage.process(this.installGraph, this.installEnvironment);
         
         registration1.unregister();
         
-        this.transformationStage.process(this.installTree, this.installEnvironment);
+        this.transformationStage.process(this.installGraph, this.installEnvironment);
         
         registration2.unregister();
         
-        this.transformationStage.process(this.installTree, this.installEnvironment);
+        this.transformationStage.process(this.installGraph, this.installEnvironment);
         
         verify(this.transformer1, this.transformer2, this.installEnvironment, this.installLog);        
     }

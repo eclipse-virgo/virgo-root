@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,17 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * {@link AbstractPipelineStage} is a common base class for {@link PipelineStage} implementations.
@@ -33,49 +33,49 @@ public abstract class AbstractPipelineStage implements PipelineStage {
     /**
      * {@inheritDoc}
      */
-    public final void process(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException,
+    public final void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
         InstallLog installLog = installEnvironment.getInstallLog();
-        installLog.log(this, "process entry with installTree '%s'", installTree.toString());
+        installLog.log(this, "process entry with installGraph '%s'", installGraph.toString());
         try {
-            doProcessTree(installTree, installEnvironment);
+            doProcessGraph(installGraph, installEnvironment);
         } catch (DeploymentException de) {
-            installLog.log(this, "process exit with installTree '%s', exception '%s' thrown", installTree.toString(), de.toString());
+            installLog.log(this, "process exit with installGraph '%s', exception '%s' thrown", installGraph.toString(), de.toString());
             throw de;
         } catch (UnableToSatisfyBundleDependenciesException utsbde) {
-            installLog.log(this, "process exit with installTree '%s', exception '%s' thrown", installTree.toString(), utsbde.toString());
+            installLog.log(this, "process exit with installGraph '%s', exception '%s' thrown", installGraph.toString(), utsbde.toString());
             throw utsbde;
         } catch (RuntimeException re) {
-            installLog.log(this, "process exit with installTree '%s', exception '%s' thrown", installTree.toString(), re.toString());
+            installLog.log(this, "process exit with installGraph '%s', exception '%s' thrown", installGraph.toString(), re.toString());
             throw re;
         } 
-        installLog.log(this, "process exit with installTree '%s'", installTree.toString());
+        installLog.log(this, "process exit with installGraph '%s'", installGraph.toString());
     }
 
     /**
-     * Processes the given install tree in the context of the given {@link InstallEnvironment}. The default
-     * implementation simply calls the <code>doProcessNode</code> method for each node in the tree. If a different
+     * Processes the given install graph in the context of the given {@link InstallEnvironment}. The default
+     * implementation simply calls the <code>doProcessNode</code> method for each node in the graph. If a different
      * behaviour is required, the subclass should override this method.
      * 
-     * @param installTree the tree to be processed
+     * @param installGraph the graph to be processed
      * @param installEnvironment the <code>InstallEnvironment</code> in the context of which to do the processing
      * @throws {@link UnableToSatisfyBundleDependenciesException} if a bundle's dependencies cannot be satisfied
      * @throws DeploymentException if a failure occurs
      */
-    protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException,
+    protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
-        InstallArtifact value = installTree.getValue();
+        InstallArtifact value = installGraph.getValue();
         doProcessNode(value, installEnvironment);
-        for (Tree<InstallArtifact> child : installTree.getChildren()) {
-            doProcessTree(child, installEnvironment);
+        for (GraphNode<InstallArtifact> child : installGraph.getChildren()) {
+            doProcessGraph(child, installEnvironment);
         }
     }
 
     /**
      * Processes the given {@link InstallArtifact} in the context of the given {@link InstallEnvironment}. Subclasses
-     * should override this method if they do not override the doProcessTree method.
+     * should override this method if they do not override the doProcessGraph method.
      * 
-     * @param installArtifact the tree node to be processed
+     * @param installArtifact the graph node to be processed
      * @param installEnvironment the <code>InstallEnvironment</code> in the context of which to do the processing
      * @throws DeploymentException if a failure occurs
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
@@ -14,15 +15,14 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import java.io.IOException;
 import java.net.URL;
 
-
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 /**
@@ -42,11 +42,11 @@ public class ManifestUpgrader implements Transformer {
     /**
      * {@inheritDoc}
      */
-    public void transform(Tree<InstallArtifact> installTree, final InstallEnvironment installEnvironment) throws DeploymentException {
-        installTree.visit(new ExceptionThrowingTreeVisitor<InstallArtifact, DeploymentException>() {
+    public void transform(GraphNode<InstallArtifact> installGraph, final InstallEnvironment installEnvironment) throws DeploymentException {
+        installGraph.visit(new ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, DeploymentException>() {
 
-            public boolean visit(Tree<InstallArtifact> tree) throws DeploymentException {
-                operate(tree.getValue(), installEnvironment);
+            public boolean visit(GraphNode<InstallArtifact> graph) throws DeploymentException {
+                operate(graph.getValue(), installEnvironment);
                 return true;
             }
         });

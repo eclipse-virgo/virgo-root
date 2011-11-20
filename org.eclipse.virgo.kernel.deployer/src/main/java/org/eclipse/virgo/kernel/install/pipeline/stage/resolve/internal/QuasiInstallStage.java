@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
@@ -14,23 +15,21 @@ package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
 import java.io.File;
 import java.io.IOException;
 
-import org.osgi.framework.BundleException;
-
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.TreeVisitor;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.framework.BundleException;
 
 /**
- * {@link QuasiInstallStage} is a {@link PipelineStage} which installs the bundle artifacts of the install tree in the
+ * {@link QuasiInstallStage} is a {@link PipelineStage} which installs the bundle artifacts of the install graph in the
  * side state.
  * <p />
  * 
@@ -44,12 +43,12 @@ public final class QuasiInstallStage implements PipelineStage {
     /**
      * {@inheritDoc}
      */
-    public void process(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException {
+    public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
         QuasiFramework quasiFramework = installEnvironment.getQuasiFramework();
-        installTree.visit(new InstallVisitor(quasiFramework, installEnvironment.getInstallLog()));
+        installGraph.visit(new InstallVisitor(quasiFramework, installEnvironment.getInstallLog()));
     }
 
-    private static class InstallVisitor implements TreeVisitor<InstallArtifact> {
+    private static class InstallVisitor implements DirectedAcyclicGraphVisitor<InstallArtifact> {
 
         private final QuasiFramework quasiFramework;
 
@@ -60,8 +59,8 @@ public final class QuasiInstallStage implements PipelineStage {
             this.installLog = installLog;
         }
 
-        public boolean visit(Tree<InstallArtifact> tree) {
-            InstallArtifact installArtifact = tree.getValue();
+        public boolean visit(GraphNode<InstallArtifact> graph) {
+            InstallArtifact installArtifact = graph.getValue();
             if (installArtifact instanceof BundleInstallArtifact) {
                 BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
                 try {

@@ -12,30 +12,30 @@
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
 
+import java.util.HashSet;
+import java.util.Set;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
 
+public final class BundleInstallArtifactGatheringGraphVisitor implements DirectedAcyclicGraphVisitor<InstallArtifact> {
 
-/**
- * A <code>ScopedPlanInstallArtifactProcessor</code> is called by a
- * {@link ScopedPlanIdentifyingDirectedAcyclicGraphVisitor} for each scoped plan that
- * it finds.
- * 
- * <p />
- *
- * <strong>Concurrent Semantics</strong><br />
- *
- * Implementations <strong>must</strong> be thread-safe.
- *
- */
-interface ScopedPlanInstallArtifactProcessor {
-    
-    /**
-     * Process the supplied <code>plan</code>
-     * @param plan the plan to process
-     * @throws DeploymentException if a failure occurs during plan processing
-     */
-    void processScopedPlanInstallArtifact(GraphNode<InstallArtifact> plan) throws DeploymentException;
+    private final Set<BundleInstallArtifact> childBundles = new HashSet<BundleInstallArtifact>();
+
+    public boolean visit(GraphNode<InstallArtifact> graph) {
+        InstallArtifact artifact = graph.getValue();
+
+        if (artifact instanceof BundleInstallArtifact) {
+            this.childBundles.add((BundleInstallArtifact) artifact);
+        }
+
+        return true;
+    }
+
+    public Set<BundleInstallArtifact> getChildBundles() {
+        return this.childBundles;
+    }
+
 }

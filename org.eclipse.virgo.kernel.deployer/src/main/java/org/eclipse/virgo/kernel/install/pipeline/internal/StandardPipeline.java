@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.internal;
@@ -14,15 +15,14 @@ package org.eclipse.virgo.kernel.install.pipeline.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
 import org.eclipse.virgo.kernel.install.pipeline.stage.AbstractPipelineStage;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * {@link StandardPipeline} is the default implementation of {@link Pipeline}.
@@ -52,14 +52,14 @@ class StandardPipeline extends AbstractPipelineStage implements Pipeline {
     /**
      * {@inheritDoc}
      */
-    protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException,
+    protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
         for (int i = 0; i < numStages(); i++) {
             PipelineStage nextStage;
             synchronized (this.monitor) {
                 nextStage = this.stageList.get(i);
             }
-            nextStage.process(installTree, installEnvironment);
+            nextStage.process(installGraph, installEnvironment);
         }
     }
 

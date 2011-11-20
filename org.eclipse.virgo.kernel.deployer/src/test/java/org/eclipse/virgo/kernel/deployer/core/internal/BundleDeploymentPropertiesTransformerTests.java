@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,26 +7,29 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import static org.easymock.EasyMock.*;
-
-
-import org.eclipse.virgo.kernel.deployer.core.internal.BundleDeploymentPropertiesTransformer;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.junit.Test;
 
 
 public class BundleDeploymentPropertiesTransformerTests {
@@ -43,7 +46,8 @@ public class BundleDeploymentPropertiesTransformerTests {
         expect(artifact.getBundleManifest()).andReturn(manifest);
         
         replay(artifact);
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(artifact);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> tree = dag.createRootNode(artifact);
         
         BundleDeploymentPropertiesTransformer transformer = new BundleDeploymentPropertiesTransformer();
         transformer.transform(tree, null);
@@ -60,7 +64,8 @@ public class BundleDeploymentPropertiesTransformerTests {
         expect(artifact.getDeploymentProperties()).andReturn(null);
         
         replay(artifact);
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(artifact);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> tree = dag.createRootNode(artifact);
         
         BundleDeploymentPropertiesTransformer transformer = new BundleDeploymentPropertiesTransformer();
         transformer.transform(tree, null);
@@ -81,7 +86,8 @@ public class BundleDeploymentPropertiesTransformerTests {
         expect(artifact.getDeploymentProperties()).andReturn(props);
         
         replay(artifact);
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(artifact);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> tree = dag.createRootNode(artifact);
         
         BundleDeploymentPropertiesTransformer transformer = new BundleDeploymentPropertiesTransformer();
         transformer.transform(tree, null);

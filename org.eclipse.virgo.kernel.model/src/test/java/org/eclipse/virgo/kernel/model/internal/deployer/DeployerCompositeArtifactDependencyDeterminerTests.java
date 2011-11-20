@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,12 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.model.internal.deployer;
 
 import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
 
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
@@ -21,16 +20,14 @@ import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
 import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifact;
-import org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifactDependencyDeterminer;
-
-
 import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
+import org.junit.Test;
 
 public class DeployerCompositeArtifactDependencyDeterminerTests {
 
@@ -71,8 +68,9 @@ public class DeployerCompositeArtifactDependencyDeterminerTests {
 
     @Test
     public void success() {
-        StubPlanInstallArtifact installArtifact = new StubPlanInstallArtifact();
-        installArtifact.getTree().addChild(new ThreadSafeArrayListTree<InstallArtifact>(new StubInstallArtifact()));
+    	DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        StubPlanInstallArtifact installArtifact = new StubPlanInstallArtifact(dag);
+        installArtifact.getGraph().addChild(dag.createRootNode(new StubInstallArtifact()));
 		DeployerCompositeArtifact artifact = new DeployerCompositeArtifact(bundleContext, installArtifact, region1);
         assertEquals(1, this.determiner.getDependents(artifact).size());
     }

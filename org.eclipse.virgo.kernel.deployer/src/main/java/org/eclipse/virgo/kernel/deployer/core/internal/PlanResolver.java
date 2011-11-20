@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
@@ -19,13 +20,13 @@ import org.osgi.framework.Version;
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeInclosure;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 
 /**
  * {@link PlanResolver} adds the immediate child nodes to a plan node.
@@ -40,20 +41,20 @@ public class PlanResolver implements Transformer {
 
     private static final String SCOPE_SEPARATOR = "-";
 
-    private final InstallArtifactTreeInclosure installArtifactTreeInclosure;
+    private final InstallArtifactGraphInclosure installArtifactGraphInclosure;
 
-    public PlanResolver(InstallArtifactTreeInclosure installArtifactTreeInclosure) {
-        this.installArtifactTreeInclosure = installArtifactTreeInclosure;
+    public PlanResolver(InstallArtifactGraphInclosure installArtifactGraphInclosure) {
+        this.installArtifactGraphInclosure = installArtifactGraphInclosure;
     }
 
     /**
      * {@InheritDoc}
      */
-    public void transform(Tree<InstallArtifact> installTree, final InstallEnvironment installEnvironment) throws DeploymentException {
-        installTree.visit(new ExceptionThrowingTreeVisitor<InstallArtifact, DeploymentException>() {
+    public void transform(GraphNode<InstallArtifact> installGraph, final InstallEnvironment installEnvironment) throws DeploymentException {
+        installGraph.visit(new ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, DeploymentException>() {
 
-            public boolean visit(Tree<InstallArtifact> tree) throws DeploymentException {
-                PlanResolver.this.operate(tree.getValue());
+            public boolean visit(GraphNode<InstallArtifact> graph) throws DeploymentException {
+                PlanResolver.this.operate(graph.getValue());
                 return true;
             }
         });
@@ -62,16 +63,16 @@ public class PlanResolver implements Transformer {
     private void operate(InstallArtifact installArtifact) throws DeploymentException {
         if (installArtifact instanceof PlanInstallArtifact) {
             PlanInstallArtifact planInstallArtifact = (PlanInstallArtifact) installArtifact;
-            if (planInstallArtifact.getTree().getChildren().isEmpty()) {
+            if (planInstallArtifact.getGraph().getChildren().isEmpty()) {
                 String scopeName = getArtifactScopeName(planInstallArtifact);
-                Tree<InstallArtifact> tree = planInstallArtifact.getTree();
+                GraphNode<InstallArtifact> graph = planInstallArtifact.getGraph();
                 List<ArtifactSpecification> artifactSpecifications = planInstallArtifact.getArtifactSpecifications();
                 for (ArtifactSpecification artifactSpecification : artifactSpecifications) {
-                    Tree<InstallArtifact> childInstallArtifactTree = createInstallArtifactTree(artifactSpecification, scopeName);     
-                    TreeUtils.addChild(tree, childInstallArtifactTree);
+                    GraphNode<InstallArtifact> childInstallArtifactGraph = createInstallArtifactGraph(artifactSpecification, scopeName);     
+                    GraphUtils.addChild(graph, childInstallArtifactGraph);
                     
                     // Put child into the INSTALLING state as Transformers (like this) are after the "begin install" pipeline stage.
-                    InstallArtifact childInstallArtifact = childInstallArtifactTree.getValue();
+                    InstallArtifact childInstallArtifact = childInstallArtifactGraph.getValue();
                     ((AbstractInstallArtifact) childInstallArtifact).beginInstall();
                 }
             }
@@ -104,7 +105,7 @@ public class PlanResolver implements Transformer {
         return result;
     }
 
-    private Tree<InstallArtifact> createInstallArtifactTree(ArtifactSpecification artifactSpecification, String scopeName) throws DeploymentException {
-        return this.installArtifactTreeInclosure.createInstallTree(artifactSpecification, scopeName);
+    private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName) throws DeploymentException {
+        return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName);
     }        
 }

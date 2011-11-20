@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
@@ -14,14 +15,13 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import java.io.IOException;
 import java.util.Map;
 
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 /**
@@ -39,8 +39,8 @@ final class BundleDeploymentPropertiesTransformer implements Transformer {
 
     private static final String HEADER_PREFIX = "header:";
 
-    public void transform(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException {
-        installTree.visit(new Visitor());
+    public void transform(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
+        installGraph.visit(new Visitor());
     }
 
     private void doTransformBundleArtifact(BundleInstallArtifact value, Map<String, String> deploymentProperties) throws IOException {
@@ -66,10 +66,10 @@ final class BundleDeploymentPropertiesTransformer implements Transformer {
         }
     }
 
-    private final class Visitor implements ExceptionThrowingTreeVisitor<InstallArtifact, DeploymentException> {
+    private final class Visitor implements ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, DeploymentException> {
 
-        public boolean visit(Tree<InstallArtifact> tree) throws DeploymentException {
-            InstallArtifact value = tree.getValue();
+        public boolean visit(GraphNode<InstallArtifact> graph) throws DeploymentException {
+            InstallArtifact value = graph.getValue();
             if (value instanceof BundleInstallArtifact) {
                 Map<String, String> deploymentProperties = ((BundleInstallArtifact)value).getDeploymentProperties();
                 if (deploymentProperties != null && !deploymentProperties.isEmpty()) {

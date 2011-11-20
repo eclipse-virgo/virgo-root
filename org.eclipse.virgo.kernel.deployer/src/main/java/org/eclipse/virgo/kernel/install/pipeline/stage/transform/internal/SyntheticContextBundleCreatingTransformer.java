@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
@@ -18,33 +19,31 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-import org.osgi.framework.Version;
-
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.TreeUtils;
+import org.eclipse.virgo.kernel.deployer.core.internal.GraphUtils;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStorageFactory;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ScopeNameFactory;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ImportBundle;
+import org.osgi.framework.Version;
 
 /**
- * A {@link Transformer} implementation that examines the install tree and, for each scoped plan found within the tree,
+ * A {@link Transformer} implementation that examines the install graph and, for each scoped plan found within the graph,
  * adds a synthetic context bundle to the plan.
  * 
  * <p />
@@ -60,31 +59,31 @@ final class SyntheticContextBundleCreatingTransformer implements Transformer, Sc
 
     private static final String SYNTHETIC_CONTEXT_SUFFIX = "-synthetic.context";
 
-    private final InstallArtifactTreeFactory installArtifactTreeFactory;
+    private final InstallArtifactGraphFactory installArtifactGraphFactory;
 
     private final ArtifactStorageFactory artifactStorageFactory;
 
-    SyntheticContextBundleCreatingTransformer(InstallArtifactTreeFactory installArtifactTreeFactory, ArtifactStorageFactory artifactStorageFactory) {
-        this.installArtifactTreeFactory = installArtifactTreeFactory;
+    SyntheticContextBundleCreatingTransformer(InstallArtifactGraphFactory installArtifactGraphFactory, ArtifactStorageFactory artifactStorageFactory) {
+        this.installArtifactGraphFactory = installArtifactGraphFactory;
         this.artifactStorageFactory = artifactStorageFactory;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void transform(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException {
-        installTree.visit(new ScopedPlanIdentifyingTreeVisitor(this));
+    public void transform(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
+        installGraph.visit(new ScopedPlanIdentifyingDirectedAcyclicGraphVisitor(this));
     }
 
     /**
      * {@inheritDoc}
      * 
      */
-    public void processScopedPlanInstallArtifact(Tree<InstallArtifact> plan) throws DeploymentException {
-        if (!syntheticContextExists(plan)) {
-            Set<BundleInstallArtifact> childBundles = getBundlesInScope(plan);
+    public void processScopedPlanInstallArtifact(GraphNode<InstallArtifact> graph) throws DeploymentException {
+        if (!syntheticContextExists(graph)) {
+            Set<BundleInstallArtifact> childBundles = getBundlesInScope(graph);
 
-            PlanInstallArtifact planArtifact = (PlanInstallArtifact) plan.getValue();
+            PlanInstallArtifact planArtifact = (PlanInstallArtifact) graph.getValue();
             
             String scopeName = determineSyntheticContextScopeName(planArtifact);
             
@@ -98,17 +97,17 @@ final class SyntheticContextBundleCreatingTransformer implements Transformer, Sc
             ArtifactStorage artifactStorage = this.artifactStorageFactory.createDirectoryStorage(identity, name + ".jar");
             writeSyntheticContextBundle(syntheticContextBundleManifest, artifactStorage.getArtifactFS());
             
-            Tree<InstallArtifact> syntheticContextBundle = this.installArtifactTreeFactory.constructInstallArtifactTree(
+            GraphNode<InstallArtifact> syntheticContextBundle = this.installArtifactGraphFactory.constructInstallArtifactGraph(
                 identity, artifactStorage, null, null);
-            TreeUtils.addChild(plan, syntheticContextBundle);
+            GraphUtils.addChild(graph, syntheticContextBundle);
         }
     }
 
-    private boolean syntheticContextExists(Tree<InstallArtifact> plan) {
+    private boolean syntheticContextExists(GraphNode<InstallArtifact> plan) {
         PlanInstallArtifact planInstallArtifact = (PlanInstallArtifact) plan.getValue();
         String syntheticContextBundleSymbolicName = determineSyntheticContextScopeName(planInstallArtifact) + SYNTHETIC_CONTEXT_SUFFIX;
-        List<Tree<InstallArtifact>> children = plan.getChildren();
-        for (Tree<InstallArtifact> child : children) {
+        List<GraphNode<InstallArtifact>> children = plan.getChildren();
+        for (GraphNode<InstallArtifact> child : children) {
             if (syntheticContextBundleSymbolicName.equals(child.getValue().getName())) {
                 return true;
             }
@@ -116,8 +115,8 @@ final class SyntheticContextBundleCreatingTransformer implements Transformer, Sc
         return false;
     }
 
-    private Set<BundleInstallArtifact> getBundlesInScope(Tree<InstallArtifact> plan) {
-        BundleInstallArtifactGatheringTreeVisitor visitor = new BundleInstallArtifactGatheringTreeVisitor();
+    private Set<BundleInstallArtifact> getBundlesInScope(GraphNode<InstallArtifact> plan) {
+        BundleInstallArtifactGatheringGraphVisitor visitor = new BundleInstallArtifactGatheringGraphVisitor();
         plan.visit(visitor);
         return visitor.getChildBundles();
     }

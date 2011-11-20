@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.internal;
@@ -24,28 +25,26 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
-import org.eclipse.virgo.kernel.install.pipeline.internal.CompensatingPipeline;
 import org.eclipse.virgo.kernel.install.pipeline.stage.AbstractPipelineStage;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  */
 public class CompensatingPipelineTests {
 
-    private Tree<InstallArtifact> installTree;
+    private GraphNode<InstallArtifact> installGraph;
 
     private InstallEnvironment installEnvironment;
 
@@ -56,7 +55,7 @@ public class CompensatingPipelineTests {
     private class GoodPipelineStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) {
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) {
             CompensatingPipelineTests.this.stageTrace.add(this);
         }
 
@@ -69,7 +68,7 @@ public class CompensatingPipelineTests {
     private class DeploymentExceptionPipelineStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException {
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
             CompensatingPipelineTests.this.stageTrace.add(this);
             throw new DeploymentException("failed");
         }
@@ -83,7 +82,7 @@ public class CompensatingPipelineTests {
     private class UnableToSatisfyBundleDependenciesExceptionPipelineStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment)
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment)
             throws UnableToSatisfyBundleDependenciesException {
             CompensatingPipelineTests.this.stageTrace.add(this);
             throw new UnableToSatisfyBundleDependenciesException("failed", null, null);
@@ -98,7 +97,7 @@ public class CompensatingPipelineTests {
     private class RuntimeExceptionPipelineStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) {
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) {
             CompensatingPipelineTests.this.stageTrace.add(this);
             throw new RuntimeException("failed");
         }
@@ -112,7 +111,7 @@ public class CompensatingPipelineTests {
     private class CompensationStage extends AbstractPipelineStage {
 
         @Override
-        protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) {
+        protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) {
             CompensatingPipelineTests.this.stageTrace.add(this);
         }
 
@@ -124,7 +123,8 @@ public class CompensatingPipelineTests {
 
     @Before
     public void setUp() {
-        this.installTree = new ThreadSafeArrayListTree<InstallArtifact>(null);
+    		DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        this.installGraph = dag.createRootNode(null);
         this.installEnvironment = createMock(InstallEnvironment.class);
         this.installLog = createMock(InstallLog.class);
         this.stageTrace = new ArrayList<PipelineStage>();
@@ -154,7 +154,7 @@ public class CompensatingPipelineTests {
         List<PipelineStage> expectedStageTrace = new ArrayList<PipelineStage>();
 
         Pipeline p = new CompensatingPipeline(new CompensationStage());
-        p.process(installTree, installEnvironment);
+        p.process(installGraph, installEnvironment);
 
         assertEquals(expectedStageTrace, this.stageTrace);
 
@@ -184,7 +184,7 @@ public class CompensatingPipelineTests {
         p.appendStage(ps2);
         expectedStageTrace.add(ps2);
 
-        p.process(installTree, installEnvironment);
+        p.process(installGraph, installEnvironment);
 
         assertEquals(expectedStageTrace, this.stageTrace);
 
@@ -221,7 +221,7 @@ public class CompensatingPipelineTests {
         expectedStageTrace.add(compensation);
 
         try {
-            p.process(installTree, installEnvironment);
+            p.process(installGraph, installEnvironment);
             assertTrue(false);
         } catch (DeploymentException e) {
         }
@@ -263,7 +263,7 @@ public class CompensatingPipelineTests {
         expectedStageTrace.add(compensation);
 
         try {
-            p.process(installTree, installEnvironment);
+            p.process(installGraph, installEnvironment);
             assertTrue(false);
         } catch (DeploymentException e) {
         }
@@ -303,7 +303,7 @@ public class CompensatingPipelineTests {
         expectedStageTrace.add(compensation);
 
         try {
-            p.process(installTree, installEnvironment);
+            p.process(installGraph, installEnvironment);
             assertTrue(false);
         } catch (UnableToSatisfyBundleDependenciesException e) {
         }
@@ -343,7 +343,7 @@ public class CompensatingPipelineTests {
         expectedStageTrace.add(compensation);
 
         try {
-            p.process(installTree, installEnvironment);
+            p.process(installGraph, installEnvironment);
             assertTrue(false);
         } catch (RuntimeException e) {
         }

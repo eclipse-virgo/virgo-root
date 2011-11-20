@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.internal;
@@ -22,7 +23,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * {@link CompensatingPipeline} is a {@link Pipeline} which runs like any other pipeline but if one of its stages throws
@@ -66,30 +67,30 @@ final class CompensatingPipeline extends StandardPipeline {
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException,
+    protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
         try {
-            super.doProcessTree(installTree, installEnvironment);
+            super.doProcessGraph(installGraph, installEnvironment);
         } catch (DeploymentException de) {
-            compensate(installTree, installEnvironment, de);
+            compensate(installGraph, installEnvironment, de);
             throw de;
         } catch (UnableToSatisfyBundleDependenciesException utsbde) {
-            compensate(installTree, installEnvironment, utsbde);
+            compensate(installGraph, installEnvironment, utsbde);
             throw utsbde;
         } catch (RuntimeException re) {
-            compensate(installTree, installEnvironment, re);
+            compensate(installGraph, installEnvironment, re);
             throw re;
         }
     }
 
-    private void compensate(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment, Exception e) {
+    private void compensate(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment, Exception e) {
         try {
             if (!(e instanceof DeploymentException) || !((DeploymentException)e).isDiagnosed()) {
                 installEnvironment.getInstallLog().logFailure(DeployerLogEvents.INSTALL_FAILURE, e);
             } else {
                 installEnvironment.getInstallLog().logFailure(DeployerLogEvents.INSTALL_FAILURE, null);
             }
-            this.compensation.process(installTree, installEnvironment);
+            this.compensation.process(installGraph, installEnvironment);
         } catch (Exception ex) {
             logger.warn(String.format("exception thrown while compensating for '%s'", e.getMessage()), ex);
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
@@ -23,24 +24,22 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyLibraryDependenciesException;
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.ImportExpandingTransformer;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
+import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyLibraryDependenciesException;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.Version;
 
 /**
  */
@@ -58,8 +57,11 @@ public class ImportExpandingTransformerTests {
 
     private InstallLog installLog;
 
+	private DirectedAcyclicGraph<InstallArtifact> dag;
+
     @Before
     public void setUp() throws Exception {
+    		this.dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
         this.bundleIinstallArtifact = createMock(BundleInstallArtifact.class);
         this.installEnvironment = createMock(InstallEnvironment.class);
         this.importExpander = createMock(org.eclipse.virgo.kernel.osgi.framework.ImportExpander.class);
@@ -99,7 +101,7 @@ public class ImportExpandingTransformerTests {
         replayMocks();
 
         ImportExpandingTransformer importExpander = new ImportExpandingTransformer(this.importExpander);
-        importExpander.transform(new ThreadSafeArrayListTree<InstallArtifact>(bundleIinstallArtifact), installEnvironment);
+        importExpander.transform(this.dag.createRootNode(bundleIinstallArtifact), installEnvironment);
 
         verifyMocks();
     }
@@ -118,7 +120,7 @@ public class ImportExpandingTransformerTests {
 
         ImportExpandingTransformer importExpander = new ImportExpandingTransformer(this.importExpander);
         try {
-            importExpander.transform(new ThreadSafeArrayListTree<InstallArtifact>(bundleIinstallArtifact), installEnvironment);
+            importExpander.transform(this.dag.createRootNode(bundleIinstallArtifact), installEnvironment);
         } catch (DeploymentException e) {
             assertTrue(e.getCause() instanceof IOException);
         }
@@ -142,7 +144,7 @@ public class ImportExpandingTransformerTests {
 
         ImportExpandingTransformer importExpander = new ImportExpandingTransformer(this.importExpander);
         try {
-            importExpander.transform(new ThreadSafeArrayListTree<InstallArtifact>(bundleIinstallArtifact), installEnvironment);
+            importExpander.transform(this.dag.createRootNode(bundleIinstallArtifact), installEnvironment);
         } catch (DeploymentException e) {
             assertTrue(e.getCause() instanceof ImportMergeException);
         }
@@ -167,7 +169,7 @@ public class ImportExpandingTransformerTests {
 
         ImportExpandingTransformer importExpander = new ImportExpandingTransformer(this.importExpander);
         try {
-            importExpander.transform(new ThreadSafeArrayListTree<InstallArtifact>(bundleIinstallArtifact), installEnvironment);
+            importExpander.transform(this.dag.createRootNode(bundleIinstallArtifact), installEnvironment);
         } catch (DeploymentException e) {
             assertTrue(e.getCause() instanceof UnableToSatisfyLibraryDependenciesException);
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
@@ -30,64 +31,69 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
 
-import org.junit.Test;
-import org.osgi.framework.Version;
-
-
 import org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStorageFactory;
 import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStorageFactory;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ScopeNameFactory;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
-import org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.SyntheticContextBundleCreatingTransformer;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.util.io.PathReference;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.Version;
 
 /**
  */
 public final class SyntheticContextBundleCreatingTransformerTests {
 
-    private final InstallArtifactTreeFactory installArtifactTreeFactory = createMock(InstallArtifactTreeFactory.class);
+    private final InstallArtifactGraphFactory installArtifactGraphFactory = createMock(InstallArtifactGraphFactory.class);
 
     private final InstallEnvironment installEnvironment = createMock(InstallEnvironment.class);
 
     private final ArtifactStorageFactory artifactStorageFactory = new StandardArtifactStorageFactory(new PathReference("target/work"),
         new StandardArtifactFSFactory(), new MockEventLogger());
 
-    private final Transformer transformer = new SyntheticContextBundleCreatingTransformer(this.installArtifactTreeFactory,
+    private final Transformer transformer = new SyntheticContextBundleCreatingTransformer(this.installArtifactGraphFactory,
         this.artifactStorageFactory);
+
+    private DirectedAcyclicGraph<InstallArtifact> dag;
+
+    @Before
+    public void createGraph() {
+    		this.dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+    }
 
     @SuppressWarnings("unchecked")
     @Test
     public void basicSyntheticContextCreation() throws DeploymentException, FileNotFoundException, IOException {
-        Tree<InstallArtifact> planInstallTree = createMockPlan(true, new Version(1, 0, 0), "plan-name", "bundle1", "bundle2", "bundle3");
+        GraphNode<InstallArtifact> planInstallGraph = createMockPlan(true, new Version(1, 0, 0), "plan-name", "bundle1", "bundle2", "bundle3");
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
         File syntheticBundleDir = new File("target/work/staging/plan-name-1/bundle/plan-name-1-synthetic.context/1.0.0/plan-name-1-synthetic.context.jar").getAbsoluteFile();
         expect(
-            this.installArtifactTreeFactory.constructInstallArtifactTree(eq(new ArtifactIdentity("bundle", "plan-name-1-synthetic.context",
+            this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "plan-name-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("plan-name", new Version(1, 0, 0)))), isA(ArtifactStorage.class),
-                (Map<String, String>) isNull(), (String) isNull())).andReturn(
-            new ThreadSafeArrayListTree<InstallArtifact>(syntheticContextInstallArtifact));
+                (Map<String, String>) isNull(), (String) isNull())).andReturn(this.dag.createRootNode(syntheticContextInstallArtifact));
 
-        replay(this.installEnvironment, this.installArtifactTreeFactory);
+        replay(this.installEnvironment, this.installArtifactGraphFactory);
 
-        this.transformer.transform(planInstallTree, this.installEnvironment);
+        this.transformer.transform(planInstallGraph, this.installEnvironment);
 
-        verify(this.installEnvironment, this.installArtifactTreeFactory);
+        verify(this.installEnvironment, this.installArtifactGraphFactory);
 
         File manifest = new File(syntheticBundleDir, JarFile.MANIFEST_NAME);
         assertTrue(manifest.exists());
@@ -98,23 +104,22 @@ public final class SyntheticContextBundleCreatingTransformerTests {
     @SuppressWarnings("unchecked")
     @Test
     public void nestedPlanSyntheticContextCreation() throws DeploymentException, FileNotFoundException, IOException {
-        Tree<InstallArtifact> rootPlanInstallTree = createMockPlan(true, new Version(1, 0, 0), "plan-name", "bundle1");
-        rootPlanInstallTree.addChild(createMockPlan(true, new Version(1, 0, 0), "nested-plan", "bundle2", "bundle3"));
+        GraphNode<InstallArtifact> rootPlanInstallGraph = createMockPlan(true, new Version(1, 0, 0), "plan-name", "bundle1");
+        rootPlanInstallGraph.addChild(createMockPlan(true, new Version(1, 0, 0), "nested-plan", "bundle2", "bundle3"));
 
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
         File syntheticBundleDir = new File("target/work/staging/plan-name-1/bundle/plan-name-1-synthetic.context/1.0.0/plan-name-1-synthetic.context.jar").getAbsoluteFile();
         expect(
-            this.installArtifactTreeFactory.constructInstallArtifactTree(eq(new ArtifactIdentity("bundle", "plan-name-1-synthetic.context",
+            this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "plan-name-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("plan-name", new Version(1, 0, 0)))), isA(ArtifactStorage.class),
-                (Map<String, String>) isNull(), (String) isNull())).andReturn(
-            new ThreadSafeArrayListTree<InstallArtifact>(syntheticContextInstallArtifact));
+                (Map<String, String>) isNull(), (String) isNull())).andReturn(this.dag.createRootNode(syntheticContextInstallArtifact));
 
-        replay(this.installEnvironment, this.installArtifactTreeFactory);
+        replay(this.installEnvironment, this.installArtifactGraphFactory);
 
-        this.transformer.transform(rootPlanInstallTree, this.installEnvironment);
+        this.transformer.transform(rootPlanInstallGraph, this.installEnvironment);
 
-        verify(this.installEnvironment, this.installArtifactTreeFactory);
+        verify(this.installEnvironment, this.installArtifactGraphFactory);
 
         File manifest = new File(syntheticBundleDir, JarFile.MANIFEST_NAME);
         assertTrue(manifest.exists());
@@ -125,25 +130,23 @@ public final class SyntheticContextBundleCreatingTransformerTests {
     @SuppressWarnings("unchecked")
     @Test
     public void syntheticContextOnlyCreatedForScopedPlans() throws DeploymentException, FileNotFoundException, IOException {
-        Tree<InstallArtifact> rootPlanInstallTree = createMockPlan(false, new Version(1, 0, 0), "plan-name", "bundle1");
-        // This test need not use TreeUtils.addChild
-        rootPlanInstallTree.addChild(createMockPlan(true, new Version(1, 0, 0), "nested-plan", "bundle2", "bundle3"));
+        GraphNode<InstallArtifact> rootPlanInstallGraph = createMockPlan(false, new Version(1, 0, 0), "plan-name", "bundle1");
+        rootPlanInstallGraph.addChild(createMockPlan(true, new Version(1, 0, 0), "nested-plan", "bundle2", "bundle3"));
 
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
         File syntheticBundleDir = new File(
             "target/work/staging/nested-plan-1/bundle/nested-plan-1-synthetic.context/1.0.0/nested-plan-1-synthetic.context.jar").getAbsoluteFile();
         expect(
-            this.installArtifactTreeFactory.constructInstallArtifactTree(eq(new ArtifactIdentity("bundle", "nested-plan-1-synthetic.context",
+            this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "nested-plan-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("nested-plan", new Version(1, 0, 0)))), isA(ArtifactStorage.class),
-                (Map<String, String>) isNull(), (String) isNull())).andReturn(
-            new ThreadSafeArrayListTree<InstallArtifact>(syntheticContextInstallArtifact));
+                (Map<String, String>) isNull(), (String) isNull())).andReturn(this.dag.createRootNode(syntheticContextInstallArtifact));
 
-        replay(this.installEnvironment, this.installArtifactTreeFactory);
+        replay(this.installEnvironment, this.installArtifactGraphFactory);
 
-        this.transformer.transform(rootPlanInstallTree, this.installEnvironment);
+        this.transformer.transform(rootPlanInstallGraph, this.installEnvironment);
 
-        verify(this.installEnvironment, this.installArtifactTreeFactory);
+        verify(this.installEnvironment, this.installArtifactGraphFactory);
 
         File manifest = new File(syntheticBundleDir, JarFile.MANIFEST_NAME);
         assertTrue(manifest.exists());
@@ -177,7 +180,7 @@ public final class SyntheticContextBundleCreatingTransformerTests {
         return bundle;
     }
 
-    private Tree<InstallArtifact> createMockPlan(boolean scoped, Version version, String name, String... bundleSymbolicNames) {
+    private GraphNode<InstallArtifact> createMockPlan(boolean scoped, Version version, String name, String... bundleSymbolicNames) {
         PlanInstallArtifact plan = createMock(PlanInstallArtifact.class);
 
         expect(plan.isScoped()).andReturn(scoped).anyTimes();
@@ -186,12 +189,11 @@ public final class SyntheticContextBundleCreatingTransformerTests {
 
         replay(plan);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(plan);
+        GraphNode<InstallArtifact> installTree = this.dag.createRootNode(plan);
 
         for (String bundleSymbolicName : bundleSymbolicNames) {
             InstallArtifact bundle = createMockBundleInstallArtifact(bundleSymbolicName);
-            // This test need not use TreeUtils.addChild
-            installTree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(bundle));
+            installTree.addChild(this.dag.createRootNode(bundle));
         }
         return installTree;
     }

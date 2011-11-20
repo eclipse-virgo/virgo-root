@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,18 +7,18 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.visit.internal;
-
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.AbstractPipelineStage;
 import org.eclipse.virgo.kernel.install.pipeline.stage.visit.Visitor;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * {@link VisitationStage} is is a pipeline stage that drives {@link Visitor Visitors}.
@@ -52,15 +52,15 @@ public final class VisitationStage extends AbstractPipelineStage {
     }
 
     @Override
-    protected void doProcessTree(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException,
+    protected void doProcessGraph(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
         if (this.preOrder) {
-            super.doProcessTree(installTree, installEnvironment);
+            super.doProcessGraph(installGraph, installEnvironment);
         } else {
             // Traverse in postorder.
-            InstallArtifact value = installTree.getValue();
-            for (Tree<InstallArtifact> child : installTree.getChildren()) {
-                doProcessTree(child, installEnvironment);
+            InstallArtifact value = installGraph.getValue();
+            for (GraphNode<InstallArtifact> child : installGraph.getChildren()) {
+                doProcessGraph(child, installEnvironment);
             }
             doProcessNode(value, installEnvironment);
         }

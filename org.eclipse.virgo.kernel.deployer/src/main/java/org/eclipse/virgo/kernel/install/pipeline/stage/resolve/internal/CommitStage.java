@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,18 +7,17 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
-
-import org.osgi.framework.BundleException;
-
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.osgi.framework.BundleException;
 
 /**
  * {@link CommitStage} is a {@link PipelineStage} which commits the changes in the side state.
@@ -34,7 +33,7 @@ public final class CommitStage implements PipelineStage {
     /**
      * {@inheritDoc}
      */
-    public void process(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException {
+    public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
         try {
             installEnvironment.getQuasiFramework().commit();
         } catch (BundleException e) {

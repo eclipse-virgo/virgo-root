@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
@@ -15,21 +16,21 @@ package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 
-final class ScopedPlanIdentifyingTreeVisitor implements ExceptionThrowingTreeVisitor<InstallArtifact, DeploymentException> {
+final class ScopedPlanIdentifyingDirectedAcyclicGraphVisitor implements ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, DeploymentException> {
 
     private final ScopedPlanInstallArtifactProcessor planProcessor;
     
-    ScopedPlanIdentifyingTreeVisitor(ScopedPlanInstallArtifactProcessor planProcessor) {
+    ScopedPlanIdentifyingDirectedAcyclicGraphVisitor(ScopedPlanInstallArtifactProcessor planProcessor) {
 
         this.planProcessor = planProcessor;
     }
 
-    public boolean visit(Tree<InstallArtifact> tree) throws DeploymentException {
-        if (isScopedPlan(tree.getValue())) {
-            this.planProcessor.processScopedPlanInstallArtifact(tree);                
+    public boolean visit(GraphNode<InstallArtifact> graph) throws DeploymentException {
+        if (isScopedPlan(graph.getValue())) {
+            this.planProcessor.processScopedPlanInstallArtifact(graph);                
             return false;
         }
         return true;

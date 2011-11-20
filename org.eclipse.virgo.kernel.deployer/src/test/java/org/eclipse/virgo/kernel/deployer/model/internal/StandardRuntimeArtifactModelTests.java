@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2010 VMware Inc. and others
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
+ *******************************************************************************/
+// TODO - DAG - check copyright header.
+
 package org.eclipse.virgo.kernel.deployer.model.internal;
 
 
@@ -18,7 +31,7 @@ import org.eclipse.virgo.kernel.deployer.model.DuplicateDeploymentIdentityExcept
 import org.eclipse.virgo.kernel.deployer.model.DuplicateFileNameException;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateLocationException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -78,10 +91,10 @@ public class StandardRuntimeArtifactModelTests {
     
     private static class StubInstallArtifact implements InstallArtifact {
 
-        private volatile Tree<InstallArtifact> tree;
+        private volatile GraphNode<InstallArtifact> graph;
 
-        public Tree<InstallArtifact> getTree() {
-            return this.tree;
+        public GraphNode<InstallArtifact> getGraph() {
+            return this.graph;
         }
 
         public void stop() throws DeploymentException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
@@ -32,7 +33,7 @@ import org.eclipse.virgo.kernel.deployer.model.DuplicateLocationException;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeInclosure;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
@@ -42,7 +43,7 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesExcept
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.WatchableRepository;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.PathReference;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -50,8 +51,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 /**
- * {@link PipelinedApplicationDeployer} is an implementation of {@link ApplicationDeployer} which creates a {@link Tree}
- * of {@link InstallArtifact InstallArtifacts} and processes the tree by passing it through a {@link Pipeline} while
+ * {@link PipelinedApplicationDeployer} is an implementation of {@link ApplicationDeployer} which creates a {@link GraphNode}
+ * of {@link InstallArtifact InstallArtifacts} and processes the graph by passing it through a {@link Pipeline} while
  * operating on an {@link InstallEnvironment}.
  * <p />
  * 
@@ -70,7 +71,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private final InstallEnvironmentFactory installEnvironmentFactory;
 
-    private final InstallArtifactTreeInclosure installArtifactTreeInclosure;
+    private final InstallArtifactGraphInclosure installArtifactGraphInclosure;
 
     private final RuntimeArtifactModel ram;
 
@@ -87,7 +88,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     private final BundleContext bundleContext;
 
     public PipelinedApplicationDeployer(Pipeline pipeline, 
-                                        InstallArtifactTreeInclosure installArtifactTreeInclosure,
+                                        InstallArtifactGraphInclosure installArtifactGraphInclosure,
                                         InstallEnvironmentFactory installEnvironmentFactory, 
                                         RuntimeArtifactModel ram, 
                                         DeploymentListener deploymentListener,
@@ -96,7 +97,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                                         DeployerConfiguration deployerConfiguration,
                                         BundleContext bundleContext){
         this.eventLogger = eventLogger;
-        this.installArtifactTreeInclosure = installArtifactTreeInclosure;
+        this.installArtifactGraphInclosure = installArtifactGraphInclosure;
         this.installEnvironmentFactory = installEnvironmentFactory;
         this.ram = ram;
         this.deploymentListener = deploymentListener;
@@ -150,18 +151,18 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 }
             }
 
-            Tree<InstallArtifact> installTree = this.installArtifactTreeInclosure.createInstallTree(new File(normalisedUri));
+            GraphNode<InstallArtifact> installGraph = this.installArtifactGraphInclosure.createInstallGraph(new File(normalisedUri));
             DeploymentIdentity deploymentIdentity;
 
             try {
-                deploymentIdentity = addTreeToModel(normalisedUri, installTree);
+                deploymentIdentity = addGraphToModel(normalisedUri, installGraph);
             } catch (KernelException ke) {
                 throw new DeploymentException(ke.getMessage(), ke);
             }
 
             this.deploymentOptionsMap.put(deploymentIdentity, deploymentOptions);
             try {
-                driveInstallPipeline(normalisedUri, installTree);
+                driveInstallPipeline(normalisedUri, installGraph);
             } catch (DeploymentException de) {
                 this.ram.delete(deploymentIdentity);
                 throw de;
@@ -221,7 +222,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private DeploymentIdentity updateAndRefresh(URI location, InstallArtifact installArtifact) throws DeploymentException {
         DeploymentIdentity deploymentIdentity = null;
-        this.installArtifactTreeInclosure.updateStagingArea(new File(location), new ArtifactIdentity(installArtifact.getType(),
+        this.installArtifactGraphInclosure.updateStagingArea(new File(location), new ArtifactIdentity(installArtifact.getType(),
             installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
         if (installArtifact.refresh()) {
             this.deploymentListener.refreshed(location);
@@ -248,9 +249,9 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
             "PipelinedApplicationDeployer ApplicationDeployer does not support deployment by type, name, and version");
     }
 
-    private DeploymentIdentity addTreeToModel(URI location, Tree<InstallArtifact> installTree) throws DuplicateFileNameException,
+    private DeploymentIdentity addGraphToModel(URI location, GraphNode<InstallArtifact> installGraph) throws DuplicateFileNameException,
         DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
-        return this.ram.add(location, installTree.getValue());
+        return this.ram.add(location, installGraph.getValue());
     }
 
     /**
@@ -258,31 +259,31 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
      */
     public void recoverDeployment(URI uri, DeploymentOptions options) throws DeploymentException {
 
-        Tree<InstallArtifact> installTree = this.installArtifactTreeInclosure.recoverInstallTree(new File(uri), options);
+        GraphNode<InstallArtifact> installNode = this.installArtifactGraphInclosure.recoverInstallGraph(new File(uri), options);
 
-        if (installTree == null) {
+        if (installNode == null) {
             // Remove the URI from the recovery log.
             this.deploymentListener.undeployed(uri);
         } else {
-            driveInstallPipeline(uri, installTree);
+            driveInstallPipeline(uri, installNode);
 
-            start(installTree.getValue(), options.getSynchronous());
+            start(installNode.getValue(), options.getSynchronous());
 
             try {
-                addTreeToModel(uri, installTree);
+                addGraphToModel(uri, installNode);
             } catch (KernelException e) {
                 throw new DeploymentException(e.getMessage(), e);
             }
         }
     }
 
-    private void driveInstallPipeline(URI uri, Tree<InstallArtifact> installTree) throws DeploymentException {
+    private void driveInstallPipeline(URI uri, GraphNode<InstallArtifact> installGraph) throws DeploymentException {
 
         refreshWatchedRepositories();
-        InstallEnvironment installEnvironment = this.installEnvironmentFactory.createInstallEnvironment(installTree.getValue());
+        InstallEnvironment installEnvironment = this.installEnvironmentFactory.createInstallEnvironment(installGraph.getValue());
 
         try {
-            this.pipeline.process(installTree, installEnvironment);
+            this.pipeline.process(installGraph, installEnvironment);
         } catch (UnableToSatisfyBundleDependenciesException utsbde) {
             logDependencySatisfactionException(uri, utsbde);
             throw new DeploymentException("Dependency satisfaction failed", utsbde);
@@ -379,7 +380,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 DeploymentIdentity originalDeploymentIdentity = getDeploymentIdentity(installArtifact);
                 deploymentIdentity = originalDeploymentIdentity;
                 try {
-                    this.installArtifactTreeInclosure.updateStagingArea(new File(normalisedLocation), new ArtifactIdentity(installArtifact.getType(),
+                    this.installArtifactGraphInclosure.updateStagingArea(new File(normalisedLocation), new ArtifactIdentity(installArtifact.getType(),
                         installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
                     // Attempt to refresh the artifact and escalate to redeploy if this fails.
                     if (refreshInternal(symbolicName, installArtifact)) {
