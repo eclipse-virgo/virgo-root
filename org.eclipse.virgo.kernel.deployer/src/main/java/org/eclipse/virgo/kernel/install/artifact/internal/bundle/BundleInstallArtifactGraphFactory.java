@@ -1,22 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   VMware Inc. - initial contribution
+ *   VMware Inc. - initial contribution (BundleInstallArtifactTreeFactory)
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
 import java.util.Map;
-
-import org.osgi.framework.BundleContext;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -25,16 +21,20 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
+import org.eclipse.virgo.kernel.install.artifact.internal.AbstractArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactRefreshHandler;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.osgi.framework.BundleContext;
 
 /**
- * {@link BundleInstallArtifactTreeFactory} is an {@link InstallArtifactTreeFactory} for {@link BundleInstallArtifact
+ * {@link BundleInstallArtifactGraphFactory} is an {@link InstallArtifactGraphFactory} for {@link BundleInstallArtifact
  * BundleInstallArtifacts}.
  * <p />
  * 
@@ -43,14 +43,15 @@ import org.eclipse.virgo.util.common.Tree;
  * This class is thread safe.
  * 
  */
-public final class BundleInstallArtifactTreeFactory implements InstallArtifactTreeFactory {
+public final class BundleInstallArtifactGraphFactory extends AbstractArtifactGraphFactory {
 
     private final BundleInstallArtifactFactory bundleArtifactFactory;
-
-    public BundleInstallArtifactTreeFactory(@NonNull OsgiFramework osgiFramework, @NonNull BundleContext kernelBundleContext,
+    public BundleInstallArtifactGraphFactory(@NonNull OsgiFramework osgiFramework, @NonNull BundleContext kernelBundleContext,
         @NonNull InstallArtifactRefreshHandler refreshHandler, @NonNull BundleStarter bundleStarter, @NonNull TracingService tracingService,
-        @NonNull PackageAdminUtil packageAdminUtil, @NonNull BundleContext regionBundleContext, EventLogger eventLogger, ArtifactIdentityDeterminer identityDeterminer) {
+        @NonNull PackageAdminUtil packageAdminUtil, @NonNull BundleContext regionBundleContext, EventLogger eventLogger, ArtifactIdentityDeterminer identityDeterminer,
+        @NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
 
+    		super(dag);
         BundleDriverFactory bundleDriverFactory = new BundleDriverFactory(osgiFramework, regionBundleContext, bundleStarter, tracingService,
             packageAdminUtil);
 
@@ -60,7 +61,7 @@ public final class BundleInstallArtifactTreeFactory implements InstallArtifactTr
     /**
      * {@inheritDoc}
      */
-    public Tree<InstallArtifact> constructInstallArtifactTree(ArtifactIdentity identity, ArtifactStorage artifactStorage, Map<String, String> deploymentProperties,
+    public GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity identity, ArtifactStorage artifactStorage, Map<String, String> deploymentProperties,
         String repositoryName) throws DeploymentException {
         if (ArtifactIdentityDeterminer.BUNDLE_TYPE.equalsIgnoreCase(identity.getType())) {
             BundleInstallArtifact bundleInstallArtifact = this.bundleArtifactFactory.createBundleInstallArtifact(identity, artifactStorage, repositoryName);
@@ -69,15 +70,11 @@ public final class BundleInstallArtifactTreeFactory implements InstallArtifactTr
                 bundleInstallArtifact.getDeploymentProperties().putAll(deploymentProperties);
             }
 
-            Tree<InstallArtifact> tree = constructInstallTree(bundleInstallArtifact);
-            ((StandardBundleInstallArtifact) bundleInstallArtifact).setTree(tree);
-            return tree;
+            GraphNode<InstallArtifact> graph = constructInstallGraph(bundleInstallArtifact);
+            ((StandardBundleInstallArtifact) bundleInstallArtifact).setGraph(graph);
+            return graph;
         } else {
             return null;
         }
-    }
-
-    private Tree<InstallArtifact> constructInstallTree(InstallArtifact rootArtifact) {
-        return new ThreadSafeArrayListTree<InstallArtifact>(rootArtifact);
     }
 }

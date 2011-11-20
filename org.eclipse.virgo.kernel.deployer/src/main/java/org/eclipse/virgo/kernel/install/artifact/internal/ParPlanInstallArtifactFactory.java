@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -18,9 +19,9 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
-import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -41,7 +42,7 @@ final class ParPlanInstallArtifactFactory {
 
     private final BundleContext bundleContext;
 
-    private final BundleInstallArtifactTreeFactory bundleInstallArtifactTreeFactory;
+    private final BundleInstallArtifactGraphFactory bundleInstallArtifactGraphFactory;
 
     private final ScopeServiceRepository scopeServiceRepository;
 
@@ -49,34 +50,34 @@ final class ParPlanInstallArtifactFactory {
 
     private final InstallArtifactRefreshHandler refreshHandler;
 
-    private final InstallArtifactTreeFactory configInstallArtifactTreeFactory;
+    private final InstallArtifactGraphFactory configInstallArtifactGraphFactory;
 
     private final ArtifactStorageFactory artifactStorageFactory;
     
     private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
 
-    private final InstallArtifactTreeFactory planInstallArtifactTreeFactory;
+    private final InstallArtifactGraphFactory planInstallArtifactGraphFactory;
 
     ParPlanInstallArtifactFactory(EventLogger eventLogger, BundleContext bundleContext,
-        BundleInstallArtifactTreeFactory bundleInstallArtifactTreeFactory, ScopeServiceRepository scopeServiceRepository, ScopeFactory scopeFactory,
-        InstallArtifactRefreshHandler refreshHandler, ConfigInstallArtifactTreeFactory configInstallArtifactTreeFactory,
-        ArtifactStorageFactory artifactStorageFactory, ArtifactIdentityDeterminer artifactIdentityDeterminer, PlanInstallArtifactTreeFactory planInstallArtifactTreeFactory) {
+        BundleInstallArtifactGraphFactory bundleInstallArtifactTreeFactory, ScopeServiceRepository scopeServiceRepository, ScopeFactory scopeFactory,
+        InstallArtifactRefreshHandler refreshHandler, ConfigInstallArtifactGraphFactory configInstallArtifactGraphFactory,
+        ArtifactStorageFactory artifactStorageFactory, ArtifactIdentityDeterminer artifactIdentityDeterminer, PlanInstallArtifactGraphFactory planInstallArtifactGraphFactory) {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
-        this.bundleInstallArtifactTreeFactory = bundleInstallArtifactTreeFactory;
+        this.bundleInstallArtifactGraphFactory = bundleInstallArtifactTreeFactory;
         this.scopeServiceRepository = scopeServiceRepository;
         this.scopeFactory = scopeFactory;
         this.refreshHandler = refreshHandler;
-        this.configInstallArtifactTreeFactory = configInstallArtifactTreeFactory;
+        this.configInstallArtifactGraphFactory = configInstallArtifactGraphFactory;
         this.artifactStorageFactory = artifactStorageFactory;
         this.artifactIdentityDeterminer = artifactIdentityDeterminer;
-        this.planInstallArtifactTreeFactory = planInstallArtifactTreeFactory;
+        this.planInstallArtifactGraphFactory = planInstallArtifactGraphFactory;
     }
 
     ParPlanInstallArtifact createParPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, @NonNull ArtifactStorage artifactStorage, String repositoryName) throws DeploymentException {
         ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
         return new ParPlanInstallArtifact(artifactIdentity, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger,
-            bundleInstallArtifactTreeFactory, refreshHandler, repositoryName, this.configInstallArtifactTreeFactory,
-            this.artifactStorageFactory, this.artifactIdentityDeterminer, this.planInstallArtifactTreeFactory);
+            bundleInstallArtifactGraphFactory, refreshHandler, repositoryName, this.configInstallArtifactGraphFactory,
+            this.artifactStorageFactory, this.artifactIdentityDeterminer, this.planInstallArtifactGraphFactory);
     }
 }

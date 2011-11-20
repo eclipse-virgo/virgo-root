@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -19,15 +20,16 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * {@link ConfigInstallArtifactTreeFactory} is an {@link InstallArtifactTreeFactory} for configuration properties file
+ * {@link ConfigInstallArtifactGraphFactory} is an {@link InstallArtifactGraphFactory} for configuration properties file
  * {@link InstallArtifact InstallArtifacts}.
  * <p />
  * 
@@ -36,7 +38,7 @@ import org.osgi.framework.ServiceReference;
  * This class is thread safe.
  * 
  */
-final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFactory {
+final class ConfigInstallArtifactGraphFactory extends AbstractArtifactGraphFactory {
 
     private static final String PROPERTIES_TYPE = ArtifactIdentityDeterminer.CONFIGURATION_TYPE;
 
@@ -50,7 +52,9 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
 
     private ConfigurationDeployer configurationDeployer;
 
-    ConfigInstallArtifactTreeFactory(BundleContext bundleContext, EventLogger eventLogger) {
+    ConfigInstallArtifactGraphFactory(BundleContext bundleContext, EventLogger eventLogger,
+    		@NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
+    		super(dag);
         this.bundleContext = bundleContext;
         this.lifecycleEngine = new ConfigLifecycleEngine(bundleContext);
         this.eventLogger = eventLogger;
@@ -59,14 +63,14 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
     /**
      * {@inheritDoc}
      */
-    public Tree<InstallArtifact> constructInstallArtifactTree(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
+    public GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
         Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
             ConfigurationDeployer configDeployer = obtainConfigurationDeployer();
             ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
             InstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
                 this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configDeployer);
-            return constructInstallTree(configInstallArtifact);
+            return constructInstallGraph(configInstallArtifact);
         } else {
             return null;
         }
@@ -82,7 +86,4 @@ final class ConfigInstallArtifactTreeFactory implements InstallArtifactTreeFacto
         }
     }
 
-    private Tree<InstallArtifact> constructInstallTree(InstallArtifact rootArtifact) {
-        return new ThreadSafeArrayListTree<InstallArtifact>(rootArtifact);
-    }
 }

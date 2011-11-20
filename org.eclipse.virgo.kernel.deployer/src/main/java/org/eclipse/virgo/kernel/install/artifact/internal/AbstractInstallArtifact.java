@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -28,7 +29,7 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
 
     protected final EventLogger eventLogger;
 
-    private Tree<InstallArtifact> tree;
+    private GraphNode<InstallArtifact> graph;
 
     private volatile boolean isRefreshing;
 
@@ -143,6 +144,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getType() {
         return this.identity.getType();
     }
@@ -150,6 +152,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getName() {
         return this.identity.getName();
     }
@@ -157,6 +160,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Version getVersion() {
         return this.identity.getVersion();
     }
@@ -164,6 +168,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getScopeName() {
         return this.identity.getScopeName();
     }
@@ -171,6 +176,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public State getState() {
         return this.artifactStateMonitor.getState();
     }
@@ -178,6 +184,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void start() throws DeploymentException {
         start(null);
     }
@@ -185,8 +192,10 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void start(AbortableSignal signal) throws DeploymentException {
-        // If ACTIVE, signal successful completion immediately, otherwise proceed with start processing.
+        // If ACTIVE, signal successful completion immediately, otherwise
+        // proceed with start processing.
         if (getState().equals(State.ACTIVE)) {
             if (signal != null) {
                 signal.signalSuccessfulCompletion();
@@ -224,6 +233,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void signalSuccessfulCompletion() {
             try {
                 asyncStartSucceeded();
@@ -236,6 +246,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void signalFailure(Throwable cause) {
             asyncStartFailed(cause);
             try {
@@ -249,6 +260,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void signalAborted() {
             asyncStartAborted();
             try {
@@ -322,6 +334,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void stop() throws DeploymentException {
         // Only stop if ACTIVE or STARTING.
         if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
@@ -348,6 +361,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void uninstall() throws DeploymentException {
         if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED)
             || getState().equals(State.INSTALLED)) {
@@ -378,6 +392,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final ArtifactFS getArtifactFS() {
         return this.artifactStorage.getArtifactFS();
     }
@@ -395,14 +410,16 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
      * responsible for calling <code>popThreadContext</code>.
      */
     public void pushThreadContext() {
-        // There is no default thread context. Subclasses must override to provide one.
+        // There is no default thread context. Subclasses must override to
+        // provide one.
     }
 
     /**
      * Pop a previously pushed thread context.
      */
     public void popThreadContext() {
-        // There is no default thread context. Subclasses must override to provide one.
+        // There is no default thread context. Subclasses must override to
+        // provide one.
     }
 
     protected final ArtifactStateMonitor getStateMonitor() {
@@ -412,6 +429,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * @return false
      */
+    @Override
     public boolean refresh() throws DeploymentException {
         try {
             this.isRefreshing = true;
@@ -456,6 +474,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getProperty(@NonNull String name) {
         return this.properties.get(name);
     }
@@ -463,6 +482,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Set<String> getPropertyNames() {
         HashSet<String> propertyNames = new HashSet<String>(this.properties.keySet());
         return Collections.unmodifiableSet(propertyNames);
@@ -471,6 +491,7 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String setProperty(String name, String value) {
         return this.properties.put(name, value);
     }
@@ -482,23 +503,25 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getRepositoryName() {
         return this.repositoryName;
     }
 
     /**
-     * @param tree to set
+     * @param graph to set
      * @throws DeploymentException possible from overriding methods
      */
-    public void setTree(Tree<InstallArtifact> tree) throws DeploymentException {
+    public void setGraph(GraphNode<InstallArtifact> graph) throws DeploymentException {
         synchronized (this.monitor) {
-            this.tree = tree;
+            this.graph = graph;
         }
     }
 
-    public final Tree<InstallArtifact> getTree() {
+    @Override
+    public final GraphNode<InstallArtifact> getGraph() {
         synchronized (this.monitor) {
-            return this.tree;
+            return this.graph;
         }
     }
 

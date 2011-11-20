@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,13 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -20,10 +21,10 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
- * {@link TreeRestrictingInstallArtifactLifecycleListener} fails any install which would turn the forest of
+ * {@link GraphRestrictingInstallArtifactLifecycleListener} fails any install which would turn the forest of
  * {@link InstallArtifact} trees into a more general directed acyclic graph.
  * <p/>
  * Before this restriction was put in place, various failures were possible. For example, a shared node could be
@@ -39,13 +40,13 @@ import org.eclipse.virgo.util.common.Tree;
  * Thread safe.
  * 
  */
-final class TreeRestrictingInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
+final class GraphRestrictingInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
 
     private final ConcurrentHashMap<ArtifactIdentity, InstallArtifact> artifactMap = new ConcurrentHashMap<ArtifactIdentity, InstallArtifact>();
 
     private final EventLogger eventLogger;
 
-    public TreeRestrictingInstallArtifactLifecycleListener(EventLogger eventLogger) {
+    public GraphRestrictingInstallArtifactLifecycleListener(EventLogger eventLogger) {
         this.eventLogger = eventLogger;
     }
 
@@ -75,10 +76,14 @@ final class TreeRestrictingInstallArtifactLifecycleListener extends InstallArtif
 
     private InstallArtifact getRoot(InstallArtifact installArtifact) {
         InstallArtifact root = installArtifact;
-        Tree<InstallArtifact> rootParent = root.getTree();
+        GraphNode<InstallArtifact> rootParent = root.getGraph();
         while (rootParent != null) {
             root = rootParent.getValue();
-            rootParent = rootParent.getParent();
+            // TODO DAG - check get parents
+            List<GraphNode<InstallArtifact>> parents = rootParent.getParents();
+            if (!parents.isEmpty()) {
+            		rootParent = rootParent.getParents().get(0);
+			}
         }
         return root;
     }

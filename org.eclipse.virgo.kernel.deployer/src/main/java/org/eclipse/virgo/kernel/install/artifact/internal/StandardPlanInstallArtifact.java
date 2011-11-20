@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -29,7 +30,7 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.kernel.shim.scope.Scope;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,10 +89,10 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         }
     }
 
-    protected final List<Tree<InstallArtifact>> getChildrenSnapshot() {
-        List<Tree<InstallArtifact>> children = new ArrayList<Tree<InstallArtifact>>();
+    protected final List<GraphNode<InstallArtifact>> getChildrenSnapshot() {
+        List<GraphNode<InstallArtifact>> children = new ArrayList<GraphNode<InstallArtifact>>();
         synchronized (this.monitor) {
-            children.addAll(getTree().getChildren());
+            children.addAll(getGraph().getChildren());
         }
         return children;
     }
@@ -101,7 +102,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
      */
     @Override
     protected final void doStart(AbortableSignal signal) throws DeploymentException {
-        List<Tree<InstallArtifact>> children = getChildrenSnapshot();
+        List<GraphNode<InstallArtifact>> children = getChildrenSnapshot();
         int numChildren = children.size();
 
         // The SignalJunction constructor will drive the signal if numChildren == 0.
@@ -128,7 +129,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     @Override
     protected final void doStop() throws DeploymentException {
         DeploymentException firstFailure = null;
-        for (Tree<InstallArtifact> child : getChildrenSnapshot()) {
+        for (GraphNode<InstallArtifact> child : getChildrenSnapshot()) {
             try {
                 child.getValue().stop();
             } catch (DeploymentException e) {
@@ -149,7 +150,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         // consider stop/start/stop etc. for package and service scoping.
         
         DeploymentException firstFailure = null;
-        for (Tree<InstallArtifact> child : getChildrenSnapshot()) {
+        for (GraphNode<InstallArtifact> child : getChildrenSnapshot()) {
             try {
                 child.getValue().uninstall();
             } catch (DeploymentException e) {

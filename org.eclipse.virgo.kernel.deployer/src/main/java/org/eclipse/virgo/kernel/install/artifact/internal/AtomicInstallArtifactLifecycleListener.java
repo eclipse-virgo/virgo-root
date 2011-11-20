@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -16,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.tree.TreeNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +27,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
  * <code>AtomicInstallArtifactLifecycleListener</code> is an InstallArtifactLifecycleListener which initiates state
@@ -113,7 +116,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
 
     private Set<InstallArtifact> getAtomicParents(InstallArtifact installArtifact) {
         Set<InstallArtifact> atomicParents = new HashSet<InstallArtifact>();
-        for (InstallArtifact parent : getParentInstallArtifacts(installArtifact)) {
+        for (InstallArtifact parent : getParentsInstallArtifacts(installArtifact)) {
             if (isAtomicInstallArtifact(parent)) {
                 atomicParents.add(parent);
             }
@@ -122,7 +125,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
     }
 
     /**
-     * Return true if this is an {@link InstallArtifact} and contains others (in the {@link Tree}) and is an atomic
+     * Return true if this is an {@link InstallArtifact} and contains others (in the {@link TreeNode}) and is an atomic
      * container.
      * 
      * @param installArtifact
@@ -135,22 +138,25 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
         return false;
     }
 
+    // TODO DAG: Check JavaDoc if there are any...
     /**
-     * Get the parent {@link InstallArtifact}s in the {@link Tree} associated with the {@link InstallArtifact}, if there
-     * is one.
+     * Get the parents {@link InstallArtifact}s in the {@link GraphNode} associated with the {@link InstallArtifact}, if there
+     * are any.
      * 
      * @param installArtifact to find the parents of
-     * @return the parent artifacts in the tree, never <code>null</code>
-     * TODO: Tree->DAG changes, resulting in sometimes returning more than one element in the set
+     * @return the parent artifacts in the graph, never <code>null</code>
      */
-    private static final Set<InstallArtifact> getParentInstallArtifacts(InstallArtifact installArtifact) {
+    private static final Set<InstallArtifact> getParentsInstallArtifacts(InstallArtifact installArtifact) {
         Set<InstallArtifact> parentInstallArtifacts = new HashSet<InstallArtifact>();
-        Tree<InstallArtifact> iaTree = installArtifact.getTree();
-        if (iaTree != null) {
-            iaTree = iaTree.getParent();
-            if (iaTree != null) {
-                parentInstallArtifacts.add(iaTree.getValue());
-            }
+        GraphNode<InstallArtifact> iaGraph = installArtifact.getGraph();
+        if (iaGraph != null) {
+            List<GraphNode<InstallArtifact>> parents = iaGraph.getParents();
+			for (GraphNode<InstallArtifact> parent : parents) {
+				// TODO DAG: do we need this null check?!
+            	if (parent != null) {
+            		parentInstallArtifacts.add(parent.getValue());
+            	}
+			}
         }
         return parentInstallArtifacts;
     }
@@ -180,9 +186,9 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
     private static InstallArtifact[] childrenOf(InstallArtifact parent) {
         List<InstallArtifact> children = new ArrayList<InstallArtifact>();
         if (parent!=null) {
-            Tree<InstallArtifact> tree = parent.getTree();
-            if (tree!=null) {
-                for(Tree<InstallArtifact> childBranch : tree.getChildren()) {
+            GraphNode<InstallArtifact> graph = parent.getGraph();
+            if (graph!=null) {
+                for(GraphNode<InstallArtifact> childBranch : graph.getChildren()) {
                     InstallArtifact child = childBranch.getValue();
                     if (child!=null) {
                         children.add(child);

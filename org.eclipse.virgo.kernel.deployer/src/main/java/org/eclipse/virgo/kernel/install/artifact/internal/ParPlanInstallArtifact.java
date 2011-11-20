@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -15,28 +16,27 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.TreeUtils;
+import org.eclipse.virgo.kernel.deployer.core.internal.GraphUtils;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ArtifactIdentityScoper;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ScopeNameFactory;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.math.OrderedPair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link ParPlanInstallArtifact} is an {@link InstallArtifact} for a PAR file.
@@ -55,35 +55,35 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
 
     private final Object monitor = new Object();
 
-    private final InstallArtifactTreeFactory bundleInstallArtifactTreeFactory;
+    private final InstallArtifactGraphFactory bundleInstallArtifactGraphFactory;
 
-    private final InstallArtifactTreeFactory configInstallArtifactTreeFactory;
+    private final InstallArtifactGraphFactory configInstallArtifactGraphFactory;
 
     private final ArtifactStorageFactory artifactStorageFactory;
 
     private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
 
-    private final List<Tree<InstallArtifact>> childInstallArtifacts;
+    private final List<GraphNode<InstallArtifact>> childInstallArtifacts;
 
-    private final InstallArtifactTreeFactory planInstallArtifactTreeFactory;
+    private final InstallArtifactGraphFactory planInstallArtifactGraphFactory;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParPlanInstallArtifact.class);
 
     public ParPlanInstallArtifact(@NonNull ArtifactIdentity identity, @NonNull ArtifactStorage artifactStorage,
         @NonNull ArtifactStateMonitor artifactStateMonitor, @NonNull ScopeServiceRepository scopeServiceRepository,
-        @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactTreeFactory bundleInstallArtifactTreeFactory,
+        @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactGraphFactory bundleInstallArtifactGraphFactory,
         @NonNull InstallArtifactRefreshHandler refreshHandler, String repositoryName,
-        @NonNull InstallArtifactTreeFactory configInstallArtifactTreeFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
-        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactTreeFactory planInstallArtifactTreeFactory)
+        @NonNull InstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
+        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactGraphFactory planInstallArtifactGraphFactory)
         throws DeploymentException {
         super(identity, true, true, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
             repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST);
 
         this.artifactStorageFactory = artifactStorageFactory;
-        this.configInstallArtifactTreeFactory = configInstallArtifactTreeFactory;
+        this.configInstallArtifactGraphFactory = configInstallArtifactGraphFactory;
 
-        this.bundleInstallArtifactTreeFactory = bundleInstallArtifactTreeFactory;
-        this.planInstallArtifactTreeFactory = planInstallArtifactTreeFactory;
+        this.bundleInstallArtifactGraphFactory = bundleInstallArtifactGraphFactory;
+        this.planInstallArtifactGraphFactory = planInstallArtifactGraphFactory;
         this.artifactIdentityDeterminer = artifactIdentityDeterminer;
 
         List<OrderedPair<ArtifactIdentity, ArtifactFSEntry>> childArtifacts = findChildArtifacts(artifactStorage.getArtifactFS());
@@ -118,33 +118,33 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
         return childArtifacts;
     }
 
-    List<Tree<InstallArtifact>> createChildInstallArtifacts(List<OrderedPair<ArtifactIdentity, ArtifactFSEntry>> childArtifacts)
+    List<GraphNode<InstallArtifact>> createChildInstallArtifacts(List<OrderedPair<ArtifactIdentity, ArtifactFSEntry>> childArtifacts)
         throws DeploymentException {
 
-        List<Tree<InstallArtifact>> childInstallArtifacts = new ArrayList<Tree<InstallArtifact>>();
+        List<GraphNode<InstallArtifact>> childInstallArtifacts = new ArrayList<GraphNode<InstallArtifact>>();
 
         for (OrderedPair<ArtifactIdentity, ArtifactFSEntry> childArtifact : childArtifacts) {
 
-            Tree<InstallArtifact> subTree = null;
+            GraphNode<InstallArtifact> subGraph = null;
 
             ArtifactIdentity identity = childArtifact.getFirst();
             ArtifactFSEntry artifactFs = childArtifact.getSecond();
 
             if (ArtifactIdentityDeterminer.BUNDLE_TYPE.equals(identity.getType())) {
-                subTree = this.bundleInstallArtifactTreeFactory.constructInstallArtifactTree(identity, createArtifactStorage(artifactFs, identity),
+                subGraph = this.bundleInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
                     null, null);
             } else if (ArtifactIdentityDeterminer.CONFIGURATION_TYPE.equals(identity.getType())) {
-                subTree = this.configInstallArtifactTreeFactory.constructInstallArtifactTree(identity, createArtifactStorage(artifactFs, identity),
+                subGraph = this.configInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
                     null, null);
             } else if (ArtifactIdentityDeterminer.PLAN_TYPE.equals(identity.getType())) {
-                subTree = this.planInstallArtifactTreeFactory.constructInstallArtifactTree(identity, createArtifactStorage(artifactFs, identity),
+                subGraph = this.planInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
                     null, null);
             }
 
-            if (subTree == null) {
+            if (subGraph == null) {
                 LOGGER.warn("Skipping " + identity + " as " + identity.getType() + " artifacts are not supported within a PAR");
             } else {
-                childInstallArtifacts.add(subTree);
+                childInstallArtifacts.add(subGraph);
             }
         }
 
@@ -158,12 +158,12 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
     public void beginInstall() throws DeploymentException {
         super.beginInstall();
 
-        List<Tree<InstallArtifact>> children;
+        List<GraphNode<InstallArtifact>> children;
         synchronized (this.monitor) {
-            children = new ArrayList<Tree<InstallArtifact>>(this.childInstallArtifacts);
+            children = new ArrayList<GraphNode<InstallArtifact>>(this.childInstallArtifacts);
         }
 
-        for (Tree<InstallArtifact> child : children) {
+        for (GraphNode<InstallArtifact> child : children) {
             ((AbstractInstallArtifact) child.getValue()).beginInstall();
         }
     }
@@ -172,22 +172,22 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
      * {@inheritDoc}
      */
     @Override
-    public void setTree(Tree<InstallArtifact> tree) throws DeploymentException {
+    public void setGraph(GraphNode<InstallArtifact> graph) throws DeploymentException {
         synchronized (this.monitor) {
-            super.setTree(tree);
-            List<Tree<InstallArtifact>> children = tree.getChildren();
-            for (Tree<InstallArtifact> child : this.childInstallArtifacts) {
+            super.setGraph(graph);
+            List<GraphNode<InstallArtifact>> children = graph.getChildren();
+            for (GraphNode<InstallArtifact> child : this.childInstallArtifacts) {
                 // Add any children that are not already present.
                 if (!isChildPresent(children, child)) {
-                    TreeUtils.addChild(tree, child);
+                    GraphUtils.addChild(graph, child);
                 }
             }
         }
     }
 
-    private static boolean isChildPresent(List<Tree<InstallArtifact>> children, Tree<InstallArtifact> newChild) {
+    private static boolean isChildPresent(List<GraphNode<InstallArtifact>> children, GraphNode<InstallArtifact> newChild) {
         InstallArtifact newChildValue = newChild.getValue();
-        for (Tree<InstallArtifact> child : children) {
+        for (GraphNode<InstallArtifact> child : children) {
             InstallArtifact childValue = child.getValue();
             if (equalIdentities(childValue, newChildValue)) {
                 return true;
@@ -225,8 +225,8 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
 
     private InstallArtifact findChild(String symbolicName) {
         InstallArtifact childToRefresh = null;
-        List<Tree<InstallArtifact>> children = getTree().getChildren();
-        for (Tree<InstallArtifact> child : children) {
+        List<GraphNode<InstallArtifact>> children = getGraph().getChildren();
+        for (GraphNode<InstallArtifact> child : children) {
             InstallArtifact childInstallArtifact = child.getValue();
             String childName = childInstallArtifact.getName();
             if (childName.equals(symbolicName) || childName.equals(ScopeNameFactory.createScopeName(getName(), getVersion()) + "-" + symbolicName)) {

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   VMware Inc. - initial contribution
+ *   VMware Inc. - initial contribution (TreeRestrictingInstallArtifactLifecycleListenerTests)
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -18,7 +19,7 @@ import static org.easymock.EasyMock.replay;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
-import org.eclipse.virgo.kernel.install.artifact.internal.TreeRestrictingInstallArtifactLifecycleListener;
+import org.eclipse.virgo.kernel.install.artifact.internal.GraphRestrictingInstallArtifactLifecycleListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -26,7 +27,7 @@ import org.osgi.framework.Version;
 
 /**
  */
-public class TreeRestrictingInstallArtifactLifecycleListenerTests {
+public class GraphRestrictingInstallArtifactLifecycleListenerTests {
 
     private StubEventLogger stubEventLogger;
 
@@ -39,7 +40,7 @@ public class TreeRestrictingInstallArtifactLifecycleListenerTests {
     @Before
     public void setUp() throws Exception {
         this.stubEventLogger = new StubEventLogger();
-        this.treeRestrictingListener = new TreeRestrictingInstallArtifactLifecycleListener(this.stubEventLogger);
+        this.treeRestrictingListener = new GraphRestrictingInstallArtifactLifecycleListener(this.stubEventLogger);
         
         this.installArtifact1 = createMock(InstallArtifact.class);
         expect(this.installArtifact1.getType()).andReturn("type1").anyTimes();

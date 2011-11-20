@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.stubs;
@@ -22,8 +23,9 @@ import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.osgi.framework.Version;
 
 public class StubInstallArtifact implements InstallArtifact {
@@ -38,7 +40,7 @@ public class StubInstallArtifact implements InstallArtifact {
 
     private final Map<String, String> properties = new HashMap<String, String>();
 
-    private final Tree<InstallArtifact> tree;
+    private final GraphNode<InstallArtifact> graph;
     
     private final String scopeName;
 
@@ -65,8 +67,14 @@ public class StubInstallArtifact implements InstallArtifact {
     public StubInstallArtifact(ArtifactFS artifactFS, String type, String name, Version version, InstallArtifact... children) {
         this(artifactFS, type, name, version, null, children);
     } 
-    
-    public StubInstallArtifact(ArtifactFS artifactFS, String type, String name, Version version, String scopeName, InstallArtifact... children) {
+
+    public StubInstallArtifact(ArtifactFS artifactFS, String type, String name, Version version, String scopeName, 
+			InstallArtifact... children) {
+        this(artifactFS, type, name, version, null, new ThreadSafeDirectedAcyclicGraph<InstallArtifact>(), children);
+    }
+
+    public StubInstallArtifact(ArtifactFS artifactFS, String type, String name, Version version, String scopeName,
+    			DirectedAcyclicGraph<InstallArtifact> dag, InstallArtifact... children) {
         this.type = type == null ? "stub" : type;
         this.name = name == null ? "the-stub" : name;
         this.version = version == null ? Version.emptyVersion : version;
@@ -74,14 +82,14 @@ public class StubInstallArtifact implements InstallArtifact {
 
         this.artifactFS = artifactFS;
 
-        this.tree = new ThreadSafeArrayListTree<InstallArtifact>(this);
+        this.graph = dag.createRootNode(this);
 
         for (InstallArtifact child : children) {
-            this.tree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(child));
+            this.graph.addChild(dag.createRootNode(child));
         }
     }
 
-    public ArtifactFS getArtifactFS() {
+	public ArtifactFS getArtifactFS() {
         return this.artifactFS;
     }
 
@@ -132,8 +140,8 @@ public class StubInstallArtifact implements InstallArtifact {
         throw new UnsupportedOperationException();
     }
 
-    public Tree<InstallArtifact> getTree() {
-        return this.tree;
+    public GraphNode<InstallArtifact> getGraph() {
+        return this.graph;
     }
 
     public void start() throws DeploymentException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
@@ -41,7 +42,7 @@ import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ArtifactIdenti
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -444,6 +445,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
         return false;
     }
 
+    // TODO DAG - think what to do with shared subgraphs.
     // If this bundle belongs to a plan, run the subtree of any scoped plan containing the bundle through the refresh
     // subpipeline.
     private boolean refreshScope() {
@@ -460,18 +462,23 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     }
 
     private PlanInstallArtifact getScopedAncestor() {
-        // TODO: when the Tree is generalised to a DAG, a bundle can belong to at most one scoped ancestor in which case any unscoped
+        // TODO DAG: when the Tree is generalised to a DAG, a bundle can belong to at most one scoped ancestor in which case any unscoped
         // ancestors it belongs to must be descendents of the scoped ancestor. So it is sufficient to search one line of ancestors
         // looking for a scope ancestor.
-        Tree<InstallArtifact> ancestor = getTree().getParent();
+    		// TODO DAG - get first parent. See comment above
+    		// TODO DAG - added isEmpty check due to JUnit error in StandardBundleInstallArtifactTests
+    		List<GraphNode<InstallArtifact>> ancestors = getGraph().getParents();
         
-        while (ancestor != null) {
+        while (!ancestors.isEmpty()) {
+        		GraphNode<InstallArtifact> ancestor = ancestors.get(0);
             InstallArtifact ancestorArtifact = ancestor.getValue();
             PlanInstallArtifact planAncestor = (PlanInstallArtifact)ancestorArtifact;
             if (planAncestor.isScoped()) {
                 return planAncestor;
             } else {
-                ancestor = ancestor.getParent();
+            		// TODO DAG - get first parent. See comment above
+                ancestor = ancestors.get(0);
+                ancestors = ancestor.getParents();
             }
         }
         

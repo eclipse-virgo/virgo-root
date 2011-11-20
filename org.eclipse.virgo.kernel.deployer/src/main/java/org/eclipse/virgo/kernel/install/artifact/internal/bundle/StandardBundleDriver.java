@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,12 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
+
+import java.util.List;
 
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
@@ -26,7 +29,7 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -147,15 +150,17 @@ final class StandardBundleDriver implements BundleDriver {
 
     private Bundle getThreadContextBundle() {
         if (this.installArtifact != null) {
-            Tree<InstallArtifact> tree = this.installArtifact.getTree();
-            Tree<InstallArtifact> parent = tree.getParent();
-            while (parent != null) {
+            GraphNode<InstallArtifact> tree = this.installArtifact.getGraph();
+            // TODO DAG - check usage of getParent
+            List<GraphNode<InstallArtifact>> parentList = tree.getParents();
+            while (!parentList.isEmpty()) {
+            		GraphNode<InstallArtifact> parent = parentList.get(0);
                 InstallArtifact parentArtifact = parent.getValue();
                 if (parentArtifact instanceof PlanInstallArtifact) {
                     PlanInstallArtifact parentPlan = (PlanInstallArtifact) (parentArtifact);
                     if (parentPlan.isScoped()) {
                         String syntheticContextBundleSymbolicName = this.installArtifact.getScopeName() + SYNTHETIC_CONTEXT_SUFFIX;
-                        for (Tree<InstallArtifact> scopedPlanChild : parent.getChildren()) {
+                        for (GraphNode<InstallArtifact> scopedPlanChild : parent.getChildren()) {
                             InstallArtifact scopedPlanChildArtifact = scopedPlanChild.getValue();
                             if (scopedPlanChildArtifact instanceof BundleInstallArtifact
                                 && syntheticContextBundleSymbolicName.equals(scopedPlanChildArtifact.getName())) {
@@ -166,7 +171,7 @@ final class StandardBundleDriver implements BundleDriver {
                         break;
                     }
                 }
-                parent = parent.getParent();
+                parentList = parent.getParents();
             }
         }
         return this.bundle;

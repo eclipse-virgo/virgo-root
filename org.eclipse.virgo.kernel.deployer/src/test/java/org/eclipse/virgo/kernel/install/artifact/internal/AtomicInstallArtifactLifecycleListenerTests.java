@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -24,8 +25,9 @@ import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
@@ -191,11 +193,13 @@ public class AtomicInstallArtifactLifecycleListenerTests {
     }
 
     private StubInstallArtifact getParent(StubInstallArtifact artifact) {
-        Tree<InstallArtifact> tree = artifact.getTree();
+        GraphNode<InstallArtifact> tree = artifact.getGraph();
         if (tree != null) {
-            Tree<InstallArtifact> parent = tree.getParent();
-            // TODO: when the Tree is generalised to a DAG, this testcase can assume the DAG is still a tree in structure because the testcase constructs the tree.
-            if (parent != null) {
+        		List<GraphNode<InstallArtifact>> parents = tree.getParents();
+            // TODO DAG: when the Tree is generalised to a DAG, this testcase can assume the DAG is still a tree in structure because the testcase constructs the tree.
+            // TODO DAG Test case uses tree. -> get first parent.
+            if (!parents.isEmpty()) {
+            		GraphNode<InstallArtifact> parent = tree.getParents().get(0);
                 return (StubInstallArtifact) parent.getValue();
             }
         }
@@ -242,28 +246,30 @@ public class AtomicInstallArtifactLifecycleListenerTests {
      * @return value (with tree attached) at last leaf of chain tree
      */
     private final static StubInstallArtifact makeChain(StubInstallArtifact... installArtifactArray) {
-        Tree<InstallArtifact> tree = null;
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> graph = null;
         for (StubInstallArtifact installArtifact : installArtifactArray) {
-            Tree<InstallArtifact> leaf = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-            if (tree == null) {
-                tree = leaf;
-            } else {
-                tree = tree.addChild(leaf);
+            GraphNode<InstallArtifact> leaf = dag.createRootNode(installArtifact);
+			if (graph == null) {
+				graph = leaf;
+			} else {
+                graph.addChild(leaf);
+                graph = leaf;
             }
-            installArtifact.setTree(tree);
+			installArtifact.setGraph(graph);
         }
         
-        if(tree == null){
-        	return null;
+        if(graph == null){
+        		return null;
         }
-        return (StubInstallArtifact) tree.getValue();
+        return (StubInstallArtifact) graph.getValue();
     }
 
     private static class StubInstallArtifact implements PlanInstallArtifact {
 
         private final boolean atomic;
 
-        private volatile Tree<InstallArtifact> tree;
+        private volatile GraphNode<InstallArtifact> graph;
 
         private volatile boolean startCalled = false;
 
@@ -287,12 +293,12 @@ public class AtomicInstallArtifactLifecycleListenerTests {
             return uninstallCalled;
         }
 
-        public Tree<InstallArtifact> getTree() {
-            return this.tree;
+        public GraphNode<InstallArtifact> getGraph() {
+            return this.graph;
         }
 
-        public void setTree(Tree<InstallArtifact> tree) {
-            this.tree = tree;
+        public void setGraph(GraphNode<InstallArtifact> graph) {
+            this.graph = graph;
         }
 
         public void stop() throws DeploymentException {

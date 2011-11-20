@@ -9,7 +9,7 @@
 	<service
 		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener">
 		<beans:bean
-			class="org.eclipse.virgo.kernel.install.artifact.internal.TreeRestrictingInstallArtifactLifecycleListener">
+			class="org.eclipse.virgo.kernel.install.artifact.internal.GraphRestrictingInstallArtifactLifecycleListener">
 			<beans:constructor-arg ref="eventLogger" />
 		</beans:bean>
 	</service>
@@ -39,7 +39,7 @@
 
 	<beans:bean id="syntheticContextCreatingTransformer"
 		class="org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.SyntheticContextBundleCreatingTransformer">
-		<beans:constructor-arg ref="bundleInstallArtifactTreeFactory" />
+		<beans:constructor-arg ref="bundleInstallArtifactGraphFactory" />
 		<beans:constructor-arg ref="artifactStorageFactory" />
 	</beans:bean>
 
@@ -51,7 +51,7 @@
 
 	<beans:bean id="planResolver"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.PlanResolver">
-		<beans:constructor-arg ref="installArtifactTreeInclosure" />
+		<beans:constructor-arg ref="installArtifactGraphInclosure" />
 	</beans:bean>
 
 	<beans:bean id="importExpandingTransformer"
@@ -118,7 +118,7 @@
 	<beans:bean id="pipelinedApplicationDeployer"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.PipelinedApplicationDeployer">
 		<beans:constructor-arg ref="mainPipeline" />
-		<beans:constructor-arg ref="installArtifactTreeInclosure" />
+		<beans:constructor-arg ref="installArtifactGraphInclosure" />
 		<beans:constructor-arg ref="installEnvironmentFactory" />
 		<beans:constructor-arg ref="runtimeArtifactModel" />
 		<beans:constructor-arg ref="deploymentListener" />
@@ -166,8 +166,8 @@
 	<beans:bean id="pipelineFactory"
 		class="org.eclipse.virgo.kernel.install.pipeline.internal.StandardPipelineFactory" />
 
-	<beans:bean id="installArtifactTreeInclosure"
-		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactTreeInclosure">
+	<beans:bean id="installArtifactGraphInclosure"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactGraphInclosure">
 		<beans:constructor-arg ref="artifactStorageFactory" />
 		<beans:constructor-arg ref="bundleContext" />
 		<beans:constructor-arg ref="repository" />
@@ -254,8 +254,8 @@
 	</beans:bean>
 
 	<!--  basic artifact type factories -->
-	<beans:bean id="bundleInstallArtifactTreeFactory"
-		class="org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactTreeFactory">
+	<beans:bean id="bundleInstallArtifactGraphFactory"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactGraphFactory">
 		<beans:constructor-arg ref="osgiFramework" />
 		<beans:constructor-arg ref="bundleContext" />
 		<beans:constructor-arg ref="refreshHandler" />
@@ -265,35 +265,42 @@
 		<beans:constructor-arg ref="userBundleContext" />
 		<beans:constructor-arg ref="eventLogger" />
 		<beans:constructor-arg ref="artifactIdentityDeterminer" />
+		<beans:constructor-arg ref="installArtifactGraph" />
 	</beans:bean>
+	
+	<beans:bean id="installArtifactGraph"
+      class="org.eclipse.virgo.kernel.install.artifact.internal.ThreadSafeInstallArtifactGraphFactory"
+      factory-method="createInstance"/>
 	
 	<reference id="userBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
 
-	<service ref="bundleInstallArtifactTreeFactory"
-		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory" />
+	<service ref="bundleInstallArtifactGraphFactory"
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory" />
 
-	<beans:bean id="configInstallArtifactTreeFactory"
-		class="org.eclipse.virgo.kernel.install.artifact.internal.ConfigInstallArtifactTreeFactory">
+	<beans:bean id="configInstallArtifactGraphFactory"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.ConfigInstallArtifactGraphFactory">
 		<beans:constructor-arg ref="bundleContext" />
 		<beans:constructor-arg ref="eventLogger" />
+		<beans:constructor-arg ref="installArtifactGraph" />
 	</beans:bean>
 
-	<service ref="configInstallArtifactTreeFactory"
-		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory" />
+	<service ref="configInstallArtifactGraphFactory"
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory" />
 
 	<service
-		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory">
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory">
 		<beans:bean
-			class="org.eclipse.virgo.kernel.install.artifact.internal.PlanInstallArtifactTreeFactory">
+			class="org.eclipse.virgo.kernel.install.artifact.internal.PlanInstallArtifactGraphFactory">
 			<beans:constructor-arg ref="bundleContext" />
 			<beans:constructor-arg ref="scopeServiceRepository" />
 			<beans:constructor-arg ref="scopeFactory" />
 			<beans:constructor-arg ref="eventLogger" />
-			<beans:constructor-arg ref="bundleInstallArtifactTreeFactory" />
+			<beans:constructor-arg ref="bundleInstallArtifactGraphFactory" />
 			<beans:constructor-arg ref="refreshHandler" />
-			<beans:constructor-arg ref="configInstallArtifactTreeFactory" />
+			<beans:constructor-arg ref="configInstallArtifactGraphFactory" />
 			<beans:constructor-arg ref="artifactStorageFactory" />
 			<beans:constructor-arg ref="artifactIdentityDeterminer" />
+			<beans:constructor-arg ref="installArtifactGraph" />
 		</beans:bean>
 	</service>
 

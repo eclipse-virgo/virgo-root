@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
@@ -24,12 +25,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 
-import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.internal.DirectoryArtifactFS;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -41,16 +36,18 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.StubInstallArtifactRefreshHandler;
-import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleDriver;
-import org.eclipse.virgo.kernel.install.artifact.internal.bundle.StandardBundleInstallArtifact;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  */
@@ -122,8 +119,8 @@ public class StandardBundleInstallArtifactTests {
 
         artifact.setQuasiBundle(quasiBundle);
 
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(artifact);
-        artifact.setTree(tree);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        artifact.setGraph(dag.createRootNode(artifact));
 
         expect(this.bundleDriver.update(isA(BundleManifest.class))).andReturn(true);
         this.bundleDriver.refreshBundle();

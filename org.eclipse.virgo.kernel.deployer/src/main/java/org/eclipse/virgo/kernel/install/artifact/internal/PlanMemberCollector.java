@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -16,12 +17,12 @@ import java.util.List;
 
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.TreeVisitor;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
 
 /**
  * A simple helper class that can be used to collect all of the members of a plan. Collection is performed by visiting
- * the entire tree beneath the plan.
+ * the entire graph beneath the plan.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -39,12 +40,12 @@ final class PlanMemberCollector {
      * @return all the members of the plan, not including the plan itself
      */
     List<InstallArtifact> collectPlanMembers(PlanInstallArtifact plan) {
-        ArtifactCollectingTreeVisitor visitor = new ArtifactCollectingTreeVisitor(plan);
-        plan.getTree().visit(visitor);
+        ArtifactCollectingGraphVisitor visitor = new ArtifactCollectingGraphVisitor(plan);
+        plan.getGraph().visit(visitor);
         return visitor.getMembers();
     }
 
-    private static final class ArtifactCollectingTreeVisitor implements TreeVisitor<InstallArtifact> {
+    private static final class ArtifactCollectingGraphVisitor implements DirectedAcyclicGraphVisitor<InstallArtifact> {
 
         private final InstallArtifact root;
 
@@ -55,15 +56,15 @@ final class PlanMemberCollector {
         /**
          * @param root
          */
-        public ArtifactCollectingTreeVisitor(InstallArtifact root) {
+        public ArtifactCollectingGraphVisitor(InstallArtifact root) {
             this.root = root;
         }
 
         /**
          * {@inheritDoc}
          */
-        public boolean visit(Tree<InstallArtifact> tree) {
-            InstallArtifact artifact = tree.getValue();
+        public boolean visit(GraphNode<InstallArtifact> node) {
+            InstallArtifact artifact = node.getValue();
 
             if (!root.equals(artifact)) {
                 synchronized (this.monitor) {

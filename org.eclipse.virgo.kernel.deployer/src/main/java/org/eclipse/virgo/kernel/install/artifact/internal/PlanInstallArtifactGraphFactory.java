@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   VMware Inc. - initial contribution
+ *   VMware Inc. - initial contribution (PlanInstallArtifactTreeFactory)
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -17,8 +18,6 @@ import static org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDetermin
 import java.io.InputStream;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
-
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor;
 import org.eclipse.virgo.kernel.artifact.plan.PlanReader;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -26,18 +25,19 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.InstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
-import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactTreeFactory;
+import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.IOUtils;
+import org.osgi.framework.BundleContext;
 
 /**
- * {@link PlanInstallArtifactTreeFactory} is an {@link InstallArtifactTreeFactory} for plan {@link InstallArtifact
+ * {@link PlanInstallArtifactGraphFactory} is an {@link InstallArtifactGraphFactory} for plan {@link InstallArtifact
  * InstallArtifacts}.
  * <p />
  * 
@@ -46,7 +46,7 @@ import org.eclipse.virgo.util.io.IOUtils;
  * This class is thread safe.
  * 
  */
-final class PlanInstallArtifactTreeFactory implements InstallArtifactTreeFactory {
+final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory {
 
     private final BundleContext bundleContext;
 
@@ -60,43 +60,44 @@ final class PlanInstallArtifactTreeFactory implements InstallArtifactTreeFactory
 
     private final ParPlanInstallArtifactFactory parFactory;
 
-    public PlanInstallArtifactTreeFactory(@NonNull BundleContext bundleContext, @NonNull ScopeServiceRepository scopeServiceRepository,
+    public PlanInstallArtifactGraphFactory(@NonNull BundleContext bundleContext, @NonNull ScopeServiceRepository scopeServiceRepository,
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger,
-        @NonNull BundleInstallArtifactTreeFactory bundleInstallArtifactTreeFactory, @NonNull InstallArtifactRefreshHandler refreshHandler,
-        @NonNull ConfigInstallArtifactTreeFactory configInstallArtifactTreeFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
-        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer) {
+        @NonNull BundleInstallArtifactGraphFactory bundleInstallArtifactGraphFactory, @NonNull InstallArtifactRefreshHandler refreshHandler,
+        @NonNull ConfigInstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
+        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
+    		super(dag);
         this.bundleContext = bundleContext;
         this.scopeServiceRepository = scopeServiceRepository;
         this.scopeFactory = scopeFactory;
         this.eventLogger = eventLogger;
         this.refreshHandler = refreshHandler;
 
-        this.parFactory = new ParPlanInstallArtifactFactory(eventLogger, bundleContext, bundleInstallArtifactTreeFactory, scopeServiceRepository,
-            scopeFactory, refreshHandler, configInstallArtifactTreeFactory, artifactStorageFactory, artifactIdentityDeterminer, this);
+        this.parFactory = new ParPlanInstallArtifactFactory(eventLogger, bundleContext, bundleInstallArtifactGraphFactory, scopeServiceRepository,
+            scopeFactory, refreshHandler, configInstallArtifactGraphFactory, artifactStorageFactory, artifactIdentityDeterminer, this);
     }
 
     /**
      * {@inheritDoc}
      */
-    public Tree<InstallArtifact> constructInstallArtifactTree(ArtifactIdentity identity, ArtifactStorage artifactStorage,
+    public GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity identity, ArtifactStorage artifactStorage,
         Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         String type = identity.getType();
         if (PLAN_TYPE.equalsIgnoreCase(type)) {
-            return createPlanTree(identity, artifactStorage, getPlanDescriptor(artifactStorage), repositoryName);
+            return createPlanGraph(identity, artifactStorage, getPlanDescriptor(artifactStorage), repositoryName);
         } else if (PAR_TYPE.equalsIgnoreCase(type)) {
-            return createParTree(identity, artifactStorage, repositoryName);
+            return createParGraph(identity, artifactStorage, repositoryName);
         } else {
             return null;
         }
     }
 
-    private Tree<InstallArtifact> createParTree(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, String repositoryName)
+    private GraphNode<InstallArtifact> createParGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, String repositoryName)
         throws DeploymentException {
 
         ParPlanInstallArtifact parArtifact = this.parFactory.createParPlanInstallArtifact(artifactIdentity, artifactStorage, repositoryName);
-        Tree<InstallArtifact> tree = constructInstallTree(parArtifact);
-        parArtifact.setTree(tree);
-        return tree;
+        GraphNode<InstallArtifact> graph = constructInstallGraph(parArtifact);
+        parArtifact.setGraph(graph);
+        return graph;
     }
 
     /**
@@ -113,7 +114,7 @@ final class PlanInstallArtifactTreeFactory implements InstallArtifactTreeFactory
         }
     }
 
-    private Tree<InstallArtifact> createPlanTree(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, PlanDescriptor planDescriptor,
+    private GraphNode<InstallArtifact> createPlanGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, PlanDescriptor planDescriptor,
         String repositoryName) throws DeploymentException {
 
         StandardPlanInstallArtifact planInstallArtifact;
@@ -122,13 +123,9 @@ final class PlanInstallArtifactTreeFactory implements InstallArtifactTreeFactory
             artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository, this.scopeFactory, this.eventLogger,
             this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
 
-        Tree<InstallArtifact> tree = constructInstallTree(planInstallArtifact);
-        planInstallArtifact.setTree(tree);
-        return tree;
-    }
-
-    private Tree<InstallArtifact> constructInstallTree(InstallArtifact rootArtifact) {
-        return new ThreadSafeArrayListTree<InstallArtifact>(rootArtifact);
+        GraphNode<InstallArtifact> graph = constructInstallGraph(planInstallArtifact);
+        planInstallArtifact.setGraph(graph);
+        return graph;
     }
 
 }

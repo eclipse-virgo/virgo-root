@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2010 VMware Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   VMware Inc. - initial contribution
+ *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
@@ -20,14 +21,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
-
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
-import org.eclipse.virgo.kernel.install.artifact.internal.PlanMemberCollector;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
+import org.junit.Test;
 
 
 /**
@@ -39,8 +39,11 @@ public class PlanMemberCollectorTests {
     @Test
     public void rootPlanIsNotIncludedInTheCollection() {
         PlanInstallArtifact plan = createNiceMock(PlanInstallArtifact.class);
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(plan);
-        expect(plan.getTree()).andReturn(tree);
+
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> graph = dag.createRootNode(plan);
+
+        expect(plan.getGraph()).andReturn(graph);
         
         replay(plan);
         
@@ -52,15 +55,16 @@ public class PlanMemberCollectorTests {
     @Test
     public void singleLevelPlan() {
         PlanInstallArtifact plan = createNiceMock(PlanInstallArtifact.class);
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(plan);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> tree = dag.createRootNode(plan);
         
         BundleInstallArtifact bundle1 = createNiceMock(BundleInstallArtifact.class);
-        tree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(bundle1));
+        tree.addChild(dag.createRootNode(bundle1));
         
         BundleInstallArtifact bundle2 = createNiceMock(BundleInstallArtifact.class);
-        tree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(bundle2));
+        tree.addChild(dag.createRootNode(bundle2));
         
-        expect(plan.getTree()).andReturn(tree);
+        expect(plan.getGraph()).andReturn(tree);
         
         replay(plan);
         
@@ -74,21 +78,23 @@ public class PlanMemberCollectorTests {
     @Test
     public void nestedPlan() {
         PlanInstallArtifact plan = createNiceMock(PlanInstallArtifact.class);
-        Tree<InstallArtifact> tree = new ThreadSafeArrayListTree<InstallArtifact>(plan);
-        expect(plan.getTree()).andReturn(tree);
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        GraphNode<InstallArtifact> tree = dag.createRootNode(plan);
+
+        expect(plan.getGraph()).andReturn(tree);
         
         BundleInstallArtifact bundle1 = createNiceMock(BundleInstallArtifact.class);
-        tree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(bundle1));
+        tree.addChild(dag.createRootNode(bundle1));
         
         BundleInstallArtifact bundle2 = createNiceMock(BundleInstallArtifact.class);
-        tree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(bundle2));
+        tree.addChild(dag.createRootNode(bundle2));
         
         PlanInstallArtifact nestedPlan = createNiceMock(PlanInstallArtifact.class);
-        Tree<InstallArtifact> nestedTree = new ThreadSafeArrayListTree<InstallArtifact>(nestedPlan);
-        expect(nestedPlan.getTree()).andReturn(nestedTree);
+        GraphNode<InstallArtifact> nestedTree = dag.createRootNode(nestedPlan);
+        expect(nestedPlan.getGraph()).andReturn(nestedTree);
         
         BundleInstallArtifact bundle3 = createNiceMock(BundleInstallArtifact.class);
-        nestedTree.addChild(new ThreadSafeArrayListTree<InstallArtifact>(bundle3));
+        nestedTree.addChild(dag.createRootNode(bundle3));
         
         tree.addChild(nestedTree);
         
