@@ -299,6 +299,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
     private void writePropertiesFile(final Properties hotDeployConfiguration, File target, String comment) throws IOException, FileNotFoundException {
         FileOutputStream stream = new FileOutputStream(target);
         hotDeployConfiguration.store(stream, comment);
+        stream.flush();
         stream.close();
     }
 
