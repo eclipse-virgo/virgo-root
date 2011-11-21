@@ -10,4 +10,22 @@
  	overflow: auto;
 }
 
-svg:not(:root) { overflow: auto; }
+#side-bar, #display {
+	vertical-align: top;
+}
+
+#side-bar {
+	display: inline-block;
+	overflow-y: auto;
+	width: 30%;
+}
+
+#display {
+	display: inline-block;
+	margin-top: 13px;
+	width: 69%;
+}
+
+svg:not(:root) { 
+	overflow: auto; 
+}

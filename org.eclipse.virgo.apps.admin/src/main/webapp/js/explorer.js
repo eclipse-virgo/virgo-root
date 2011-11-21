@@ -16,6 +16,7 @@ function pageinit() {
 	
 	layoutmanager = new Layout();
 	dataManager = new GeminiDataSource(layoutmanager);
+	dataManager.showDefault();
 	
 	//util.loadScript('explorer-layout-manager', false);
 	//Explorer.init();
@@ -40,6 +41,7 @@ var GeminiDataSource = function(layout){
 			$('view-bundles-button').removeClass('button-selected');
 			$('view-services-button').removeClass('button-selected');
 		}
+		
 	};
 	
 	this.showDefault = function(){
@@ -47,15 +49,32 @@ var GeminiDataSource = function(layout){
 			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
 			method : 'get',
 			onSuccess : function(responseJSON) {
-				this.renderBundles(responseJSON.value);
-			}
+				this.getRegions(responseJSON.value);
+			}.bind(this)
 		}).send();
 	};
 	
 	//Start private methods
 
-	this.renderBundles = function(json){
+	this.getRegions = function(bundles){
+		new Request.JSON({
+			url : util.getCurrentHost() + "/jolokia/read/org.eclipse.equinox.region.domain:type=Region,*",
+			method : 'get',
+			onSuccess : function(responseJSON) {
+				this.getOverview(bundles, responseJSON.value);
+			}.bind(this)
+		}).send();
+	};
 	
+	this.getOverview = function(rawBundles, regions){
+		console.log(bundles);
+		console.log(regions);
+		var bundles = {};
+		Object.each(rawBundles, function(value){
+		
+			this.bundles[] = new Bundle();
+		
+		});
 	};
 
 };
