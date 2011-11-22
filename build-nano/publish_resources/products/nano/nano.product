@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Virgo Nano" uid="nano.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+<product name="Eclipse Virgo Nano Product" uid="nano.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>

@@ -1,17 +1,69 @@
-<feature id="org.eclipse.virgo.util" label="Virgo Util" version="1.0.0.qualifier" provider-name="Virgo">
-	<description url="http://www.eclipse.org/virgo/">
-		This feature provides a package of Virgo Util bundles
-	</description>
-	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
-	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
-	
-	<plugin id="org.eclipse.virgo.util.io" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.util.osgi" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.util.common" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.util.jmx" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.util.math" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.util.osgi.manifest" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.util.parser.manifest" version="0.0.0"/>
-    
-    <plugin id="tooling.org.eclipse.virgo.util.osgi" version="0.0.0"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.util"
+      label="%featureName"
+      version="1.0.0"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.virgo.util.io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.jmx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.math"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.osgi.manifest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.parser.manifest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolingANY.ANY.ANY.org.eclipse.virgo.util.osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>

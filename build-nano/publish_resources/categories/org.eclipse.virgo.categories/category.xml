@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.virgo.ds_1.0.0.jar" id="org.eclipse.virgo.ds" version="1.0.0">
+      <category name="org.eclipse.virgo.addons"/>
+   </feature>
+   <feature url="features/org.eclipse.virgo.p2.provisioning_1.0.0.jar" id="org.eclipse.virgo.p2.provisioning" version="1.0.0">
+      <category name="org.eclipse.virgo.addons"/>
+   </feature>
+   <feature url="features/org.eclipse.virgo.springdm_1.0.0.jar" id="org.eclipse.virgo.springdm" version="1.0.0">
+      <category name="org.eclipse.virgo.addons"/>
+   </feature>
+   <feature url="features/org.eclipse.gemini.web_1.0.0.jar" id="org.eclipse.gemini.web" version="1.0.0">
+      <category name="org.eclipse.virgo.addons"/>
+   </feature>
+   <feature url="features/org.eclipse.virgo.util_1.0.0.jar" id="org.eclipse.virgo.util" version="1.0.0">
+      <category name="org.eclipse.virgo.addons"/>
+   </feature>
+   <category-def name="org.eclipse.virgo.addons" label="Eclipse Virgo Add-Ons">
+      <description>
+         This category groups the standalone add-ons that the various Eclipse Virgo products use to build the Virgo distributions. The add-ons can be installed to Eclipse Virgo distributions that don&apos;t include them in their original content, allowing the users to enhance and customize their Virgo runtimes
+      </description>
+   </category-def>
+</site>

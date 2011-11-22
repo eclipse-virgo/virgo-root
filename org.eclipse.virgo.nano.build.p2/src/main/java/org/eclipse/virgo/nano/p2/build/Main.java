@@ -23,7 +23,7 @@ public class Main {
             String baseDir = args[0];
 
             StringBuilder bundlesInfoContent = new StringBuilder();
-            File baseDirFile = new File(baseDir + File.separatorChar + P2_CLIENT_DIR);
+            File baseDirFile = new File(baseDir + File.separatorChar + P2_CLIENT_DIR + "/plugins");
             if (baseDirFile.isDirectory()) {
                 for (File file : baseDirFile.listFiles()) {
                     if (file.getName().endsWith(".jar") && file.getName().contains(BSN_VERSION_SEPARATOR)) {
@@ -38,7 +38,7 @@ public class Main {
                         if (name.equals(EQUINOX_BSN)) {
                             startLevel = -1;
                         }
-                        bundlesInfoContent = bundlesInfoContent.append(name).append(",").append(version).append(",").append(file.getName()).append(",").append(startLevel).append(",").append("true\n");
+                        bundlesInfoContent = bundlesInfoContent.append(name).append(",").append(version).append(",").append("plugins/" + file.getName()).append(",").append(startLevel).append(",").append("true\n");
                     }
                 }
             }

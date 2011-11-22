@@ -1,15 +1,57 @@
-<feature id="org.eclipse.gemini.web" label="Gemini Web feature" version="1.0.0.qualifier" provider-name="Virgo">
-	<description url="http://www.eclipse.org/virgo/">
-		This feature provides a package of Virgo Util bundles
-	</description>
-	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
-	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
-	
-	<plugin id="org.eclipse.gemini.web.tomcat" version="0.0.0"/>
-    <plugin id="org.eclipse.gemini.web.extender" version="0.0.0"/>
-    <plugin id="org.eclipse.gemini.web.core" version="0.0.0"/>
-    
-    <plugin id="tooling.org.eclipse.gemini.web.tomcat" version="0.0.0"/>
-    <plugin id="tooling.org.eclipse.gemini.web.extender" version="0.0.0"/>
-    <plugin id="tooling.org.eclipse.gemini.web.core" version="0.0.0"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.gemini.web"
+      label="%featureName"
+      version="1.0.0"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.gemini.web.tomcat"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.gemini.web.extender"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.gemini.web.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolingANY.ANY.ANY.org.eclipse.gemini.web.tomcat"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolingANY.ANY.ANY.org.eclipse.gemini.web.extender"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolingANY.ANY.ANY.org.eclipse.gemini.web.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>

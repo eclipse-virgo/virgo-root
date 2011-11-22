@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Virgo Nano Web With p2" uid="nanoweb-with-p2.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+<product name="Eclipse Virgo Nano Web With p2 Product" uid="nanoweb-with-p2.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>
@@ -10,7 +10,6 @@
    </vm>
 
    <plugins>
-   		<plugin id="nano.product" version="0.0.0"/>
    </plugins>
 
    <features>

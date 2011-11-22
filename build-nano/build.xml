@@ -16,18 +16,21 @@
 	<target name="package" depends="ivy.init">
 		<delete dir="${basedir}/p2" quiet="true"/>
 		<mkdir dir="${basedir}/p2"/>
+        <mkdir dir="${basedir}/p2/plugins"/>
 		
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
 		
+        <property name="p2.tools.location" value="${basedir}/p2"/>
+        <property name="p2.tools.plugins.location" value="${p2.tools.location}/plugins"/>
 		<!-- Prepare the minimal p2 publishing client -->
 		<ivy:resolve resolveId="copy.path" file="${basedir}/p2runtime-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${basedir}/p2/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${p2.tools.plugins.location}/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
 		
 		<ivy:resolve resolveId="copy.path" file="${basedir}/p2build-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${basedir}/p2/[artifact]_[revision].[ext]" conf="p2-build" type="jar"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${p2.tools.plugins.location}/[artifact]_[revision].[ext]" conf="p2-build" type="jar"/>
 		
-		<copy todir="${basedir}/p2/configuration" failonerror="false">
+		<copy todir="${p2.tools.location}/configuration" failonerror="false">
 			<fileset dir="${basedir}/p2build_resources" excludes="keystore"/>
 			<filterset>
 				<filter token="SIMPLE.CONFIG.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
@@ -35,10 +38,17 @@
 			</filterset>
 		</copy>
 		<echo message="Building bundles.info for the minimal p2 client"/>
-		<java jar="${basedir}/p2/org.eclipse.virgo.nano.build.p2_${bundle.version}.jar" fork="true" taskname="BundlesInfoBuilder" failonerror="true" maxmemory="256m">
+		<java jar="${p2.tools.plugins.location}/org.eclipse.virgo.nano.build.p2_${bundle.version}.jar" fork="true" taskname="BundlesInfoBuilder" failonerror="true" maxmemory="256m">
 			<arg value="${basedir}"/>
 		</java>
 		
+        <!-- Zip the minimal p2 client as artifact produced by this build -->
+        <mkdir dir="${artifacts.dir}"/>
+        <property name="p2.tools.output.file" value="${artifacts.dir}/p2tools-${bundle.version}.zip"/>
+        <zip destfile="${p2.tools.output.file}">
+			<zipfileset dir="${p2.tools.location}"/>
+		</zip>
+        
 		<!-- Assemble artifacts -->
 		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${package.dir}/zip/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
@@ -84,13 +94,15 @@
         <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
         
+        <!-- Prepare the features for publishing -->
         <copy todir="${target.dir}/assembly/features" failonerror="false">
 			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
 		</copy>
         
         <property name="p2.products.location" value="${basedir}/publish_resources/products"/>
+        <property name="p2.categories.location" value="${basedir}/publish_resources/categories"/>
         <property name="publishing.dir" value="${basedir}/target/repository"/>
-        <property name="launcher.jar" value="${basedir}/p2/org.eclipse.equinox.launcher_${org.eclipse.equinox.launcher}.jar"/>
+        <property name="launcher.jar" value="${p2.tools.plugins.location}/org.eclipse.equinox.launcher_${org.eclipse.equinox.launcher}.jar"/>
 		
 		<!-- execute repository publisher -->
 		<echo message="Publishing Virgo Nano features and bundles in p2 repository" />
@@ -102,7 +114,6 @@
             <arg line="-artifactRepository file:${publishing.dir}"/>
             <arg line="-source ${target.dir}/assembly"/>
             <arg line="-publishArtifacts"/>
-            <arg line="-configs all.all.all"/>
         </java>
         
         <echo message="Publishing Virgo Nano binaries in p2 repository" />
@@ -116,7 +127,6 @@
             <arg line="-publishArtifacts"/>
             <arg line="-append"/>
             <arg line="-chmod startup.sh@bin#755,dmk.sh@bin#755,checkJava.sh@bin#755,jconsole.sh@bin#755,setupClasspath.sh@bin#755,shutdown.sh@bin#755,org.eclipse.virgo.kernel.jmxremote.access.properties@config#600"/>
-            <arg line="-configs all.all.all"/>
         </java>
         
         <echo message="Publishing Virgo Nano product in p2 repository" />
@@ -127,7 +137,7 @@
 			<arg line="-metadataRepository file:${target.dir}/repository"/>
 			<arg line="-artifactRepository file:${target.dir}/repository"/>
 			<arg line="-productFile ${p2.products.location}/nano/nano.product"/>
-            <arg line="-configs all.all.all"/>
+            <arg line="-configs ANY"/>
             <arg line="-publishArtifacts"/>
             <arg line="-append"/>
             <arg line="-flavor tooling"/>
@@ -141,7 +151,7 @@
 			<arg line="-metadataRepository file:${target.dir}/repository"/>
 			<arg line="-artifactRepository file:${target.dir}/repository"/>
 			<arg line="-productFile ${p2.products.location}/nanoweb/nanoweb.product"/>
-            <arg line="-configs all.all.all"/>
+            <arg line="-configs ANY"/>
             <arg line="-publishArtifacts"/>
             <arg line="-append"/>
             <arg line="-flavor tooling"/>
@@ -155,11 +165,42 @@
 			<arg line="-metadataRepository file:${target.dir}/repository"/>
 			<arg line="-artifactRepository file:${target.dir}/repository"/>
 			<arg line="-productFile ${p2.products.location}/nanoweb-with-p2/nanoweb-with-p2.product"/>
-            <arg line="-configs all.all.all"/>
+            <arg line="-configs ANY"/>
             <arg line="-publishArtifacts"/>
             <arg line="-append"/>
             <arg line="-flavor tooling"/>
 		</java>
+        
+        <echo message="Publishing Virgo Add-Ons feature category in the p2 repository" />
+		<java jar="${launcher.jar}" fork="true" taskname="p2Category" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher"/>
+			<arg line="-metadataRepository file:${target.dir}/repository"/>
+			<arg line="-categoryDefinition file:${p2.categories.location}/org.eclipse.virgo.categories/category.xml"/>
+		</java>
+        
+        <echo message="Installing the largest Nano flavor for distribution purposes" />
+		<java jar="${launcher.jar}" fork="true" taskname="p2Director" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <arg line="-application org.eclipse.equinox.p2.director"/>
+			<arg line="-repository file:${target.dir}/repository"/>
+			<arg line="-installIU nanoweb-with-p2.product"/>
+            <arg line="-tag InitialState"/>
+            <arg line="-destination ${package.output.dir}"/>
+            <arg line="-profile VIRGOProfile"/>
+            <arg line="-roaming"/>
+		</java>
+        
+        <zip destfile="${package.output.file}">
+			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}">
+				<exclude name="${package.basename}/bin/*.sh"/>
+				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			</zipfileset>
+		</zip>
         
         <delete dir="${target.dir}/assembly" quiet="true"/>
 		

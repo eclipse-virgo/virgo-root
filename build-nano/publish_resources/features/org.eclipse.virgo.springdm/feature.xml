@@ -1,13 +1,45 @@
-<feature id="org.eclipse.virgo.springdm" label="Virgo Spring DM" version="1.0.0.qualifier" provider-name="Virgo">
-	<description url="http://www.eclipse.org/virgo/">
-		This feature provides a package of Virgo Spring DM modules
-	</description>
-	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
-	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
-	
-	<plugin id="org.springframework.osgi.core" version="0.0.0"/>
-	<plugin id="org.springframework.osgi.extender" version="0.0.0"/>
-	<plugin id="org.springframework.osgi.io" version="0.0.0"/>
-    
-    <plugin id="tooling.org.springframework.osgi.extender" version="0.0.0"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.springdm"
+      label="%featureName"
+      version="1.0.0"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.springframework.osgi.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.springframework.osgi.extender"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.springframework.osgi.io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolingANY.ANY.ANY.org.springframework.osgi.extender"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>

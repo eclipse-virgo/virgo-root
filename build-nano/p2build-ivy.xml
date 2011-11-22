@@ -11,9 +11,8 @@
 
 	<dependencies>		
 		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.build.p2" rev="latest.integration" conf="p2-build->runtime"/>
-        	
-        <exclude org="org.eclipse.osgi" module="org.eclipse.equinox.p2.publisher.eclipse.pdepublishing"/>
-	</dependencies>
+        <exclude org="org.aspectj" module="com.springsource.org.aspectj.weaver"/>
+    </dependencies>
 
 </ivy-module>
 

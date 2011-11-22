@@ -24,7 +24,7 @@
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.p2.metadata" rev="${org.eclipse.equinox.p2.metadata}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.p2.publisher" rev="${org.eclipse.equinox.p2.publisher}" conf="compile->runtime"/>
-        <dependency org="org.eclipse.osgi" name="org.eclipse.equinox.p2.publisher.eclipse.pdepublishing" rev="1.0.0" conf="compile->runtime"/>
+        <dependency org="org.eclipse.osgi" name="org.eclipse.equinox.p2.publisher.eclipse" rev="${org.eclipse.equinox.p2.publisher.eclipse}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.p2.repository" rev="${org.eclipse.equinox.p2.repository}" conf="compile->runtime"/>
 		
 		<!-- Allow Equinox to be upgraded point-wise before rippling -->

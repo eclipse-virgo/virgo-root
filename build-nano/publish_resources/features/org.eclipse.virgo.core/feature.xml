@@ -1,31 +1,139 @@
-<feature id="org.eclipse.virgo.core" label="Virgo Core" version="1.0.0.qualifier" provider-name="Virgo">
-	<description url="http://www.eclipse.org/virgo/">
-		This feature provides the Core features of a Virgo OSGi container such as enhanced supportability and deployment mechanisms
-	</description>
-	<copyright url="http://www.eclipse.org/virgo/">Virgo</copyright>
-	<license url="http://www.eclipse.org/legal/epl/notice.php">http://www.eclipse.org/legal/epl/notice.php</license>
-	
-	<plugin id="org.eclipse.virgo.kernel.core" version="0.0.0"/>
-	<plugin id="com.springsource.org.apache.mina.core" version="0.0.0"/>
-	<plugin id="com.springsource.org.apache.sshd.core" version="0.0.0"/>
-	<plugin id="org.apache.felix.gogo.command" version="0.0.0"/>
-	<plugin id="org.apache.felix.gogo.runtime" version="0.0.0"/>
-	<plugin id="org.apache.felix.gogo.shell" version="0.0.0"/>
-	<plugin id="com.springsource.org.aspectj.weaver" version="0.0.0"/>
-	<plugin id="org.eclipse.equinox.console.supportability" version="0.0.0"/>
-	<plugin id="com.springsource.slf4j.api" version="0.0.0"/>
-	<plugin id="com.springsource.slf4j.bridge" version="0.0.0"/>
-	<plugin id="com.springsource.slf4j.org.apache.commons.logging" version="0.0.0"/>
-	<plugin id="com.springsource.org.aopalliance" version="0.0.0"/>
-	<plugin id="org.eclipse.equinox.region" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.medic" version="0.0.0"/>
-	<plugin id="org.eclipse.virgo.medic.core" version="0.0.0"/>
-	<plugin id="org.eclipse.equinox.cm" version="0.0.0"/>
-	<plugin id="org.eclipse.osgi.services" version="0.0.0"/>
-	<plugin id="org.eclipse.equinox.event" version="0.0.0"/>
-    <plugin id="nano_zipped_resources" version="0.0.0"/>
-	
-    <requires>
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.core"
+      label="%featureName"
+      version="1.0.0"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <requires>
       <import feature="org.eclipse.virgo.ds" version="0.0.0"/>
-    </requires>
+   </requires>
+
+   <plugin
+         id="org.eclipse.virgo.kernel.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.org.apache.mina.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.org.apache.sshd.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.felix.gogo.command"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.felix.gogo.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.felix.gogo.shell"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.org.aspectj.weaver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.equinox.console.supportability"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.slf4j.bridge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.slf4j.org.apache.commons.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.springsource.org.aopalliance"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.equinox.region"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.medic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.virgo.medic.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.equinox.cm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osgi.services"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.equinox.event"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="nano_zipped_resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>
