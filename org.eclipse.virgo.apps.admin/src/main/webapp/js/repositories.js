@@ -50,7 +50,6 @@ TabManager = {
 			url: util.getCurrentHost() + '/jolokia/read/' + this.retrieve('mBean'), 
 			method: 'get',
 			onSuccess: function (responseJSON, responseText){
-				
 				var rows = [];
 				responseJSON.value.AllArtifactDescriptorSummaries.each(function(item, index){
 					rows.push([item.type, 
@@ -58,7 +57,8 @@ TabManager = {
 					           item.version, 
 					           {content: 'deploy', properties: {'class': 'repository-deploy', 'onClick': 'TabManager.deploy("repository:' + item.type + '/' + item.name + '")'}}]);
 				});		
-				var propertiesTable = new HtmlTable({ properties: {'class': 'repository-table'}, 
+				var propertiesTable = new HtmlTable({
+					properties: {'class': 'repository-table'}, 
 					headers: ['Type', 'Name', 'Version'], 
 					rows: rows,
 					selectable: true,

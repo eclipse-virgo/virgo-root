@@ -10,6 +10,10 @@
  	overflow: auto;
 }
 
+svg:not(:root) { 
+	overflow: auto; 
+}
+
 #side-bar, #display {
 	vertical-align: top;
 }
@@ -17,15 +21,27 @@
 #side-bar {
 	display: inline-block;
 	overflow-y: auto;
-	width: 30%;
+	width: 34%;
 }
 
 #display {
 	display: inline-block;
 	margin-top: 13px;
-	width: 69%;
+	width: 65%;
 }
 
-svg:not(:root) { 
-	overflow: auto; 
+.bundle-table .table-tr-hovered {
+	background:#BAD9EC;
+}
+
+.bundle-table th {
+	cursor: pointer;
+}
+
+.bundle-table .table-th-sort {
+	color: #0095CA;
+}
+
+.bundle-table .table-tr-selected {
+	background:#BAD9EC;
 }

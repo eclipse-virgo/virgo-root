@@ -14,18 +14,16 @@
 function pageinit() {
 	util.loadScript('raphael', false);
 	
-	layoutmanager = new Layout();
-	dataManager = new GeminiDataSource(layoutmanager);
-	dataManager.showDefault();
+	paper = Raphael("bundle-canvas", "700px", "500px");
+	dataManager = new GeminiDataSource();
+	dataManager.setUp();
 	
 	//util.loadScript('explorer-layout-manager', false);
 	//Explorer.init();
 	util.pageReady();
 }
 
-var GeminiDataSource = function(layout){
-
-	this.layout = layout;
+var GeminiDataSource = function(){
 
 	this.display = function(type){
 		if(type == 'bundles') {
@@ -44,7 +42,7 @@ var GeminiDataSource = function(layout){
 		
 	};
 	
-	this.showDefault = function(){
+	this.setUp = function(){
 		new Request.JSON({
 			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
 			method : 'get',
@@ -67,28 +65,53 @@ var GeminiDataSource = function(layout){
 	};
 	
 	this.getOverview = function(rawBundles, regions){
-		console.log(bundles);
-		console.log(regions);
-		var bundles = {};
-		Object.each(rawBundles, function(value){
 		
-			this.bundles[] = new Bundle();
-		
+		var regionsMap = {};
+		Object.each(regions, function(value, key){
+			value.BundleIds.each(function(id){
+				regionsMap[id] = value.Name;
+			});
 		});
+		
+		var bundles = {};
+		var rows = [];
+		Object.each(rawBundles, function(value, key){
+			bundles[key] = new Bundle(value.SymbolicName, value.Version, regionsMap[key], key, value.State, value.Location);
+			rows.push([key, value.SymbolicName, value.Version, value.State]);
+		});
+
+		this.layout = new Layout(bundles);
+			
+		var bundlesTable = new HtmlTable({ 
+			properties: {'class': 'bundle-table'}, 
+			headers : ['Id', 'Name', 'Version', 'State'], 
+			rows : rows,
+			selectable : true,
+			allowMultiSelect : false,
+			sortable : true,
+			zebra : true
+		});
+		
+		bundlesTable.rowFocus = function(tr){
+			alert(tr);
+		};
+		
+		$('side-bar').empty();
+		bundlesTable.inject($('side-bar'));
 	};
 
 };
 
-var Layout = function(){
+var Layout = function(bundles){
 
-	this.bundles = {};
+	this.bundles = bundles;
 	
-	this.shuffle = function(focusId, inIds, outIds){
-	
+	this.shuffle = function(bundleId){
+		this.bundles[id].show();
 	};
 	
 	this.addBundle = function(bundle){
-		this.bundles[budle.id] = bundle;
+		this.bundles[bundle.id] = bundle;
 	};
 	
 	this.removeBundle = function(id){
@@ -120,23 +143,37 @@ var Bundle = function(name, version, region, id, state, location){
 	this.location = location;
 	
 	//Display attributes
-	this.bundleHeight = 25;
-	this.bundlexMargin = 10;
-	this.x = -1;
-	this.y = -1;
+	this.bundleMargin = 8;
+	this.x = 5;
+	this.y = 5;
 	
-	//Display objects
-	var rect = this.canvas.rect(x, y, 1, bundleBgHeight, 5).attr({
-		fill : "90-#dfdfdf-#fff",
-		stroke : "#ccc"
-	});
-	var text = this.canvas.text(x + this.bundlexMargin, y + this.bundleHeight / 2, "[" + this.id + "]" + this.name + " " + this.version + " " + this.state).attr({
-		"text-anchor" : "start",
-		"font" : "10px Arial"
-	});
+	this.summary = function(){
+		return "[" + this.id + "] " + this.name + " " + this.version + " " + this.state;
+	};
+	
+	this.text = paper.text(this.x + this.bundleMargin, this.y + this.bundleMargin + 8, this.summary()).attr({
+		"text-anchor" : "start", 
+		"font" : "12px Arial"
+	}).hide();
+	
+	this.boxWidth = this.text.getBBox().width.round();
+	this.boxHeight = this.text.getBBox().height.round();
+	
+	this.box = paper.rect(this.x, this.y, this.boxWidth + 2*this.bundleMargin, this.boxHeight + 2*this.bundleMargin, 8).attr({
+		"fill" : "90-#dfdfdf-#fff", 
+		"stroke" : "#002F5E"
+	}).hide();
+	
+	this.box.toBack();
 	
 	this.hide = function(){
-		
+		this.text.hide();
+		this.box.hide();
+	};
+	
+	this.show = function(){
+		this.text.show();
+		this.box.show();
 	};
 
 	//Start private methods
