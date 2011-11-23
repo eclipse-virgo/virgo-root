@@ -22,12 +22,19 @@ svg:not(:root) {
 	display: inline-block;
 	overflow-y: auto;
 	width: 34%;
+	height: 600px;
 }
 
 #display {
 	display: inline-block;
-	margin-top: 13px;
 	width: 65%;
+	visibility: hidden;
+}
+
+#bundle-canvas {
+	border: 1px solid #333333;
+	margin: auto;
+	overflow: auto;
 }
 
 .bundle-table .table-tr-hovered {

@@ -13,31 +13,28 @@
 
 function pageinit() {
 	util.loadScript('raphael', false);
-	
-	paper = Raphael("bundle-canvas", "700px", "500px");
+	var width = 900;
+	var height = 566;
+	$('bundle-canvas').setStyles({'width' : width, 'height' : height + 3});
+	paper = Raphael("bundle-canvas", width + "px", height + "px");
 	dataManager = new GeminiDataSource();
 	dataManager.setUp();
-	
-	//util.loadScript('explorer-layout-manager', false);
-	//Explorer.init();
 	util.pageReady();
 }
 
 var GeminiDataSource = function(){
 
+	this.relationships = 'bundles';
+
 	this.display = function(type){
 		if(type == 'bundles') {
 			$('view-bundles-button').addClass('button-selected');
 			$('view-services-button').removeClass('button-selected');
-			$('view-packages-button').removeClass('button-selected');
+			this.relationships = type;
 		} else if(type == 'services'){
 			$('view-services-button').addClass('button-selected');
 			$('view-bundles-button').removeClass('button-selected');
-			$('view-packages-button').removeClass('button-selected');
-		} else {
-			$('view-packages-button').addClass('button-selected');
-			$('view-bundles-button').removeClass('button-selected');
-			$('view-services-button').removeClass('button-selected');
+			this.relationships = type;
 		}
 		
 	};
@@ -65,7 +62,6 @@ var GeminiDataSource = function(){
 	};
 	
 	this.getOverview = function(rawBundles, regions){
-		
 		var regionsMap = {};
 		Object.each(regions, function(value, key){
 			value.BundleIds.each(function(id){
@@ -73,31 +69,42 @@ var GeminiDataSource = function(){
 			});
 		});
 		
-		var bundles = {};
-		var rows = [];
-		Object.each(rawBundles, function(value, key){
-			bundles[key] = new Bundle(value.SymbolicName, value.Version, regionsMap[key], key, value.State, value.Location);
-			rows.push([key, value.SymbolicName, value.Version, value.State]);
-		});
-
-		this.layout = new Layout(bundles);
-			
 		var bundlesTable = new HtmlTable({ 
 			properties: {'class': 'bundle-table'}, 
 			headers : ['Id', 'Name', 'Version', 'State'], 
-			rows : rows,
+			rows : [],
 			selectable : true,
 			allowMultiSelect : false,
 			sortable : true,
 			zebra : true
 		});
 		
-		bundlesTable.rowFocus = function(tr){
-			alert(tr);
-		};
+		var bundles = {};
+		Object.each(rawBundles, function(value, key){
+			bundles[key] = new Bundle(value.SymbolicName, value.Version, regionsMap[key], key, value.State, value.Location);
+			bundlesTable.push([key, value.SymbolicName, value.Version, value.State], {'key' : key});
+		});
+
+		this.layout = new Layout(bundles);
+
+		bundlesTable.addEvent('rowFocus', function(tr){
+			if(this.relationships = 'bundles'){
+				this.layout.shuffle(tr.getProperty('key'), this.getBundleRelationships());
+			} else if(this.relationships = 'services') {	
+				this.layout.shuffle(tr.getProperty('key'), this.getServiceRelationships());
+			}
+		}.bind(this));
 		
 		$('side-bar').empty();
 		bundlesTable.inject($('side-bar'));
+	};
+	
+	this.getBundleRelationships = function(){
+		return [[], []];
+	};
+	
+	this.getServiceRelationships = function() {
+		return [[], []];
 	};
 
 };
@@ -106,30 +113,75 @@ var Layout = function(bundles){
 
 	this.bundles = bundles;
 	
-	this.shuffle = function(bundleId){
-		this.bundles[id].show();
+	this.focused = -1;
+	
+	this.shuffle = function(bundleId, relationships){
+		var center = this.findCenter();
+		this.bundles[bundleId].move(center.x, center.y);
+		if(this.focused != -1){
+			this.hide(this.focused);
+		}
+		this.bundles[bundleId].show();
+		this.focused = bundleId;
+		
+		this.renderInBundles(relationships[0]);
+		this.renderOutBundles(relationships[1]);
+		
+		$('display').setStyle('visibility', 'visible');
 	};
 	
 	this.addBundle = function(bundle){
 		this.bundles[bundle.id] = bundle;
 	};
 	
-	this.removeBundle = function(id){
-		this.bundles[id].hide();
-		this.bundles[id] = undefined;
+	this.removeBundle = function(bundleId){
+		this.bundles[bundleId].hide();
+		this.bundles[bundleId] = undefined;
 	};
 	
-	this.clear = function(){
-		Object.each(this.bundles, function(value){
-			value.hide();
-		});
+	this.empty = function(){
+		this.hideAll();
 		this.bundles = {};
 	};
 	
-	this.hide = function(id){
-		this.bundles[id].hide();
+	this.hide = function(bundleId){
+		this.bundles[bundleId].hide();
+		if(bundleId == this.focused){
+			this.focused = -1;
+		}
 	};
-
+	
+	this.hideAll = function(){
+		Object.each(this.bundles, function(value){
+			value.hide();
+		});
+		this.focused = -1;
+	};
+	
+	
+	this.renderInBundles = function(inBundles){
+		console.log(inBundles);
+	};
+	
+	this.renderOutBundles = function(outBundles){
+		console.log(outBundles);
+	};
+	
+	/**
+	 * Finds the centre of the canvas
+	 * 
+	 * @returns (Object) - Coordinates of centre
+	 */
+	this.findCenter = function() {
+		var width = paper.width;
+		var height = paper.height;
+		width = (width.indexOf("px") != -1 ? width.substr(0, width.length - 2) : 10);
+		height = (height.indexOf("px") != -1 ? height.substr(0, height.length - 2) : 10);
+		return {
+			'x' : (width / 2).round(),
+			'y' : (height / 2).round()
+		};
+	};
 };
 
 var Bundle = function(name, version, region, id, state, location){
@@ -174,6 +226,17 @@ var Bundle = function(name, version, region, id, state, location){
 	this.show = function(){
 		this.text.show();
 		this.box.show();
+	};
+	
+	this.move = function(x, y) {
+		this.box.attr({
+			'x' : x - (this.boxWidth/2), 
+			'y' : y - (this.boxHeight/2)
+		});
+		this.text.attr({
+			'x' : x - (this.boxWidth/2) + this.bundleMargin, 
+			'y' : y - (this.boxHeight/2) + this.bundleMargin + 8
+		});
 	};
 
 	//Start private methods
