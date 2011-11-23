@@ -138,7 +138,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         assertNotNull(deploymentIdentity);
 
         // let it deploy
-        sleep(1000);
+        sleep(100);
 
         assertEquals(1, countFactoryConfigurations("test.factory.pid.a"));
         assertEquals(1, service.updateCount());
@@ -151,8 +151,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         this.appDeployer.undeploy(deploymentIdentity);
 
         // give time for events to percolate
-        sleep(1000);
-
+        sleep(100);
         assertEquals(0, countFactoryConfigurations("test.factory.pid.a"));
         assertEquals(1, service.updateCount());
         assertEquals(1, service.deleteCount());
@@ -196,6 +195,8 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             writePropertiesFile(hotDeployConfiguration, target, "no comment");
 
             ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
+            // let events propagate
+            sleep(100);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(0, service.deleteCount());
@@ -208,7 +209,8 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             // remove the file and let it be removed
             target.delete();
             ConfigurationTestUtils.pollUntilFactoryNotInConfigurationAdmin(this.configAdmin, factoryPid);
-
+            // let events propagate
+            sleep(100);
             assertEquals(0, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(1, service.deleteCount());
@@ -250,7 +252,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
 
             ConfigurationTestUtils.pollUntilFactoryInConfigurationAdmin(this.configAdmin, factoryPid);
             // let events propagate
-            sleep(1000);
+            sleep(100);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(1, service.updateCount());
             assertEquals(0, service.deleteCount());
@@ -266,7 +268,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             writePropertiesFile(hotDeployConfiguration, target, "updated");
 
             // let events propagate and update happen
-            sleep(2501);
+            sleep(4001);
             assertEquals(1, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount()); // This takes several seconds to change from 1 to 2
             assertEquals(0, service.deleteCount());
@@ -356,7 +358,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
             assertEquals("1", propertiesFromService.get("prop2"));
 
             writePropertiesFile(configTwo, targetTwo, "initial");
-            sleep(2502);
+            sleep(4002);
             assertEquals(2, countFactoryConfigurations(factoryPid));
             assertEquals(2, service.updateCount());
             assertEquals(0, service.deleteCount());
