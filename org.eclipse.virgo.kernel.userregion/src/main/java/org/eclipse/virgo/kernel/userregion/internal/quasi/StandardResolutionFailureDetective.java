@@ -206,6 +206,11 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
 
     private void formatBasicResolverError(ResolverError resolverError, StringBuilder sb) {
         sb.append(this.getTypeDescription(resolverError.getType()));
+        formatResolverErrorData(resolverError, sb);
+        formatResolverErrorUnsatisfiedConstraint(resolverError, sb);
+    }
+
+    private void formatResolverErrorUnsatisfiedConstraint(ResolverError resolverError, StringBuilder sb) {
         VersionConstraint unsatisfiedConstraint = resolverError.getUnsatisfiedConstraint();
         if(unsatisfiedConstraint != null){
             formatMissingConstraintWithAttributes(resolverError, sb, unsatisfiedConstraint);
@@ -216,7 +221,16 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
 
     private void formatMissingFragment(ResolverError resolverError, StringBuilder sb) {
         sb.append(this.getTypeDescription(resolverError.getType()));
-        sb.append(" The affected fragment is ").append(resolverError.getBundle());
+        sb.append(" The affected fragment is ").append(resolverError.getBundle()).append(".");
+        formatResolverErrorData(resolverError, sb);
+        formatResolverErrorUnsatisfiedConstraint(resolverError, sb);
+    }
+
+    private void formatResolverErrorData(ResolverError resolverError, StringBuilder sb) {
+        String data = resolverError.getData();
+        if (data != null) {
+            sb.append(" Resolver error data <").append(data).append(">.");
+        }
     }
 
     private void formatUsesConflict(ResolverError resolverError, StringBuilder sb, State state) {
