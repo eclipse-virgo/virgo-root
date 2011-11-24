@@ -19,6 +19,7 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactState;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
@@ -36,15 +37,20 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
  */
 public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
 
+    private static final ArrayList<OsgiServiceHolder<InstallArtifactLifecycleListener>> EMPTY_LISTENER_HOLDER_LIST = new ArrayList<OsgiServiceHolder<InstallArtifactLifecycleListener>>();
+
     private final BundleContext bundleContext;
-   
+
+    private final Bundle bundle;
+
     private final ArtifactState artifactState;
 
     private StandardArtifactStateMonitor(BundleContext bundleContext, ArtifactState artifactState) {
         this.bundleContext = bundleContext;
+        this.bundle = this.bundleContext.getBundle();
         this.artifactState = artifactState;
     }
-    
+
     public StandardArtifactStateMonitor(BundleContext bundleContext) {
         this(bundleContext, new ArtifactState());
     }
@@ -52,14 +58,14 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public State getState() {
+    public State getState() {
         return this.artifactState.getState();
     }
-    
+
     /**
      * {@inheritDoc}
      */
-	public void setState(State state) {
+    public void setState(State state) {
         switch (state) {
             case ACTIVE:
                 this.artifactState.setActive();
@@ -97,7 +103,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onInstalling(InstallArtifact installArtifact) throws DeploymentException {
+    public void onInstalling(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setInstalling()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -113,7 +119,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onInstallFailed(InstallArtifact installArtifact) throws DeploymentException {
+    public void onInstallFailed(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setInitial()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -129,7 +135,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onInstalled(InstallArtifact installArtifact) throws DeploymentException {
+    public void onInstalled(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setInstalled()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -145,7 +151,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onResolving(InstallArtifact installArtifact) throws DeploymentException {
+    public void onResolving(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setResolving()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -161,7 +167,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onResolveFailed(InstallArtifact installArtifact) throws DeploymentException {
+    public void onResolveFailed(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setInstalled()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -177,7 +183,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onResolved(InstallArtifact installArtifact) throws DeploymentException {
+    public void onResolved(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setResolved()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -193,7 +199,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public boolean onStarting(InstallArtifact installArtifact) throws DeploymentException {
+    public boolean onStarting(InstallArtifact installArtifact) throws DeploymentException {
         boolean stateChanged = this.artifactState.setStarting();
         if (stateChanged) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
@@ -211,7 +217,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onStartFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
+    public void onStartFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
         List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
         try {
             for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
@@ -225,7 +231,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onStartAborted(InstallArtifact installArtifact) throws DeploymentException {
+    public void onStartAborted(InstallArtifact installArtifact) throws DeploymentException {
         List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
         try {
             for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
@@ -239,7 +245,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onStarted(InstallArtifact installArtifact) throws DeploymentException {
+    public void onStarted(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setActive()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -255,7 +261,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onStopping(InstallArtifact installArtifact) {
+    public void onStopping(InstallArtifact installArtifact) {
         if (this.artifactState.setStopping()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -271,7 +277,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onStopFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
+    public void onStopFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
         if (this.artifactState.setActive()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -287,7 +293,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onStopped(InstallArtifact installArtifact) {
+    public void onStopped(InstallArtifact installArtifact) {
         if (this.artifactState.setResolved()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -303,7 +309,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onUnresolved(InstallArtifact installArtifact) throws DeploymentException {
+    public void onUnresolved(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setInstalled()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -315,11 +321,11 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-	public void onUninstalling(InstallArtifact installArtifact) throws DeploymentException {
+    public void onUninstalling(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setUninstalling()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -335,7 +341,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onUninstallFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
+    public void onUninstallFailed(InstallArtifact installArtifact, Throwable cause) throws DeploymentException {
         if (this.artifactState.setResolved()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -351,7 +357,7 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     /**
      * {@inheritDoc}
      */
-	public void onUninstalled(InstallArtifact installArtifact) throws DeploymentException {
+    public void onUninstalled(InstallArtifact installArtifact) throws DeploymentException {
         if (this.artifactState.setUninstalled()) {
             List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
             try {
@@ -365,7 +371,9 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
     }
 
     private List<OsgiServiceHolder<InstallArtifactLifecycleListener>> getListenerHolders() {
-        return OsgiFrameworkUtils.getServices(this.bundleContext, InstallArtifactLifecycleListener.class);
+        // Avoid InvalidStateException if our bundle is stopped, typically during shutdown.
+        return this.bundle.getState() != Bundle.RESOLVED ? OsgiFrameworkUtils.getServices(this.bundleContext, InstallArtifactLifecycleListener.class)
+            : EMPTY_LISTENER_HOLDER_LIST;
     }
 
     private List<InstallArtifactLifecycleListener> getListeners(List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders) {
