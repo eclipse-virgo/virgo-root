@@ -269,7 +269,7 @@
 	</beans:bean>
 	
 	<beans:bean id="installArtifactGraph"
-      class="org.eclipse.virgo.kernel.install.artifact.internal.ThreadSafeInstallArtifactGraphFactory"
+      class="org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactDAGSingletonFactory"
       factory-method="createInstance"/>
 	
 	<reference id="userBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>

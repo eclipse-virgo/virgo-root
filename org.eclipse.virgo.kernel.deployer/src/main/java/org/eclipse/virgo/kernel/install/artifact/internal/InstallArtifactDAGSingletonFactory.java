@@ -15,7 +15,7 @@ import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 
 /**
- * {@link ThreadSafeInstallArtifactGraphFactory} is used to create the graph of
+ * {@link InstallArtifactDAGSingletonFactory} is used to create the graph of
  * {@link InstallArtifact InstallArtifacts}.
  * <p />
  * 
@@ -24,8 +24,7 @@ import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
  * Implementations of this interface must be thread safe.
  * 
  */
-// TODO - DAG think about a better name
-public class ThreadSafeInstallArtifactGraphFactory {
+final class InstallArtifactDAGSingletonFactory {
 
 	private static final DirectedAcyclicGraph<InstallArtifact> DAG = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
 
