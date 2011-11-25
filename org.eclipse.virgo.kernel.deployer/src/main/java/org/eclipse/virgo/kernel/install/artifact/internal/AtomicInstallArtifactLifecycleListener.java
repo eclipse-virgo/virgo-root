@@ -22,7 +22,6 @@ import javax.swing.tree.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
@@ -42,7 +41,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -59,7 +58,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -76,7 +75,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -97,7 +96,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -116,7 +115,7 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
 
     private Set<InstallArtifact> getAtomicParents(InstallArtifact installArtifact) {
         Set<InstallArtifact> atomicParents = new HashSet<InstallArtifact>();
-        for (InstallArtifact parent : getParentsInstallArtifacts(installArtifact)) {
+        for (InstallArtifact parent : getParentInstallArtifacts(installArtifact)) {
             if (isAtomicInstallArtifact(parent)) {
                 atomicParents.add(parent);
             }
@@ -138,31 +137,28 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
         return false;
     }
 
-    // TODO DAG: Check JavaDoc if there are any...
     /**
-     * Get the parents {@link InstallArtifact}s in the {@link GraphNode} associated with the {@link InstallArtifact}, if there
-     * are any.
+     * Get the parent {@link InstallArtifact}s in the {@link GraphNode} associated with the {@link InstallArtifact}, if
+     * there are any.
      * 
      * @param installArtifact to find the parents of
      * @return the parent artifacts in the graph, never <code>null</code>
      */
-    private static final Set<InstallArtifact> getParentsInstallArtifacts(InstallArtifact installArtifact) {
+    private static final Set<InstallArtifact> getParentInstallArtifacts(InstallArtifact installArtifact) {
         Set<InstallArtifact> parentInstallArtifacts = new HashSet<InstallArtifact>();
         GraphNode<InstallArtifact> iaGraph = installArtifact.getGraph();
         if (iaGraph != null) {
             List<GraphNode<InstallArtifact>> parents = iaGraph.getParents();
-			for (GraphNode<InstallArtifact> parent : parents) {
-				// TODO DAG: do we need this null check?!
-            	if (parent != null) {
-            		parentInstallArtifacts.add(parent.getValue());
-            	}
-			}
+            for (GraphNode<InstallArtifact> parent : parents) {
+                parentInstallArtifacts.add(parent.getValue());
+            }
         }
         return parentInstallArtifacts;
     }
-    
+
     /**
-     * Determines if <em>any</em> child of this {@link InstallArtifact} has {@link AbstractInstallArtifact#isRefreshing() isRefreshing()} which returns true.
+     * Determines if <em>any</em> child of this {@link InstallArtifact} has
+     * {@link AbstractInstallArtifact#isRefreshing() isRefreshing()} which returns true.
      * 
      * @param atomicParent whose children are checked
      * @return true if any child is refreshing, otherwise false.
@@ -185,12 +181,12 @@ final class AtomicInstallArtifactLifecycleListener extends InstallArtifactLifecy
      */
     private static InstallArtifact[] childrenOf(InstallArtifact parent) {
         List<InstallArtifact> children = new ArrayList<InstallArtifact>();
-        if (parent!=null) {
+        if (parent != null) {
             GraphNode<InstallArtifact> graph = parent.getGraph();
-            if (graph!=null) {
-                for(GraphNode<InstallArtifact> childBranch : graph.getChildren()) {
+            if (graph != null) {
+                for (GraphNode<InstallArtifact> childBranch : graph.getChildren()) {
                     InstallArtifact child = childBranch.getValue();
-                    if (child!=null) {
+                    if (child != null) {
                         children.add(child);
                     }
                 }
