@@ -23,7 +23,6 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.GraphUtils;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -99,7 +98,7 @@ final class SyntheticContextBundleCreatingTransformer implements Transformer, Sc
             
             GraphNode<InstallArtifact> syntheticContextBundle = this.installArtifactGraphFactory.constructInstallArtifactGraph(
                 identity, artifactStorage, null, null);
-            GraphUtils.addChild(graph, syntheticContextBundle);
+            graph.addChild(syntheticContextBundle);
         }
     }
 

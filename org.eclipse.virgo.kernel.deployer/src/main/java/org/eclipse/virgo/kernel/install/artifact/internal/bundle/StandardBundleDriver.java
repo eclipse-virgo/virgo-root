@@ -12,8 +12,6 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
-import java.util.List;
-
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.core.BundleUtils;
@@ -150,28 +148,17 @@ final class StandardBundleDriver implements BundleDriver {
 
     private Bundle getThreadContextBundle() {
         if (this.installArtifact != null) {
-            GraphNode<InstallArtifact> tree = this.installArtifact.getGraph();
-            // TODO DAG - check usage of getParent
-            List<GraphNode<InstallArtifact>> parentList = tree.getParents();
-            while (!parentList.isEmpty()) {
-            		GraphNode<InstallArtifact> parent = parentList.get(0);
-                InstallArtifact parentArtifact = parent.getValue();
-                if (parentArtifact instanceof PlanInstallArtifact) {
-                    PlanInstallArtifact parentPlan = (PlanInstallArtifact) (parentArtifact);
-                    if (parentPlan.isScoped()) {
-                        String syntheticContextBundleSymbolicName = this.installArtifact.getScopeName() + SYNTHETIC_CONTEXT_SUFFIX;
-                        for (GraphNode<InstallArtifact> scopedPlanChild : parent.getChildren()) {
-                            InstallArtifact scopedPlanChildArtifact = scopedPlanChild.getValue();
-                            if (scopedPlanChildArtifact instanceof BundleInstallArtifact
-                                && syntheticContextBundleSymbolicName.equals(scopedPlanChildArtifact.getName())) {
-                                BundleInstallArtifact syntheticContextBundleArtifact = (BundleInstallArtifact) scopedPlanChildArtifact;
-                                return syntheticContextBundleArtifact.getBundle();
-                            }
-                        }
-                        break;
+            PlanInstallArtifact scopedAncestor = this.installArtifact.getScopedAncestor();
+            if (scopedAncestor != null) {
+                String syntheticContextBundleSymbolicName = this.installArtifact.getScopeName() + SYNTHETIC_CONTEXT_SUFFIX;
+                for (GraphNode<InstallArtifact> scopedPlanChild : scopedAncestor.getGraph().getChildren()) {
+                    InstallArtifact scopedPlanChildArtifact = scopedPlanChild.getValue();
+                    if (scopedPlanChildArtifact instanceof BundleInstallArtifact
+                        && syntheticContextBundleSymbolicName.equals(scopedPlanChildArtifact.getName())) {
+                        BundleInstallArtifact syntheticContextBundleArtifact = (BundleInstallArtifact) scopedPlanChildArtifact;
+                        return syntheticContextBundleArtifact.getBundle();
                     }
                 }
-                parentList = parent.getParents();
             }
         }
         return this.bundle;

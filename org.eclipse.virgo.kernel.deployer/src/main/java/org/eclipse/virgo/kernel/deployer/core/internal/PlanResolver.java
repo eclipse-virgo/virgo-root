@@ -14,9 +14,6 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 
 import java.util.List;
 
-import org.osgi.framework.Version;
-
-
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -27,6 +24,7 @@ import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
+import org.osgi.framework.Version;
 
 /**
  * {@link PlanResolver} adds the immediate child nodes to a plan node.
@@ -68,16 +66,17 @@ public class PlanResolver implements Transformer {
                 GraphNode<InstallArtifact> graph = planInstallArtifact.getGraph();
                 List<ArtifactSpecification> artifactSpecifications = planInstallArtifact.getArtifactSpecifications();
                 for (ArtifactSpecification artifactSpecification : artifactSpecifications) {
-                    GraphNode<InstallArtifact> childInstallArtifactGraph = createInstallArtifactGraph(artifactSpecification, scopeName);     
-                    GraphUtils.addChild(graph, childInstallArtifactGraph);
-                    
-                    // Put child into the INSTALLING state as Transformers (like this) are after the "begin install" pipeline stage.
+                    GraphNode<InstallArtifact> childInstallArtifactGraph = createInstallArtifactGraph(artifactSpecification, scopeName);
+                    graph.addChild(childInstallArtifactGraph);
+
+                    // Put child into the INSTALLING state as Transformers (like this) are after the "begin install"
+                    // pipeline stage.
                     InstallArtifact childInstallArtifact = childInstallArtifactGraph.getValue();
                     ((AbstractInstallArtifact) childInstallArtifact).beginInstall();
                 }
             }
         }
-    }        
+    }
 
     /**
      * Returns the scope name of the given {@link InstallArtifact} or <code>null</code> if the given InstallArtifact
@@ -105,7 +104,8 @@ public class PlanResolver implements Transformer {
         return result;
     }
 
-    private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName) throws DeploymentException {
+    private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName)
+        throws DeploymentException {
         return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName);
-    }        
+    }
 }

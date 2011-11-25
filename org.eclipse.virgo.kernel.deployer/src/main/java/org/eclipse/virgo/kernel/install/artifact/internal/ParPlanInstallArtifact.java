@@ -21,7 +21,6 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.internal.GraphUtils;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -131,11 +130,11 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
             ArtifactFSEntry artifactFs = childArtifact.getSecond();
 
             if (ArtifactIdentityDeterminer.BUNDLE_TYPE.equals(identity.getType())) {
-                subGraph = this.bundleInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
-                    null, null);
+                subGraph = this.bundleInstallArtifactGraphFactory.constructInstallArtifactGraph(identity,
+                    createArtifactStorage(artifactFs, identity), null, null);
             } else if (ArtifactIdentityDeterminer.CONFIGURATION_TYPE.equals(identity.getType())) {
-                subGraph = this.configInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
-                    null, null);
+                subGraph = this.configInstallArtifactGraphFactory.constructInstallArtifactGraph(identity,
+                    createArtifactStorage(artifactFs, identity), null, null);
             } else if (ArtifactIdentityDeterminer.PLAN_TYPE.equals(identity.getType())) {
                 subGraph = this.planInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
                     null, null);
@@ -179,7 +178,7 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
             for (GraphNode<InstallArtifact> child : this.childInstallArtifacts) {
                 // Add any children that are not already present.
                 if (!isChildPresent(children, child)) {
-                    GraphUtils.addChild(graph, child);
+                    graph.addChild(child);
                 }
             }
         }

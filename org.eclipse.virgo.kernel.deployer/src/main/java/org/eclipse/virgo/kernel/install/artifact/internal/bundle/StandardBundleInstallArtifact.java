@@ -67,12 +67,12 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String MANIFEST_ENTRY_NAME = "/META-INF/MANIFEST.MF";
-	
-	private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
-	private static final String RESERVED_SYSTEM_BUNDLE_NAME = "system.bundle";
+    private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
-	private static final long REFRESH_RESTART_WAIT_PERIOD = 60;
+    private static final String RESERVED_SYSTEM_BUNDLE_NAME = "system.bundle";
+
+    private static final long REFRESH_RESTART_WAIT_PERIOD = 60;
 
     private final Object monitor = new Object();
 
@@ -81,7 +81,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     private final BundleDriver bundleDriver;
 
     private final InstallArtifactRefreshHandler refreshHandler;
-    
+
     private final ArtifactIdentityDeterminer identityDeterminer;
 
     private BundleManifest bundleManifest;
@@ -100,11 +100,12 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      * @param refreshHandler
      * @param repositoryName
      * @param eventLogger
-     * @param identityDeterminer 
+     * @param identityDeterminer
      */
     public StandardBundleInstallArtifact(@NonNull ArtifactIdentity artifactIdentifier, @NonNull BundleManifest bundleManifest,
         @NonNull ArtifactStorage artifactStorage, @NonNull BundleDriver bundleDriver, @NonNull ArtifactStateMonitor artifactStateMonitor,
-        @NonNull InstallArtifactRefreshHandler refreshHandler, String repositoryName, EventLogger eventLogger, ArtifactIdentityDeterminer identityDeterminer) {
+        @NonNull InstallArtifactRefreshHandler refreshHandler, String repositoryName, EventLogger eventLogger,
+        ArtifactIdentityDeterminer identityDeterminer) {
         super(artifactIdentifier, artifactStorage, artifactStateMonitor, repositoryName, eventLogger);
 
         this.artifactStorage = artifactStorage;
@@ -112,7 +113,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
         this.bundleDriver = bundleDriver;
         this.refreshHandler = refreshHandler;
-        
+
         this.identityDeterminer = identityDeterminer;
 
         synchronizeBundleSymbolicNameWithIdentity();
@@ -222,7 +223,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     public void popThreadContext() {
         this.bundleDriver.popThreadContext();
     }
-    
+
     /**
      * Track the start of the bundle.
      */
@@ -231,7 +232,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
         this.bundleDriver.trackStart(signal);
     }
 
-	@Override
+    @Override
     public void beginInstall() throws DeploymentException {
         if (isFragmentOnSystemBundle()) {
             throw new DeploymentException("Deploying fragments of the system bundle is not supported");
@@ -370,11 +371,11 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
         }
 
         ArtifactIdentity newIdentity = this.identityDeterminer.determineIdentity(this.artifactStorage.getArtifactFS().getFile(), getScopeName());
-        
+
         if (newIdentity == null) {
             throw new DeploymentException("Failed to determine new identity during refresh");
         }
-        
+
         newIdentity = ArtifactIdentityScoper.scopeArtifactIdentity(newIdentity);
         if (!isNameAndVersionUnchanged(newIdentity)) {
             return false;
@@ -394,7 +395,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
         if (!refreshScope()) {
             synchronized (this.monitor) {
-                this.bundleManifest = currentBundleManifest;                
+                this.bundleManifest = currentBundleManifest;
             }
             startIfNecessary(bundleStopped);
             return false;
@@ -413,16 +414,16 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
         if (!refreshSuccessful) {
             synchronized (this.monitor) {
-                this.bundleManifest = currentBundleManifest;            
+                this.bundleManifest = currentBundleManifest;
             }
             startIfNecessary(bundleStopped);
         }
         return refreshSuccessful;
     }
-    
+
     private void startIfNecessary(boolean bundleStopped) throws DeploymentException {
-    	if (bundleStopped) {
-    		BlockingAbortableSignal signal = new BlockingAbortableSignal(true);
+        if (bundleStopped) {
+            BlockingAbortableSignal signal = new BlockingAbortableSignal(true);
             start(signal);
             signal.awaitCompletion(REFRESH_RESTART_WAIT_PERIOD);
         }
@@ -434,9 +435,8 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
         return newExportedPackageSet.equals(previousExportedPackageSet);
     }
 
-    private boolean isNameAndVersionUnchanged(ArtifactIdentity newIdentity) {        
-        if (newIdentity.getName().equals(getName())
-            && newIdentity.getVersion().equals(getVersion())) {
+    private boolean isNameAndVersionUnchanged(ArtifactIdentity newIdentity) {
+        if (newIdentity.getName().equals(getName()) && newIdentity.getVersion().equals(getVersion())) {
             return true;
         }
 
@@ -450,38 +450,33 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     // subpipeline.
     private boolean refreshScope() {
         boolean refreshed;
-        
+
         PlanInstallArtifact scopedAncestor = getScopedAncestor();
-        
+
         if (scopedAncestor != null) {
-            refreshed = scopedAncestor.refreshScope();            
+            refreshed = scopedAncestor.refreshScope();
         } else {
             refreshed = this.refreshHandler.refresh(this);
         }
         return refreshed;
     }
 
-    private PlanInstallArtifact getScopedAncestor() {
-        // TODO DAG: when the Tree is generalised to a DAG, a bundle can belong to at most one scoped ancestor in which case any unscoped
-        // ancestors it belongs to must be descendents of the scoped ancestor. So it is sufficient to search one line of ancestors
-        // looking for a scope ancestor.
-    		// TODO DAG - get first parent. See comment above
-    		// TODO DAG - added isEmpty check due to JUnit error in StandardBundleInstallArtifactTests
-    		List<GraphNode<InstallArtifact>> ancestors = getGraph().getParents();
-        
+    PlanInstallArtifact getScopedAncestor() {
+        // If the bundle belongs to a scoped plan, that plan may be found by searching up any line of ancestors.
+        List<GraphNode<InstallArtifact>> ancestors = getGraph().getParents();
+
         while (!ancestors.isEmpty()) {
-        		GraphNode<InstallArtifact> ancestor = ancestors.get(0);
+            GraphNode<InstallArtifact> ancestor = ancestors.get(0);
             InstallArtifact ancestorArtifact = ancestor.getValue();
-            PlanInstallArtifact planAncestor = (PlanInstallArtifact)ancestorArtifact;
+            PlanInstallArtifact planAncestor = (PlanInstallArtifact) ancestorArtifact;
             if (planAncestor.isScoped()) {
                 return planAncestor;
             } else {
-            		// TODO DAG - get first parent. See comment above
                 ancestor = ancestors.get(0);
                 ancestors = ancestor.getParents();
             }
         }
-        
+
         return null;
     }
 
