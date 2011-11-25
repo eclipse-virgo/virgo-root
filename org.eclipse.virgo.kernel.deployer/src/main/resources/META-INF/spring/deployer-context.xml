@@ -9,7 +9,7 @@
 	<service
 		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener">
 		<beans:bean
-			class="org.eclipse.virgo.kernel.install.artifact.internal.GraphRestrictingInstallArtifactLifecycleListener">
+			class="org.eclipse.virgo.kernel.install.artifact.internal.TreeRestrictingInstallArtifactLifecycleListener">
 			<beans:constructor-arg ref="eventLogger" />
 		</beans:bean>
 	</service>

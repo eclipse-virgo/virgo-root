@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * An existing artifact with the same type, name, and version as the incoming artifact is not replaced except in the
  * case of a bundle. An existing {@link BundleArtifact} is replaced by an incoming {@link DeployerBundleArtifact}. This
  * prevents the RAM being corrupted if an attempt it made to install an artifact which belongs to an existing install
- * tree. See {@link GraphRestrictingInstallArtifactLifecycleListener}.
+ * tree. See {@link TreeRestrictingInstallArtifactLifecycleListener}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />

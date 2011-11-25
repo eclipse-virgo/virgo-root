@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
-import org.eclipse.virgo.kernel.install.artifact.internal.GraphRestrictingInstallArtifactLifecycleListener;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,7 @@ import org.osgi.framework.Version;
 
 /**
  */
-public class GraphRestrictingInstallArtifactLifecycleListenerTests {
+public class TreeRestrictingInstallArtifactLifecycleListenerTests {
 
     private StubEventLogger stubEventLogger;
 
@@ -44,7 +43,7 @@ public class GraphRestrictingInstallArtifactLifecycleListenerTests {
     @Before
     public void setUp() throws Exception {
         this.stubEventLogger = new StubEventLogger();
-        this.treeRestrictingListener = new GraphRestrictingInstallArtifactLifecycleListener(this.stubEventLogger);
+        this.treeRestrictingListener = new TreeRestrictingInstallArtifactLifecycleListener(this.stubEventLogger);
         
         this.installArtifact1 = createMock(InstallArtifact.class);
         expect(this.installArtifact1.getType()).andReturn("type1").anyTimes();

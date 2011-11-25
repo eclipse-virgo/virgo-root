@@ -24,7 +24,7 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.GraphNode;
 
 /**
- * {@link GraphRestrictingInstallArtifactLifecycleListener} fails any install which would turn the forest of
+ * {@link TreeRestrictingInstallArtifactLifecycleListener} fails any install which would turn the forest of
  * {@link InstallArtifact} trees into a more general directed acyclic graph.
  * <p/>
  * Before this restriction was put in place, various failures were possible. For example, a shared node could be
@@ -40,13 +40,13 @@ import org.eclipse.virgo.util.common.GraphNode;
  * Thread safe.
  * 
  */
-final class GraphRestrictingInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
+final class TreeRestrictingInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
 
     private final ConcurrentHashMap<ArtifactIdentity, InstallArtifact> artifactMap = new ConcurrentHashMap<ArtifactIdentity, InstallArtifact>();
 
     private final EventLogger eventLogger;
 
-    public GraphRestrictingInstallArtifactLifecycleListener(EventLogger eventLogger) {
+    public TreeRestrictingInstallArtifactLifecycleListener(EventLogger eventLogger) {
         this.eventLogger = eventLogger;
     }
 
@@ -71,21 +71,24 @@ final class GraphRestrictingInstallArtifactLifecycleListener extends InstallArti
     }
 
     private ArtifactIdentity getArtifactIdentity(InstallArtifact installArtifact) {
-        return new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName());
+        return new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(),
+            installArtifact.getScopeName());
     }
 
     private InstallArtifact getRoot(InstallArtifact installArtifact) {
         InstallArtifact root = installArtifact;
-        GraphNode<InstallArtifact> rootParent = root.getGraph();
+        GraphNode<InstallArtifact> rootParent = getParent(root);
         while (rootParent != null) {
             root = rootParent.getValue();
-            // TODO DAG - check get parents
-            List<GraphNode<InstallArtifact>> parents = rootParent.getParents();
-            if (!parents.isEmpty()) {
-            		rootParent = rootParent.getParents().get(0);
-			}
+            rootParent = getParent(root);
         }
         return root;
+    }
+
+    private GraphNode<InstallArtifact> getParent(InstallArtifact installArtifact) {
+        GraphNode<InstallArtifact> graph = installArtifact.getGraph();
+        List<GraphNode<InstallArtifact>> parents = graph.getParents();
+        return parents.isEmpty() ? null : parents.get(0);
     }
 
     /**
