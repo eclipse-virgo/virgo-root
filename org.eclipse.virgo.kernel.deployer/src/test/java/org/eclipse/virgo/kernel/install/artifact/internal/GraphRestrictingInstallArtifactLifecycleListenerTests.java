@@ -16,10 +16,14 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.internal.GraphRestrictingInstallArtifactLifecycleListener;
+import org.eclipse.virgo.util.common.GraphNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -61,6 +65,86 @@ public class GraphRestrictingInstallArtifactLifecycleListenerTests {
     public void testOnInstalling() throws DeploymentException {
         this.treeRestrictingListener.onInstalling(this.installArtifact1);
         this.treeRestrictingListener.onInstalling(this.installArtifact2);
+    }
+    
+    /**
+     * Add test for case where a restriction is needed. Keep this very basic as we will be deleting it before long.
+     */
+    @Test(expected=DeploymentException.class)
+    public void testOnInstallingDAG() throws DeploymentException {
+        
+        GraphNode<InstallArtifact> graph = new GraphNode<InstallArtifact>() {
+
+            @Override
+            public InstallArtifact getValue() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public List<GraphNode<InstallArtifact>> getChildren() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public void addChild(GraphNode<InstallArtifact> child) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public boolean removeChild(GraphNode<InstallArtifact> child) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public List<GraphNode<InstallArtifact>> getParents() {
+                return new ArrayList<GraphNode<InstallArtifact>>();
+            }
+
+            @Override
+            public void visit(org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor<InstallArtifact> visitor) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public <E extends Exception> void visit(
+                org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, E> visitor) throws E {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public int size() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public boolean isRootNode() {
+                // TODO Auto-generated method stub
+                return false;
+            }};
+        InstallArtifact installArtifactA = createMock(InstallArtifact.class);
+        expect(installArtifactA.getType()).andReturn("type1").anyTimes();
+        expect(installArtifactA.getName()).andReturn("name1").anyTimes();
+        expect(installArtifactA.getVersion()).andReturn(Version.emptyVersion).anyTimes();
+        expect(installArtifactA.getScopeName()).andReturn(null).anyTimes();
+        expect(installArtifactA.getGraph()).andReturn(graph).anyTimes();
+        
+        InstallArtifact installArtifactB = createMock(InstallArtifact.class);
+        expect(installArtifactB.getType()).andReturn("type1").anyTimes();
+        expect(installArtifactB.getName()).andReturn("name1").anyTimes();
+        expect(installArtifactB.getVersion()).andReturn(Version.emptyVersion).anyTimes();
+        expect(installArtifactB.getScopeName()).andReturn(null).anyTimes();
+        
+        replay(installArtifactA, installArtifactB);
+        
+        this.treeRestrictingListener.onInstalling(installArtifactA);
+        this.treeRestrictingListener.onInstalling(installArtifactB);
     }
 
     @Test
