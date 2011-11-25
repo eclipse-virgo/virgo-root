@@ -22,7 +22,7 @@ svg:not(:root) {
 	display: inline-block;
 	overflow-y: auto;
 	width: 34%;
-	height: 600px;
+	height: 613px;
 }
 
 #display {
@@ -32,23 +32,25 @@ svg:not(:root) {
 }
 
 #bundle-canvas {
-	border: 1px solid #333333;
-	margin: auto;
-	overflow: auto;
+	border: 1px solid #BAD9EC;
+	margin-top: 13px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow-x: auto;
 }
 
-.bundle-table .table-tr-hovered {
+#bundle-table .table-tr-hovered {
 	background:#BAD9EC;
 }
 
-.bundle-table th {
+#bundle-table th {
 	cursor: pointer;
 }
 
-.bundle-table .table-th-sort {
+#bundle-table .table-th-sort {
 	color: #0095CA;
 }
 
-.bundle-table .table-tr-selected {
+#bundle-table .table-tr-selected {
 	background:#BAD9EC;
 }

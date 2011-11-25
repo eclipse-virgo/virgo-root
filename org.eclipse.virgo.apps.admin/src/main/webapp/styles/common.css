@@ -165,10 +165,6 @@ a:active, a.active {
     width: 12px;
 }
 
-#navigation .selected-navigation a {
-	color: #0095CA;
-}
-
 #navigation-left-curve {
 	background: transparent url(../images/menu-curve-left.png) no-repeat top left;
 	height: 26px;
@@ -199,6 +195,10 @@ a:active, a.active {
 
 #navigation li:hover > .button-cap-right-white {
     background: transparent url(../images/button-cap-right-white.png) no-repeat;
+}
+
+#navigation .selected-navigation a {
+	color: #0095CA;
 }
 
 /*
