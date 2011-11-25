@@ -33,7 +33,7 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  * thread-safe
  * 
  */
-public class StubBundleInstallArtifact extends StubInstallArtifact implements BundleInstallArtifact {
+public class StubBundleInstallArtifact extends StubGraphAssociableInstallArtifact implements BundleInstallArtifact {
 
     private final Bundle bundle;
 

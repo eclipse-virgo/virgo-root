@@ -21,7 +21,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 
-public class StubPlanInstallArtifact extends StubInstallArtifact implements PlanInstallArtifact {
+public class StubPlanInstallArtifact extends StubGraphAssociableInstallArtifact implements PlanInstallArtifact {
 
     public StubPlanInstallArtifact() {
 		super();

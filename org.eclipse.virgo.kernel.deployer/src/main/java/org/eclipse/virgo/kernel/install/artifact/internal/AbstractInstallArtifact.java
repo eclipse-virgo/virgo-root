@@ -26,6 +26,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactState;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.kernel.install.artifact.GraphAssociableInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * This class is thread safe.
  * 
  */
-public abstract class AbstractInstallArtifact implements InstallArtifact {
+public abstract class AbstractInstallArtifact implements GraphAssociableInstallArtifact {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -518,6 +519,9 @@ public abstract class AbstractInstallArtifact implements InstallArtifact {
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     */
     @Override
     public final GraphNode<InstallArtifact> getGraph() {
         synchronized (this.monitor) {

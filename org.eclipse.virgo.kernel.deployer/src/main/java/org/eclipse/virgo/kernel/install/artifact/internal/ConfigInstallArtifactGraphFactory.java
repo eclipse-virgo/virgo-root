@@ -19,6 +19,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.kernel.install.artifact.ConfigInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
@@ -68,9 +69,9 @@ final class ConfigInstallArtifactGraphFactory extends AbstractArtifactGraphFacto
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
             ConfigurationDeployer configDeployer = obtainConfigurationDeployer();
             ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
-            InstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
+            ConfigInstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
                 this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configDeployer);
-            return constructInstallGraph(configInstallArtifact);
+            return constructAssociatedGraphNode(configInstallArtifact);
         } else {
             return null;
         }

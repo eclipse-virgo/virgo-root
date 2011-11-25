@@ -26,7 +26,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
  * This class is thread safe.
  * 
  */
-public interface PlanInstallArtifact extends InstallArtifact {
+public interface PlanInstallArtifact extends GraphAssociableInstallArtifact {
 
     /**
      * Returns whether or not this plan is scoped.

@@ -70,9 +70,7 @@ public final class BundleInstallArtifactGraphFactory extends AbstractArtifactGra
                 bundleInstallArtifact.getDeploymentProperties().putAll(deploymentProperties);
             }
 
-            GraphNode<InstallArtifact> graph = constructInstallGraph(bundleInstallArtifact);
-            ((StandardBundleInstallArtifact) bundleInstallArtifact).setGraph(graph);
-            return graph;
+            return constructAssociatedGraphNode(bundleInstallArtifact);
         } else {
             return null;
         }

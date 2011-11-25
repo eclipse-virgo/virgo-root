@@ -11,18 +11,24 @@
 
 package org.eclipse.virgo.kernel.install.artifact;
 
-import java.io.IOException;
-import java.util.Properties;
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.util.common.GraphNode;
 
 /**
- * {@link ConfigInstallArtifact} is a marker interface to identify configuration install artifacts.
+ * {@link GraphAssociableInstallArtifact} is an {@link InstallArtifact} which may have its graph node set.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
- * Implementations of this interface must be thread safe.
+ * Implementation <strong>must</strong> be thread-safe.
  */
-public interface ConfigInstallArtifact extends GraphAssociableInstallArtifact {
-    
-    Properties getProperties() throws IOException;
+public interface GraphAssociableInstallArtifact extends InstallArtifact {
+
+    /**
+     * Associate the given graph with this install artifact.
+     * 
+     * @param graph to set
+     * @throws DeploymentException possible from overriding methods
+     */
+    void setGraph(GraphNode<InstallArtifact> graph) throws DeploymentException;
 
 }

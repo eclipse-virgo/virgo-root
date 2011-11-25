@@ -11,14 +11,15 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
+import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.install.artifact.GraphAssociableInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 import org.eclipse.virgo.util.common.GraphNode;
 
 /**
- * {@link AbstractArtifactGraphFactory} is a base class for implementations of
- * {@link InstallArtifactGraphFactory}.
+ * {@link AbstractArtifactGraphFactory} is a base class for implementations of {@link InstallArtifactGraphFactory}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -26,19 +27,18 @@ import org.eclipse.virgo.util.common.GraphNode;
  * This class is thread safe.
  * 
  */
-public abstract class AbstractArtifactGraphFactory implements
-		InstallArtifactGraphFactory {
+public abstract class AbstractArtifactGraphFactory implements InstallArtifactGraphFactory {
 
-	private final DirectedAcyclicGraph<InstallArtifact> dag;
+    private final DirectedAcyclicGraph<InstallArtifact> dag;
 
-	public AbstractArtifactGraphFactory(
-			DirectedAcyclicGraph<InstallArtifact> dag) {
-		this.dag = dag;
-	}
+    public AbstractArtifactGraphFactory(DirectedAcyclicGraph<InstallArtifact> dag) {
+        this.dag = dag;
+    }
 
-	protected GraphNode<InstallArtifact> constructInstallGraph(
-			InstallArtifact rootArtifact) {
-		return this.dag.createRootNode(rootArtifact);
-	}
+    protected GraphNode<InstallArtifact> constructAssociatedGraphNode(GraphAssociableInstallArtifact rootArtifact) throws DeploymentException {
+        GraphNode<InstallArtifact> graphNode = this.dag.createRootNode(rootArtifact);
+        rootArtifact.setGraph(graphNode);
+        return graphNode;
+    }
 
 }

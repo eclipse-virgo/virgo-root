@@ -95,9 +95,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
         throws DeploymentException {
 
         ParPlanInstallArtifact parArtifact = this.parFactory.createParPlanInstallArtifact(artifactIdentity, artifactStorage, repositoryName);
-        GraphNode<InstallArtifact> graph = constructInstallGraph(parArtifact);
-        parArtifact.setGraph(graph);
-        return graph;
+        return constructAssociatedGraphNode(parArtifact);
     }
 
     /**
@@ -123,9 +121,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
             artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository, this.scopeFactory, this.eventLogger,
             this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
 
-        GraphNode<InstallArtifact> graph = constructInstallGraph(planInstallArtifact);
-        planInstallArtifact.setGraph(graph);
-        return graph;
+        return constructAssociatedGraphNode(planInstallArtifact);
     }
 
 }

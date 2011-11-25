@@ -29,7 +29,7 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  * This class is thread safe.
  * 
  */
-public interface BundleInstallArtifact extends InstallArtifact {
+public interface BundleInstallArtifact extends GraphAssociableInstallArtifact {
 
     /**
      * Returns the bundle manifest. This may differ from the bundle's original manifest file contents if transformations
