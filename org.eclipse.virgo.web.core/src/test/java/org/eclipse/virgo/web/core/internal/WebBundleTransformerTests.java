@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
@@ -33,8 +34,9 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.ThreadSafeArrayListTree;
-import org.eclipse.virgo.util.common.Tree;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardBundleManifest;
 import org.junit.Test;
@@ -73,12 +75,90 @@ public class WebBundleTransformerTests {
 
         replay(manifestTransformer);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer);
 
         assertManifestTransformations(bundleManifest, "web-bundle");
+    }
+
+    private GraphNode<InstallArtifact> createGraphNode(final InstallArtifact installArtifact) {
+        return new GraphNode<InstallArtifact>() {
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public void addChild(GraphNode<InstallArtifact> arg0) {
+                throw new UnsupportedOperationException();
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public List<GraphNode<InstallArtifact>> getChildren() {
+                throw new UnsupportedOperationException();
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public List<GraphNode<InstallArtifact>> getParents() {
+                throw new UnsupportedOperationException();
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public InstallArtifact getValue() {
+                return installArtifact;
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public boolean isRootNode() {
+                throw new UnsupportedOperationException();
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public boolean removeChild(GraphNode<InstallArtifact> arg0) {
+                throw new UnsupportedOperationException();
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public int size() {
+                throw new UnsupportedOperationException();
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public void visit(DirectedAcyclicGraphVisitor<InstallArtifact> visitor) {
+                visitor.visit(this);
+            }
+
+            /** 
+             * {@inheritDoc}
+             */
+            @Override
+            public <E extends Exception> void visit(ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, E> visitor) throws E {
+                visitor.visit(this);
+            }
+            
+        };
     }
 
     @Test
@@ -87,8 +167,8 @@ public class WebBundleTransformerTests {
 
         replay(manifestTransformer);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer);
     }
@@ -103,8 +183,8 @@ public class WebBundleTransformerTests {
 
         replay(manifestTransformer);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer);
 
@@ -125,8 +205,8 @@ public class WebBundleTransformerTests {
 
         replay(manifestTransformer);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer);
 
@@ -144,8 +224,8 @@ public class WebBundleTransformerTests {
 
         replay(manifestTransformer);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer);
 
@@ -166,8 +246,8 @@ public class WebBundleTransformerTests {
 
         replay(manifestTransformer);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer);
 
@@ -201,8 +281,8 @@ public class WebBundleTransformerTests {
 
         WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer, configAdmin, config);
 
@@ -236,8 +316,8 @@ public class WebBundleTransformerTests {
 
         WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
 
-        Tree<InstallArtifact> installTree = new ThreadSafeArrayListTree<InstallArtifact>(installArtifact);
-        webBundleTransformer.transform(installTree, null);
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
 
         verify(manifestTransformer, configAdmin, config);
 

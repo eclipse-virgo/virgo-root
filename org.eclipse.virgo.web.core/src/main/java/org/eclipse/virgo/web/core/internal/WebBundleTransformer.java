@@ -32,8 +32,8 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.common.Tree;
-import org.eclipse.virgo.util.common.Tree.ExceptionThrowingTreeVisitor;
+import org.eclipse.virgo.util.common.GraphNode;
+import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 /**
@@ -104,11 +104,11 @@ final class WebBundleTransformer implements Transformer {
     /**
      * {@inheritDoc}
      */
-    public void transform(Tree<InstallArtifact> installTree, InstallEnvironment installEnvironment) throws DeploymentException {
-        installTree.visit(new ExceptionThrowingTreeVisitor<InstallArtifact, DeploymentException>() {
+    public void transform(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
+        installGraph.visit(new ExceptionThrowingDirectedAcyclicGraphVisitor<InstallArtifact, DeploymentException>() {
 
-            public boolean visit(Tree<InstallArtifact> tree) throws DeploymentException {
-                InstallArtifact installArtifact = tree.getValue();
+            public boolean visit(GraphNode<InstallArtifact> node) throws DeploymentException {
+                InstallArtifact installArtifact = node.getValue();
                 if (checkWebBundle(installArtifact)) {
                     applyWebContainerTransformations((BundleInstallArtifact) installArtifact);
                 }
