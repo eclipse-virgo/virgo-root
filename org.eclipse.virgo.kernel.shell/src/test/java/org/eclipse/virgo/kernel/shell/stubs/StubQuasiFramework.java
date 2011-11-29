@@ -27,19 +27,18 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubServiceReference;
 import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
-
 /**
  * <p>
- * This <code>StubQuasiFramework</code> is a pretend framework containing 
- * one bundle with an id of 4
+ * This <code>StubQuasiFramework</code> is a pretend framework containing one bundle with an id of 4
  * <p />
- *
+ * 
  */
-public class StubQuasiFramework implements QuasiFramework{
-    
-    private final StubBundle stubBundle; 
+public class StubQuasiFramework implements QuasiFramework {
+
+    private final StubBundle stubBundle;
+
     private final StubBundleContext stubBundleContext;
-    
+
     @SuppressWarnings("unchecked")
     public StubQuasiFramework() {
         this.stubBundle = new StubBundle(4L, "test.symbolic.name", new Version("0"), "");
@@ -51,18 +50,21 @@ public class StubQuasiFramework implements QuasiFramework{
     public void commit() throws BundleException {
     }
 
+    @Override
+    public void commit(boolean resolve) throws BundleException {
+    }
+
     public QuasiBundle getBundle(long bundleId) {
-        if(bundleId == 4){
+        if (bundleId == 4) {
             return new StubQuasiLiveBundle(bundleId, this.stubBundle);
-        }else{
+        } else {
             return null;
         }
     }
 
     public List<QuasiBundle> getBundles() {
         List<QuasiBundle> bundles = new ArrayList<QuasiBundle>();
-        
-        
+
         bundles.add(new StubQuasiLiveBundle(4, this.stubBundle));
         return bundles;
     }

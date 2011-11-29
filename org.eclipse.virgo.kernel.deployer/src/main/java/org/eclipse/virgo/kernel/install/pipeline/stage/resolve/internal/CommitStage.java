@@ -35,7 +35,7 @@ public final class CommitStage implements PipelineStage {
      */
     public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException {
         try {
-            installEnvironment.getQuasiFramework().commit();
+            installEnvironment.getQuasiFramework().commit(DependencyHelper.dependenciesToBeInstalled(installGraph));
         } catch (BundleException e) {
             throw new DeploymentException("commit failed", e);
         }

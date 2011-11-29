@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -59,13 +60,16 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     
     private final boolean scoped;
     
+    private final Dependencies dependencies;
+
     private final List<ArtifactSpecification> artifactSpecifications;
     
     protected final EventLogger eventLogger;
 
     private Scope applicationScope;
 
-    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull ArtifactStorage artifactStorage,
+
+    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Dependencies dependencies, @NonNull ArtifactStorage artifactStorage,
         @NonNull ArtifactStateMonitor artifactStateMonitor, @NonNull ScopeServiceRepository scopeServiceRepository,
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactRefreshHandler refreshHandler,
         String repositoryName, List<ArtifactSpecification> artifactSpecifications) throws DeploymentException {
@@ -79,6 +83,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         this.refreshHandler = refreshHandler;
         this.atomic = atomic;
         this.scoped = scoped;
+        this.dependencies = dependencies;
         this.artifactSpecifications = artifactSpecifications;
     }
     
@@ -220,6 +225,13 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         return this.scoped;
     }
     
+    /** 
+     * {@inheritDoc}
+     */
+    public Dependencies getDependencies() {
+        return this.dependencies;
+    }
+
     public final List<ArtifactSpecification> getArtifactSpecifications() {
         return this.artifactSpecifications;
     }  

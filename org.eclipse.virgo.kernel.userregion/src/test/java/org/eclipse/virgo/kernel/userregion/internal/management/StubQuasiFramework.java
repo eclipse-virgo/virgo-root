@@ -65,6 +65,10 @@ public class StubQuasiFramework implements QuasiFramework {
 	}
 
 	@Override
+	public void commit(boolean resolve) throws BundleException {
+	}
+	
+	@Override
 	public void destroy() {
 	}
 

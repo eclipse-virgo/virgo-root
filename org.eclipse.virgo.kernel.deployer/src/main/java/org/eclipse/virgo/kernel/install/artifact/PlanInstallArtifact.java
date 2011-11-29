@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.install.artifact;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 
 
@@ -66,5 +67,11 @@ public interface PlanInstallArtifact extends GraphAssociableInstallArtifact {
      * @return true if successfully refreshed, false otherwise
      */
     boolean refreshScope();
+
+    /**
+     * Returns the {@link PlanDescriptor.Dependencies} for the plan.
+     * @return the dependencies setting of the plan
+     */
+    PlanDescriptor.Dependencies getDependencies();
 
 }

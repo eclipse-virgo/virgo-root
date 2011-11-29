@@ -65,7 +65,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
         @NonNull BundleInstallArtifactGraphFactory bundleInstallArtifactGraphFactory, @NonNull InstallArtifactRefreshHandler refreshHandler,
         @NonNull ConfigInstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
         @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
-    		super(dag);
+        super(dag);
         this.bundleContext = bundleContext;
         this.scopeServiceRepository = scopeServiceRepository;
         this.scopeFactory = scopeFactory;
@@ -112,14 +112,14 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
         }
     }
 
-    private GraphNode<InstallArtifact> createPlanGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, PlanDescriptor planDescriptor,
-        String repositoryName) throws DeploymentException {
+    private GraphNode<InstallArtifact> createPlanGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
+        PlanDescriptor planDescriptor, String repositoryName) throws DeploymentException {
 
         StandardPlanInstallArtifact planInstallArtifact;
 
         planInstallArtifact = new StandardPlanInstallArtifact(artifactIdentity, planDescriptor.getAtomic(), planDescriptor.getScoped(),
-            artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository, this.scopeFactory, this.eventLogger,
-            this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
+            planDescriptor.getDependencies(), artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository,
+            this.scopeFactory, this.eventLogger, this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
 
         return constructAssociatedGraphNode(planInstallArtifact);
     }

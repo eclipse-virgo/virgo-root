@@ -15,6 +15,7 @@ package org.eclipse.virgo.kernel.stubs;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -53,5 +54,9 @@ public class StubPlanInstallArtifact extends StubGraphAssociableInstallArtifact 
 
     public List<ArtifactSpecification> getArtifactSpecifications() {
         return null;
+    }
+
+    public Dependencies getDependencies() {
+        return Dependencies.INSTALL;
     }
 }

@@ -342,13 +342,22 @@ final class StandardQuasiFramework implements QuasiFramework {
         }
         return bd;
     }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void commit() throws BundleException {
+        commit(true);
+    }
 
     /**
      * {@inheritDoc}
      */
-    public void commit() throws BundleException {
+    @Override
+    public void commit(boolean resolve) throws BundleException {
         synchronized (this.monitor) {
-            if (this.otherBundles == null) {
+            if (resolve && this.otherBundles == null) {
                 List<QuasiResolutionFailure> failures = resolve();
                 if (!failures.isEmpty()) {
                     throw new BundleException("Commit resolution failed: '" + failures.toString() + "'");

@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
@@ -75,7 +76,7 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
         @NonNull InstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
         @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactGraphFactory planInstallArtifactGraphFactory)
         throws DeploymentException {
-        super(identity, true, true, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
+        super(identity, true, true, Dependencies.INSTALL, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
             repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST);
 
         this.artifactStorageFactory = artifactStorageFactory;

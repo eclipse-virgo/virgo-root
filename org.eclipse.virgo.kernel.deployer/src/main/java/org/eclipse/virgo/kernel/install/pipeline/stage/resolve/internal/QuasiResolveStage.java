@@ -14,8 +14,10 @@ package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
 
 import java.util.List;
 
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
@@ -37,13 +39,16 @@ public final class QuasiResolveStage implements PipelineStage {
     /**
      * {@inheritDoc}
      */
-    public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException, UnableToSatisfyBundleDependenciesException {
-        QuasiFramework quasiFramework = installEnvironment.getQuasiFramework();
-        List<QuasiResolutionFailure> resolutionFailures = quasiFramework.resolve();
-        if (!resolutionFailures.isEmpty()) {
-            QuasiResolutionFailure failure = resolutionFailures.get(0);
-            throw new UnableToSatisfyBundleDependenciesException(failure.getUnresolvedQuasiBundle().getSymbolicName(), failure.getUnresolvedQuasiBundle().getVersion(),
-                failure.getDescription());
+    public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
+        UnableToSatisfyBundleDependenciesException {
+        if (DependencyHelper.dependenciesToBeInstalled(installGraph)) {
+            QuasiFramework quasiFramework = installEnvironment.getQuasiFramework();
+            List<QuasiResolutionFailure> resolutionFailures = quasiFramework.resolve();
+            if (!resolutionFailures.isEmpty()) {
+                QuasiResolutionFailure failure = resolutionFailures.get(0);
+                throw new UnableToSatisfyBundleDependenciesException(failure.getUnresolvedQuasiBundle().getSymbolicName(),
+                    failure.getUnresolvedQuasiBundle().getVersion(), failure.getDescription());
+            }
         }
     }
 
