@@ -49,40 +49,53 @@
 			<zipfileset dir="${p2.tools.location}"/>
 		</zip>
         
-		<!-- Assemble artifacts -->
+		<!-- Assemble the common resources -->
+        <property name="common.resources" value="${target.dir}/common_resources"/>
 		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${package.dir}/zip/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
 		
-		<mkdir dir="${package.dir}/zip/config"/>
-		<mkdir dir="${package.dir}/zip/pickup"/>
+		<mkdir dir="${common.resources}/config"/>
+		<mkdir dir="${common.resources}/pickup"/>
 		
-		<echo file="${package.dir}/zip/lib/.version"
+		<echo file="${common.resources}/lib/.version"
 				message="virgo.nano.version=${bundle.version}&#xa;"/>
 		
-		<copy todir="${package.dir}/zip" failonerror="false">
+		<copy todir="${common.resources}" failonerror="false">
 			<fileset dir="${basedir}/resources"/>
 		</copy>
-		
-		<copy todir="${package.dir}/zip/bin" failonerror="false">
-			<fileset dir="${basedir}/bin"/>
-		</copy>
-
-		<copy todir="${package.dir}/zip/lib" failonerror="false">
+        
+        <copy todir="${common.resources}/lib" failonerror="false">
 			<fileset dir="${basedir}/lib"/>
 		</copy>
-		
-		<copy todir="${package.dir}/zip/config" failonerror="false">
+        
+        <copy todir="${common.resources}/config" failonerror="false">
 			<fileset dir="${basedir}/config" excludes="keystore"/>
 		</copy>
 		
-		<copy file="${basedir}/config/keystore" todir="${package.dir}/zip/config" failonerror="false"/>
+		<copy file="${basedir}/config/keystore" todir="${common.resources}/config" failonerror="false"/>
 		
-		<!-- zip the published Virgo repositories and configuration data -->
-		<zip destfile="${target.dir}/assembly/binary/nano_zipped_resources">
-			<zipfileset dir="${package.dir}/zip"/>
+        <!-- Assemble the scripts -->
+        <property name="scripts" value="${target.dir}/scripts"/>
+		<copy todir="${scripts}/bin" failonerror="false">
+			<fileset dir="${basedir}/bin"/>
+		</copy>
+		
+
+		<property name="common.resources.location" value="${target.dir}/common_resources_zipped"/>
+        <property name="scripts.location" value="${target.dir}/scripts_zipped"/>
+		<!-- prepare the scripts and the common resource sources for publishing -->
+		<zip destfile="${common.resources.location}/binary/common_resources">
+			<zipfileset dir="${common.resources}"/>
 		</zip>
+        <zip destfile="${scripts.location}/binary/scripts">
+			<zipfileset dir="${scripts}"/>
+		</zip>
+        <!-- clean up -->
+        <delete dir="${common.resources}" quiet="true"/>
+        <delete dir="${scripts}" quiet="true"/>
         
-        <delete dir="${package.dir}/zip" quiet="true"/>
+        
+        <!--delete dir="${package.dir}/zip" quiet="true"/-->
 		
 		<!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
 		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="true"/>
@@ -116,17 +129,30 @@
             <arg line="-publishArtifacts"/>
         </java>
         
-        <echo message="Publishing Virgo Nano binaries in p2 repository" />
+        <echo message="Publishing Virgo Nano common resources in p2 repository" />
         <java jar="${launcher.jar}" fork="true" taskname="p2Binaries" failonerror="true" maxmemory="256m">
             <!--jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
             <arg line="-application org.eclipse.virgo.nano.p2.build.BinaryPublisherApplication"/>
             <arg line="-metadataRepository file:${publishing.dir}"/>
             <arg line="-artifactRepository file:${publishing.dir}"/>
-            <arg line="-source ${target.dir}/assembly"/>
+            <arg line="-source ${common.resources.location}"/>
             <arg line="-publishArtifacts"/>
             <arg line="-append"/>
-            <arg line="-chmod startup.sh@bin#755,dmk.sh@bin#755,checkJava.sh@bin#755,jconsole.sh@bin#755,setupClasspath.sh@bin#755,shutdown.sh@bin#755,org.eclipse.virgo.kernel.jmxremote.access.properties@config#600"/>
+            <arg line="-chmod org.eclipse.virgo.kernel.jmxremote.access.properties@config#600"/>
+        </java>
+        
+        <echo message="Publishing Virgo Nano scripts in p2 repository" />
+        <java jar="${launcher.jar}" fork="true" taskname="p2Binaries" failonerror="true" maxmemory="256m">
+            <!--jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/-->
+            <arg line="-application org.eclipse.virgo.nano.p2.build.BinaryPublisherApplication"/>
+            <arg line="-metadataRepository file:${publishing.dir}"/>
+            <arg line="-artifactRepository file:${publishing.dir}"/>
+            <arg line="-source ${scripts.location}"/>
+            <arg line="-publishArtifacts"/>
+            <arg line="-append"/>
+            <arg line="-chmod startup.sh@bin#755,dmk.sh@bin#755,checkJava.sh@bin#755,jconsole.sh@bin#755,setupClasspath.sh@bin#755,shutdown.sh@bin#755"/>
         </java>
         
         <echo message="Publishing Virgo Nano product in p2 repository" />
@@ -203,6 +229,8 @@
 		</zip>
         
         <delete dir="${target.dir}/assembly" quiet="true"/>
+        <delete dir="${common.resources.location}" quiet="true"/>
+        <delete dir="${scripts.location}" quiet="true"/>
 		
      </target>
     

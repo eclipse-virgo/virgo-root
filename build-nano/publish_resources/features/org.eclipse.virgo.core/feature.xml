@@ -131,7 +131,13 @@
          version="0.0.0"/>
 
    <plugin
-         id="nano_zipped_resources"
+         id="common_resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+         
+    <plugin
+         id="scripts"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
