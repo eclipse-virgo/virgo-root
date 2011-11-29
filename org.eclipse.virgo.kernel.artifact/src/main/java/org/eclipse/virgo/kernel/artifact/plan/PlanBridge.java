@@ -42,6 +42,8 @@ public class PlanBridge implements ArtifactBridge {
     private static final String SCOPED = "scoped";
 
     private static final String ATOMIC = "atomic";
+    
+    private static final String DEPENDENCIES = "dependencies";
 
     private static final String ARTIFACT = "artifact";
 
@@ -88,6 +90,7 @@ public class PlanBridge implements ArtifactBridge {
 
         builder.addAttribute(new AttributeBuilder().setName(SCOPED).setValue(Boolean.toString(plan.getScoped())).build());
         builder.addAttribute(new AttributeBuilder().setName(ATOMIC).setValue(Boolean.toString(plan.getAtomic())).build());
+        builder.addAttribute(new AttributeBuilder().setName(DEPENDENCIES).setValue(plan.getDependencies().toString()).build());
 
         parseArtifacts(plan.getArtifactSpecifications(), builder);
         

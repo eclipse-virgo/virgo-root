@@ -98,7 +98,12 @@ This version must meet the OSGi version specification. This is one component of 
 		</attribute>
 		<attribute name="atomic" type="boolean" use="required" >
 			<annotation>
-				<documentation><![CDATA[Whether the lifecycle of the artifacts in the plan should be tied together. Making a plan atomic means that install, start, stop and uninstall events for a single artifact in the plan will be escalated to all artifacts in the plan. Also, in an atomic plan, dm Server prevents artifacts from being in inconsistent states. For example, if one artifact should fail to start, then dm Server will stop all artifacts in the plan.]]></documentation>
+				<documentation><![CDATA[Whether the lifecycle of the artifacts in the plan should be tied together. Making a plan atomic means that install, start, stop and uninstall events for a single artifact in the plan will be escalated to all artifacts in the plan. Also, in an atomic plan, Virgo prevents artifacts from being in inconsistent states. For example, if one artifact should fail to start, then Virgo will stop all artifacts in the plan.]]></documentation>
+			</annotation>
+		</attribute>
+		<attribute name="dependencies" type="string" default="install" >
+			<annotation>
+				<documentation><![CDATA[Whether missing dependencies of artifacts in the plan are installed by Virgo or assumed not to happen. The default value of 'install' causes Virgo to install missing dependencies from the repository chain. A value of 'noinstall' causes Virgo to assume all dependencies are present and, if they are not, to fail deployment of the plan.]]></documentation>
 			</annotation>
 		</attribute>
 	</complexType>
@@ -106,7 +111,7 @@ This version must meet the OSGi version specification. This is one component of 
 <!-- Elements -->
 	<element name="plan" type="plan:plan">
 		<annotation>
-			<documentation><![CDATA[Plans are a way to group bundles together as a single logical unit in dm Server. Within a plan, bundles and services can be placed into a scope that isolates them from the rest of the system. This scoping ensures that the bundles wire to each other and see each other's services in preference to services from outside the scope. Scoping also prevents application code from leaking into the global scope or scope of another application. In addition, a plan can serve as a way to link the lifcycle of a group of bundles together atomically. This atomicity ensures that instal, start, stop, and uninstall events on a single artifact in the plan will be escalated to all artifacts in the plan.]]></documentation>
+			<documentation><![CDATA[Plans are a way to group bundles, and other artifacts, together as a single logical unit in Virgo. Within a plan, bundles and services can be placed into a scope that isolates them from the rest of the system. This scoping ensures that the bundles wire to each other and see each other's services in preference to services from outside the scope. Scoping also prevents application code from leaking into the global scope or scope of another application. In addition, a plan can serve as a way to link the lifcycle of a group of bundles together atomically. This atomicity ensures that instal, start, stop, and uninstall events on a single artifact in the plan will be escalated to all artifacts in the plan.]]></documentation>
 		</annotation>
 	</element>
 

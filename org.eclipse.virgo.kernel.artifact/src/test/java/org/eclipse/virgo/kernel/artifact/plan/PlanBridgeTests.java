@@ -82,6 +82,22 @@ public class PlanBridgeTests {
             }
         }
     }
+    
+    @Test
+    public void testNoInstallDependenciesPlan() throws ArtifactGenerationException {
+        org.eclipse.virgo.repository.ArtifactDescriptor artefact = bridge.generateArtifactDescriptor(new File(
+            "src/test/resources/plans/no-install-dependencies.plan"));
+        assertEquals("plan", artefact.getType());
+        assertEquals("noinstalldependencies.plan", artefact.getName());
+        assertEquals(new Version(1, 0, 0), artefact.getVersion());
+
+        Set<Attribute> attributes = artefact.getAttribute("dependencies");
+        assertEquals(1, attributes.size());
+        Attribute attribute = attributes.iterator().next();
+        assertEquals("dependencies", attribute.getKey());
+        assertEquals("noinstall", attribute.getValue());
+        assertEquals(0, attribute.getProperties().size());
+    }
 
     private String getProperty(String key, Map<String, Set<String>> properties) {
         return properties.get(key).iterator().next();
