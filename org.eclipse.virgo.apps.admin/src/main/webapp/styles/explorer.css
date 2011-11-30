@@ -54,3 +54,18 @@ svg:not(:root) {
 #bundle-table .table-tr-selected {
 	background:#BAD9EC;
 }
+
+#info-box {
+	background-color: #FFFFFF;
+	width: 700px;
+	height: 500px;
+	padding: 20px;
+	margin-top: 40px;
+	margin-left: auto;
+	margin-right: auto;
+	border: 3px solid #002F5E;
+}
+
+#info-box-content {
+	margin-bottom: 15px;
+}

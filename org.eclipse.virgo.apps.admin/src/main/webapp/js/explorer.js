@@ -17,9 +17,8 @@ function pageinit() {
 	var height = 551;
 	$('bundle-canvas').setStyles({'width' : width, 'height' : height + 18});
 	paper = Raphael("bundle-canvas", width, height);
-	dataManager = new GeminiDataSource();
-	dataManager.setUp();
-	util.pageReady();
+	infoBox = new InfoBox();
+	dataManager = new GeminiDataSource().setUp();
 }
 
 var GeminiDataSource = function(){
@@ -27,6 +26,16 @@ var GeminiDataSource = function(){
 	this.relationships = 'bundles';
 
 	$('side-bar').store('scroller', new Fx.Scroll($('side-bar')));
+
+	this.fullRequest = [{
+		"mbean" : "osgi.core:type=bundleState,version=1.5",
+		"operation" : "listBundles",
+		"arguments" : [],
+		"type" : "exec"
+	},{
+		"mbean" : "org.eclipse.equinox.region.domain:type=Region,*",
+		"type" : "read"
+	}];
 
 	this.display = function(type){
 		if(type == 'bundles') {
@@ -51,30 +60,16 @@ var GeminiDataSource = function(){
 	};
 	
 	this.setUp = function(){
-		new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
-			method : 'get',
-			onSuccess : function(responseJSON) {
-				this.getRegions(responseJSON.value);
-			}.bind(this)
-		}).send();
+		util.doBulkQuery(this.fullRequest, function(response) {
+			this.getOverview(response[0].value, response[1].value);
+			util.pageReady();
+		}.bind(this)); 
+		return this;
 	};
-	
-	//Start private methods
-
-	this.getRegions = function(bundles){
-		new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/read/org.eclipse.equinox.region.domain:type=Region,*",
-			method : 'get',
-			onSuccess : function(responseJSON) {
-				this.getOverview(bundles, responseJSON.value);
-			}.bind(this)
-		}).send();
-	};
-	
-	this.getOverview = function(rawBundles, regions){
+		
+	this.getOverview = function(rawBundles, rawRegions){
 		var regionsMap = {};
-		Object.each(regions, function(value, key){
+		Object.each(rawRegions, function(value, key){
 			value.BundleIds.each(function(id){
 				regionsMap[id] = value.Name;
 			});
@@ -82,7 +77,7 @@ var GeminiDataSource = function(){
 		
 		var bundlesTable = new HtmlTable({ 
 			properties: {'id' : 'bundle-table'}, 
-			headers : ['Id', 'Name', 'Version', 'State'], 
+			headers : ['Id', 'Name', 'Version'], 
 			rows : [],
 			selectable : true,
 			allowMultiSelect : false,
@@ -92,9 +87,11 @@ var GeminiDataSource = function(){
 		});
 		
 		this.bundles = {};
+		this.packages = {};
 		Object.each(rawBundles, function(value, key){
+			this.processPackages(key, value.ImportedPackages, value.ExportedPackages);
 			this.bundles[key] = new Bundle(value.SymbolicName, value.Version, regionsMap[key], key, value.State, value.Location, this.formatHeader(value.Headers), value.Fragment, value.Hosts, value.Fragments, value.ImportedPackages, value.ExportedPackages, value.RequiredBundles, value.RequiringBundles, value.RegisteredServices, value.ServicesInUse, this.bundleClicked);
-			bundlesTable.push([key, value.SymbolicName, value.Version, value.State], {'key' : key, 'id' : 'bundle-' + key});
+			bundlesTable.push([key, value.SymbolicName, value.Version], {'key' : key, 'id' : 'bundle-' + key});
 		}.bind(this));
 
 		this.layout = new Layout(this.bundles);
@@ -119,6 +116,25 @@ var GeminiDataSource = function(){
 		return result;
 	};
 	
+	this.processPackages = function(id, imports, exports) {
+		imports.each(function(package) {
+			if(this.packages[package]){
+				this.packages[package].importers.push(id);
+			} else {
+				var nameAndVersion = package.split(';');
+				this.packages[package] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [id], exporters : []};
+			}
+		}, this);
+		exports.each(function(package) {
+			if(this.packages[package]){
+				this.packages[package].exporters.push(id);
+			} else {
+				var nameAndVersion = package.split(';');
+				this.packages[package] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [], exporters : [id]};
+			}
+		}, this);
+	};
+	
 	this.bundleClicked = function(bundleId){
 		console.log('Scrolling table to', $('bundle-' + bundleId));
 		$('side-bar').retrieve('scroller').toElementCenter($('bundle-' + bundleId), 'y');
@@ -130,29 +146,46 @@ var GeminiDataSource = function(){
 		var bundle = this.bundles[bundleId];
 		var providers = [];
 		var requirers = [];
-	
+		bundle.importedPackages.each(function(package){
+			this.packages[package].exporters.each(function(exporter){
+				providers.push({'bundle' : this.bundles[exporter], 'info' : this.getPackageInfo, 'infoKey' : package, 'tooltip' : 'Package: ' + package});
+			}, this);
+		}, this);
+		bundle.exportedPackages.each(function(package){
+			this.packages[package].importers.each(function(importer){
+				requirers.push({'bundle' : this.bundles[importer], 'info' : this.getPackageInfo, 'infoKey' : package, 'tooltip' : 'Package: ' + package});
+			}, this);
+		}, this);
 		return [providers, requirers];
+	};
+	
+	this.getPackageInfo = function(packageKey) {
+		return 'testing package ' + packageKey;
 	};
 	
 	this.getServiceRelationships = function(bundleId) {
 		var bundle = this.bundles[bundleId];
 		var providers = [];
 		var requirers = [];
-		bundle.providedServices.each(function(providedServiceId){
-			Object.each(this.bundles, function(bundleToCheck){
-				if(bundleToCheck.consumedServices.contains(providedServiceId)){
-					requirers.push(bundleToCheck);
-				}
-			}.bind(this));
-		}, this);
 		bundle.consumedServices.each(function(consumedServiceId){
 			Object.each(this.bundles, function(bundleToCheck){
 				if(bundleToCheck.providedServices.contains(consumedServiceId)){
-					providers.push(bundleToCheck);
+					providers.push({'bundle' : bundleToCheck, 'info' : this.getServiceInfo, 'infoKey' : consumedServiceId, 'tooltip' : 'Service Id: ' + consumedServiceId});
+				}
+			}.bind(this));
+		}, this);
+		bundle.providedServices.each(function(providedServiceId){
+			Object.each(this.bundles, function(bundleToCheck){
+				if(bundleToCheck.consumedServices.contains(providedServiceId)){
+					requirers.push({'bundle' : bundleToCheck, 'info' : this.getServiceInfo, 'infoKey' : providedServiceId, 'tooltip' : 'Service Id: ' + providedServiceId});
 				}
 			}.bind(this));
 		}, this);
 		return [providers, requirers];
+	};
+	
+	this.getServiceInfo = function(serviceId) {
+		return 'testing service ' + serviceId;
 	};
 
 };
@@ -168,14 +201,20 @@ var Layout = function(bundles){
 	
 	this.bundleSpacing = 10; //Pixels to leave between bundles when rendering
 	
-	this.shuffle = function(bundleId, relationships){
+	this.relationships = {};
+	
+	this.shuffle = function(bundleId, newRelationships){
+		Object.each(this.relationships, function(oldRelationship){
+			oldRelationship.remove();
+		});
+		this.relationships = {};
 		this.hideAll();
 
-		console.log("In", relationships[0].length);
-		console.log("Out", relationships[1].length);
+		console.log("In", newRelationships[0].length);
+		console.log("Out", newRelationships[1].length);
 		
-		var widthTop = this.renderBundlesRow(bundleId, relationships[0], -239);
-		var widthBottom = this.renderBundlesRow(bundleId, relationships[1], 239);
+		var widthTop = this.renderBundlesRow(this.bundles[bundleId], false, newRelationships[0], -239);
+		var widthBottom = this.renderBundlesRow(this.bundles[bundleId], true, newRelationships[1], 239);
 		
 		var newWidth = widthTop < widthBottom ? widthBottom : widthTop;
 		newWidth < 900 ? paper.setSize(900, paper.height) : paper.setSize(newWidth, paper.height);
@@ -183,6 +222,10 @@ var Layout = function(bundles){
 		this.bundles[bundleId].show();
 		
 		new Fx.Scroll($('bundle-canvas')).set((paper.width/2).round() - 450, (paper.height/2).round());
+
+		Object.each(this.relationships, function(relationship){
+			relationship.display();
+		});
 		
 		$('display').setStyle('visibility', 'visible');
 	};
@@ -193,7 +236,7 @@ var Layout = function(bundles){
 	
 	this.removeBundle = function(bundleId){
 		this.bundles[bundleId].hide();
-		this.bundles[bundleId] = undefined;
+		Object.erase(this.bundles, bundleId);
 	};
 	
 	this.empty = function(){
@@ -211,18 +254,30 @@ var Layout = function(bundles){
 		});
 	};
 
-	this.renderBundlesRow = function(focused, inBundles, offSet){
+	this.renderBundlesRow = function(focused, isFrom, relations, offSet){
 		var yPos = (paper.height/2).round() + offSet;
 		var xPos = this.bundleSpacing;
-		inBundles.each(function(bundle){
-			if(bundle.isVisible){
+		relations.each(function(relation){
+			if(relation.bundle.id == focused.id){
 				//Add a back link
-			
-			} else if(bundle.id != focused.id){
-				xPos = xPos + (bundle.boxWidth/2);
-				bundle.move(xPos, yPos);
-				bundle.show();
-				xPos = xPos + (bundle.boxWidth/2) + this.bundleSpacing;
+				//console.log('Self link for focused bundle ', bundle.id);
+			} else {
+				if(relation.bundle.isVisible){
+					//console.log('Back link for bundle ', bundle.id);
+				} else {
+					xPos = xPos + (relation.bundle.boxWidth/2);
+					relation.bundle.move(xPos, yPos);
+					relation.bundle.show();
+					xPos = xPos + (relation.bundle.boxWidth/2) + this.bundleSpacing;
+					if(isFrom){
+						var relationship = new Relationship(focused, relation.bundle, relation.info, relation.infoKey, relation.tooltip);
+					}else{
+						var relationship = new Relationship(relation.bundle, focused, relation.info, relation.infoKey, relation.tooltip);
+					}
+					this.relationships[relationship.key] = relationship;
+					focused.addRelationship(relationship);
+					relation.bundle.addRelationship(relationship);
+				}
 			}
 		}, this);
 		return xPos;
@@ -271,16 +326,18 @@ var Bundle = function(name, version, region, id, state, location, headers, isFra
 	
 	this.isVisible = false; 
 	
+	this.relationships = {};
+	
 	//Display attributes
 	this.bundleMargin = 8;
 	this.x = 5;
 	this.y = 5;
 	
 	this.summary = function(){
-		return "[" + this.id + "] " + this.name + " " + this.version + " " + this.state;
+		return "[" + this.id + "] " + this.name + "\n" + this.version;
 	};
 	
-	this.text = paper.text(this.x + this.bundleMargin, this.y + this.bundleMargin + 8, this.summary()).attr({
+	this.text = paper.text(this.x, this.y, this.summary()).attr({
 		"text-anchor" : "start", 
 		"font" : "12px Arial"
 	}).hide();
@@ -289,18 +346,14 @@ var Bundle = function(name, version, region, id, state, location, headers, isFra
 	this.boxHeight = this.text.getBBox().height.round() + 2*this.bundleMargin;
 	
 	this.box = paper.rect(this.x, this.y, this.boxWidth, this.boxHeight, 8).attr({
-		"fill" : "90-#dfdfdf-#fff", 
+		"fill" : "#E8F6FF", 
 		"stroke" : "#002F5E"
 	}).hide();
 	
 	this.box.toBack();
 	
-	this.box.dblclick(function(){
-		this.dblClickCallback(this.id);
-	}.bind(this));
-	this.text.dblclick(function(){
-		this.dblClickCallback(this.id);
-	}.bind(this));
+	this.box.dblclick(function(){this.dblClickCallback(this.id);}.bind(this));
+	this.text.dblclick(function(){this.dblClickCallback(this.id);}.bind(this));
 	
 	this.hide = function(){
 		this.text.hide();
@@ -315,256 +368,126 @@ var Bundle = function(name, version, region, id, state, location, headers, isFra
 	};
 	
 	this.move = function(x, y) {
-		//console.log('Moving bundle to ' + x + ', ' + y);
+		this.x = x;
+		this.y = y;
 		this.box.attr({
 			'x' : x - (this.boxWidth/2), 
 			'y' : y - (this.boxHeight/2)
 		});
 		this.text.attr({
 			'x' : x - (this.boxWidth/2) + this.bundleMargin, 
-			'y' : y - (this.boxHeight/2) + this.bundleMargin + 8
+			'y' : y
 		});
+		
 	};
 
-	//Start private methods
+	this.addRelationship = function(relationship){
+		this.relationships[relationship.key] = relationship;
+	};
+
+	this.removeRelationship = function(relationshipKey){
+		Object.erase(this.relationships, relationshipKey);
+	};
+
+};
+
+var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip) {
+
+	this.fromBundle = fromBundle;
+	this.toBundle = toBundle;
+	this.infoCallback = infoCallback;
+	this.infoKey = infoKey;
+	this.tooltip = tooltip;
+	this.key = 'from' + this.fromBundle.id + 'to' + this.toBundle.id;
+	this.controlPointOffset = 100;
+
+	this.setCoordinates = function(){
+		this.startPoint = (fromBundle.x) + ',' + (fromBundle.y + fromBundle.boxHeight/2); 
+		this.endPoint = (toBundle.x) + ',' + (toBundle.y - toBundle.boxHeight/2 - 1);	
+		this.startPointControl = (fromBundle.x) + ',' + (fromBundle.y + fromBundle.boxHeight/2 + this.controlPointOffset); 
+		this.endPointControl = (toBundle.x) + ',' + (toBundle.y - toBundle.boxHeight/2 - this.controlPointOffset);
+	};
+	
+	this.setInfoPoint = function() {
+		this.halfLength = this.visual.getTotalLength()/2;
+		this.midPoint = this.visual.getPointAtLength(this.halfLength);
+	};
+	
+	this.display = function() {
+		if(this.visual){
+			this.visual.remove();
+		}
+		if(this.infoPoint){
+			this.infoPoint.remove();
+		}
+		if(this.infoPointText){
+			this.infoPointText.remove();
+		}
+		this.setCoordinates();
+		this.visual = paper.path('M' + this.startPoint + 'C' + this.startPointControl + ',' + this.endPointControl + ',' + this.endPoint).attr({
+			'arrow-end' : 'block-wide-long',
+			'stroke-width' : 3,
+			'stroke' : '#002F5E'
+		});
+		
+		this.setInfoPoint();
+		this.infoPoint = paper.ellipse(this.midPoint.x, this.midPoint.y, 12, 8).attr({
+			'fill' : '#002F5E', 
+			'stroke' : 'none',
+			'title' : this.tooltip
+		}).rotate(this.midPoint.alpha);
+		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, '5').attr({
+			'font' : '14px Arial', 
+			'stroke' : '#FFFFFF',
+			'title' : this.tooltip
+		}).rotate(this.midPoint.alpha - 90);
+		
+		this.infoPoint.click(function(){this.displayInfoBox()}.bind(this));
+		this.infoPointText.click(function(){this.displayInfoBox()}.bind(this));
+	};
+	
+	this.displayInfoBox = function() {
+		infoBox.go(this.infoCallback, this.infoKey);
+	};
+	
+	this.remove = function() {
+		this.visual.remove();
+		this.infoPoint.remove();
+		this.infoPointText.remove();
+		this.fromBundle.removeRelationship(this.key);
+		this.toBundle.removeRelationship(this.key);
+	};
 
 };
 
 /**
- * The main Explorer class for bundle creation and assigning event handlers.
- * 
- * Draws the initial grid of bundles
+ * Singleton
  */
-var Explorer = {
-	/**
-	 * The initiation function. Creates the canvas, and requests JSON from server.
-	 */
-	init : function() {
-		this.canvas = Raphael("expl_canvas", "100px", "500px");
-		this.tip = {
-			'set' : false,
-			'div' : null
-		};
-		this.jsonRequest = new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
-			method : 'get',
-			onSuccess : function(responseJSON, responseText) {
-				Explorer.bundleConfig(responseJSON);
-			}
-		}).send();
-	},
+var InfoBox = function() {
+	
+	this.mask = new Mask($('content'), {
+		'id' : 'info-box-mask'
+	});
+	
+	this.infoElement = new Element('div#info-box').inject(this.mask.toElement());
+	
+	new Element('div#info-box-content').inject(this.infoElement);
+	var buttonContainer = new Element('div.button-container').inject(this.infoElement);
+	new Element('div.control-cap-left').inject(buttonContainer);
+	var okButton = new Element('div.button').inject(new Element('div.controls').inject(buttonContainer));
+	new Element('div.button-cap-left-blue').inject(okButton);
+	new Element('div.button-text').appendText('OK').inject(okButton);
+	new Element('div.button-cap-right-blue').inject(okButton);
+	new Element('div.control-cap-right').inject(buttonContainer);
+	
+	okButton.addEvent('click', function() {
+		this.mask.hide();
+	}.bind(this));
+	
+	this.go = function(contentCallback, key){
+		$('info-box-content').empty();
+		this.mask.show();
+		$('info-box-content').appendText(contentCallback(key));
+	};
 
-	/**
-	 * Takes URL parameter if there is one and auto-loads that bundle
-	 */
-	go : function() {
-		var loc = window.location.href;
-		if (loc.indexOf("#") != -1) {
-			var key = loc.split("#")[1];
-			var keyNotExist = Object.every(this.bundles, function(objValue, objKey) {
-				return objValue.key != key;
-			});
-			if (!keyNotExist) {
-				new LayoutManager(this.bundles, key, this.arrows);
-			} else {
-				alert("That Bundle Id doesn't exist.");
-			}
-		}
-	},
-
-	/**
-	 * Main success handler for the JSON response
-	 * 
-	 * @param json (JSON Object) - Raw JSON of bundle information
-	 */
-	bundleConfig : function(responseJson) {
-		var kernelBundles, userBundles;
-		new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/read/org.eclipse.equinox.region.domain:type=Region,*",
-			method : 'get',
-			onSuccess : function(JSON) {
-				Object.each(JSON.value, function(value, key) {
-					key.indexOf("kernel") != -1 ? kernelBundles = value.BundleIds : userBundles = value.BundleIds;
-				});
-				Explorer.createBundleOverview(responseJson.value, kernelBundles, userBundles);
-			}
-		}).send();
-	},
-
-	/**
-	 * Gets the coordinates for the next bundle
-	 * 
-	 * @param i (Number) - The iterator of the bundles loop
-	 * @returns (Object) - The x and y coordinates
-	 */
-	getNextCoords : function(i) {
-		if (i == 0) {
-			this.xRefactor = 0;
-			this.yRefactor = 0;
-		}
-		var xColWidth = 360, yColHeight = 450;
-
-		// Re-factoring is to set the new x & y values for a new column
-		i > 0 && i % 15 == 0 ? this.xRefactor = this.xRefactor + xColWidth : this.xRefactor;
-		i > 0 && i % 15 == 0 ? this.yRefactor = this.yRefactor - yColHeight : this.yRefactor;
-
-		// Set x & y coordinates
-		var x = 3 + this.xRefactor;
-		var y = (i * 30) + this.yRefactor;
-
-		return {
-			"x" : x,
-			"y" : y
-		};
-	},
-
-	/**
-	 * Sets the bundles region
-	 * 
-	 * @param kernelIds - List of kernel bundle Ids
-	 * @param userIds - List of user bundle Ids
-	 * @param bundle (Object) - A single bundle objext
-	 * @returns (Object) - returns the bundle
-	 */
-	setBundleRegion : function(kernelIds, userIds, bundle) {
-		if (Object.contains(kernelIds, bundle.Identifier)) {
-			bundle.Region = "Kernel";
-		} else if (Object.contains(userIds, bundle.Identifier)) {
-			bundle.Region = "User";
-		} else {
-			bundle.Region = "";
-		}
-
-		return bundle;
-	},
-
-	/**
-	 * Creates the starting Overview perspective.
-	 * 
-	 * @param bundleObj (Object) - Main JS object from JSON
-	 */
-	createBundleOverview : function(bundleObj, kernelIds, userIds) {
-		var i = 0;
-		this.arrows = new Object();
-		this.bundles = new Object();
-		this.bundles.widest = 0;
-		Object.each(bundleObj, function(value, key) {
-			var coords = this.getNextCoords(i);
-			var bundle = this.setBundleRegion(kernelIds, userIds, value);
-
-			this.bundles[key] = {
-				"key" : key,
-				"visual" : this.createBundle(bundle, coords['x'], coords['y']),
-				"bundle" : bundle,
-				"service" : {
-					"serviceState" : "",
-					"properties" : null
-				}
-			};
-			
-			this.bundles.lastAdded = this.bundles[key];
-			if(this.bundles[key].visual.rect.attrs.width > this.bundles.widest){
-				this.bundles.widest = this.bundles[key].visual.rect.attrs.width;
-			}
-
-			// Add tooltip
-			var tooltipTxt =  "<strong>Identifier:</strong> " + bundle.Identifier + "<br />"
-							+ "<strong>SymbolicName:</strong> " + bundle.SymbolicName + "<br />"
-							+ "<strong>Version:</strong> " + bundle.Version + "<br />"
-							+ "<strong>Region:</strong> " + bundle.Region + " <br />"
-							+ "<strong>State:</strong> " + bundle.State + "<br />"
-							+ "<strong>Location:</strong> " + bundle.Location + "<br />";
-			util.tooltip(this.bundles[key].visual['text'].node, tooltipTxt);
-
-			// Add event handlers
-			this.bundles[key].visual['set'].dblclick(function() {
-				new LayoutManager(this.bundles, key, this.arrows);
-			}, this);
-
-			i++;
-		}, this);
-
-		this.resizeCanvas();
-		this.go();
-	},
-
-	/**
-	 * Resizes canvas depending on width of last bundle (inc. col width) For overview only.
-	 */
-	resizeCanvas : function() {
-		if (Object.getLength(this.bundles) > 0){
-			var lastBox = this.bundles.lastAdded.visual['set'].getBBox();
-			this.canvas.setSize(lastBox.x + this.bundles.widest + 10, this.canvas.height);
-		}
-	},
-
-	/**
-	 * Creates and returns the Raphael set of the bundle
-	 * 
-	 * @param bundle (Object) - JS object of bundle info
-	 * @param x (Number) - x coordinate
-	 * @param y (Number) - y coordinate
-	 * @returns (Object) - The raphael set and separate rect element
-	 */
-	createBundle : function(bundle, x, y) {
-		var bundleBgHeight = 25, xMargin = 10;
-
-		// Set up raphael set
-		var st = this.canvas.set();
-
-		// Add to raphael set, rect and text
-		var rect = this.createBundleBg(x, y, 1, bundleBgHeight, 5);
-		var text = this.createTextObj(x, xMargin, y, bundleBgHeight / 2, this.getBundleText(bundle));
-		rect.attr("width", text.getBBox().width + 2 * xMargin);
-
-		st.push(text, rect);
-
-		return {
-			'set' : st,
-			'rect' : rect,
-			'text' : text
-		};
-	},
-
-	/**
-	 * Creates and returns the Raphael object of a rect
-	 * 
-	 * @param x (Number) - x coordinate
-	 * @param y (Number) - y coordinate
-	 * @param width (Number) - width in pixels
-	 * @param height (Number) - height in pixels
-	 * @param cornerRadius (Number) - Radius for rounded corner
-	 * @returns (Raphael Object) - a rect with a fill and stroke
-	 */
-	createBundleBg : function(x, y, width, height, cornerRadius) {
-		return this.canvas.rect(x, y, width, height, cornerRadius).attr({
-			fill : "90-#dfdfdf-#fff",
-			stroke : "#ccc"
-		});
-	},
-
-	/**
-	 * Creates the text node and returns the Raphael object
-	 * 
-	 * @param x (Number) - The x coordinate to position at
-	 * @param xMargin (Number) - The x offset
-	 * @param y (Number) - The y coordinate to position at
-	 * @param yMargin (Number) - The y offset
-	 * @param text (String) - The text to add to the element
-	 * @returns (Raphael Object)
-	 */
-	createTextObj : function(x, xMargin, y, yMargin, text) {
-		return this.canvas.text(x + xMargin, y + yMargin, text).attr({
-			"text-anchor" : "start",
-			"font" : "10px Arial"
-		});
-	},
-
-	/**
-	 * @param bundle (object) - JS object from JSON of single bundle
-	 * @return (string) - The full bundle name of SymbolicName + Version + ID
-	 */
-	getBundleText : function(bundle) {
-		return bundle.SymbolicName + " " + bundle.Version + " " + bundle.Identifier;
-	}
 };
