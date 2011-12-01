@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
-import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.artifact.plan.internal.PlanReaderEntityResolver;
 import org.eclipse.virgo.kernel.artifact.plan.internal.PlanReaderErrorHandler;
 import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
@@ -56,9 +56,11 @@ public final class PlanReader {
 
     private static final String ATOMIC_ATTRIBUTE = "atomic";
     
-    private static final String INSTALL_ATTRIBUTE = "install";
+    private static final String PROVISIONING_INHERIT_ATTRIBUTE = "inherit";
     
-    private static final String NO_INSTALL_ATTRIBUTE = "noinstall";
+    private static final String PROVISIONING_AUTO_ATTRIBUTE = "auto";
+    
+    private static final String PROVISIONING_DISABLED_ATTRIBUTE = "disabled";
 
     private static final String ARTIFACT_ELEMENT = "artifact";
 
@@ -111,7 +113,7 @@ public final class PlanReader {
         Version version = new Version(element.getAttribute(VERSION_ATTRIBUTE));
         boolean scoped = Boolean.parseBoolean(element.getAttribute(SCOPED_ATTRIBUTE));
         boolean atomic = Boolean.parseBoolean(element.getAttribute(ATOMIC_ATTRIBUTE));
-        Dependencies dependencies = parseDependenciesAttribute(element);
+        Provisioning dependencies = parseProvisioningAttribute(element);
 
         Properties attributes = parseAttributes(element);
 
@@ -120,16 +122,19 @@ public final class PlanReader {
         return new PlanDescriptor(name, version, scoped, atomic, dependencies, artifactSpecifications);
     }
 
-    private Dependencies parseDependenciesAttribute(Element element) {
-        String dependenciesAttribute = element.getAttribute("dependencies");
-        Dependencies dependencies = Dependencies.INSTALL;
-        if (INSTALL_ATTRIBUTE.equals(dependenciesAttribute) || "".equals(dependenciesAttribute)) {
-        } else if (NO_INSTALL_ATTRIBUTE.equals(dependenciesAttribute)) {
-            dependencies = Dependencies.NO_INSTALL;
+    private Provisioning parseProvisioningAttribute(Element element) {
+        String provisioningAttribute = element.getAttribute("provisioning");
+        Provisioning provisioning;
+        if ("".equals(provisioningAttribute) || PROVISIONING_INHERIT_ATTRIBUTE.equals(provisioningAttribute)) {
+            provisioning = Provisioning.INHERIT;
+        } else if (PROVISIONING_AUTO_ATTRIBUTE.equals(provisioningAttribute)) {
+            provisioning = Provisioning.AUTO;
+        } else if (PROVISIONING_DISABLED_ATTRIBUTE.equals(provisioningAttribute)) {
+            provisioning = Provisioning.DISABLED;
         } else {
-            throw new IllegalArgumentException("Invalid dependencies value '" + dependenciesAttribute + "'");
+            throw new IllegalArgumentException("Invalid provisioning value '" + provisioningAttribute + "'");
         }
-        return dependencies;
+        return provisioning;
     }
 
     private Properties parseAttributes(Element element) {

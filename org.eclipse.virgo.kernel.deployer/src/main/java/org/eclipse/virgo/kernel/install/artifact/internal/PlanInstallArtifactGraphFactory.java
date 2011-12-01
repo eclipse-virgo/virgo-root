@@ -118,7 +118,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
         StandardPlanInstallArtifact planInstallArtifact;
 
         planInstallArtifact = new StandardPlanInstallArtifact(artifactIdentity, planDescriptor.getAtomic(), planDescriptor.getScoped(),
-            planDescriptor.getDependencies(), artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository,
+            planDescriptor.getProvisioning(), artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository,
             this.scopeFactory, this.eventLogger, this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
 
         return constructAssociatedGraphNode(planInstallArtifact);

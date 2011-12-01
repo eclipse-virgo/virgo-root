@@ -24,7 +24,7 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor;
-import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.artifact.plan.PlanReader;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
@@ -43,7 +43,7 @@ public class PlanReaderTests {
         assertEquals("single-artifact.plan", plan.getName());
         assertEquals(new Version(1, 0, 0), plan.getVersion());
         
-        assertEquals(Dependencies.INSTALL, plan.getDependencies());
+        assertEquals(Provisioning.INHERIT, plan.getProvisioning());
 
         List<ArtifactSpecification> artifactSpecifications = plan.getArtifactSpecifications();
         assertEquals(1, artifactSpecifications.size());
@@ -108,8 +108,26 @@ public class PlanReaderTests {
     }
     
     @Test
-    public void testNoInstallDependenciesPlan() throws FileNotFoundException {
-        PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/no-install-dependencies.plan"));
-        assertEquals(Dependencies.NO_INSTALL, plan.getDependencies());
+    public void testProvisioningDefaultPlan() throws FileNotFoundException {
+        PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/provisioning-default.plan"));
+        assertEquals(Provisioning.INHERIT, plan.getProvisioning());
+    }
+    
+    @Test
+    public void testProvisioningInheritPlan() throws FileNotFoundException {
+        PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/provisioning-inherit.plan"));
+        assertEquals(Provisioning.INHERIT, plan.getProvisioning());
+    }
+    
+    @Test
+    public void testProvisioningAutoPlan() throws FileNotFoundException {
+        PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/provisioning-auto.plan"));
+        assertEquals(Provisioning.AUTO, plan.getProvisioning());
+    }
+    
+    @Test
+    public void testProvisioningDisabledPlan() throws FileNotFoundException {
+        PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/provisioning-disabled.plan"));
+        assertEquals(Provisioning.DISABLED, plan.getProvisioning());
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plan name="noinstalldependencies.plan" version="1.0.0" scoped="false"
-	atomic="true" dependencies="noinstall" xmlns="http://www.eclipse.org/virgo/schema/plan"
+<plan name="provisioninginherit.plan" version="1.0.0" scoped="false"
+	atomic="true" provisioning="inherit" xmlns="http://www.eclipse.org/virgo/schema/plan"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 			http://www.eclipse.org/virgo/schema/plan 

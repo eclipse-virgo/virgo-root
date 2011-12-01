@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
-import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
@@ -60,7 +60,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     
     private final boolean scoped;
     
-    private final Dependencies dependencies;
+    private final Provisioning dependencies;
 
     private final List<ArtifactSpecification> artifactSpecifications;
     
@@ -69,7 +69,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     private Scope applicationScope;
 
 
-    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Dependencies dependencies, @NonNull ArtifactStorage artifactStorage,
+    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Provisioning dependencies, @NonNull ArtifactStorage artifactStorage,
         @NonNull ArtifactStateMonitor artifactStateMonitor, @NonNull ScopeServiceRepository scopeServiceRepository,
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactRefreshHandler refreshHandler,
         String repositoryName, List<ArtifactSpecification> artifactSpecifications) throws DeploymentException {
@@ -228,7 +228,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     /** 
      * {@inheritDoc}
      */
-    public Dependencies getDependencies() {
+    public Provisioning getProvisioning() {
         return this.dependencies;
     }
 

@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -382,7 +382,7 @@ public class AtomicInstallArtifactLifecycleListenerTests {
             return null;
         }
 
-        public Dependencies getDependencies() {
+        public Provisioning getProvisioning() {
             throw new UnsupportedOperationException();
         }
     }

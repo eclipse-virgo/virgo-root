@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
 
-import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Dependencies;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.util.common.GraphNode;
@@ -23,7 +23,7 @@ final class DependencyHelper {
         InstallArtifact rootArtifact = installGraph.getValue();
         if (rootArtifact instanceof PlanInstallArtifact) {
             PlanInstallArtifact rootPlan = (PlanInstallArtifact) rootArtifact;
-            installDependencies = Dependencies.INSTALL == rootPlan.getDependencies();
+            installDependencies = Provisioning.AUTO == rootPlan.getProvisioning();
         }
         return installDependencies;
     }

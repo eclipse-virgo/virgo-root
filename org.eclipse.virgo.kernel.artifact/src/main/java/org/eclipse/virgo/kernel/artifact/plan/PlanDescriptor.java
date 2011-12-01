@@ -25,15 +25,15 @@ import org.osgi.framework.Version;
  */
 public final class PlanDescriptor {
 
-    public enum Dependencies {
-        INSTALL, NO_INSTALL;
+    public enum Provisioning {
+        INHERIT, AUTO, DISABLED;
 
         /** 
          * {@inheritDoc}
          */
         @Override
         public String toString() {
-            return this == INSTALL ? "install" : "noinstall";
+            return this == INHERIT ? "inherit" : this == AUTO ? "auto" : "disabled";
         }
     }
 
@@ -45,17 +45,17 @@ public final class PlanDescriptor {
 
     private final boolean atomic;
 
-    private final Dependencies dependencies;
+    private final Provisioning provisioning;
 
     private final List<ArtifactSpecification> artifactSpecifications;
 
-    public PlanDescriptor(String name, Version version, boolean scoped, boolean atomic, Dependencies dependencies,
+    public PlanDescriptor(String name, Version version, boolean scoped, boolean atomic, Provisioning provisioning,
         List<ArtifactSpecification> artifactSpecifications) {
         this.name = name;
         this.version = version;
         this.scoped = scoped;
         this.atomic = atomic;
-        this.dependencies = dependencies;
+        this.provisioning = provisioning;
         this.artifactSpecifications = artifactSpecifications;
     }
 
@@ -75,8 +75,8 @@ public final class PlanDescriptor {
         return atomic;
     }
 
-    public Dependencies getDependencies() {
-        return dependencies;
+    public Provisioning getProvisioning() {
+        return provisioning;
     }
 
     public List<ArtifactSpecification> getArtifactSpecifications() {

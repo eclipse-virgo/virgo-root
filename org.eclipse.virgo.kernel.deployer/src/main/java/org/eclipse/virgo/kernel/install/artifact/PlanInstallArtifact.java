@@ -64,14 +64,14 @@ public interface PlanInstallArtifact extends GraphAssociableInstallArtifact {
      * to any parents this plan has. Note that a plan may be a descendent of at most one scoped plan since scopes do not
      * overlap.
      * 
-     * @return true if successfully refreshed, false otherwise
+     * @return <code>true</code> if successfully refreshed, <code>false</code> otherwise
      */
     boolean refreshScope();
 
     /**
-     * Returns the {@link PlanDescriptor.Dependencies} for the plan.
-     * @return the dependencies setting of the plan
+     * Returns the {@link PlanDescriptor.Provisioning} for the plan.
+     * @return the provisioning setting of the plan
      */
-    PlanDescriptor.Dependencies getDependencies();
+    PlanDescriptor.Provisioning getProvisioning();
 
 }
