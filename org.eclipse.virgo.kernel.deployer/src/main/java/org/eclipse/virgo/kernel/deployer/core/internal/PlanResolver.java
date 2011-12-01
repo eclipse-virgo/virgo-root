@@ -15,6 +15,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
@@ -66,7 +67,8 @@ public class PlanResolver implements Transformer {
                 GraphNode<InstallArtifact> graph = planInstallArtifact.getGraph();
                 List<ArtifactSpecification> artifactSpecifications = planInstallArtifact.getArtifactSpecifications();
                 for (ArtifactSpecification artifactSpecification : artifactSpecifications) {
-                    GraphNode<InstallArtifact> childInstallArtifactGraph = createInstallArtifactGraph(artifactSpecification, scopeName);
+                    GraphNode<InstallArtifact> childInstallArtifactGraph = createInstallArtifactGraph(artifactSpecification, scopeName,
+                        planInstallArtifact.getProvisioning());
                     graph.addChild(childInstallArtifactGraph);
 
                     // Put child into the INSTALLING state as Transformers (like this) are after the "begin install"
@@ -104,8 +106,9 @@ public class PlanResolver implements Transformer {
         return result;
     }
 
-    private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName)
+    private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName,
+        Provisioning provisioning)
         throws DeploymentException {
-        return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName);
+        return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName, provisioning);
     }
 }

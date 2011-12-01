@@ -76,7 +76,7 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
         @NonNull InstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
         @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactGraphFactory planInstallArtifactGraphFactory)
         throws DeploymentException {
-        super(identity, true, true, Provisioning.INHERIT, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
+        super(identity, true, true, Provisioning.AUTO, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
             repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST);
 
         this.artifactStorageFactory = artifactStorageFactory;

@@ -16,9 +16,11 @@ import static org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDetermin
 import static org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer.PLAN_TYPE;
 
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.artifact.plan.PlanReader;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
@@ -47,6 +49,8 @@ import org.osgi.framework.BundleContext;
  * 
  */
 final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory {
+
+    private static final String PROVISIONING_PROPERTY_NAME = "org.eclipse.virgo.kernel.provisioning";
 
     private final BundleContext bundleContext;
 
@@ -83,7 +87,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
         Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         String type = identity.getType();
         if (PLAN_TYPE.equalsIgnoreCase(type)) {
-            return createPlanGraph(identity, artifactStorage, getPlanDescriptor(artifactStorage), repositoryName);
+            return createPlanGraph(identity, artifactStorage, getPlanDescriptor(artifactStorage), repositoryName, deploymentProperties);
         } else if (PAR_TYPE.equalsIgnoreCase(type)) {
             return createParGraph(identity, artifactStorage, repositoryName);
         } else {
@@ -113,15 +117,37 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
     }
 
     private GraphNode<InstallArtifact> createPlanGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
-        PlanDescriptor planDescriptor, String repositoryName) throws DeploymentException {
+        PlanDescriptor planDescriptor, String repositoryName, Map<String, String> deploymentProperties) throws DeploymentException {
 
-        StandardPlanInstallArtifact planInstallArtifact;
+        Provisioning resultantProvisioning = determinePlanProvisioning(planDescriptor, getParentProvisioning(deploymentProperties));
 
-        planInstallArtifact = new StandardPlanInstallArtifact(artifactIdentity, planDescriptor.getAtomic(), planDescriptor.getScoped(),
-            planDescriptor.getProvisioning(), artifactStorage, new StandardArtifactStateMonitor(this.bundleContext), this.scopeServiceRepository,
-            this.scopeFactory, this.eventLogger, this.refreshHandler, repositoryName, planDescriptor.getArtifactSpecifications());
+        StandardPlanInstallArtifact planInstallArtifact = new StandardPlanInstallArtifact(artifactIdentity, planDescriptor.getAtomic(),
+            planDescriptor.getScoped(), resultantProvisioning, artifactStorage, new StandardArtifactStateMonitor(this.bundleContext),
+            this.scopeServiceRepository, this.scopeFactory, this.eventLogger, this.refreshHandler, repositoryName,
+            planDescriptor.getArtifactSpecifications());
 
         return constructAssociatedGraphNode(planInstallArtifact);
     }
 
+    private Provisioning getParentProvisioning(Map<String, String> deploymentProperties) {
+        Provisioning parentProvisioning = Provisioning.AUTO;
+        if (deploymentProperties != null) {
+            String provisioningProperty = deploymentProperties.get(PROVISIONING_PROPERTY_NAME);
+            if (provisioningProperty != null) {
+                parentProvisioning = Provisioning.valueOf(provisioningProperty.toUpperCase(Locale.ENGLISH));
+                if (parentProvisioning == Provisioning.INHERIT) {
+                    parentProvisioning = Provisioning.AUTO;
+                }
+            }
+        }
+        return parentProvisioning;
+    }
+
+    private Provisioning determinePlanProvisioning(PlanDescriptor planDescriptor, Provisioning parentProvisioning) {
+        Provisioning planProvisioningSpec = planDescriptor.getProvisioning();
+        Provisioning resultantProvisioning = planProvisioningSpec == Provisioning.INHERIT ? parentProvisioning : planProvisioningSpec;
+        return resultantProvisioning;
+    }
+
 }
+

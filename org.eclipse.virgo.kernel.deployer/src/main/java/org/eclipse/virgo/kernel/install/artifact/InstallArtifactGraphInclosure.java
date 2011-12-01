@@ -15,6 +15,7 @@ package org.eclipse.virgo.kernel.install.artifact;
 import java.io.File;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.util.common.GraphNode;
@@ -48,10 +49,12 @@ public interface InstallArtifactGraphInclosure {
      * 
      * @param artifactSpecification the <code>ArtifactSpecification</code>.
      * @param scopeName the scope name of the artifact or <code>null</code> if it does not belong to a scope
+     * @param provisioning the provisioning behaviour to be inherited
      * @return an install graph
      * @throws DeploymentException if the graph cannot be created
      */
-    GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification artifactSpecification, String scopeName) throws DeploymentException;
+    GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification artifactSpecification, String scopeName, Provisioning provisioning)
+        throws DeploymentException;
 
     /**
      * Create an install graph consisting of the single artifact available at the given file URI.

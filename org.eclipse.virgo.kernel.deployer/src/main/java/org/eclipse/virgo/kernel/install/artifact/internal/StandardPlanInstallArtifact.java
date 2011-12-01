@@ -60,7 +60,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     
     private final boolean scoped;
     
-    private final Provisioning dependencies;
+    private final Provisioning provisioning;
 
     private final List<ArtifactSpecification> artifactSpecifications;
     
@@ -69,7 +69,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     private Scope applicationScope;
 
 
-    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Provisioning dependencies, @NonNull ArtifactStorage artifactStorage,
+    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Provisioning provisioning, @NonNull ArtifactStorage artifactStorage,
         @NonNull ArtifactStateMonitor artifactStateMonitor, @NonNull ScopeServiceRepository scopeServiceRepository,
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactRefreshHandler refreshHandler,
         String repositoryName, List<ArtifactSpecification> artifactSpecifications) throws DeploymentException {
@@ -83,7 +83,10 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         this.refreshHandler = refreshHandler;
         this.atomic = atomic;
         this.scoped = scoped;
-        this.dependencies = dependencies;
+        if (provisioning == Provisioning.INHERIT) {
+            throw new IllegalArgumentException("A plan's provisoning behaviour may not be set to INHERIT");
+        }
+        this.provisioning = provisioning;
         this.artifactSpecifications = artifactSpecifications;
     }
     
@@ -229,7 +232,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
      * {@inheritDoc}
      */
     public Provisioning getProvisioning() {
-        return this.dependencies;
+        return this.provisioning;
     }
 
     public final List<ArtifactSpecification> getArtifactSpecifications() {
