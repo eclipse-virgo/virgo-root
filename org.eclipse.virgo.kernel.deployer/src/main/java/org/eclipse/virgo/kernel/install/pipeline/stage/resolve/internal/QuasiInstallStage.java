@@ -14,10 +14,13 @@ package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
@@ -62,11 +65,13 @@ public final class QuasiInstallStage implements PipelineStage {
         public boolean visit(GraphNode<InstallArtifact> graph) {
             InstallArtifact installArtifact = graph.getValue();
             if (installArtifact instanceof BundleInstallArtifact) {
+                Provisioning provisioning = getProvisioning(graph);
                 BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
                 try {
                     BundleManifest bundleManifest = bundleInstallArtifact.getBundleManifest();
                     File location = bundleInstallArtifact.getArtifactFS().getFile();
                     QuasiBundle quasiBundle = this.quasiFramework.install(location.toURI(), bundleManifest);
+                    quasiBundle.setProvisioning(provisioning);
                     bundleInstallArtifact.setQuasiBundle(quasiBundle);
                 } catch (IOException e) {
                     this.installLog.log(bundleInstallArtifact, "failed to read bundle manifest", e.getMessage());
@@ -77,6 +82,36 @@ public final class QuasiInstallStage implements PipelineStage {
                 }
             }
             return true;
+        }
+
+        /**
+         * Returns the provisioning behaviour for the given install artifact node. If the artifact has no parents, then
+         * this is AUTO. If the artifact has at least one parent, then its provisioning behaviour is AUTO unless all its
+         * parents are plans with provisioning behaviour DISABLED, in which case its provisioning behaviour is DISABLED.
+         * 
+         * @param artifactGraphNode the {@link GraphNode} of the install artifact
+         * @return the {@link Provisioning} of the given install artifact node
+         */
+        private Provisioning getProvisioning(GraphNode<InstallArtifact> artifactGraphNode) {
+            Provisioning provisioning;
+            List<GraphNode<InstallArtifact>> parents = artifactGraphNode.getParents();
+            if (parents.isEmpty()) {
+                provisioning = Provisioning.AUTO;
+            } else {
+                boolean allParentsDisabled = true;
+                for (GraphNode<InstallArtifact> parent : parents) {
+                    InstallArtifact parentInstallArtifact = parent.getValue();
+                    if (parentInstallArtifact instanceof PlanInstallArtifact) {
+                        if (((PlanInstallArtifact) parentInstallArtifact).getProvisioning() == Provisioning.AUTO) {
+                            allParentsDisabled = false;
+                        }
+                    } else {
+                        allParentsDisabled = false; // in case other kinds of parents are introduced
+                    }
+                }
+                provisioning = allParentsDisabled ? Provisioning.DISABLED : Provisioning.AUTO;
+            }
+            return provisioning;
         }
 
     }

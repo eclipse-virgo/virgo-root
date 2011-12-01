@@ -35,6 +35,7 @@ import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.StateHelper;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.osgi.service.resolver.VersionConstraint;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.core.FatalKernelException;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
@@ -66,6 +67,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 final class StandardQuasiFramework implements QuasiFramework {
+
+    private static final BundleDescription[] EMPTY_BUNDLE_DESCRIPTION_ARRAY = new BundleDescription[0];
 
     private final RegionFilter TOP;
 
@@ -227,7 +230,8 @@ final class StandardQuasiFramework implements QuasiFramework {
     public List<QuasiResolutionFailure> resolve() {
         synchronized (this.monitor) {
             BundleDescription[] bundles = getBundleDescriptionArray();
-            BundleDescription[] dependencies = getDependencies(bundles);
+            BundleDescription[] disabledProvisioningBundles = getDisabledProvisioningBundleDescriptionArray();
+            BundleDescription[] dependencies = getDependencies(bundles, disabledProvisioningBundles);
 
             this.otherBundles = dependencies;
 
@@ -251,14 +255,14 @@ final class StandardQuasiFramework implements QuasiFramework {
             failureDescription);
     }
 
-    private BundleDescription[] getDependencies(BundleDescription[] bundles) {
+    private BundleDescription[] getDependencies(BundleDescription[] bundles, BundleDescription[] disabledProvisioningBundles) {
         createCoregionIfNecessary();
         try {
-            return this.dependencyCalculator.calculateDependencies(this.state, this.coregion, bundles);
+            return this.dependencyCalculator.calculateDependencies(this.state, this.coregion, bundles, disabledProvisioningBundles);
         } catch (BundleException e) {
-            return new BundleDescription[0];
+            return EMPTY_BUNDLE_DESCRIPTION_ARRAY;
         } catch (UnableToSatisfyDependenciesException utsde) {
-            return new BundleDescription[0];
+            return EMPTY_BUNDLE_DESCRIPTION_ARRAY;
         }
     }
 
@@ -342,8 +346,20 @@ final class StandardQuasiFramework implements QuasiFramework {
         }
         return bd;
     }
-    
-    /** 
+
+    private BundleDescription[] getDisabledProvisioningBundleDescriptionArray() {
+        ArrayList<BundleDescription> disabledProvisioningBundleDescriptions = new ArrayList<BundleDescription>();
+        int n = this.installedQuasiBundles.size();
+        for (int i = 0; i < n; i++) {
+            StandardQuasiBundle quasiBundle = this.installedQuasiBundles.get(i);
+            if (quasiBundle.getProvisioning() == Provisioning.DISABLED) {
+                disabledProvisioningBundleDescriptions.add(quasiBundle.getBundleDescription());
+            }
+        }
+        return disabledProvisioningBundleDescriptions.toArray(EMPTY_BUNDLE_DESCRIPTION_ARRAY);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

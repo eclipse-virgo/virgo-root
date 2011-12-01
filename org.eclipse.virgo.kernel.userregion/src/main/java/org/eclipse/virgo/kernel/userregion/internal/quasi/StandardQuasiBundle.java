@@ -28,6 +28,7 @@ import org.eclipse.osgi.service.resolver.StateHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
@@ -56,6 +57,8 @@ final class StandardQuasiBundle implements QuasiBundle {
     private Version bv;
 
     private final StateHelper stateHelper;
+
+    private volatile Provisioning provisioning = Provisioning.AUTO;
 
     /**
      * Constructs an unresolved, uncommitted {@link QuasiBundle} with the given {@link BundleDescription}.
@@ -288,6 +291,28 @@ final class StandardQuasiBundle implements QuasiBundle {
             }
         }
         return null;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void setProvisioning(Provisioning provisioning) {
+        if (provisioning == null) {
+            throw new IllegalArgumentException("null not a valid provisioning behaviour for a QuasiBundle");
+        }
+        if (provisioning == Provisioning.INHERIT) {
+            throw new IllegalArgumentException("INHERIT is not a valid provisioning behaviour for a QuasiBundle");
+        }
+        this.provisioning = provisioning;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public Provisioning getProvisioning() {
+        return this.provisioning;
     }
 
 }

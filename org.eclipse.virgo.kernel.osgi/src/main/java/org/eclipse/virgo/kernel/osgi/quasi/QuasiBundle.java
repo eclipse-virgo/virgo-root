@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.osgi.quasi;
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
@@ -125,5 +126,19 @@ public interface QuasiBundle {
      * @return The file that is represented by this QuasiBundle
      */
     File getBundleFile();
+
+    /**
+     * Sets the provisioning behaviour required for this bundle.
+     * 
+     * @param provisioning the required provisioning behaviour, either Provisioning.AUTO or Provisioning.DISABLED
+     */
+    void setProvisioning(Provisioning provisioning);
+
+    /**
+     * Returns the provisioning behaviour required for this bundle.
+     * 
+     * @return Provisioning.AUTO or Provisioning.DISABLED
+     */
+    Provisioning getProvisioning();
 
 }

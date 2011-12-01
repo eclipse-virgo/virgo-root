@@ -8,12 +8,14 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
+
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
@@ -27,76 +29,90 @@ import org.osgi.framework.Version;
  */
 public class StubQuasiBundle implements QuasiBundle {
 
-	private final Version version;
-	private final String name;
+    private final Version version;
 
-	public StubQuasiBundle(String name, Version version) {
-		this.name = name;
-		this.version = version;
-	}
-	
-	@Override
-	public String getSymbolicName() {
-		return this.name;
-	}
+    private final String name;
 
-	@Override
-	public Version getVersion() {
-		return this.version;
-	}
+    private volatile Provisioning provisioning = Provisioning.AUTO;
 
-	@Override
-	public boolean isResolved() {
-		return false;
-	}
+    public StubQuasiBundle(String name, Version version) {
+        this.name = name;
+        this.version = version;
+    }
 
-	@Override
-	public void uninstall() {
-	}
+    @Override
+    public String getSymbolicName() {
+        return this.name;
+    }
 
-	@Override
-	public Bundle getBundle() {
-		return null;
-	}
+    @Override
+    public Version getVersion() {
+        return this.version;
+    }
 
-	@Override
-	public long getBundleId() {
-		return 0;
-	}
+    @Override
+    public boolean isResolved() {
+        return false;
+    }
 
-	@Override
-	public List<QuasiBundle> getFragments() {
-		return new ArrayList<QuasiBundle>();
-	}
+    @Override
+    public void uninstall() {
+    }
 
-	@Override
-	public List<QuasiBundle> getHosts() {
-		return new ArrayList<QuasiBundle>();
-	}
+    @Override
+    public Bundle getBundle() {
+        return null;
+    }
 
-	@Override
-	public List<QuasiExportPackage> getExportPackages() {
-		return new ArrayList<QuasiExportPackage>();
-	}
+    @Override
+    public long getBundleId() {
+        return 0;
+    }
 
-	@Override
-	public List<QuasiImportPackage> getImportPackages() {
-		return new ArrayList<QuasiImportPackage>();
-	}
+    @Override
+    public List<QuasiBundle> getFragments() {
+        return new ArrayList<QuasiBundle>();
+    }
 
-	@Override
-	public List<QuasiRequiredBundle> getRequiredBundles() {
-		return new ArrayList<QuasiRequiredBundle>();
-	}
+    @Override
+    public List<QuasiBundle> getHosts() {
+        return new ArrayList<QuasiBundle>();
+    }
 
-	@Override
-	public List<QuasiBundle> getDependents() {
-		return new ArrayList<QuasiBundle>();
-	}
+    @Override
+    public List<QuasiExportPackage> getExportPackages() {
+        return new ArrayList<QuasiExportPackage>();
+    }
 
-	@Override
-	public File getBundleFile() {
-		return null;
-	}
+    @Override
+    public List<QuasiImportPackage> getImportPackages() {
+        return new ArrayList<QuasiImportPackage>();
+    }
+
+    @Override
+    public List<QuasiRequiredBundle> getRequiredBundles() {
+        return new ArrayList<QuasiRequiredBundle>();
+    }
+
+    @Override
+    public List<QuasiBundle> getDependents() {
+        return new ArrayList<QuasiBundle>();
+    }
+
+    @Override
+    public File getBundleFile() {
+        return null;
+    }
+
+    @Override
+    public void setProvisioning(Provisioning provisioning) {
+        this.provisioning = provisioning;
+
+    }
+
+    @Override
+    public Provisioning getProvisioning() {
+        return this.provisioning;
+    }
 
 }

@@ -15,10 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
-
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
@@ -26,6 +23,9 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 
 
 /**
@@ -189,6 +189,16 @@ final class StandardQuasiLiveBundle implements QuasiLiveBundle {
      */
     public File getBundleFile() {
         return this.quasiBundle.getBundleFile();
+    }
+
+    @Override
+    public void setProvisioning(Provisioning provisioning) {
+        this.quasiBundle.setProvisioning(provisioning);
+    }
+
+    @Override
+    public Provisioning getProvisioning() {
+        return this.quasiBundle.getProvisioning();
     }
 
 }

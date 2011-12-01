@@ -116,18 +116,19 @@ public final class DependencyCalculator {
      * 
      * @param state the <code>State</code> to satisfy against.
      * @param coregion the coregion containing the side-state bundles
-     * @param bundles the bundles to calculate dependencies for.
+     * @param bundles the bundles to calculate dependencies for
+     * @param disabledProvisioningBundles a subset of bundles which should not have their dependencies provisioned
      * @return an array of descriptions of bundles that need to be added to the state to satisfy constraints.
      * @throws BundleException
      * @throws UnableToSatisfyDependenciesException
      */
-    public BundleDescription[] calculateDependencies(State state, Region coregion, BundleDescription[] bundles) throws BundleException,
-        UnableToSatisfyDependenciesException {
+    public BundleDescription[] calculateDependencies(State state, Region coregion, BundleDescription[] bundles,
+        BundleDescription[] disabledProvisioningBundles) throws BundleException, UnableToSatisfyDependenciesException {
         this.logger.info("Calculating missing dependencies of bundle(s) '{}'", bundles);
         synchronized (this.monitor) {
             this.coregion = coregion;
             try {
-                doSatisfyConstraints(bundles, state);
+                doSatisfyConstraints(bundles, state, disabledProvisioningBundles);
 
                 StateDelta delta = state.resolve(bundles);
 
@@ -224,37 +225,43 @@ public final class DependencyCalculator {
         return packageProviders;
     }
 
-    private void doSatisfyConstraints(BundleDescription description, State state) throws BundleException {
-        doSatisfyConstraints(new BundleDescription[] { description }, state);
+    private void doSatisfyConstraints(BundleDescription description, State state, BundleDescription[] disabledProvisioningDescriptions)
+        throws BundleException {
+        doSatisfyConstraints(new BundleDescription[] { description }, state, disabledProvisioningDescriptions);
     }
 
-    private void doSatisfyConstraints(BundleDescription[] descriptions, State state) throws BundleException {
+    private void doSatisfyConstraints(BundleDescription[] descriptions, State state, BundleDescription[] disabledProvisioningDescriptions)
+        throws BundleException {
 
         VersionConstraint[] unsatisfiedConstraints = findUnsatisfiedConstraints(descriptions, state);
 
         List<BundleDescription> constraintsSatisfiers = new ArrayList<BundleDescription>();
 
         for (VersionConstraint versionConstraint : unsatisfiedConstraints) {
+            BundleDescription unsatisfiedBundle = versionConstraint.getBundle();
             boolean found = false;
             for (BundleDescription description : descriptions) {
-                if (description == versionConstraint.getBundle()) {
+                if (description == unsatisfiedBundle) {
                     found = true;
                 }
             }
-            if (!found) {
-                continue;
-            }
-            if (versionConstraint instanceof ImportPackageSpecification) {
-                satisfyImportPackage((ImportPackageSpecification) versionConstraint, state, constraintsSatisfiers);
-            } else if (versionConstraint instanceof BundleSpecification) {
-                satisfyRequireBundle(versionConstraint, state, constraintsSatisfiers);
-            } else if (versionConstraint instanceof HostSpecification) {
-                satisfyFragmentHost(versionConstraint, state, constraintsSatisfiers);
+            if (found) {
+                if (provision(unsatisfiedBundle, disabledProvisioningDescriptions)) {
+                    if (versionConstraint instanceof ImportPackageSpecification) {
+                        satisfyImportPackage((ImportPackageSpecification) versionConstraint, state, constraintsSatisfiers);
+                    } else if (versionConstraint instanceof BundleSpecification) {
+                        satisfyRequireBundle(versionConstraint, state, constraintsSatisfiers);
+                    } else if (versionConstraint instanceof HostSpecification) {
+                        satisfyFragmentHost(versionConstraint, state, constraintsSatisfiers);
+                    }
+                }
             }
         }
 
         for (BundleDescription description : descriptions) {
-            satisfyFragments(description, state, constraintsSatisfiers);
+            if (provision(description, disabledProvisioningDescriptions)) {
+                satisfyFragments(description, state, constraintsSatisfiers);
+            }
         }
 
         Collections.sort(constraintsSatisfiers, new BundleDescriptionComparator());
@@ -263,9 +270,19 @@ public final class DependencyCalculator {
             if (!isBundlePresentInState(constraintSatisfier.getName(), constraintSatisfier.getVersion(), state)) {
                 state.addBundle(constraintSatisfier);
                 this.coregion.addBundle(constraintSatisfier.getBundleId());
-                doSatisfyConstraints(constraintSatisfier, state);
+                doSatisfyConstraints(constraintSatisfier, state, disabledProvisioningDescriptions);
             }
         }
+    }
+
+    private boolean provision(BundleDescription bundleDescription, BundleDescription[] disabledProvisioningDescriptions) {
+        boolean provision = true;
+        for (BundleDescription disabledProvisioningDescription : disabledProvisioningDescriptions) {
+            if (disabledProvisioningDescription == bundleDescription) {
+                provision = false;
+            }
+        }
+        return provision;
     }
 
     private void satisfyFragments(BundleDescription description, State state, List<BundleDescription> constraintSatisfiers) throws BundleException {

@@ -18,6 +18,7 @@ import java.util.List;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
@@ -32,6 +33,8 @@ public class StubQuasiLiveBundle implements QuasiLiveBundle {
     private final Bundle bundle;
 
     private final long id;
+
+    private volatile Provisioning provisioning = Provisioning.AUTO;
 
     public StubQuasiLiveBundle(long id, Bundle bundle) {
         this.bundle = bundle;
@@ -99,6 +102,17 @@ public class StubQuasiLiveBundle implements QuasiLiveBundle {
 
     public File getBundleFile() {
         return null;
+    }
+
+    @Override
+    public void setProvisioning(Provisioning provisioning) {
+        this.provisioning = provisioning;
+
+    }
+
+    @Override
+    public Provisioning getProvisioning() {
+        return this.provisioning;
     }
 
 }
