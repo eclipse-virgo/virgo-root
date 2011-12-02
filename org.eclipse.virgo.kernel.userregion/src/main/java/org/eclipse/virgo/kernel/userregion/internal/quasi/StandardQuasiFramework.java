@@ -364,16 +364,8 @@ final class StandardQuasiFramework implements QuasiFramework {
      */
     @Override
     public void commit() throws BundleException {
-        commit(true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void commit(boolean resolve) throws BundleException {
         synchronized (this.monitor) {
-            if (resolve && this.otherBundles == null) {
+            if (this.otherBundles == null) {
                 List<QuasiResolutionFailure> failures = resolve();
                 if (!failures.isEmpty()) {
                     throw new BundleException("Commit resolution failed: '" + failures.toString() + "'");

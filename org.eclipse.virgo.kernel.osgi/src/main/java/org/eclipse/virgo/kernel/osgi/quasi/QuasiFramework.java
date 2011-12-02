@@ -86,15 +86,9 @@ public interface QuasiFramework {
      */
     List<QuasiResolutionFailure> diagnose(long bundleId);
 
-    /**
-     * Equivalent to commit(true).
-     * 
-     * @throws BundleException if the contents could not be resolved and installed
-     */
-    void commit() throws BundleException;
     
     /**
-     * Optionally attempts to resolve any unresolved {@link QuasiBundle QuasiBundles} in this {@link QuasiFramework} and then
+     * Attempts to resolve any unresolved {@link QuasiBundle QuasiBundles} in this {@link QuasiFramework} and then
      * commits the contents of this {@link QuasiFramework} by installing each of its <code>QuasiBundles</code> into the
      * OSGi framework.
      * <p/>
@@ -103,11 +97,10 @@ public interface QuasiFramework {
      * If a <code>QuasiBundle</code> fails to install, any <code>QuasiBundles</code> which have been installed are
      * uninstalled and <code>BundleException</code> is thrown.
      * <p/>
-     * @param resolve <code>true</code> if and only if any unresolved <code>QuasiBundles</code> should be resolved
      * 
      * @throws BundleException if the contents could not be resolved and installed
      */
-    void commit(boolean resolve) throws BundleException;
+    void commit() throws BundleException;
 
     /**
      * Delete any resources associated with this {@link QuasiFramework}.

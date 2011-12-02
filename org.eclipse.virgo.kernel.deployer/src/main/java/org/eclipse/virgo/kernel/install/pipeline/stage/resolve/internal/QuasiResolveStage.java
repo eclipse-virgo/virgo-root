@@ -39,14 +39,12 @@ public final class QuasiResolveStage implements PipelineStage {
      */
     public void process(GraphNode<InstallArtifact> installGraph, InstallEnvironment installEnvironment) throws DeploymentException,
         UnableToSatisfyBundleDependenciesException {
-        if (DependencyHelper.dependenciesToBeInstalled(installGraph)) {
-            QuasiFramework quasiFramework = installEnvironment.getQuasiFramework();
-            List<QuasiResolutionFailure> resolutionFailures = quasiFramework.resolve();
-            if (!resolutionFailures.isEmpty()) {
-                QuasiResolutionFailure failure = resolutionFailures.get(0);
-                throw new UnableToSatisfyBundleDependenciesException(failure.getUnresolvedQuasiBundle().getSymbolicName(),
-                    failure.getUnresolvedQuasiBundle().getVersion(), failure.getDescription());
-            }
+        QuasiFramework quasiFramework = installEnvironment.getQuasiFramework();
+        List<QuasiResolutionFailure> resolutionFailures = quasiFramework.resolve();
+        if (!resolutionFailures.isEmpty()) {
+            QuasiResolutionFailure failure = resolutionFailures.get(0);
+            throw new UnableToSatisfyBundleDependenciesException(failure.getUnresolvedQuasiBundle().getSymbolicName(),
+                failure.getUnresolvedQuasiBundle().getVersion(), failure.getDescription());
         }
     }
 

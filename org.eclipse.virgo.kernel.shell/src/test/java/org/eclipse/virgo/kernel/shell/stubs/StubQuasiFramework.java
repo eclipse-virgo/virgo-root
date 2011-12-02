@@ -50,10 +50,6 @@ public class StubQuasiFramework implements QuasiFramework {
     public void commit() throws BundleException {
     }
 
-    @Override
-    public void commit(boolean resolve) throws BundleException {
-    }
-
     public QuasiBundle getBundle(long bundleId) {
         if (bundleId == 4) {
             return new StubQuasiLiveBundle(bundleId, this.stubBundle);

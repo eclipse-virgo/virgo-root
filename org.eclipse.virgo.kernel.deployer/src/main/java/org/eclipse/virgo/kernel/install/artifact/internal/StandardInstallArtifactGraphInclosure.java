@@ -91,7 +91,7 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
      * {@inheritDoc}
      */
     @Override
-    public GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification specification, String scopeName, Provisioning provisioning)
+    public GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification specification, String scopeName, Provisioning parentProvisioning)
         throws DeploymentException {
         String type = specification.getType();
         String name = specification.getName();
@@ -110,13 +110,13 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
         ArtifactStorage artifactStorage = this.artifactStorageFactory.create(new File(artifactURI), identity);
 
         GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(identity,
-            determineDeploymentProperties(specification, provisioning), artifactStorage, artifactDescriptor.getRepositoryName());
+            determineDeploymentProperties(specification, parentProvisioning), artifactStorage, artifactDescriptor.getRepositoryName());
         return installArtifactGraph;
     }
 
-    private Map<String, String> determineDeploymentProperties(ArtifactSpecification specification, Provisioning provisioning) {
+    private Map<String, String> determineDeploymentProperties(ArtifactSpecification specification, Provisioning parentProvisioning) {
         Map<String, String> deploymentProperties = new HashMap<String, String>(specification.getProperties());
-        deploymentProperties.put(PROVISIONING_PROPERTY_NAME, provisioning.toString());
+        deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
         return deploymentProperties;
     }
 

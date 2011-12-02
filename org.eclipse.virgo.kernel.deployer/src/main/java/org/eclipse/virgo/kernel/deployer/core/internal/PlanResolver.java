@@ -107,8 +107,8 @@ public class PlanResolver implements Transformer {
     }
 
     private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName,
-        Provisioning provisioning)
+        Provisioning parentProvisioning)
         throws DeploymentException {
-        return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName, provisioning);
+        return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName, parentProvisioning);
     }
 }

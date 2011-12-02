@@ -95,13 +95,6 @@ final class StandardQuasiLiveFramework implements QuasiFramework {
     /** 
      * {@inheritDoc}
      */
-    public void commit(boolean resolve) throws BundleException {
-        this.quasiFramework.commit(resolve);
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
     public QuasiBundle install(URI location, BundleManifest bundleManifest) throws BundleException {
         return this.quasiFramework.install(location, bundleManifest);
     }
