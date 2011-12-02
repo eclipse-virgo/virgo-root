@@ -13,84 +13,342 @@
 
 function pageinit() {
 	util.loadScript('raphael', false);
-	
-	layoutmanager = new Layout();
-	dataManager = new GeminiDataSource(layoutmanager);
-	
-	//util.loadScript('explorer-layout-manager', false);
-	//Explorer.init();
-	util.pageReady();
+	var width = 900;
+	var height = 551;
+	$('bundle-canvas').setStyles({'width' : width, 'height' : height + 18});
+	paper = Raphael("bundle-canvas", width, height);
+	infoBox = new InfoBox();
+	dataManager = new GeminiDataSource().setUp();
 }
 
-var GeminiDataSource = function(layout){
+var GeminiDataSource = function(){
 
-	this.layout = layout;
+	this.relationships = 'bundles';
+
+	$('side-bar').store('scroller', new Fx.Scroll($('side-bar')));
+
+	this.fullRequest = [{
+		"mbean" : "osgi.core:type=bundleState,version=1.5",
+		"operation" : "listBundles",
+		"arguments" : [],
+		"type" : "exec"
+	},{
+		"mbean" : "org.eclipse.equinox.region.domain:type=Region,*",
+		"type" : "read"
+	}];
 
 	this.display = function(type){
 		if(type == 'bundles') {
 			$('view-bundles-button').addClass('button-selected');
 			$('view-services-button').removeClass('button-selected');
-			$('view-packages-button').removeClass('button-selected');
+			this.relationships = type;
+			var currentRow = $('bundle-table').retrieve('HtmlTable').getSelected()[0];
+			if(currentRow){
+				$('bundle-table').retrieve('HtmlTable').selectNone();
+				$('bundle-table').retrieve('HtmlTable').selectRow(currentRow);
+			}
 		} else if(type == 'services'){
 			$('view-services-button').addClass('button-selected');
 			$('view-bundles-button').removeClass('button-selected');
-			$('view-packages-button').removeClass('button-selected');
-		} else {
-			$('view-packages-button').addClass('button-selected');
-			$('view-bundles-button').removeClass('button-selected');
-			$('view-services-button').removeClass('button-selected');
+			this.relationships = type;
+			var currentRow = $('bundle-table').retrieve('HtmlTable').getSelected()[0];
+			if(currentRow){
+				$('bundle-table').retrieve('HtmlTable').selectNone();
+				$('bundle-table').retrieve('HtmlTable').selectRow(currentRow);
+			}
 		}
 	};
 	
-	this.showDefault = function(){
-		new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
-			method : 'get',
-			onSuccess : function(responseJSON) {
-				this.renderBundles(responseJSON.value);
-			}
-		}).send();
+	this.setUp = function(){
+		util.doBulkQuery(this.fullRequest, function(response) {
+			this.getOverview(response[0].value, response[1].value);
+			util.pageReady();
+		}.bind(this)); 
+		return this;
 	};
-	
-	//Start private methods
+		
+	this.getOverview = function(rawBundles, rawRegions){
+		var regionsMap = {};
+		Object.each(rawRegions, function(value, key){
+			value.BundleIds.each(function(id){
+				regionsMap[id] = value.Name;
+			});
+		});
+		
+		var bundlesTable = new HtmlTable({ 
+			properties: {'id' : 'bundle-table'}, 
+			headers : ['Id', 'Name', 'Version'], 
+			rows : [],
+			selectable : true,
+			allowMultiSelect : false,
+			defaultParser : 'number',
+			sortable : true,
+			zebra : true
+		});
+		
+		this.bundles = {};
+		this.packages = {};
+		Object.each(rawBundles, function(value, key){
+			this.processPackages(key, value.ImportedPackages, value.ExportedPackages);
+			this.bundles[key] = new Bundle(value.SymbolicName, value.Version, regionsMap[key], key, value.State, value.Location, this.formatHeader(value.Headers), value.Fragment, value.Hosts, value.Fragments, value.ImportedPackages, value.ExportedPackages, value.RequiredBundles, value.RequiringBundles, value.RegisteredServices, value.ServicesInUse, this.bundleClicked);
+			bundlesTable.push([key, value.SymbolicName, value.Version], {'key' : key, 'id' : 'bundle-' + key});
+		}.bind(this));
 
-	this.renderBundles = function(json){
-	
+		this.layout = new Layout(this.bundles);
+
+		bundlesTable.addEvent('rowFocus', function(tr){
+			if(this.relationships == 'bundles'){
+				this.layout.shuffle(tr.getProperty('key'), this.getBundleRelationships(tr.getProperty('key')));
+			} else if(this.relationships == 'services') {	
+				this.layout.shuffle(tr.getProperty('key'), this.getServiceRelationships(tr.getProperty('key')));
+			}
+		}.bind(this));
+		
+		$('side-bar').empty();
+		bundlesTable.inject($('side-bar'));
 	};
+	
+	this.formatHeader = function(rawHeaders){
+		var result = {};
+		Object.each(rawHeaders, function(header){
+			result[header.Key] = header.Value;
+		});
+		return result;
+	};
+	
+	this.processPackages = function(id, imports, exports) {
+		imports.each(function(packageKey) {
+			if(this.packages[packageKey]){
+				this.packages[packageKey].importers.push(id);
+			} else {
+				var nameAndVersion = packageKey.split(';');
+				this.packages[packageKey] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [id], exporters : []};
+			}
+		}, this);
+		exports.each(function(packageKey) {
+			if(this.packages[packageKey]){
+				this.packages[packageKey].exporters.push(id);
+			} else {
+				var nameAndVersion = packageKey.split(';');
+				this.packages[packageKey] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [], exporters : [id]};
+			}
+		}, this);
+	};
+	
+	this.bundleClicked = function(bundleId){
+		console.log('Scrolling table to', $('bundle-' + bundleId));
+		$('side-bar').retrieve('scroller').toElementCenter($('bundle-' + bundleId), 'y');
+		$('bundle-table').retrieve('HtmlTable').selectNone();
+		$('bundle-table').retrieve('HtmlTable').selectRow($('bundle-' + bundleId));
+	};
+	
+	// ****** BUNDLES VIEW ****** //
+	
+	this.getBundleRelationships = function(bundleId){
+		var bundle = this.bundles[bundleId];
+		var providers = [];
+		var requirers = [];
+		bundle.importedPackages.each(function(packageKey){
+			this.packages[packageKey].exporters.each(function(exporter){
+				providers.push({'bundle' : this.bundles[exporter], 'info' : this.getPackageInfo, 'infoKey' : packageKey, 'tooltip' : 'Package: ' + packageKey});
+			}, this);
+		}, this);
+		bundle.exportedPackages.each(function(packageKey){
+			this.packages[packageKey].importers.each(function(importer){
+				requirers.push({'bundle' : this.bundles[importer], 'info' : this.getPackageInfo, 'infoKey' : packageKey, 'tooltip' : 'Package: ' + packageKey});
+			}, this);
+		}, this);
+		return [providers, requirers];
+	};
+	
+	this.getPackageInfo = function(packageKey, callBack) {
+		var nameAndVersion = packageKey.split(';');
+		var packageRequest = [{
+			"mbean" : "osgi.core:type=packageState,version=1.5",
+			"operation" : "isRemovalPending",
+			"arguments" : [nameAndVersion[0], nameAndVersion[1]],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=packageState,version=1.5",
+			"operation" : "getImportingBundles",
+			"arguments" : [nameAndVersion[0], nameAndVersion[1]],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=packageState,version=1.5",
+			"operation" : "getExportingBundles",
+			"arguments" : [nameAndVersion[0], nameAndVersion[1]],
+			"type" : "exec"
+		}];
+		util.doBulkQuery(packageRequest, function(response) {
+		console.log(this.packages);
+		console.log(response);
+			callBack([response[0].value, response[1].value, response[2].value]);
+		}.bind(this)); 
+	}.bind(this);
+	
+	// ****** SERVICES VIEW ****** //
+	
+	this.getServiceRelationships = function(bundleId) {
+		var bundle = this.bundles[bundleId];
+		var providers = [];
+		var requirers = [];
+		bundle.consumedServices.each(function(consumedServiceId){
+			Object.each(this.bundles, function(bundleToCheck){
+				if(bundleToCheck.providedServices.contains(consumedServiceId)){
+					providers.push({'bundle' : bundleToCheck, 'info' : this.getServiceInfo, 'infoKey' : consumedServiceId, 'tooltip' : 'Service Id: ' + consumedServiceId});
+				}
+			}.bind(this));
+		}, this);
+		bundle.providedServices.each(function(providedServiceId){
+			Object.each(this.bundles, function(bundleToCheck){
+				if(bundleToCheck.consumedServices.contains(providedServiceId)){
+					requirers.push({'bundle' : bundleToCheck, 'info' : this.getServiceInfo, 'infoKey' : providedServiceId, 'tooltip' : 'Service Id: ' + providedServiceId});
+				}
+			}.bind(this));
+		}, this);
+		return [providers, requirers];
+	};
+	
+	this.getServiceInfo = function(serviceId, callBack) {
+		var serviceRequest = [{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getProperties",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getUsingBundles",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getObjectClass",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getBundleIdentifier",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		}];
+		util.doBulkQuery(serviceRequest, function(response) {
+			var content = new Element('ul.infoContent');
+			new Element('li').inject(content).appendText('Service provided by bundle: ' + this.bundles[response[3].value].summary());
+			new Element('li').inject(content).appendText('Objectclass: ' + response[2].value);
+			new Element('li').inject(content).appendText('Properties');
+			var propertiesList = new Element('ul.infoContent').inject(content);
+			Object.each(response[0].value, function(property){
+				new Element('li').inject(propertiesList).appendText(property.Key + ' - ' + property.Value);
+			});
+			new Element('li').inject(content).appendText('Consumers');
+			var consumersList = new Element('ul.infoContent').inject(content);
+			response[1].value.each(function(bundleId){
+				new Element('li').inject(consumersList).appendText(this.bundles[bundleId].summary());
+			}.bind(this));
+			callBack(content);
+		}.bind(this)); 
+	}.bind(this);
 
 };
 
-var Layout = function(){
+/**
+ * Take a map of bundles to use for generating the display.
+ *
+ */
+var Layout = function(bundles){
 
-	this.bundles = {};
+	this.bundles = bundles;
 	
-	this.shuffle = function(focusId, inIds, outIds){
+	this.bundleSpacing = 10; //Pixels to leave between bundles when rendering
 	
+	this.relationships = {};
+	
+	this.shuffle = function(bundleId, newRelationships){
+		Object.each(this.relationships, function(oldRelationship){
+			oldRelationship.remove();
+		});
+		this.relationships = {};
+		this.hideAll();
+
+		console.log("In", newRelationships[0].length);
+		console.log("Out", newRelationships[1].length);
+		
+		var widthTop = this.renderBundlesRow(this.bundles[bundleId], false, newRelationships[0], -239);
+		var widthBottom = this.renderBundlesRow(this.bundles[bundleId], true, newRelationships[1], 239);
+		
+		var newWidth = widthTop < widthBottom ? widthBottom : widthTop;
+		newWidth < 900 ? paper.setSize(900, paper.height) : paper.setSize(newWidth, paper.height);
+		this.bundles[bundleId].move((paper.width/2).round(), (paper.height/2).round());
+		this.bundles[bundleId].show();
+		
+		new Fx.Scroll($('bundle-canvas')).set((paper.width/2).round() - 450, (paper.height/2).round());
+
+		Object.each(this.relationships, function(relationship){
+			relationship.display();
+		});
+		
+		$('display').setStyle('visibility', 'visible');
 	};
 	
 	this.addBundle = function(bundle){
-		this.bundles[budle.id] = bundle;
+		this.bundles[bundle.id] = bundle;
 	};
 	
-	this.removeBundle = function(id){
-		this.bundles[id].hide();
-		this.bundles[id] = undefined;
+	this.removeBundle = function(bundleId){
+		this.bundles[bundleId].hide();
+		Object.erase(this.bundles, bundleId);
 	};
 	
-	this.clear = function(){
-		Object.each(this.bundles, function(value){
-			value.hide();
-		});
+	this.empty = function(){
+		this.hideAll();
 		this.bundles = {};
 	};
 	
-	this.hide = function(id){
-		this.bundles[id].hide();
+	this.hide = function(bundleId){
+		this.bundles[bundleId].hide();
+	};
+	
+	this.hideAll = function(){
+		Object.each(this.bundles, function(value){
+			value.hide();
+		});
 	};
 
+	this.renderBundlesRow = function(focused, isFrom, relations, offSet){
+		var yPos = (paper.height/2).round() + offSet;
+		var xPos = this.bundleSpacing;
+		relations.each(function(relation){
+			if(relation.bundle.id == focused.id){
+				//Add a back link
+				//console.log('Self link for focused bundle ', bundle.id);
+			} else {
+				if(relation.bundle.isVisible){
+					//console.log('Back link for bundle ', bundle.id);
+				} else {
+					xPos = xPos + (relation.bundle.boxWidth/2);
+					relation.bundle.move(xPos, yPos);
+					relation.bundle.show();
+					xPos = xPos + (relation.bundle.boxWidth/2) + this.bundleSpacing;
+					if(isFrom){
+						var relationship = new Relationship(focused, relation.bundle, relation.info, relation.infoKey, relation.tooltip);
+					}else{
+						var relationship = new Relationship(relation.bundle, focused, relation.info, relation.infoKey, relation.tooltip);
+					}
+					this.relationships[relationship.key] = relationship;
+					focused.addRelationship(relationship);
+					relation.bundle.addRelationship(relationship);
+				}
+			}
+		}, this);
+		return xPos;
+	};
+	
 };
 
-var Bundle = function(name, version, region, id, state, location){
+/**
+ * Bundle
+ */
+var Bundle = function(name, version, region, id, state, location, headers, isFragment, hosts, fragments, importedPackages, exportedPackages, requiredBundles, requiringBundles, providedServices, consumedServices, dblClickCallback){
 
 	//Data about the bundle
 	this.name = name;
@@ -99,266 +357,206 @@ var Bundle = function(name, version, region, id, state, location){
 	this.id = id;
 	this.state = state;
 	this.location = location;
+	this.headers = headers; 
+	this.isFragment = isFragment;
+	this.hosts = hosts;
+	this.fragments = fragments;
+	this.importedPackages = importedPackages;
+	this.exportedPackages = exportedPackages;
+	this.requiredBundles = requiredBundles;
+	this.requiringBundles = requiringBundles;
+	this.providedServices = providedServices;
+	this.consumedServices = consumedServices;
+	this.dblClickCallback = dblClickCallback;
+	
+	this.isVisible = false; 
+	
+	this.relationships = {};
 	
 	//Display attributes
-	this.bundleHeight = 25;
-	this.bundlexMargin = 10;
-	this.x = -1;
-	this.y = -1;
+	this.bundleMargin = 8;
+	this.x = 5;
+	this.y = 5;
 	
-	//Display objects
-	var rect = this.canvas.rect(x, y, 1, bundleBgHeight, 5).attr({
-		fill : "90-#dfdfdf-#fff",
-		stroke : "#ccc"
-	});
-	var text = this.canvas.text(x + this.bundlexMargin, y + this.bundleHeight / 2, "[" + this.id + "]" + this.name + " " + this.version + " " + this.state).attr({
-		"text-anchor" : "start",
-		"font" : "10px Arial"
-	});
+	this.summary = function(){
+		return "[" + this.id + "] " + this.name + "\n" + this.version;
+	};
+	
+	this.text = paper.text(this.x, this.y, this.summary()).attr({
+		"text-anchor" : "start", 
+		"font" : "12px Arial"
+	}).hide();
+	
+	this.boxWidth = this.text.getBBox().width.round() + 2*this.bundleMargin;
+	this.boxHeight = this.text.getBBox().height.round() + 2*this.bundleMargin;
+	
+	this.box = paper.rect(this.x, this.y, this.boxWidth, this.boxHeight, 8).attr({
+		"fill" : "#E8F6FF", 
+		"stroke" : "#002F5E"
+	}).hide();
+	
+	this.box.toBack();
+	
+	this.box.dblclick(function(){this.dblClickCallback(this.id);}.bind(this));
+	this.text.dblclick(function(){this.dblClickCallback(this.id);}.bind(this));
 	
 	this.hide = function(){
+		this.text.hide();
+		this.box.hide();
+		this.isVisible = false; 
+	};
+	
+	this.show = function(){
+		this.text.show();
+		this.box.show();
+		this.isVisible = true; 
+	};
+	
+	this.move = function(x, y) {
+		this.x = x;
+		this.y = y;
+		this.box.attr({
+			'x' : x - (this.boxWidth/2), 
+			'y' : y - (this.boxHeight/2)
+		});
+		this.text.attr({
+			'x' : x - (this.boxWidth/2) + this.bundleMargin, 
+			'y' : y
+		});
 		
 	};
 
-	//Start private methods
+	this.addRelationship = function(relationship){
+		this.relationships[relationship.key] = relationship;
+	};
+
+	this.removeRelationship = function(relationshipKey){
+		Object.erase(this.relationships, relationshipKey);
+	};
+
+};
+
+var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip) {
+
+	this.fromBundle = fromBundle;
+	this.toBundle = toBundle;
+	this.infoCallback = infoCallback;
+	this.infoKey = infoKey;
+	this.tooltip = tooltip;
+	this.key = 'from' + this.fromBundle.id + 'to' + this.toBundle.id;
+	this.controlPointOffset = 100;
+
+	this.setCoordinates = function(){
+		this.startPoint = {'x' : fromBundle.x, 'y' : fromBundle.y + fromBundle.boxHeight/2};
+		this.endPoint = {'x' : toBundle.x, 'y' : toBundle.y - toBundle.boxHeight/2};
+		this.startPointControl = {'x' : this.startPoint.x, 'y' : this.startPoint.y + this.controlPointOffset}; 
+		this.endPointControl = {'x' : this.endPoint.x, 'y' : this.endPoint.y - this.controlPointOffset};
+		this.midPoint = this.calculateMidpoint(this.startPoint.x, this.startPoint.y, this.endPoint.x, this.endPoint.y); 
+	};
+	
+	this.calculateMidpoint = function(startX, startY, endX, endY){
+		if(startX < endX){
+			var midX = startX + (endX - startX)/2;
+		} else {
+			var midX = endX + (startX - endX)/2;
+		}
+		if(startY < endY){
+			var midY = startY + (endY - startY)/2;
+		} else {
+			var midY = endY + (startY - endY)/2;
+		}
+		return {'x' : midX, 'y' : midY};
+	};
+	
+	this.display = function() {
+		if(this.visual){
+			this.visual.remove();
+		}
+		if(this.infoPoint){
+			this.infoPoint.remove();
+		}
+		if(this.infoPointText){
+			this.infoPointText.remove();
+		}
+		this.setCoordinates();
+		this.visual = paper.path('M' + this.startPoint.x + ',' + this.startPoint.y + 
+									'C' + this.startPointControl.x + ',' + this.startPointControl.y + 
+									',' + this.endPointControl.x + ',' + this.endPointControl.y + 
+									',' + this.endPoint.x + ',' + this.endPoint.y).attr({
+			'arrow-end' : 'block-wide-long',
+			'stroke-width' : 3,
+			'stroke' : '#002F5E'
+		}).toBack();
+		this.infoPoint = paper.circle(this.midPoint.x, this.midPoint.y, 10).attr({
+			'fill' : '#BAD9EC', 
+			'stroke' : 'none',
+			'title' : this.tooltip
+		});
+		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, '5').attr({
+			'font' : '14px Arial', 
+			'stroke' : '#002F5E',
+			'title' : this.tooltip
+		});
+		
+		this.infoPoint.click(function(){this.displayInfoBox()}.bind(this));
+		this.infoPointText.click(function(){this.displayInfoBox()}.bind(this));
+		
+		this.infoPoint.hover(function(){this.glow = this.visual.glow()}, function(){this.glow.remove()}, this, this);
+		this.infoPointText.hover(function(){this.glow = this.visual.glow()}, function(){this.glow.remove()}, this, this);
+	};
+	
+	this.displayInfoBox = function() {
+		infoBox.go(this.infoCallback, this.infoKey);
+	};
+	
+	this.remove = function() {
+		this.visual.remove();
+		this.infoPoint.remove();
+		this.infoPointText.remove();
+		this.fromBundle.removeRelationship(this.key);
+		this.toBundle.removeRelationship(this.key);
+	};
 
 };
 
 /**
- * The main Explorer class for bundle creation and assigning event handlers.
- * 
- * Draws the initial grid of bundles
+ * Singleton
  */
-var Explorer = {
-	/**
-	 * The initiation function. Creates the canvas, and requests JSON from server.
-	 */
-	init : function() {
-		this.canvas = Raphael("expl_canvas", "100px", "500px");
-		this.tip = {
-			'set' : false,
-			'div' : null
-		};
-		this.jsonRequest = new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/exec/osgi.core:type=bundleState,version=1.5/listBundles",
-			method : 'get',
-			onSuccess : function(responseJSON, responseText) {
-				Explorer.bundleConfig(responseJSON);
-			}
-		}).send();
-	},
+var InfoBox = function() {
+	
+	this.mask = new Mask($('content'), {
+		'id' : 'info-box-mask'
+	});
+	
+	this.infoElement = new Element('div#info-box').inject(this.mask.toElement());
+	
+	new Element('div#info-box-content').inject(this.infoElement);
+	var buttonContainer = new Element('div.button-container').inject(this.infoElement);
+	new Element('div.control-cap-left').inject(buttonContainer);
+	var okButton = new Element('div.button').inject(new Element('div.controls').inject(buttonContainer));
+	new Element('div.button-cap-left-blue').inject(okButton);
+	new Element('div.button-text').appendText('OK').inject(okButton);
+	new Element('div.button-cap-right-blue').inject(okButton);
+	new Element('div.control-cap-right').inject(buttonContainer);
+	
+	okButton.addEvent('click', function() {
+		this.mask.hide();
+	}.bind(this));
+	
+	this.go = function(contentCallback, key){
+		$('info-box-content').empty();
+		$('info-box-content').appendText('Loading...');
+		this.mask.show();
+		contentCallback(key, this.showContent);
+	};
+	
+	this.showContent = function(content) {
+		$('info-box-content').empty();
+		content.inject($('info-box-content'));
+	};
+	
+	this.hide = function() {
+		this.mask.hide();
+	};
 
-	/**
-	 * Takes URL parameter if there is one and auto-loads that bundle
-	 */
-	go : function() {
-		var loc = window.location.href;
-		if (loc.indexOf("#") != -1) {
-			var key = loc.split("#")[1];
-			var keyNotExist = Object.every(this.bundles, function(objValue, objKey) {
-				return objValue.key != key;
-			});
-			if (!keyNotExist) {
-				new LayoutManager(this.bundles, key, this.arrows);
-			} else {
-				alert("That Bundle Id doesn't exist.");
-			}
-		}
-	},
-
-	/**
-	 * Main success handler for the JSON response
-	 * 
-	 * @param json (JSON Object) - Raw JSON of bundle information
-	 */
-	bundleConfig : function(responseJson) {
-		var kernelBundles, userBundles;
-		new Request.JSON({
-			url : util.getCurrentHost() + "/jolokia/read/org.eclipse.equinox.region.domain:type=Region,*",
-			method : 'get',
-			onSuccess : function(JSON) {
-				Object.each(JSON.value, function(value, key) {
-					key.indexOf("kernel") != -1 ? kernelBundles = value.BundleIds : userBundles = value.BundleIds;
-				});
-				Explorer.createBundleOverview(responseJson.value, kernelBundles, userBundles);
-			}
-		}).send();
-	},
-
-	/**
-	 * Gets the coordinates for the next bundle
-	 * 
-	 * @param i (Number) - The iterator of the bundles loop
-	 * @returns (Object) - The x and y coordinates
-	 */
-	getNextCoords : function(i) {
-		if (i == 0) {
-			this.xRefactor = 0;
-			this.yRefactor = 0;
-		}
-		var xColWidth = 360, yColHeight = 450;
-
-		// Re-factoring is to set the new x & y values for a new column
-		i > 0 && i % 15 == 0 ? this.xRefactor = this.xRefactor + xColWidth : this.xRefactor;
-		i > 0 && i % 15 == 0 ? this.yRefactor = this.yRefactor - yColHeight : this.yRefactor;
-
-		// Set x & y coordinates
-		var x = 3 + this.xRefactor;
-		var y = (i * 30) + this.yRefactor;
-
-		return {
-			"x" : x,
-			"y" : y
-		};
-	},
-
-	/**
-	 * Sets the bundles region
-	 * 
-	 * @param kernelIds - List of kernel bundle Ids
-	 * @param userIds - List of user bundle Ids
-	 * @param bundle (Object) - A single bundle objext
-	 * @returns (Object) - returns the bundle
-	 */
-	setBundleRegion : function(kernelIds, userIds, bundle) {
-		if (Object.contains(kernelIds, bundle.Identifier)) {
-			bundle.Region = "Kernel";
-		} else if (Object.contains(userIds, bundle.Identifier)) {
-			bundle.Region = "User";
-		} else {
-			bundle.Region = "";
-		}
-
-		return bundle;
-	},
-
-	/**
-	 * Creates the starting Overview perspective.
-	 * 
-	 * @param bundleObj (Object) - Main JS object from JSON
-	 */
-	createBundleOverview : function(bundleObj, kernelIds, userIds) {
-		var i = 0;
-		this.arrows = new Object();
-		this.bundles = new Object();
-		this.bundles.widest = 0;
-		Object.each(bundleObj, function(value, key) {
-			var coords = this.getNextCoords(i);
-			var bundle = this.setBundleRegion(kernelIds, userIds, value);
-
-			this.bundles[key] = {
-				"key" : key,
-				"visual" : this.createBundle(bundle, coords['x'], coords['y']),
-				"bundle" : bundle,
-				"service" : {
-					"serviceState" : "",
-					"properties" : null
-				}
-			};
-			
-			this.bundles.lastAdded = this.bundles[key];
-			if(this.bundles[key].visual.rect.attrs.width > this.bundles.widest){
-				this.bundles.widest = this.bundles[key].visual.rect.attrs.width;
-			}
-
-			// Add tooltip
-			var tooltipTxt =  "<strong>Identifier:</strong> " + bundle.Identifier + "<br />"
-							+ "<strong>SymbolicName:</strong> " + bundle.SymbolicName + "<br />"
-							+ "<strong>Version:</strong> " + bundle.Version + "<br />"
-							+ "<strong>Region:</strong> " + bundle.Region + " <br />"
-							+ "<strong>State:</strong> " + bundle.State + "<br />"
-							+ "<strong>Location:</strong> " + bundle.Location + "<br />";
-			util.tooltip(this.bundles[key].visual['text'].node, tooltipTxt);
-
-			// Add event handlers
-			this.bundles[key].visual['set'].dblclick(function() {
-				new LayoutManager(this.bundles, key, this.arrows);
-			}, this);
-
-			i++;
-		}, this);
-
-		this.resizeCanvas();
-		this.go();
-	},
-
-	/**
-	 * Resizes canvas depending on width of last bundle (inc. col width) For overview only.
-	 */
-	resizeCanvas : function() {
-		if (Object.getLength(this.bundles) > 0){
-			var lastBox = this.bundles.lastAdded.visual['set'].getBBox();
-			this.canvas.setSize(lastBox.x + this.bundles.widest + 10, this.canvas.height);
-		}
-	},
-
-	/**
-	 * Creates and returns the Raphael set of the bundle
-	 * 
-	 * @param bundle (Object) - JS object of bundle info
-	 * @param x (Number) - x coordinate
-	 * @param y (Number) - y coordinate
-	 * @returns (Object) - The raphael set and separate rect element
-	 */
-	createBundle : function(bundle, x, y) {
-		var bundleBgHeight = 25, xMargin = 10;
-
-		// Set up raphael set
-		var st = this.canvas.set();
-
-		// Add to raphael set, rect and text
-		var rect = this.createBundleBg(x, y, 1, bundleBgHeight, 5);
-		var text = this.createTextObj(x, xMargin, y, bundleBgHeight / 2, this.getBundleText(bundle));
-		rect.attr("width", text.getBBox().width + 2 * xMargin);
-
-		st.push(text, rect);
-
-		return {
-			'set' : st,
-			'rect' : rect,
-			'text' : text
-		};
-	},
-
-	/**
-	 * Creates and returns the Raphael object of a rect
-	 * 
-	 * @param x (Number) - x coordinate
-	 * @param y (Number) - y coordinate
-	 * @param width (Number) - width in pixels
-	 * @param height (Number) - height in pixels
-	 * @param cornerRadius (Number) - Radius for rounded corner
-	 * @returns (Raphael Object) - a rect with a fill and stroke
-	 */
-	createBundleBg : function(x, y, width, height, cornerRadius) {
-		return this.canvas.rect(x, y, width, height, cornerRadius).attr({
-			fill : "90-#dfdfdf-#fff",
-			stroke : "#ccc"
-		});
-	},
-
-	/**
-	 * Creates the text node and returns the Raphael object
-	 * 
-	 * @param x (Number) - The x coordinate to position at
-	 * @param xMargin (Number) - The x offset
-	 * @param y (Number) - The y coordinate to position at
-	 * @param yMargin (Number) - The y offset
-	 * @param text (String) - The text to add to the element
-	 * @returns (Raphael Object)
-	 */
-	createTextObj : function(x, xMargin, y, yMargin, text) {
-		return this.canvas.text(x + xMargin, y + yMargin, text).attr({
-			"text-anchor" : "start",
-			"font" : "10px Arial"
-		});
-	},
-
-	/**
-	 * @param bundle (object) - JS object from JSON of single bundle
-	 * @return (string) - The full bundle name of SymbolicName + Version + ID
-	 */
-	getBundleText : function(bundle) {
-		return bundle.SymbolicName + " " + bundle.Version + " " + bundle.Identifier;
-	}
 };

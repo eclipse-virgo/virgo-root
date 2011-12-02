@@ -80,17 +80,13 @@ var Util = function(){
 	 * @param callback
 	 * @param formatter
 	 */
-	this.doBulkQuery = function(query, callback, formatter){
+	this.doBulkQuery = function(query, callback){
 		new Request.JSON({
 			url: this.getCurrentHost() + '/jolokia',
 			data: JSON.encode(query),
 			urlEncoded: false,
 			onSuccess: function (response) {
-				if(formatter){
-					callback(formatter(response));
-				} else {
-					callback(response);
-				}
+				callback(response);
 			}
 		}).send();
 	};
@@ -120,17 +116,17 @@ var Util = function(){
 			div.appendText('');
 			document.childNodes[1].appendChild(div);
 			div.setProperty('id', 'tooltip');
-			div.set("style","display: none;");
+			div.set('style','display: none;');
 		}
 		
 		el.onmouseover = function(e) {
-			$("tooltip").empty();
-			$("tooltip").set('html',text);
-			$("tooltip").set("styles",{"display": "block", "top": (e.pageY+10) + "px", "left": e.pageX + "px"});
+			$('tooltip').empty();
+			$('tooltip').set('html', text);
+			$('tooltip').set('styles', {"display": "block", "top": (e.pageY+10) + "px", "left": e.pageX + "px"});
 		};
 		
 		el.onmouseout = function(){
-			$("tooltip").set("styles", {"display": "none"});
+			$('tooltip').set('styles', {"display": "none"});
 		};
 	};
 };
@@ -213,30 +209,32 @@ var Server = function(){
 	 */
 	this.getServerOverview = function(callback){
 		var request = [{
-				"type": "version"
-			},{
-				"mbean":"java.lang:type=OperatingSystem",
-				"attribute":"Name",
-				"type":"READ"
-			},{
-				"mbean":"java.lang:type=OperatingSystem",
-				"attribute":"Version",
-				"type":"READ"
-			},{
-				"mbean":"java.lang:type=Runtime",
-				"attribute":"VmVendor",
-				"type":"READ"
-			},{
-				"mbean":"java.lang:type=Runtime",
-				"attribute":"VmName",
-				"type":"READ"
-			},{
-				"mbean":"java.lang:type=Runtime",
-				"attribute":"VmVersion",
-				"type":"READ"
-			}];
+			"type" : "version"
+		},{
+			"mbean" : "java.lang:type=OperatingSystem",
+			"attribute" : "Name",
+			"type" : "READ"
+		},{
+			"mbean" : "java.lang:type=OperatingSystem",
+			"attribute" : "Version",
+			"type" : "READ"
+		},{
+			"mbean" : "java.lang:type=Runtime",
+			"attribute" : "VmVendor",
+			"type" : "READ"
+		},{
+			"mbean" : "java.lang:type=Runtime",
+			"attribute" : "VmName",
+			"type" : "READ"
+		},{
+			"mbean" : "java.lang:type=Runtime",
+			"attribute" : "VmVersion",
+			"type" : "READ"
+		}];
 		
-		util.doBulkQuery(request, callback, this.formatter); 
+		util.doBulkQuery(request, function(response) {
+			callback(this.formatter(response));
+		}.bind(this)); 
 	};
 	
 	/* **************** START PRIVATE METHODS **************** */

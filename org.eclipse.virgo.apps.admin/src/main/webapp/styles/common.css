@@ -201,6 +201,10 @@ a:active, a.active {
     background: transparent url(../images/button-cap-right-white.png) no-repeat;
 }
 
+#navigation .selected-navigation a {
+	color: #0095CA;
+}
+
 /*
  * SPINNER STYLES
  */
