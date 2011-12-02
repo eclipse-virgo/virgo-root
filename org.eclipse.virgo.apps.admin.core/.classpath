@@ -42,5 +42,6 @@
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.BUILD-20111031165127/org.eclipse.virgo.util.io-3.1.0.BUILD-20111031165127.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.1.0.BUILD-20111031165127/org.eclipse.virgo.util.osgi.manifest-3.1.0.BUILD-20111031165127.jar"/>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.artifact/3.1.0.D-20111202140150/org.eclipse.virgo.kernel.artifact-3.1.0.D-20111202140150.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
