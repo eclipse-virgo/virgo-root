@@ -165,10 +165,6 @@ a:active, a.active {
     width: 12px;
 }
 
-#navigation .selected-navigation a {
-	color: #0095CA;
-}
-
 #navigation-left-curve {
 	background: transparent url(../images/menu-curve-left.png) no-repeat top left;
 	height: 26px;
@@ -179,6 +175,10 @@ a:active, a.active {
 	background: transparent url(../images/menu-curve-right.png) no-repeat top right;
 	height: 26px;
 	width: 30px;
+}
+
+#navigation .selected-navigation a {
+	color: #0095CA !important;
 }
 
 #navigation li > * {
@@ -402,16 +402,13 @@ td {
 	vertical-align: top;
 }
 
-.button:hover > .button-text {
+.button:hover > div {
+	background: #FFFFFF;
 	color: #002F5E;
 }
 
 .button-selected > .button-text{
-	color: #0095CA;
-}
-
-.button:hover > div {
-	background: #FFFFFF;
+	color: #0095CA !important;
 }
 
 /*
