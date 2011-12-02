@@ -116,17 +116,17 @@ var Util = function(){
 			div.appendText('');
 			document.childNodes[1].appendChild(div);
 			div.setProperty('id', 'tooltip');
-			div.set("style","display: none;");
+			div.set('style','display: none;');
 		}
 		
 		el.onmouseover = function(e) {
-			$("tooltip").empty();
-			$("tooltip").set('html',text);
-			$("tooltip").set("styles",{"display": "block", "top": (e.pageY+10) + "px", "left": e.pageX + "px"});
+			$('tooltip').empty();
+			$('tooltip').set('html', text);
+			$('tooltip').set('styles', {"display": "block", "top": (e.pageY+10) + "px", "left": e.pageX + "px"});
 		};
 		
 		el.onmouseout = function(){
-			$("tooltip").set("styles", {"display": "none"});
+			$('tooltip').set('styles', {"display": "none"});
 		};
 	};
 };

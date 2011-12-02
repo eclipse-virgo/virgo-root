@@ -117,20 +117,20 @@ var GeminiDataSource = function(){
 	};
 	
 	this.processPackages = function(id, imports, exports) {
-		imports.each(function(package) {
-			if(this.packages[package]){
-				this.packages[package].importers.push(id);
+		imports.each(function(packageKey) {
+			if(this.packages[packageKey]){
+				this.packages[packageKey].importers.push(id);
 			} else {
-				var nameAndVersion = package.split(';');
-				this.packages[package] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [id], exporters : []};
+				var nameAndVersion = packageKey.split(';');
+				this.packages[packageKey] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [id], exporters : []};
 			}
 		}, this);
-		exports.each(function(package) {
-			if(this.packages[package]){
-				this.packages[package].exporters.push(id);
+		exports.each(function(packageKey) {
+			if(this.packages[packageKey]){
+				this.packages[packageKey].exporters.push(id);
 			} else {
-				var nameAndVersion = package.split(';');
-				this.packages[package] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [], exporters : [id]};
+				var nameAndVersion = packageKey.split(';');
+				this.packages[packageKey] = {name : nameAndVersion[0], version : nameAndVersion[1], importers : [], exporters : [id]};
 			}
 		}, this);
 	};
@@ -142,26 +142,51 @@ var GeminiDataSource = function(){
 		$('bundle-table').retrieve('HtmlTable').selectRow($('bundle-' + bundleId));
 	};
 	
+	// ****** BUNDLES VIEW ****** //
+	
 	this.getBundleRelationships = function(bundleId){
 		var bundle = this.bundles[bundleId];
 		var providers = [];
 		var requirers = [];
-		bundle.importedPackages.each(function(package){
-			this.packages[package].exporters.each(function(exporter){
-				providers.push({'bundle' : this.bundles[exporter], 'info' : this.getPackageInfo, 'infoKey' : package, 'tooltip' : 'Package: ' + package});
+		bundle.importedPackages.each(function(packageKey){
+			this.packages[packageKey].exporters.each(function(exporter){
+				providers.push({'bundle' : this.bundles[exporter], 'info' : this.getPackageInfo, 'infoKey' : packageKey, 'tooltip' : 'Package: ' + packageKey});
 			}, this);
 		}, this);
-		bundle.exportedPackages.each(function(package){
-			this.packages[package].importers.each(function(importer){
-				requirers.push({'bundle' : this.bundles[importer], 'info' : this.getPackageInfo, 'infoKey' : package, 'tooltip' : 'Package: ' + package});
+		bundle.exportedPackages.each(function(packageKey){
+			this.packages[packageKey].importers.each(function(importer){
+				requirers.push({'bundle' : this.bundles[importer], 'info' : this.getPackageInfo, 'infoKey' : packageKey, 'tooltip' : 'Package: ' + packageKey});
 			}, this);
 		}, this);
 		return [providers, requirers];
 	};
 	
-	this.getPackageInfo = function(packageKey) {
-		return 'testing package ' + packageKey;
-	};
+	this.getPackageInfo = function(packageKey, callBack) {
+		var nameAndVersion = packageKey.split(';');
+		var packageRequest = [{
+			"mbean" : "osgi.core:type=packageState,version=1.5",
+			"operation" : "isRemovalPending",
+			"arguments" : [nameAndVersion[0], nameAndVersion[1]],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=packageState,version=1.5",
+			"operation" : "getImportingBundles",
+			"arguments" : [nameAndVersion[0], nameAndVersion[1]],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=packageState,version=1.5",
+			"operation" : "getExportingBundles",
+			"arguments" : [nameAndVersion[0], nameAndVersion[1]],
+			"type" : "exec"
+		}];
+		util.doBulkQuery(packageRequest, function(response) {
+		console.log(this.packages);
+		console.log(response);
+			callBack([response[0].value, response[1].value, response[2].value]);
+		}.bind(this)); 
+	}.bind(this);
+	
+	// ****** SERVICES VIEW ****** //
 	
 	this.getServiceRelationships = function(bundleId) {
 		var bundle = this.bundles[bundleId];
@@ -184,14 +209,49 @@ var GeminiDataSource = function(){
 		return [providers, requirers];
 	};
 	
-	this.getServiceInfo = function(serviceId) {
-		return 'testing service ' + serviceId;
-	};
+	this.getServiceInfo = function(serviceId, callBack) {
+		var serviceRequest = [{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getProperties",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getUsingBundles",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getObjectClass",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		},{
+			"mbean" : "osgi.core:type=serviceState,version=1.5",
+			"operation" : "getBundleIdentifier",
+			"arguments" : [serviceId],
+			"type" : "exec"
+		}];
+		util.doBulkQuery(serviceRequest, function(response) {
+			var content = new Element('ul.infoContent');
+			new Element('li').inject(content).appendText('Service provided by bundle: ' + this.bundles[response[3].value].summary());
+			new Element('li').inject(content).appendText('Objectclass: ' + response[2].value);
+			new Element('li').inject(content).appendText('Properties');
+			var propertiesList = new Element('ul.infoContent').inject(content);
+			Object.each(response[0].value, function(property){
+				new Element('li').inject(propertiesList).appendText(property.Key + ' - ' + property.Value);
+			});
+			new Element('li').inject(content).appendText('Consumers');
+			var consumersList = new Element('ul.infoContent').inject(content);
+			response[1].value.each(function(bundleId){
+				new Element('li').inject(consumersList).appendText(this.bundles[bundleId].summary());
+			}.bind(this));
+			callBack(content);
+		}.bind(this)); 
+	}.bind(this);
 
 };
 
 /**
- *
  * Take a map of bundles to use for generating the display.
  *
  */
@@ -286,22 +346,7 @@ var Layout = function(bundles){
 };
 
 /**
- * this.name - String
- * this.version -String
- * this.region - String
- * this.id - Number
- * this.state - String;
- * this.location - String
- * this.headers - Object of key<String> value<String> pairs 
- * this.isFragment - boolean
- * this.hosts - array of bundlesIds
- * this.fragments = array of bundleIds
- * this.importedPackages - array of Strings 'packageName;packageVersion'
- * this.exportedPackages - array of Strings 'packageName;packageVersion'
- * this.requiredBundles - array of bundleIds
- * this.requiringBundles - array of bundleIds
- * this.providedServices - array of serviceIds
- * this.consumedServices - array of serviceIds
+ * Bundle
  */
 var Bundle = function(name, version, region, id, state, location, headers, isFragment, hosts, fragments, importedPackages, exportedPackages, requiredBundles, requiringBundles, providedServices, consumedServices, dblClickCallback){
 
@@ -402,15 +447,25 @@ var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip
 	this.controlPointOffset = 100;
 
 	this.setCoordinates = function(){
-		this.startPoint = (fromBundle.x) + ',' + (fromBundle.y + fromBundle.boxHeight/2); 
-		this.endPoint = (toBundle.x) + ',' + (toBundle.y - toBundle.boxHeight/2 - 1);	
-		this.startPointControl = (fromBundle.x) + ',' + (fromBundle.y + fromBundle.boxHeight/2 + this.controlPointOffset); 
-		this.endPointControl = (toBundle.x) + ',' + (toBundle.y - toBundle.boxHeight/2 - this.controlPointOffset);
+		this.startPoint = {'x' : fromBundle.x, 'y' : fromBundle.y + fromBundle.boxHeight/2};
+		this.endPoint = {'x' : toBundle.x, 'y' : toBundle.y - toBundle.boxHeight/2};
+		this.startPointControl = {'x' : this.startPoint.x, 'y' : this.startPoint.y + this.controlPointOffset}; 
+		this.endPointControl = {'x' : this.endPoint.x, 'y' : this.endPoint.y - this.controlPointOffset};
+		this.midPoint = this.calculateMidpoint(this.startPoint.x, this.startPoint.y, this.endPoint.x, this.endPoint.y); 
 	};
 	
-	this.setInfoPoint = function() {
-		this.halfLength = this.visual.getTotalLength()/2;
-		this.midPoint = this.visual.getPointAtLength(this.halfLength);
+	this.calculateMidpoint = function(startX, startY, endX, endY){
+		if(startX < endX){
+			var midX = startX + (endX - startX)/2;
+		} else {
+			var midX = endX + (startX - endX)/2;
+		}
+		if(startY < endY){
+			var midY = startY + (endY - startY)/2;
+		} else {
+			var midY = endY + (startY - endY)/2;
+		}
+		return {'x' : midX, 'y' : midY};
 	};
 	
 	this.display = function() {
@@ -424,26 +479,30 @@ var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip
 			this.infoPointText.remove();
 		}
 		this.setCoordinates();
-		this.visual = paper.path('M' + this.startPoint + 'C' + this.startPointControl + ',' + this.endPointControl + ',' + this.endPoint).attr({
+		this.visual = paper.path('M' + this.startPoint.x + ',' + this.startPoint.y + 
+									'C' + this.startPointControl.x + ',' + this.startPointControl.y + 
+									',' + this.endPointControl.x + ',' + this.endPointControl.y + 
+									',' + this.endPoint.x + ',' + this.endPoint.y).attr({
 			'arrow-end' : 'block-wide-long',
 			'stroke-width' : 3,
 			'stroke' : '#002F5E'
-		});
-		
-		this.setInfoPoint();
-		this.infoPoint = paper.ellipse(this.midPoint.x, this.midPoint.y, 12, 8).attr({
-			'fill' : '#002F5E', 
+		}).toBack();
+		this.infoPoint = paper.circle(this.midPoint.x, this.midPoint.y, 10).attr({
+			'fill' : '#BAD9EC', 
 			'stroke' : 'none',
 			'title' : this.tooltip
-		}).rotate(this.midPoint.alpha);
+		});
 		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, '5').attr({
 			'font' : '14px Arial', 
-			'stroke' : '#FFFFFF',
+			'stroke' : '#002F5E',
 			'title' : this.tooltip
-		}).rotate(this.midPoint.alpha - 90);
+		});
 		
 		this.infoPoint.click(function(){this.displayInfoBox()}.bind(this));
 		this.infoPointText.click(function(){this.displayInfoBox()}.bind(this));
+		
+		this.infoPoint.hover(function(){this.glow = this.visual.glow()}, function(){this.glow.remove()}, this, this);
+		this.infoPointText.hover(function(){this.glow = this.visual.glow()}, function(){this.glow.remove()}, this, this);
 	};
 	
 	this.displayInfoBox = function() {
@@ -486,8 +545,18 @@ var InfoBox = function() {
 	
 	this.go = function(contentCallback, key){
 		$('info-box-content').empty();
+		$('info-box-content').appendText('Loading...');
 		this.mask.show();
-		$('info-box-content').appendText(contentCallback(key));
+		contentCallback(key, this.showContent);
+	};
+	
+	this.showContent = function(content) {
+		$('info-box-content').empty();
+		content.inject($('info-box-content'));
+	};
+	
+	this.hide = function() {
+		this.mask.hide();
 	};
 
 };
