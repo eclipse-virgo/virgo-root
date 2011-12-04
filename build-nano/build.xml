@@ -145,31 +145,13 @@
 		
      </target>
     
-    <target name="p2.publish" depends="package" description="Publishes dev repository to build.eclipse.org">
-        
-        <sshexec host="build.eclipse.org" 
-                username="${eclipse.buildId}" 
-                keyfile="${key.file}" 
-                passphrase="${passphrase}"
-                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
-
-        <scp todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}/" 
-                keyfile="${key.file}"
-                passphrase="${passphrase}">
-            <fileset dir="${publishing.dir}"/>
-        </scp>
-        
-    </target>
-    
     <target name="ci.publish.nightly" depends="package" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudson only!">
         
         <delete dir="${nightly.updatesite.dir}"/>
         
         <copy toDir="${nightly.updatesite.dir}">
-            <fileset dir="${publishing.dir}"/>
+            <fileset dir="${repository.dir}"/>
         </copy>
         
     </target>
-
-	
 </project>
