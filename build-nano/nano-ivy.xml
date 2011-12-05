@@ -12,9 +12,9 @@
 	<dependencies>
 		<!-- nano runtime -->	
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.kernel}" conf="nano-runtime->runtime"/>
-        <dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo}" conf="nano-runtime->runtime" />
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo}" conf="nano-runtime->runtime" />
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo}" conf="nano-runtime->runtime" />
+        <dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.shell}" conf="nano-runtime->runtime" />
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.shell}" conf="nano-runtime->runtime" />
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo.shell}" conf="nano-runtime->runtime" />
 		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="nano-runtime->runtime"/>
 		<dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.supportability" rev="${org.eclipse.equinox.console.supportability}" conf="nano-runtime->runtime"/>
