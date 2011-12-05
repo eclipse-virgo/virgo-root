@@ -22,7 +22,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-3.0.0.v201103241009.jar" sourcepath="/WEB_IVY_CACHE/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-sources-3.0.0.v201103241009.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110613/org.eclipse.osgi-3.7.0.v20110613.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110613/org.eclipse.osgi-sources-3.7.0.v20110613.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar" sourcepath="/WEB_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-sources-3.7.1.R37x_v20110808-1106.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/WEB_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-3.0.5.RELEASE.jar" sourcepath="/WEB_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.context/3.0.5.RELEASE/org.springframework.context-3.0.5.RELEASE.jar" sourcepath="/WEB_IVY_CACHE/org.springframework/org.springframework.context/3.0.5.RELEASE/org.springframework.context-sources-3.0.5.RELEASE.jar"/>
@@ -34,13 +34,13 @@
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.io/1.2.1/org.springframework.osgi.io-1.2.1.jar" sourcepath="/WEB_IVY_CACHE/org.springframework.osgi/org.springframework.osgi.io/1.2.1/org.springframework.osgi.io-sources-1.2.1.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/WEB_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.1.0.D-20111202140150/org.eclipse.virgo.kernel.core-3.1.0.D-20111202140150.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer/3.1.0.D-20111202140150/org.eclipse.virgo.kernel.deployer-3.1.0.D-20111202140150.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer.dm/3.1.0.D-20111202140150/org.eclipse.virgo.kernel.deployer.dm-3.1.0.D-20111202140150.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.1.0.D-20111205153601/org.eclipse.virgo.kernel.core-3.1.0.D-20111205153601.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer/3.1.0.D-20111205153601/org.eclipse.virgo.kernel.deployer-3.1.0.D-20111205153601.jar"/>
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer.dm/3.1.0.D-20111205153601/org.eclipse.virgo.kernel.deployer.dm-3.1.0.D-20111205153601.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-1.6.1.jar" sourcepath="/WEB_IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
 	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.aop/3.0.5.RELEASE/org.springframework.aop-3.0.5.RELEASE.jar" sourcepath="/WEB_IVY_CACHE/org.springframework/org.springframework.aop/3.0.5.RELEASE/org.springframework.aop-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111031170115/org.eclipse.virgo.medic-3.1.0.D-20111031170115.jar">
+	<classpathentry kind="var" path="WEB_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-3.1.0.D-20111205152504.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
