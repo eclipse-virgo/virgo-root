@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.core"
       label="%featureName"
-      version="1.0.0"
+      version="@KERNEL.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -26,120 +26,6 @@
          id="org.eclipse.virgo.kernel.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.org.apache.mina.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.org.apache.sshd.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.felix.gogo.command"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.felix.gogo.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.felix.gogo.shell"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.org.aspectj.weaver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.equinox.console.supportability"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.slf4j.bridge"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.slf4j.org.apache.commons.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.springsource.org.aopalliance"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.equinox.region"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.virgo.medic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.virgo.medic.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.equinox.cm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.equinox.event"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="common_resources"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-         
-    <plugin
-         id="scripts"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
+         version="@KERNEL.VERSION@"/>
 
 </feature>

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.springdm"
       label="%featureName"
-      version="1.0.0"
+      version="@SPRING.DM.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -22,24 +22,21 @@
          id="org.springframework.osgi.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="@SPRING.DM.VERSION@"
+         unpack="false"/>
 
    <plugin
          id="org.springframework.osgi.extender"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="@SPRING.DM.VERSION@"
+         unpack="false"/>
 
    <plugin
          id="org.springframework.osgi.io"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="toolingANY.ANY.ANY.org.springframework.osgi.extender"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
+         version="@SPRING.DM.VERSION@"
+         unpack="false"/>
 
 </feature>

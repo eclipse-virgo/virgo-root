@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.virgo.ds_1.0.0.jar" id="org.eclipse.virgo.ds" version="1.0.0">
+   <feature id="org.eclipse.virgo.ds">
       <category name="org.eclipse.virgo.addons"/>
    </feature>
-   <feature url="features/org.eclipse.virgo.p2.provisioning_1.0.0.jar" id="org.eclipse.virgo.p2.provisioning" version="1.0.0">
+   <feature id="org.eclipse.virgo.p2.provisioning">
       <category name="org.eclipse.virgo.addons"/>
    </feature>
-   <feature url="features/org.eclipse.virgo.springdm_1.0.0.jar" id="org.eclipse.virgo.springdm" version="1.0.0">
+   <feature id="org.eclipse.virgo.springdm">
       <category name="org.eclipse.virgo.addons"/>
    </feature>
-   <feature url="features/org.eclipse.gemini.web_1.0.0.jar" id="org.eclipse.gemini.web" version="1.0.0">
+   <feature id="org.eclipse.gemini.web">
       <category name="org.eclipse.virgo.addons"/>
    </feature>
-   <feature url="features/org.eclipse.virgo.util_1.0.0.jar" id="org.eclipse.virgo.util" version="1.0.0">
+   <feature id="org.eclipse.virgo.util">
       <category name="org.eclipse.virgo.addons"/>
    </feature>
    <category-def name="org.eclipse.virgo.addons" label="Eclipse Virgo Add-Ons">

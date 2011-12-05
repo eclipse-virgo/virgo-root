@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.virgo.ds"
+      id="org.eclipse.virgo.medic"
       label="%featureName"
-      version="@EQUINOX.DS.VERSION@"
+      version="@MEDIC.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -19,10 +19,17 @@
    </license>
 
    <plugin
-         id="org.eclipse.equinox.ds"
+         id="org.eclipse.virgo.medic"
          download-size="0"
          install-size="0"
-         version="@EQUINOX.DS.VERSION@"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.virgo.medic.core"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
          unpack="false"/>
 
 </feature>

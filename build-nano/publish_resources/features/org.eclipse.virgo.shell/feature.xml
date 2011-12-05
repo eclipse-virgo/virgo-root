@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.virgo.util"
+      id="org.eclipse.virgo.shell"
       label="%featureName"
-      version="@UTIL.VERSION@"
+      version="1.0.0"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -19,52 +19,45 @@
    </license>
 
    <plugin
-         id="org.eclipse.virgo.util.io"
+         id="com.springsource.org.apache.mina.core"
          download-size="0"
          install-size="0"
-         version="@UTIL.VERSION@"
+         version="@MINA.CORE.VERSION@"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.virgo.util.osgi"
+         id="com.springsource.org.apache.sshd.core"
          download-size="0"
          install-size="0"
-         version="@UTIL.VERSION@"
+         version="@SSHD.CORE.VERSION@"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.virgo.util.common"
+         id="org.apache.felix.gogo.command"
          download-size="0"
          install-size="0"
-         version="@UTIL.VERSION@"
+         version="@FELIX.GOGO.COMMAND.VERSION@"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.virgo.util.jmx"
+         id="org.apache.felix.gogo.runtime"
          download-size="0"
          install-size="0"
-         version="@UTIL.VERSION@"
+         version="@FELIX.GOGO.RUNTIME.VERSION@"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.virgo.util.math"
+         id="org.apache.felix.gogo.shell"
          download-size="0"
          install-size="0"
-         version="@UTIL.VERSION@"
+         version="@FELIX.GOGO.SHELL.VERSION@"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.virgo.util.osgi.manifest"
+         id="org.eclipse.equinox.console.supportability"
          download-size="0"
          install-size="0"
-         version="@UTIL.VERSION@"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.virgo.util.parser.manifest"
-         download-size="0"
-         install-size="0"
-         version="@UTIL.VERSION@"
+         version="@EQUINOX.CONSOLE.VERSION@"
          unpack="false"/>
 
 </feature>

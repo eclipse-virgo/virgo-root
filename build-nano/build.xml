@@ -68,6 +68,53 @@
         <!-- Prepare the features for publishing -->
         <copy todir="${target.dir}/assembly/features" failonerror="false">
 			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
+            <filterset>
+				<filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
+                <filter token="TOMCAT.VERSION" value="${org.apache.tomcat}"/>
+				<filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
+				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
+				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
+				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
+                <filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
+                <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
+				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
+				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
+				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console.supportability}"/>
+				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>
+				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
+                <filter token="CONTENTTYPE.VERSION" value="${org.eclipse.core.contenttype}"/>
+                <filter token="JOBS.VERSION" value="${org.eclipse.core.jobs}"/>
+                <filter token="CORE.VERSION" value="${org.eclipse.core.runtime}"/>
+                <filter token="ECF.VERSION" value="${org.eclipse.ecf}"/>
+                <filter token="ECF.FT.VERSION" value="${org.eclipse.ecf.filetransfer}"/>
+                <filter token="ECF.I.VERSION" value="${org.eclipse.ecf.identity}"/>
+                <filter token="ECF.P.FT.VERSION" value="${org.eclipse.ecf.provider.filetransfer}"/>
+                <filter token="ECF.SSL.VERSION" value="${org.eclipse.ecf.ssl}"/>
+                <filter token="EQUINOX.APP.VERSION" value="${org.eclipse.equinox.app}"/>
+                <filter token="EQUINOX.COMMON.VERSION" value="${org.eclipse.equinox.common}"/>
+                <filter token="EQUINOX.FRKA.VERSION" value="${org.eclipse.equinox.frameworkadmin}"/>
+                <filter token="EQUINOX.FRKA.E.VERSION" value="${org.eclipse.equinox.frameworkadmin.equinox}"/>
+                <filter token="P2.A.R.VERSION" value="${org.eclipse.equinox.p2.artifact.repository}"/>
+                <filter token="P2.CONSOLE.VERSION" value="${org.eclipse.equinox.p2.console}"/>
+                <filter token="P2.CORE.VERSION" value="${org.eclipse.equinox.p2.core}"/>
+                <filter token="P2.DIRECTOR.VERSION" value="${org.eclipse.equinox.p2.director}"/>
+                <filter token="P2.ENGINE.VERSION" value="${org.eclipse.equinox.p2.engine}"/>
+                <filter token="P2.GC.VERSION" value="${org.eclipse.equinox.p2.garbagecollector}"/>
+                <filter token="P2.JP.VERSION" value="${org.eclipse.equinox.p2.jarprocessor}"/>
+                <filter token="P2.METADATA.VERSION" value="${org.eclipse.equinox.p2.metadata}"/>
+                <filter token="P2.M.R.VERSION" value="${org.eclipse.equinox.p2.metadata.repository}"/>
+                <filter token="P2.PUBLISHER.VERSION" value="${org.eclipse.equinox.p2.publisher}"/>
+                <filter token="P2.P.E.VERSION" value="${org.eclipse.equinox.p2.publisher.eclipse}"/>
+                <filter token="P2.REPOSITORY.VERSION" value="${org.eclipse.equinox.p2.repository}"/>
+                <filter token="P2.T.E.VERSION" value="${org.eclipse.equinox.p2.touchpoint.eclipse}"/>
+                <filter token="P2.T.N.VERSION" value="${org.eclipse.equinox.p2.touchpoint.natives}"/>
+                <filter token="P2.T.ECF.VERSION" value="${org.eclipse.equinox.p2.transport.ecf}"/>
+                <filter token="EQUINOX.PFRCS.VERSION" value="${org.eclipse.equinox.preferences}"/>
+                <filter token="EQUINOX.REGISTRY.VERSION" value="${org.eclipse.equinox.registry}"/>
+                <filter token="EQUINOX.SECURITY.VERSION" value="${org.eclipse.equinox.security}"/>
+                <filter token="EQUINOX.SC.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
+                <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
+			</filterset>
 		</copy>
         
         <antcall target="fetch-unzipped-virgo-build-tools"/>
@@ -97,21 +144,15 @@
         
         <antcall target="p2.publish-product">
             <param name="repository" value="${repository.dir}"/>
-            <param name="product.file.location" value="${p2.products.location}/nano/nano.product"/>
+            <param name="product.file.location" value="${p2.products.location}/base/base.product"/>
         </antcall>
-        <echo message="Published nano product to ${repository.dir}."/>
-        
-        <antcall target="p2.publish-product">
-            <param name="repository" value="${repository.dir}"/>
-            <param name="product.file.location" value="${p2.products.location}/nanoweb/nanoweb.product"/>
-        </antcall>
-        <echo message="Published nanoweb product to ${repository.dir}."/>
+        <echo message="Published base product to ${repository.dir}."/>
         
 		<antcall target="p2.publish-product">
             <param name="repository" value="${repository.dir}"/>
-            <param name="product.file.location" value="${p2.products.location}/nanoweb-with-p2/nanoweb-with-p2.product"/>
+            <param name="product.file.location" value="${p2.products.location}/nano/nano.product"/>
         </antcall>
-        <echo message="Published nanoweb-with-p2 product to ${repository.dir}."/>
+        <echo message="Published nano product to ${repository.dir}."/>
    
         <antcall target="p2.publish-category">
             <param name="repository" value="${repository.dir}"/>
@@ -122,7 +163,7 @@
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${repository.dir}"/>
             <param name="destination" value="${package.output.dir}"/>
-            <param name="product.iu" value="nanoweb-with-p2.product"/>
+            <param name="product.iu" value="nano.product"/>
         </antcall>
         <echo message="Installed the largest Nano flavor for distribution purposes."/>
         

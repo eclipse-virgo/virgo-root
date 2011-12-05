@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.gemini.web"
       label="%featureName"
-      version="1.0.0"
+      version="@GEMINI.WEB@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -22,36 +22,27 @@
          id="org.eclipse.gemini.web.tomcat"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="@GEMINI.WEB@"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.gemini.web.extender"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="@GEMINI.WEB@"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.gemini.web.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
+         version="@GEMINI.WEB@"
+         unpack="false"/>
    <plugin
-         id="toolingANY.ANY.ANY.org.eclipse.gemini.web.tomcat"
+         id="com.springsource.org.apache.jasper"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="toolingANY.ANY.ANY.org.eclipse.gemini.web.extender"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="toolingANY.ANY.ANY.org.eclipse.gemini.web.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
+         version="@TOMCAT.VERSION@"
+         unpack="false"/>
 
 </feature>
