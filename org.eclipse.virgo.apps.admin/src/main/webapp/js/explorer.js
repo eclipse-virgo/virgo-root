@@ -29,7 +29,7 @@ var GeminiDataSource = function(){
 
 	this.fullRequest = [{
 		"mbean" : "osgi.core:type=bundleState,version=1.5",
-		"operation" : "listBundles",
+		"operation" : "listBundles()",
 		"arguments" : [],
 		"type" : "exec"
 	},{

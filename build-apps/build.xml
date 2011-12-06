@@ -3,7 +3,6 @@
 
 	<path id="unit.test.bundles">
 		<pathelement location="../org.eclipse.virgo.apps.splash"/>
-		<pathelement location="../org.eclipse.virgo.apps.admin.jmx"/>
 		<pathelement location="../org.eclipse.virgo.apps.admin"/>
 		<pathelement location="../org.eclipse.virgo.apps.repository.core"/>
 		<pathelement location="../org.eclipse.virgo.apps.repository.web"/>
