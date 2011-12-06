@@ -40,19 +40,4 @@
 			    </ivy:publish>
         </target>
 
-		<target name="publish-maven" depends="create.pom, ivy.init, maven.init, resolve">
-			<maven:deploy file="${par.output.file}">
-				<remoteRepository url="s3://${publish.bucket}/maven/bundles/${adjusted.release.type}">
-					<authentication username="${accessKey}" passphrase="${secretKey}"/>
-				</remoteRepository>
-				<pom file="${pom.output.file}"/>
-			</maven:deploy>
-		</target>
-
-		<target name="publish-maven-local" depends="create.pom, snapshot.pom, maven.init">
-			<maven:install file="${par.output.file}">
-				<pom file="${pom.output.file}"/>				
-			</maven:install>
-		</target>
-
 </project>

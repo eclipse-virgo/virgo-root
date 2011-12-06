@@ -27,7 +27,7 @@
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.springframework/org.springframework.test/3.0.5.RELEASE/org.springframework.test-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
-	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.0.v20110613/org.eclipse.osgi-3.7.0.v20110613.jar"/>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.apps.repository.core"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
