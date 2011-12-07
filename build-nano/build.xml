@@ -123,45 +123,45 @@
         <property name="p2.categories.location" value="${basedir}/publish_resources/categories"/>
         
         <antcall target="p2.publish-binary-chmod">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${common.resources.location}"/>
             <param name="chmod.args" value="org.eclipse.virgo.kernel.jmxremote.access.properties@/config#600"/>
         </antcall>
-        <echo message="Published the commons resources to ${repository.dir}."/>
+        <echo message="Published the commons resources to ${p2.repository.dir}."/>
         
         <antcall target="p2.publish-binary-chmod">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${scripts.location}"/>
             <param name="chmod.args" value="startup.sh@/bin#755,dmk.sh@/bin#755,checkJava.sh@/bin#755,jconsole.sh@/bin#755,setupClasspath.sh@/bin#755,shutdown.sh@/bin#755"/>
         </antcall>
-        <echo message="Published the scripts to ${repository.dir}."/>
+        <echo message="Published the scripts to ${p2.repository.dir}."/>
         
         <antcall target="p2.publish-bundles-features">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${target.dir}/assembly"/>
         </antcall>
-        <echo message="Published bundles and features to ${repository.dir}."/>
+        <echo message="Published bundles and features to ${p2.repository.dir}."/>
         
         <antcall target="p2.publish-product">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="product.file.location" value="${p2.products.location}/base/base.product"/>
         </antcall>
-        <echo message="Published base product to ${repository.dir}."/>
+        <echo message="Published base product to ${p2.repository.dir}."/>
         
 		<antcall target="p2.publish-product">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="product.file.location" value="${p2.products.location}/nano/nano.product"/>
         </antcall>
-        <echo message="Published nano product to ${repository.dir}."/>
+        <echo message="Published nano product to ${p2.repository.dir}."/>
    
         <antcall target="p2.publish-category">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="category.file.location" value="${p2.categories.location}/org.eclipse.virgo.categories/category.xml"/>
         </antcall>
         <echo message="Published Virgo Add-Ons feature category in the p2 repository" />
 
         <antcall target="p2.install-virgo-product">
-            <param name="repository" value="${repository.dir}"/>
+            <param name="repository" value="${p2.repository.dir}"/>
             <param name="destination" value="${package.output.dir}"/>
             <param name="product.iu" value="nano.product"/>
         </antcall>
@@ -176,7 +176,7 @@
 			</zipfileset>
 		</zip>
         <zip destfile="${artifacts.dir}\${natural.name}-updatesite-${bundle.version}.zip">
-			<zipfileset dir="${repository.dir}"/>
+			<zipfileset dir="${p2.repository.dir}"/>
 		</zip>
         
         <delete dir="${target.dir}/assembly" quiet="true"/>
@@ -191,7 +191,7 @@
         <delete dir="${nightly.updatesite.dir}"/>
         
         <copy toDir="${nightly.updatesite.dir}">
-            <fileset dir="${repository.dir}"/>
+            <fileset dir="${p2.repository.dir}"/>
         </copy>
         
     </target>
