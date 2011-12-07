@@ -31,6 +31,7 @@
 		<plugin id="org.eclipse.osgi.services" autoStart="true" />
 		<plugin id="org.eclipse.virgo.medic" autoStart="true" startLevel="3"/>
 		<plugin id="org.eclipse.virgo.medic.core" autoStart="true" startLevel="3"/>
+		<plugin id="org.eclipse.virgo.util.osgi" autoStart="true"/>
 		
 		<property name="osgi.compatibility.bootdelegation" value="false"/>
 		<property name="equinox.use.ds" value="true"/>
