@@ -22,9 +22,9 @@
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.command}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo.shell}" conf="test->runtime"/>
 		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="test->runtime" />
         <dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="test->runtime" />
 		
