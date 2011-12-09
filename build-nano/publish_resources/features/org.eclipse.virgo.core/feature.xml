@@ -26,6 +26,7 @@
          id="org.eclipse.virgo.kernel.core"
          download-size="0"
          install-size="0"
-         version="@KERNEL.VERSION@"/>
+         version="@KERNEL.VERSION@"
+         unpack="false"/>
 
 </feature>
