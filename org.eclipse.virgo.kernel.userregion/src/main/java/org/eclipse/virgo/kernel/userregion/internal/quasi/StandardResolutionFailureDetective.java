@@ -32,7 +32,6 @@ import org.eclipse.virgo.kernel.userregion.internal.equinox.UsesAnalyser.Analyse
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
-
 /**
  * Helper class that analyses resolution failures and generates a human-readable failure description.
  * <p/>
@@ -98,12 +97,15 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
 
     }
 
+    /**
+     * List all the resolver errors in the given state starting with those of the given bundle.
+     */
     private ResolverError[] gatherResolverErrors(BundleDescription bundleDescription, State state) {
         Set<ResolverError> resolverErrors = new LinkedHashSet<ResolverError>();
         Collections.addAll(resolverErrors, state.getResolverErrors(bundleDescription));
         BundleDescription[] bundles = state.getBundles();
         for (BundleDescription bd : bundles) {
-            if (!bd.isResolved()) {
+            if (bd != bundleDescription && !bd.isResolved()) {
                 Collections.addAll(resolverErrors, state.getResolverErrors(bd));
             }
         }
@@ -147,10 +149,10 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
         if (s2.isEmpty()) {
             return s1.length();
         }
-        
+
         final int s2len = s2.length();
         final int s1len = s1.length();
-      
+
         int d[][] = new int[s1len + 1][s2len + 1];
 
         for (int i = 0; i <= s1len; i++) {
@@ -212,7 +214,7 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
 
     private void formatResolverErrorUnsatisfiedConstraint(ResolverError resolverError, StringBuilder sb) {
         VersionConstraint unsatisfiedConstraint = resolverError.getUnsatisfiedConstraint();
-        if(unsatisfiedConstraint != null){
+        if (unsatisfiedConstraint != null) {
             formatMissingConstraintWithAttributes(resolverError, sb, unsatisfiedConstraint);
         } else {
             sb.append(" In bundle <").append(resolverError.getBundle()).append(">");
@@ -236,12 +238,12 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
     private void formatUsesConflict(ResolverError resolverError, StringBuilder sb, State state) {
         VersionConstraint unsatisfiedConstraint = resolverError.getUnsatisfiedConstraint();
         BundleDescription bundle = resolverError.getBundle();
-        sb.append("Uses violation: <").append(unsatisfiedConstraint)
-        .append("> in bundle <").append(bundle).append("[").append(bundle.getBundleId()).append("]").append(">\n");
-        
-        AnalysedUsesConflict[] usesConflicts = this.usesAnalyser.getUsesConflicts(state, resolverError);            
-        if (usesConflicts==null || usesConflicts.length==0) {
-            indent(sb,3);
+        sb.append("Uses violation: <").append(unsatisfiedConstraint).append("> in bundle <").append(bundle).append("[").append(bundle.getBundleId()).append(
+            "]").append(">\n");
+
+        AnalysedUsesConflict[] usesConflicts = this.usesAnalyser.getUsesConflicts(state, resolverError);
+        if (usesConflicts == null || usesConflicts.length == 0) {
+            indent(sb, 3);
             sb.append(" Resolver reported uses conflict for import");
             formatConstraintAttributes(sb, unsatisfiedConstraint);
         } else {
@@ -251,7 +253,8 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
 
     private void formatMissingConstraintWithAttributes(ResolverError resolverError, StringBuilder sb, VersionConstraint unsatisfiedConstraint) {
         sb.append(" Caused by missing constraint in bundle <").append(resolverError.getBundle()).append(">\n");
-        indent(sb, 3); sb.append(" constraint: <").append(unsatisfiedConstraint).append(">");
+        indent(sb, 3);
+        sb.append(" constraint: <").append(unsatisfiedConstraint).append(">");
 
         formatConstraintAttributes(sb, unsatisfiedConstraint);
     }
@@ -260,20 +263,21 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
         if (unsatisfiedConstraint instanceof ImportPackageSpecification) {
             ImportPackageSpecification importPackageSpecification = (ImportPackageSpecification) unsatisfiedConstraint;
             formatConstrainedBundleAttributes(sb, importPackageSpecification);
-            Map<?,?> attributes = importPackageSpecification.getAttributes();
-            if (attributes!=null && !attributes.isEmpty()) {
-                sb.append("\n"); 
-                indent(sb, 3); sb.append("with attributes ").append(attributes).append("\n");
+            Map<?, ?> attributes = importPackageSpecification.getAttributes();
+            if (attributes != null && !attributes.isEmpty()) {
+                sb.append("\n");
+                indent(sb, 3);
+                sb.append("with attributes ").append(attributes).append("\n");
             }
         }
     }
-    
+
     private void formatConstrainedBundleAttributes(StringBuilder sb, ImportPackageSpecification importPackageSpecification) {
         String bundleSymbolicName = importPackageSpecification.getBundleSymbolicName();
-        if (null!=bundleSymbolicName) {
+        if (null != bundleSymbolicName) {
             sb.append(" constrained to bundle <").append(bundleSymbolicName).append(">");
             VersionRange versionRange = importPackageSpecification.getBundleVersionRange();
-            if (null!=versionRange) {
+            if (null != versionRange) {
                 sb.append(" constrained bundle version range \"").append(versionRange).append("\"");
             }
         }
@@ -284,7 +288,8 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
         sb.append("Found conflicts:\n");
         for (AnalysedUsesConflict conflict : usesConflicts) {
             for (String line : conflict.getConflictStatement()) {
-                indent(sb,4); sb.append(line).append("\n");
+                indent(sb, 4);
+                sb.append(line).append("\n");
             }
         }
     }
@@ -306,10 +311,10 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
             sb.append(resolverError.getUnsatisfiedConstraint());
         }
     }
-    
+
     private List<BundleDescription> findPossibleHosts(VersionConstraint hostSpecification, State state) {
         List<BundleDescription> possibleHosts = new ArrayList<BundleDescription>();
-                
+
         BundleDescription[] bundles = state.getBundles(hostSpecification.getName());
         if (bundles != null) {
             for (BundleDescription bundle : bundles) {
@@ -318,10 +323,9 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
                 }
             }
         }
-        
+
         return possibleHosts;
     }
-
 
     private void formatConstraint(VersionConstraint versionConstraint, StringBuilder sb) {
         String constraintInformation = versionConstraint.toString();
@@ -353,55 +357,75 @@ public final class StandardResolutionFailureDetective implements ResolutionFailu
             out.append("    ");
         }
     }
-    
+
     /**
-     * Provides a human readable string for any type of equinox resolver error.
-     * Errors are defined in {@link org.eclipse.osgi.service.resolver.ResolverError} 
+     * Provides a human readable string for any type of equinox resolver error. Errors are defined in
+     * {@link org.eclipse.osgi.service.resolver.ResolverError}
      * 
      * @param type
      * @return
      */
     private String getTypeDescription(int type) {
-        switch(type){
-            case ResolverError.MISSING_IMPORT_PACKAGE: return "An Import-Package could not be resolved.";
-       
-            case ResolverError.MISSING_REQUIRE_BUNDLE: return "A Require-Bundle could not be resolved.";
+        switch (type) {
+            case ResolverError.MISSING_IMPORT_PACKAGE:
+                return "An Import-Package could not be resolved.";
 
-            case ResolverError.MISSING_FRAGMENT_HOST: return "A Fragment-Host could not be resolved.";
+            case ResolverError.MISSING_REQUIRE_BUNDLE:
+                return "A Require-Bundle could not be resolved.";
 
-            case ResolverError.SINGLETON_SELECTION: return "The bundle could not be resolved because another singleton bundle was selected.";
+            case ResolverError.MISSING_FRAGMENT_HOST:
+                return "A Fragment-Host could not be resolved.";
 
-            case ResolverError.FRAGMENT_CONFLICT: return "The fragment could not be resolved because of a constraint conflict with a host, possibly because the host is already resolved.";
+            case ResolverError.SINGLETON_SELECTION:
+                return "The bundle could not be resolved because another singleton bundle was selected.";
 
-            case ResolverError.IMPORT_PACKAGE_USES_CONFLICT: return "An Import-Package could not be resolved because of a uses directive conflict.";
-            
-            case ResolverError.REQUIRE_BUNDLE_USES_CONFLICT: return "A Require-Bundle could not be resolved because of a uses directive conflict.";
-          
-            case ResolverError.IMPORT_PACKAGE_PERMISSION: return "An Import-Package could not be resolved because the importing bundle does not have the correct permissions to import the package.";
+            case ResolverError.FRAGMENT_CONFLICT:
+                return "The fragment could not be resolved because of a constraint conflict with a host, possibly because the host is already resolved.";
 
-            case ResolverError.EXPORT_PACKAGE_PERMISSION: return "An Import-Package could not be resolved because no exporting bundle has the correct permissions to export the package.";
+            case ResolverError.IMPORT_PACKAGE_USES_CONFLICT:
+                return "An Import-Package could not be resolved because of a uses directive conflict.";
 
-            case ResolverError.REQUIRE_BUNDLE_PERMISSION: return "A Require-Bundle could not be resolved because the requiring bundle does not have the correct permissions to require the bundle.";
+            case ResolverError.REQUIRE_BUNDLE_USES_CONFLICT:
+                return "A Require-Bundle could not be resolved because of a uses directive conflict.";
 
-            case ResolverError.PROVIDE_BUNDLE_PERMISSION: return "A Require-Bundle could not be resolved because no bundle with the required symbolic name has the correct permissions to provied the required symbolic name.";
+            case ResolverError.IMPORT_PACKAGE_PERMISSION:
+                return "An Import-Package could not be resolved because the importing bundle does not have the correct permissions to import the package.";
 
-            case ResolverError.HOST_BUNDLE_PERMISSION: return "A Fragment-Host could not be resolved because no bundle with the required symbolic name has the correct permissions to host a fragment.";
+            case ResolverError.EXPORT_PACKAGE_PERMISSION:
+                return "An Import-Package could not be resolved because no exporting bundle has the correct permissions to export the package.";
 
-            case ResolverError.FRAGMENT_BUNDLE_PERMISSION: return "A Fragment-Host could not be resolved because the fragment bundle does not have the correct permissions to be a fragment.";
+            case ResolverError.REQUIRE_BUNDLE_PERMISSION:
+                return "A Require-Bundle could not be resolved because the requiring bundle does not have the correct permissions to require the bundle.";
 
-            case ResolverError.PLATFORM_FILTER: return "A bundle could not be resolved because a platform filter did not match the runtime environment.";
+            case ResolverError.PROVIDE_BUNDLE_PERMISSION:
+                return "A Require-Bundle could not be resolved because no bundle with the required symbolic name has the correct permissions to provied the required symbolic name.";
 
-            case ResolverError.MISSING_EXECUTION_ENVIRONMENT: return "A bundle could not be resolved because the required execution enviroment did not match the runtime environment.";
+            case ResolverError.HOST_BUNDLE_PERMISSION:
+                return "A Fragment-Host could not be resolved because no bundle with the required symbolic name has the correct permissions to host a fragment.";
 
-            case ResolverError.MISSING_GENERIC_CAPABILITY: return "A bundle could not be resolved because the required generic capability could not be resolved.";
+            case ResolverError.FRAGMENT_BUNDLE_PERMISSION:
+                return "A Fragment-Host could not be resolved because the fragment bundle does not have the correct permissions to be a fragment.";
 
-            case ResolverError.NO_NATIVECODE_MATCH: return "A bundle could not be resolved because no match was found for the native code specification.";
+            case ResolverError.PLATFORM_FILTER:
+                return "A bundle could not be resolved because a platform filter did not match the runtime environment.";
 
-            case ResolverError.INVALID_NATIVECODE_PATHS: return "A bundle could not be resolved because the matching native code paths are invalid.";
+            case ResolverError.MISSING_EXECUTION_ENVIRONMENT:
+                return "A bundle could not be resolved because the required execution enviroment did not match the runtime environment.";
 
-            case ResolverError.DISABLED_BUNDLE: return "A bundle could not be resolved because the bundle was disabled.";
-            
-            default: return "Unknown Error.";   
+            case ResolverError.MISSING_GENERIC_CAPABILITY:
+                return "A bundle could not be resolved because the required generic capability could not be resolved.";
+
+            case ResolverError.NO_NATIVECODE_MATCH:
+                return "A bundle could not be resolved because no match was found for the native code specification.";
+
+            case ResolverError.INVALID_NATIVECODE_PATHS:
+                return "A bundle could not be resolved because the matching native code paths are invalid.";
+
+            case ResolverError.DISABLED_BUNDLE:
+                return "A bundle could not be resolved because the bundle was disabled.";
+
+            default:
+                return "Unknown Error.";
         }
     }
 }
