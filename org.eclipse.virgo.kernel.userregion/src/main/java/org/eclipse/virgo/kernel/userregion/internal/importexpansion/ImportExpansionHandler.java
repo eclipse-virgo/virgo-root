@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.userregion.internal.importexpansion;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -322,7 +323,8 @@ public final class ImportExpansionHandler implements ImportExpander {
 
         if (bundleManifest.getFragmentHost().getBundleSymbolicName() != null) {
             bundleSymbolicName = bundleManifest.getFragmentHost().getBundleSymbolicName();
-            packageImports = BundleManifestProcessor.createImportedPackageForEachExportedPackageOfFragment(exportedPackages, bundleSymbolicName, bundleManifest.getFragmentHost().getBundleVersion());
+            packageImports = BundleManifestProcessor.createImportedPackageForEachExportedPackageOfFragment(exportedPackages, bundleSymbolicName,
+                bundleManifest.getFragmentHost().getBundleVersion());
         } else {
             packageImports = BundleManifestProcessor.createImportedPackageForEachExportedPackage(exportedPackages, bundleSymbolicName, bundleVersion);
         }
@@ -354,14 +356,14 @@ public final class ImportExpansionHandler implements ImportExpander {
      * @param bundleVersion the version of the imported bundle
      */
     private void diagnoseSystemBundleOverlap(List<ImportedPackage> importedPackages, String bundleSymbolicNameString, String bundleVersion) {
-        boolean overlap = false;
+        Set<String> overlap = new HashSet<String>();
         for (ImportedPackage importedPackage : importedPackages) {
-            if (this.packagesExportedBySystemBundle.contains(importedPackage.getPackageName())) {
-                overlap = true;
-                break;
+            String packageName = importedPackage.getPackageName();
+            if (this.packagesExportedBySystemBundle.contains(packageName)) {
+                overlap.add(packageName);
             }
         }
-        if (overlap) {
+        if (!overlap.isEmpty()) {
             StringBuilder imports = new StringBuilder();
             boolean first = true;
             for (ImportedPackage packageImport : importedPackages) {
@@ -371,7 +373,8 @@ public final class ImportExpansionHandler implements ImportExpander {
                 first = false;
                 imports.append(packageImport.getPackageName());
             }
-            this.eventLogger.log(UserRegionLogEvents.SYSTEM_BUNDLE_OVERLAP, bundleSymbolicNameString, bundleVersion, imports.toString());
+            this.eventLogger.log(UserRegionLogEvents.SYSTEM_BUNDLE_OVERLAP, bundleSymbolicNameString, bundleVersion, overlap.toString(),
+                imports.toString());
         }
     }
 

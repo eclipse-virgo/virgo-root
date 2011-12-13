@@ -34,6 +34,7 @@ import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StubHashGenerator;
+import org.eclipse.virgo.medic.test.eventlog.LoggedEvent;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.ArtifactGenerationException;
@@ -611,6 +612,20 @@ public class ImportExpansionHandlerTests {
 
         Assert.assertTrue("No events were logged.", eventLogger.getCalled());
         Assert.assertTrue("The correct event was not logged.", eventLogger.containsLogged("UR0003W"));
+        List<LoggedEvent> ur3Events = eventLogger.getEventsWithCodes("UR0003W");
+        Assert.assertEquals(1, ur3Events.size());
+        LoggedEvent ur3Event = ur3Events.get(0);
+        Object[] inserts = ur3Event.getInserts();
+        Assert.assertTrue("Wrong number of inserts.", inserts.length >= 3);
+        Object overlap = inserts[2];
+        Assert.assertTrue("Insert at index 2 is not a String", overlap instanceof String);
+        String overlapString = (String)overlap;
+        String[] splitOverlap = overlapString.substring(1, overlapString.length()-1).split(", ");
+        Set<String> overlapSet = new HashSet<String>();
+        for (String pkg : splitOverlap) {
+            overlapSet.add(pkg);
+        }
+        Assert.assertEquals("Unexpected overlap with system bundle exports", packagesExportedBySystemBundle, overlapSet);
     }
 
     @Test
@@ -658,7 +673,7 @@ public class ImportExpansionHandlerTests {
 
         assertImported(bundleManifest, Arrays.asList(new String[] { "a" }), Arrays.asList(new String[] { "1.0.0" }));
     }
-
+    
     private static <T> T createAndStoreMock(Class<T> classToMock, List<Object> mocks) {
         T mock = createMock(classToMock);
         mocks.add(mock);
