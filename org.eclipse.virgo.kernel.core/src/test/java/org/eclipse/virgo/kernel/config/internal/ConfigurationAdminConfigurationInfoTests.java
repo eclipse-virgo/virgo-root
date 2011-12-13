@@ -80,5 +80,22 @@ public class ConfigurationAdminConfigurationInfoTests {
         expectedMap.put("key", "value");
         assertEquals(expectedMap, configurationInfo.getProperties());
     }
+    
+    @Test
+    public void testNonStringDictionaryKeys() throws IOException {
+        ConfigurationAdmin stubAdmin = new StubConfigurationAdmin();
+        Configuration config = stubAdmin.getConfiguration(CONFIG_INFO_TEST_PID, null);
+
+        Dictionary<String, Object> dict = new Hashtable<String, Object>();
+        dict.put("key", Boolean.TRUE);
+        
+        config.update(dict);
+                
+        ConfigurationInfo configurationInfo = new ConfigurationAdminConfigurationInfo(stubAdmin, CONFIG_INFO_TEST_PID);
+        
+        Map<String, String> expectedMap = new HashMap<String, String>();
+        expectedMap.put("key", "true");
+        assertEquals(expectedMap, configurationInfo.getProperties());
+    }
 
 }
