@@ -20,6 +20,7 @@ public class KernelStartupAndShutdownTests extends AbstractKernelTests {
 	public void testKernelStartUpStatus() throws Exception {
 		new Thread(new KernelStartUpThread()).start();
 		AbstractKernelTests.waitForKernelStartFully();
+		Thread.sleep(20000); // wait for startup to complete in case it fails
 		assertEquals(STATUS_STARTED, getKernelStartUpStatus());
 	}
 
