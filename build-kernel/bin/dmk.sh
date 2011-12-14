@@ -142,23 +142,41 @@ then
 	    echo "Warning: Kernel shell not supported; -shell option ignored."
 		# LAUNCH_OPTS="$LAUNCH_OPTS -Forg.eclipse.virgo.kernel.shell.local=true"
 	fi
-	
+
+	ACCESS_PROPERTIES=$CONFIG_DIR/org.eclipse.virgo.kernel.jmxremote.access.properties
+	AUTH_LOGIN=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config
+	AUTH_FILE=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties
+	CONFIG_PROPS=$KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties
+	CONFIG_AREA=$KERNEL_HOME/work/osgi/configuration
+	JAVA_PROFILE=$KERNEL_HOME/lib/java6-server.profile
+
+	if $cygwin; then
+		ACCESS_PROPERTIES=$(cygpath -wp $ACCESS_PROPERTIES)
+		AUTH_LOGIN=$(cygpath -wp $AUTH_LOGIN)
+		AUTH_FILE=$(cygpath -wp $AUTH_FILE)
+		CONFIG_PROPS=$(cygpath -wp $CONFIG_PROPS)
+		KERNEL_HOME=$(cygpath -wp $KERNEL_HOME)
+		CONFIG_DIR=$(cygpath -wp $CONFIG_DIR)
+		CONFIG_AREA=$(cygpath -wp $CONFIG_AREA)
+		JAVA_PROFILE=$(cygpath -wp $JAVA_PROFILE)
+	fi
+
 	# Set the required permissions on the JMX configuration files
-	chmod 600 $CONFIG_DIR/org.eclipse.virgo.kernel.jmxremote.access.properties
+	chmod 600 $ACCESS_PROPERTIES
 
 	JMX_OPTS=" \
 		$JMX_OPTS \
 		-Dcom.sun.management.jmxremote.port=$JMX_PORT \
 		-Dcom.sun.management.jmxremote.authenticate=true \
 		-Dcom.sun.management.jmxremote.login.config=virgo-kernel \
-		-Dcom.sun.management.jmxremote.access.file=$CONFIG_DIR/org.eclipse.virgo.kernel.jmxremote.access.properties \
+		-Dcom.sun.management.jmxremote.access.file="$ACCESS_PROPERTIES" \
 		-Djavax.net.ssl.keyStore=$KEYSTORE_PATH \
 		-Djavax.net.ssl.keyStorePassword=$KEYSTORE_PASSWORD \
 		-Dcom.sun.management.jmxremote.ssl=true \
 		-Dcom.sun.management.jmxremote.ssl.need.client.auth=false"
 
 	# If we get here we have the correct Java version.
-	
+
 	if [ -z "$NO_START_FLAG" ]
 	then
 		TMP_DIR=$KERNEL_HOME/work/tmp
@@ -172,19 +190,19 @@ then
 			-XX:+HeapDumpOnOutOfMemoryError \
 			-XX:ErrorFile=$KERNEL_HOME/serviceability/error.log \
 			-XX:HeapDumpPath=$KERNEL_HOME/serviceability/heap_dump.hprof \
-			-Djava.security.auth.login.config=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config \
-			-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
+			-Djava.security.auth.login.config=$AUTH_LOGIN \
+			-Dorg.eclipse.virgo.kernel.authentication.file=$AUTH_FILE \
 			-Djava.io.tmpdir=$TMP_DIR \
 			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
             -Dorg.eclipse.equinox.console.jaas.file="$CONFIG_DIR/store" \
             -Dssh.server.keystore="$CONFIG_DIR/hostkey.ser" \
 			-classpath $CLASSPATH \
 			org.eclipse.virgo.osgi.launcher.Launcher \
-	    		-config $KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties \
+	    		-config $CONFIG_PROPS \
 			-Forg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 			-Forg.eclipse.virgo.kernel.config=$CONFIG_DIR \
-			-Fosgi.configuration.area=$KERNEL_HOME/work/osgi/configuration \
-			-Fosgi.java.profile="file:$KERNEL_HOME/lib/java6-server.profile" \
+			-Fosgi.configuration.area=$CONFIG_AREA \
+			-Fosgi.java.profile="file:$JAVA_PROFILE" \
 			$LAUNCH_OPTS \
 			$ADDITIONAL_ARGS
 	fi
@@ -243,6 +261,11 @@ then
 		-Djavax.net.ssl.trustStorePassword=${TRUSTSTORE_PASSWORD}"
 
 	OTHER_ARGS+=" -jmxport $JMX_PORT"
+
+	if $cygwin; then
+		KERNEL_HOME=$(cygpath -wp $KERNEL_HOME)
+		CONFIG_DIR=$(cygpath -wp $CONFIG_DIR)
+	fi
 
 	exec $JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
 		-classpath $CLASSPATH \
