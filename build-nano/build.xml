@@ -188,6 +188,7 @@
         <delete dir="${target.dir}/assembly" quiet="true"/>
         <delete dir="${common.resources.location}" quiet="true"/>
         <delete dir="${scripts.location}" quiet="true"/>
+        <delete dir="${tools.dir}" quiet="true"/>
 		
      </target>
     
