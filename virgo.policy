@@ -1,0 +1,4 @@
+ALLOW {
+	[org.osgi.service.condpermadmin.BundleLocationCondition "file:plugins/*"]
+	(java.security.AllPermission)
+};

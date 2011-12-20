@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-nano" xmlns:ivy="antlib:org.apache.ivy.ant">
-
-    <path id="bundles"/>
+    <path id="unit.test.bundles">
+		<pathelement location="../org.eclipse.virgo.kernel.core"/>
+        <pathelement location="../org.eclipse.virgo.kernel.authentication"/>
+        <pathelement location="../org.eclipse.virgo.kernel.shutdown"/>
+	</path>
+    <path id="bundles">
+        <path refid="unit.test.bundles" />
+    </path>
 
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
@@ -71,7 +77,7 @@
             <filterset>
 				<filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
                 <filter token="TOMCAT.VERSION" value="${org.apache.tomcat}"/>
-				<filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
+				<filter token="NANO.VERSION" value="${bundle.version}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>

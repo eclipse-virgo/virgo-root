@@ -11,8 +11,8 @@
 
 	<dependencies>
 		<!-- lib -->
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shutdown" rev="${org.eclipse.virgo.kernel}" conf="lib->runtime"/>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.authentication" rev="${org.eclipse.virgo.kernel}" conf="lib->runtime"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.shutdown" rev="latest.integration" conf="lib->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.authentication" rev="latest.integration" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
         <dependency org="org.eclipse.osgi" name="org.eclipse.equinox.launcher" rev="${org.eclipse.equinox.launcher}" conf="lib->runtime"/>

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.core"
       label="%featureName"
-      version="@KERNEL.VERSION@"
+      version="@NANO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -26,7 +26,7 @@
          id="org.eclipse.virgo.kernel.core"
          download-size="0"
          install-size="0"
-         version="@KERNEL.VERSION@"
+         version="@NANO.VERSION@"
          unpack="false"/>
 
 </feature>

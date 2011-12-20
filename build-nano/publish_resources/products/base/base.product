@@ -38,8 +38,6 @@
 		<property name="osgi.console.enable.builtin" value="false"/>
 		<property name="osgi.parentClassloader" value="fwk"/>
 		<property name="osgi.console.ssh.useDefaultSecureStorage" value="true"/>
-		<property name="osgi.console" value="2401"/>
-		<property name="osgi.console.ssh" value="2402"/>
 		<property name="equinox.refresh.duplicate.bsn" value="false"/>
 		<property name="eclipse.bundle.setTCCL" value="false"/>
 		<property name="org.eclipse.virgo.suppress.heap.dumps" value="false"/>
