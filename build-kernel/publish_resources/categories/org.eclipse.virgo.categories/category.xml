@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.eclipse.equinox.regions">
+      <category name="org.eclipse.virgo.addons"/>
+   </feature>
+</site>
