@@ -4,6 +4,8 @@
 	<path id="bundles">
 		<pathelement location="../org.eclipse.virgo.medic"/>
 		<pathelement location="../org.eclipse.virgo.medic.core"/>
+		<pathelement location="../org.eclipse.virgo.medic.logbackcorefragment"/>
+		<pathelement location="../org.eclipse.virgo.medic.logbackclassicfragment"/>
 		<pathelement location="../org.eclipse.virgo.medic.test"/>
 		<pathelement location="../org.eclipse.virgo.medic.testfragment"/>
 		<pathelement location="../org.eclipse.virgo.medic.integrationtest"/>

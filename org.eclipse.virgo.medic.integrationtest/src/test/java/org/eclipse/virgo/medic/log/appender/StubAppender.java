@@ -19,20 +19,26 @@ import java.util.Map;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
-public class StubAppender extends AppenderBase<LoggingEvent> {
+public final class StubAppender extends AppenderBase<LoggingEvent> {
+
+    private static final Object monitor = new Object();
 
     private static Map<String, List<LoggingEvent>> loggingEvents = new HashMap<String, List<LoggingEvent>>();
 
     @Override
     protected void append(LoggingEvent eventObject) {
-        getLoggingEventsByName(name).add(eventObject);
+        synchronized (monitor) {
+            getLoggingEventsByName(name).add(eventObject);
+        }
     }
 
     public static List<LoggingEvent> getAndResetLoggingEvents(String name) {
-        List<LoggingEvent> loggingEvents = getLoggingEventsByName(name);
-        List<LoggingEvent> response = new ArrayList<LoggingEvent>(loggingEvents);
-        loggingEvents.clear();
-        return response;
+        synchronized (monitor) {
+            List<LoggingEvent> loggingEvents = getLoggingEventsByName(name);
+            List<LoggingEvent> response = new ArrayList<LoggingEvent>(loggingEvents);
+            loggingEvents.clear();
+            return response;
+        }
     }
 
     private static List<LoggingEvent> getLoggingEventsByName(String name) {
