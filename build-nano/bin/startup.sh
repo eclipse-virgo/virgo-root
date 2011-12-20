@@ -17,4 +17,13 @@ done
 SCRIPT_DIR=`dirname $SCRIPT`
 EXECUTABLE="dmk.sh"
 
+#
+# identify yourself when running under cygwin
+#
+cygwin=false
+case "$(uname)" in
+    CYGWIN*) cygwin=true ;;
+esac
+export cygwin
+
 exec "$SCRIPT_DIR"/"$EXECUTABLE" start "$@"

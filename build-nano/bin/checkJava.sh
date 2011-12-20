@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#
+# make adjustment when running under cygwin
+#
+if $cygwin; then
+    CLASSPATH=$(cygpath -wp $CLASSPATH)
+fi
+
 # Run java version check with the discovered java jvm.
 $JAVA_HOME/bin/java \
 	-classpath $CLASSPATH \
