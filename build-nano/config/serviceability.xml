@@ -5,7 +5,7 @@
 	<appender name="SIFTED_LOG_FILE" class="ch.qos.logback.classic.sift.SiftingAppender">
 		<discriminator>
 			<Key>applicationName</Key>
-			<DefaultValue>virgo-kernel</DefaultValue>
+			<DefaultValue>virgo-nano</DefaultValue>
 		</discriminator>
 		<sift>
 			<appender name="${applicationName}_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">

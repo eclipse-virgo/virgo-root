@@ -18,7 +18,7 @@
       <feature id="org.eclipse.virgo.shell" version="0.0.0"/>
       <feature id="org.eclipse.virgo.ds" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.springdm" version="0.0.0"/>
-	  <feature id="org.eclipse.virgo.common.resources" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.nano.common.resources" version="0.0.0"/>
    </features>
    
    <configurations>

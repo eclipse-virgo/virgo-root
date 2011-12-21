@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.virgo.nano.common.resources"
+      id="org.eclipse.virgo.nano.specific.resources"
       label="%featureName"
       version="1.0.0"
       provider-name="%providerName"
@@ -19,7 +19,7 @@
    </license>
     
     <plugin
-         id="nano_common_resources"
+         id="nano_specific_resources"
          download-size="0"
          install-size="0"
          version="1.0.0"/>
