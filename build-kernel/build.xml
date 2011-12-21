@@ -144,8 +144,7 @@
         <property name="specific.resources" value="${target.dir}/specific_resources"/>
         <mkdir dir="${specific.resources}/lib"/>
         <mkdir dir="${specific.resources}/config"/>
-        <echo file="${specific.resources}/lib/.version"
-			message="virgo.kernel.version=${bundle.version}&#xa;"/>
+        
         <copy todir="${specific.resources}/config" failonerror="false">
 			<fileset dir="${basedir}/config">
 				<include name="org.eclipse.virgo.kernel.userregion.properties"/>
@@ -174,12 +173,12 @@
 		</copy>
         
         <!-- get and reconfigure the serviceability.xml -->
-        <unzip src="${p2.repository.dir}/binary/nano_specific_resources_1.0.0" dest="${specific.resources}/temp">
+        <unzip src="${p2.repository.dir}/binary/nano_specific_resources_1.0.0" dest="${specific.resources}">
 			<globmapper from="nano_specific_resources/*" to="*"/>
 		</unzip>
-        <copy todir="${specific.resources}/config" failonerror="false">
-			<fileset dir="${specific.resources}/temp/config"/>
-		</copy>
+        <echo file="${specific.resources}/lib/.version" append="true"
+			message="virgo.kernel.version=${bundle.version}&#xa;"/>
+        
         <replaceregexp match="virgo-nano" replace="virgo-kernel" flags="g"
 				file="${specific.resources}/config/serviceability.xml"/>
         
