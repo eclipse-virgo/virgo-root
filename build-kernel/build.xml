@@ -85,6 +85,7 @@
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
 				<filter token="EQUINOX.REGION.VERSION" value="${org.eclipse.equinox.region}"/>
+				<filter token="LOGBACK.VERSION" value="${ch.qos.logback}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>

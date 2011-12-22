@@ -41,6 +41,10 @@
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="test->runtime"/>
 
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
+		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="test->runtime"/>
+		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="test->runtime"/>
 
 		<dependency org="org.eclipse.virgo.repository" name="org.eclipse.virgo.repository" rev="${org.eclipse.virgo.repository}" conf="test->runtime"/>
 		
