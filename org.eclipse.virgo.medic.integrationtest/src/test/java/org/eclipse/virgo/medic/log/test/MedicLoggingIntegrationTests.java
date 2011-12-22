@@ -39,16 +39,28 @@ public class MedicLoggingIntegrationTests {
 	@Test
 	public void test() throws BundleException {				
 		bundleContext.installBundle("file:src/test/resources/test-bundle_1").start();
+        allowEventsToPropagate();
 		assertEquals(1, StubAppender.getAndResetLoggingEvents("bundle1-stub").size());
 		
 		bundleContext.installBundle("file:src/test/resources/test-bundle_2").start();
+        allowEventsToPropagate();
 		assertEquals(1, StubAppender.getAndResetLoggingEvents("bundle2-stub").size());
 		
 		bundleContext.installBundle("file:src/test/resources/test-bundle_3").start();
-		assertEquals(13, StubAppender.getAndResetLoggingEvents("root-stub").size()); //9 When run in Eclipse
+		allowEventsToPropagate();
+		assertEquals(14, StubAppender.getAndResetLoggingEvents("root-stub").size()); //9 When run in Eclipse
 	}
 	
-	@Test
+	private void allowEventsToPropagate() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Test
 	public void availabilityOfConfigurationPublisher() {
 		assertNotNull(bundleContext.getServiceReference(LoggingConfigurationPublisher.class.getName()));
 	}		

@@ -42,6 +42,9 @@ public final class MedicActivator implements BundleActivator {
     private MedicMBeanExporter medicMBeanExporter = null;
     
     public void start(BundleContext context) throws Exception {
+        // Avoid logback accidentally obtaining classes from the application class loader.
+        System.setProperty("logback.ignoreTCL", "true");
+        
         this.configurationProvider = new ConfigurationAdminConfigurationProvider(context);
         this.registrationTracker.track(context.registerService(ConfigurationListener.class.getName(), configurationProvider, null));
 
