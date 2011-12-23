@@ -319,11 +319,33 @@ var Layout = function(bundles){
 		var xPos = this.bundleSpacing;
 		relations.each(function(relation){
 			if(relation.bundle.id == focused.id){
-				//Add a back link
-				//console.log('Self link for focused bundle ', bundle.id);
+				var relationship = new SelfRelationship(focused, relation.info, relation.infoKey, relation.tooltip);
+				this.relationships[relationship.key] = relationship;
+				focused.addRelationship(relationship);
 			} else {
 				if(relation.bundle.isVisible){
-					//console.log('Back link for bundle ', bundle.id);
+					if(isFrom){
+						var relationship = new Relationship(focused, relation.bundle, relation.info, relation.infoKey, relation.tooltip);
+					}else{
+						var relationship = new Relationship(relation.bundle, focused, relation.info, relation.infoKey, relation.tooltip);
+					}
+					var existingRelationship = this.relationships[relationship.key];
+					if(existingRelationship){
+						existingRelationship.increaseCount(relation.tooltip);
+					} else {
+						console.log('Extra', isFrom, relation.tooltip);
+						
+						if(isFrom){
+							var backRelationship = new Relationship(focused, relation.bundle, relation.info, relation.infoKey, relation.tooltip);
+						}else{
+							var backRelationship = new Relationship(relation.bundle, focused, relation.info, relation.infoKey, relation.tooltip);
+						}
+						
+						
+						this.relationships[backRelationship.key] = backRelationship;
+						focused.addRelationship(backRelationship);
+						relation.bundle.addRelationship(backRelationship);
+					}
 				} else {
 					xPos = xPos + (relation.bundle.boxWidth/2);
 					relation.bundle.move(xPos, yPos);
@@ -443,6 +465,7 @@ var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip
 	this.infoCallback = infoCallback;
 	this.infoKey = infoKey;
 	this.tooltip = tooltip;
+	this.count = 1;
 	this.key = 'from' + this.fromBundle.id + 'to' + this.toBundle.id;
 	this.controlPointOffset = 100;
 
@@ -492,8 +515,8 @@ var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip
 			'stroke' : 'none',
 			'title' : this.tooltip
 		});
-		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, '5').attr({
-			'font' : '14px Arial', 
+		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, this.count).attr({
+			'font' : '13px Arial', 
 			'stroke' : '#002F5E',
 			'title' : this.tooltip
 		});
@@ -509,6 +532,16 @@ var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip
 		infoBox.go(this.infoCallback, this.infoKey);
 	};
 	
+	this.increaseCount = function(tooltip) {
+		this.count = this.count + 1;
+		this.tooltip = this.tooltip + ' ' + tooltip;
+		if(this.infoPointText){
+			this.infoPointText.attr({
+				'text' : this.count
+			});
+		};
+	};
+	
 	this.remove = function() {
 		this.visual.remove();
 		this.infoPoint.remove();
@@ -517,6 +550,83 @@ var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip
 		this.toBundle.removeRelationship(this.key);
 	};
 
+};
+
+var SelfRelationship = function(bundle, infoCallback, infoKey, tooltip) {
+	
+	this.bundle = bundle;
+	this.infoCallback = infoCallback;
+	this.infoKey = infoKey;
+	this.tooltip = tooltip;
+	this.count = 1;
+	this.key = 'self' + this.bundle.id;
+	this.offset = 10;
+	this.offset2 = 100;
+	
+	this.setCoordinates = function(){
+		this.startPoint = {'x' : this.bundle.x + this.bundle.boxWidth/2, 'y' : this.bundle.y - this.offset};
+		this.endPoint = {'x' : this.bundle.x + this.bundle.boxWidth/2, 'y' : this.bundle.y + this.offset};
+		
+		this.startPointControl = {'x' : this.startPoint.x + this.offset2, 'y' : this.startPoint.y - this.offset2}; 
+		this.endPointControl = {'x' : this.endPoint.x + this.offset2, 'y' : this.endPoint.y + this.offset2};
+		
+		this.midPoint = {'x' : this.bundle.x + this.bundle.boxWidth/2 + this.offset2*0.74, 'y' : this.bundle.y}; 
+	};
+	
+	this.display = function() {
+		if(this.visual){
+			this.visual.remove();
+		}
+		if(this.infoPoint){
+			this.infoPoint.remove();
+		}
+		if(this.infoPointText){
+			this.infoPointText.remove();
+		}
+		this.setCoordinates();
+		this.visual = paper.path('M' + this.startPoint.x + ',' + this.startPoint.y + 
+									'C' + this.startPointControl.x + ',' + this.startPointControl.y + 
+									',' + this.endPointControl.x + ',' + this.endPointControl.y + 
+									',' + this.endPoint.x + ',' + this.endPoint.y).attr({
+			'arrow-end' : 'block-wide-long',
+			'stroke-width' : 3,
+			'stroke' : '#002F5E'
+		}).toBack();
+		this.infoPoint = paper.circle(this.midPoint.x, this.midPoint.y, 10).attr({
+			'fill' : '#BAD9EC', 
+			'stroke' : 'none',
+			'title' : this.tooltip
+		});
+		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, this.count).attr({
+			'font' : '13px Arial', 
+			'stroke' : '#002F5E',
+			'title' : this.tooltip
+		});
+		
+		this.infoPoint.click(function(){this.displayInfoBox()}.bind(this));
+		this.infoPointText.click(function(){this.displayInfoBox()}.bind(this));
+		
+		this.infoPoint.hover(function(){this.glow = this.visual.glow()}, function(){this.glow.remove()}, this, this);
+		this.infoPointText.hover(function(){this.glow = this.visual.glow()}, function(){this.glow.remove()}, this, this);
+		
+	};
+	
+	this.increaseCount = function(tooltip) {
+		this.count = this.count + 1;
+		this.tooltip = this.tooltip + ' ' + tooltip;
+		if(this.infoPointText){
+			this.infoPointText.attr({
+				'text' : this.count
+			});
+		};
+	};
+	
+	this.remove = function() {
+		this.visual.remove();
+		this.infoPoint.remove();
+		this.infoPointText.remove();
+	};
+	
 };
 
 /**
