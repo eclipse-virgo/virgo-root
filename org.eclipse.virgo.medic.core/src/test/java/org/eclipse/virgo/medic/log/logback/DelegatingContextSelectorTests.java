@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.medic.log.impl.logback;
+package org.eclipse.virgo.medic.log.logback;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.virgo.medic.log.impl.logback.ContextSelectorDelegate;
-import org.eclipse.virgo.medic.log.impl.logback.DelegatingContextSelector;
+import org.eclipse.virgo.medic.log.logback.DelegatingContextSelector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

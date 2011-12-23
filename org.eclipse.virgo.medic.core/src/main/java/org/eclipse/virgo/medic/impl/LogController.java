@@ -27,10 +27,10 @@ import org.eclipse.virgo.medic.log.DelegatingPrintStream;
 import org.eclipse.virgo.medic.log.LoggingConfigurationPublisher;
 import org.eclipse.virgo.medic.log.impl.*;
 import org.eclipse.virgo.medic.log.impl.config.*;
-import org.eclipse.virgo.medic.log.impl.logback.DelegatingContextSelector;
 import org.eclipse.virgo.medic.log.impl.logback.JoranLoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.LoggerContextConfigurer;
 import org.eclipse.virgo.medic.log.impl.logback.StandardContextSelectorDelegate;
+import org.eclipse.virgo.medic.log.logback.DelegatingContextSelector;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleListener;
@@ -94,6 +94,7 @@ public class LogController implements ConfigurationChangeListener {
             "org.slf4j",//
             "org.slf4j.impl",//
             "org.eclipse.virgo.medic.log",//
+            "org.eclipse.virgo.medic.log.logback",//
             "org.eclipse.virgo.medic.log.impl",//
             "org.eclipse.virgo.medic.log.impl.logback");
 

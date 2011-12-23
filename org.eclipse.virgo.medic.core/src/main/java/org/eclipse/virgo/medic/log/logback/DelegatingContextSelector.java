@@ -9,10 +9,12 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.medic.log.impl.logback;
+package org.eclipse.virgo.medic.log.logback;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.eclipse.virgo.medic.log.impl.logback.ContextSelectorDelegate;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
