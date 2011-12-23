@@ -24,7 +24,7 @@ import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.repository.internal.RepositoryUtils;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * <strong>Concurrent Semantics</strong><br />

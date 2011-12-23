@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * <p>

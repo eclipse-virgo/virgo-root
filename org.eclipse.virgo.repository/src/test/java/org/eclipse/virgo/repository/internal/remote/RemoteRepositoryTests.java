@@ -58,7 +58,7 @@ import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
 import org.eclipse.virgo.repository.internal.remote.RemoteRepository;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
 import org.eclipse.virgo.util.io.FileCopyUtils;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;

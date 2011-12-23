@@ -32,7 +32,7 @@ import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.repository.internal.chain.ChainedRepository;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 public class ChainedRepositoryTests {
 

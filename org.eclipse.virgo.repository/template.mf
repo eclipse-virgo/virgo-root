@@ -2,7 +2,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Artifact Repository
 Bundle-Activator: org.eclipse.virgo.repository.internal.RepositoryBundleActivator
 Bundle-SymbolicName: org.eclipse.virgo.repository
-Bundle-Version: 3.0.0
+Bundle-Version: ${version}
 Import-Template: 
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
  javax.management.*;version="0",

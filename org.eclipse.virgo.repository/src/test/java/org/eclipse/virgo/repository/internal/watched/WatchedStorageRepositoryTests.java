@@ -47,7 +47,7 @@ import org.eclipse.virgo.repository.configuration.WatchedStorageRepositoryConfig
 import org.eclipse.virgo.repository.internal.LocalRepository;
 import org.eclipse.virgo.repository.internal.watched.WatchedStorageRepository;
 import org.eclipse.virgo.util.io.FileCopyUtils;
-import org.eclipse.virgo.util.osgi.VersionRange;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * Test the {@link WatchedStorageRepository} extension of the {@link LocalRepository} class.
