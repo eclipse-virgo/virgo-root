@@ -11,16 +11,13 @@
 
 package org.eclipse.virgo.kernel.deployer.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.assertBundlesInstalled;
+import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.assertBundlesNotInstalled;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
 
 // TODO 1c. (transitive dependencies) (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
 public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest {
@@ -79,40 +76,6 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
 
         this.deployer.undeploy(deploymentIdentity);
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
-    }
-
-    // TODO - copy from PlanDeploymentTests
-    private void assertBundlesNotInstalled(Bundle[] bundles, String... candidateBsns) {
-        List<String> installedBsns = getInstalledBsns(bundles);
-        for (String candidateBsn : candidateBsns) {
-            for (String installedBsn : installedBsns) {
-                if (installedBsn.contains(candidateBsn)) {
-                    fail(candidateBsn + " was installed");
-                }
-            }
-        }
-    }
-
-    private void assertBundlesInstalled(Bundle[] bundles, String... candidateBsns) {
-        List<String> installedBsns = getInstalledBsns(bundles);
-        for (String candidateBsn : candidateBsns) {
-            boolean found = false;
-            for (String installedBsn : installedBsns) {
-                if (installedBsn.contains(candidateBsn)) {
-                    found = true;
-                }
-            }
-            assertTrue(candidateBsn + " was not installed", found);
-        }
-    }
-
-    private List<String> getInstalledBsns(Bundle[] bundles) {
-        List<String> installedBsns = new ArrayList<String>(bundles.length);
-        for (Bundle bundle : bundles) {
-            installedBsns.add(bundle.getSymbolicName());
-        }
-
-        return installedBsns;
     }
 
 }
