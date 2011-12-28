@@ -17,6 +17,10 @@
    <license url="%licenseURL">
       %license
    </license>
+   
+   <requires>
+      <import feature="org.eclipse.virgo.simpleconfigurator" version="0.0.0"/>
+   </requires>
 
    <plugin
          id="org.eclipse.core.contenttype"
@@ -226,13 +230,6 @@
          download-size="0"
          install-size="0"
          version="@EQUINOX.SECURITY.VERSION@"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.simpleconfigurator"
-         download-size="0"
-         install-size="0"
-         version="@EQUINOX.SC.VERSION@"
          unpack="false"/>
 
    <plugin
