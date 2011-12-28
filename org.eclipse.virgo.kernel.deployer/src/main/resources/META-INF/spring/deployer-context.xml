@@ -6,14 +6,6 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service
-		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener">
-		<beans:bean
-			class="org.eclipse.virgo.kernel.install.artifact.internal.TreeRestrictingInstallArtifactLifecycleListener">
-			<beans:constructor-arg ref="eventLogger" />
-		</beans:bean>
-	</service>
-
 	<service id="applicationDeployer" ref="pipelinedApplicationDeployer"
 		interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer" />
 
