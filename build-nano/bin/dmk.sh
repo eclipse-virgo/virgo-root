@@ -207,7 +207,6 @@ then
             -Declipse.ignoreApp=true \
             -Dosgi.install.area=$KERNEL_HOME \
             -Dssh.server.keystore="$CONFIG_DIR/hostkey.ser" \
-            -Dgosh.args="--nointeractive" \
             -Dosgi.frameworkClassPath=$FWCLASSPATH \
             -classpath $CLASSPATH \
 			org.eclipse.equinox.launcher.Main \
