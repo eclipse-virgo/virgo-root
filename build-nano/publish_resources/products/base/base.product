@@ -51,6 +51,7 @@
 		<property name="eclipse.enableStateSaver" value="false"/>
 		<property name="osgi.hook.configurators.include" value="org.eclipse.virgo.osgi.extensions.equinox.hooks.ExtensionsHookConfigurator"/>	
 		<property name="gosh.args" value="--nointeractive"/>
+		<property name="osgi.console.ssh.useDefaultSecureStorage" value="false"/>
 	</configurations>
 
 </product>

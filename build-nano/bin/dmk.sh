@@ -202,7 +202,6 @@ then
 			-Djava.io.tmpdir=$TMP_DIR \
 			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 			-Dorg.eclipse.virgo.kernel.config=$CONFIG_DIR \
-            -Dorg.eclipse.equinox.console.jaas.file="$CONFIG_DIR/store" \
 			-Dosgi.java.profile="file:$JAVA_PROFILE" \
             -Declipse.ignoreApp=true \
             -Dosgi.install.area=$KERNEL_HOME \
