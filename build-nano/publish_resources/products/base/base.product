@@ -37,8 +37,10 @@
 		<property name="osgi.compatibility.bootdelegation" value="false"/>
 		<property name="equinox.use.ds" value="true"/>
 		<property name="osgi.console.enable.builtin" value="false"/>
+		<property name="gosh.args" value="--nointeractive"/>
+		<property name="osgi.console.ssh.useDefaultSecureStorage" value="false"/>
+		<property name="osgi.console.useConfigAdmin" value="true"/>
 		<property name="osgi.parentClassloader" value="fwk"/>
-		<property name="osgi.console.ssh.useDefaultSecureStorage" value="true"/>
 		<property name="equinox.refresh.duplicate.bsn" value="false"/>
 		<property name="eclipse.bundle.setTCCL" value="false"/>
 		<property name="org.eclipse.virgo.suppress.heap.dumps" value="false"/>
@@ -50,8 +52,6 @@
 		<property name="osgi.context.bootdelegation" value="false"/>
 		<property name="eclipse.enableStateSaver" value="false"/>
 		<property name="osgi.hook.configurators.include" value="org.eclipse.virgo.osgi.extensions.equinox.hooks.ExtensionsHookConfigurator"/>	
-		<property name="gosh.args" value="--nointeractive"/>
-		<property name="osgi.console.ssh.useDefaultSecureStorage" value="false"/>
 	</configurations>
 
 </product>
