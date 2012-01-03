@@ -22,7 +22,6 @@
 		<plugin id="com.springsource.org.apache.commons.codec" autoStart="true"/>
 		<plugin id="com.springsource.org.apache.commons.httpclient" autoStart="true"/>
  
-		<property name="osgi.console.useConfigAdmin" value="true"/>
 		<property name="org.osgi.framework.bsnversion" value="multiple"/>
 		<property name="osgi.clean" value="true"/>
 	</configurations>
