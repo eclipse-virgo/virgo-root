@@ -274,7 +274,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         }
     }
 
-    private static List<String> getInstalledBsns(Bundle[] bundles) {
+    static List<String> getInstalledBsns(Bundle[] bundles) {
         List<String> installedBsns = new ArrayList<String>(bundles.length);
         for (Bundle bundle : bundles) {
             installedBsns.add(bundle.getSymbolicName());
