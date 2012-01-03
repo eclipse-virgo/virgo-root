@@ -231,6 +231,8 @@
         </antcall>
         <echo message="Installed Virgo Kernel for distribution purposes."/>
         
+        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        
 		<zip destfile="${package.output.file}">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
 			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
@@ -239,7 +241,7 @@
 				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
-        <zip destfile="${artifacts.dir}\${natural.name}-updatesite-${bundle.version}.zip">
+        <zip destfile="${updatesite.output.file}">
 			<zipfileset dir="${p2.repository.dir}"/>
 		</zip>
         
