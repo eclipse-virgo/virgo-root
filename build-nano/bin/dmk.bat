@@ -143,13 +143,6 @@ rem ------------------------------
       rmdir /Q /S "%KERNEL_HOME%\serviceability"
       rmdir /Q /S "%KERNEL_HOME%\work"
       
-	  for /f %%f in ('dir /b "%KERNEL_HOME%\configuration"') do (
-		if not "%%f"=="config.ini" (
-		  if not "%%f"=="org.eclipse.equinox.simpleconfigurator" (
-			rmdir /Q /S "%KERNEL_HOME%\configuration\%%f"
-		  )
-		)
-	  )
       set LAUNCH_OPTS=%LAUNCH_OPTS% -clean
     )
 
@@ -186,12 +179,13 @@ rem ------------------------------
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.authentication.file="%CONFIG_DIR%\org.eclipse.virgo.kernel.users.properties" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djava.io.tmpdir="%TMP_DIR%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.home="%KERNEL_HOME%" 
-	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.java.profile="file:%KERNEL_HOME%\lib\java6-server.profile"
+	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.java.profile="file:%CONFIG_DIR%\java6-server.profile"
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dssh.server.keystore="%CONFIG_DIR%/hostkey.ser" 
 	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.home="%KERNEL_HOME%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dorg.eclipse.virgo.kernel.config="%CONFIG_DIR%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Declipse.ignoreApp="true" 
-	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.install.area="%KERNEL_HOME%" 
+	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.install.area="%KERNEL_HOME%"
+	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.configuration.area="%KERNEL_HOME%\work" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.frameworkClassPath="%FWCLASSPATH%"
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -classpath "%CLASSPATH%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% org.eclipse.equinox.launcher.Main
@@ -213,8 +207,8 @@ rem ------------------------------
   rem The shift must be here :()
 
   rem Set defaults
-  set CONFIG_DIR=%KERNEL_HOME%\config
-  if not defined TRUSTSTORE_PATH set TRUSTSTORE_PATH=%KERNEL_HOME%\config\keystore
+  set CONFIG_DIR=%KERNEL_HOME%\configuration
+  if not defined TRUSTSTORE_PATH set TRUSTSTORE_PATH=%CONFIG_DIR%\keystore
   if not defined TRUSTSTORE_PASSWORD set TRUSTSTORE_PASSWORD=changeit
   if not defined JMX_PORT set JMX_PORT=9875
   set OTHER_ARGS=

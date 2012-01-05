@@ -43,7 +43,7 @@ if [ "$COMMAND" = "start" ]
 then
 	
 	# parse the standard arguments
-	CONFIG_DIR=$KERNEL_HOME/config
+	CONFIG_DIR=$KERNEL_HOME/configuration
 	CLEAN_FLAG=
 	NO_START_FLAG=
 
@@ -134,13 +134,6 @@ then
         rm -rf $KERNEL_HOME/work
         rm -rf $KERNEL_HOME/serviceability
 
-        for f in "$KERNEL_HOME"/configuration/*
-        do
-            if [ $(basename $f) != 'config.ini' -a $(basename $f) != 'org.eclipse.equinox.simpleconfigurator' ];
-            then
-                rm -rf $f
-            fi
-        done
         LAUNCH_OPTS="$LAUNCH_OPTS -clean" #equivalent to setting osgi.clean to "true"
 	fi
 	
@@ -153,15 +146,13 @@ then
     ACCESS_PROPERTIES=$CONFIG_DIR/org.eclipse.virgo.kernel.jmxremote.access.properties
     AUTH_LOGIN=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config
     AUTH_FILE=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties
-    CONFIG_PROPS=$KERNEL_HOME/lib/org.eclipse.virgo.kernel.launch.properties
-    CONFIG_AREA=$KERNEL_HOME/work/osgi/configuration
-    JAVA_PROFILE=$KERNEL_HOME/lib/java6-server.profile
+    CONFIG_AREA=$KERNEL_HOME/work
+    JAVA_PROFILE=$KERNEL_HOME/configuration/java6-server.profile
 
     if $cygwin; then
         ACCESS_PROPERTIES=$(cygpath -wp $ACCESS_PROPERTIES)
         AUTH_LOGIN=$(cygpath -wp $AUTH_LOGIN)
         AUTH_FILE=$(cygpath -wp $AUTH_FILE)
-        CONFIG_PROPS=$(cygpath -wp $CONFIG_PROPS)
         KERNEL_HOME=$(cygpath -wp $KERNEL_HOME)
         CONFIG_DIR=$(cygpath -wp $CONFIG_DIR)
         CONFIG_AREA=$(cygpath -wp $CONFIG_AREA)
@@ -205,6 +196,7 @@ then
 			-Dosgi.java.profile="file:$JAVA_PROFILE" \
             -Declipse.ignoreApp=true \
             -Dosgi.install.area=$KERNEL_HOME \
+            -Dosgi.configuration.area=$CONFIG_AREA \
             -Dssh.server.keystore="$CONFIG_DIR/hostkey.ser" \
             -Dosgi.frameworkClassPath=$FWCLASSPATH \
             -classpath $CLASSPATH \
@@ -216,12 +208,12 @@ then
 elif [ "$COMMAND" = "stop" ]
 then
 
-	CONFIG_DIR=$KERNEL_HOME/config
+	CONFIG_DIR=$KERNEL_HOME/configuration
 
 	#parse args for the script
 	if [ -z "$TRUSTSTORE_PATH" ]
 	then
-		TRUSTSTORE_PATH=$KERNEL_HOME/config/keystore
+		TRUSTSTORE_PATH=$CONFIG_DIR/keystore
 	fi
 	
 	if [ -z "$TRUSTSTORE_PASSWORD" ]	

@@ -22,22 +22,18 @@
 		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
 		
-		<mkdir dir="${common.resources}/config"/>
+		<mkdir dir="${common.resources}/configuration"/>
 		<mkdir dir="${common.resources}/pickup"/>
 		
 		<copy todir="${common.resources}" failonerror="false">
 			<fileset dir="${basedir}/resources"/>
 		</copy>
         
-        <copy todir="${common.resources}/lib" failonerror="false">
-			<fileset dir="${basedir}/lib"/>
-		</copy>
-        
-        <copy todir="${common.resources}/config" failonerror="false">
-			<fileset dir="${basedir}/config" excludes="keystore,serviceability.xml"/>
+        <copy todir="${common.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration" excludes="keystore,serviceability.xml"/>
 		</copy>
 		
-		<copy file="${basedir}/config/keystore" todir="${common.resources}/config" failonerror="false"/>
+		<copy file="${basedir}/configuration/keystore" todir="${common.resources}/configuration" failonerror="false"/>
         
         <property name="common.resources.location" value="${target.dir}/common_resources_zipped"/>
         <zip destfile="${common.resources.location}/binary/nano_common_resources">
@@ -50,8 +46,8 @@
         <mkdir dir="${specific.resources}/lib"/>
         <echo file="${specific.resources}/lib/.version"
 			message="virgo.nano.version=${bundle.version}&#xa;"/>
-        <copy todir="${specific.resources}/config" failonerror="false">
-			<fileset dir="${basedir}/config">
+        <copy todir="${specific.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration">
 				<include name="serviceability.xml"/>
 			</fileset>
 		</copy>
@@ -144,7 +140,7 @@
         <antcall target="p2.publish-binary-chmod">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${common.resources.location}"/>
-            <param name="chmod.args" value="org.eclipse.virgo.kernel.jmxremote.access.properties@/config#600"/>
+            <param name="chmod.args" value="org.eclipse.virgo.kernel.jmxremote.access.properties@/configuration#600"/>
         </antcall>
         <echo message="Published the commons resources to ${p2.repository.dir}."/>
         
@@ -196,10 +192,10 @@
         
         <zip destfile="${package.output.file}">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">
 				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+				<exclude name="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
         <zip destfile="${updatesite.output.file}">
