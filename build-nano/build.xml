@@ -12,6 +12,7 @@
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
+    <property name="nano-full-package" value="virgo-nano-full"/>
 	
 	<target name="package" depends="ivy.init">		
 		<delete dir="${package.output.dir}" quiet="true"/>
@@ -174,6 +175,12 @@
             <param name="product.file.location" value="${p2.products.location}/nano/nano.product"/>
         </antcall>
         <echo message="Published nano product to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/nano-full/nano-full.product"/>
+        </antcall>
+        <echo message="Published nano-full product to ${p2.repository.dir}."/>
    
         <antcall target="p2.publish-category">
             <param name="repository" value="${p2.repository.dir}"/>
@@ -188,14 +195,32 @@
         </antcall>
         <echo message="Installed Virgo Nano for distribution purposes."/>
         
-        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        <antcall target="p2.install-virgo-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="destination" value="${package.dir}/${nano-full-package}-${bundle.version}"/>
+            <param name="product.iu" value="nano-full.product"/>
+        </antcall>
+        <echo message="Installed Virgo Nano Full for distribution purposes."/>
         
+        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        <delete dir="${package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
+        
+        <property name="nano.package.dir" value="${package.dir}/${package.basename}"/>
         <zip destfile="${package.output.file}">
-			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${package.dir}">
-				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			<zipfileset dir="${nano.package.dir}" includes="bin/*.sh" filemode="755"/>
+			<zipfileset dir="${nano.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${nano.package.dir}">
+				<exclude name="bin/*.sh"/>
+				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			</zipfileset>
+		</zip>
+        <property name="nano.full.package.dir" value="${package.dir}/${nano-full-package}-${bundle.version}"/>
+        <zip destfile="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip">
+			<zipfileset dir="${nano.full.package.dir}" includes="bin/*.sh" filemode="755"/>
+			<zipfileset dir="${nano.full.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${nano.full.package.dir}">
+				<exclude name="bin/*.sh"/>
+				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
         <zip destfile="${updatesite.output.file}">
@@ -208,6 +233,24 @@
         <delete dir="${scripts.location}" quiet="true"/>
         <delete dir="${tools.dir}" quiet="true"/>
 		
+     </target>
+     
+     <target name="publish-multiple-nano-packages-build" description="Uploads all Nano zipped packages to build.eclipse.org">
+        <antcall target="publish-package-build">
+            <param name="package.output.file" value="${package.output.file}"/>
+        </antcall>
+        <antcall target="publish-package-build">
+            <param name="package.output.file" value="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip"/>
+        </antcall>
+     </target>
+     
+     <target name="publish-multiple-nano-packages-download" description="Uploads all Nano zipped packages to download.eclipse.org">
+        <antcall target="publish-package-download">
+            <param name="package.output.file" value="${package.output.file}"/>
+        </antcall>
+        <antcall target="publish-package-download">
+            <param name="package.output.file" value="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip"/>
+        </antcall>
      </target>
     
     <target name="ci.publish.nightly" depends="package" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudson only!">
