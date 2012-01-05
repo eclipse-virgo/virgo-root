@@ -31,15 +31,6 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
 
-    <!--P2 publishing properties-->
-    <property name="publishing.dir" value="${basedir}/target/repository"/>
-    <property name="distro.res" value="${basedir}/distro_resources"/>
-    <property name="p2.repo.url" value="file:///${publishing.dir}"/>
-    <property name="product.file" value="${basedir}/org.eclipse.virgo.kernel.product"/>
-    <property name="lib.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.product"/>
-    <property name="lib.kernel.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.kernel.product"/>
-    <property name="repository.ext.product.file" value="${basedir}/org.eclipse.virgo.kernel.repository.ext.product"/>
-
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, package, smoke-test"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
         
@@ -98,10 +89,10 @@
 		<ivy:resolve resolveId="copy.path" file="${basedir}/repository-ext-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/repository/ext/[artifact]_[revision].[ext]" conf="repository-ext" type="jar"/>
 
-		<mkdir dir="${kernel.resources}/config"/>
+		<mkdir dir="${kernel.resources}/configuration"/>
 
-		<copy todir="${kernel.resources}/config" failonerror="false">
-			<fileset dir="${basedir}/config" excludes="org.eclipse.virgo.kernel.userregion.properties"/>
+		<copy todir="${kernel.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration" excludes="org.eclipse.virgo.kernel.userregion.properties"/>
 		</copy>
         
         <copy todir="${kernel.resources}" failonerror="false">
@@ -143,10 +134,10 @@
         <!-- Assemble and prepare for publishing the Kernel's specific resources -->
         <property name="specific.resources" value="${target.dir}/specific_resources"/>
         <mkdir dir="${specific.resources}/lib"/>
-        <mkdir dir="${specific.resources}/config"/>
+        <mkdir dir="${specific.resources}/configuration"/>
         
-        <copy todir="${specific.resources}/config" failonerror="false">
-			<fileset dir="${basedir}/config">
+        <copy todir="${specific.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration">
 				<include name="org.eclipse.virgo.kernel.userregion.properties"/>
 			</fileset>
             <filterset>
@@ -172,7 +163,7 @@
 			</filterset>
 		</copy>
         
-        <!-- get and reconfigure the serviceability.xml -->
+        <!-- get and reconfigure the serviceability.xml and .version -->
         <unzip src="${p2.repository.dir}/binary/nano_specific_resources_1.0.0" dest="${specific.resources}">
 			<globmapper from="nano_specific_resources/*" to="*"/>
 		</unzip>
@@ -180,7 +171,7 @@
 			message="virgo.kernel.version=${bundle.version}&#xa;"/>
         
         <replaceregexp match="virgo-nano" replace="virgo-kernel" flags="g"
-				file="${specific.resources}/config/serviceability.xml"/>
+				file="${specific.resources}/configuration/serviceability.xml"/>
         
         <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
         <zip destfile="${specific.resources.location}/binary/kernel_specific_resources">
@@ -235,10 +226,10 @@
         
 		<zip destfile="${package.output.file}">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">
 				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+				<exclude name="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
         <zip destfile="${updatesite.output.file}">
