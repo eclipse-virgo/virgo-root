@@ -24,7 +24,7 @@ KERNEL_HOME=`dirname "$SCRIPT"`/..
 KERNEL_HOME=`cd $KERNEL_HOME; pwd`
 
 #parse args for the script
-TRUSTSTORE_PATH=$KERNEL_HOME/config/keystore
+TRUSTSTORE_PATH=$KERNEL_HOME/configuration/keystore
 TRUSTSTORE_PASSWORD=changeit
 
 shopt -s extglob

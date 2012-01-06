@@ -76,17 +76,7 @@ public final class CommandLinePropertiesSource implements PropertiesSource {
 			}
 		}
 		
-		applyDefaults(configuration);
-		
 		return configuration;
-	}
-	
-	private void applyDefaults(Map<String, Properties> configuration) {
-		Properties properties = getProperties(PID_KERNEL_REGION, configuration);
-		String userArtifacts = properties.getProperty(PROPERTY_USERREGION_COMMANDLINE_ARTIFACTS);
-		if (userArtifacts == null) {
-			properties.put(PROPERTY_USERREGION_COMMANDLINE_ARTIFACTS, "");
-		}		
 	}
 
 	private void processCommand(String command, List<String> arguments, Map<String, Properties> configuration) {

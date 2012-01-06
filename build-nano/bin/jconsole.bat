@@ -19,7 +19,7 @@ if exist "%SCRIPT_DIR%setupVars.bat" (
 )
 
 rem Set defaults
-  set TRUSTSTORE_PATH=%KERNEL_HOME%\config\keystore
+  set TRUSTSTORE_PATH=%KERNEL_HOME%\configuration\keystore
   set TRUSTSTORE_PASSWORD=changeit
   set OTHER_ARGS=
   
