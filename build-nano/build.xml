@@ -37,6 +37,7 @@
 		<copy file="${basedir}/configuration/keystore" todir="${common.resources}/configuration" failonerror="false"/>
         
         <property name="common.resources.location" value="${target.dir}/common_resources_zipped"/>
+        <mkdir dir="${common.resources.location}/binary"/>
         <zip destfile="${common.resources.location}/binary/nano_common_resources">
 			<zipfileset dir="${common.resources}"/>
 		</zip>
@@ -54,6 +55,7 @@
 		</copy>
         
         <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
+        <mkdir dir="${specific.resources.location}/binary"/>
         <zip destfile="${specific.resources.location}/binary/nano_specific_resources">
 			<zipfileset dir="${specific.resources}"/>
 		</zip>
@@ -66,6 +68,7 @@
 		</copy>
 		
         <property name="scripts.location" value="${target.dir}/scripts_zipped"/>
+        <mkdir dir="${scripts.location}/binary"/>
 		<zip destfile="${scripts.location}/binary/scripts">
 			<zipfileset dir="${scripts}"/>
 		</zip>
@@ -206,6 +209,7 @@
         <delete dir="${package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
         
         <property name="nano.package.dir" value="${package.dir}/${package.basename}"/>
+        <mkdir dir="${artifacts.dir}"/>
         <zip destfile="${package.output.file}">
 			<zipfileset dir="${nano.package.dir}" includes="bin/*.sh" filemode="755"/>
 			<zipfileset dir="${nano.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
