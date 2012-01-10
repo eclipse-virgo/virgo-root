@@ -40,16 +40,14 @@ public class CommandLinePropertiesSourceTests {
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
 		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
-		assertNotNull(properties);
-		
-		assertEquals("", properties.get("commandLineArtifacts"));
+		assertEquals(null, properties);
 		
 		assertEquals(0, this.eventLogger.getLoggedEvents().size());
 	}
 	
 	@Test
 	public void singlePlanWithVersion() {
-		this.bundleContext.addProperty("org.eclipse.virgo.osgi.launcher.unrecognizedArguments", "-plan,foo,1");
+		this.bundleContext.addProperty("eclipse.commands", "-plan\nfoo\n1");
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
@@ -63,7 +61,7 @@ public class CommandLinePropertiesSourceTests {
 	
 	@Test
 	public void singlePlanWithoutVersion() {
-		this.bundleContext.addProperty("org.eclipse.virgo.osgi.launcher.unrecognizedArguments", "-plan,foo");
+		this.bundleContext.addProperty("eclipse.commands", "-plan\nfoo");
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
@@ -77,7 +75,7 @@ public class CommandLinePropertiesSourceTests {
 	
 	@Test
 	public void multiplePlans() {
-		this.bundleContext.addProperty("org.eclipse.virgo.osgi.launcher.unrecognizedArguments", "-plan,foo,-plan,bar,1.2.3");
+		this.bundleContext.addProperty("eclipse.commands", "-plan\nfoo\n-plan\nbar\n1.2.3");
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
@@ -91,14 +89,12 @@ public class CommandLinePropertiesSourceTests {
 	
 	@Test
 	public void planWithMissingArguments() {
-		this.bundleContext.addProperty("org.eclipse.virgo.osgi.launcher.unrecognizedArguments", "-plan");
+		this.bundleContext.addProperty("eclipse.commands", "-plan");
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
 		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
-		assertNotNull(properties);
-		
-		assertEquals("", properties.get("commandLineArtifacts"));
+		assertEquals(null, properties);
 		
 		List<LoggedEvent> loggedEvents = this.eventLogger.getLoggedEvents();
 		assertEquals(1, loggedEvents.size());
@@ -108,14 +104,12 @@ public class CommandLinePropertiesSourceTests {
 	
 	@Test
 	public void planWithSurplusArguments() {
-		this.bundleContext.addProperty("org.eclipse.virgo.osgi.launcher.unrecognizedArguments", "-plan,foo,bar,1.2.3");
+		this.bundleContext.addProperty("eclipse.commands", "-plan\nfoo\nbar\n1.2.3");
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
 		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
-		assertNotNull(properties);
-		
-		assertEquals("", properties.get("commandLineArtifacts"));
+		assertEquals(null, properties);
 		
 		List<LoggedEvent> loggedEvents = this.eventLogger.getLoggedEvents();
 		assertEquals(1, loggedEvents.size());

@@ -28,7 +28,7 @@ public final class CommandLinePropertiesSource implements PropertiesSource {
 	
 	private static final String PROPERTY_USERREGION_COMMANDLINE_ARTIFACTS = "commandLineArtifacts";
 
-	private static final String PROPERTY_UNRECOGNIZED_LAUNCHER_ARGUMENTS = "org.eclipse.virgo.osgi.launcher.unrecognizedArguments";
+	private static final String PROPERTY_UNRECOGNIZED_LAUNCHER_ARGUMENTS = "eclipse.commands";
 	
 	private static final String COMMAND_PREFIX = "-";
 	
@@ -54,7 +54,7 @@ public final class CommandLinePropertiesSource implements PropertiesSource {
 		Map<String, Properties> configuration = new HashMap<String, Properties>();
 		
 		if (this.unrecognizedArguments != null) {
-			String[] components = this.unrecognizedArguments.split(",");
+			String[] components = this.unrecognizedArguments.split("\n");
 			
 			List<String> arguments = null;
 			String command = null;
