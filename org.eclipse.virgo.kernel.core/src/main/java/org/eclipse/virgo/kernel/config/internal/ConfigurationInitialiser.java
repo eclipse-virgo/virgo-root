@@ -52,10 +52,11 @@ public final class ConfigurationInitialiser {
             throw new IllegalStateException("ConfigurationAdmin service missing");
         }
         KernelConfiguration configuration = new KernelConfiguration(context);
-
+    
         publishConfiguration(context, eventLogger, configuration, configAdmin);
         this.configAdminExporter = initializeConfigAdminExporter(context, configuration, configAdmin);
         initializeDumpContributor(context, configAdmin);
+        initializeConsoleConfigurationConvertor(context, configAdmin);
         return configuration;
 
     }
@@ -80,6 +81,11 @@ public final class ConfigurationInitialiser {
         this.tracker.track(context.registerService(ConfigurationListener.class.getName(), exporter, null));
         exporter.init();
         return exporter;
+    }
+    
+    private void initializeConsoleConfigurationConvertor(BundleContext context, ConfigurationAdmin configAdmin) {
+    	ConsoleConfigurationConvertor consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context, configAdmin);
+    	consoleConfigurationConvertor.start();
     }
 
     public void stop() {

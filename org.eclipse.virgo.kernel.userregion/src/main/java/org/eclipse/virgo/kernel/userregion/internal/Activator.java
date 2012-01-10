@@ -137,6 +137,7 @@ public class Activator implements BundleActivator {
         scheduleInitialArtifactDeployerCreation(context, eventLogger);
         
         context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
+        initializeConsoleConfigurationConvertor(context);
         this.stateDumpMBeanExorter = new StateDumpMBeanExporter(quasiFrameworkFactory);
     }
     
@@ -221,6 +222,11 @@ public class Activator implements BundleActivator {
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
         thread.start();
+    }
+    
+    private void initializeConsoleConfigurationConvertor(BundleContext context) {
+    	ConsoleConfigurationConvertor consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context);
+    	consoleConfigurationConvertor.start();
     }
 
     /**
