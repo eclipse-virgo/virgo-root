@@ -35,7 +35,7 @@ public class ServiceUtils {
 
     private static volatile int maxSecondsWaitForService = DEFAULT_STARTUP_WAIT_LIMIT;
 
-    private static volatile long maxMillisWaitForService = TimeUnit.SECONDS.toMillis(DEFAULT_STARTUP_WAIT_LIMIT);
+    private static volatile long maxMillisWaitForService = 0;
 
     private static final Object monitor = new Object();
 
