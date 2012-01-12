@@ -184,6 +184,12 @@
             <param name="product.file.location" value="${p2.products.location}/nano-full/nano-full.product"/>
         </antcall>
         <echo message="Published nano-full product to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/nano-full-noscripts/nano-full-noscripts.product"/>
+        </antcall>
+        <echo message="Published nano-full-noscripts product to ${p2.repository.dir}."/>
    
         <antcall target="p2.publish-category">
             <param name="repository" value="${p2.repository.dir}"/>
