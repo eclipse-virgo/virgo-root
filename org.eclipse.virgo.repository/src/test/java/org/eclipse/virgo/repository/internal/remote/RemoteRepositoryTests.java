@@ -316,7 +316,6 @@ public class RemoteRepositoryTests {
 
     void pollUntilDescriptorAvailable(Repository repository, String type, String name, VersionRange version) {
         while (repository.get(type, name, version) == null) {
-            ;
         }
     }
 
@@ -352,7 +351,6 @@ public class RemoteRepositoryTests {
         sendProperIndex.set(true);
 
         while (repository.get("dummy", "dummy", new VersionRange("[2,2]")) == null) {
-            ;
         }
 
         repository.stop();
@@ -390,7 +388,6 @@ public class RemoteRepositoryTests {
         sendProperIndex.set(true);
 
         while (repository.get("dummy", "dummy", new VersionRange("[2,2]")) == null) {
-            ;
         }
 
         sendProperIndex.set(false);
