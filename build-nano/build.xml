@@ -93,6 +93,7 @@
 				<filter token="NANO.VERSION" value="${bundle.version}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
+                <filter token="LOGBACK.VERSION" value="${ch.qos.logback}"/>
 				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
                 <filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
                 <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>

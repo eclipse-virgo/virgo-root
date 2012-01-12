@@ -25,6 +25,12 @@
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.region" rev="${org.eclipse.equinox.region}" conf="nano-runtime->runtime"/>
+        
+        <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
+		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="nano-runtime->runtime"/>
+		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="nano-runtime->runtime"/>
 		
 		<exclude org="org.aspectj" module="com.springsource.org.aspectj.runtime"/>
 		<exclude org="org.jboss.logging"/>

@@ -31,5 +31,28 @@
          install-size="0"
          version="@MEDIC.VERSION@"
          unpack="false"/>
-
+   <plugin
+         id="org.eclipse.virgo.medic.logbackcorefragment"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="org.eclipse.virgo.medic.logbackclassicfragment"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="com.springsource.ch.qos.logback.classic"
+         download-size="0"
+         install-size="0"
+         version="@LOGBACK.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="com.springsource.ch.qos.logback.core"
+         download-size="0"
+         install-size="0"
+         version="@LOGBACK.VERSION@"
+         unpack="false"/>
 </feature>
