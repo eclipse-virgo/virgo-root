@@ -11,12 +11,15 @@
 
 package org.eclipse.virgo.kernel.userregion.internal;
 
+import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.PROPERTY_KERNEL_STARTUP_WAIT_LIMIT;
+import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.getPotentiallyDelayedService;
+import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.getWaitLimitSeconds;
+
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.equinox.region.RegionDigraph;
@@ -31,7 +34,6 @@ import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.services.work.WorkArea;
@@ -74,41 +76,37 @@ import org.osgi.service.packageadmin.PackageAdmin;
 @SuppressWarnings("deprecation")
 public class Activator implements BundleActivator {
 
-    private static final long MAX_SECONDS_WAIT_FOR_SERVICE = 30;
-
-    private static final long MAX_MILLIS_WAIT_FOR_SERVICE = TimeUnit.SECONDS.toMillis(MAX_SECONDS_WAIT_FOR_SERVICE);
-
     private static final long SYSTEM_BUNDLE_ID = 0;
 
     private static final String PROPERTY_USER_REGION_ARTIFACTS = "initialArtifacts";
 
     private static final String PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS = "commandLineArtifacts";
-    
+
     private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
-    
+
     private static final String KERNEL_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel";
 
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
     private volatile EquinoxHookRegistrar hookRegistrar;
 
-	private StateDumpMBeanExporter stateDumpMBeanExorter;
+    private StateDumpMBeanExporter stateDumpMBeanExorter;
 
     /**
      * {@inheritDoc}
      */
     public void start(BundleContext context) throws Exception {
-    	publishConfigurations(context);
+        publishConfigurations(context);
         ResolutionFailureDetective rfd = createResolutionFailureDetective(context);
         Repository repository = getPotentiallyDelayedService(context, Repository.class);
         PackageAdmin packageAdmin = getPotentiallyDelayedService(context, PackageAdmin.class);
 
         EventLogger eventLogger = getPotentiallyDelayedService(context, EventLoggerFactory.class).createEventLogger(context.getBundle());
-        
+
         RegionDigraph regionDigraph = getPotentiallyDelayedService(context, RegionDigraph.class);
-        
+
         WorkArea workArea = getPotentiallyDelayedService(context, WorkArea.class);
-        
+
         ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));
 
@@ -118,7 +116,8 @@ public class Activator implements BundleActivator {
         this.registrationTracker.track(context.registerService(OsgiFramework.class.getName(), osgiFramework, null));
 
         DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
-        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph, dumpExtractor);
+        QuasiFrameworkFactory quasiFrameworkFactory = createQuasiFrameworkFactory(context, rfd, repository, bundleTransformerHandler, regionDigraph,
+            dumpExtractor);
         this.registrationTracker.track(context.registerService(QuasiFrameworkFactory.class.getName(), quasiFrameworkFactory, null));
 
         EquinoxHookRegistrar hookRegistrar = createHookRegistrar(context, packageAdmin, bundleTransformerHandler);
@@ -135,31 +134,34 @@ public class Activator implements BundleActivator {
         this.registrationTracker.track(context.registerService(ModuleContextAccessor.class.getName(), new EmptyModuleContextAccessor(), properties));
 
         scheduleInitialArtifactDeployerCreation(context, eventLogger);
-        
+
         context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
         this.stateDumpMBeanExorter = new StateDumpMBeanExporter(quasiFrameworkFactory);
     }
-    
+
     /**
      * This method gets the kernel and user regions configurations from the kernel region and publishes them in the
      * configuration admin in the user region.
+     * 
      * @throws Exception
      */
     private void publishConfigurations(BundleContext context) throws Exception {
-    	ConfigurationExporter configurationExporter = getPotentiallyDelayedService(context, ConfigurationExporter.class);
-		ConfigurationAdmin admin = getPotentiallyDelayedService(context, ConfigurationAdmin.class);
+        ConfigurationExporter configurationExporter = getPotentiallyDelayedService(context, ConfigurationExporter.class);
+        ConfigurationAdmin admin = getPotentiallyDelayedService(context, ConfigurationAdmin.class);
 
-		try {
-			publishConfigurationFromKernelRegion(configurationExporter.getUserRegionConfigurationProperties(), admin.getConfiguration(USER_REGION_CONFIGURATION_PID));
-			publishConfigurationFromKernelRegion(configurationExporter.getKernelRegionConfigurationProperties(), admin.getConfiguration(KERNEL_REGION_CONFIGURATION_PID));
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to publish required configurations. Startup sequence can't continue", e);
-		}
+        try {
+            publishConfigurationFromKernelRegion(configurationExporter.getUserRegionConfigurationProperties(),
+                admin.getConfiguration(USER_REGION_CONFIGURATION_PID));
+            publishConfigurationFromKernelRegion(configurationExporter.getKernelRegionConfigurationProperties(),
+                admin.getConfiguration(KERNEL_REGION_CONFIGURATION_PID));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to publish required configurations. Startup sequence can't continue", e);
+        }
     }
 
-	private void publishConfigurationFromKernelRegion(Dictionary<?, ?> configurationProperties, Configuration config) throws IOException {
-		config.update(configurationProperties);
-	}
+    private void publishConfigurationFromKernelRegion(Dictionary<?, ?> configurationProperties, Configuration config) throws IOException {
+        config.update(configurationProperties);
+    }
 
     private ResolutionFailureDetective createResolutionFailureDetective(BundleContext context) {
         PlatformAdmin platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class).getService();
@@ -170,9 +172,10 @@ public class Activator implements BundleActivator {
         TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
         return new EquinoxOsgiFramework(context, packageAdmin, bundleTransformerHandler);
     }
-    
+
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
-        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, RegionDigraph regionDigraph, DumpExtractor dumpExtractor) {
+        Repository repository, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler, RegionDigraph regionDigraph,
+        DumpExtractor dumpExtractor) {
         return new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleTransformerHandler, regionDigraph, dumpExtractor);
     }
 
@@ -230,9 +233,9 @@ public class Activator implements BundleActivator {
         this.registrationTracker.unregisterAll();
 
         StateDumpMBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
-        if(localStateDumpMBeanExporter != null){
-        	localStateDumpMBeanExporter.close();
-        	this.stateDumpMBeanExorter = null;
+        if (localStateDumpMBeanExporter != null) {
+            localStateDumpMBeanExporter.close();
+            this.stateDumpMBeanExorter = null;
         }
 
         EquinoxHookRegistrar hookRegistrar = this.hookRegistrar;
@@ -270,7 +273,7 @@ public class Activator implements BundleActivator {
                 this.registrationTracker.track(context.registerService(new String[] { "org.osgi.framework.hooks.service.FindHook",
                     "org.osgi.framework.hooks.service.EventHook" }, serviceScopingRegistryHook, null));
             } catch (TimeoutException te) {
-                this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, MAX_SECONDS_WAIT_FOR_SERVICE);
+                this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, getWaitLimitSeconds(), PROPERTY_KERNEL_STARTUP_WAIT_LIMIT);
                 shutdown.immediateShutdown();
             } catch (InterruptedException ie) {
                 this.eventLogger.log(UserRegionLogEvents.USERREGION_START_INTERRUPTED, ie);
@@ -319,7 +322,7 @@ public class Activator implements BundleActivator {
 
                 initialArtifactDeployer.deployArtifacts();
             } catch (TimeoutException te) {
-                this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, MAX_SECONDS_WAIT_FOR_SERVICE);
+                this.eventLogger.log(UserRegionLogEvents.KERNEL_SERVICE_NOT_AVAILABLE, te, getWaitLimitSeconds(), PROPERTY_KERNEL_STARTUP_WAIT_LIMIT);
                 shutdown.immediateShutdown();
             } catch (InterruptedException ie) {
                 this.eventLogger.log(UserRegionLogEvents.USERREGION_START_INTERRUPTED, ie);
@@ -338,34 +341,7 @@ public class Activator implements BundleActivator {
                 throw new RuntimeException("Failed to read region artifact configuration", ioe);
             }
         }
- 
+
     }
 
-    private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass) throws TimeoutException, InterruptedException {
-        T service = null;
-        OsgiServiceHolder<T> serviceHolder;
-        long millisWaited = 0;
-        while (service == null && millisWaited <= MAX_MILLIS_WAIT_FOR_SERVICE) {
-            try {
-                serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
-                if (serviceHolder != null) {
-                    service = serviceHolder.getService();
-                } else {
-                    millisWaited += sleepABitMore();
-                }
-            } catch (IllegalStateException e) {
-            }
-        }
-        if (service == null) {
-            throw new TimeoutException(serviceClass.getName());
-        }
-        return service;
-    }
-
-    private static long sleepABitMore() throws InterruptedException {
-        long before = System.currentTimeMillis();
-        Thread.sleep(100);
-        return (System.currentTimeMillis() - before);
-    }
-  
 }
