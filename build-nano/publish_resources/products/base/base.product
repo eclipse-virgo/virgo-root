@@ -50,7 +50,8 @@
 		<property name="org.eclipse.virgo.medic.log.config.path" value="configuration/serviceability.xml"/>
 		<property name="osgi.context.bootdelegation" value="false"/>
 		<property name="eclipse.enableStateSaver" value="false"/>
-		<property name="osgi.hook.configurators.include" value="org.eclipse.virgo.osgi.extensions.equinox.hooks.ExtensionsHookConfigurator"/>	
+		<property name="osgi.hook.configurators.include" value="org.eclipse.virgo.osgi.extensions.equinox.hooks.ExtensionsHookConfigurator"/>
+		<property name="org.eclipse.virgo.kernel.startup.wait.limit" value="180"/>
 	</configurations>
 
 </product>
