@@ -14,9 +14,13 @@ package org.eclipse.virgo.kernel.core.internal;
 import java.lang.management.ManagementFactory;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.InstanceNotFoundException;
@@ -47,7 +51,6 @@ import org.osgi.framework.launch.Framework;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * ComponentContext activator that initialises the core of the Kernel.
@@ -134,11 +137,8 @@ public class CoreBundleActivator {
 
     @SuppressWarnings("unchecked")
     private BundleStartTracker createAndRegisterBundleStartTracker(BundleContext context) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setThreadNamePrefix(START_SIGNALLING_THREAD_NAME_PREFIX);
-        executor.setQueueCapacity(0);
-        executor.initialize();
-        
+    	BlockingQueue q = new SynchronousQueue();
+    	ThreadPoolExecutor executor = new ThreadPoolExecutor(1, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, q, new PrefixingThreadFactory(START_SIGNALLING_THREAD_NAME_PREFIX), new ThreadPoolExecutor.AbortPolicy());
     	BundleStartTracker asynchronousStartTracker = new BundleStartTracker(executor);
     	asynchronousStartTracker.initialize(context);
     	
@@ -236,4 +236,28 @@ public class CoreBundleActivator {
         }
         return result;
     }
+    
+    private class PrefixingThreadFactory implements ThreadFactory {
+		private int threadCount = 0;
+		private final Object threadCountMonitor = new Object();
+		String prefix = "default-thread-prefix";
+		
+		public PrefixingThreadFactory(String prefix) {
+			this.prefix = prefix;
+		}
+		
+		@Override
+		public Thread newThread(Runnable r) {
+			return new Thread(r, nextThreadName());
+		}
+		
+		private String nextThreadName() {
+			int threadNumber = 0;
+			synchronized (this.threadCountMonitor) {
+				this.threadCount++;
+				threadNumber = this.threadCount;
+			}
+			return this.prefix + threadNumber;
+		}
+	}
 }

@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleUtils;
@@ -29,10 +30,6 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.osgi.extender.support.ApplicationContextConfiguration;
-
 
 /**
  * <code>BundleStartTracker</code> tracks the startup of bundles, including any asynchronous portion of the startup,
@@ -73,9 +70,9 @@ final class BundleStartTracker implements EventHandler {
 
     private final BundleListener bundleListener = new StartupTrackerBundleListener();
     
-    private final TaskExecutor signalExecutor;
+    private final ExecutorService signalExecutor;
     
-    BundleStartTracker(TaskExecutor signalExecutor) {
+    BundleStartTracker(ExecutorService signalExecutor) {
         this.signalExecutor = signalExecutor;
     }
 
@@ -220,9 +217,7 @@ final class BundleStartTracker implements EventHandler {
     }
 
     private static boolean isSpringDmPoweredBundle(Bundle bundle) {
-        ApplicationContextConfiguration springDmConfiguration = new ApplicationContextConfiguration(bundle);
-        boolean springDmPowered = springDmConfiguration.isSpringPoweredBundle();
-        return springDmPowered;
+        return SpringUtils.isSpringDMPoweredBundle(bundle);
     }
 
     private final class StartupTrackerBundleListener implements SynchronousBundleListener {
@@ -280,12 +275,6 @@ final class BundleStartTracker implements EventHandler {
      * 
      */
     public void stop() {
-        if (this.signalExecutor instanceof DisposableBean) {
-            try {
-                ((DisposableBean) this.signalExecutor).destroy();
-            } catch (Exception e) {
-                LOGGER.debug("Failure when attempting to destroy signal executor", e);
-            }
-        }
+    	this.signalExecutor.shutdownNow();
     }
 }

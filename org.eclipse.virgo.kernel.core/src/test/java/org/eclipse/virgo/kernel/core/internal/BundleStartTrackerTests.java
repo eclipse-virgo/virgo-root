@@ -25,7 +25,6 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.service.event.Event;
-import org.springframework.core.task.SyncTaskExecutor;
 
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.internal.BundleStartTracker;

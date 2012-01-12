@@ -17,7 +17,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.util.Assert;
 
 
 
@@ -184,7 +183,9 @@ public final class StandardTicker<V> implements Ticker, Callable<V> {
      */
     private long getCurrentTimeMillis() {
         long currentTimeMillis = System.currentTimeMillis();
-        Assert.isTrue(currentTimeMillis >= this.lastTickMillis, "Time must not go backwards");
+        if (currentTimeMillis < this.lastTickMillis) {
+        	throw new IllegalArgumentException("Time must not go backwards");
+        }
         return currentTimeMillis;
     }
 

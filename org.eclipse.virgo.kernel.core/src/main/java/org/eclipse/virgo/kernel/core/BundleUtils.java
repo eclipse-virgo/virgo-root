@@ -13,8 +13,8 @@ package org.eclipse.virgo.kernel.core;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
-import org.springframework.osgi.extender.support.ApplicationContextConfiguration;
 
+import org.eclipse.virgo.kernel.core.internal.SpringUtils;
 import org.eclipse.virgo.util.common.StringUtils;
 
 
@@ -35,7 +35,7 @@ public final class BundleUtils {
      * @return <code>true</code> if the <code>Bundle</code> is Spring-DM powered, otherwise <code>false</code>.
      */
     public static boolean isSpringOsgiPoweredBundle(Bundle bundle) {
-        return new ApplicationContextConfiguration(bundle).isSpringPoweredBundle();
+        return SpringUtils.isSpringDMPoweredBundle(bundle);
     }        
     
     /**
