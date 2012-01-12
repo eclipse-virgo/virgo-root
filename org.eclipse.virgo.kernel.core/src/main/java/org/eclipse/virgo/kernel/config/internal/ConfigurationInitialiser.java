@@ -40,6 +40,8 @@ public final class ConfigurationInitialiser {
 
     public KernelConfiguration start(BundleContext context, EventLogger eventLogger) throws IOException {
 
+        //The ConfigurationAdmin service is already available because the caller of this method(CoreBundleActivator.activate)
+        //is a DS component that statically requires it
         ServiceReference<ConfigurationAdmin> configurationAdminReference = context.getServiceReference(ConfigurationAdmin.class);
 
         ConfigurationAdmin configAdmin = null;
@@ -56,6 +58,7 @@ public final class ConfigurationInitialiser {
         publishConfiguration(context, eventLogger, configuration, configAdmin);
         this.configAdminExporter = initializeConfigAdminExporter(context, configuration, configAdmin);
         initializeDumpContributor(context, configAdmin);
+        initializeConsoleConfigurationConvertor(context, configAdmin);
         return configuration;
 
     }
@@ -80,6 +83,11 @@ public final class ConfigurationInitialiser {
         this.tracker.track(context.registerService(ConfigurationListener.class.getName(), exporter, null));
         exporter.init();
         return exporter;
+    }
+    
+    private void initializeConsoleConfigurationConvertor(BundleContext context, ConfigurationAdmin configAdmin) {
+        ConsoleConfigurationConvertor consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context, configAdmin);
+        consoleConfigurationConvertor.start();
     }
 
     public void stop() {
