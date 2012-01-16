@@ -1,3 +1,4 @@
+
 package org.eclipse.virgo.kernel.config.internal;
 
 import java.io.IOException;
@@ -15,13 +16,21 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * This class reads the merged shell configuration and registers it separated in the @link(ConfigurationAdmin).
+ * <p />
+ * 
+ * <strong>Concurrent Semantics</strong><br />
+ * Thread-safe.
+ */
 public class ConsoleConfigurationConvertor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private BundleContext context;
+    private final BundleContext context;
 
-    private ConfigurationAdmin configAdmin;
+    private final ConfigurationAdmin configAdmin;
 
     private ServiceRegistration<ManagedService> configuratorRegistration;
 
@@ -49,6 +58,8 @@ public class ConsoleConfigurationConvertor {
 
     private static final String ENABLED = "enabled";
 
+    private static final Object monitor = new Object();
+
     ConsoleConfigurationConvertor(BundleContext context, ConfigurationAdmin configAdmin) {
         this.context = context;
         this.configAdmin = configAdmin;
@@ -57,12 +68,14 @@ public class ConsoleConfigurationConvertor {
     public void start() {
         Dictionary<String, String> consoleProperties = new Hashtable<String, String>();
         consoleProperties.put(Constants.SERVICE_PID, CONSOLE_PID);
-        configuratorRegistration = context.registerService(ManagedService.class, new ConsoleConfigurator(), consoleProperties);
+        synchronized (ConsoleConfigurationConvertor.monitor) {
+            this.configuratorRegistration = this.context.registerService(ManagedService.class, new ConsoleConfigurator(), consoleProperties);
+        }
     }
 
     private void updateConfiguration(String pid, String host, String port, String enabled) {
         try {
-            Configuration configuration = configAdmin.getConfiguration(pid, null);
+            Configuration configuration = this.configAdmin.getConfiguration(pid, null);
             Properties properties = new Properties();
             properties.put(HOST, host);
             properties.put(PORT, port);
@@ -70,8 +83,8 @@ public class ConsoleConfigurationConvertor {
             configuration.update(properties);
         } catch (IOException e) {
             String message = String.format("Unable to update configuration with pid '%s'", pid);
-            logger.error(message);
-            logger.trace(message, e);
+            this.logger.error(message);
+            this.logger.trace(message, e);
         }
     }
 
@@ -83,21 +96,22 @@ public class ConsoleConfigurationConvertor {
         public void updated(Dictionary props) throws ConfigurationException {
             if (props != null) {
                 this.properties = props;
-                properties.put(Constants.SERVICE_PID, CONSOLE_PID);
+                this.properties.put(Constants.SERVICE_PID, CONSOLE_PID);
             } else {
                 return;
             }
+            synchronized (ConsoleConfigurationConvertor.monitor) {
+                ConsoleConfigurationConvertor.this.configuratorRegistration.setProperties(this.properties);
+            }
 
-            configuratorRegistration.setProperties(properties);
-
-            String telnetHost = (String) properties.get(TELNET_HOST);
-            String telnetPort = (String) properties.get(TELNET_PORT);
-            String telnetEnabled = (String) properties.get(TELNET_ENABLED);
+            String telnetHost = (String) this.properties.get(TELNET_HOST);
+            String telnetPort = (String) this.properties.get(TELNET_PORT);
+            String telnetEnabled = (String) this.properties.get(TELNET_ENABLED);
             updateConfiguration(TELNET_PID, telnetHost, telnetPort, telnetEnabled);
 
-            String sshHost = (String) properties.get(SSH_HOST);
-            String sshPort = (String) properties.get(SSH_PORT);
-            String sshEnabled = (String) properties.get(SSH_ENABLED);
+            String sshHost = (String) this.properties.get(SSH_HOST);
+            String sshPort = (String) this.properties.get(SSH_PORT);
+            String sshEnabled = (String) this.properties.get(SSH_ENABLED);
             updateConfiguration(SSH_PID, sshHost, sshPort, sshEnabled);
         }
     }
