@@ -49,6 +49,11 @@
 				<documentation><![CDATA[The name of the artifact.]]></documentation>
 			</annotation>
 		</attribute>
+		<attribute name="url" type="string" use="optional" >
+			<annotation>
+				<documentation><![CDATA[The URL of the artifact. This attribute is optional and when not specified will result in the repository being searched for the artifact.]]></documentation>
+			</annotation>
+		</attribute>
 		<attribute name="version" type="string" use="optional" default="0">
             <annotation>
             	<documentation><![CDATA[The version or version range for this artifact.
