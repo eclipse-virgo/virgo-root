@@ -11,7 +11,6 @@
 
 	<dependencies>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.agent.dm" rev="latest.integration"/>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer.dm" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.dmfragment" rev="latest.integration"/>

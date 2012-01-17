@@ -2,7 +2,6 @@
 <project name="build-kernel" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<path id="unit.test.bundles">
-		<pathelement location="../org.eclipse.virgo.kernel.core"/>
 		<pathelement location="../org.eclipse.virgo.kernel.artifact"/>
 		<pathelement location="../org.eclipse.virgo.kernel.services"/>
 		<pathelement location="../org.eclipse.virgo.kernel.osgi"/>

@@ -34,7 +34,7 @@
 		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.supportability" rev="${org.eclipse.equinox.console.supportability}" conf="test->runtime" />
 
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="test->compile"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shell" rev="latest.integration" conf="test->runtime"/>
