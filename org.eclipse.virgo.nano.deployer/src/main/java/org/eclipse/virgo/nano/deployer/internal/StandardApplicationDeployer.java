@@ -35,9 +35,15 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private void doStart(URI uri, Bundle installed) throws DeploymentException {
         try {
-            eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installed.getSymbolicName() + "_" + installed.getVersion());
-            installed.start();
-            eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installed.getSymbolicName() + "_" + installed.getVersion());
+            if (recogniseArtifactType(uri.toString()).equals(WAR)) {
+                eventLogger.log(NanoDeployerLogEvents.NANO_WEB_STARTING, installed.getSymbolicName(), installed.getVersion(), "/" + installed.getSymbolicName());
+                installed.start();
+                eventLogger.log(NanoDeployerLogEvents.NANO_WEB_STARTED, installed.getSymbolicName(), installed.getVersion(), "/" + installed.getSymbolicName());
+            } else {
+                eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installed.getSymbolicName(), installed.getVersion());
+                installed.start();
+                eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installed.getSymbolicName(), installed.getVersion());
+            }
         } catch (BundleException e) {
             throw new DeploymentException("Failed to start artifact installed from " + uri, e);
         }
@@ -53,7 +59,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
             } else {
                 installed = this.bundleContext.installBundle(uri.toString());
             }
-            eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName() + "_" + installed.getVersion());
+            eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
         } catch (BundleException e) {
             throw new DeploymentException("Failed to install artifact from " + uri, e);
         }
@@ -101,13 +107,13 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     public void undeploy(String type, String name, String version) throws DeploymentException {
         Bundle toUndeploy = getBundleBy(name);
         
-        eventLogger.log(NanoDeployerLogEvents.NANO_STOPPING, toUndeploy.getSymbolicName() + "_" + toUndeploy.getVersion());
+        eventLogger.log(NanoDeployerLogEvents.NANO_STOPPING, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
         doStop(name, toUndeploy);
-        eventLogger.log(NanoDeployerLogEvents.NANO_STOPPED, toUndeploy.getSymbolicName() + "_" + toUndeploy.getVersion());
+        eventLogger.log(NanoDeployerLogEvents.NANO_STOPPED, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
         
-        eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLING, toUndeploy.getSymbolicName() + "_" + toUndeploy.getVersion());
+        eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLING, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
         doUninstall(name, toUndeploy);
-        eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLED, toUndeploy.getSymbolicName() + "_" + toUndeploy.getVersion());
+        eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLED, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
     }
 
     private void doUninstall(String name, Bundle toUndeploy) throws DeploymentException {
