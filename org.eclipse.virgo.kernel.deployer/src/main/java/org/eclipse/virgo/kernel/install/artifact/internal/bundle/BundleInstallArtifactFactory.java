@@ -78,6 +78,8 @@ final class BundleInstallArtifactFactory {
 
         StandardBundleInstallArtifact bundleInstallArtifact = new StandardBundleInstallArtifact(identity, bundleManifest, artifactStorage, bundleDriver, artifactStateMonitor, this.refreshHandler, repositoryName, this.eventLogger, this.identityDeterminer);
 
+        //TODO: need to set identity version from bundleManifest etc. Best to use supertype method.
+        
         bundleDriver.setInstallArtifact(bundleInstallArtifact);
 
         return bundleInstallArtifact;

@@ -96,6 +96,9 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
         String type = specification.getType();
         String name = specification.getName();
         VersionRange versionRange = specification.getVersionRange();
+        
+        // TODO: if url is supplied, need to determine the artifact's version
+        
         RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
         if (artifactDescriptor == null) {
             this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
