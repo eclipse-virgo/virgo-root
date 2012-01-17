@@ -50,11 +50,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/3.1.0.M01/org.eclipse.virgo.medic.test-3.1.0.M01.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/3.1.0.M01/org.eclipse.virgo.medic.test-sources-3.1.0.M01.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.artifact"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.1.0.M01/org.eclipse.virgo.teststubs.osgi-3.1.0.M01.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/1.0.0.CI-B39/org.eclipse.virgo.teststubs.osgi-sources-1.0.0.CI-B39.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.5.0.M02/org.eclipse.virgo.teststubs.osgi-3.5.0.M02.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/1.0.0.CI-B39/org.eclipse.virgo.teststubs.osgi-sources-1.0.0.CI-B39.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.event/1.2.100.v20110110/org.eclipse.equinox.event-1.2.100.v20110110.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.1.0.BUILD-20120117073757/org.eclipse.virgo.deployer.api-3.1.0.BUILD-20120117073757.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.hot/3.1.0.BUILD-20120117073757/org.eclipse.virgo.deployer.hot-3.1.0.BUILD-20120117073757.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.5.0.M02/org.eclipse.virgo.deployer.api-3.5.0.M02.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.hot/3.5.0.M02/org.eclipse.virgo.deployer.hot-3.5.0.M02.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
