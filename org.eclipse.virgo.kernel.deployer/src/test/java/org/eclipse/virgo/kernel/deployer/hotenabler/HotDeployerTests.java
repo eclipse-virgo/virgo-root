@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.hot;
+package org.eclipse.virgo.kernel.deployer.hotenabler;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -83,8 +83,8 @@ public class HotDeployerTests {
 
         replay(deployerConfiguration);
 
-        HotDeployer deployer = new HotDeployer(deployerConfiguration, this.deployer, new MockEventLogger());
-        deployer.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", (Map<String, ?>)null));
+        HotDeployerEnabler enabler = new HotDeployerEnabler(deployerConfiguration, this.deployer, new MockEventLogger());
+        enabler.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", (Map<String, ?>)null));
 
         try {
             // Deployer.start() is asynchronous: sleep long
@@ -96,7 +96,7 @@ public class HotDeployerTests {
 
         PathReference copy = sourceFile.copy(PICKUP_DIR);
         pauseOnCreate(copy, 4000, 4000);
-        deployer.stop();
+        enabler.stop();
 
         verify(this.deployer);
     }
