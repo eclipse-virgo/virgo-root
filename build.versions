@@ -2,13 +2,14 @@
 org.eclipse.virgo.kernel=3.1.0.D-20120105235247
 org.eclipse.virgo.repository=3.1.0.M01
 org.eclipse.virgo.util=3.1.0.M01
-org.eclipse.virgo.medic=3.1.0.M01
+org.eclipse.virgo.medic=3.1.0.D-20111222170736
 javax.servlet=3.0.0.v201103241009
 org.eclipse.osgi=3.7.1.R37x_v20110808-1106
 org.eclipse.equinox.event=1.2.100.v20110110
 org.springframework=3.0.5.RELEASE
 org.springframework.osgi=1.2.1
 org.eclipse.gemini.web=2.1.0.BUILD-20120114220114
+org.eclipse.virgo.nano=3.1.0.BUILD-20120117073757
 org.aspectj=1.6.6.RELEASE
 org.slf4j=1.6.1
 org.slf4j.spi=1.6.1

@@ -18,6 +18,8 @@
 
 	<dependencies>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="${org.eclipse.virgo.nano}" conf="provided->runtime"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.core" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.dm" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.tomcat.support" rev="latest.integration"/>
