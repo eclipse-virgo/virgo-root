@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.virgo.core"
+      id="org.eclipse.virgo.nano.deployer"
       label="%featureName"
       version="@NANO.VERSION@"
       provider-name="%providerName"
@@ -22,20 +22,8 @@
       <import feature="org.eclipse.virgo.ds" version="0.0.0"/>
    </requires>
 
-   <plugin
-         id="org.eclipse.virgo.kernel.core"
-         download-size="0"
-         install-size="0"
-         version="@NANO.VERSION@"
-         unpack="false"/>
     <plugin
-         id="org.eclipse.virgo.deployer.api"
-         download-size="0"
-         install-size="0"
-         version="@NANO.VERSION@"
-         unpack="false"/>
-    <plugin
-         id="org.eclipse.virgo.deployer.hot"
+         id="org.eclipse.virgo.nano.deployer"
          download-size="0"
          install-size="0"
          version="@NANO.VERSION@"

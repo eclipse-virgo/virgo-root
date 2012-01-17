@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Deployer API
+Bundle-SymbolicName: org.eclipse.virgo.deployer.api
+Bundle-Version: ${version}
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
+ org.osgi.framework.*;version="0",
+ javax.management.*;version="0",
+ javax.xml.*;version="0",
+ org.xml.*;version="0",
+ org.w3c.*;version="0"
+Excluded-Exports:
+ *.internal.*
