@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 VMware Inc.
+ * Copyright (c) 2008, 2012 VMware Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,16 @@
 
 package org.eclipse.virgo.kernel.artifact;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
- * An <code>ArtifactSpecification</code> is a reference to an artifact by type, name and version <i>range</i>.
+ * An <code>ArtifactSpecification</code> is a reference to an artifact by type, name and version <i>range</i> with an
+ * optional URL to bypass repository lookup.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -25,6 +28,8 @@ import org.eclipse.virgo.util.osgi.manifest.VersionRange;
  * 
  */
 public final class ArtifactSpecification {
+
+    private static final Map<String, String> IMMUTABLE_EMPTY_MAP = Collections.<String, String> emptyMap();
 
     private final String type;
 
@@ -34,29 +39,106 @@ public final class ArtifactSpecification {
 
     private final Map<String, String> properties;
 
-    public ArtifactSpecification(String type, String name, VersionRange versionRange) {
-        this(type, name, versionRange, null);
+    private final URL url;
+
+    /**
+     * Constructs a {@link ArtifactSpecification} with the given type, name, and version range and <code>null</code> URL
+     * and properties.
+     * 
+     * @param type the type of the artifact specification, which must not be <code>null</code>
+     * @param name the name of the artifact specification, which must not be <code>null</code>
+     * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
+     */
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange) {
+        this(type, name, versionRange, null, null);
     }
 
-    public ArtifactSpecification(String type, String name, VersionRange versionRange, Map<String, String> properties) {
+    /**
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and URL and with
+     * <code>null</code> properties.
+     * 
+     * @param type the type of the artifact specification, which must not be <code>null</code>
+     * @param name the name of the artifact specification, which must not be <code>null</code>
+     * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
+     * @param url the URL of the artifact specification, which may be <code>null</code>
+     */
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URL url) {
+        this(type, name, versionRange, url, null);
+    }
+
+    /**
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and properties and with a
+     * <code>null</code> URL.
+     * 
+     * @param type the type of the artifact specification, which must not be <code>null</code>
+     * @param name the name of the artifact specification, which must not be <code>null</code>
+     * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
+     * @param properties the properties of the artifact specification, which may be <code>null</code>
+     */
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, Map<String, String> properties) {
+        this(type, name, versionRange, null, properties);
+    }
+
+    /**
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, URL, and properties.
+     * 
+     * @param type the type of the artifact specification, which must not be <code>null</code>
+     * @param name the name of the artifact specification, which must not be <code>null</code>
+     * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
+     * @param url the URL of the artifact specification, which may be <code>null</code>
+     * @param properties the properties of the artifact specification, which may be <code>null</code>
+     */
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URL url,
+        Map<String, String> properties) {
         this.type = type;
         this.name = name;
         this.versionRange = versionRange;
-        this.properties = properties == null ? Collections.<String, String> emptyMap() : Collections.unmodifiableMap(properties);
+        this.url = url;
+        this.properties = properties == null ? IMMUTABLE_EMPTY_MAP : Collections.unmodifiableMap(properties);
     }
 
+    /**
+     * Returns the type.
+     * 
+     * @return the type, neverl <code>null</code>
+     */
     public String getType() {
-        return type;
+        return this.type;
     }
 
+    /**
+     * Returns the name.
+     * 
+     * @return the name, never <code>null</code>
+     */
     public String getName() {
-        return name;
+        return this.name;
     }
 
+    /**
+     * Returns the version range.
+     * 
+     * @return a {@link VersionRange}, never <code>null</code>
+     */
     public VersionRange getVersionRange() {
-        return versionRange;
+        return this.versionRange;
     }
 
+    /**
+     * Returns the URL. If a URL was not specified, returns <code>null</code>.
+     * 
+     * @return a {@link URL} or <code>null</code>
+     */
+    public URL getUrl() {
+        return this.url;
+    }
+
+    /**
+     * Returns the properties. If properties were not specified, returns an empty map. The returned properties may not
+     * be modified.
+     * 
+     * @return a properties map, never <code>null</code>
+     */
     public Map<String, String> getProperties() {
         return this.properties;
     }

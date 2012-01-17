@@ -14,6 +14,8 @@ package org.eclipse.virgo.kernel.artifact;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,10 +40,38 @@ public class ArtifactSpecificationTests {
         ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"));
         assertNotNull(spec.getProperties());
     }
-    
+
     @Test(expected=UnsupportedOperationException.class)
     public void testPropertiesImmutable() {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("foo", "bar");
+        ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"), props);
+        spec.getProperties().put("a", "b");
+    }
+    
+    
+    @Test(expected=UnsupportedOperationException.class)
+    public void testEmptyPropertiesImmutable() {
         ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"));
         spec.getProperties().put("foo", "bar");
     }
+    
+    @Test
+    public void testCreateWithUrlAndProperties() throws Exception {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("foo", "bar");
+        URL url = new URL("file:x.y");
+        ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"), url, props);
+        assertEquals(url, spec.getUrl());
+    }
+    
+    @Test
+    public void testCreateWithUrlWithoutProperties() throws Exception {
+        URL url = new URL("file:x.y");
+        ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"), url);
+        assertEquals(url, spec.getUrl());
+    }
+    
+    
+
 }
