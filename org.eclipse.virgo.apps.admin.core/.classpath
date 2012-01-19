@@ -23,7 +23,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/APPS_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.services/3.5.0.M02/org.eclipse.virgo.kernel.services-3.5.0.M02.jar"/>
-	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/3.5.0.M02/org.eclipse.virgo.kernel.core-3.5.0.M02.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/2.0.0.D-164/org.eclipse.virgo.kernel.core-sources-2.0.0.D-164.jar"/>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.5.0.M02/org.eclipse.virgo.kernel.core-3.5.0.M02.jar" sourcepath="/APPS_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.core/2.0.0.D-164/org.eclipse.virgo.kernel.core-sources-2.0.0.D-164.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.springframework/org.springframework.context/3.0.5.RELEASE/org.springframework.context-3.0.5.RELEASE.jar" sourcepath="/APPS_IVY_CACHE/org.springframework/org.springframework.context/3.0.5.RELEASE/org.springframework.context-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-3.0.5.RELEASE.jar" sourcepath="/APPS_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.springframework/org.springframework.beans/3.0.5.RELEASE/org.springframework.beans-3.0.5.RELEASE.jar" sourcepath="/APPS_IVY_CACHE/org.springframework/org.springframework.beans/3.0.5.RELEASE/org.springframework.beans-sources-3.0.5.RELEASE.jar"/>
@@ -43,5 +43,6 @@
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.M02/org.eclipse.virgo.util.io-3.5.0.M02.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.5.0.M02/org.eclipse.virgo.util.osgi.manifest-3.5.0.M02.jar"/>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.artifact/3.5.0.M02/org.eclipse.virgo.kernel.artifact-3.5.0.M02.jar"/>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.5.0.M02/org.eclipse.virgo.deployer.api-3.5.0.M02.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
