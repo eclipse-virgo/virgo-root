@@ -18,13 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
@@ -37,12 +30,17 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ArtifactIdentityScoper;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardInstallArtifactGraphInclosure} is a default implementation of {@link InstallArtifactGraphInclosure}
@@ -93,27 +91,38 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
     @Override
     public GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification specification, String scopeName, Provisioning parentProvisioning)
         throws DeploymentException {
-        String type = specification.getType();
-        String name = specification.getName();
-        VersionRange versionRange = specification.getVersionRange();
-        
-        // TODO: if url is supplied, need to determine the artifact's version
-        
-        RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
-        if (artifactDescriptor == null) {
-            this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
-            throw new DeploymentException(type + " '" + name + "' version '" + versionRange + "' not found");
+
+        ArtifactIdentity identity;
+        String repositoryName = null;
+
+        URI artifactUri = specification.getUri();
+
+        if (artifactUri == null) {
+            String type = specification.getType();
+            String name = specification.getName();
+            VersionRange versionRange = specification.getVersionRange();
+
+            RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
+            if (artifactDescriptor == null) {
+                this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
+                throw new DeploymentException(type + " '" + name + "' version '" + versionRange + "' not found");
+            }
+
+            artifactUri = artifactDescriptor.getUri();
+
+            identity = new ArtifactIdentity(type, name, artifactDescriptor.getVersion(), scopeName);
+            repositoryName = artifactDescriptor.getRepositoryName();
+            
+        } else {
+            identity = this.artifactIdentityDeterminer.determineIdentity(new File(artifactUri), scopeName);
         }
 
-        URI artifactURI = artifactDescriptor.getUri();
+        ArtifactIdentity scopedIdentity = ArtifactIdentityScoper.scopeArtifactIdentity(identity);
 
-        ArtifactIdentity identity = new ArtifactIdentity(type, name, artifactDescriptor.getVersion(), scopeName);
-        identity = ArtifactIdentityScoper.scopeArtifactIdentity(identity);
+        ArtifactStorage artifactStorage = this.artifactStorageFactory.create(new File(artifactUri), scopedIdentity);
 
-        ArtifactStorage artifactStorage = this.artifactStorageFactory.create(new File(artifactURI), identity);
-
-        GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(identity,
-            determineDeploymentProperties(specification, parentProvisioning), artifactStorage, artifactDescriptor.getRepositoryName());
+        GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(scopedIdentity,
+            determineDeploymentProperties(specification, parentProvisioning), artifactStorage, repositoryName);
         return installArtifactGraph;
     }
 

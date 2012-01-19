@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.artifact;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * An <code>ArtifactSpecification</code> is a reference to an artifact by type, name and version <i>range</i> with an
- * optional URL to bypass repository lookup.
+ * optional URI to bypass repository lookup.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -39,10 +39,10 @@ public final class ArtifactSpecification {
 
     private final Map<String, String> properties;
 
-    private final URL url;
+    private final URI uri;
 
     /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, and version range and <code>null</code> URL
+     * Constructs a {@link ArtifactSpecification} with the given type, name, and version range and <code>null</code> URI
      * and properties.
      * 
      * @param type the type of the artifact specification, which must not be <code>null</code>
@@ -54,21 +54,21 @@ public final class ArtifactSpecification {
     }
 
     /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and URL and with
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and URI and with
      * <code>null</code> properties.
      * 
      * @param type the type of the artifact specification, which must not be <code>null</code>
      * @param name the name of the artifact specification, which must not be <code>null</code>
      * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
-     * @param url the URL of the artifact specification, which may be <code>null</code>
+     * @param uri the URI of the artifact specification, which may be <code>null</code>
      */
-    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URL url) {
-        this(type, name, versionRange, url, null);
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URI uri) {
+        this(type, name, versionRange, uri, null);
     }
 
     /**
      * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and properties and with a
-     * <code>null</code> URL.
+     * <code>null</code> URI.
      * 
      * @param type the type of the artifact specification, which must not be <code>null</code>
      * @param name the name of the artifact specification, which must not be <code>null</code>
@@ -80,20 +80,20 @@ public final class ArtifactSpecification {
     }
 
     /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, URL, and properties.
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, URI, and properties.
      * 
      * @param type the type of the artifact specification, which must not be <code>null</code>
      * @param name the name of the artifact specification, which must not be <code>null</code>
      * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
-     * @param url the URL of the artifact specification, which may be <code>null</code>
+     * @param uri the URI of the artifact specification, which may be <code>null</code>
      * @param properties the properties of the artifact specification, which may be <code>null</code>
      */
-    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URL url,
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URI uri,
         Map<String, String> properties) {
         this.type = type;
         this.name = name;
         this.versionRange = versionRange;
-        this.url = url;
+        this.uri = uri;
         this.properties = properties == null ? IMMUTABLE_EMPTY_MAP : Collections.unmodifiableMap(properties);
     }
 
@@ -125,12 +125,12 @@ public final class ArtifactSpecification {
     }
 
     /**
-     * Returns the URL. If a URL was not specified, returns <code>null</code>.
+     * Returns the URI. If a URI was not specified, returns <code>null</code>.
      * 
-     * @return a {@link URL} or <code>null</code>
+     * @return a {@link URI} or <code>null</code>
      */
-    public URL getUrl() {
-        return this.url;
+    public URI getUri() {
+        return this.uri;
     }
 
     /**
