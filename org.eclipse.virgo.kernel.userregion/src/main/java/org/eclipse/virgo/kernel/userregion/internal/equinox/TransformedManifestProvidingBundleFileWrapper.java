@@ -179,7 +179,7 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
         /**
          * {@inheritDoc}
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public Enumeration getEntryPaths(String path) {
             return this.bundleFile.getEntryPaths(path);

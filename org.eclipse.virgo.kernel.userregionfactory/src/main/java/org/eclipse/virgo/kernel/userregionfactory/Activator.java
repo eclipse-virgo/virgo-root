@@ -110,9 +110,6 @@ public final class Activator {
 
     private DumpGenerator dumpGenerator;
 
-    /**
-     * {@inheritDoc}
-     */
     public void activate(ComponentContext componentContext) throws Exception {
         this.bundleContext = componentContext.getBundleContext();
         this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
@@ -357,9 +354,6 @@ public final class Activator {
         this.bundleContext.registerService(BundleContext.class, userRegionBundleContext, properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void deactivate(ComponentContext context) throws Exception {
     }
 

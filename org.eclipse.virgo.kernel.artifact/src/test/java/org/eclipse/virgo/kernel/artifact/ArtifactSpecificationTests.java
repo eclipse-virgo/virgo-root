@@ -14,15 +14,12 @@ package org.eclipse.virgo.kernel.artifact;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-
-import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+import org.junit.Test;
 
 
 public class ArtifactSpecificationTests {
