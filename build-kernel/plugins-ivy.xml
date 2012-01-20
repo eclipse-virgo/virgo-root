@@ -9,9 +9,9 @@
 	</configurations>
 
 	<dependencies>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="latest.integration" conf="lib-kernel->runtime"/>
-        <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="lib-kernel->runtime"/>
-		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='lib-kernel->runtime' />
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="latest.integration" conf="plugins->runtime"/>
+        <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="plugins->runtime"/>
+		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='plugins->runtime' />
 		
 		<!-- The exclude of Equinox (org="org.eclipse.osgi" module="org.eclipse.osgi") does not work. 
 		This is due to the transitive dependency from org.eclipse.virgo.osgi.equinox on org.eclipse.osgi
