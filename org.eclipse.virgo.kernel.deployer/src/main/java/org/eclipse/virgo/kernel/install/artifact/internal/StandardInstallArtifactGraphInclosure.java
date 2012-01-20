@@ -158,7 +158,7 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
 
             return constructGraphNode(artifactIdentity, artifact, properties, repositoryName);
         } catch (Exception e) {
-            throw new DeploymentException(e.getMessage(), e);
+            throw new DeploymentException(e.getMessage() + ": uri='" + artifactUri + "'", e);
         }
     }
 

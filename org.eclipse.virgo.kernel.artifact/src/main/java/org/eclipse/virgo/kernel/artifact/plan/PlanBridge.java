@@ -23,6 +23,7 @@ import org.eclipse.virgo.repository.HashGenerator;
 import org.eclipse.virgo.repository.builder.ArtifactDescriptorBuilder;
 import org.eclipse.virgo.repository.builder.AttributeBuilder;
 import org.eclipse.virgo.util.io.IOUtils;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
  * An {@link ArtifactBridge} that reads and parses a .plan file.
@@ -106,7 +107,8 @@ public class PlanBridge implements ArtifactBridge {
             attributeBuilder.setValue("");
             attributeBuilder.putProperties(TYPE, artifact.getType());
             attributeBuilder.putProperties(NAME, artifact.getName());
-            attributeBuilder.putProperties(VERSION, artifact.getVersionRange().toParseString());
+            VersionRange versionRange = artifact.getVersionRange();
+            attributeBuilder.putProperties(VERSION, versionRange == null ? "" : versionRange.toParseString());
             builder.addAttribute(attributeBuilder.build());
         }
     }

@@ -63,6 +63,7 @@ public class PlanResolver implements Transformer {
         if (installArtifact instanceof PlanInstallArtifact) {
             PlanInstallArtifact planInstallArtifact = (PlanInstallArtifact) installArtifact;
             if (planInstallArtifact.getGraph().getChildren().isEmpty()) {
+                try {
                 String scopeName = getArtifactScopeName(planInstallArtifact);
                 GraphNode<InstallArtifact> graph = planInstallArtifact.getGraph();
                 List<ArtifactSpecification> artifactSpecifications = planInstallArtifact.getArtifactSpecifications();
@@ -75,6 +76,8 @@ public class PlanResolver implements Transformer {
                     // pipeline stage.
                     InstallArtifact childInstallArtifact = childInstallArtifactGraph.getValue();
                     ((AbstractInstallArtifact) childInstallArtifact).beginInstall();
+                }} catch (DeploymentException de) {
+                    throw new DeploymentException("Deployment of " + planInstallArtifact +" failed: " + de.getMessage(), de);
                 }
             }
         }
