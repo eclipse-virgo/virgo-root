@@ -56,7 +56,7 @@ rem ------------------------------
   )
 
   rem Set defaults
-    set CONFIG_DIR=%KERNEL_HOME%\config
+    set CONFIG_DIR=%KERNEL_HOME%\configuration
     set CLEAN_FLAG=
     set NO_START_FLAG=
     set DEBUG_FLAG=
