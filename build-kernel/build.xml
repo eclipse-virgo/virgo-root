@@ -38,20 +38,20 @@
 		
 		<condition property="dependancy.folder" value="milestone" else="${adjusted.release.type}">
 			<or>
-				<contains string="${org.eclipse.virgo.kernel}" substring=".M"/>
-				<contains string="${org.eclipse.virgo.kernel}" substring=".RC"/>
+				<contains string="${org.eclipse.virgo.nano}" substring=".M"/>
+				<contains string="${org.eclipse.virgo.nano}" substring=".RC"/>
 			</or>
 		</condition>
 		
 		<condition property="dependancy.folder" value="release" else="${adjusted.release.type}">
-			<contains string="${org.eclipse.virgo.kernel}" substring=".RELEASE"/>
+			<contains string="${org.eclipse.virgo.nano}" substring=".RELEASE"/>
 		</condition>
 		
 		<get src="http://build.eclipse.org/rt/virgo/zips/${dependancy.folder}/VN/${org.eclipse.virgo.nano}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip"
 			dest="${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip" 
 			usetimestamp="true" />
 
-		<echo message="Fetched the Nano zip to ${target.dir}/virgo-kernel-${org.eclipse.virgo.kernel}.zip"/>
+		<echo message="Fetched the Nano zip to ${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip"/>
 	</target>
 
 	<target name="package" depends="ivy.init, fetch-nano-updatesite">
@@ -66,8 +66,8 @@
 		<echo message="Fetched the Nano update site zip to ${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip"/>
         
         <!-- Assemble the kernel bundles for publishing -->
-        <ivy:resolve resolveId="copy.path" file="${basedir}/kernel-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="lib-kernel" type="jar"/>
+        <ivy:resolve resolveId="copy.path" file="${basedir}/plugins-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="plugins" type="jar"/>
         <!-- Prepare the features for publishing -->
         <copy todir="${target.dir}/assembly/features" failonerror="false">
 			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
@@ -166,8 +166,7 @@
         <unzip src="${p2.repository.dir}/binary/nano_specific_resources_1.0.0" dest="${specific.resources}">
 			<globmapper from="nano_specific_resources/*" to="*"/>
 		</unzip>
-        <echo file="${specific.resources}/lib/.version" append="true"
-			message="virgo.kernel.version=${bundle.version}&#xa;"/>
+        <echo file="${specific.resources}/lib/.version" append="true" message="virgo.kernel.version=${bundle.version}&#xa;"/>
         
         <replaceregexp match="virgo-nano" replace="virgo-kernel" flags="g"
 				file="${specific.resources}/configuration/serviceability.xml"/>
