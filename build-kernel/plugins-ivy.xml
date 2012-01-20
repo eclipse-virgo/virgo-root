@@ -5,7 +5,7 @@
 
 	<configurations>
 		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
-		<conf name="lib-kernel" visibility="public" description="Dependencies to be packaged in lib/kernel"/>
+		<conf name="plugins" visibility="public" description="Dependencies to be packaged in plugins"/>
 	</configurations>
 
 	<dependencies>
