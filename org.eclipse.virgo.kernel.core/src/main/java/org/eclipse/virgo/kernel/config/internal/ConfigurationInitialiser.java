@@ -37,6 +37,8 @@ public final class ConfigurationInitialiser {
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
     
     private volatile ConfigurationAdminExporter configAdminExporter;
+    
+    private ConsoleConfigurationConvertor consoleConfigurationConvertor;
 
     public KernelConfiguration start(BundleContext context, EventLogger eventLogger) throws IOException {
 
@@ -86,12 +88,13 @@ public final class ConfigurationInitialiser {
     }
     
     private void initializeConsoleConfigurationConvertor(BundleContext context, ConfigurationAdmin configAdmin) {
-        ConsoleConfigurationConvertor consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context, configAdmin);
+        consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context, configAdmin);
         consoleConfigurationConvertor.start();
     }
 
     public void stop() {
         this.tracker.unregisterAll();
+        consoleConfigurationConvertor.stop();
         
         ConfigurationAdminExporter local = this.configAdminExporter;
         
