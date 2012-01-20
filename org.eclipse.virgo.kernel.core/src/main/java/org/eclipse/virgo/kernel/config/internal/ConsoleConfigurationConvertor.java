@@ -89,35 +89,20 @@ public class ConsoleConfigurationConvertor {
     }
     
     public void stop() {
-    	Configuration configuration;
-    	
-    	try {
-			configuration = configAdmin.getConfiguration(TELNET_PID, null);
+    	deleteConfiguration(TELNET_PID);
+    	deleteConfiguration(SSH_PID);
+    	deleteConfiguration(CONSOLE_PID);
+    }
+
+    private void deleteConfiguration(String pid) {
+        try {
+  			Configuration configuration = configAdmin.getConfiguration(pid, null);
 			configuration.delete();
     	} catch (IOException e) {
-			String message = String.format("Unable to delete telnet configuration");
+			String message = String.format("Unable to delete configuration with pid: " + pid);
             this.logger.error(message);
             this.logger.trace(message, e);
 		}
-			
-    	try {
-			configuration = configAdmin.getConfiguration(SSH_PID, null);
-			configuration.delete();
-    	} catch (IOException e) {
-			String message = String.format("Unable to delete ssh configuration");
-            this.logger.error(message);
-            this.logger.trace(message, e);
-		}
-		
-    	try {
-			configuration = configAdmin.getConfiguration(CONSOLE_PID, null);
-			configuration.delete();
-    	} catch (IOException e) {
-			String message = String.format("Unable to delete console configuration");
-            this.logger.error(message);
-            this.logger.trace(message, e);
-		}
-		
     }
 
     class ConsoleConfigurator implements ManagedService {
