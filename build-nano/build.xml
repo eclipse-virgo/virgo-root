@@ -276,4 +276,17 @@
         </copy>
         
     </target>
+    
+    <target name="smoke-test" description="Runs a smoke test on the nano packaged build">
+		<path id="smoke.test.bundles">
+			<pathelement location="${basedir}/../org.eclipse.virgo.nano.smoketest" />
+		</path>
+		<antcall target="test.pre"/>
+		<all-bundles target="test-package" buildpathRef="smoke.test.bundles">
+			<property name="package.output.file" value="${package.output.file}"/>
+			<property name="package.basename" value="${package.basename}"/>
+		</all-bundles>
+		<antcall target="test.post"/>
+	</target>
+    
 </project>
