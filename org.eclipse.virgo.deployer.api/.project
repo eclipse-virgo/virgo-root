@@ -5,10 +5,8 @@
 	<projects>
 	</projects>
 	<buildSpec>
-	</buildSpec>
-	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
+			<name>org.eclipse.ajdt.core.ajbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
