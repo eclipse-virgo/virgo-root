@@ -56,14 +56,14 @@ public class ArtifactSpecificationTests {
         Map<String, String> props = new HashMap<String, String>();
         props.put("foo", "bar");
         URI uri = new URI("file:x.y");
-        ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"), uri, props);
+        ArtifactSpecification spec = new ArtifactSpecification(uri, props);
         assertEquals(uri, spec.getUri());
     }
 
     @Test
     public void testCreateWithUrlWithoutProperties() throws Exception {
         URI uri = new URI("file:x.y");
-        ArtifactSpecification spec = new ArtifactSpecification("t", "n", new VersionRange("1.2.3"), uri);
+        ArtifactSpecification spec = new ArtifactSpecification(uri);
         assertEquals(uri, spec.getUri());
     }
 

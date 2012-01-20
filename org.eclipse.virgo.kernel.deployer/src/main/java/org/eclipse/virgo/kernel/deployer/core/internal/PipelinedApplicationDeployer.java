@@ -151,7 +151,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 }
             }
 
-            GraphNode<InstallArtifact> installGraph = this.installArtifactGraphInclosure.createInstallGraph(new File(normalisedUri));
+            GraphNode<InstallArtifact> installGraph = this.installArtifactGraphInclosure.createInstallGraph(normalisedUri);
             DeploymentIdentity deploymentIdentity;
 
             try {

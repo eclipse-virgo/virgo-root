@@ -13,6 +13,7 @@
 package org.eclipse.virgo.kernel.install.artifact;
 
 import java.io.File;
+import java.net.URI;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
@@ -33,7 +34,7 @@ import org.eclipse.virgo.util.common.GraphNode;
 public interface InstallArtifactGraphInclosure {
 
     /**
-     * Create an install graph consisting of the single artifact matching the supplied {@link ArtifactSpecification}.
+     * Create an install graph consisting of the single unscoped artifact matching the supplied {@link ArtifactSpecification}.
      * 
      * @param artifactSpecification the <code>ArtifactSpecification</code>.
      * @return an install graph
@@ -57,13 +58,13 @@ public interface InstallArtifactGraphInclosure {
         throws DeploymentException;
 
     /**
-     * Create an install graph consisting of the single artifact available at the given file URI.
+     * Create an install graph consisting of the single unscoped artifact available at the given file URI.
      * 
-     * @param location the artifact's location
+     * @param uri the artifact's location which must be an absolute file URI
      * @return an install graph
      * @throws DeploymentException if the graph cannot be created
      */
-    GraphNode<InstallArtifact> createInstallGraph(File location) throws DeploymentException;
+    GraphNode<InstallArtifact> createInstallGraph(URI uri) throws DeploymentException;
 
     /**
      * Optionally recover an install graph from the staging area using the given file URI to identify the artifact. The

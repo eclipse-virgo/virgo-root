@@ -19,8 +19,8 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**
- * An <code>ArtifactSpecification</code> is a reference to an artifact by type, name and version <i>range</i> with an
- * optional URI to bypass repository lookup.
+ * An <code>ArtifactSpecification</code> is a reference to an artifact by type, name and version <i>range</i> or URI,
+ * but not both, together with some properties.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -37,13 +37,12 @@ public final class ArtifactSpecification {
 
     private final VersionRange versionRange;
 
-    private final Map<String, String> properties;
-
     private final URI uri;
 
+    private final Map<String, String> properties;
+
     /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, and version range and <code>null</code> URI
-     * and properties.
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range and no properties.
      * 
      * @param type the type of the artifact specification, which must not be <code>null</code>
      * @param name the name of the artifact specification, which must not be <code>null</code>
@@ -54,42 +53,51 @@ public final class ArtifactSpecification {
     }
 
     /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and URI and with
-     * <code>null</code> properties.
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and properties.
      * 
      * @param type the type of the artifact specification, which must not be <code>null</code>
      * @param name the name of the artifact specification, which must not be <code>null</code>
      * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
-     * @param uri the URI of the artifact specification, which may be <code>null</code>
+     * @param properties the properties of the artifact specification, which must not be <code>null</code>
      */
-    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URI uri) {
-        this(type, name, versionRange, uri, null);
-    }
-
-    /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, and properties and with a
-     * <code>null</code> URI.
-     * 
-     * @param type the type of the artifact specification, which must not be <code>null</code>
-     * @param name the name of the artifact specification, which must not be <code>null</code>
-     * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
-     * @param properties the properties of the artifact specification, which may be <code>null</code>
-     */
-    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, Map<String, String> properties) {
+    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange,
+        @NonNull Map<String, String> properties) {
         this(type, name, versionRange, null, properties);
     }
 
     /**
-     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, URI, and properties.
+     * Constructs a {@link ArtifactSpecification} with the given URI and with no properties.
      * 
-     * @param type the type of the artifact specification, which must not be <code>null</code>
-     * @param name the name of the artifact specification, which must not be <code>null</code>
-     * @param versionRange the version range of the artifact specification, which must not be <code>null</code>
-     * @param uri the URI of the artifact specification, which may be <code>null</code>
+     * @param uri the URI of the artifact specification, which must not be <code>null</code>
+     */
+    public ArtifactSpecification(@NonNull URI uri) {
+        this(null, null, null, uri, null);
+    }
+
+    /**
+     * Constructs a {@link ArtifactSpecification} with the given URI and with no properties.
+     * 
+     * @param uri the URI of the artifact specification, which must not be <code>null</code>
+     * @param properties the properties of the artifact specification, which must not be <code>null</code>
+     */
+    public ArtifactSpecification(@NonNull URI uri, @NonNull Map<String, String> properties) {
+        this(null, null, null, uri, properties);
+    }
+
+    /**
+     * Constructs a {@link ArtifactSpecification} with the given type, name, version range, URI, and properties.
+     * <p>
+     * Either the type, name, and version range must be non-<code>null</code> and the URI <code>null</code> or the URI
+     * must be non-<code>null</code> and the type, name, and version range <code>null</code>. The properties may be
+     * <code>null</code>.
+     * 
+     * @param type the type of the artifact specification
+     * @param name the name of the artifact specification
+     * @param versionRange the version range of the artifact specification
+     * @param uri the URI of the artifact specification
      * @param properties the properties of the artifact specification, which may be <code>null</code>
      */
-    public ArtifactSpecification(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, URI uri,
-        Map<String, String> properties) {
+    private ArtifactSpecification(String type, String name, VersionRange versionRange, URI uri, Map<String, String> properties) {
         this.type = type;
         this.name = name;
         this.versionRange = versionRange;
@@ -100,7 +108,7 @@ public final class ArtifactSpecification {
     /**
      * Returns the type.
      * 
-     * @return the type, neverl <code>null</code>
+     * @return the type, or <code>null</code> if this artifact specification is by URI
      */
     public String getType() {
         return this.type;
@@ -109,7 +117,7 @@ public final class ArtifactSpecification {
     /**
      * Returns the name.
      * 
-     * @return the name, never <code>null</code>
+     * @return the name, or <code>null</code> if this artifact specification is by URI
      */
     public String getName() {
         return this.name;
@@ -118,7 +126,7 @@ public final class ArtifactSpecification {
     /**
      * Returns the version range.
      * 
-     * @return a {@link VersionRange}, never <code>null</code>
+     * @return a {@link VersionRange}, or <code>null</code> if this artifact specification is by URI
      */
     public VersionRange getVersionRange() {
         return this.versionRange;
@@ -127,7 +135,7 @@ public final class ArtifactSpecification {
     /**
      * Returns the URI. If a URI was not specified, returns <code>null</code>.
      * 
-     * @return a {@link URI} or <code>null</code>
+     * @return a {@link URI} or <code>null</code> if this artifact specification is by type, name, and version range
      */
     public URI getUri() {
         return this.uri;
