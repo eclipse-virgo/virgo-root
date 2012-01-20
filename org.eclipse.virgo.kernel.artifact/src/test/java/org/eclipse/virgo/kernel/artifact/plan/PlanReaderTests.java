@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.artifact.plan;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
@@ -53,6 +54,7 @@ public class PlanReaderTests {
         assertEquals(new VersionRange("[1.0.0, 2.0.0)"), artifactSpecification.getVersionRange());
         assertNotNull(artifactSpecification.getProperties());
         assertTrue(artifactSpecification.getProperties().isEmpty());
+        assertNull(artifactSpecification.getUri());
     }
 
     @Test
@@ -130,4 +132,39 @@ public class PlanReaderTests {
         PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/provisioning-disabled.plan"));
         assertEquals(Provisioning.DISABLED, plan.getProvisioning());
     }
+    
+    @Test
+    public void testSingleUriPlan() throws FileNotFoundException {
+        PlanDescriptor plan = reader.read(new FileInputStream("src/test/resources/plans/single-uri.plan"));
+        assertEquals("single-uri.plan", plan.getName());
+        assertEquals(new Version(1, 0, 0), plan.getVersion());
+        
+        assertEquals(Provisioning.INHERIT, plan.getProvisioning());
+
+        List<ArtifactSpecification> artifactSpecifications = plan.getArtifactSpecifications();
+        assertEquals(1, artifactSpecifications.size());
+        ArtifactSpecification artifactSpecification = artifactSpecifications.iterator().next();
+        assertNull(artifactSpecification.getType());
+        assertNull(artifactSpecification.getName());
+        assertNull(artifactSpecification.getVersionRange());
+        assertNotNull(artifactSpecification.getProperties());
+        assertTrue(artifactSpecification.getProperties().isEmpty());
+        assertEquals("file:/a/b.c", artifactSpecification.getUri().toString());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testInvalidUriWithTypePlan() throws FileNotFoundException {
+        reader.read(new FileInputStream("src/test/resources/plans/invalid-uri-type.plan"));
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testInvalidUriWithNamePlan() throws FileNotFoundException {
+        reader.read(new FileInputStream("src/test/resources/plans/invalid-uri-name.plan"));
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testInvalidUriWithVersionRangePlan() throws FileNotFoundException {
+        reader.read(new FileInputStream("src/test/resources/plans/invalid-uri-versionrange.plan"));
+    }
+
 }
