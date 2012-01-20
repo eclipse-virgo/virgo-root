@@ -39,20 +39,25 @@
 				</annotation>
 			</element>
 		</sequence>
-        <attribute name="type" type="string" use="required" >
+        <attribute name="type" type="string" use="optional" >
 			<annotation>
-				<documentation><![CDATA[The type of the artifact.]]></documentation>
+				<documentation><![CDATA[The type of the artifact. This must be specifed if and only if uri is not specified.]]></documentation>
 			</annotation>
 		</attribute>
-		<attribute name="name" type="string" use="required" >
+		<attribute name="name" type="string" use="optional" >
 			<annotation>
-				<documentation><![CDATA[The name of the artifact.]]></documentation>
+				<documentation><![CDATA[The name of the artifact. This must be specifed if and only if uri is not specified.]]></documentation>
 			</annotation>
 		</attribute>
-		<attribute name="version" type="string" use="optional" default="0">
+		<attribute name="uri" type="string" use="optional" >
+			<annotation>
+				<documentation><![CDATA[The absolute file URI of the artifact. This attribute is optional and when not specified will result in the repository being searched for the artifact.]]></documentation>
+			</annotation>
+		</attribute>
+		<attribute name="version" type="string" use="optional">
             <annotation>
             	<documentation><![CDATA[The version or version range for this artifact.
-This version or version number must meet the OSGi version specification. This attribute is optional and when not specified will result in a default value of "0" meaning 0 to infinity in OSGi.]]></documentation>
+This version or version number must meet the OSGi version specification. This attribute is optional and when neither it nor uri is specified will result in a default value of "0" meaning 0 to infinity in OSGi.]]></documentation>
             </annotation>
 		</attribute>
 	</complexType>

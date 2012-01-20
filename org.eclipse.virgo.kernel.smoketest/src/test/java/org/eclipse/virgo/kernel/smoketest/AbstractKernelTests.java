@@ -75,7 +75,7 @@ public class AbstractKernelTests {
 		env.put(JMXConnector.CREDENTIALS, creds);
 
 		System.setProperty("javax.net.ssl.trustStore", severDir
-				+ "/config/keystore");
+				+ "/configuration/keystore");
 		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 
 		JMXServiceURL url = new JMXServiceURL(

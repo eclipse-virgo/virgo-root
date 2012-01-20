@@ -13,6 +13,8 @@
 
 package org.eclipse.virgo.kernel.userregionfactory;
 
+import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.getPotentiallyDelayedService;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,29 +24,24 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionFilter;
 import org.eclipse.equinox.region.RegionFilterBuilder;
+import org.eclipse.virgo.kernel.core.Shutdown;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
 import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.RequireBundle;
 import org.eclipse.virgo.util.osgi.manifest.RequiredBundle;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -52,6 +49,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
@@ -64,15 +62,11 @@ import org.osgi.service.event.EventAdmin;
  * Not thread safe.
  * 
  */
-public final class Activator implements BundleActivator {
+public final class Activator {
 
     private static final String KERNEL_REGION_NAME = "org.eclipse.equinox.region.kernel";
 
     private static final String CLASS_LIST_SEPARATOR = ",";
-
-    private static final long MAX_SECONDS_WAIT_FOR_SERVICE = 30;
-
-    private static final long MAX_MILLIS_WAIT_FOR_SERVICE = TimeUnit.SECONDS.toMillis(MAX_SECONDS_WAIT_FOR_SERVICE);
 
     private static final String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
@@ -95,7 +89,7 @@ public final class Activator implements BundleActivator {
     private static final String EVENT_PROPERTY_REGION_BUNDLECONTEXT = "region.bundleContext";
 
     private static final String WILDCARD = "*";
-
+    
     private EventAdmin eventAdmin;
 
     private String regionBundles;
@@ -116,12 +110,8 @@ public final class Activator implements BundleActivator {
 
     private DumpGenerator dumpGenerator;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start(BundleContext bundleContext) throws Exception {
-        this.bundleContext = bundleContext;
+    public void activate(ComponentContext componentContext) throws Exception {
+        this.bundleContext = componentContext.getBundleContext();
         this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
         RegionDigraph regionDigraph = getPotentiallyDelayedService(bundleContext, RegionDigraph.class);
         this.eventAdmin = getPotentiallyDelayedService(bundleContext, EventAdmin.class);
@@ -132,7 +122,7 @@ public final class Activator implements BundleActivator {
 
         createUserRegion(regionDigraph, eventLogger);
     }
-
+    
     private void getRegionConfiguration(ConfigurationAdmin configAdmin, EventLogger eventLogger, Shutdown shutdown) {
         try {
             Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
@@ -364,37 +354,7 @@ public final class Activator implements BundleActivator {
         this.bundleContext.registerService(BundleContext.class, userRegionBundleContext, properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void stop(BundleContext context) throws Exception {
+    public void deactivate(ComponentContext context) throws Exception {
     }
 
-    private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass) throws TimeoutException, InterruptedException {
-        T service = null;
-        OsgiServiceHolder<T> serviceHolder;
-        long millisWaited = 0;
-        while (service == null && millisWaited <= MAX_MILLIS_WAIT_FOR_SERVICE) {
-            try {
-                serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
-                if (serviceHolder != null) {
-                    service = serviceHolder.getService();
-                } else {
-                    millisWaited += sleepABitMore();
-                }
-            } catch (IllegalStateException e) {
-            }
-        }
-        if (service == null) {
-            throw new TimeoutException(serviceClass.getName());
-        }
-        return service;
-    }
-
-    private static long sleepABitMore() throws InterruptedException {
-        long before = System.currentTimeMillis();
-        Thread.sleep(100);
-        return System.currentTimeMillis() - before;
-    }
 }

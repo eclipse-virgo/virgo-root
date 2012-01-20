@@ -12,6 +12,5 @@
         <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[3.0, 4.0)"/>
 		<artifact type="bundle" name="org.eclipse.equinox.ds" version="0.0.0"/>
 		<artifact type="bundle" name="org.eclipse.equinox.util" version="0.0.0"/>
-		<artifact type="configuration" name="osgi.console.telnet" version="0"/>
-		<artifact type="configuration" name="osgi.console.ssh" version="0"/>
+		<artifact type="configuration" name="osgi.console" version="0"/>
 </plan>

@@ -14,20 +14,18 @@ package org.eclipse.virgo.kernel.userregion.internal.equinox;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
+import org.eclipse.virgo.kernel.osgi.framework.support.AbstractOsgiFramework;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
-
-import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-import org.eclipse.virgo.kernel.osgi.framework.support.AbstractOsgiFramework;
 
 /**
  * Implementation of <code>OsgiFramework</code> using Equinox.
@@ -51,7 +49,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
      */
     public EquinoxOsgiFramework(BundleContext context, PackageAdmin packageAdmin, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
         super(context, packageAdmin);
-        this.bootDelegationHelper = new EquinoxBootDelegationHelper(FrameworkProperties.getProperty(Constants.FRAMEWORK_BOOTDELEGATION));
+        this.bootDelegationHelper = new EquinoxBootDelegationHelper(FrameworkProperties.getProperty(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION));
         this.platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class);
         this.bundleTransformationHandler = bundleTransformationHandler;
     }

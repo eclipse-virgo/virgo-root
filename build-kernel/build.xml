@@ -2,9 +2,6 @@
 <project name="build-kernel" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<path id="unit.test.bundles">
-		<pathelement location="../org.eclipse.virgo.kernel.shutdown"/>
-		<pathelement location="../org.eclipse.virgo.kernel.authentication"/>
-		<pathelement location="../org.eclipse.virgo.kernel.core"/>
 		<pathelement location="../org.eclipse.virgo.kernel.artifact"/>
 		<pathelement location="../org.eclipse.virgo.kernel.services"/>
 		<pathelement location="../org.eclipse.virgo.kernel.osgi"/>
@@ -33,143 +30,214 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
 
-    <!--P2 publishing properties-->
-    <property name="publishing.dir" value="${basedir}/target/repository"/>
-    <property name="distro.res" value="${basedir}/distro_resources"/>
-    <property name="p2.repo.url" value="file:///${publishing.dir}"/>
-    <property name="product.file" value="${basedir}/org.eclipse.virgo.kernel.product"/>
-    <property name="lib.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.product"/>
-    <property name="lib.kernel.product.file" value="${basedir}/org.eclipse.virgo.kernel.lib.kernel.product"/>
-    <property name="repository.ext.product.file" value="${basedir}/org.eclipse.virgo.kernel.repository.ext.product"/>
-
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, package, smoke-test"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
+        
+    <target name="fetch-nano-updatesite">
+		<mkdir dir="${target.dir}"/>
+		
+		<condition property="dependancy.folder" value="milestone" else="${adjusted.release.type}">
+			<or>
+				<contains string="${org.eclipse.virgo.nano}" substring=".M"/>
+				<contains string="${org.eclipse.virgo.nano}" substring=".RC"/>
+			</or>
+		</condition>
+		
+		<condition property="dependancy.folder" value="release" else="${adjusted.release.type}">
+			<contains string="${org.eclipse.virgo.nano}" substring=".RELEASE"/>
+		</condition>
+		
+		<get src="http://build.eclipse.org/rt/virgo/zips/${dependancy.folder}/VN/${org.eclipse.virgo.nano}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip"
+			dest="${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip" 
+			usetimestamp="true" />
 
-	<target name="package" depends="ivy.init">
+		<echo message="Fetched the Nano zip to ${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip"/>
+	</target>
+
+	<target name="package" depends="ivy.init, fetch-nano-updatesite">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
+        
+        <unzip src="${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip" dest="${p2.repository.dir}">
+			<globmapper from="virgo-nano-updatesite-${org.eclipse.virgo.nano}/*" to="*"/>
+		</unzip>
+        <delete file="${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip" quiet="true"/>
 
+		<echo message="Fetched the Nano update site zip to ${target.dir}/virgo-nano-updatesite-${org.eclipse.virgo.nano}.zip"/>
+        
+        <!-- Assemble the kernel bundles for publishing -->
+        <ivy:resolve resolveId="copy.path" file="${basedir}/plugins-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="plugins" type="jar"/>
+        <!-- Prepare the features for publishing -->
+        <copy todir="${target.dir}/assembly/features" failonerror="false">
+			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
+            <filterset>
+				<filter token="REGION.VERSION" value="${org.eclipse.equinox.region}"/>
+				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
+				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
+                <filter token="SPRING.VERSION" value="${org.springframework}"/>
+            </filterset>
+		</copy>
+        
+        <!-- prepare Kernel's resources - configurations and bundles that are not installed initially -->
+        <property name="kernel.resources" value="${target.dir}/kernel_resources"/>
+        
 		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/lib/[artifact]-[revision].[ext]" conf="lib" type="jar"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
 
-		<ivy:resolve resolveId="copy.path" file="${basedir}/kernel-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/lib/kernel/[artifact]-[revision].[ext]" conf="lib-kernel" type="jar"/>
-		<!-- Workaround for the issue that exclude does not work properly for Equinox in kernel-ivy.xml -->
-		<delete file="${package.output.dir}/lib/kernel/org.eclipse.osgi-${org.eclipse.osgi}.jar"/>
-		
 		<ivy:resolve resolveId="copy.path" file="${basedir}/repository-ext-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${package.output.dir}/repository/ext/[artifact]-[revision].[ext]" conf="repository-ext" type="jar"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/repository/ext/[artifact]_[revision].[ext]" conf="repository-ext" type="jar"/>
 
-		<mkdir dir="${package.output.dir}/config"/>
-		<mkdir dir="${package.output.dir}/work"/>
-		<mkdir dir="${package.output.dir}/pickup"/>
+		<mkdir dir="${kernel.resources}/configuration"/>
 
-		<echo file="${package.output.dir}/lib/.version"
-				message="virgo.kernel.version=${bundle.version}&#xa;"/>
-		
-		<copy todir="${package.output.dir}" failonerror="false">
+		<copy todir="${kernel.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration" excludes="org.eclipse.virgo.kernel.userregion.properties"/>
+		</copy>
+        
+        <copy todir="${kernel.resources}" failonerror="false">
 			<fileset dir="${basedir}/resources"/>
 		</copy>
-
-		<copy todir="${package.output.dir}/bin" failonerror="false">
-			<fileset dir="${basedir}/bin"/>
-		</copy>
-
-		<copy todir="${package.output.dir}/lib" failonerror="false">
-			<fileset dir="${basedir}/lib"/>
-			<filterset>
-				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
-				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
-				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
-				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
-				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
-				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
-				<filter token="EQUINOX.REGION.VERSION" value="${org.eclipse.equinox.region}"/>
-				<filter token="LOGBACK.VERSION" value="${ch.qos.logback}"/>
-				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
-				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
-				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
-				<filter token="SLF4J.VERSION" value="${org.slf4j}"/>
-				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>	
-				<filter token="SPRING.VERSION" value="${org.springframework}"/>
-				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
-				<filter token="OSGI.EXTENSIONS.VERSION" value="${org.eclipse.virgo.osgi}"/>
-				<filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
-                <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
-                <filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
-				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
-				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
-				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console.supportability}"/>
-			</filterset>
-		</copy>
-
-		<copy todir="${package.output.dir}/config" failonerror="false">
-			<fileset dir="${basedir}/config" excludes="keystore"/>
-			<filterset>
-				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
-				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
-				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
-				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
-				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
-				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
-				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
-				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
-				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
-				<filter token="SLF4J.VERSION" value="${org.slf4j}"/>
-				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>	
-				<filter token="SPRING.VERSION" value="${org.springframework}"/>
-				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
-				<filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
-                <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
-                <filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
-				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
-				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
-				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console.supportability}"/>
-			</filterset>
-		</copy>
 		
-		<copy todir="${package.output.dir}/repository/ext" failonerror="false">
+		<copy todir="${kernel.resources}/repository/ext" failonerror="false">
 			<fileset dir="${basedir}/repository/ext"/>
 		</copy>
 		
-		<copy todir="${package.output.dir}/repository/ext" failonerror="false">
-			<fileset dir="${package.output.dir}/lib/kernel">
-				<include name="org.eclipse.virgo.kernel.agent.dm-*.jar"/>
+		<copy todir="${kernel.resources}/repository/ext" failonerror="false">
+			<fileset dir="${target.dir}/assembly/plugins">
+				<include name="org.eclipse.virgo.kernel.agent.dm_*.jar"/>
+			</fileset>
+		</copy>
+        <!-- Prepare these two as part of the resources. They need a later installation, not with the other initial kernel region bundles. -->
+        <copy todir="${kernel.resources}/plugins" failonerror="false">
+			<fileset dir="${target.dir}/assembly/plugins">
+				<include name="org.eclipse.virgo.kernel.userregion_*.jar"/>
+                <include name="org.eclipse.virgo.kernel.osgicommand_*.jar"/>
 			</fileset>
 		</copy>
 		
-		<move todir="${package.output.dir}/repository/ext" failonerror="false">
-			<fileset dir="${package.output.dir}/lib/kernel">
-				<include name="org.eclipse.virgo.kernel.dmfragment-*.jar"/>
-				<include name="org.eclipse.virgo.kernel.deployer.dm-*.jar"/>
+		<move todir="${kernel.resources}/repository/ext" failonerror="false">
+			<fileset dir="${target.dir}/assembly/plugins">
+				<include name="org.eclipse.virgo.kernel.dmfragment_*.jar"/>
+				<include name="org.eclipse.virgo.kernel.deployer.dm_*.jar"/>
 			</fileset>
 		</move>
 		
-		<mkdir dir="${package.output.dir}/repository/usr"/>
+		<mkdir dir="${kernel.resources}/repository/usr"/>
+        
+        <property name="kernel.resources.location" value="${target.dir}/kernel_resources_zipped"/>
+		<zip destfile="${kernel.resources.location}/binary/kernel_resources">
+			<zipfileset dir="${kernel.resources}"/>
+		</zip>
+        <delete dir="${kernel.resources}" quiet="true"/>
+        
+        <!-- Assemble and prepare for publishing the Kernel's specific resources -->
+        <property name="specific.resources" value="${target.dir}/specific_resources"/>
+        <mkdir dir="${specific.resources}/lib"/>
+        <mkdir dir="${specific.resources}/configuration"/>
+        
+        <copy todir="${specific.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration">
+				<include name="org.eclipse.virgo.kernel.userregion.properties"/>
+			</fileset>
+            <filterset>
+				<filter token="ASPECTJ.VERSION" value="${org.aspectj}"/>
+				<filter token="OSGI.SERVICES.VERSION" value="${org.eclipse.osgi.services}"/>
+				<filter token="EQUINOX.EVENT.VERSION" value="${org.eclipse.equinox.event}"/>
+				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
+				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
+				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
+				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
+				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
+				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
+				<filter token="SLF4J.VERSION" value="${org.slf4j}"/>
+				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>	
+				<filter token="SPRING.VERSION" value="${org.springframework}"/>
+				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
+				<filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
+                <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
+                <filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
+				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
+				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
+				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console.supportability}"/>
+			</filterset>
+		</copy>
+        
+        <!-- get and reconfigure the serviceability.xml and .version -->
+        <unzip src="${p2.repository.dir}/binary/nano_specific_resources_1.0.0" dest="${specific.resources}">
+			<globmapper from="nano_specific_resources/*" to="*"/>
+		</unzip>
+        <echo file="${specific.resources}/lib/.version" append="true" message="virgo.kernel.version=${bundle.version}&#xa;"/>
+        
+        <replaceregexp match="virgo-nano" replace="virgo-kernel" flags="g"
+				file="${specific.resources}/configuration/serviceability.xml"/>
+        
+        <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
+        <zip destfile="${specific.resources.location}/binary/kernel_specific_resources">
+			<zipfileset dir="${specific.resources}"/>
+		</zip>
+        <delete dir="${specific.resources}" quiet="true"/>
 		
-		<copy file="${basedir}/config/keystore" todir="${package.output.dir}/config" failonerror="false"/>
-
-		<chmod perm="600">
-			<fileset dir="${package.output.dir}/config">
-				<include name="org.eclipse.virgo.kernel.jmxremote.access.properties"/>
-			</fileset>
-		</chmod>
-
-		<chmod perm="755">
-			<fileset dir="${package.output.dir}/bin">
-				<include name="*.sh"/>
-			</fileset>
-		</chmod>
-
+        <!-- Publish -->
 		<mkdir dir="${artifacts.dir}"/>
+           
+        <antcall target="fetch-unzipped-virgo-build-tools"/>
+        <property name="p2.products.location" value="${basedir}/publish_resources/products"/>
+        
+        <antcall target="p2.publish-binary">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${kernel.resources.location}"/>
+        </antcall>
+        <echo message="Published the kernel resources to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-binary">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${specific.resources.location}"/>
+        </antcall>
+        <echo message="Published the kernel specific resources to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-bundles-features">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${target.dir}/assembly"/>
+        </antcall>
+        <echo message="Published bundles and features to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/kernel-base/kernel-base.product"/>
+        </antcall>
+        <echo message="Published kernel base product to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/kernel/kernel.product"/>
+        </antcall>
+        <echo message="Published kernel product to ${p2.repository.dir}."/>
+
+        <antcall target="p2.install-virgo-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="destination" value="${package.output.dir}"/>
+            <param name="product.iu" value="kernel.product"/>
+        </antcall>
+        <echo message="Installed Virgo Kernel for distribution purposes."/>
+        
+        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        
 		<zip destfile="${package.output.file}">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">
 				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+				<exclude name="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
+        <zip destfile="${updatesite.output.file}">
+			<zipfileset dir="${p2.repository.dir}"/>
+		</zip>
+        
+        <delete dir="${kernel.resources.location}" quiet="true"/>
+        <delete dir="${specific.resources.location}" quiet="true"/>
+        <delete dir="${target.dir}/assembly" quiet="true"/>
+        <delete dir="${tools.dir}" quiet="true"/>
 	</target>
 
 	<target name="smoke-test" description="Runs a smoke test on the kernel packaged build">
@@ -183,92 +251,5 @@
 		</all-bundles>
 		<antcall target="test.post"/>
 	</target>
-
-    <target name="package.resources" depends="package"
-            description="Creates a special bundle containing Virgo entities that are not bundles">
-        <property name="meta.inf" value="${distro.res}/META-INF"/>
-        <property name="content" value="${distro.res}/root_content"/>
-        <property name="resources.jar" value="${package.output.dir}/lib/org.eclipse.virgo.kernel.resources.jar"/>
-        <zip destfile="${resources.jar}">
-            <zipfileset dir="${distro.res}"/>
-            <zipfileset dir="${package.dir}/${package.basename}"
-                        includes="bin/*.sh" filemode="755"/>
-            <zipfileset dir="${package.dir}/${package.basename}"
-                        includes="config/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-            <zipfileset dir="${package.dir}/${package.basename}">
-                <exclude name="bin/*.sh"/>
-                <exclude name="config/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
-                <exclude name="**/*.jar"/>
-            </zipfileset>
-        </zip>
-    </target>
-
-    <target name="p2.publish" depends="package.resources, p2.extract-publisher"
-            description="Publishes bundles, features and product">
-        <java jar="${p2.launcher.jar}" fork="true" taskname="p2bundles" failonerror="true" maxmemory="256m">
-            <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher"/>
-            <arg line="-metadataRepository ${p2.repo.url}"/>
-            <arg line="-artifactRepository ${p2.repo.url}"/>
-            <arg line="-bundles ${package.output.dir}/lib,${package.output.dir}/repository/ext"/>
-            <arg line="-publishArtifacts"/>
-            <arg line="-configs all"/>
-        </java>
-
-        <sshexec host="build.eclipse.org" 
-                username="${eclipse.buildId}" 
-                keyfile="${key.file}" 
-                passphrase="${passphrase}"
-                command="mkdir -pv /opt/public/rt/virgo/update-site/${release.type}/${build.stamp}"/>
-
-        <scp todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/update-site/${release.type}/${build.stamp}/" 
-                keyfile="${key.file}"
-                passphrase="${passphrase}">
-            <fileset dir="${publishing.dir}"/>
-        </scp>
-        
-        
-        
-        <!-- <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
-                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
-                 <arg line="-metadataRepository ${p2.repo.url}"/>
-                 <arg line="-artifactRepository ${p2.repo.url}"/>
-                 <arg line="-productFile ${product.file}"/>
-                 <arg line="-append"/>
-                 <arg line="-publishArtifacts"/>
-                 <arg line="-flavor tooling"/>
-                 <arg line="-configs all"/>
-             </java>
-             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
-                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
-                 <arg line="-metadataRepository ${p2.repo.url}"/>
-                 <arg line="-artifactRepository ${p2.repo.url}"/>
-                 <arg line="-productFile ${lib.product.file}"/>
-                 <arg line="-append"/>
-                 <arg line="-publishArtifacts"/>
-                 <arg line="-flavor tooling"/>
-                 <arg line="-configs all"/>
-             </java>
-             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
-                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
-                 <arg line="-metadataRepository ${p2.repo.url}"/>
-                 <arg line="-artifactRepository ${p2.repo.url}"/>
-                 <arg line="-productFile ${lib.kernel.product.file}"/>
-                 <arg line="-append"/>
-                 <arg line="-publishArtifacts"/>
-                 <arg line="-flavor tooling"/>
-                 <arg line="-configs all"/>
-             </java>
-             <java jar="${p2.launcher.jar}" fork="true" taskname="p2product" failonerror="true" maxmemory="256m">
-                 <arg line="-application org.eclipse.equinox.p2.publisher.ProductPublisher"/>
-                 <arg line="-metadataRepository ${p2.repo.url}"/>
-                 <arg line="-artifactRepository ${p2.repo.url}"/>
-                 <arg line="-productFile ${repository.ext.product.file}"/>
-                 <arg line="-append"/>
-                 <arg line="-publishArtifacts"/>
-                 <arg line="-flavor tooling"/>
-                 <arg line="-configs all"/>
-             </java> -->
-             <delete dir="${p2.publishing.dir}" excludes="p2agent.zip" includeemptydirs="true" quiet="true"/>
-    </target>
 
 </project>

@@ -10,15 +10,10 @@
 
 	<dependencies>
 		<!-- lib -->
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shutdown" rev="latest.integration" conf="lib->runtime"/>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.authentication" rev="latest.integration" conf="lib->runtime"/>
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.console" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
 		<dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="lib->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.supportability" rev="${org.eclipse.equinox.console.supportability}" conf="lib->runtime" />
 		
-		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
+		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
 	</dependencies>
 
 </ivy-module>

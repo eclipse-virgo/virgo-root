@@ -21,7 +21,7 @@
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.common" rev="${org.eclipse.virgo.util}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.math" rev="${org.eclipse.virgo.util}" conf="test->compile"/>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="test->compile"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf="test->compile"/>

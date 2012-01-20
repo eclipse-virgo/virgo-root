@@ -16,24 +16,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.util.io.JarUtils;
 import org.eclipse.virgo.util.io.PathReference;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Test refreshing individual modules of a deployed application.
@@ -45,8 +41,6 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
     private static final String REFRESH_IMPORTER_VERSION = "1.0.0.BUILD-20100310081114";
 
     private static final String REFRESH_EXPORTER_VERSION = "1.0.0.BUILD-20100310081114";
-
-    private static final File LOG_FILE = new File("target/serviceability/eventlog/eventlog.log");
 
     private final String TEST_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshTest-1-RefreshImporter";
 
@@ -61,18 +55,6 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
     private PathReference par;
 
     private PathReference parImportBundle;
-
-    private int existingLines;
-
-    public void countExistingLogLines() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(LOG_FILE));
-        String line = reader.readLine();
-        existingLines = 0;
-        while (line != null) {
-            existingLines++;
-            line = reader.readLine();
-        }
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -90,8 +72,6 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
         JarUtils.unpackTo(par, explodedPar);
 
         parImportBundle = new PathReference("src/test/resources/refresh-import-bundle.par");
-
-        countExistingLogLines();
     }
 
     @After

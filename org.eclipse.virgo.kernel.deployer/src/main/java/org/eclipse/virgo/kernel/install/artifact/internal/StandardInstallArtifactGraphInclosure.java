@@ -18,13 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
@@ -37,12 +30,17 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ArtifactIdentityScoper;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardInstallArtifactGraphInclosure} is a default implementation of {@link InstallArtifactGraphInclosure}
@@ -93,29 +91,49 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
     @Override
     public GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification specification, String scopeName, Provisioning parentProvisioning)
         throws DeploymentException {
+
+        Map<String, String> properties = determineDeploymentProperties(specification.getProperties(), parentProvisioning);
+        URI artifactUri = specification.getUri();
+
+        if (artifactUri == null) {
+            return createInstallGraph(specification, scopeName, properties);
+        } else {
+            return createInstallGraph(artifactUri, scopeName, properties, null);
+        }
+    }
+
+    private GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification specification, String scopeName, Map<String, String> properties)
+        throws DeploymentException {
         String type = specification.getType();
         String name = specification.getName();
         VersionRange versionRange = specification.getVersionRange();
+
         RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
         if (artifactDescriptor == null) {
             this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
             throw new DeploymentException(type + " '" + name + "' version '" + versionRange + "' not found");
         }
 
-        URI artifactURI = artifactDescriptor.getUri();
+        URI artifactUri = artifactDescriptor.getUri();
 
         ArtifactIdentity identity = new ArtifactIdentity(type, name, artifactDescriptor.getVersion(), scopeName);
-        identity = ArtifactIdentityScoper.scopeArtifactIdentity(identity);
-
-        ArtifactStorage artifactStorage = this.artifactStorageFactory.create(new File(artifactURI), identity);
-
-        GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(identity,
-            determineDeploymentProperties(specification, parentProvisioning), artifactStorage, artifactDescriptor.getRepositoryName());
-        return installArtifactGraph;
+        return constructGraphNode(identity, new File(artifactUri), properties, artifactDescriptor.getRepositoryName());
     }
 
-    private Map<String, String> determineDeploymentProperties(ArtifactSpecification specification, Provisioning parentProvisioning) {
-        Map<String, String> deploymentProperties = new HashMap<String, String>(specification.getProperties());
+    private GraphNode<InstallArtifact> constructGraphNode(ArtifactIdentity identity, File artifact, Map<String, String> properties,
+        String repositoryName) throws DeploymentException {
+        ArtifactIdentity scopedIdentity = ArtifactIdentityScoper.scopeArtifactIdentity(identity);
+        ArtifactStorage artifactStorage = this.artifactStorageFactory.create(artifact, scopedIdentity);
+        try {
+            return constructInstallArtifactGraph(scopedIdentity, properties, artifactStorage, repositoryName);
+        } catch (DeploymentException e) {
+            artifactStorage.delete();
+            throw e;
+        }
+    }
+
+    private Map<String, String> determineDeploymentProperties(Map<String, String> properties, Provisioning parentProvisioning) {
+        Map<String, String> deploymentProperties = new HashMap<String, String>(properties);
         deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
         return deploymentProperties;
     }
@@ -124,30 +142,27 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
      * {@inheritDoc}
      */
     @Override
-    public GraphNode<InstallArtifact> createInstallGraph(File sourceFile) throws DeploymentException {
+    public GraphNode<InstallArtifact> createInstallGraph(URI uri) throws DeploymentException {
+        return createInstallGraph(uri, null, null, null);
+    }
 
-        if (!sourceFile.exists()) {
-            throw new DeploymentException(sourceFile + " does not exist");
-        }
-
-        ArtifactStorage artifactStorage = null;
+    private GraphNode<InstallArtifact> createInstallGraph(URI artifactUri, String scopeName, Map<String, String> properties, String repositoryName)
+        throws DeploymentException {
         try {
-            ArtifactIdentity artifactIdentity = determineIdentity(sourceFile);
-            artifactStorage = this.artifactStorageFactory.create(sourceFile, artifactIdentity);
-            GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(artifactIdentity, null, artifactStorage, null);
-
-            return installArtifactGraph;
-        } catch (DeploymentException e) {
-            if (artifactStorage != null) {
-                artifactStorage.delete();
+            File artifact = new File(artifactUri);
+            if (!artifact.exists()) {
+                throw new DeploymentException(artifact + " does not exist");
             }
-            throw e;
+
+            ArtifactIdentity artifactIdentity = determineIdentity(artifact, scopeName);
+
+            return constructGraphNode(artifactIdentity, artifact, properties, repositoryName);
         } catch (Exception e) {
-            throw new DeploymentException(e.getMessage(), e);
+            throw new DeploymentException(e.getMessage() + ": uri='" + artifactUri + "'", e);
         }
     }
 
-    private ArtifactIdentity determineIdentity(File file) throws DeploymentException {
+    private ArtifactIdentity determineIdentity(File file, String scopeName) throws DeploymentException {
         ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, null);
 
         if (artifactIdentity == null) {
@@ -194,7 +209,7 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
         ArtifactStorage artifactStorage = null;
         if (deploymentOptions.getRecoverable() && (!deploymentOptions.getDeployerOwned() || sourceFile.exists())) {
             try {
-                ArtifactIdentity artifactIdentity = determineIdentity(sourceFile);
+                ArtifactIdentity artifactIdentity = determineIdentity(sourceFile, null);
                 artifactStorage = this.artifactStorageFactory.create(sourceFile, artifactIdentity);
                 GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(artifactIdentity, null, artifactStorage, null);
 
@@ -221,4 +236,5 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
     public void updateStagingArea(File sourceFile, ArtifactIdentity identity) throws DeploymentException {
         this.artifactStorageFactory.create(sourceFile, identity).synchronize();
     }
+
 }
