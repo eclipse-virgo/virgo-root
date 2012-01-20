@@ -46,7 +46,7 @@
 		<property name="osgi.bundlefile.limit" value="500"/>
 		<property name="osgi.java.profile.bootdelegation" value="override"/>
 		<property name="osgi.compatibility.eagerStart.LazyActivation" value="false"/>
-		<property name="osgi.java.profile" value="file:lib/java6-server.profile"/>
+		<property name="osgi.java.profile" value="file:configuration/java6-server.profile"/>
 		<property name="org.eclipse.virgo.medic.log.config.path" value="configuration/serviceability.xml"/>
 		<property name="osgi.context.bootdelegation" value="false"/>
 		<property name="eclipse.enableStateSaver" value="false"/>
