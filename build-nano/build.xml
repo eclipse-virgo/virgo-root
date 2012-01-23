@@ -267,7 +267,7 @@
         </antcall>
      </target>
     
-    <target name="ci.publish.nightly" depends="package" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudson only!">
+    <target name="ci.publish.nightly" description="Publishes nightly repository to download.eclipse.org. Can be executed on Hudson only!">
         
         <delete dir="${nightly.updatesite.dir}"/>
         
