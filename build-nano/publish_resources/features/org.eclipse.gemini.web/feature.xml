@@ -23,21 +23,24 @@
          download-size="0"
          install-size="0"
          version="@GEMINI.WEB@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.eclipse.gemini.web.extender"
          download-size="0"
          install-size="0"
          version="@GEMINI.WEB@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.eclipse.gemini.web.core"
          download-size="0"
          install-size="0"
          version="@GEMINI.WEB@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
    <plugin
          id="com.springsource.org.apache.jasper"
          download-size="0"

@@ -20,64 +20,59 @@
 	<target name="package" depends="ivy.init">		
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
-
-		<!-- Assemble the common resources and prepare them for publishing -->
-        <property name="common.resources" value="${target.dir}/common_resources"/>
-		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
-		
-		<mkdir dir="${common.resources}/configuration"/>
-		<mkdir dir="${common.resources}/pickup"/>
-		
-		<copy todir="${common.resources}" failonerror="false">
-			<fileset dir="${basedir}/resources"/>
-		</copy>
-        
-        <copy todir="${common.resources}/configuration" failonerror="false">
-			<fileset dir="${basedir}/configuration" excludes="keystore,serviceability.xml"/>
-		</copy>
-		
-		<copy file="${basedir}/configuration/keystore" todir="${common.resources}/configuration" failonerror="false"/>
-        
         <property name="common.resources.location" value="${target.dir}/common_resources_zipped"/>
-        <mkdir dir="${common.resources.location}/binary"/>
-        <zip destfile="${common.resources.location}/binary/nano_common_resources">
-			<zipfileset dir="${common.resources}"/>
-		</zip>
-        <delete dir="${common.resources}" quiet="true"/>
-		
-        <!-- Assemble specific resources and prepare them for publishing -->
-        <property name="specific.resources" value="${target.dir}/specific_resources"/>
-        <mkdir dir="${specific.resources}/lib"/>
-        <echo file="${specific.resources}/lib/.version"
-			message="virgo.nano.version=${bundle.version}&#xa;"/>
-        <copy todir="${specific.resources}/configuration" failonerror="false">
-			<fileset dir="${basedir}/configuration">
-				<include name="serviceability.xml"/>
-			</fileset>
-		</copy>
-        
         <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
-        <mkdir dir="${specific.resources.location}/binary"/>
-        <zip destfile="${specific.resources.location}/binary/nano_specific_resources">
-			<zipfileset dir="${specific.resources}"/>
-		</zip>
-        <delete dir="${specific.resources}" quiet="true"/>
-        
-        <!-- Assemble the scripts and prepare them for publishing-->
-        <property name="scripts" value="${target.dir}/scripts"/>
-		<copy todir="${scripts}/bin" failonerror="false">
-			<fileset dir="${basedir}/bin"/>
-		</copy>
-		
         <property name="scripts.location" value="${target.dir}/scripts_zipped"/>
-        <mkdir dir="${scripts.location}/binary"/>
-		<zip destfile="${scripts.location}/binary/scripts">
-			<zipfileset dir="${scripts}"/>
+
+        <antcall target="prepare-common-resources"/>
+        <antcall target="prepare-specific-resources"/>
+        <antcall target="prepare-scripts"/>
+		<antcall target="prepare-bundles-and-features"/>
+        <antcall target="publish-p2-repo"/>
+        <antcall target="install-packages"/>
+        <antcall target="assemble-zips"/>
+        <antcall target="clean-up"/>
+     </target>
+     
+     
+     <target name="clean-up">
+        <delete dir="${target.dir}/assembly" quiet="true"/>
+        <delete dir="${common.resources.location}" quiet="true"/>
+        <delete dir="${specific.resources.location}" quiet="true"/>
+        <delete dir="${scripts.location}" quiet="true"/>
+        <delete dir="${tools.dir}" quiet="true"/>
+     </target>
+     
+     <target name="assemble-zips">
+        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        <delete dir="${package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
+        
+        <property name="nano.package.dir" value="${package.dir}/${package.basename}"/>
+        <mkdir dir="${artifacts.dir}"/>
+        <zip destfile="${package.output.file}">
+			<zipfileset dir="${nano.package.dir}" includes="bin/*.sh" filemode="755"/>
+			<zipfileset dir="${nano.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${nano.package.dir}">
+				<exclude name="bin/*.sh"/>
+				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			</zipfileset>
 		</zip>
-        <delete dir="${scripts}" quiet="true"/>
-		
-		<!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
+        <property name="nano.full.package.dir" value="${package.dir}/${nano-full-package}-${bundle.version}"/>
+        <zip destfile="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip">
+			<zipfileset dir="${nano.full.package.dir}" includes="bin/*.sh" filemode="755"/>
+			<zipfileset dir="${nano.full.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${nano.full.package.dir}">
+				<exclude name="bin/*.sh"/>
+				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			</zipfileset>
+		</zip>
+        <zip destfile="${updatesite.output.file}">
+			<zipfileset dir="${p2.repository.dir}"/>
+		</zip>
+     </target>
+     
+     <target name="prepare-bundles-and-features">
+        <!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
 		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
 
@@ -139,8 +134,14 @@
                 <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
 			</filterset>
 		</copy>
-        
+     </target>
+     
+     <target name="publish-p2-repo">
         <antcall target="fetch-unzipped-virgo-build-tools"/>
+        
+        <antcall target="p2.generate-inf">
+            <param name="source" value="${target.dir}/assembly/features"/>
+        </antcall>
         
         <property name="p2.products.location" value="${basedir}/publish_resources/products"/>
         <property name="p2.categories.location" value="${basedir}/publish_resources/categories"/>
@@ -200,7 +201,9 @@
             <param name="category.file.location" value="${p2.categories.location}/org.eclipse.virgo.categories/category.xml"/>
         </antcall>
         <echo message="Published Virgo Add-Ons feature category in the p2 repository" />
-
+     </target>
+     
+     <target name="install-packages">
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="destination" value="${package.output.dir}"/>
@@ -214,40 +217,63 @@
             <param name="product.iu" value="nano-full.product"/>
         </antcall>
         <echo message="Installed Virgo Nano Full for distribution purposes."/>
-        
-        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
-        <delete dir="${package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
-        
-        <property name="nano.package.dir" value="${package.dir}/${package.basename}"/>
-        <mkdir dir="${artifacts.dir}"/>
-        <zip destfile="${package.output.file}">
-			<zipfileset dir="${nano.package.dir}" includes="bin/*.sh" filemode="755"/>
-			<zipfileset dir="${nano.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${nano.package.dir}">
-				<exclude name="bin/*.sh"/>
-				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
-			</zipfileset>
-		</zip>
-        <property name="nano.full.package.dir" value="${package.dir}/${nano-full-package}-${bundle.version}"/>
-        <zip destfile="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip">
-			<zipfileset dir="${nano.full.package.dir}" includes="bin/*.sh" filemode="755"/>
-			<zipfileset dir="${nano.full.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${nano.full.package.dir}">
-				<exclude name="bin/*.sh"/>
-				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
-			</zipfileset>
-		</zip>
-        <zip destfile="${updatesite.output.file}">
-			<zipfileset dir="${p2.repository.dir}"/>
-		</zip>
-        
-        <delete dir="${target.dir}/assembly" quiet="true"/>
-        <delete dir="${common.resources.location}" quiet="true"/>
-        <delete dir="${specific.resources.location}" quiet="true"/>
-        <delete dir="${scripts.location}" quiet="true"/>
-        <delete dir="${tools.dir}" quiet="true"/>
-		
      </target>
+     
+     <target name="prepare-common-resources">
+        <property name="common.resources" value="${target.dir}/common_resources"/>
+		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
+		
+		<mkdir dir="${common.resources}/configuration"/>
+		<mkdir dir="${common.resources}/pickup"/>
+		
+		<copy todir="${common.resources}" failonerror="false">
+			<fileset dir="${basedir}/resources"/>
+		</copy>
+        
+        <copy todir="${common.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration" excludes="keystore,serviceability.xml"/>
+		</copy>
+		
+		<copy file="${basedir}/configuration/keystore" todir="${common.resources}/configuration" failonerror="false"/>
+        
+        <mkdir dir="${common.resources.location}/binary"/>
+        <zip destfile="${common.resources.location}/binary/nano_common_resources">
+			<zipfileset dir="${common.resources}"/>
+		</zip>
+        <delete dir="${common.resources}" quiet="true"/>
+    </target>
+    
+    <target name="prepare-specific-resources">
+        <property name="specific.resources" value="${target.dir}/specific_resources"/>
+        <mkdir dir="${specific.resources}/lib"/>
+        <echo file="${specific.resources}/lib/.version"
+			message="virgo.nano.version=${bundle.version}&#xa;"/>
+        <copy todir="${specific.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration">
+				<include name="serviceability.xml"/>
+			</fileset>
+		</copy>
+        
+        <mkdir dir="${specific.resources.location}/binary"/>
+        <zip destfile="${specific.resources.location}/binary/nano_specific_resources">
+			<zipfileset dir="${specific.resources}"/>
+		</zip>
+        <delete dir="${specific.resources}" quiet="true"/>
+    </target>
+    
+    <target name="prepare-scripts">
+        <property name="scripts" value="${target.dir}/scripts"/>
+		<copy todir="${scripts}/bin" failonerror="false">
+			<fileset dir="${basedir}/bin"/>
+		</copy>
+		
+        <mkdir dir="${scripts.location}/binary"/>
+		<zip destfile="${scripts.location}/binary/scripts">
+			<zipfileset dir="${scripts}"/>
+		</zip>
+        <delete dir="${scripts}" quiet="true"/>
+    </target>
      
      <target name="publish-multiple-nano-packages-build" description="Uploads all Nano zipped packages to build.eclipse.org">
         <antcall target="publish-package-build">

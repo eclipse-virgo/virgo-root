@@ -23,6 +23,7 @@
    
    <configurations>
 		<plugin id="org.eclipse.equinox.cm" autoStart="true" />
+		<plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1"/>
 		<plugin id="org.eclipse.equinox.event" autoStart="true" />
 		<plugin id="org.eclipse.equinox.common" autoStart="true" />
 		<plugin id="org.eclipse.equinox.console.supportability" autoStart="true" />

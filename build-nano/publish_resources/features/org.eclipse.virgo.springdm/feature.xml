@@ -30,7 +30,8 @@
          download-size="0"
          install-size="0"
          version="@SPRING.DM.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.springframework.osgi.io"

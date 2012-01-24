@@ -23,41 +23,47 @@
          download-size="0"
          install-size="0"
          version="@MINA.CORE.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="com.springsource.org.apache.sshd.core"
          download-size="0"
          install-size="0"
          version="@SSHD.CORE.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.apache.felix.gogo.command"
          download-size="0"
          install-size="0"
          version="@FELIX.GOGO.COMMAND.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.apache.felix.gogo.runtime"
          download-size="0"
          install-size="0"
          version="@FELIX.GOGO.RUNTIME.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.apache.felix.gogo.shell"
          download-size="0"
          install-size="0"
          version="@FELIX.GOGO.SHELL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
    <plugin
          id="org.eclipse.equinox.console.supportability"
          download-size="0"
          install-size="0"
          version="@EQUINOX.CONSOLE.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
 
 </feature>
