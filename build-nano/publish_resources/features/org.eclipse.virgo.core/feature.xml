@@ -27,8 +27,7 @@
          download-size="0"
          install-size="0"
          version="@NANO.VERSION@"
-         unpack="false"
-         autostart="true"/>
+         unpack="false"/>
     <plugin
          id="org.eclipse.virgo.deployer.api"
          download-size="0"
