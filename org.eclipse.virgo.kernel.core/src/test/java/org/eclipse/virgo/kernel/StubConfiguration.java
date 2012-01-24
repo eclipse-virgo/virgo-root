@@ -35,7 +35,7 @@ public class StubConfiguration implements Configuration {
     }
 
     public void delete() throws IOException {
-        throw new UnsupportedOperationException();
+        return;
     }
 
     public String getBundleLocation() {
