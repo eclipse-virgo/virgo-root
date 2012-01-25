@@ -181,6 +181,11 @@
 		<mkdir dir="${artifacts.dir}"/>
            
         <antcall target="fetch-unzipped-virgo-build-tools"/>
+        
+        <antcall target="p2.generate-inf">
+            <param name="source" value="${target.dir}/assembly/features"/>
+        </antcall>
+        
         <property name="p2.products.location" value="${basedir}/publish_resources/products"/>
         
         <antcall target="p2.publish-binary">

@@ -28,57 +28,66 @@
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.repository"
          download-size="0"
          install-size="0"
          version="@REPOSITORY.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.agent.dm"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.artifact"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.services"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.model"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
-    <plugin
-         id="org.eclipse.virgo.kernel.kerneldmfragment"
-         download-size="0"
-         install-size="0"
-         version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.shell"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.osgi"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
-         unpack="false"/>
+         unpack="false"
+         autostart="true"/>
     <plugin
          id="org.eclipse.virgo.kernel.userregionfactory"
+         download-size="0"
+         install-size="0"
+         version="@KERNEL.VERSION@"
+         unpack="false"
+         autostart="true"/>
+    <plugin
+         id="org.eclipse.virgo.kernel.kerneldmfragment"
          download-size="0"
          install-size="0"
          version="@KERNEL.VERSION@"
