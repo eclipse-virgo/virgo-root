@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="ltw-web-module">
-
-	<property file="${basedir}/build.properties"/>
-    <property file="${basedir}/../../build.versions"/>
-    <property name="jar.output.file" value="${basedir}/../../org.eclipse.virgo.web.test/src/test/apps/ltw-web-module.jar"/>
-    <import file="${basedir}/../../virgo-build/standard/default.xml"/>
-
-</project>

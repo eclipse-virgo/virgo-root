@@ -19,7 +19,7 @@ public class LoadTimeWeavingInWebModuleTests extends AbstractWebIntegrationTests
     
     @Test
     public void testStandardWarWithNoManifest() throws Exception {
-        assertDeployAndUndeployBehavior("ltwweb", new File("src/test/apps-static/ltw-web-module.jar"), "index.html");
+        assertDeployAndUndeployBehavior("ltwweb", new File("src/test/apps/ltw-web-bundle.jar"), "index.html");
     }
 
 }

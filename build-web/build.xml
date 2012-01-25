@@ -27,6 +27,7 @@
 		<pathelement location="../test-apps/jstl-tests"/>
 		<pathelement location="../test-apps/listener-test"/>
 		<pathelement location="../test-apps/listeners-tests"/>
+		<pathelement location="../test-apps/ltw-web-bundle"/>
 		<pathelement location="../test-apps/spring-capability-tests"/>
 		<pathelement location="../test-apps/standalone-web-module"/>
 		<pathelement location="../test-apps/tld-bundle"/>
