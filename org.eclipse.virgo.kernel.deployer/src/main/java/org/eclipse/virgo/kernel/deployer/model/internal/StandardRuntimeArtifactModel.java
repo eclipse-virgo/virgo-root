@@ -13,7 +13,10 @@ package org.eclipse.virgo.kernel.deployer.model.internal;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -222,6 +225,16 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
     public boolean isGCRoot(InstallArtifact installArtifact) {
         synchronized (this.monitor) {
             return this.artifactByUri.containsValue(installArtifact);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Iterator<InstallArtifact> iterator() {
+        synchronized (this.monitor) {
+            Collection<InstallArtifact> roots = this.artifactByUri.values();
+            return new HashSet<InstallArtifact>(roots).iterator();
         }
     }
 }

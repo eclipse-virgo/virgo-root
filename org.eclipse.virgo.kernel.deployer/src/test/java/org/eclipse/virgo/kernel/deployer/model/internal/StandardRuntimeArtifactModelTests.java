@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
@@ -96,6 +97,13 @@ public class StandardRuntimeArtifactModelTests {
     }
     
 
+    @Test
+    public void testGCRootIterator() {
+        Iterator<InstallArtifact> iterator = this.standardRuntimeArtifactModel.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(this.stubInstallArtifact, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
     
     private static class StubInstallArtifact implements InstallArtifact {
 

@@ -24,7 +24,7 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
  * <strong>Concurrent Semantics</strong><br />
  * Implementations of this interface must be thread safe.
  */
-public interface GCRoots {
+public interface GCRoots extends Iterable<InstallArtifact> {
 
     /**
      * Checks whether or not the given {@link InstallArtifact} is a GC root.
