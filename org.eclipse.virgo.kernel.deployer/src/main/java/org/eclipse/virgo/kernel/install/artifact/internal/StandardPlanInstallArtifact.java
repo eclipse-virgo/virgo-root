@@ -21,6 +21,7 @@ import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.AbortableSignalJunction;
+import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -68,11 +69,12 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
 
     private Scope applicationScope;
 
+    private final GCRoots gcRoots;
 
     protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Provisioning provisioning, @NonNull ArtifactStorage artifactStorage,
         @NonNull ArtifactStateMonitor artifactStateMonitor, @NonNull ScopeServiceRepository scopeServiceRepository,
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactRefreshHandler refreshHandler,
-        String repositoryName, List<ArtifactSpecification> artifactSpecifications) throws DeploymentException {
+        String repositoryName, List<ArtifactSpecification> artifactSpecifications, GCRoots gcRoots) throws DeploymentException {
         super(artifactIdentity, artifactStorage, artifactStateMonitor, repositoryName, eventLogger);
         
         policeNestedScopes(artifactIdentity, scoped, eventLogger);
@@ -88,6 +90,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         }
         this.provisioning = provisioning;
         this.artifactSpecifications = artifactSpecifications;
+        this.gcRoots = gcRoots;
     }
     
     private void policeNestedScopes(ArtifactIdentity artifactIdentity, boolean scoped, EventLogger eventLogger) throws DeploymentException {

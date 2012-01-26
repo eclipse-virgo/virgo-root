@@ -16,6 +16,7 @@ import org.osgi.framework.BundleContext;
 
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -74,10 +75,10 @@ final class ParPlanInstallArtifactFactory {
         this.planInstallArtifactGraphFactory = planInstallArtifactGraphFactory;
     }
 
-    ParPlanInstallArtifact createParPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, @NonNull ArtifactStorage artifactStorage, String repositoryName) throws DeploymentException {
+    ParPlanInstallArtifact createParPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, @NonNull ArtifactStorage artifactStorage, String repositoryName, GCRoots gcRoots) throws DeploymentException {
         ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
         return new ParPlanInstallArtifact(artifactIdentity, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger,
             bundleInstallArtifactGraphFactory, refreshHandler, repositoryName, this.configInstallArtifactGraphFactory,
-            this.artifactStorageFactory, this.artifactIdentityDeterminer, this.planInstallArtifactGraphFactory);
+            this.artifactStorageFactory, this.artifactIdentityDeterminer, this.planInstallArtifactGraphFactory, gcRoots);
     }
 }

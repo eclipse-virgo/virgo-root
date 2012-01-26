@@ -14,7 +14,9 @@ package org.eclipse.virgo.kernel.deployer.model.internal;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -87,6 +89,13 @@ public class StandardRuntimeArtifactModelTests {
         assertNull(this.standardRuntimeArtifactModel.get(this.deploymentIdentity));
     }
     
+    @Test
+    public void testisGCRoot() {
+        assertTrue(this.standardRuntimeArtifactModel.isGCRoot(this.stubInstallArtifact));
+        assertFalse(this.standardRuntimeArtifactModel.isGCRoot(new StubInstallArtifact()));
+    }
+    
+
     
     private static class StubInstallArtifact implements InstallArtifact {
 

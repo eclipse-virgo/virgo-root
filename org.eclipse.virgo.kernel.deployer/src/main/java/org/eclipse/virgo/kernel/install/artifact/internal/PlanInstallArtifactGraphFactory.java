@@ -23,6 +23,7 @@ import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.artifact.plan.PlanReader;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -64,17 +65,21 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
 
     private final ParPlanInstallArtifactFactory parFactory;
 
+    private final GCRoots gcRoots;
+
     public PlanInstallArtifactGraphFactory(@NonNull BundleContext bundleContext, @NonNull ScopeServiceRepository scopeServiceRepository,
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger,
         @NonNull BundleInstallArtifactGraphFactory bundleInstallArtifactGraphFactory, @NonNull InstallArtifactRefreshHandler refreshHandler,
         @NonNull ConfigInstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
-        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
+        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull DirectedAcyclicGraph<InstallArtifact> dag,
+        @NonNull GCRoots gcRoots) {
         super(dag);
         this.bundleContext = bundleContext;
         this.scopeServiceRepository = scopeServiceRepository;
         this.scopeFactory = scopeFactory;
         this.eventLogger = eventLogger;
         this.refreshHandler = refreshHandler;
+        this.gcRoots = gcRoots;
 
         this.parFactory = new ParPlanInstallArtifactFactory(eventLogger, bundleContext, bundleInstallArtifactGraphFactory, scopeServiceRepository,
             scopeFactory, refreshHandler, configInstallArtifactGraphFactory, artifactStorageFactory, artifactIdentityDeterminer, this);
@@ -98,7 +103,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
     private GraphNode<InstallArtifact> createParGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, String repositoryName)
         throws DeploymentException {
 
-        ParPlanInstallArtifact parArtifact = this.parFactory.createParPlanInstallArtifact(artifactIdentity, artifactStorage, repositoryName);
+        ParPlanInstallArtifact parArtifact = this.parFactory.createParPlanInstallArtifact(artifactIdentity, artifactStorage, repositoryName, this.gcRoots);
         return constructAssociatedGraphNode(parArtifact);
     }
 
@@ -124,7 +129,7 @@ final class PlanInstallArtifactGraphFactory extends AbstractArtifactGraphFactory
         StandardPlanInstallArtifact planInstallArtifact = new StandardPlanInstallArtifact(artifactIdentity, planDescriptor.getAtomic(),
             planDescriptor.getScoped(), resultantProvisioning, artifactStorage, new StandardArtifactStateMonitor(this.bundleContext),
             this.scopeServiceRepository, this.scopeFactory, this.eventLogger, this.refreshHandler, repositoryName,
-            planDescriptor.getArtifactSpecifications());
+            planDescriptor.getArtifactSpecifications(), this.gcRoots);
 
         return constructAssociatedGraphNode(planInstallArtifact);
     }

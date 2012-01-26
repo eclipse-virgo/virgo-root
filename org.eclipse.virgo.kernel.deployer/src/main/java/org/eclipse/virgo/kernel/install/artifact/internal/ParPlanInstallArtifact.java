@@ -22,6 +22,7 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -74,10 +75,10 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
         @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactGraphFactory bundleInstallArtifactGraphFactory,
         @NonNull InstallArtifactRefreshHandler refreshHandler, String repositoryName,
         @NonNull InstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
-        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactGraphFactory planInstallArtifactGraphFactory)
+        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactGraphFactory planInstallArtifactGraphFactory, GCRoots gcRoots)
         throws DeploymentException {
         super(identity, true, true, Provisioning.AUTO, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
-            repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST);
+            repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST, gcRoots);
 
         this.artifactStorageFactory = artifactStorageFactory;
         this.configInstallArtifactGraphFactory = configInstallArtifactGraphFactory;
