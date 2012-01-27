@@ -26,7 +26,6 @@ import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.Version;
 
 /**
@@ -98,23 +97,13 @@ public class PlanResolver implements Transformer {
         }
     }
 
-   private void destroyInstallGraph(Object childInstallNod) {
+    private void destroyInstallGraph(Object childInstallNod) {
         // TODO Auto-generated method stub
-        
+
     }
 
- /**
-     * Searches the DAG from its GC roots looking for an install artifact that matches the given graph node and returns
-     * the first one it finds or <code>null</code> if none are found.
-     */
     private GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph) {
-        InstallArtifact installArtifact = installGraph.getValue();
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(installArtifact.getType(), installArtifact.getName(),
-            VersionRange.createExactRange(installArtifact.getVersion()), installArtifact.getScopeName());
-        for (InstallArtifact gcRoot : this.gcRoots) {
-            gcRoot.getGraph().visit(visitor);
-        }
-        return visitor.getFoundNode();
+        return ExistingNodeLocator.findSharedNode(installGraph, this.gcRoots);
     }
 
     /**

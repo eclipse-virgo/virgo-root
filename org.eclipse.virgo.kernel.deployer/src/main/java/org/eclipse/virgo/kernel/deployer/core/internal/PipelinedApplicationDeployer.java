@@ -195,13 +195,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     }
 
     private GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph) {
-        InstallArtifact installArtifact = installGraph.getValue();
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(installArtifact.getType(), installArtifact.getName(),
-            VersionRange.createExactRange(installArtifact.getVersion()), installArtifact.getScopeName());
-        for (InstallArtifact gcRoot : (GCRoots) this.ram) {
-            gcRoot.getGraph().visit(visitor);
-        }
-        return visitor.getFoundNode();
+        GCRoots gcRoots = (GCRoots) this.ram;
+        return ExistingNodeLocator.findSharedNode(installGraph, gcRoots);
     }
 
     private DeploymentIdentity updateAndRefreshExistingArtifact(URI normalisedLocation, InstallArtifact existingArtifact) throws DeploymentException {

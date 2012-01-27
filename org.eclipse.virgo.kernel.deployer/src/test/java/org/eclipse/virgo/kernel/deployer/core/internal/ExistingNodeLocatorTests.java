@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-public class ExistingArtifactLocatingVisitorTests {
+public class ExistingNodeLocatorTests {
 
     private static final String TEST_SCOPE_NAME = "scope";
 
@@ -56,42 +56,42 @@ public class ExistingArtifactLocatingVisitorTests {
 
     @Test
     public void testMatch() {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, TEST_NAME,
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, TEST_NAME,
             VersionRange.createExactRange(TEST_VERSION), TEST_SCOPE_NAME);
         assertFound(visitor);
     }
 
     @Test
     public void testTypeMismatch() {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor("a", TEST_NAME, VersionRange.createExactRange(TEST_VERSION),
+        ExistingNodeLocator visitor = new ExistingNodeLocator("a", TEST_NAME, VersionRange.createExactRange(TEST_VERSION),
             TEST_SCOPE_NAME);
         assertNotFound(visitor);
     }
 
     @Test
     public void testNameMismatch() {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, "a", VersionRange.createExactRange(TEST_VERSION),
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, "a", VersionRange.createExactRange(TEST_VERSION),
             TEST_SCOPE_NAME);
         assertNotFound(visitor);
     }
 
     @Test
     public void testVersionMismatch() {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, TEST_NAME, new VersionRange("[1,1]"),
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, TEST_NAME, new VersionRange("[1,1]"),
             TEST_SCOPE_NAME);
         assertNotFound(visitor);
     }
 
     @Test
     public void testNonNullScopeNameMismatch() {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, TEST_NAME,
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, TEST_NAME,
             VersionRange.createExactRange(TEST_VERSION), "a");
         assertNotFound(visitor);
     }
 
     @Test
     public void testNullScopeNameMismatch() {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, TEST_NAME,
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, TEST_NAME,
             VersionRange.createExactRange(TEST_VERSION), null);
         assertNotFound(visitor);
     }
@@ -105,7 +105,7 @@ public class ExistingArtifactLocatingVisitorTests {
         EasyMock.expect(this.installArtifact.getScopeName()).andReturn(null).anyTimes();
         EasyMock.replay(this.installArtifact);
 
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, TEST_NAME,
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, TEST_NAME,
             VersionRange.createExactRange(TEST_VERSION), TEST_SCOPE_NAME);
         assertNotFound(visitor);
     }
@@ -119,19 +119,19 @@ public class ExistingArtifactLocatingVisitorTests {
         EasyMock.expect(this.installArtifact.getScopeName()).andReturn(null).anyTimes();
         EasyMock.replay(this.installArtifact);
 
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(TEST_TYPE, TEST_NAME,
+        ExistingNodeLocator visitor = new ExistingNodeLocator(TEST_TYPE, TEST_NAME,
             VersionRange.createExactRange(TEST_VERSION), null);
         assertFound(visitor);
     }
     
-    private void assertFound(ExistingArtifactLocatingVisitor visitor) {
+    private void assertFound(ExistingNodeLocator visitor) {
         TestGraphNode node = new TestGraphNode(this.installArtifact);
         visitor.visit(node);
         GraphNode<InstallArtifact> foundNode = visitor.getFoundNode();
         assertEquals(node, foundNode);
     }
  
-    private void assertNotFound(ExistingArtifactLocatingVisitor visitor) {
+    private void assertNotFound(ExistingNodeLocator visitor) {
         TestGraphNode node = new TestGraphNode(this.installArtifact);
         visitor.visit(node);
         GraphNode<InstallArtifact> foundNode = visitor.getFoundNode();
