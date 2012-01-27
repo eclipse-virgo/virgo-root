@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web;
 
-import java.lang.management.ManagementFactory;
 import java.util.Dictionary;
 import java.util.Hashtable;
-
-import javax.management.MBeanServer;
 
 import org.eclipse.virgo.apps.admin.web.internal.AdminHttpContext;
 import org.osgi.framework.BundleActivator;
