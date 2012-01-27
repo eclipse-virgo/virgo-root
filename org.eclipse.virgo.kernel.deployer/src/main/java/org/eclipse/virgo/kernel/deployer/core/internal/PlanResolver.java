@@ -25,7 +25,6 @@ import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifac
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
 import org.eclipse.virgo.util.common.GraphNode;
-import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.Version;
@@ -40,46 +39,6 @@ import org.osgi.framework.Version;
  * 
  */
 public class PlanResolver implements Transformer {
-
-    private final class ExistingArtifactLocatingVisitor implements DirectedAcyclicGraphVisitor<InstallArtifact> {
-
-        private final String scopeName;
-
-        private GraphNode<InstallArtifact> foundNode = null;
-
-        private final String type;
-
-        private final String name;
-
-        private final VersionRange versionRange;
-
-        ExistingArtifactLocatingVisitor(ArtifactSpecification artifactSpecification, String scopeName) {
-            this.name = artifactSpecification.getName();
-            this.type = artifactSpecification.getType();
-            this.versionRange = artifactSpecification.getVersionRange();
-            this.scopeName = scopeName;
-        }
-
-        @Override
-        public boolean visit(GraphNode<InstallArtifact> node) {
-            InstallArtifact candidate = node.getValue();
-            if (this.foundNode == null && matches(candidate)) {
-                this.foundNode = node;
-            }
-            return this.foundNode == null;
-        }
-
-        private boolean matches(InstallArtifact candidate) {
-            return candidate.getType().equals(this.type)
-                && candidate.getName().equals(this.name)
-                && (this.scopeName == null && candidate.getScopeName() == null || this.scopeName != null
-                    && this.scopeName.equals(candidate.getScopeName())) && this.versionRange.includes(candidate.getVersion());
-        }
-
-        public GraphNode<InstallArtifact> getFoundNode() {
-            return this.foundNode;
-        }
-    }
 
     private static final String SCOPE_SEPARATOR = "-";
 
@@ -116,22 +75,20 @@ public class PlanResolver implements Transformer {
                     GraphNode<InstallArtifact> graph = planInstallArtifact.getGraph();
                     List<ArtifactSpecification> artifactSpecifications = planInstallArtifact.getArtifactSpecifications();
                     for (ArtifactSpecification artifactSpecification : artifactSpecifications) {
-                        boolean shared = false;
-                        GraphNode<InstallArtifact> childInstallArtifactGraph = findInstallArtifactGraph(artifactSpecification, scopeName);
-                        if (childInstallArtifactGraph == null) {
-                            childInstallArtifactGraph = createInstallArtifactGraph(artifactSpecification, scopeName,
-                                planInstallArtifact.getProvisioning());
-                        } else {
-                            shared = true;
-                        }
-                        graph.addChild(childInstallArtifactGraph);
+                        GraphNode<InstallArtifact> childInstallNode = createInstallArtifactGraph(artifactSpecification, scopeName,
+                            planInstallArtifact.getProvisioning());
+                        GraphNode<InstallArtifact> sharedChildInstallNode = findSharedNode(childInstallNode);
 
-                        if (!shared) {
+                        if (sharedChildInstallNode == null) {
+                            graph.addChild(childInstallNode);
                             // Put child into the INSTALLING state as Transformers (like this) are after the
                             // "begin install"
                             // pipeline stage.
-                            InstallArtifact childInstallArtifact = childInstallArtifactGraph.getValue();
+                            InstallArtifact childInstallArtifact = childInstallNode.getValue();
                             ((AbstractInstallArtifact) childInstallArtifact).beginInstall();
+                        } else {
+                            graph.addChild(sharedChildInstallNode);
+                            destroyInstallGraph(childInstallNode);
                         }
                     }
                 } catch (DeploymentException de) {
@@ -141,13 +98,19 @@ public class PlanResolver implements Transformer {
         }
     }
 
-    /**
-     * Searches the DAG from its GC roots looking for an install artifact that matches the given
-     * {@link ArtifactSpecification} and scope name and returns the first one it finds or <code>null</code> if none are
-     * found.
+   private void destroyInstallGraph(Object childInstallNod) {
+        // TODO Auto-generated method stub
+        
+    }
+
+ /**
+     * Searches the DAG from its GC roots looking for an install artifact that matches the given graph node and returns
+     * the first one it finds or <code>null</code> if none are found.
      */
-    private GraphNode<InstallArtifact> findInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName) {
-        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(artifactSpecification, scopeName);
+    private GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph) {
+        InstallArtifact installArtifact = installGraph.getValue();
+        ExistingArtifactLocatingVisitor visitor = new ExistingArtifactLocatingVisitor(installArtifact.getType(), installArtifact.getName(),
+            VersionRange.createExactRange(installArtifact.getVersion()), installArtifact.getScopeName());
         for (InstallArtifact gcRoot : this.gcRoots) {
             gcRoot.getGraph().visit(visitor);
         }

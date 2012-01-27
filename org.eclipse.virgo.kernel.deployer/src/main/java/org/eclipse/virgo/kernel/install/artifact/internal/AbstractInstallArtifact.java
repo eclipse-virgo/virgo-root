@@ -365,22 +365,27 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
     @Override
     public void uninstall() throws DeploymentException {
         if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED)
-            || getState().equals(State.INSTALLED)) {
-            pushThreadContext();
+            || getState().equals(State.INSTALLED) || getState().equals(State.INITIAL)) {
             try {
-                if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
-                    stop();
-                }
-                this.artifactStateMonitor.onUninstalling(this);
-                try {
-                    doUninstall();
-                    this.artifactStateMonitor.onUninstalled(this);
-                } catch (DeploymentException e) {
-                    this.artifactStateMonitor.onUninstallFailed(this, e);
+                if (!getState().equals(State.INITIAL)) {
+                    pushThreadContext();
+                    try {
+                        if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
+                            stop();
+                        }
+                        this.artifactStateMonitor.onUninstalling(this);
+                        try {
+                            doUninstall();
+                            this.artifactStateMonitor.onUninstalled(this);
+                        } catch (DeploymentException e) {
+                            this.artifactStateMonitor.onUninstallFailed(this, e);
+                        }
+                    } finally {
+                        popThreadContext();
+                    }
                 }
             } finally {
                 this.artifactStorage.delete();
-                popThreadContext();
             }
         }
     }
@@ -519,7 +524,7 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
