@@ -337,8 +337,8 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
      */
     @Override
     public void stop() throws DeploymentException {
-        // Only stop if ACTIVE or STARTING.
-        if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
+        // Only stop if ACTIVE or STARTING and no parents are ACTIVE or STARTING
+        if ((getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) && !hasActiveParent()) {
             pushThreadContext();
             try {
                 this.artifactStateMonitor.onStopping(this);
@@ -352,6 +352,16 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
                 popThreadContext();
             }
         }
+    }
+
+    protected boolean hasActiveParent() {
+        for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
+            State parentState = parent.getValue().getState();
+            if (parentState.equals(State.ACTIVE) || parentState.equals(State.STARTING)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

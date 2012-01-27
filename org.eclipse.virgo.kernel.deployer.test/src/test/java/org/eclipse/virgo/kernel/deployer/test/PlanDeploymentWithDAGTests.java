@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.deployer.test;
 import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.assertBundlesInstalled;
 import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.assertBundlesNotInstalled;
 import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.getInstalledBsns;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     @Test
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
     public void planReferencingAnAlreadyInstalledBundle() throws Exception {
-        
+
         File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
         DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
@@ -49,7 +50,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     @Test
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
     public void planReferencingAnAlreadyInstalledBundleUndeployBundleFirst() throws Exception {
-        
+
         File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
         DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
@@ -57,7 +58,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
         assertNoDuplicatesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
-        
+
         this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
@@ -110,6 +111,53 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
 
         this.deployer.undeploy(deploymentIdentity);
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+    }
+
+    @Test
+    public void testLifecycleWithTwoPlansReferencingASharedBundle() throws Exception {
+
+        DeploymentIdentity deploymentIdentityPlanA = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        DeploymentIdentity deploymentIdentityPlanB = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicB.plan").toURI());
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentIdentityPlanB);
+        
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentIdentityPlanA);
+    }
+    
+    @Test
+    public void testLifecycleWithPlanReferencingAnAlreadyInstalledBundleUndeployBundleFirst() throws Exception {
+
+        File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
+        DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentIdentity);
+    }
+
+
+
+    static void assertBundlesActive(Bundle[] bundles, String... bsns) {
+        for (String bsn : bsns) {
+            boolean found = false;
+            for (Bundle bundle : bundles) {
+                if (bsn.equals(bundle.getSymbolicName())) {
+                    found = true;
+                    assertEquals(Bundle.ACTIVE, bundle.getState());
+                }
+            }
+            assertTrue(found);
+        }
     }
 
 }
