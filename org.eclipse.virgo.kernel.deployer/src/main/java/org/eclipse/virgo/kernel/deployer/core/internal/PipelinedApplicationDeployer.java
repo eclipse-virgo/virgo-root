@@ -46,7 +46,6 @@ import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.WatchableRepository;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.PathReference;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -551,7 +550,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     private void undeployInternal(DeploymentIdentity deploymentIdentity, boolean redeploying, boolean deleted) throws DeploymentException {
         DeploymentOptions options = this.deploymentOptionsMap.remove(deploymentIdentity);
         URI location = doUndeploy(deploymentIdentity);
-        if (!redeploying) {
+        if (location != null && !redeploying) {
             deleteArtifactIfNecessary(location, options, deleted);
         }
     }
@@ -575,10 +574,16 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
             } else {
                 URI location = this.ram.getLocation(deploymentIdentity);
 
-                stopArtifact(installArtifact);
-                uninstallArtifact(installArtifact);
+                this.ram.delete(deploymentIdentity);
 
-                return location;
+                // Avoid uninstalling an artifact which is shared by a plan.
+                if (ExistingNodeLocator.findSharedNode(installArtifact.getGraph(), (GCRoots) this.ram) == null) {
+                    stopArtifact(installArtifact);
+                    uninstallArtifact(installArtifact);
+                    return location;
+                } else {
+                    return null;
+                }
             }
         }
     }
