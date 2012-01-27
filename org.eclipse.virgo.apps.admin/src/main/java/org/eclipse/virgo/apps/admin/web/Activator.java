@@ -70,9 +70,6 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		
-		MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-		this.context.registerService(MBeanServer.class, platformMBeanServer, null);
-		
 		Activator.contextPath = this.context.getBundle().getHeaders().get("Web-ContextPath");
 		this.httpServiceTracker = new ServiceTracker<HttpService, HttpService>(context, HttpService.class, new HttpServiceTrackerCustomizer(context));
 		
