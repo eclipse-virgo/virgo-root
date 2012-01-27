@@ -76,7 +76,7 @@ public class MedicActivatorTests {
         
         assertFalse(this.server.isRegistered(new ObjectName("org.eclipse.virgo.kernel:type=Medic,name=DumpInspector")));
         
-        assertEquals(1, bundleContext.getServiceRegistrations().size());
+        assertEquals(2, bundleContext.getServiceRegistrations().size());
     }        
 
     @Test

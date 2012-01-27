@@ -11,6 +11,10 @@
 
 package org.eclipse.virgo.medic.impl;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.MBeanServer;
+
 import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.impl.config.ConfigurationAdminConfigurationProvider;
@@ -56,6 +60,9 @@ public final class MedicActivator implements BundleActivator {
         logController.eventLogStart();
         DumpGenerator dumpGenerator = logController.dumpStart();
         
+        //Register the platformMBeanServer with 
+		MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
+		context.registerService(MBeanServer.class, platformMBeanServer, null);
         this.medicMBeanExporter = new MedicMBeanExporter(configurationProvider, dumpGenerator);
 
         this.logReaderReference = context.getServiceReference(ExtendedLogReaderService.class);
