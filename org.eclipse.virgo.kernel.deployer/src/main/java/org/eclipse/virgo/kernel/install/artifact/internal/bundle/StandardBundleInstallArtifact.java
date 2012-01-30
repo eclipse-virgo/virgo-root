@@ -278,7 +278,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      */
     @Override
     public void stop() throws DeploymentException {
-        if (this.getBundle().getState() == Bundle.ACTIVE && !hasActiveParent()) {
+        if (this.getBundle().getState() == Bundle.ACTIVE && shouldStop()) {
             /*
              * Do not call super.stop() as it is essential that stopping and stopped events are driven under the bundle
              * lifecycle events so the listeners see a suitable bundle state, however we must ensure that we ignore

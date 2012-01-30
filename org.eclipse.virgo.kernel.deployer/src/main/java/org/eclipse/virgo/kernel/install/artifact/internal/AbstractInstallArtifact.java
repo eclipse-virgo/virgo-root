@@ -337,8 +337,8 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
      */
     @Override
     public void stop() throws DeploymentException {
-        // Only stop if ACTIVE or STARTING and no parents are ACTIVE or STARTING
-        if ((getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) && !hasActiveParent()) {
+        // Only stop if ACTIVE or STARTING and this artifact should stop given its parent's states.
+        if ((getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) && shouldStop()) {
             pushThreadContext();
             try {
                 this.artifactStateMonitor.onStopping(this);
@@ -354,10 +354,28 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         }
     }
 
-    protected boolean hasActiveParent() {
+    protected boolean shouldStop() {
+        /*
+         * This artifact should stop if it was explicitly stopped independently of its parents (that is, it has no
+         * STOPPING parents) or it has no parents that are ACTIVE or STARTING.
+         */
+        return !hasStoppingParent() || !hasActiveParent();
+    }
+
+    private boolean hasActiveParent() {
         for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
             State parentState = parent.getValue().getState();
             if (parentState.equals(State.ACTIVE) || parentState.equals(State.STARTING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasStoppingParent() {
+        for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
+            State parentState = parent.getValue().getState();
+            if (parentState.equals(State.STOPPING)) {
                 return true;
             }
         }
