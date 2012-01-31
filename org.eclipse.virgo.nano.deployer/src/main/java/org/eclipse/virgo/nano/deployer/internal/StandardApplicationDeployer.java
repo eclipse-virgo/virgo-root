@@ -67,7 +67,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
     
     private String getWebBundleLocation(String uri) {
-        String[] splitInstallingArtifactPath = uri.split(File.separator);
+        String[] splitInstallingArtifactPath = uri.split("/");
         String installingArtifact = splitInstallingArtifactPath[splitInstallingArtifactPath.length-1];
         return "webbundle:" + uri.toString() + "?Web-ContextPath=/" + installingArtifact.substring(0, installingArtifact.length()-4);
     }
