@@ -12,18 +12,24 @@
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
+import java.io.File;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.model.GCRoots;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
+import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.osgi.framework.Version;
@@ -38,6 +44,8 @@ import org.osgi.framework.Version;
  * 
  */
 public class PlanResolver implements Transformer {
+
+    private static final String PROVISIONING_PROPERTY_NAME = "org.eclipse.virgo.kernel.provisioning";
 
     private static final String SCOPE_SEPARATOR = "-";
 
@@ -134,6 +142,34 @@ public class PlanResolver implements Transformer {
 
     private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName,
         Provisioning parentProvisioning) throws DeploymentException {
-        return this.installArtifactGraphInclosure.createInstallGraph(artifactSpecification, scopeName, parentProvisioning);
+        ArtifactIdentity identity;
+        File artifact;
+        Map<String, String> properties = determineDeploymentProperties(artifactSpecification.getProperties(), parentProvisioning);
+        String repositoryName = null;
+        URI uri = artifactSpecification.getUri();
+        if (uri == null) {
+            RepositoryAwareArtifactDescriptor repositoryAwareArtifactDescriptor = this.installArtifactGraphInclosure.lookup(artifactSpecification);
+            URI artifactUri = repositoryAwareArtifactDescriptor.getUri();
+
+            artifact = new File(artifactUri);
+            identity = new ArtifactIdentity(repositoryAwareArtifactDescriptor.getType(), repositoryAwareArtifactDescriptor.getName(),
+                repositoryAwareArtifactDescriptor.getVersion(), scopeName);
+            repositoryName = repositoryAwareArtifactDescriptor.getRepositoryName();
+        } else {
+            try {
+                artifact = new File(uri);
+            } catch (IllegalArgumentException e) {
+                throw new DeploymentException("Invalid artifact specification URI", e);
+            }
+            identity = this.installArtifactGraphInclosure.determineIdentity(uri, scopeName);
+        }
+        return this.installArtifactGraphInclosure.constructGraphNode(identity, artifact, properties, repositoryName);
     }
+
+    private Map<String, String> determineDeploymentProperties(Map<String, String> properties, Provisioning parentProvisioning) {
+        Map<String, String> deploymentProperties = new HashMap<String, String>(properties);
+        deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
+        return deploymentProperties;
+    }
+
 }

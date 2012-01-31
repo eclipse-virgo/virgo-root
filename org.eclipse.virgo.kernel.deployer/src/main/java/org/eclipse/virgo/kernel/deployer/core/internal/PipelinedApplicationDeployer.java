@@ -145,8 +145,14 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                     return refreshedIdentity;
                 }
             }
-
-            GraphNode<InstallArtifact> installNode = this.installArtifactGraphInclosure.createInstallGraph(normalisedUri);
+            
+            GraphNode<InstallArtifact> installNode;
+            try {
+                ArtifactIdentity artifactIdentity = this.installArtifactGraphInclosure.determineIdentity(normalisedUri, null);
+                installNode = this.installArtifactGraphInclosure.constructGraphNode(artifactIdentity, new File(normalisedUri), null, null);
+            } catch (Exception e) {
+                throw new DeploymentException(e.getMessage() + ": uri='" + normalisedUri + "'", e);
+            }
 
             GraphNode<InstallArtifact> sharedInstallNode = findSharedNode(installNode);
 
