@@ -82,20 +82,16 @@ public class PlanResolver implements Transformer {
                     GraphNode<InstallArtifact> graph = planInstallArtifact.getGraph();
                     List<ArtifactSpecification> artifactSpecifications = planInstallArtifact.getArtifactSpecifications();
                     for (ArtifactSpecification artifactSpecification : artifactSpecifications) {
-                        GraphNode<InstallArtifact> childInstallNode = createInstallArtifactGraph(artifactSpecification, scopeName,
+                        GraphNode<InstallArtifact> childInstallNode = obtainInstallArtifactGraph(artifactSpecification, scopeName,
                             planInstallArtifact.getProvisioning());
-                        GraphNode<InstallArtifact> sharedChildInstallNode = findSharedNode(childInstallNode);
 
-                        if (sharedChildInstallNode == null) {
+                        if (childInstallNode.getParents().isEmpty()) {
                             graph.addChild(childInstallNode);
                             // Put child into the INSTALLING state as Transformers (like this) are after the
                             // "begin install"
                             // pipeline stage.
                             InstallArtifact childInstallArtifact = childInstallNode.getValue();
                             ((AbstractInstallArtifact) childInstallArtifact).beginInstall();
-                        } else {
-                            graph.addChild(sharedChildInstallNode);
-                            destroyInstallGraph(childInstallNode);
                         }
                     }
                 } catch (DeploymentException de) {
@@ -105,16 +101,7 @@ public class PlanResolver implements Transformer {
         }
     }
 
-    private void destroyInstallGraph(Object childInstallNod) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph) {
-        return ExistingNodeLocator.findSharedNode(installGraph, this.gcRoots);
-    }
-
-    /**
+     /**
      * Returns the scope name of the given {@link InstallArtifact} or <code>null</code> if the given InstallArtifact
      * does not belong to a scope.
      * 
@@ -140,7 +127,7 @@ public class PlanResolver implements Transformer {
         return result;
     }
 
-    private GraphNode<InstallArtifact> createInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName,
+    private GraphNode<InstallArtifact> obtainInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName,
         Provisioning parentProvisioning) throws DeploymentException {
         ArtifactIdentity identity;
         File artifact;
@@ -163,13 +150,19 @@ public class PlanResolver implements Transformer {
             }
             identity = this.installArtifactGraphInclosure.determineIdentity(uri, scopeName);
         }
-        return this.installArtifactGraphInclosure.constructGraphNode(identity, artifact, properties, repositoryName);
+        GraphNode<InstallArtifact> sharedNode = findSharedNode(identity);
+        return sharedNode == null ? this.installArtifactGraphInclosure.constructGraphNode(identity, artifact, properties, repositoryName)
+            : sharedNode;
     }
 
     private Map<String, String> determineDeploymentProperties(Map<String, String> properties, Provisioning parentProvisioning) {
         Map<String, String> deploymentProperties = new HashMap<String, String>(properties);
         deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
         return deploymentProperties;
+    }
+
+    private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {
+        return ExistingNodeLocator.findSharedNode(artifactIdentity, this.gcRoots);
     }
 
 }

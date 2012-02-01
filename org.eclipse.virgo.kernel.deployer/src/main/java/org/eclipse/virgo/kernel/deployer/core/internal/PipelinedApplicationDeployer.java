@@ -145,20 +145,19 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                     return refreshedIdentity;
                 }
             }
-            
+
             GraphNode<InstallArtifact> installNode;
+            boolean shared = false;
             try {
                 ArtifactIdentity artifactIdentity = this.installArtifactGraphInclosure.determineIdentity(normalisedUri, null);
-                installNode = this.installArtifactGraphInclosure.constructGraphNode(artifactIdentity, new File(normalisedUri), null, null);
+                installNode = findSharedNode(artifactIdentity);
+                if (installNode == null) {
+                    installNode = this.installArtifactGraphInclosure.constructGraphNode(artifactIdentity, new File(normalisedUri), null, null);
+                } else {
+                    shared = true;
+                }
             } catch (Exception e) {
                 throw new DeploymentException(e.getMessage() + ": uri='" + normalisedUri + "'", e);
-            }
-
-            GraphNode<InstallArtifact> sharedInstallNode = findSharedNode(installNode);
-
-            if (sharedInstallNode != null) {
-                destroyInstallGraph(installNode);
-                installNode = sharedInstallNode;
             }
 
             DeploymentIdentity deploymentIdentity;
@@ -166,13 +165,13 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
             try {
                 deploymentIdentity = addGraphToModel(normalisedUri, installNode);
             } catch (KernelException ke) {
-                if (sharedInstallNode == null) {
+                if (!shared) {
                     destroyInstallGraph(installNode);
                 }
                 throw new DeploymentException(ke.getMessage(), ke);
             }
 
-            if (sharedInstallNode == null) {
+            if (!shared) {
                 this.deploymentOptionsMap.put(deploymentIdentity, deploymentOptions);
                 try {
                     driveInstallPipeline(normalisedUri, installNode);
@@ -191,17 +190,17 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         }
     }
 
+    private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {
+        GCRoots gcRoots = (GCRoots) this.ram;
+        return ExistingNodeLocator.findSharedNode(artifactIdentity, gcRoots);
+    }
+
     private void destroyInstallGraph(GraphNode<InstallArtifact> installGraph) throws DeploymentException {
         installGraph.getValue().uninstall();
     }
 
     private void removeFromModel(DeploymentIdentity deploymentIdentity) throws DeploymentException {
         this.ram.delete(deploymentIdentity);
-    }
-
-    private GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph) {
-        GCRoots gcRoots = (GCRoots) this.ram;
-        return ExistingNodeLocator.findSharedNode(installGraph, gcRoots);
     }
 
     private DeploymentIdentity updateAndRefreshExistingArtifact(URI normalisedLocation, InstallArtifact existingArtifact) throws DeploymentException {

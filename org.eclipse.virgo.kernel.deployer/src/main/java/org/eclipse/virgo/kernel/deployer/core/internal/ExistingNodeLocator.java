@@ -12,6 +12,7 @@
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
 import org.eclipse.virgo.kernel.deployer.model.GCRoots;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.GraphNode;
@@ -34,14 +35,25 @@ public final class ExistingNodeLocator implements DirectedAcyclicGraphVisitor<In
      * Searches the DAG from the given GC roots looking for an install artifact that matches the given graph node and returns
      * the first one it finds or <code>null</code> if none are found.
      */
-    public static GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph, GCRoots gcRoots) {
-        InstallArtifact installArtifact = installGraph.getValue();
-        ExistingNodeLocator visitor = new ExistingNodeLocator(installArtifact.getType(), installArtifact.getName(),
-            VersionRange.createExactRange(installArtifact.getVersion()), installArtifact.getScopeName());
+    public static GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity, GCRoots gcRoots) {
+        ExistingNodeLocator visitor = new ExistingNodeLocator(artifactIdentity.getType(), artifactIdentity.getName(),
+            VersionRange.createExactRange(artifactIdentity.getVersion()), artifactIdentity.getScopeName());
         for (InstallArtifact gcRoot : gcRoots) {
             gcRoot.getGraph().visit(visitor);
         }
         return visitor.getFoundNode();
+    }
+
+    
+    /**
+     * Searches the DAG from the given GC roots looking for an install artifact that matches the given graph node and returns
+     * the first one it finds or <code>null</code> if none are found.
+     */
+    public static GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph, GCRoots gcRoots) {
+        InstallArtifact installArtifact = installGraph.getValue();
+        ArtifactIdentity artifactIdentity = new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(),
+            installArtifact.getVersion(), installArtifact.getScopeName());
+        return findSharedNode(artifactIdentity, gcRoots);
     }
 
     ExistingNodeLocator(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, String scopeName) {
