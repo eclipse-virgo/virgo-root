@@ -16,11 +16,9 @@ import java.io.File;
 import java.net.URI;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.util.common.GraphNode;
 
 /**
@@ -34,17 +32,6 @@ import org.eclipse.virgo.util.common.GraphNode;
  * 
  */
 public interface InstallArtifactGraphInclosure {
-
-    /**
-     * Looks up the artifact with the given specification in the repository.
-     * <p />
-     * Precondition specification.getUri() == null
-     * 
-     * @param specification the specification of the artifact
-     * @return a {@linkRepositoryAwareArtifactDescriptor}
-     * @throws DeploymentException if the artifact is not found in the repository
-     */
-    RepositoryAwareArtifactDescriptor lookup(ArtifactSpecification specification) throws DeploymentException;
 
     /**
      * Determines the identity of the artifact at the given URI with the given scope name.

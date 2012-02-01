@@ -45,6 +45,8 @@
 		class="org.eclipse.virgo.kernel.deployer.core.internal.PlanResolver">
 		<beans:constructor-arg ref="installArtifactGraphInclosure" />
 		<beans:constructor-arg ref="runtimeArtifactModel" />
+		<beans:constructor-arg ref="repository" />
+		<beans:constructor-arg ref="eventLogger" />
 	</beans:bean>
 
 	<beans:bean id="importExpandingTransformer"
@@ -163,7 +165,6 @@
 		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactGraphInclosure">
 		<beans:constructor-arg ref="artifactStorageFactory" />
 		<beans:constructor-arg ref="bundleContext" />
-		<beans:constructor-arg ref="repository" />
 		<beans:constructor-arg ref="eventLogger" />
 		<beans:constructor-arg ref="artifactIdentityDeterminer" />
 	</beans:bean>

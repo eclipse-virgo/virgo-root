@@ -17,7 +17,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
@@ -32,10 +31,7 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.repository.Repository;
-import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.util.common.GraphNode;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,43 +54,19 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
 
     private final BundleContext bundleContext;
 
-    private final Repository repository;
-
     private final ArtifactStorageFactory artifactStorageFactory;
 
     private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
 
     public StandardInstallArtifactGraphInclosure(@NonNull ArtifactStorageFactory artifactStorageFactory, @NonNull BundleContext bundleContext,
-        @NonNull Repository repository, @NonNull EventLogger eventLogger, @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer) {
-        this.repository = repository;
+        @NonNull EventLogger eventLogger, @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer) {
         this.artifactStorageFactory = artifactStorageFactory;
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
         this.artifactIdentityDeterminer = artifactIdentityDeterminer;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
-    @Override
-    public RepositoryAwareArtifactDescriptor lookup(ArtifactSpecification specification) throws DeploymentException {
-        if (specification.getUri() != null) {
-            throw new IllegalArgumentException("Non-null artifact specification URI");
-        }
-        String type = specification.getType();
-        String name = specification.getName();
-        VersionRange versionRange = specification.getVersionRange();
-
-        RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
-        if (artifactDescriptor == null) {
-            this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
-            throw new DeploymentException(type + " '" + name + "' version '" + versionRange + "' not found");
-        }
-
-        return artifactDescriptor;
-    }
-
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override

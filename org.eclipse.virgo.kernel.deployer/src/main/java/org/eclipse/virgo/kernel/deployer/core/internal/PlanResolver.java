@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
+import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
@@ -29,9 +30,13 @@ import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.osgi.framework.Version;
 
 /**
@@ -53,9 +58,15 @@ public class PlanResolver implements Transformer {
 
     private final GCRoots gcRoots;
 
-    public PlanResolver(InstallArtifactGraphInclosure installArtifactGraphInclosure, GCRoots gcRoots) {
+    private final Repository repository;
+
+    private final EventLogger eventLogger;
+
+    public PlanResolver(@NonNull InstallArtifactGraphInclosure installArtifactGraphInclosure, @NonNull GCRoots gcRoots, @NonNull Repository repository, @NonNull EventLogger eventLogger) {
         this.installArtifactGraphInclosure = installArtifactGraphInclosure;
         this.gcRoots = gcRoots;
+        this.repository = repository;
+        this.eventLogger = eventLogger;
     }
 
     /**
@@ -101,7 +112,7 @@ public class PlanResolver implements Transformer {
         }
     }
 
-     /**
+    /**
      * Returns the scope name of the given {@link InstallArtifact} or <code>null</code> if the given InstallArtifact
      * does not belong to a scope.
      * 
@@ -135,7 +146,7 @@ public class PlanResolver implements Transformer {
         String repositoryName = null;
         URI uri = artifactSpecification.getUri();
         if (uri == null) {
-            RepositoryAwareArtifactDescriptor repositoryAwareArtifactDescriptor = this.installArtifactGraphInclosure.lookup(artifactSpecification);
+            RepositoryAwareArtifactDescriptor repositoryAwareArtifactDescriptor = lookup(artifactSpecification);
             URI artifactUri = repositoryAwareArtifactDescriptor.getUri();
 
             artifact = new File(artifactUri);
@@ -159,6 +170,23 @@ public class PlanResolver implements Transformer {
         Map<String, String> deploymentProperties = new HashMap<String, String>(properties);
         deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
         return deploymentProperties;
+    }
+    
+    public RepositoryAwareArtifactDescriptor lookup(ArtifactSpecification specification) throws DeploymentException {
+        if (specification.getUri() != null) {
+            throw new IllegalArgumentException("Non-null artifact specification URI");
+        }
+        String type = specification.getType();
+        String name = specification.getName();
+        VersionRange versionRange = specification.getVersionRange();
+
+        RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
+        if (artifactDescriptor == null) {
+            this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
+            throw new DeploymentException(type + " '" + name + "' version '" + versionRange + "' not found");
+        }
+
+        return artifactDescriptor;
     }
 
     private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {
