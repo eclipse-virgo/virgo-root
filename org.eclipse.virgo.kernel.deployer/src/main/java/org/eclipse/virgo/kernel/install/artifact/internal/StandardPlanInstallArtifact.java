@@ -167,7 +167,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         for (GraphNode<InstallArtifact> child : getChildrenSnapshot()) {
             getGraph().removeChild(child);
             // Avoid uninstalling shared child
-            if (ExistingNodeLocator.findSharedNode(child, this.gcRoots) == null) {
+            if (ExistingNodeLocator.findSharedNode(this.gcRoots, child) == null) {
                 try {
                     child.getValue().uninstall();
                 } catch (DeploymentException e) {

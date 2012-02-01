@@ -211,7 +211,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {
         GCRoots gcRoots = (GCRoots) this.ram;
-        return ExistingNodeLocator.findSharedNode(artifactIdentity, gcRoots);
+        return ExistingNodeLocator.findSharedNode(gcRoots, artifactIdentity);
     }
 
     private void destroyInstallGraph(GraphNode<InstallArtifact> installGraph) throws DeploymentException {
@@ -616,7 +616,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 this.ram.delete(deploymentIdentity);
 
                 // Avoid uninstalling an artifact which is shared by a plan.
-                if (ExistingNodeLocator.findSharedNode(installArtifact.getGraph(), (GCRoots) this.ram) == null) {
+                if (ExistingNodeLocator.findSharedNode((GCRoots) this.ram, installArtifact.getGraph()) == null) {
                     stopArtifact(installArtifact);
                     uninstallArtifact(installArtifact);
                     return location;

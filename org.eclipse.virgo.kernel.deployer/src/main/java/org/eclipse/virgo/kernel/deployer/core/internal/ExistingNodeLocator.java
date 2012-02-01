@@ -30,12 +30,12 @@ public final class ExistingNodeLocator implements DirectedAcyclicGraphVisitor<In
     private final String name;
 
     private final VersionRange versionRange;
-    
+
     /**
-     * Searches the DAG from the given GC roots looking for an install artifact that matches the given graph node and returns
-     * the first one it finds or <code>null</code> if none are found.
+     * Searches the DAG from the given GC roots looking for an install artifact with the given identity and returns the
+     * first one it finds or <code>null</code> if none are found.
      */
-    public static GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity, GCRoots gcRoots) {
+    public static GraphNode<InstallArtifact> findSharedNode(GCRoots gcRoots, ArtifactIdentity artifactIdentity) {
         ExistingNodeLocator visitor = new ExistingNodeLocator(artifactIdentity.getType(), artifactIdentity.getName(),
             VersionRange.createExactRange(artifactIdentity.getVersion()), artifactIdentity.getScopeName());
         for (InstallArtifact gcRoot : gcRoots) {
@@ -44,16 +44,28 @@ public final class ExistingNodeLocator implements DirectedAcyclicGraphVisitor<In
         return visitor.getFoundNode();
     }
 
-    
     /**
-     * Searches the DAG from the given GC roots looking for an install artifact that matches the given graph node and returns
-     * the first one it finds or <code>null</code> if none are found.
+     * Searches the DAG from the given GC roots looking for an install artifact with the given type, name, and scope
+     * name and with version in the given version range and returns the first one it finds or <code>null</code> if none
+     * are found.
      */
-    public static GraphNode<InstallArtifact> findSharedNode(GraphNode<InstallArtifact> installGraph, GCRoots gcRoots) {
+    public static GraphNode<InstallArtifact> findSharedNode(GCRoots gcRoots, String type, String name, VersionRange versionRange, String scopeName) {
+        ExistingNodeLocator visitor = new ExistingNodeLocator(type, name, versionRange, scopeName);
+        for (InstallArtifact gcRoot : gcRoots) {
+            gcRoot.getGraph().visit(visitor);
+        }
+        return visitor.getFoundNode();
+    }
+
+    /**
+     * Searches the DAG from the given GC roots looking for an install artifact that matches the given graph node and
+     * returns the first one it finds or <code>null</code> if none are found.
+     */
+    public static GraphNode<InstallArtifact> findSharedNode(GCRoots gcRoots, GraphNode<InstallArtifact> installGraph) {
         InstallArtifact installArtifact = installGraph.getValue();
-        ArtifactIdentity artifactIdentity = new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(),
-            installArtifact.getVersion(), installArtifact.getScopeName());
-        return findSharedNode(artifactIdentity, gcRoots);
+        ArtifactIdentity artifactIdentity = new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(),
+            installArtifact.getScopeName());
+        return findSharedNode(gcRoots, artifactIdentity);
     }
 
     ExistingNodeLocator(@NonNull String type, @NonNull String name, @NonNull VersionRange versionRange, String scopeName) {

@@ -62,7 +62,7 @@ public class PlanResolver implements Transformer {
     private final Repository repository;
 
     private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
-    
+
     private final EventLogger eventLogger;
 
     public PlanResolver(@NonNull InstallArtifactGraphInclosure installArtifactGraphInclosure, @NonNull GCRoots gcRoots,
@@ -101,7 +101,8 @@ public class PlanResolver implements Transformer {
                         GraphNode<InstallArtifact> childInstallNode = obtainInstallArtifactGraph(artifactSpecification, scopeName,
                             planInstallArtifact.getProvisioning());
 
-                        if (childInstallNode.getParents().isEmpty()) {
+                        boolean newNode = childInstallNode.getParents().isEmpty();
+                        if (newNode) {
                             graph.addChild(childInstallNode);
                             // Put child into the INSTALLING state as Transformers (like this) are after the
                             // "begin install"
@@ -145,19 +146,33 @@ public class PlanResolver implements Transformer {
 
     private GraphNode<InstallArtifact> obtainInstallArtifactGraph(ArtifactSpecification artifactSpecification, String scopeName,
         Provisioning parentProvisioning) throws DeploymentException {
-        ArtifactIdentity identity;
-        File artifact;
+        GraphNode<InstallArtifact> sharedNode = null;
+        ArtifactIdentity identity = null;
+        File artifact = null;
         Map<String, String> properties = determineDeploymentProperties(artifactSpecification.getProperties(), parentProvisioning);
         String repositoryName = null;
         URI uri = artifactSpecification.getUri();
         if (uri == null) {
             RepositoryAwareArtifactDescriptor repositoryAwareArtifactDescriptor = lookup(artifactSpecification);
-            URI artifactUri = repositoryAwareArtifactDescriptor.getUri();
+            if (repositoryAwareArtifactDescriptor == null) {
+                String type = artifactSpecification.getType();
+                String name = artifactSpecification.getName();
+                VersionRange versionRange = artifactSpecification.getVersionRange();
+                sharedNode = findSharedNode(type, name, versionRange, null);
+                if (sharedNode == null) {
+                    this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
+                    throw new DeploymentException(type + " '" + name + "' in version range '" + versionRange + "' not found");
+                }
+            } else {
+                URI artifactUri = repositoryAwareArtifactDescriptor.getUri();
 
-            artifact = new File(artifactUri);
-            identity = new ArtifactIdentity(repositoryAwareArtifactDescriptor.getType(), repositoryAwareArtifactDescriptor.getName(),
-                repositoryAwareArtifactDescriptor.getVersion(), scopeName);
-            repositoryName = repositoryAwareArtifactDescriptor.getRepositoryName();
+                artifact = new File(artifactUri);
+                identity = new ArtifactIdentity(repositoryAwareArtifactDescriptor.getType(), repositoryAwareArtifactDescriptor.getName(),
+                    repositoryAwareArtifactDescriptor.getVersion(), scopeName);
+                repositoryName = repositoryAwareArtifactDescriptor.getRepositoryName();
+                sharedNode = findSharedNode(identity);
+            }
+
         } else {
             try {
                 artifact = new File(uri);
@@ -165,8 +180,8 @@ public class PlanResolver implements Transformer {
                 throw new DeploymentException("Invalid artifact specification URI", e);
             }
             identity = determineIdentity(uri, scopeName);
+            sharedNode = findSharedNode(identity);
         }
-        GraphNode<InstallArtifact> sharedNode = findSharedNode(identity);
         return sharedNode == null ? this.installArtifactGraphInclosure.constructGraphNode(identity, artifact, properties, repositoryName)
             : sharedNode;
     }
@@ -178,22 +193,13 @@ public class PlanResolver implements Transformer {
     }
 
     private RepositoryAwareArtifactDescriptor lookup(ArtifactSpecification specification) throws DeploymentException {
-        if (specification.getUri() != null) {
-            throw new IllegalArgumentException("Non-null artifact specification URI");
-        }
         String type = specification.getType();
         String name = specification.getName();
         VersionRange versionRange = specification.getVersionRange();
 
-        RepositoryAwareArtifactDescriptor artifactDescriptor = this.repository.get(type, name, versionRange);
-        if (artifactDescriptor == null) {
-            this.eventLogger.log(DeployerLogEvents.ARTIFACT_NOT_FOUND, type, name, versionRange, this.repository.getName());
-            throw new DeploymentException(type + " '" + name + "' version '" + versionRange + "' not found");
-        }
-
-        return artifactDescriptor;
+        return this.repository.get(type, name, versionRange);
     }
-    
+
     private ArtifactIdentity determineIdentity(URI artifactUri, String scopeName) throws DeploymentException {
         try {
             File artifact = new File(artifactUri);
@@ -206,7 +212,7 @@ public class PlanResolver implements Transformer {
             throw new DeploymentException(e.getMessage() + ": uri='" + artifactUri + "'", e);
         }
     }
-    
+
     private ArtifactIdentity determineIdentity(File file, String scopeName) throws DeploymentException {
         ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, scopeName);
 
@@ -219,7 +225,11 @@ public class PlanResolver implements Transformer {
     }
 
     private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {
-        return ExistingNodeLocator.findSharedNode(artifactIdentity, this.gcRoots);
+        return ExistingNodeLocator.findSharedNode(this.gcRoots, artifactIdentity);
+    }
+
+    public GraphNode<InstallArtifact> findSharedNode(String type, String name, VersionRange versionRange, String scopeName) {
+        return ExistingNodeLocator.findSharedNode(this.gcRoots, type, name, versionRange, scopeName);
     }
 
 }
