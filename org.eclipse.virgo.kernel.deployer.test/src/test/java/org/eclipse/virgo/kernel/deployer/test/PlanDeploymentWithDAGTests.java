@@ -28,6 +28,8 @@ import org.osgi.framework.Bundle;
 public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest {
 
     private static final String BUNDLE_ONE_SYMBOLIC_NAME = "simple.bundle.one";
+    
+    private static final String BUNDLE_THREE_SYMBOLIC_NAME = "simple.bundle.three";
 
     @Test
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
@@ -145,7 +147,40 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         this.deployer.undeploy(deploymentIdentity);
     }
 
+    @Test
+    public void planReferencingAnAlreadyInstalledBundleNotInRepository() throws Exception {
 
+        File file = new File("src/test/resources/plan-deployment-dag/simple.bundle.three.jar");
+        DeploymentIdentity bundleDeploymentId = this.deployer.deploy(file.toURI());
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+
+        DeploymentIdentity planDeploymentId = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicC.plan").toURI());
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(planDeploymentId);
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(bundleDeploymentId.getType(), bundleDeploymentId.getSymbolicName(), bundleDeploymentId.getVersion());
+        assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+    }
+    
+    @Test
+    public void planReferencingAnAlreadyInstalledBundleNotInRepositoryUndeployBundleFirst() throws Exception {
+
+        File file = new File("src/test/resources/plan-deployment/simple.bundle.three.jar");
+        DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+
+        DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicC.plan").toURI());
+        assertNoDuplicatesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentIdentity);
+        assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
+    }
 
     static void assertBundlesActive(Bundle[] bundles, String... bsns) {
         for (String bsn : bsns) {
