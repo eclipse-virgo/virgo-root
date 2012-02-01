@@ -24,6 +24,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
@@ -60,12 +61,16 @@ public class PlanResolver implements Transformer {
 
     private final Repository repository;
 
+    private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
+    
     private final EventLogger eventLogger;
 
-    public PlanResolver(@NonNull InstallArtifactGraphInclosure installArtifactGraphInclosure, @NonNull GCRoots gcRoots, @NonNull Repository repository, @NonNull EventLogger eventLogger) {
+    public PlanResolver(@NonNull InstallArtifactGraphInclosure installArtifactGraphInclosure, @NonNull GCRoots gcRoots,
+        @NonNull Repository repository, @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull EventLogger eventLogger) {
         this.installArtifactGraphInclosure = installArtifactGraphInclosure;
         this.gcRoots = gcRoots;
         this.repository = repository;
+        this.artifactIdentityDeterminer = artifactIdentityDeterminer;
         this.eventLogger = eventLogger;
     }
 
@@ -159,7 +164,7 @@ public class PlanResolver implements Transformer {
             } catch (IllegalArgumentException e) {
                 throw new DeploymentException("Invalid artifact specification URI", e);
             }
-            identity = this.installArtifactGraphInclosure.determineIdentity(uri, scopeName);
+            identity = determineIdentity(uri, scopeName);
         }
         GraphNode<InstallArtifact> sharedNode = findSharedNode(identity);
         return sharedNode == null ? this.installArtifactGraphInclosure.constructGraphNode(identity, artifact, properties, repositoryName)
@@ -171,8 +176,8 @@ public class PlanResolver implements Transformer {
         deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
         return deploymentProperties;
     }
-    
-    public RepositoryAwareArtifactDescriptor lookup(ArtifactSpecification specification) throws DeploymentException {
+
+    private RepositoryAwareArtifactDescriptor lookup(ArtifactSpecification specification) throws DeploymentException {
         if (specification.getUri() != null) {
             throw new IllegalArgumentException("Non-null artifact specification URI");
         }
@@ -187,6 +192,30 @@ public class PlanResolver implements Transformer {
         }
 
         return artifactDescriptor;
+    }
+    
+    private ArtifactIdentity determineIdentity(URI artifactUri, String scopeName) throws DeploymentException {
+        try {
+            File artifact = new File(artifactUri);
+            if (!artifact.exists()) {
+                throw new DeploymentException(artifact + " does not exist");
+            }
+
+            return determineIdentity(artifact, scopeName);
+        } catch (Exception e) {
+            throw new DeploymentException(e.getMessage() + ": uri='" + artifactUri + "'", e);
+        }
+    }
+    
+    private ArtifactIdentity determineIdentity(File file, String scopeName) throws DeploymentException {
+        ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, scopeName);
+
+        if (artifactIdentity == null) {
+            this.eventLogger.log(DeployerLogEvents.INDETERMINATE_ARTIFACT_TYPE, file);
+            throw new DeploymentException("Cannot determine the artifact identity of the file '" + file + "'");
+        }
+
+        return artifactIdentity;
     }
 
     private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {

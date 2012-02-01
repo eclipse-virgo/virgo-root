@@ -13,12 +13,10 @@
 package org.eclipse.virgo.kernel.install.artifact;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.util.common.GraphNode;
 
 /**
@@ -32,16 +30,6 @@ import org.eclipse.virgo.util.common.GraphNode;
  * 
  */
 public interface InstallArtifactGraphInclosure {
-
-    /**
-     * Determines the identity of the artifact at the given URI with the given scope name.
-     * 
-     * @param uri the URI of the artifact
-     * @param scopeName the scope name
-     * @return an {@link ArtifactIdentity}
-     * @throws DeploymentException if the identity cannot be determined
-     */
-    ArtifactIdentity determineIdentity(@NonNull URI uri, String scopeName) throws DeploymentException;
 
     /**
      * Create an install graph consisting of a single artifact with the given identity and file contents, the given
@@ -67,7 +55,7 @@ public interface InstallArtifactGraphInclosure {
      * @param options the {@link DeploymentOptions} of the artifact
      * @return an install graph or <code>null</code>
      */
-    GraphNode<InstallArtifact> recoverInstallGraph(File location, DeploymentOptions options);
+    GraphNode<InstallArtifact> recoverInstallGraph(ArtifactIdentity identity, File location);
 
     /**
      * Update the copy of the given artefact in the deploy area.

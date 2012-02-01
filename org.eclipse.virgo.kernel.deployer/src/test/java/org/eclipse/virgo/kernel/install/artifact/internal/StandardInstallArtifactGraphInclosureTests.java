@@ -35,7 +35,6 @@ import org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
@@ -124,23 +123,21 @@ public class StandardInstallArtifactGraphInclosureTests {
 
         replayMocks();
 
-        StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(testArtifactBridges);
-
         StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(installEnvironmentFactory, refreshPipeline);
 
         bundleContext.registerService(InstallArtifactGraphFactory.class.getName(), new BundleInstallArtifactGraphFactory(this.osgiFramework,
             bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
             new MockEventLogger(), null, dag), null);
 
-        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, this.repository,
-            new MockEventLogger(), artifactIdentityDeterminer);
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
         Map<String, String> properties = determineDeploymentProperties(Collections.<String, String> emptyMap(), Provisioning.AUTO);
 
         File artifact = new File(this.bundleURI);
         ArtifactIdentity identity = new ArtifactIdentity("bundle", "a", new Version(1, 2, 3), null);
 
-        GraphNode<InstallArtifact> installGraph = this.installArtifactFactory.constructGraphNode(identity, artifact, properties, TEST_BUNDLE_REPOSITORY_NAME);
+        GraphNode<InstallArtifact> installGraph = this.installArtifactFactory.constructGraphNode(identity, artifact, properties,
+            TEST_BUNDLE_REPOSITORY_NAME);
 
         InstallArtifact installArtifact = installGraph.getValue();
         assertNotNull(installArtifact);
@@ -175,8 +172,7 @@ public class StandardInstallArtifactGraphInclosureTests {
             bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
             new MockEventLogger(), null, dag), null);
 
-        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, this.repository,
-            new MockEventLogger(), artifactIdentityDeterminer);
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
         File bundle = new File(this.bundleURI);
         GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory.constructGraphNode(
@@ -203,8 +199,7 @@ public class StandardInstallArtifactGraphInclosureTests {
             bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
             new MockEventLogger(), null, dag), null);
 
-        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, this.repository,
-            new MockEventLogger(), artifactIdentityDeterminer);
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
         File bundle = new File("src/test/resources/artifacts/nobsn.jar");
         GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory.constructGraphNode(
@@ -235,19 +230,15 @@ public class StandardInstallArtifactGraphInclosureTests {
             bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
             new MockEventLogger(), null, dag), null);
 
-        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, this.repository,
-            new MockEventLogger(), artifactIdentityDeterminer);
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
         File bundle = new File(this.bundleURI);
         GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory.constructGraphNode(
             artifactIdentityDeterminer.determineIdentity(bundle, null), bundle, null, null);
 
         checkBundleImplicitTypeAndVersion(installArtifactGraph.getValue());
-
-        DeploymentOptions deploymentOptions = new DeploymentOptions(
-        /* recoverable */true, /* deployerOwned */false, true);
-        GraphNode<InstallArtifact> recoveredInstallGraph = this.installArtifactFactory.recoverInstallGraph(new File(this.bundleURI),
-            deploymentOptions);
+        
+        GraphNode<InstallArtifact> recoveredInstallGraph = this.installArtifactFactory.recoverInstallGraph(artifactIdentityDeterminer.determineIdentity(bundle, null), new File(this.bundleURI));
         checkBundleImplicitTypeAndVersion(recoveredInstallGraph.getValue());
 
         verifyMocks();

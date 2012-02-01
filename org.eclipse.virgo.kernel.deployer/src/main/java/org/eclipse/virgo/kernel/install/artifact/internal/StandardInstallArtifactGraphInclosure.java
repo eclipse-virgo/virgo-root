@@ -13,15 +13,12 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
-import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
@@ -56,31 +53,11 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
 
     private final ArtifactStorageFactory artifactStorageFactory;
 
-    private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
-
     public StandardInstallArtifactGraphInclosure(@NonNull ArtifactStorageFactory artifactStorageFactory, @NonNull BundleContext bundleContext,
-        @NonNull EventLogger eventLogger, @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer) {
+        @NonNull EventLogger eventLogger) {
         this.artifactStorageFactory = artifactStorageFactory;
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
-        this.artifactIdentityDeterminer = artifactIdentityDeterminer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ArtifactIdentity determineIdentity(@NonNull URI artifactUri, String scopeName) throws DeploymentException {
-        try {
-            File artifact = new File(artifactUri);
-            if (!artifact.exists()) {
-                throw new DeploymentException(artifact + " does not exist");
-            }
-
-            return determineIdentity(artifact, scopeName);
-        } catch (Exception e) {
-            throw new DeploymentException(e.getMessage() + ": uri='" + artifactUri + "'", e);
-        }
     }
 
     public GraphNode<InstallArtifact> constructGraphNode(ArtifactIdentity identity, File artifact, Map<String, String> properties,
@@ -96,17 +73,6 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
             artifactStorage.delete();
             throw e;
         }
-    }
-
-    private ArtifactIdentity determineIdentity(File file, String scopeName) throws DeploymentException {
-        ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, scopeName);
-
-        if (artifactIdentity == null) {
-            this.eventLogger.log(DeployerLogEvents.INDETERMINATE_ARTIFACT_TYPE, file);
-            throw new DeploymentException("Cannot determine the artifact identity of the file '" + file + "'");
-        }
-
-        return artifactIdentity;
     }
 
     private GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity identity, Map<String, String> deploymentProperties,
@@ -141,28 +107,26 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
      * {@inheritDoc}
      */
     @Override
-    public GraphNode<InstallArtifact> recoverInstallGraph(File sourceFile, DeploymentOptions deploymentOptions) {
+    public GraphNode<InstallArtifact> recoverInstallGraph(ArtifactIdentity artifactIdentity, File artifact) {
         ArtifactStorage artifactStorage = null;
-        if (deploymentOptions.getRecoverable() && (!deploymentOptions.getDeployerOwned() || sourceFile.exists())) {
-            try {
-                ArtifactIdentity artifactIdentity = determineIdentity(sourceFile, null);
-                artifactStorage = this.artifactStorageFactory.create(sourceFile, artifactIdentity);
-                GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(artifactIdentity, null, artifactStorage, null);
+        try {
+            artifactStorage = this.artifactStorageFactory.create(artifact, artifactIdentity);
+            GraphNode<InstallArtifact> installArtifactGraph = constructInstallArtifactGraph(artifactIdentity, null, artifactStorage, null);
 
-                return installArtifactGraph;
-            } catch (RuntimeException e) {
-                if (artifactStorage != null) {
-                    artifactStorage.delete();
-                }
-                this.logger.error(String.format("An error occurred during recovery of artefact '%s'", sourceFile), e);
-                throw e;
-            } catch (DeploymentException e) {
+            return installArtifactGraph;
+        } catch (RuntimeException e) {
+            if (artifactStorage != null) {
                 artifactStorage.delete();
-                this.logger.warn(String.format("An error occurred during recovery of artefact '%s'", sourceFile), e);
-                return null;
             }
+            this.logger.error(String.format("An error occurred during recovery of artefact '%s'", artifact), e);
+            throw e;
+        } catch (DeploymentException e) {
+            if (artifactStorage != null) {
+                artifactStorage.delete();
+            }
+            this.logger.warn(String.format("An error occurred during recovery of artefact '%s'", artifact), e);
+            return null;
         }
-        return null;
     }
 
     /**

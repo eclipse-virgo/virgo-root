@@ -9,6 +9,7 @@
  *   VMware Inc. - initial contribution
  *   EclipseSource - Bug 358442 Change InstallArtifact graph from a tree to a DAG
  *******************************************************************************/
+
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
 import static org.easymock.EasyMock.createMock;
@@ -28,6 +29,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.event.DeploymentListener;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
@@ -41,28 +43,41 @@ import org.junit.Test;
 public class PipelinedApplicationDeployerTests {
 
     private PipelinedApplicationDeployer pipelinedApplicationDeployer;
+
     private Pipeline pipeline;
+
     private InstallArtifactGraphInclosure installArtifactTreeInclosure;
+
+    private ArtifactIdentityDeterminer artifactIdentityDeterminer;
+
     private InstallEnvironmentFactory installEnvironmentFactory;
+
     private RuntimeArtifactModel ram;
+
     private DeploymentListener deploymentListener;
+
     private EventLogger eventLogger;
+
     private DeployUriNormaliser normaliser;
+
     private DeployerConfiguration deployerConfiguration;
+
     private InstallArtifact installArtifact;
-    private StubBundleContext stubBundleContext = new StubBundleContext();
-    
+
+    private final StubBundleContext stubBundleContext = new StubBundleContext();
+
     @Before
     public void setup() {
-        pipeline = createMock(Pipeline.class);
-        installArtifactTreeInclosure = createMock(InstallArtifactGraphInclosure.class);
-        installEnvironmentFactory = createMock(InstallEnvironmentFactory.class);
-        ram = createMock(RuntimeArtifactModel.class);
-        deploymentListener = createMock(DeploymentListener.class);
-        eventLogger = createNiceMock(EventLogger.class);
-        normaliser = createMock(DeployUriNormaliser.class);
-        deployerConfiguration = createMock(DeployerConfiguration.class);
-        installArtifact = createMock(InstallArtifact.class);
+        this.pipeline = createMock(Pipeline.class);
+        this.installArtifactTreeInclosure = createMock(InstallArtifactGraphInclosure.class);
+        this.artifactIdentityDeterminer = createMock(ArtifactIdentityDeterminer.class);
+        this.installEnvironmentFactory = createMock(InstallEnvironmentFactory.class);
+        this.ram = createMock(RuntimeArtifactModel.class);
+        this.deploymentListener = createMock(DeploymentListener.class);
+        this.eventLogger = createNiceMock(EventLogger.class);
+        this.normaliser = createMock(DeployUriNormaliser.class);
+        this.deployerConfiguration = createMock(DeployerConfiguration.class);
+        this.installArtifact = createMock(InstallArtifact.class);
         expect(this.deployerConfiguration.getDeploymentTimeoutSeconds()).andReturn(5);
     }
 
@@ -72,18 +87,23 @@ public class PipelinedApplicationDeployerTests {
     }
 
     private void startTests() {
-        replay(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger, this.normaliser, this.deployerConfiguration, this.installArtifact);
-        this.pipelinedApplicationDeployer = new PipelinedApplicationDeployer(pipeline, installArtifactTreeInclosure, installEnvironmentFactory, ram, deploymentListener, eventLogger, normaliser, deployerConfiguration, stubBundleContext);
+        replay(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger,
+            this.normaliser, this.deployerConfiguration, this.installArtifact);
+        this.pipelinedApplicationDeployer = new PipelinedApplicationDeployer(this.pipeline, this.installArtifactTreeInclosure,
+            this.artifactIdentityDeterminer, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger, this.normaliser,
+            this.deployerConfiguration, this.stubBundleContext);
     }
 
     private void verifyMocks() {
-        verify(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger, this.normaliser, this.deployerConfiguration, this.installArtifact);
+        verify(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger,
+            this.normaliser, this.deployerConfiguration, this.installArtifact);
     }
 
     private void resetMocks() {
-        reset(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger, this.normaliser, this.deployerConfiguration, this.installArtifact);
+        reset(this.pipeline, this.installArtifactTreeInclosure, this.installEnvironmentFactory, this.ram, this.deploymentListener, this.eventLogger,
+            this.normaliser, this.deployerConfiguration, this.installArtifact);
     }
-    
+
     @Test
     public void testIsdeployedFalse() throws URISyntaxException, DeploymentException {
         URI testURI = new URI("foo");
@@ -93,7 +113,7 @@ public class PipelinedApplicationDeployerTests {
         this.verifyMocks();
         assertFalse(result);
     }
-    
+
     @Test
     public void testIsdeployedFalse2() throws URISyntaxException, DeploymentException {
         URI testURI = new URI("foo");
@@ -103,8 +123,8 @@ public class PipelinedApplicationDeployerTests {
         boolean result = this.pipelinedApplicationDeployer.isDeployed(testURI);
         this.verifyMocks();
         assertFalse(result);
-    } 
-    
+    }
+
     @Test
     public void testIsdeployedSucsess() throws Exception {
         URI testURI = new URI("foo");
@@ -115,7 +135,6 @@ public class PipelinedApplicationDeployerTests {
         this.verifyMocks();
         assertTrue(result);
     }
- 
 
     @Test
     public void testIsdeployedFail() throws URISyntaxException, DeploymentException {
@@ -126,5 +145,5 @@ public class PipelinedApplicationDeployerTests {
         this.verifyMocks();
         assertFalse(result);
     }
-    
+
 }
