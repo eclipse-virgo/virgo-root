@@ -127,7 +127,7 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
     }
 
     private ArtifactIdentity determineIdentity(File file, String scopeName) throws DeploymentException {
-        ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, null);
+        ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, scopeName);
 
         if (artifactIdentity == null) {
             this.eventLogger.log(DeployerLogEvents.INDETERMINATE_ARTIFACT_TYPE, file);
