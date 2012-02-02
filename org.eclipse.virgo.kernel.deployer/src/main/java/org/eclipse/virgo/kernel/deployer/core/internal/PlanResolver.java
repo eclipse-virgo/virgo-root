@@ -102,8 +102,8 @@ public class PlanResolver implements Transformer {
                             planInstallArtifact.getProvisioning());
 
                         boolean newNode = childInstallNode.getParents().isEmpty();
+                        graph.addChild(childInstallNode);
                         if (newNode) {
-                            graph.addChild(childInstallNode);
                             // Put child into the INSTALLING state as Transformers (like this) are after the
                             // "begin install"
                             // pipeline stage.
