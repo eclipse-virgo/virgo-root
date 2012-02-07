@@ -18,18 +18,75 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.deployer.test.util.ArtifactLifecycleEvent;
+import org.eclipse.virgo.kernel.deployer.test.util.ArtifactListener;
+import org.eclipse.virgo.kernel.deployer.test.util.TestLifecycleEvent;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
+import org.eclipse.virgo.kernel.model.Artifact;
+import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
+import org.eclipse.virgo.util.math.Sets;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.Version;
 
 // TODO 1c. (transitive dependencies) (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
 public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest {
 
     private static final String BUNDLE_ONE_SYMBOLIC_NAME = "simple.bundle.one";
-    
+
     private static final String BUNDLE_THREE_SYMBOLIC_NAME = "simple.bundle.three";
+
+    private final ArtifactListener artifactListener = new ArtifactListener();
+
+    private ServiceRegistration<InstallArtifactLifecycleListener> testInstallArtifactLifecycleListenerServiceRegistration = null;
+
+    private RuntimeArtifactRepository ram;
+
+    private Region globalRegion;
+
+    private Region userRegion;
+
+    @Before
+    public void setUp() throws Exception {
+        this.testInstallArtifactLifecycleListenerServiceRegistration = this.context.registerService(InstallArtifactLifecycleListener.class,
+            this.artifactListener, null);
+
+        ServiceReference<RuntimeArtifactRepository> runtimeArtifactRepositoryServiceReference = context.getServiceReference(RuntimeArtifactRepository.class);
+        if (runtimeArtifactRepositoryServiceReference != null) {
+            this.ram = context.getService(runtimeArtifactRepositoryServiceReference);
+        }
+
+        Collection<ServiceReference<Region>> globalRegionServiceReferences = context.getServiceReferences(Region.class,
+            "(org.eclipse.virgo.kernel.region.name=global)");
+        if (globalRegionServiceReferences != null && globalRegionServiceReferences.size() == 1) {
+            this.globalRegion = context.getService(globalRegionServiceReferences.iterator().next());
+        }
+
+        Collection<ServiceReference<Region>> userRegionServiceReferences = context.getServiceReferences(Region.class,
+            "(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.user)");
+        if (userRegionServiceReferences != null && userRegionServiceReferences.size() == 1) {
+            this.userRegion = context.getService(userRegionServiceReferences.iterator().next());
+        }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        if (this.testInstallArtifactLifecycleListenerServiceRegistration != null) {
+            this.testInstallArtifactLifecycleListenerServiceRegistration.unregister();
+            this.testInstallArtifactLifecycleListenerServiceRegistration = null;
+        }
+    }
 
     @Test
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
@@ -125,12 +182,12 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
         this.deployer.undeploy(deploymentIdentityPlanB);
-        
+
         assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
         this.deployer.undeploy(deploymentIdentityPlanA);
     }
-    
+
     @Test
     public void testLifecycleWithPlanReferencingAnAlreadyInstalledBundleUndeployBundleFirst() throws Exception {
 
@@ -163,7 +220,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         this.deployer.undeploy(bundleDeploymentId.getType(), bundleDeploymentId.getSymbolicName(), bundleDeploymentId.getVersion());
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
     }
-    
+
     @Test
     public void planReferencingAnAlreadyInstalledBundleNotInRepositoryUndeployBundleFirst() throws Exception {
 
@@ -181,7 +238,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         this.deployer.undeploy(deploymentIdentity);
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
     }
-    
+
     @Test
     public void twoPlansReferencingAnAlreadyInstalledBundleNotInRepository() throws Exception {
 
@@ -191,7 +248,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
 
         DeploymentIdentity planCDeploymentId = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicC.plan").toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
-        
+
         DeploymentIdentity planDDeploymentId = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicD.plan").toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
 
@@ -200,11 +257,54 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
 
         this.deployer.undeploy(bundleDeploymentId.getType(), bundleDeploymentId.getSymbolicName(), bundleDeploymentId.getVersion());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
-        
+
         this.deployer.undeploy(planDDeploymentId);
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_THREE_SYMBOLIC_NAME);
     }
 
+    @Test
+    public void sharedTopLevelBundleLifecycleTest() throws Exception {
+
+        Set<ArtifactLifecycleEvent> expectedEventSet = new HashSet<ArtifactLifecycleEvent>();
+
+        File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
+        DeploymentIdentity bundleId = this.deployer.deploy(file.toURI());
+        Artifact bundleArtifact = getBundleArtifact(bundleId);
+
+        DeploymentIdentity planId = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
+
+        Artifact planArtifact = getPlanArtifact(planId);
+
+        this.artifactListener.clear();
+        expectedEventSet.clear();
+        bundleArtifact.stop();
+        waitForAndCheckEventsReceived(expectedEventSet, 50L);
+        bundleArtifact.start();
+
+        this.artifactListener.clear();
+        expectedEventSet.clear();
+        expectEvent(expectedEventSet, planId, TestLifecycleEvent.STOPPING, TestLifecycleEvent.STOPPED);
+        planArtifact.stop();
+        waitForAndCheckEventsReceived(expectedEventSet, 50L);
+
+        this.deployer.undeploy(planId);
+        this.deployer.undeploy(bundleId.getType(), bundleId.getSymbolicName(), bundleId.getVersion());
+    }
+
+    public void expectEvent(Set<ArtifactLifecycleEvent> expectedEventSet, DeploymentIdentity deploymentIdentity, TestLifecycleEvent... events) {
+        for (TestLifecycleEvent event : events) {
+            expectedEventSet.add(new ArtifactLifecycleEvent(event, deploymentIdentity.getType(), deploymentIdentity.getSymbolicName(), new Version(
+                deploymentIdentity.getVersion())));
+        }
+    }
+
+    public Artifact getBundleArtifact(DeploymentIdentity bundleId) {
+        return this.ram.getArtifact(bundleId.getType(), bundleId.getSymbolicName(), new Version(bundleId.getVersion()), this.userRegion);
+    }
+
+    public Artifact getPlanArtifact(DeploymentIdentity planId) {
+        return this.ram.getArtifact(planId.getType(), planId.getSymbolicName(), new Version(planId.getVersion()), this.globalRegion);
+    }
 
     static void assertBundlesActive(Bundle[] bundles, String... bsns) {
         for (String bsn : bsns) {
@@ -217,6 +317,18 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
             }
             assertTrue(found);
         }
+    }
+
+    private void waitForAndCheckEventsReceived(Set<ArtifactLifecycleEvent> expectedEventSet, long timeout) {
+        this.artifactListener.waitForEvents(expectedEventSet, timeout);
+
+        Set<ArtifactLifecycleEvent> actualEventSet = new HashSet<ArtifactLifecycleEvent>(this.artifactListener.extract());
+
+        Set<ArtifactLifecycleEvent> extraEvents = Sets.difference(actualEventSet, expectedEventSet);
+        Set<ArtifactLifecycleEvent> missingEvents = Sets.difference(expectedEventSet, actualEventSet);
+
+        assertTrue(extraEvents.size() + " more events were received than expected: " + extraEvents, extraEvents.isEmpty());
+        assertTrue("There were " + missingEvents.size() + " missing events: " + missingEvents, missingEvents.isEmpty());
     }
 
 }
