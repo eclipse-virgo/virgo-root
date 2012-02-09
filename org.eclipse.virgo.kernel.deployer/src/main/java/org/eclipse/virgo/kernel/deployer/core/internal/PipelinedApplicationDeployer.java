@@ -37,6 +37,7 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
@@ -298,7 +299,9 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private DeploymentIdentity addGraphToModel(URI location, GraphNode<InstallArtifact> installGraph) throws DuplicateFileNameException,
         DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
-        return this.ram.add(location, installGraph.getValue());
+        InstallArtifact installArtifact = installGraph.getValue();
+        ((AbstractInstallArtifact) installArtifact).setTopLevelDeployed();
+        return this.ram.add(location, installArtifact);
     }
 
     /**
@@ -615,14 +618,9 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
                 this.ram.delete(deploymentIdentity);
 
-                // Avoid uninstalling an artifact which is shared by a plan.
-                if (ExistingNodeLocator.findSharedNode((GCRoots) this.ram, installArtifact.getGraph()) == null) {
-                    stopArtifact(installArtifact);
-                    uninstallArtifact(installArtifact);
-                    return location;
-                } else {
-                    return null;
-                }
+                stopArtifact(installArtifact);
+                uninstallArtifact(installArtifact);
+                return location;
             }
         }
     }

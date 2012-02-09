@@ -101,7 +101,8 @@ public class PlanResolver implements Transformer {
                         GraphNode<InstallArtifact> childInstallNode = obtainInstallArtifactGraph(artifactSpecification, scopeName,
                             planInstallArtifact.getProvisioning());
 
-                        boolean newNode = childInstallNode.getParents().isEmpty();
+                        boolean newNode = childInstallNode.getParents().isEmpty()
+                            && !(((AbstractInstallArtifact) childInstallNode.getValue()).getTopLevelDeployed());
                         graph.addChild(childInstallNode);
                         if (newNode) {
                             // Put child into the INSTALLING state as Transformers (like this) are after the

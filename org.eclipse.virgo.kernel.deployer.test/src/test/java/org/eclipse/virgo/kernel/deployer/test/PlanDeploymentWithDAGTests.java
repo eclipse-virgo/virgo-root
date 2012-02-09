@@ -187,25 +187,44 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
     }
 
-    @Test
+    @Test    
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
     public void planReferencingAnAlreadyInstalledBundleUndeployBundleFirst() throws Exception {
 
         File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
-        DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
+        DeploymentIdentity bundleDeploymentId = this.deployer.deploy(file.toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
-        DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
+        DeploymentIdentity planDeploymentId = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
         assertNoDuplicatesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
-        this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
+        this.deployer.undeploy(bundleDeploymentId.getType(), bundleDeploymentId.getSymbolicName(), bundleDeploymentId.getVersion());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
-        this.deployer.undeploy(deploymentIdentity);
+        this.deployer.undeploy(planDeploymentId);
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
     }
 
+    @Test
+    // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
+    public void planReferencingAnAlreadyInstalledBundleUndeployPlanFirst() throws Exception {
+        
+        File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
+        DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+        
+        DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
+        assertNoDuplicatesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+        
+        this.deployer.undeploy(deploymentIdentity);
+        assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+        
+        this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
+        assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+    }
+    
     private void assertNoDuplicatesInstalled(Bundle[] bundles, String bundleOneSymbolicName) {
         List<String> installedBsns = getInstalledBsns(bundles);
         int found = 0;
@@ -280,9 +299,25 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
         this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
+        assertBundlesResolved(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentIdentity);
+    }
+
+    @Test
+    public void testLifecycleWithPlanReferencingAnAlreadyInstalledBundleUndeployPlanFirst() throws Exception {
+
+        File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
+        DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
         assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
 
         this.deployer.undeploy(deploymentIdentity);
+        assertBundlesActive(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
+
+        this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
     }
 
     @Test
@@ -380,6 +415,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     public void sharedTopLevelBundleActiveActiveStopBundle() throws Exception {
         sharedTopLevelBundlePlanActiveBundleActive();
         stopBundle();
+        expectBundleStop();
         checkEvents();
     }
 
@@ -387,6 +423,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     public void sharedTopLevelBundleActiveActiveUninstallBundle() throws Exception {
         sharedTopLevelBundlePlanActiveBundleActive();
         uninstallBundle();
+        expectBundleStop();
         checkEvents();
     }
 
@@ -396,7 +433,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     public void sharedTopLevelBundleActiveResolvedStartPlan() throws Exception {
         sharedTopLevelBundlePlanActiveBundleResolved();
         startPlanA();
-        expectBundleStart();
+        // no bundle events expected as ACTIVE plan no-ops when started
         checkEvents();
     }
 
@@ -544,6 +581,17 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         expectPlanAUninstall();
         checkEvents();
     }
+    
+    @Test
+    public void sharedTopLevelBundleResolvedResolvedUninstallPlanUninstallBundle() throws Exception {
+        sharedTopLevelBundlePlanResolvedBundleResolved();
+        uninstallPlanA();
+        uninstallBundle();
+        expectPlanAUninstall();
+        expectBundleUninstall();
+        checkEvents();
+    }
+
 
     // twoPlansReferencingASharedBundleActiveActive
 
@@ -672,6 +720,8 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     public void sharedTopLevelPlanActiveActiveStopChildPlan() throws Exception {
         sharedTopLevelPlanChildActiveParentActive();
         stopChildPlan();
+        expectChildPlanStop();
+        expectBundleStop();
         checkEvents();
     }
 
@@ -679,6 +729,8 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     public void sharedTopLevelPlanActiveActiveUninstallChildPlan() throws Exception {
         sharedTopLevelPlanChildActiveParentActive();
         uninstallChildPlan();
+        expectChildPlanStop();
+        expectBundleStop();
         checkEvents();
     }
 
@@ -720,6 +772,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         sharedTopLevelPlanChildActiveParentResolved();
         stopChildPlan();
         expectChildPlanStop();
+        expectBundleStop();
         checkEvents();
     }
 
@@ -728,6 +781,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         sharedTopLevelPlanChildActiveParentResolved();
         uninstallChildPlan();
         expectChildPlanStop();
+        expectBundleStop();
         checkEvents();
     }
 
@@ -761,6 +815,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         sharedTopLevelPlanChildResolvedParentActive();
         startChildPlan();
         expectChildPlanStart();
+        expectBundleStart();
         checkEvents();
     }
 
@@ -809,6 +864,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         sharedTopLevelPlanChildResolvedParentResolved();
         startChildPlan();
         expectChildPlanStart();
+        expectBundleStart();
         checkEvents();
     }
 
@@ -858,6 +914,17 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         uninstallChildPlan();
         expectParentPlanUninstall();
         expectChildPlanUninstall();
+        expectBundleUninstall();
+        checkEvents();
+    }
+    
+    @Test
+    public void sharedTopLevelPlanResolvedResolvedUninstallChildPlanUninstallParentPlan() throws Exception {
+        sharedTopLevelPlanChildResolvedParentResolved();
+        uninstallChildPlan();
+        uninstallParentPlan();
+        expectChildPlanUninstall();
+        expectParentPlanUninstall();
         expectBundleUninstall();
         checkEvents();
     }
@@ -1287,13 +1354,13 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     private void sharedTopLevelBundlePlanActiveBundleResolved() throws DeploymentException {
         deploySharedTopLevelBundle();
         stopBundle();
-        stopBundle();
         clearEvents();
     }
 
     private void sharedTopLevelBundlePlanResolvedBundleActive() throws DeploymentException {
         deploySharedTopLevelBundle();
         stopPlanA();
+        startBundle();
         clearEvents();
     }
 
@@ -1395,12 +1462,20 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     }
 
     static void assertBundlesActive(Bundle[] bundles, String... bsns) {
+        assertBundlesInState(Bundle.ACTIVE, bundles, bsns);
+    }
+    
+    static void assertBundlesResolved(Bundle[] bundles, String... bsns) {
+        assertBundlesInState(Bundle.RESOLVED, bundles, bsns);
+    }
+
+    private static void assertBundlesInState(int state, Bundle[] bundles, String... bsns) {
         for (String bsn : bsns) {
             boolean found = false;
             for (Bundle bundle : bundles) {
                 if (bsn.equals(bundle.getSymbolicName())) {
                     found = true;
-                    assertEquals(Bundle.ACTIVE, bundle.getState());
+                    assertEquals(state, bundle.getState());
                 }
             }
             assertTrue(found);
@@ -1416,7 +1491,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         Set<ArtifactLifecycleEvent> missingEvents = Sets.difference(expectedEventSet, actualEventSet);
 
         assertTrue(extraEvents.size() + " more events were received than expected: " + extraEvents, extraEvents.isEmpty());
-        assertTrue("There were " + missingEvents.size() + " missing events: " + missingEvents, missingEvents.isEmpty());
+        assertTrue(missingEvents.size() + " more events were expected than received: " + missingEvents, missingEvents.isEmpty());
     }
 
 }

@@ -296,7 +296,6 @@
 			<beans:constructor-arg ref="artifactStorageFactory" />
 			<beans:constructor-arg ref="artifactIdentityDeterminer" />
 			<beans:constructor-arg ref="installArtifactGraph" />
-			<beans:constructor-arg ref="runtimeArtifactModel" />
 		</beans:bean>
 	</service>
 

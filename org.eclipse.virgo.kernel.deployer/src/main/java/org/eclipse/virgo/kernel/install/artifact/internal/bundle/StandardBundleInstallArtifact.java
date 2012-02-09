@@ -253,6 +253,9 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      */
     @Override
     public void start(AbortableSignal signal) throws DeploymentException {
+        if (!hasStartingParent()) {
+            topLevelStart();
+        }
         /*
          * Do not call super.start(signal) as it is essential that the starting event is driven under the bundle
          * lifecycle event so the listeners see a suitable bundle state.
