@@ -43,6 +43,7 @@ Import-Package:
  org.apache.taglibs.standard.tei;version="[1.1.2,2.0.0)",
  org.apache.taglibs.standard.tlv;version="[1.1.2,2.0.0)",
  javax.servlet.jsp.jstl.core;version="${javax.servlet.jsp.jstl:[=.=.=,+1)}",
+ javax.servlet.jsp.tagext;version="${javax.servlet.jsp:[=.=.=,+1)}",
  org.eclipse.virgo.web.dm;version="${org.eclipse.virgo.web:[=.=,+1)}",
  org.springframework.beans.factory.xml;version="${org.springframework:[2.5.6, +1)}",
  org.springframework.context.config;version="${org.springframework:[2.5.6, +1)}",
