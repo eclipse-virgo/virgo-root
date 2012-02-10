@@ -657,6 +657,7 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
     public void setTopLevelDeployed() {
         synchronized (this.monitor) {
             this.isTopLevelDeployed = true;
+            this.isTopLevelActive = true;
         }
     }
 

@@ -187,7 +187,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
     }
 
-    @Test    
+    @Test
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
     public void planReferencingAnAlreadyInstalledBundleUndeployBundleFirst() throws Exception {
 
@@ -209,22 +209,22 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     @Test
     // 1a. (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
     public void planReferencingAnAlreadyInstalledBundleUndeployPlanFirst() throws Exception {
-        
+
         File file = new File("src/test/resources/plan-deployment/simple.bundle.one.jar");
         DeploymentIdentity deploymentId = this.deployer.deploy(file.toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
-        
+
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicA.plan").toURI());
         assertNoDuplicatesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
-        
+
         this.deployer.undeploy(deploymentIdentity);
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
-        
+
         this.deployer.undeploy(deploymentId.getType(), deploymentId.getSymbolicName(), deploymentId.getVersion());
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
     }
-    
+
     private void assertNoDuplicatesInstalled(Bundle[] bundles, String bundleOneSymbolicName) {
         List<String> installedBsns = getInstalledBsns(bundles);
         int found = 0;
@@ -581,7 +581,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         expectPlanAUninstall();
         checkEvents();
     }
-    
+
     @Test
     public void sharedTopLevelBundleResolvedResolvedUninstallPlanUninstallBundle() throws Exception {
         sharedTopLevelBundlePlanResolvedBundleResolved();
@@ -591,7 +591,6 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         expectBundleUninstall();
         checkEvents();
     }
-
 
     // twoPlansReferencingASharedBundleActiveActive
 
@@ -917,7 +916,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         expectBundleUninstall();
         checkEvents();
     }
-    
+
     @Test
     public void sharedTopLevelPlanResolvedResolvedUninstallChildPlanUninstallParentPlan() throws Exception {
         sharedTopLevelPlanChildResolvedParentResolved();
@@ -1135,15 +1134,60 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
         this.bundleId = BUNDLE_ONE_IDENTITY;
         stopPlanB();
         clearEvents();
-        
+
         deployUnscopedNonatomicPlanAParent();
         expectPlanAInstall();
         expectPlanAStart();
         expectSharedPlanStart();
         checkEvents();
     }
+    
+    // Raw bundle access
+    
+    @Test
+    public void rawBundleStop() throws Exception {
+        deployUnscopedNonatomicPlanA();
+        deploySimpleBundleOne();
+        stopPlanA();
+        Bundle b = getUnderlyingBundle();
+        b.stop();
+        clearEvents();
+
+        startPlanA();
+        stopPlanA();
+        expectPlanAStart();
+        expectBundleStart();
+        expectPlanAStop();
+        // Do not expect bundle stop, since bundle was not stopped via the deployer.
+        checkEvents();
+    }
+
+    @Test
+    public void rawBundleStart() throws Exception {
+        deployUnscopedNonatomicPlanA();
+        deploySimpleBundleOne();
+        stopBundle();
+        Bundle b = getUnderlyingBundle();
+        b.start();
+        Thread.sleep(50);
+        clearEvents();
+        
+        stopPlanA();
+        expectPlanAStop();
+        expectBundleStop(); // since bundle was not started via the deployer
+        checkEvents();
+    }
 
     // helper methods
+    
+    private Bundle getUnderlyingBundle() {
+        for (Bundle bundle : this.context.getBundles()) {
+            if (BUNDLE_ONE_SYMBOLIC_NAME.equals(bundle.getSymbolicName()) && (new Version(BUNDLE_ONE_VERSION)).equals(bundle.getVersion())) {
+                return bundle;
+            }
+        }
+        return null;
+    }
 
     private void checkEvents() {
         waitForAndCheckEventsReceived(this.expectedEventSet, 50L);
@@ -1464,7 +1508,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     static void assertBundlesActive(Bundle[] bundles, String... bsns) {
         assertBundlesInState(Bundle.ACTIVE, bundles, bsns);
     }
-    
+
     static void assertBundlesResolved(Bundle[] bundles, String... bsns) {
         assertBundlesInState(Bundle.RESOLVED, bundles, bsns);
     }

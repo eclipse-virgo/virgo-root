@@ -225,7 +225,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     }
 
     /**
-     * Track the start of the bundle.
+     * Track an unsolicited start of the bundle.
      */
     void trackStart() {
         AbortableSignal signal = createStateMonitorSignal(null);

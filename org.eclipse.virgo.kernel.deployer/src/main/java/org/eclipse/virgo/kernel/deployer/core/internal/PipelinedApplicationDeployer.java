@@ -310,18 +310,27 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     public void recoverDeployment(URI uri, DeploymentOptions options) throws DeploymentException {
 
         GraphNode<InstallArtifact> installNode = null;
+        boolean shared = false;
         File artifact = new File(uri);
         if (options.getRecoverable() && (!options.getDeployerOwned() || artifact.exists())) {
-            installNode = this.installArtifactGraphInclosure.recoverInstallGraph(determineIdentity(artifact, null), artifact);
+            ArtifactIdentity artifactIdentity = determineIdentity(artifact, null);
+            installNode = findSharedNode(artifactIdentity);
+            if (installNode == null) {
+                installNode = this.installArtifactGraphInclosure.recoverInstallGraph(artifactIdentity, artifact);
+            } else {
+                shared = true;
+            }
         }
 
         if (installNode == null) {
             // Remove the URI from the recovery log.
             this.deploymentListener.undeployed(uri);
         } else {
-            driveInstallPipeline(uri, installNode);
+            if (!shared) {
+                driveInstallPipeline(uri, installNode);
 
-            start(installNode.getValue(), options.getSynchronous());
+                start(installNode.getValue(), options.getSynchronous());
+            }
 
             try {
                 addGraphToModel(uri, installNode);
