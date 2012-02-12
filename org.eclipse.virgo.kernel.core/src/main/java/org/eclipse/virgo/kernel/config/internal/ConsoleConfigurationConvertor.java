@@ -2,6 +2,10 @@
 package org.eclipse.virgo.kernel.config.internal;
 
 import java.io.IOException;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -57,7 +61,11 @@ public class ConsoleConfigurationConvertor {
     private static final String PORT = "port";
 
     private static final String ENABLED = "enabled";
-
+    
+    private static final String TELNET_SERVICE = "telnet";
+    
+    private static final String SSH_SERVICE = "ssh";
+    
     private static final Object monitor = new Object();
 
     ConsoleConfigurationConvertor(BundleContext context, ConfigurationAdmin configAdmin) {
@@ -74,6 +82,17 @@ public class ConsoleConfigurationConvertor {
     }
 
     private void updateConfiguration(String pid, String host, String port, String enabled) {
+    	boolean isPortAvailable;
+    	if (pid.contains(TELNET_SERVICE)) {
+    		isPortAvailable = checkPortAvailability(port, enabled, TELNET_SERVICE);
+    	} else {
+    		isPortAvailable = checkPortAvailability(port, enabled, SSH_SERVICE);
+    	}
+    	
+    	if(!isPortAvailable) {
+    		return;
+    	}
+    	
         try {
             Configuration configuration = this.configAdmin.getConfiguration(pid, null);
             Properties properties = new Properties();
@@ -83,8 +102,7 @@ public class ConsoleConfigurationConvertor {
             configuration.update(properties);
         } catch (IOException e) {
             String message = String.format("Unable to update configuration with pid '%s'", pid);
-            this.logger.error(message);
-            this.logger.trace(message, e);
+            this.logger.error(message, e);
         }
     }
     
@@ -100,9 +118,34 @@ public class ConsoleConfigurationConvertor {
 			configuration.delete();
     	} catch (IOException e) {
 			String message = String.format("Unable to delete configuration with pid: " + pid);
-            this.logger.error(message);
-            this.logger.trace(message, e);
+            this.logger.error(message, e);
 		}
+    }
+    
+    private boolean checkPortAvailability(String portStr, String enabled, String service) {
+    	if ("false".equalsIgnoreCase(enabled)) {
+    		return true;
+    	}
+    	int port = Integer.parseInt(portStr);
+    	ServerSocket socket = null;
+    	try {
+    		socket = new ServerSocket(port);
+    		return true;
+    	} catch (BindException e) {
+    		String message = "Port " + port + " already in use; " + service + " access to console will not be available";
+    		this.logger.error(message, e);
+    	} catch (IOException e) {
+			// do nothing
+		} finally {
+    		if (socket != null) {
+    			try {
+					socket.close();
+				} catch (IOException e) {
+					// do nothing
+				}
+    		}
+    	}
+    	return false;
     }
 
     class ConsoleConfigurator implements ManagedService {
