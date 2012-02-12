@@ -91,6 +91,8 @@ public class Activator implements BundleActivator {
     private volatile EquinoxHookRegistrar hookRegistrar;
 
     private StateDumpMBeanExporter stateDumpMBeanExorter;
+    
+    private ConsoleConfigurationConvertor consoleConfigurationConvertor = null;
 
     /**
      * {@inheritDoc}
@@ -228,7 +230,7 @@ public class Activator implements BundleActivator {
     }
     
     private void initializeConsoleConfigurationConvertor(BundleContext context) {
-    	ConsoleConfigurationConvertor consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context);
+    	consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context);
     	consoleConfigurationConvertor.start();
     }
 
@@ -237,6 +239,10 @@ public class Activator implements BundleActivator {
      */
     public void stop(BundleContext context) throws Exception {
         this.registrationTracker.unregisterAll();
+        
+        if (this.consoleConfigurationConvertor != null) {
+        	this.consoleConfigurationConvertor.stop();
+        }
 
         StateDumpMBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
         if (localStateDumpMBeanExporter != null) {
@@ -249,6 +255,7 @@ public class Activator implements BundleActivator {
             hookRegistrar.destroy();
             this.hookRegistrar = null;
         }
+        
     }
 
     private static final class ServiceScopingHookRegisteringRunnable implements Runnable {
