@@ -3,18 +3,19 @@
 
 <product name="Eclipse Virgo Kernel Product" uid="kernel.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
 
-   <configIni use="default">
-   </configIni>
-   
-   <vm>
-   </vm>
+	<configIni use="default">
+	</configIni>
 
-   <plugins>
-   </plugins>
+	<vm>
+	</vm>
 
-   <features>
-      <feature id="org.eclipse.virgo.kernel.specific.resources" version="0.0.0"/>  
-      <feature id="org.eclipse.virgo.scripts" version="0.0.0"/>
-   </features>
+	<plugins>
+	</plugins>
+
+	<features>
+		<feature id="org.eclipse.virgo.kernel.specific.resources" version="0.0.0" />
+		<feature id="org.eclipse.virgo.scripts" version="0.0.0" />
+		<feature id="org.eclipse.gemini.management" version="0.0.0" />
+	</features>
 
 </product>

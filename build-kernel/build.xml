@@ -76,6 +76,7 @@
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
                 <filter token="SPRING.VERSION" value="${org.springframework}"/>
+				<filter token="GEMINI.MANAGEMENT.VERSION" value="${org.eclipse.gemini.management}"/>
             </filterset>
 		</copy>
         
@@ -146,6 +147,8 @@
 				<filter token="EQUINOX.CONFIGADMIN.VERSION" value="${org.eclipse.equinox.cm}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
+				<filter token="OSGI.ENTERPRISE.VERSION" value="${org.osgi.enterprise}"/>
+				<filter token="GEMINI.MANAGEMENT.VERSION" value="${org.eclipse.gemini.management}"/>
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
