@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="virgo.nano.deployer.component" immediate="true" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
-	<implementation class="org.eclipse.virgo.nano.deployer.Activator"/>
+	<implementation class="org.eclipse.virgo.nano.deployer.internal.StandardApplicationDeployer"/>
 	
 	<reference name="EventLogger"
 		interface="org.eclipse.virgo.medic.eventlog.EventLogger"
@@ -9,6 +9,13 @@
 		bind="bindEventLogger" 
 		unbind="unbindEventLogger"/>
 		
+	<reference name="PackageAdmin"
+		interface="org.osgi.service.packageadmin.PackageAdmin"
+		policy="static" 
+		cardinality="1..1" 
+		bind="bindPackageAdmin" 
+		unbind="unbindPackageAdmin"/>
+		
 	<reference name="KernelConfig"
 		interface="org.eclipse.virgo.kernel.core.KernelConfig"  
 		policy="static" 
@@ -16,4 +23,18 @@
 		bind="bindKernelConfig" 
 		unbind="unbindKernelConfig"/>
 		
+	<reference name="WBMT"
+		interface="org.eclipse.gemini.web.core.WebBundleManifestTransformer"  
+		policy="static" 
+		cardinality="1..1" 
+		bind="bindWebBundleManifestTransformer" 
+		unbind="unbindWebBundleManifestTransformer"/>
+		
+	<reference name="SimpleDeployer"
+		interface="org.eclipse.virgo.nano.deployer.SimpleDeployer"  
+		policy="dynamic" 
+		cardinality="0..n" 
+		bind="bindSimpleDeployer" 
+		unbind="unbindSimpleDeployer"/>
+
 </component>
