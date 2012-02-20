@@ -25,6 +25,7 @@ com.springsource.org.apache.sshd.core=0.5.0
 org.eclipse.equinox.console.supportability=1.0.0.N20110815-2000
 org.eclipse.gemini.web=2.1.0.BUILD-20120114220114
 org.apache.tomcat=7.0.21
+javax.transaction=1.1.0
 
 # p2 Publishing
 org.eclipse.core.contenttype=3.4.100.v20110423-0524

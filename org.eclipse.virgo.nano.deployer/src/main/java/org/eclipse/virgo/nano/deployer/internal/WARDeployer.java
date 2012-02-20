@@ -195,7 +195,7 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private String extractWarNameFromString(String path) {
-        final String warName = path.substring(path.lastIndexOf(File.separatorChar) + 1, path.length() - 4);
+        final String warName = path.substring(path.lastIndexOf(SLASH) + 1, path.length() - 4);
         return warName;
     }
 

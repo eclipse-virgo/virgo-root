@@ -1,4 +1,5 @@
 org.osgi.framework.system.packages = \
+ org.eclipse.virgo.osgi.extensions.equinox.hooks,\
  javax.accessibility,\
  javax.activation,\
  javax.activation;version="1.1.1",\
