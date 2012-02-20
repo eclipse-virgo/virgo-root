@@ -2,6 +2,7 @@
 <project name="build-nano" xmlns:ivy="antlib:org.apache.ivy.ant">
     <path id="unit.test.bundles">
 		<pathelement location="../org.eclipse.virgo.kernel.core"/>
+        <pathelement location="../org.eclipse.virgo.kernel.services"/>
         <pathelement location="../org.eclipse.virgo.deployer.api"/>
         <pathelement location="../org.eclipse.virgo.deployer.hot"/>
         <pathelement location="../org.eclipse.virgo.nano.deployer"/>

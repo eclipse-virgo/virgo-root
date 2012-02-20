@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel Services
+Bundle-SymbolicName: org.eclipse.virgo.kernel.services
+Bundle-Version: ${version}
+Service-Component: OSGI-INF/deadlock.monitor.xml, OSGI-INF/ds.monitor.xml
+Excluded-Exports: 
+ *.internal.*
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
+ org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, =.+1)}",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
+ org.aspectj.*;version="${org.aspectj:[=.=.=.=, +1)}",
+ org.slf4j.*;version="${org.slf4j:[=.=.=, +1)}",
+ org.osgi.framework.*;version="0",
+ org.osgi.service.cm.*;version="0",
+ org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
+ javax.management.*;version="0",
+ javax.xml.*;version="0",
+ org.xml.*;version="0",
+ org.w3c.*;version="0",
+ org.osgi.service.component;version="0",
+ org.apache.felix.scr;version="0"
