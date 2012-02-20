@@ -15,7 +15,15 @@ public enum NanoDeployerLogEvents implements LogEvent {
     NANO_UNINSTALLING(7, Level.INFO), //
     NANO_UNINSTALLED(8, Level.INFO), //
     NANO_WEB_STARTING(9, Level.INFO), //
-    NANO_WEB_STARTED(10, Level.INFO); //
+    NANO_WEB_STARTED(10, Level.INFO), //
+    NANO_INSTALLING_ERROR(11, Level.ERROR), //
+    NANO_STARTING_ERROR(12, Level.ERROR), //
+    NANO_UPDATING_ERROR(13, Level.ERROR), //
+    NANO_PERSIST_ERROR(14, Level.WARNING), //
+    NANO_UPDATING(15, Level.INFO), //
+    NANO_UPDATED(16, Level.INFO), //
+    NANO_UPDATE_ERROR(17, Level.ERROR), //
+    NANO_UNDEPLOY_ERROR(18, Level.ERROR); //
 
     private static final String PREFIX = "DE";
 

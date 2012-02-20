@@ -1,85 +1,133 @@
+
 package org.eclipse.virgo.nano.deployer.internal;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
+import org.eclipse.virgo.kernel.core.KernelConfig;
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.deployer.SimpleDeployer;
+import org.eclipse.virgo.nano.deployer.hot.HotDeployerEnabler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.packageadmin.PackageAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StandardApplicationDeployer implements ApplicationDeployer {
 
-    private static final String BUNDLE = "BUNDLE";
-    private static final String WAR = "WAR";
-    private final BundleContext bundleContext;
-    private final EventLogger eventLogger;
+    private EventLogger eventLogger;
 
-    public StandardApplicationDeployer(BundleContext bundleContext, EventLogger eventLogger) {
-        this.bundleContext = bundleContext;
-        this.eventLogger = eventLogger;
+    private WebBundleManifestTransformer transformer;
+
+    private PackageAdmin packageAdmin;
+
+    private final List<SimpleDeployer> simpleDeployers = new ArrayList<SimpleDeployer>();
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private KernelConfig kernelConfig;
+
+    private HotDeployerEnabler hotDeployerEnabler = null;
+
+    private BundleContext bundleContext;
+
+    public void activate(ComponentContext context) throws Exception {
+        this.bundleContext = context.getBundleContext();
+        this.simpleDeployers.add(new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger));
+        this.simpleDeployers.add(new WARDeployer(context.getBundleContext(), this.packageAdmin, this.transformer, this.eventLogger));
+        initialiseHotDeployer();
+
+        // TODO register the deployer MBean when the management classes are factored out in a new bundle.
+        // Deployer deployerMBean = new StandardDeployer(appDeployer);
     }
 
-    @Override
-    public DeploymentIdentity install(URI uri, DeploymentOptions options) throws DeploymentException {
-        Bundle installed = null;
-        installed = doInstall(uri);
-        doStart(uri, installed);
-        return getDeploymentIdentityFor(uri.toString(), installed);
-    }
-
-    private void doStart(URI uri, Bundle installed) throws DeploymentException {
-        try {
-            if (recogniseArtifactType(uri.toString()).equals(WAR)) {
-                eventLogger.log(NanoDeployerLogEvents.NANO_WEB_STARTING, installed.getSymbolicName(), installed.getVersion(), "/" + installed.getSymbolicName());
-                installed.start();
-                eventLogger.log(NanoDeployerLogEvents.NANO_WEB_STARTED, installed.getSymbolicName(), installed.getVersion(), "/" + installed.getSymbolicName());
-            } else {
-                eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installed.getSymbolicName(), installed.getVersion());
-                installed.start();
-                eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installed.getSymbolicName(), installed.getVersion());
-            }
-        } catch (BundleException e) {
-            throw new DeploymentException("Failed to start artifact installed from " + uri, e);
+    public void deactivate(ComponentContext context) throws Exception {
+        if (this.hotDeployerEnabler != null) {
+            this.hotDeployerEnabler.stopHotDeployer();
         }
     }
 
-    private Bundle doInstall(URI uri) throws DeploymentException {
-        Bundle installed = null;
-        try {
-            String uriString = uri.toString();
-            eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, uriString);
-            if (uriString.toUpperCase().endsWith(WAR)) {
-                installed = this.bundleContext.installBundle(getWebBundleLocation(uriString));
-            } else {
-                installed = this.bundleContext.installBundle(uri.toString());
-            }
-            eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
-        } catch (BundleException e) {
-            throw new DeploymentException("Failed to install artifact from " + uri, e);
-        }
-        return installed;
-    }
-    
-    private String getWebBundleLocation(String uri) {
-        String[] splitInstallingArtifactPath = uri.split("/");
-        String installingArtifact = splitInstallingArtifactPath[splitInstallingArtifactPath.length-1];
-        return "webbundle:" + uri.toString() + "?Web-ContextPath=/" + installingArtifact.substring(0, installingArtifact.length()-4);
-    }
-
-    @Override
-    public DeploymentIdentity install(URI uri) throws DeploymentException {
-        return this.install(uri, null);
+    private void initialiseHotDeployer() {
+        int deployerTimeout = Integer.valueOf(this.kernelConfig.getProperty("deployer.timeout"));
+        String pickupDirectory = this.kernelConfig.getProperty("deployer.pickupDirectory");
+        DeployerConfiguration deployerConfiguration = new StandardDeployerConfiguration(deployerTimeout, new File(pickupDirectory));
+        this.hotDeployerEnabler = new HotDeployerEnabler(this, deployerConfiguration, this.eventLogger);
+        this.hotDeployerEnabler.startHotDeployer();
     }
 
     @Override
     public DeploymentIdentity deploy(URI uri) throws DeploymentException {
-        return this.install(uri);
+        for (SimpleDeployer deployer : this.simpleDeployers) {
+            if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                if (deployer.isDeployed(uri)) {
+                    deployer.update(uri);
+                } else {
+                    deployer.deploy(uri);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void undeploy(DeploymentIdentity deploymentIdentity) throws DeploymentException {
+        if (this.bundleContext != null) {
+            String symbolicName = deploymentIdentity.getSymbolicName();
+            String version = deploymentIdentity.getVersion();
+            List<Bundle> existingBundles = new ArrayList<Bundle>();
+
+            for (Bundle bundle : this.bundleContext.getBundles()) {
+                if (bundle.getSymbolicName().equals(symbolicName) && bundle.getVersion().toString().equals(version)) {
+                    existingBundles.add(bundle);
+                }
+            }
+            if (existingBundles.size() > 1) {
+                this.logger.warn("Multiple bundles matching the marked for uninstall symbolicName-version pair. List of all matches: "
+                    + existingBundles.toArray(new Bundle[existingBundles.size()]).toString());
+                this.logger.warn("Uninstalling the last-installed matching bundle " + existingBundles.get(existingBundles.size() - 1).toString());
+            }
+            for (SimpleDeployer deployer : this.simpleDeployers) {
+                if (deployer.canServeFileType(deploymentIdentity.getType())) {
+                    deployer.undeploy(existingBundles.get(0));
+                }
+            }
+        }
+    }
+
+    @Override
+    public DeploymentIdentity getDeploymentIdentity(URI uri) {
+        for (SimpleDeployer deployer : this.simpleDeployers) {
+            if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                return deployer.getDeploymentIdentity(uri);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isDeployed(URI uri) {
+        for (SimpleDeployer deployer : this.simpleDeployers) {
+            if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                return deployer.isDeployed(uri);
+            }
+        }
+        return false;
+    }
+
+    private String getFileTypeFromUri(URI uri) {
+        String path = uri.toString();
+        return path.substring(path.lastIndexOf(".") + 1);
     }
 
     @Override
@@ -99,70 +147,38 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     @Override
     public void undeploy(String applicationSymbolicName, String version) throws DeploymentException {
-        this.undeploy(null, applicationSymbolicName, version);
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
 
+    }
+
+    @Override
+    public DeploymentIdentity install(URI uri, DeploymentOptions options) throws DeploymentException {
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
+    }
+
+    @Override
+    public DeploymentIdentity install(URI uri) throws DeploymentException {
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
     public void undeploy(String type, String name, String version) throws DeploymentException {
-        Bundle toUndeploy = getBundleBy(name);
-        
-        eventLogger.log(NanoDeployerLogEvents.NANO_STOPPING, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
-        doStop(name, toUndeploy);
-        eventLogger.log(NanoDeployerLogEvents.NANO_STOPPED, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
-        
-        eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLING, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
-        doUninstall(name, toUndeploy);
-        eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLED, toUndeploy.getSymbolicName(), toUndeploy.getVersion());
-    }
-
-    private void doUninstall(String name, Bundle toUndeploy) throws DeploymentException {
-        try {
-            toUndeploy.uninstall();
-        } catch (BundleException e) {
-            throw new DeploymentException("Failed to undeploy bundle with symbolic name" + name, e);
-        }
-    }
-    
-    private void doStop(String name, Bundle toUndeploy) throws DeploymentException {
-        try {
-            toUndeploy.stop();
-        } catch (BundleException e) {
-            throw new DeploymentException("Failed to stop bundle with symbolic name" + name, e);
-        }
-    }
-
-    @Override
-    public void undeploy(DeploymentIdentity deploymentIdentity) throws DeploymentException {
-        this.undeploy(deploymentIdentity.getSymbolicName(), deploymentIdentity.getVersion());
-
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
     public void undeploy(DeploymentIdentity deploymentIdentity, boolean deleted) throws DeploymentException {
-        this.undeploy(deploymentIdentity);
-
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
     public DeploymentIdentity refresh(URI uri, String symbolicName) throws DeploymentException {
-        Bundle toRefresh = this.bundleContext.getBundle(uri.toString());
-        try {
-            toRefresh.update();
-            return getDeploymentIdentityFor(uri.toString(), toRefresh);
-        } catch (BundleException e) {
-            throw new DeploymentException("Failed to refresh bundle with location " + uri, e);
-        }
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
     public void refreshBundle(String bundleSymbolicName, String bundleVersion) throws DeploymentException {
-        Bundle toRefresh = getBundleBy(bundleSymbolicName);
-        try {
-            toRefresh.update();
-        } catch (BundleException e) {
-            throw new DeploymentException("Failed to refresh bundle with symbolic name " + bundleSymbolicName + " and version " + bundleVersion, e);
-        }
+        throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
@@ -170,47 +186,44 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
-    @Override
-    public DeploymentIdentity getDeploymentIdentity(URI uri) {
-        String uriString = uri.toString();
-        Bundle aBundle = null;
-        if (uriString.toUpperCase().endsWith(WAR)) {
-            aBundle = this.bundleContext.getBundle(getWebBundleLocation(uriString));
-        } else {
-            aBundle = this.bundleContext.getBundle(uriString);
-        }
-        return getDeploymentIdentityFor(uriString, aBundle);
+    public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
+        this.transformer = transformer;
     }
 
-    @Override
-    public boolean isDeployed(URI uri) {
-        Bundle aBundle = this.bundleContext.getBundle(uri.toString());
-        if (aBundle != null) {
-            return true;
-        }
-        return false;
-    }
-    
-    private StandardDeploymentIdentity getDeploymentIdentityFor(String uri, Bundle installed) {
-        return new StandardDeploymentIdentity(recogniseArtifactType(uri), installed.getSymbolicName(), installed.getVersion().toString());
+    public void unbindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
+        this.transformer = null;
     }
 
-    private String recogniseArtifactType(String uri) {
-        if (uri.toString().toUpperCase().endsWith(WAR)) {
-            return WAR;
-        } else {
-            return BUNDLE;
-        }
+    public void bindEventLogger(EventLogger logger) {
+        this.eventLogger = logger;
     }
-    
-    private Bundle getBundleBy(String symbolicName) {
-        Bundle[] bundles = this.bundleContext.getBundles();
-        for (Bundle bundle : bundles) {
-            if (bundle.getSymbolicName().equalsIgnoreCase(symbolicName)) {
-                return bundle;
-            }
-        }
-        return null;
+
+    public void unbindEventLogger(EventLogger logger) {
+        this.eventLogger = null;
+    }
+
+    public void bindKernelConfig(KernelConfig config) {
+        this.kernelConfig = config;
+    }
+
+    public void unbindKernelConfig(KernelConfig config) {
+        this.kernelConfig = null;
+    }
+
+    public void bindPackageAdmin(PackageAdmin packageAdmin) {
+        this.packageAdmin = packageAdmin;
+    }
+
+    public void unbindPackageAdmin(PackageAdmin packageAdmin) {
+        this.packageAdmin = null;
+    }
+
+    public void bindSimpleDeployer(SimpleDeployer deployer) {
+        this.simpleDeployers.add(deployer);
+    }
+
+    public void unbindSimpleDeployer(SimpleDeployer deployer) {
+        this.simpleDeployers.remove(deployer);
     }
 
 }
