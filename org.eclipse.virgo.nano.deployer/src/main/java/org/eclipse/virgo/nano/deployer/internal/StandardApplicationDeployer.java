@@ -42,9 +42,12 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private BundleContext bundleContext;
 
+    private BundleDeployer defaultDeployer;
+
     public void activate(ComponentContext context) throws Exception {
         this.bundleContext = context.getBundleContext();
-        this.simpleDeployers.add(new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger));
+        this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
+        this.simpleDeployers.add(defaultDeployer);
         this.simpleDeployers.add(new WARDeployer(context.getBundleContext(), this.packageAdmin, this.transformer, this.eventLogger));
         initialiseHotDeployer();
 
@@ -68,13 +71,22 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     @Override
     public DeploymentIdentity deploy(URI uri) throws DeploymentException {
+        boolean isThereSuitableDeployer = false;
         for (SimpleDeployer deployer : this.simpleDeployers) {
             if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                isThereSuitableDeployer = true;
                 if (deployer.isDeployed(uri)) {
                     deployer.update(uri);
                 } else {
                     deployer.deploy(uri);
                 }
+            }
+        }
+        if (!isThereSuitableDeployer) {
+            if (this.defaultDeployer.isDeployed(uri)) {
+                this.defaultDeployer.update(uri);
+            } else {
+                this.defaultDeployer.deploy(uri);
             }
         }
         return null;
@@ -97,10 +109,15 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
                     + existingBundles.toArray(new Bundle[existingBundles.size()]).toString());
                 this.logger.warn("Uninstalling the last-installed matching bundle " + existingBundles.get(existingBundles.size() - 1).toString());
             }
+            boolean isThereSuitableDeployer = false;
             for (SimpleDeployer deployer : this.simpleDeployers) {
                 if (deployer.canServeFileType(deploymentIdentity.getType())) {
+                    isThereSuitableDeployer = true;
                     deployer.undeploy(existingBundles.get(0));
                 }
+            }
+            if (!isThereSuitableDeployer) {
+                this.defaultDeployer.undeploy(existingBundles.get(0));
             }
         }
     }
@@ -148,7 +165,6 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     @Override
     public void undeploy(String applicationSymbolicName, String version) throws DeploymentException {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
-
     }
 
     @Override
