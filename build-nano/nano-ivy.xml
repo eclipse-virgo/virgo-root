@@ -36,6 +36,8 @@
 		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="nano-runtime->runtime"/>
 		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="nano-runtime->runtime"/>
 		
+        <dependency org="org.apache.commons" name="com.springsource.org.apache.commons.logging" rev="${com.springsource.org.apache.commons.logging}" />
+        
 		<exclude org="org.aspectj" module="com.springsource.org.aspectj.runtime"/>
 		<exclude org="org.jboss.logging"/>
 		<exclude org="org.jboss.util"/>

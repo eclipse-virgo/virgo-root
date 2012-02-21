@@ -133,6 +133,7 @@
                 <filter token="EQUINOX.SECURITY.VERSION" value="${org.eclipse.equinox.security}"/>
                 <filter token="EQUINOX.SC.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
                 <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
+                <filter token="COMMONS.LOGGING" value="${com.springsource.org.apache.commons.logging}"/>
 			</filterset>
 		</copy>
      </target>
