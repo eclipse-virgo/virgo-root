@@ -12,6 +12,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
+import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -35,7 +36,7 @@ public class BundleDeployer implements SimpleDeployer {
     private static final String FILE_PROTOCOL = "file";
 
     private static final String UNKNOWN = "unknown";
-
+    
     private static final String INSTALL_BY_REFERENCE_PREFIX = "reference:file:";
 
     private final EventLogger eventLogger;
@@ -49,6 +50,8 @@ public class BundleDeployer implements SimpleDeployer {
     private final BundleInfosUpdater bundleInfosUpdater;
 
     private final PackageAdmin packageAdmin;
+    
+    private final File workBundleInstallLocation;
 
     public BundleDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, EventLogger eventLogger) {
         this.eventLogger = eventLogger;
@@ -58,6 +61,9 @@ public class BundleDeployer implements SimpleDeployer {
         File kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+        String thisBundleName = this.bundleContext.getBundle().getSymbolicName();
+        String staging = "staging";
+        this.workBundleInstallLocation = new File(kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging); 
     }
 
     @Override
@@ -72,8 +78,18 @@ public class BundleDeployer implements SimpleDeployer {
         }
         final Bundle installed;
         try {
+            //copy bundle to work
+            if (!this.workBundleInstallLocation.exists()) {
+                if (!this.workBundleInstallLocation.mkdirs()) {
+                    this.logger.error("Failed to create staging directory '" + this.workBundleInstallLocation.getAbsolutePath() + "' for bundle deployment.");
+                    this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
+                    return STATUS_ERROR;
+                }
+            }
+            File stagedFile = new File(workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
+            FileCopyUtils.copy(deployedFile, stagedFile);
             // install the bundle
-            installed = this.bundleContext.installBundle(createInstallLocation(deployedFile));
+            installed = this.bundleContext.installBundle(createInstallLocation(stagedFile));
         } catch (Exception e) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
             return STATUS_ERROR;
@@ -102,6 +118,7 @@ public class BundleDeployer implements SimpleDeployer {
     @Override
     public boolean update(URI path) {
         final File updatedFile = new File(path);
+        final File matchingStagedFile = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
 
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file [" + path + "] for writing. Timeout is [" + this.largeFileCopyTimeout + "].");
@@ -109,9 +126,12 @@ public class BundleDeployer implements SimpleDeployer {
             return STATUS_ERROR;
         }
 
-        final Bundle bundle = this.bundleContext.getBundle(createInstallLocation(updatedFile));
+        final Bundle bundle = this.bundleContext.getBundle(createInstallLocation(matchingStagedFile));
         if (bundle != null) {
             try {
+                //copy the updated bundle over the old one
+                FileCopyUtils.copy(updatedFile, matchingStagedFile);
+                
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
                 if (this.packageAdmin != null) {
@@ -153,6 +173,11 @@ public class BundleDeployer implements SimpleDeployer {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.uninstall();
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
+                
+                File stagingFileToDelete = new File(bundle.getLocation().substring(this.INSTALL_BY_REFERENCE_PREFIX.length()));
+                if (!stagingFileToDelete.delete()) {
+                    this.logger.warn("Could not delete staging file '"+ stagingFileToDelete.getAbsolutePath() +"'");
+                }
             } catch (BundleException e) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
                 return STATUS_ERROR;
@@ -168,8 +193,8 @@ public class BundleDeployer implements SimpleDeployer {
 
     @Override
     public boolean isDeployed(URI path) {
-        File isDeployedFile = new File(path);
-        if (this.bundleContext.getBundle(createInstallLocation(isDeployedFile)) == null) {
+        File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
+        if (this.bundleContext.getBundle(createInstallLocation(matchingStagingBundle)) == null) {
             return false;
         }
         return true;
@@ -177,8 +202,8 @@ public class BundleDeployer implements SimpleDeployer {
 
     @Override
     public DeploymentIdentity getDeploymentIdentity(URI path) {
-        File deployedBundle = new File(path);
-        Bundle bundle = this.bundleContext.getBundle(createInstallLocation(deployedBundle));
+        File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
+        Bundle bundle = this.bundleContext.getBundle(createInstallLocation(matchingStagingBundle));
         if (bundle == null) {
             return null;
         }
@@ -245,4 +270,8 @@ public class BundleDeployer implements SimpleDeployer {
         return INSTALL_BY_REFERENCE_PREFIX + jarFile.getAbsolutePath();
     }
 
+    private String extractJarFileNameFromString(String path) {
+        final String warName = path.substring(path.lastIndexOf(SLASH) + 1);
+        return warName;
+    }
 }

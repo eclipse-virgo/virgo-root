@@ -68,7 +68,7 @@ public class BundleInfosUpdater {
     public void addBundleToBundlesInfo(String bundleSymbolicName, URI url, String bundleVersion, int startLevel, boolean autoStartFlag)
         throws IOException, BundleException {
         try {
-            BundleInfo bundleInfo = createBundleInfo(bundleSymbolicName, bundleVersion, url, startLevel, autoStartFlag);
+            BundleInfo bundleInfo = createBundleInfo(bundleSymbolicName, bundleVersion, this.baseDir.toURI().relativize(url), startLevel, autoStartFlag);
             if (bundleInfo != null) {
                 this.toBeAddedInBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
             }
@@ -80,7 +80,7 @@ public class BundleInfosUpdater {
     public void removeBundleFromBundlesInfo(String bundleSymbolicName, URI url, String bundleVersion, int startLevel, boolean autoStartFlag)
         throws IOException, BundleException {
         try {
-            BundleInfo bundleInfo = createBundleInfo(bundleSymbolicName, bundleVersion, url, startLevel, autoStartFlag);
+            BundleInfo bundleInfo = createBundleInfo(bundleSymbolicName, bundleVersion, this.baseDir.toURI().relativize(url), startLevel, autoStartFlag);
             if (bundleInfo != null) {
                 this.toBeRemovedFromBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
             }
