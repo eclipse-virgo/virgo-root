@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class HotDeployer {
 
-    private static final String EXCLUDE_PATTERN = "\\.DS_Store";
+    private static final String EXCLUDE_PATTERN = "\\.DS_Store|\\.state";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
