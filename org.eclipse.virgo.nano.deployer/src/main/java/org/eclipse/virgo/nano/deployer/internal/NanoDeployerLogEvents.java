@@ -23,7 +23,10 @@ public enum NanoDeployerLogEvents implements LogEvent {
     NANO_UPDATING(15, Level.INFO), //
     NANO_UPDATED(16, Level.INFO), //
     NANO_UPDATE_ERROR(17, Level.ERROR), //
-    NANO_UNDEPLOY_ERROR(18, Level.ERROR); //
+    NANO_UNDEPLOY_ERROR(18, Level.ERROR), //
+    NANO_REFRESHING_HOST(19, Level.INFO), //
+    NANO_REFRESHED_HOST(20, Level.INFO), //
+    NANO_REFRESH_HOST_ERROR(21, Level.ERROR); //
 
     private static final String PREFIX = "DE";
 
