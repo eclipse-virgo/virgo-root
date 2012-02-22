@@ -17,6 +17,7 @@
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
         <dependency org="org.eclipse.osgi" name="org.eclipse.equinox.launcher" rev="${org.eclipse.equinox.launcher}" conf="lib->runtime"/>
         <dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="lib->runtime"/>
+        <dependency org="javax.annotation" name="javax.annotation" rev="${javax.annotation}" />
 
 		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
 	</dependencies>

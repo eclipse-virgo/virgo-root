@@ -27,6 +27,7 @@ org.eclipse.gemini.web=2.1.0.BUILD-20120114220114
 org.apache.tomcat=7.0.21
 javax.transaction=1.1.0
 com.springsource.org.apache.commons.logging=1.1.1
+javax.annotation=1.1.0.v201105051105
 
 # p2 Publishing
 org.eclipse.core.contenttype=3.4.100.v20110423-0524

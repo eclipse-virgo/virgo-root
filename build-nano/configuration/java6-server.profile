@@ -6,6 +6,7 @@ org.osgi.framework.system.packages = \
  javax.activity,\
  javax.annotation,\
  javax.annotation;version="1.0.0",\
+ javax.annotation;version="1.1.0",\
  javax.annotation.processing,\
  javax.crypto,\
  javax.crypto.interfaces,\
@@ -145,6 +146,7 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.soap;version="2.1.1",\
  javax.xml.ws.spi,\
  javax.xml.ws.spi;version="2.1.1",\
+ javax.xml.ws.wsaddressing;version="2.1.1",\
  javax.xml.xpath,\
  org.ietf.jgss,\
  org.omg.CORBA,\
