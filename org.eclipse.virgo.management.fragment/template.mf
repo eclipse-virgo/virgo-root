@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Management Fragment
+Fragment-Host: org.eclipse.gemini.mgmt;bundle-version="${org.eclipse.gemini.management:[=.=.=, =.+1)}"
+Bundle-SymbolicName: org.eclipse.virgo.management.fragment
+Bundle-Version: ${version}
+GeminiManagement-ObjectNameTranslator: org.eclipse.virgo.management.fragment.VirgoObjectNameTranslator
+Import-Package: 
+ org.eclipse.equinox.region;version="${org.eclipse.equinox.region:[=.=.=, =.+1)}",
+ javax.management;version="0"
+Excluded-Imports: org.eclipse.gemini.mgmt
+Excluded-Exports: *

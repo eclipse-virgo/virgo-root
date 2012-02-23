@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="false"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/main/resources">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="false"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.0.200809221524/org.eclipse.osgi-3.5.0.200809221524.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.agent.dm"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.management/1.0.0.RELEASE/org.eclipse.gemini.management-1.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
