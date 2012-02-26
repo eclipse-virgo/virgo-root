@@ -104,14 +104,17 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
      * {@inheritDoc}
      */
     public void onInstalling(InstallArtifact installArtifact) throws DeploymentException {
-        if (this.artifactState.setInstalling()) {
-            List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
-            try {
-                for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
-                    listener.onInstalling(installArtifact);
+        State state = this.artifactState.getState();
+        if (state.equals(State.INITIAL)) {
+            if (this.artifactState.setInstalling()) {
+                List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+                try {
+                    for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                        listener.onInstalling(installArtifact);
+                    }
+                } finally {
+                    ungetListeners(listenerHolders);
                 }
-            } finally {
-                ungetListeners(listenerHolders);
             }
         }
     }
@@ -120,14 +123,17 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
      * {@inheritDoc}
      */
     public void onInstallFailed(InstallArtifact installArtifact) throws DeploymentException {
-        if (this.artifactState.setInitial()) {
-            List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
-            try {
-                for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
-                    listener.onInstallFailed(installArtifact);
+        State state = this.artifactState.getState();
+        if (state.equals(State.INSTALLING)) {
+            if (this.artifactState.setInitial()) {
+                List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+                try {
+                    for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                        listener.onInstallFailed(installArtifact);
+                    }
+                } finally {
+                    ungetListeners(listenerHolders);
                 }
-            } finally {
-                ungetListeners(listenerHolders);
             }
         }
     }
@@ -136,14 +142,17 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
      * {@inheritDoc}
      */
     public void onInstalled(InstallArtifact installArtifact) throws DeploymentException {
-        if (this.artifactState.setInstalled()) {
-            List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
-            try {
-                for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
-                    listener.onInstalled(installArtifact);
+        State state = this.artifactState.getState();
+        if (state.equals(State.INITIAL) || state.equals(State.INSTALLING)) {
+            if (this.artifactState.setInstalled()) {
+                List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+                try {
+                    for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                        listener.onInstalled(installArtifact);
+                    }
+                } finally {
+                    ungetListeners(listenerHolders);
                 }
-            } finally {
-                ungetListeners(listenerHolders);
             }
         }
     }
@@ -152,14 +161,17 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
      * {@inheritDoc}
      */
     public void onResolving(InstallArtifact installArtifact) throws DeploymentException {
-        if (this.artifactState.setResolving()) {
-            List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
-            try {
-                for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
-                    listener.onResolving(installArtifact);
+        State state = this.artifactState.getState();
+        if (state.equals(State.INITIAL) || state.equals(State.INSTALLING) || state.equals(State.INSTALLED)) {
+            if (this.artifactState.setResolving()) {
+                List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+                try {
+                    for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                        listener.onResolving(installArtifact);
+                    }
+                } finally {
+                    ungetListeners(listenerHolders);
                 }
-            } finally {
-                ungetListeners(listenerHolders);
             }
         }
     }
@@ -168,14 +180,17 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
      * {@inheritDoc}
      */
     public void onResolveFailed(InstallArtifact installArtifact) throws DeploymentException {
-        if (this.artifactState.setInstalled()) {
-            List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
-            try {
-                for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
-                    listener.onResolveFailed(installArtifact);
+        State state = this.artifactState.getState();
+        if (state.equals(State.INITIAL) || state.equals(State.INSTALLING) || state.equals(State.INSTALLED) || state.equals(State.RESOLVING) || state.equals(State.STOPPING)) {
+            if (this.artifactState.setInstalled()) {
+                List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+                try {
+                    for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                        listener.onResolveFailed(installArtifact);
+                    }
+                } finally {
+                    ungetListeners(listenerHolders);
                 }
-            } finally {
-                ungetListeners(listenerHolders);
             }
         }
     }
@@ -184,14 +199,17 @@ public class StandardArtifactStateMonitor implements ArtifactStateMonitor {
      * {@inheritDoc}
      */
     public void onResolved(InstallArtifact installArtifact) throws DeploymentException {
-        if (this.artifactState.setResolved()) {
-            List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
-            try {
-                for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
-                    listener.onResolved(installArtifact);
+        State state = this.artifactState.getState();
+        if (state.equals(State.INITIAL) || state.equals(State.INSTALLING) || state.equals(State.INSTALLED) || state.equals(State.RESOLVING) || state.equals(State.STOPPING)) {
+            if (this.artifactState.setResolved()) {
+                List<OsgiServiceHolder<InstallArtifactLifecycleListener>> listenerHolders = getListenerHolders();
+                try {
+                    for (InstallArtifactLifecycleListener listener : getListeners(listenerHolders)) {
+                        listener.onResolved(installArtifact);
+                    }
+                } finally {
+                    ungetListeners(listenerHolders);
                 }
-            } finally {
-                ungetListeners(listenerHolders);
             }
         }
     }

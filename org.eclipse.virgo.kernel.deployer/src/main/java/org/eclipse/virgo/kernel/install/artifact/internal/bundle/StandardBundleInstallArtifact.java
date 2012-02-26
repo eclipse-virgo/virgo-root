@@ -225,7 +225,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     }
 
     /**
-     * Track the start of the bundle.
+     * Track an unsolicited start of the bundle.
      */
     void trackStart() {
         AbortableSignal signal = createStateMonitorSignal(null);
@@ -253,6 +253,9 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      */
     @Override
     public void start(AbortableSignal signal) throws DeploymentException {
+        if (!hasStartingParent()) {
+            topLevelStart();
+        }
         /*
          * Do not call super.start(signal) as it is essential that the starting event is driven under the bundle
          * lifecycle event so the listeners see a suitable bundle state.
@@ -278,7 +281,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      */
     @Override
     public void stop() throws DeploymentException {
-        if (this.getBundle().getState() == Bundle.ACTIVE) {
+        if (this.getBundle().getState() == Bundle.ACTIVE && shouldStop()) {
             /*
              * Do not call super.stop() as it is essential that stopping and stopped events are driven under the bundle
              * lifecycle events so the listeners see a suitable bundle state, however we must ensure that we ignore

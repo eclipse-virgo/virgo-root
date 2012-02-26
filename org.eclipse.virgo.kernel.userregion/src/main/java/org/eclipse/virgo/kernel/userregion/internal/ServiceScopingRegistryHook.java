@@ -31,26 +31,30 @@ import org.osgi.framework.hooks.service.FindHook;
 @SuppressWarnings("deprecation")
 final class ServiceScopingRegistryHook implements FindHook, EventHook {
 
-    private final ServiceScopingStrategy serviceScopingStrategy;
+	private final ServiceScopingStrategy serviceScopingStrategy;
 
-    public ServiceScopingRegistryHook(ServiceScopingStrategy serviceScopingStrategy) {
-       this.serviceScopingStrategy = serviceScopingStrategy;
-    }
+	public ServiceScopingRegistryHook(
+			ServiceScopingStrategy serviceScopingStrategy) {
+		this.serviceScopingStrategy = serviceScopingStrategy;
+	}
 
-    @SuppressWarnings("unchecked")
-    public void find(BundleContext context, String name, String filter, boolean allServices, Collection references) {
-        this.serviceScopingStrategy.scopeReferences(references, context, name, filter);
-    }
+	@SuppressWarnings("unchecked")
+	public void find(BundleContext context, String name, String filter,
+			boolean allServices,
+			@SuppressWarnings("rawtypes") Collection references) {
+		this.serviceScopingStrategy.scopeReferences(references, context, name,
+				filter);
+	}
 
-    @SuppressWarnings("unchecked")
-    public void event(ServiceEvent event, Collection contexts) {
-        ServiceReference ref = event.getServiceReference();
-        for (Iterator iterator = contexts.iterator(); iterator.hasNext();) {
-            BundleContext context = (BundleContext) iterator.next();
-            if (!this.serviceScopingStrategy.isPotentiallyVisible(ref, context)) {
-                iterator.remove();
-            }
-        }
-    }
+	@SuppressWarnings("rawtypes")
+	public void event(ServiceEvent event, Collection contexts) {
+		ServiceReference ref = event.getServiceReference();
+		for (Iterator iterator = contexts.iterator(); iterator.hasNext();) {
+			BundleContext context = (BundleContext) iterator.next();
+			if (!this.serviceScopingStrategy.isPotentiallyVisible(ref, context)) {
+				iterator.remove();
+			}
+		}
+	}
 
 }

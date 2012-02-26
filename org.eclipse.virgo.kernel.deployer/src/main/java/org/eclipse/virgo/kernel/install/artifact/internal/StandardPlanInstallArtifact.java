@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class StandardPlanInstallArtifact extends AbstractInstallArtifact implements PlanInstallArtifact {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(StandardPlanInstallArtifact.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandardPlanInstallArtifact.class);
 
     private final Object monitor = new Object();
 
@@ -55,28 +55,28 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     private final ScopeFactory scopeFactory;
 
     private final InstallArtifactRefreshHandler refreshHandler;
-    
+
     private final boolean atomic;
-    
+
     private final boolean scoped;
-    
+
     private final Provisioning provisioning;
 
     private final List<ArtifactSpecification> artifactSpecifications;
-    
+
     protected final EventLogger eventLogger;
 
     private Scope applicationScope;
 
-
-    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped, @NonNull Provisioning provisioning, @NonNull ArtifactStorage artifactStorage,
-        @NonNull ArtifactStateMonitor artifactStateMonitor, @NonNull ScopeServiceRepository scopeServiceRepository,
-        @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger, @NonNull InstallArtifactRefreshHandler refreshHandler,
-        String repositoryName, List<ArtifactSpecification> artifactSpecifications) throws DeploymentException {
+    protected StandardPlanInstallArtifact(@NonNull ArtifactIdentity artifactIdentity, boolean atomic, boolean scoped,
+        @NonNull Provisioning provisioning, @NonNull ArtifactStorage artifactStorage, @NonNull ArtifactStateMonitor artifactStateMonitor,
+        @NonNull ScopeServiceRepository scopeServiceRepository, @NonNull ScopeFactory scopeFactory, @NonNull EventLogger eventLogger,
+        @NonNull InstallArtifactRefreshHandler refreshHandler, String repositoryName, List<ArtifactSpecification> artifactSpecifications)
+        throws DeploymentException {
         super(artifactIdentity, artifactStorage, artifactStateMonitor, repositoryName, eventLogger);
-        
+
         policeNestedScopes(artifactIdentity, scoped, eventLogger);
-        
+
         this.scopeServiceRepository = scopeServiceRepository;
         this.scopeFactory = scopeFactory;
         this.eventLogger = eventLogger;
@@ -89,10 +89,11 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         this.provisioning = provisioning;
         this.artifactSpecifications = artifactSpecifications;
     }
-    
+
     private void policeNestedScopes(ArtifactIdentity artifactIdentity, boolean scoped, EventLogger eventLogger) throws DeploymentException {
         if (artifactIdentity.getScopeName() != null && scoped) {
-            eventLogger.log(DeployerLogEvents.NESTED_SCOPES_NOT_SUPPORTED, artifactIdentity.getType(), ArtifactIdentityScoper.getUnscopedName(artifactIdentity), artifactIdentity.getVersion(), artifactIdentity.getScopeName());
+            eventLogger.log(DeployerLogEvents.NESTED_SCOPES_NOT_SUPPORTED, artifactIdentity.getType(),
+                ArtifactIdentityScoper.getUnscopedName(artifactIdentity), artifactIdentity.getVersion(), artifactIdentity.getScopeName());
             throw new DeploymentException("Nested scope detected", true);
         }
     }
@@ -115,17 +116,17 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
 
         // The SignalJunction constructor will drive the signal if numChildren == 0.
         AbortableSignalJunction signalJunction = new AbortableSignalJunction(signal, numChildren);
-        
-        LOGGER.debug("Created {} that will notify {} to track start of {}", new Object[] {signalJunction, signal, this});
-        
+
+        LOGGER.debug("Created {} that will notify {} to track start of {}", new Object[] { signalJunction, signal, this });
+
         List<AbortableSignal> subSignals = signalJunction.getSignals();
 
         for (int childIndex = 0; childIndex < numChildren && !signalJunction.failed(); childIndex++) {
             InstallArtifact childArtifact = children.get(childIndex).getValue();
             AbortableSignal subSignal = subSignals.get(childIndex);
-            
-            LOGGER.debug("Starting {} with signal {} from {}", new Object[] {childArtifact, subSignal, signalJunction});
-            
+
+            LOGGER.debug("Starting {} with signal {} from {}", new Object[] { childArtifact, subSignal, signalJunction });
+
             childArtifact.start(subSignal);
         }
 
@@ -156,13 +157,17 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     protected final void doUninstall() throws DeploymentException {
         deScope(); // TODO this was placed here in copying from the old deployer, but it is insufficient. Need to
         // consider stop/start/stop etc. for package and service scoping.
-        
+
         DeploymentException firstFailure = null;
         for (GraphNode<InstallArtifact> child : getChildrenSnapshot()) {
-            try {
-                child.getValue().uninstall();
-            } catch (DeploymentException e) {
-                firstFailure = e;
+            getGraph().removeChild(child);
+            // Avoid uninstalling shared child
+            if (!inUse(child)) {
+                try {
+                    child.getValue().uninstall();
+                } catch (DeploymentException e) {
+                    firstFailure = e;
+                }
             }
         }
         if (firstFailure != null) {
@@ -170,12 +175,18 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
         }
     }
 
+    private boolean inUse(GraphNode<InstallArtifact> child) {
+        AbstractInstallArtifact installArtifact = (AbstractInstallArtifact) child.getValue();
+        boolean isTopLevelDeployed = installArtifact.getTopLevelDeployed();
+        return isTopLevelDeployed || !child.getParents().isEmpty();
+    }
+
     public void scope() throws DeploymentException {
-        if (isScoped()) {            
+        if (isScoped()) {
             List<InstallArtifact> scopeMembers = new PlanMemberCollector().collectPlanMembers(this);
             PlanScoper planScoper = new PlanScoper(scopeMembers, getName(), getVersion(), this.scopeServiceRepository, this.eventLogger);
             String scopeName = planScoper.getScopeName();
-            
+
             synchronized (this.monitor) {
                 this.applicationScope = this.scopeFactory.getApplicationScope(scopeName);
                 // TODO Do we really need to hold this lock while we're driving the planScoper?
@@ -193,8 +204,6 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
             }
         }
     }
-    
-    
 
     /**
      * {@inheritDoc}
@@ -202,7 +211,7 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     public boolean refresh(String symbolicName) throws DeploymentException {
         return false;
     }
-    
+
     protected boolean doRefresh() {
         return false;
     }
@@ -227,8 +236,8 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     public final boolean isScoped() {
         return this.scoped;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public Provisioning getProvisioning() {
@@ -237,5 +246,5 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
 
     public final List<ArtifactSpecification> getArtifactSpecifications() {
         return this.artifactSpecifications;
-    }  
+    }
 }

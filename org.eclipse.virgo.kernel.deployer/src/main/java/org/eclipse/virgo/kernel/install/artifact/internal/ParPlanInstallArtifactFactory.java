@@ -12,9 +12,6 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
-import org.osgi.framework.BundleContext;
-
-
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
@@ -25,6 +22,7 @@ import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallAr
 import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.osgi.framework.BundleContext;
 
 /**
  * A factory for creating {@link ParPlanInstallArtifact} instances.

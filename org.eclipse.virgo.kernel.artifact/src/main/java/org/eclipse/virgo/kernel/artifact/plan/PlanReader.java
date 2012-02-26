@@ -13,6 +13,8 @@ package org.eclipse.virgo.kernel.artifact.plan;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,18 +50,22 @@ import org.eclipse.virgo.util.osgi.manifest.VersionRange;
  */
 public final class PlanReader {
 
+    private static final String TYPE_ATTRIBUTE = "type";
+
     private static final String NAME_ATTRIBUTE = "name";
 
     private static final String VERSION_ATTRIBUTE = "version";
 
+    private static final String URI_ATTRIBUTE = "uri";
+
     private static final String SCOPED_ATTRIBUTE = "scoped";
 
     private static final String ATOMIC_ATTRIBUTE = "atomic";
-    
+
     private static final String PROVISIONING_INHERIT_ATTRIBUTE = "inherit";
-    
+
     private static final String PROVISIONING_AUTO_ATTRIBUTE = "auto";
-    
+
     private static final String PROVISIONING_DISABLED_ATTRIBUTE = "disabled";
 
     private static final String ARTIFACT_ELEMENT = "artifact";
@@ -67,8 +73,6 @@ public final class PlanReader {
     private static final String ATTRIBUTE_ELEMENT = "attribute";
 
     private static final String PROPERTY_ELEMENT = "property";
-
-    private static final String TYPE_ATTRIBUTE = "type";
 
     private static final String VALUE_ATTRIBUTE = "value";
 
@@ -80,6 +84,7 @@ public final class PlanReader {
 
     /**
      * Creates a {@link PlanDescriptor} meta-data artifact from an {@link InputStream}
+     * 
      * @param inputStream from which the plan is to be read
      * @return The plan descriptor (meta-data) from the input stream
      */
@@ -125,7 +130,7 @@ public final class PlanReader {
     private Provisioning parseProvisioningAttribute(Element element) {
         String provisioningAttribute = element.getAttribute("provisioning");
         Provisioning provisioning;
-        if ("".equals(provisioningAttribute) || PROVISIONING_INHERIT_ATTRIBUTE.equals(provisioningAttribute)) {
+        if (isEmpty(provisioningAttribute) || PROVISIONING_INHERIT_ATTRIBUTE.equals(provisioningAttribute)) {
             provisioning = Provisioning.INHERIT;
         } else if (PROVISIONING_AUTO_ATTRIBUTE.equals(provisioningAttribute)) {
             provisioning = Provisioning.AUTO;
@@ -159,12 +164,39 @@ public final class PlanReader {
             String type = replacePlaceholders(artifactElement.getAttribute(TYPE_ATTRIBUTE), attributes);
             String name = replacePlaceholders(artifactElement.getAttribute(NAME_ATTRIBUTE), attributes);
             String version = replacePlaceholders(artifactElement.getAttribute(VERSION_ATTRIBUTE), attributes);
+            String uri = replacePlaceholders(artifactElement.getAttribute(URI_ATTRIBUTE), attributes);
             Map<String, String> properties = parseArtifactProperties(artifactElement, attributes);
-
-            artifactSpecifications.add(new ArtifactSpecification(type, name, new VersionRange(version), properties));
+            artifactSpecifications.add(buildArtifactSpecification(type, name, version, uri, properties));
         }
 
         return artifactSpecifications;
+    }
+
+    private ArtifactSpecification buildArtifactSpecification(String type, String name, String version, String uriString, Map<String, String> properties) {
+        if (isEmpty(uriString)) {
+            return new ArtifactSpecification(type, name, new VersionRange(version), properties);
+        } else {
+            URI uri;
+            try {
+                uri = new URI(uriString);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Invalid URI in plan artifact specification", e);
+            }
+            if (!isEmpty(type)) {
+                throw new IllegalArgumentException("Plan artifact may not specify both URI (" + uriString + ") and type (" + type + ")");
+            }
+            if (!isEmpty(name)) {
+                throw new IllegalArgumentException("Plan artifact may not specify both URI (" + uriString + ") and name (" + name + ")");
+            }
+            if (!isEmpty(version)) {
+                throw new IllegalArgumentException("Plan artifact may not specify both URI (" + uriString + ") and version (" + version + ")");
+            }
+            return new ArtifactSpecification(uri, properties);
+        }
+    }
+
+    private static boolean isEmpty(String string) {
+        return "".equals(string);
     }
 
     private Map<String, String> parseArtifactProperties(Element artifactElement, Properties attributes) {

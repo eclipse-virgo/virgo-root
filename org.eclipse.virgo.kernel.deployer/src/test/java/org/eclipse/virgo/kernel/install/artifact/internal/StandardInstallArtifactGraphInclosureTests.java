@@ -14,7 +14,6 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
@@ -25,14 +24,18 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
 import org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory;
+import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
@@ -51,249 +54,202 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.util.io.PathReference;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-/**
- */
 public class StandardInstallArtifactGraphInclosureTests {
 
-	private static final String TEST_BUNDLE_REPOSITORY_NAME = "testBundleRepositoryName";
+    private static final String PROVISIONING_PROPERTY_NAME = "org.eclipse.virgo.kernel.provisioning";
 
-	private final InstallEnvironmentFactory installEnvironmentFactory = createMock(InstallEnvironmentFactory.class);
+    private static final String TEST_BUNDLE_REPOSITORY_NAME = "testBundleRepositoryName";
 
-	private final Pipeline refreshPipeline = createMock(Pipeline.class);
+    private final InstallEnvironmentFactory installEnvironmentFactory = createMock(InstallEnvironmentFactory.class);
 
-	private InstallArtifactGraphInclosure installArtifactFactory;
+    private final Pipeline refreshPipeline = createMock(Pipeline.class);
 
-	private URI bundleURI;
+    private InstallArtifactGraphInclosure installArtifactFactory;
 
-	private OsgiFramework osgiFramework;
+    private URI bundleURI;
 
-	private BundleStarter bundleStarter;
+    private OsgiFramework osgiFramework;
 
-	private TracingService tracingService;
+    private BundleStarter bundleStarter;
 
-	private PackageAdminUtil packageAdminUtil;
+    private TracingService tracingService;
 
-	private Repository repository;
+    private PackageAdminUtil packageAdminUtil;
 
-	private RepositoryAwareArtifactDescriptor artifactDescriptor;
+    private Repository repository;
 
-	private final ArtifactStorageFactory artifactStorageFactory = new StandardArtifactStorageFactory(
-			new PathReference("target/work/deployer.staging"),
-			new StandardArtifactFSFactory(), new MockEventLogger());
+    private RepositoryAwareArtifactDescriptor artifactDescriptor;
 
-	private Set<ArtifactBridge> testArtifactBridges = new HashSet<ArtifactBridge>();
+    private final ArtifactStorageFactory artifactStorageFactory = new StandardArtifactStorageFactory(
+        new PathReference("target/work/deployer.staging"), new StandardArtifactFSFactory(), new MockEventLogger());
 
-	private ThreadSafeDirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+    private Set<ArtifactBridge> testArtifactBridges = new HashSet<ArtifactBridge>();
 
-	@Before
-	public void setUp() {
-		this.bundleURI = new File("src/test/resources/artifacts/simple.jar")
-				.toURI();
-		this.osgiFramework = createMock(OsgiFramework.class);
-		this.bundleStarter = createMock(BundleStarter.class);
-		this.tracingService = createMock(TracingService.class);
-		this.packageAdminUtil = createMock(PackageAdminUtil.class);
-		this.repository = createMock(Repository.class);
-		this.artifactDescriptor = createMock(RepositoryAwareArtifactDescriptor.class);
-		this.testArtifactBridges.add(new StubArtifactBridge("bundle", ".jar"));
-	}
+    private ThreadSafeDirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
 
-	private void replayMocks() {
-		replay(this.osgiFramework, this.bundleStarter, this.tracingService,
-				this.packageAdminUtil, this.repository, this.artifactDescriptor);
-	}
+    @Before
+    public void setUp() {
+        this.bundleURI = new File("src/test/resources/artifacts/simple.jar").toURI();
+        this.osgiFramework = createMock(OsgiFramework.class);
+        this.bundleStarter = createMock(BundleStarter.class);
+        this.tracingService = createMock(TracingService.class);
+        this.packageAdminUtil = createMock(PackageAdminUtil.class);
+        this.repository = createMock(Repository.class);
+        this.artifactDescriptor = createMock(RepositoryAwareArtifactDescriptor.class);
+        this.testArtifactBridges.add(new StubArtifactBridge("bundle", ".jar"));
+    }
 
-	private void verifyMocks() {
-		verify(this.osgiFramework, this.bundleStarter, this.tracingService,
-				this.packageAdminUtil, this.repository, this.artifactDescriptor);
-	}
+    private void replayMocks() {
+        replay(this.osgiFramework, this.bundleStarter, this.tracingService, this.packageAdminUtil, this.repository, this.artifactDescriptor);
+    }
 
-	private void resetMocks() {
-		reset(this.osgiFramework, this.bundleStarter, this.tracingService,
-				this.packageAdminUtil, this.repository, this.artifactDescriptor);
-	}
+    private void verifyMocks() {
+        verify(this.osgiFramework, this.bundleStarter, this.tracingService, this.packageAdminUtil, this.repository, this.artifactDescriptor);
+    }
 
-	@Test
-	public void testBundle() throws DeploymentException, IOException {
-		StubBundleContext bundleContext = new StubBundleContext();
-		StubBundleContext userRegionBundleContext = new StubBundleContext();
-		expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext)
-				.anyTimes();
-		expect(
-				this.repository.get(isA(String.class), isA(String.class),
-						isA(VersionRange.class))).andReturn(
-				this.artifactDescriptor);
-		expect(this.artifactDescriptor.getUri()).andReturn(this.bundleURI);
-		expect(this.artifactDescriptor.getVersion()).andReturn(
-				new Version(1, 2, 3));
-		expect(this.artifactDescriptor.getRepositoryName()).andReturn(
-				TEST_BUNDLE_REPOSITORY_NAME);
+    private void resetMocks() {
+        reset(this.osgiFramework, this.bundleStarter, this.tracingService, this.packageAdminUtil, this.repository, this.artifactDescriptor);
+    }
 
-		replayMocks();
+    @Test
+    public void testBundle() throws DeploymentException, IOException {
+        StubBundleContext bundleContext = new StubBundleContext();
+        StubBundleContext userRegionBundleContext = new StubBundleContext();
+        expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext).anyTimes();
 
-		StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(
-				testArtifactBridges);
+        replayMocks();
 
-		StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(
-				installEnvironmentFactory, refreshPipeline);
+        StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(installEnvironmentFactory, refreshPipeline);
 
-		bundleContext.registerService(InstallArtifactGraphFactory.class
-				.getName(), new BundleInstallArtifactGraphFactory(
-				this.osgiFramework, bundleContext, refreshHelper,
-				this.bundleStarter, this.tracingService, this.packageAdminUtil,
-				userRegionBundleContext, new MockEventLogger(), null, dag),
-				null);
+        bundleContext.registerService(InstallArtifactGraphFactory.class.getName(), new BundleInstallArtifactGraphFactory(this.osgiFramework,
+            bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
+            new MockEventLogger(), null, dag), null);
 
-		this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(
-				this.artifactStorageFactory, bundleContext, this.repository,
-				new MockEventLogger(), artifactIdentityDeterminer);
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
-		ArtifactSpecification specification = new ArtifactSpecification(
-				"bundle", "a", new VersionRange("2.0.0"));
-		InstallArtifact installArtifact = this.installArtifactFactory
-				.createInstallGraph(specification).getValue();
-		assertNotNull(installArtifact);
-		assertEquals(TEST_BUNDLE_REPOSITORY_NAME,
-				installArtifact.getRepositoryName());
-		assertTrue(installArtifact instanceof BundleInstallArtifact);
-		BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
-		assertEquals("a", bundleInstallArtifact.getBundleManifest()
-				.getBundleSymbolicName().getSymbolicName());
+        Map<String, String> properties = determineDeploymentProperties(Collections.<String, String> emptyMap(), Provisioning.AUTO);
 
-		verifyMocks();
-		resetMocks();
-	}
+        File artifact = new File(this.bundleURI);
+        ArtifactIdentity identity = new ArtifactIdentity("bundle", "a", new Version(1, 2, 3), null);
 
-	@Test
-	public void testBundleImplicitTypeAndVersion() throws DeploymentException,
-			IOException {
-		StubBundleContext bundleContext = new StubBundleContext();
-		StubBundleContext userRegionBundleContext = new StubBundleContext();
-		expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext)
-				.anyTimes();
+        GraphNode<InstallArtifact> installGraph = this.installArtifactFactory.constructGraphNode(identity, artifact, properties,
+            TEST_BUNDLE_REPOSITORY_NAME);
 
-		replayMocks();
+        InstallArtifact installArtifact = installGraph.getValue();
+        assertNotNull(installArtifact);
+        assertEquals(TEST_BUNDLE_REPOSITORY_NAME, installArtifact.getRepositoryName());
+        assertTrue(installArtifact instanceof BundleInstallArtifact);
+        BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
+        assertEquals("a", bundleInstallArtifact.getBundleManifest().getBundleSymbolicName().getSymbolicName());
 
-		StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(
-				testArtifactBridges);
+        verifyMocks();
+        resetMocks();
+    }
 
-		StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(
-				installEnvironmentFactory, refreshPipeline);
+    private Map<String, String> determineDeploymentProperties(Map<String, String> properties, Provisioning parentProvisioning) {
+        Map<String, String> deploymentProperties = new HashMap<String, String>(properties);
+        deploymentProperties.put(PROVISIONING_PROPERTY_NAME, parentProvisioning.toString());
+        return deploymentProperties;
+    }
 
-		bundleContext.registerService(InstallArtifactGraphFactory.class
-				.getName(), new BundleInstallArtifactGraphFactory(
-				this.osgiFramework, bundleContext, refreshHelper,
-				this.bundleStarter, this.tracingService, this.packageAdminUtil,
-				userRegionBundleContext, new MockEventLogger(), null, dag),
-				null);
+    @Test
+    public void testBundleImplicitTypeAndVersion() throws DeploymentException, IOException {
+        StubBundleContext bundleContext = new StubBundleContext();
+        StubBundleContext userRegionBundleContext = new StubBundleContext();
+        expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext).anyTimes();
 
-		this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(
-				this.artifactStorageFactory, bundleContext, this.repository,
-				new MockEventLogger(), artifactIdentityDeterminer);
+        replayMocks();
 
-		GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory
-				.createInstallGraph(new File(this.bundleURI));
-		checkBundleImplicitTypeAndVersion(installArtifactGraph.getValue());
+        StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(testArtifactBridges);
 
-		verifyMocks();
-		resetMocks();
-	}
+        StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(installEnvironmentFactory, refreshPipeline);
 
-	@Test
-	public void testNoBSNBundleImplicitTypeAndVersion()
-			throws DeploymentException {
-		StubBundleContext bundleContext = new StubBundleContext();
-		StubBundleContext userRegionBundleContext = new StubBundleContext();
-		expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext)
-				.anyTimes();
+        bundleContext.registerService(InstallArtifactGraphFactory.class.getName(), new BundleInstallArtifactGraphFactory(this.osgiFramework,
+            bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
+            new MockEventLogger(), null, dag), null);
 
-		replayMocks();
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
-		StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(
-				testArtifactBridges);
+        File bundle = new File(this.bundleURI);
+        GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory.constructGraphNode(
+            artifactIdentityDeterminer.determineIdentity(bundle, null), bundle, null, null);
+        checkBundleImplicitTypeAndVersion(installArtifactGraph.getValue());
 
-		StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(
-				installEnvironmentFactory, refreshPipeline);
+        verifyMocks();
+        resetMocks();
+    }
 
-		bundleContext.registerService(InstallArtifactGraphFactory.class
-				.getName(), new BundleInstallArtifactGraphFactory(
-				this.osgiFramework, bundleContext, refreshHelper,
-				this.bundleStarter, this.tracingService, this.packageAdminUtil,
-				userRegionBundleContext, new MockEventLogger(), null, dag),
-				null);
+    @Test
+    public void testNoBSNBundleImplicitTypeAndVersion() throws DeploymentException, URISyntaxException {
+        StubBundleContext bundleContext = new StubBundleContext();
+        StubBundleContext userRegionBundleContext = new StubBundleContext();
+        expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext).anyTimes();
 
-		this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(
-				this.artifactStorageFactory, bundleContext, this.repository,
-				new MockEventLogger(), artifactIdentityDeterminer);
+        replayMocks();
 
-		GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory
-				.createInstallGraph(new File(
-						"src/test/resources/artifacts/nobsn.jar"));
-		InstallArtifact installArtifact = installArtifactGraph.getValue();
-		assertNotNull(installArtifact);
-		assertTrue(installArtifact instanceof BundleInstallArtifact);
-		assertEquals("nobsn", installArtifact.getName());
-		assertEquals(new Version("0"), installArtifact.getVersion());
+        StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(testArtifactBridges);
 
-		verifyMocks();
-		resetMocks();
-	}
+        StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(installEnvironmentFactory, refreshPipeline);
 
-	@Test
-	public void testRecoverBundleImplicitTypeAndVersion()
-			throws DeploymentException, IOException {
-		StubBundleContext bundleContext = new StubBundleContext();
-		StubBundleContext userRegionBundleContext = new StubBundleContext();
-		expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext)
-				.anyTimes();
+        bundleContext.registerService(InstallArtifactGraphFactory.class.getName(), new BundleInstallArtifactGraphFactory(this.osgiFramework,
+            bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
+            new MockEventLogger(), null, dag), null);
 
-		replayMocks();
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
 
-		StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(
-				installEnvironmentFactory, refreshPipeline);
+        File bundle = new File("src/test/resources/artifacts/nobsn.jar");
+        GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory.constructGraphNode(
+            artifactIdentityDeterminer.determineIdentity(bundle, null), bundle, null, null);
+        InstallArtifact installArtifact = installArtifactGraph.getValue();
+        assertNotNull(installArtifact);
+        assertTrue(installArtifact instanceof BundleInstallArtifact);
+        assertEquals("nobsn", installArtifact.getName());
+        assertEquals(new Version("0"), installArtifact.getVersion());
 
-		StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(
-				testArtifactBridges);
+        verifyMocks();
+        resetMocks();
+    }
 
-		bundleContext.registerService(InstallArtifactGraphFactory.class
-				.getName(), new BundleInstallArtifactGraphFactory(
-				this.osgiFramework, bundleContext, refreshHelper,
-				this.bundleStarter, this.tracingService, this.packageAdminUtil,
-				userRegionBundleContext, new MockEventLogger(), null, dag),
-				null);
+    @Test
+    public void testRecoverBundleImplicitTypeAndVersion() throws DeploymentException, IOException {
+        StubBundleContext bundleContext = new StubBundleContext();
+        StubBundleContext userRegionBundleContext = new StubBundleContext();
+        expect(this.osgiFramework.getBundleContext()).andReturn(bundleContext).anyTimes();
 
-		this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(
-				this.artifactStorageFactory, bundleContext, this.repository,
-				new MockEventLogger(), artifactIdentityDeterminer);
+        replayMocks();
 
-		GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory
-				.createInstallGraph(new File(this.bundleURI));
-		checkBundleImplicitTypeAndVersion(installArtifactGraph.getValue());
+        StandardInstallArtifactRefreshHandler refreshHelper = new StandardInstallArtifactRefreshHandler(installEnvironmentFactory, refreshPipeline);
 
-		DeploymentOptions deploymentOptions = new DeploymentOptions(
-		/* recoverable */true, /* deployerOwned */false, true);
-		GraphNode<InstallArtifact> recoveredInstallGraph = this.installArtifactFactory
-				.recoverInstallGraph(new File(this.bundleURI),
-						deploymentOptions);
-		checkBundleImplicitTypeAndVersion(recoveredInstallGraph.getValue());
+        StandardArtifactIdentityDeterminer artifactIdentityDeterminer = new StandardArtifactIdentityDeterminer(testArtifactBridges);
 
-		verifyMocks();
-		resetMocks();
-	}
+        bundleContext.registerService(InstallArtifactGraphFactory.class.getName(), new BundleInstallArtifactGraphFactory(this.osgiFramework,
+            bundleContext, refreshHelper, this.bundleStarter, this.tracingService, this.packageAdminUtil, userRegionBundleContext,
+            new MockEventLogger(), null, dag), null);
 
-	private void checkBundleImplicitTypeAndVersion(
-			InstallArtifact installArtifact) throws IOException {
-		assertNotNull(installArtifact);
-		assertTrue(installArtifact instanceof BundleInstallArtifact);
-		BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
-		assertEquals("simple", bundleInstallArtifact.getBundleManifest()
-				.getBundleSymbolicName().getSymbolicName());
-		assertEquals(new Version("0"), bundleInstallArtifact
-				.getBundleManifest().getBundleVersion());
-	}
+        this.installArtifactFactory = new StandardInstallArtifactGraphInclosure(this.artifactStorageFactory, bundleContext, new MockEventLogger());
+
+        File bundle = new File(this.bundleURI);
+        GraphNode<InstallArtifact> installArtifactGraph = this.installArtifactFactory.constructGraphNode(
+            artifactIdentityDeterminer.determineIdentity(bundle, null), bundle, null, null);
+
+        checkBundleImplicitTypeAndVersion(installArtifactGraph.getValue());
+        
+        GraphNode<InstallArtifact> recoveredInstallGraph = this.installArtifactFactory.recoverInstallGraph(artifactIdentityDeterminer.determineIdentity(bundle, null), new File(this.bundleURI));
+        checkBundleImplicitTypeAndVersion(recoveredInstallGraph.getValue());
+
+        verifyMocks();
+        resetMocks();
+    }
+
+    private void checkBundleImplicitTypeAndVersion(InstallArtifact installArtifact) throws IOException {
+        assertNotNull(installArtifact);
+        assertTrue(installArtifact instanceof BundleInstallArtifact);
+        BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
+        assertEquals("simple", bundleInstallArtifact.getBundleManifest().getBundleSymbolicName().getSymbolicName());
+        assertEquals(new Version("0"), bundleInstallArtifact.getBundleManifest().getBundleVersion());
+    }
 }

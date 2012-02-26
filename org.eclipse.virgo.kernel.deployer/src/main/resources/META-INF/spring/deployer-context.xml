@@ -6,14 +6,6 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service
-		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener">
-		<beans:bean
-			class="org.eclipse.virgo.kernel.install.artifact.internal.TreeRestrictingInstallArtifactLifecycleListener">
-			<beans:constructor-arg ref="eventLogger" />
-		</beans:bean>
-	</service>
-
 	<service id="applicationDeployer" ref="pipelinedApplicationDeployer"
 		interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer" />
 
@@ -52,6 +44,10 @@
 	<beans:bean id="planResolver"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.PlanResolver">
 		<beans:constructor-arg ref="installArtifactGraphInclosure" />
+		<beans:constructor-arg ref="runtimeArtifactModel" />
+		<beans:constructor-arg ref="repository" />
+		<beans:constructor-arg ref="artifactIdentityDeterminer" />
+		<beans:constructor-arg ref="eventLogger" />
 	</beans:bean>
 
 	<beans:bean id="importExpandingTransformer"
@@ -119,6 +115,7 @@
 		class="org.eclipse.virgo.kernel.deployer.core.internal.PipelinedApplicationDeployer">
 		<beans:constructor-arg ref="mainPipeline" />
 		<beans:constructor-arg ref="installArtifactGraphInclosure" />
+		<beans:constructor-arg ref="artifactIdentityDeterminer" />
 		<beans:constructor-arg ref="installEnvironmentFactory" />
 		<beans:constructor-arg ref="runtimeArtifactModel" />
 		<beans:constructor-arg ref="deploymentListener" />
@@ -170,9 +167,7 @@
 		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactGraphInclosure">
 		<beans:constructor-arg ref="artifactStorageFactory" />
 		<beans:constructor-arg ref="bundleContext" />
-		<beans:constructor-arg ref="repository" />
 		<beans:constructor-arg ref="eventLogger" />
-		<beans:constructor-arg ref="artifactIdentityDeterminer" />
 	</beans:bean>
 
 	<beans:bean id="installEnvironmentFactory"

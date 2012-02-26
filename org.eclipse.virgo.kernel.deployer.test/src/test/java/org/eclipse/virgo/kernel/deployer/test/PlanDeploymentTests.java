@@ -228,7 +228,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         assertTrue("More than one STARTING event received for the atomic plan.", actualEventSetList.indexOf(planStartingEvent) == actualEventSetList.lastIndexOf(planStartingEvent));
     }
 
-    private void assertBundlesNotInstalled(Bundle[] bundles, String... candidateBsns) {
+    static void assertBundlesNotInstalled(Bundle[] bundles, String... candidateBsns) {
         List<String> installedBsns = getInstalledBsns(bundles);
         for (String candidateBsn : candidateBsns) {
             for (String installedBsn : installedBsns) {
@@ -261,7 +261,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         Assert.assertNull(configuration.getProperties());
     }
 
-    private void assertBundlesInstalled(Bundle[] bundles, String... candidateBsns) {
+    static void assertBundlesInstalled(Bundle[] bundles, String... candidateBsns) {
         List<String> installedBsns = getInstalledBsns(bundles);
         for (String candidateBsn : candidateBsns) {
             boolean found = false;
@@ -274,7 +274,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         }
     }
 
-    private List<String> getInstalledBsns(Bundle[] bundles) {
+    static List<String> getInstalledBsns(Bundle[] bundles) {
         List<String> installedBsns = new ArrayList<String>(bundles.length);
         for (Bundle bundle : bundles) {
             installedBsns.add(bundle.getSymbolicName());

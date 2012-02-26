@@ -30,16 +30,20 @@ import org.eclipse.virgo.kernel.deployer.core.internal.event.DeploymentListener;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateDeploymentIdentityException;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateFileNameException;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateLocationException;
+import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphInclosure;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
+import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironmentFactory;
 import org.eclipse.virgo.kernel.install.pipeline.Pipeline;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
+import org.eclipse.virgo.kernel.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.WatchableRepository;
@@ -51,9 +55,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 /**
- * {@link PipelinedApplicationDeployer} is an implementation of {@link ApplicationDeployer} which creates a {@link GraphNode}
- * of {@link InstallArtifact InstallArtifacts} and processes the graph by passing it through a {@link Pipeline} while
- * operating on an {@link InstallEnvironment}.
+ * {@link PipelinedApplicationDeployer} is an implementation of {@link ApplicationDeployer} which creates a
+ * {@link GraphNode} of {@link InstallArtifact InstallArtifacts} and processes the graph by passing it through a
+ * {@link Pipeline} while operating on an {@link InstallEnvironment}.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -73,6 +77,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private final InstallArtifactGraphInclosure installArtifactGraphInclosure;
 
+    private final ArtifactIdentityDeterminer artifactIdentityDeterminer;
+
     private final RuntimeArtifactModel ram;
 
     private final DeploymentListener deploymentListener;
@@ -87,17 +93,13 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private final BundleContext bundleContext;
 
-    public PipelinedApplicationDeployer(Pipeline pipeline, 
-                                        InstallArtifactGraphInclosure installArtifactGraphInclosure,
-                                        InstallEnvironmentFactory installEnvironmentFactory, 
-                                        RuntimeArtifactModel ram, 
-                                        DeploymentListener deploymentListener,
-                                        EventLogger eventLogger, 
-                                        DeployUriNormaliser normaliser, 
-                                        DeployerConfiguration deployerConfiguration,
-                                        BundleContext bundleContext){
+    public PipelinedApplicationDeployer(@NonNull Pipeline pipeline, @NonNull InstallArtifactGraphInclosure installArtifactGraphInclosure,
+        @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallEnvironmentFactory installEnvironmentFactory,
+        @NonNull RuntimeArtifactModel ram, @NonNull DeploymentListener deploymentListener, @NonNull EventLogger eventLogger,
+        @NonNull DeployUriNormaliser normaliser, @NonNull DeployerConfiguration deployerConfiguration, @NonNull BundleContext bundleContext) {
         this.eventLogger = eventLogger;
         this.installArtifactGraphInclosure = installArtifactGraphInclosure;
+        this.artifactIdentityDeterminer = artifactIdentityDeterminer;
         this.installEnvironmentFactory = installEnvironmentFactory;
         this.ram = ram;
         this.deploymentListener = deploymentListener;
@@ -151,28 +153,74 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 }
             }
 
-            GraphNode<InstallArtifact> installGraph = this.installArtifactGraphInclosure.createInstallGraph(new File(normalisedUri));
+            GraphNode<InstallArtifact> installNode;
+            boolean shared = false;
+            try {
+                ArtifactIdentity artifactIdentity = determineIdentity(normalisedUri);
+                installNode = findSharedNode(artifactIdentity);
+                if (installNode == null) {
+                    installNode = this.installArtifactGraphInclosure.constructGraphNode(artifactIdentity, new File(normalisedUri), null, null);
+                } else {
+                    shared = true;
+                }
+            } catch (Exception e) {
+                throw new DeploymentException(e.getMessage() + ": uri='" + normalisedUri + "'", e);
+            }
+
             DeploymentIdentity deploymentIdentity;
 
             try {
-                deploymentIdentity = addGraphToModel(normalisedUri, installGraph);
+                deploymentIdentity = addGraphToModel(normalisedUri, installNode);
             } catch (KernelException ke) {
+                if (!shared) {
+                    destroyInstallGraph(installNode);
+                }
                 throw new DeploymentException(ke.getMessage(), ke);
             }
 
-            this.deploymentOptionsMap.put(deploymentIdentity, deploymentOptions);
-            try {
-                driveInstallPipeline(normalisedUri, installGraph);
-            } catch (DeploymentException de) {
-                this.ram.delete(deploymentIdentity);
-                throw de;
-            } catch (RuntimeException re) {
-                this.ram.delete(deploymentIdentity);
-                throw re;
+            if (!shared) {
+                this.deploymentOptionsMap.put(deploymentIdentity, deploymentOptions);
+                try {
+                    driveInstallPipeline(normalisedUri, installNode);
+                } catch (DeploymentException de) {
+                    removeFromModel(deploymentIdentity);
+                    destroyInstallGraph(installNode);
+                    throw de;
+                } catch (RuntimeException re) {
+                    removeFromModel(deploymentIdentity);
+                    destroyInstallGraph(installNode);
+                    throw re;
+                }
             }
 
             return deploymentIdentity;
         }
+    }
+
+    private ArtifactIdentity determineIdentity(URI artifactUri) throws DeploymentException {
+        try {
+            File artifact = new File(artifactUri);
+            if (!artifact.exists()) {
+                throw new DeploymentException(artifact + " does not exist");
+            }
+
+            return determineIdentity(artifact, null);
+        } catch (Exception e) {
+            throw new DeploymentException(e.getMessage() + ": uri='" + artifactUri + "'", e);
+        }
+    }
+
+    private GraphNode<InstallArtifact> findSharedNode(ArtifactIdentity artifactIdentity) {
+        GCRoots gcRoots = (GCRoots) this.ram;
+        return ExistingNodeLocator.findSharedNode(gcRoots, artifactIdentity);
+    }
+
+    private void destroyInstallGraph(GraphNode<InstallArtifact> installGraph) throws DeploymentException {
+        installGraph.getValue().uninstall();
+    }
+
+    private void removeFromModel(DeploymentIdentity deploymentIdentity) throws DeploymentException {
+        this.ram.delete(deploymentIdentity);
     }
 
     private DeploymentIdentity updateAndRefreshExistingArtifact(URI normalisedLocation, InstallArtifact existingArtifact) throws DeploymentException {
@@ -222,8 +270,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private DeploymentIdentity updateAndRefresh(URI location, InstallArtifact installArtifact) throws DeploymentException {
         DeploymentIdentity deploymentIdentity = null;
-        this.installArtifactGraphInclosure.updateStagingArea(new File(location), new ArtifactIdentity(installArtifact.getType(),
-            installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
+        this.installArtifactGraphInclosure.updateStagingArea(new File(location),
+            new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
         if (installArtifact.refresh()) {
             this.deploymentListener.refreshed(location);
 
@@ -251,7 +299,9 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
 
     private DeploymentIdentity addGraphToModel(URI location, GraphNode<InstallArtifact> installGraph) throws DuplicateFileNameException,
         DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
-        return this.ram.add(location, installGraph.getValue());
+        InstallArtifact installArtifact = installGraph.getValue();
+        ((AbstractInstallArtifact) installArtifact).setTopLevelDeployed();
+        return this.ram.add(location, installArtifact);
     }
 
     /**
@@ -259,15 +309,28 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
      */
     public void recoverDeployment(URI uri, DeploymentOptions options) throws DeploymentException {
 
-        GraphNode<InstallArtifact> installNode = this.installArtifactGraphInclosure.recoverInstallGraph(new File(uri), options);
+        GraphNode<InstallArtifact> installNode = null;
+        boolean shared = false;
+        File artifact = new File(uri);
+        if (options.getRecoverable() && (!options.getDeployerOwned() || artifact.exists())) {
+            ArtifactIdentity artifactIdentity = determineIdentity(artifact, null);
+            installNode = findSharedNode(artifactIdentity);
+            if (installNode == null) {
+                installNode = this.installArtifactGraphInclosure.recoverInstallGraph(artifactIdentity, artifact);
+            } else {
+                shared = true;
+            }
+        }
 
         if (installNode == null) {
             // Remove the URI from the recovery log.
             this.deploymentListener.undeployed(uri);
         } else {
-            driveInstallPipeline(uri, installNode);
+            if (!shared) {
+                driveInstallPipeline(uri, installNode);
 
-            start(installNode.getValue(), options.getSynchronous());
+                start(installNode.getValue(), options.getSynchronous());
+            }
 
             try {
                 addGraphToModel(uri, installNode);
@@ -275,6 +338,17 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 throw new DeploymentException(e.getMessage(), e);
             }
         }
+    }
+
+    private ArtifactIdentity determineIdentity(File file, String scopeName) throws DeploymentException {
+        ArtifactIdentity artifactIdentity = this.artifactIdentityDeterminer.determineIdentity(file, scopeName);
+
+        if (artifactIdentity == null) {
+            this.eventLogger.log(DeployerLogEvents.INDETERMINATE_ARTIFACT_TYPE, file);
+            throw new DeploymentException("Cannot determine the artifact identity of the file '" + file + "'");
+        }
+
+        return artifactIdentity;
     }
 
     private void driveInstallPipeline(URI uri, GraphNode<InstallArtifact> installGraph) throws DeploymentException {
@@ -302,10 +376,12 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         installArtifact.start(blockingSignal);
         if (synchronous && this.deployerConfiguredTimeoutInSeconds > 0) {
             boolean complete = blockingSignal.awaitCompletion(this.deployerConfiguredTimeoutInSeconds);
-            if(blockingSignal.isAborted()){
-                this.eventLogger.log(DeployerLogEvents.START_ABORTED, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
+            if (blockingSignal.isAborted()) {
+                this.eventLogger.log(DeployerLogEvents.START_ABORTED, installArtifact.getType(), installArtifact.getName(),
+                    installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
             } else if (!complete) {
-                this.eventLogger.log(DeployerLogEvents.START_TIMED_OUT, installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
+                this.eventLogger.log(DeployerLogEvents.START_TIMED_OUT, installArtifact.getType(), installArtifact.getName(),
+                    installArtifact.getVersion(), this.deployerConfiguredTimeoutInSeconds);
             }
         } else {
             // Completion messages will have been issued if complete, so ignore return value.
@@ -380,8 +456,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 DeploymentIdentity originalDeploymentIdentity = getDeploymentIdentity(installArtifact);
                 deploymentIdentity = originalDeploymentIdentity;
                 try {
-                    this.installArtifactGraphInclosure.updateStagingArea(new File(normalisedLocation), new ArtifactIdentity(installArtifact.getType(),
-                        installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
+                    this.installArtifactGraphInclosure.updateStagingArea(new File(normalisedLocation), new ArtifactIdentity(
+                        installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
                     // Attempt to refresh the artifact and escalate to redeploy if this fails.
                     if (refreshInternal(symbolicName, installArtifact)) {
                         this.deploymentListener.refreshed(normalisedLocation);
@@ -525,7 +601,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     private void undeployInternal(DeploymentIdentity deploymentIdentity, boolean redeploying, boolean deleted) throws DeploymentException {
         DeploymentOptions options = this.deploymentOptionsMap.remove(deploymentIdentity);
         URI location = doUndeploy(deploymentIdentity);
-        if (!redeploying) {
+        if (location != null && !redeploying) {
             deleteArtifactIfNecessary(location, options, deleted);
         }
     }
@@ -544,13 +620,15 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 String symbolicName = deploymentIdentity.getSymbolicName();
                 String version = deploymentIdentity.getVersion();
                 this.eventLogger.log(DeployerLogEvents.UNDEPLOY_ARTEFACT_NOT_FOUND, type, symbolicName, version);
-                throw new DeploymentException("Undeploy not possible as no " + type + " with name " + symbolicName + " and version " + version + " is deployed");
+                throw new DeploymentException("Undeploy not possible as no " + type + " with name " + symbolicName + " and version " + version
+                    + " is deployed");
             } else {
                 URI location = this.ram.getLocation(deploymentIdentity);
 
+                this.ram.delete(deploymentIdentity);
+
                 stopArtifact(installArtifact);
                 uninstallArtifact(installArtifact);
-
                 return location;
             }
         }
@@ -569,14 +647,14 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     private void refreshWatchedRepositories() {
         try {
             Collection<ServiceReference<WatchableRepository>> references = this.bundleContext.getServiceReferences(WatchableRepository.class, null);
-            for(ServiceReference<WatchableRepository> reference : references){
+            for (ServiceReference<WatchableRepository> reference : references) {
                 WatchableRepository watchableRepository = this.bundleContext.getService(reference);
                 try {
                     watchableRepository.forceCheck();
                 } catch (Exception e) {
                     String name;
-                    if(watchableRepository instanceof Repository){
-                        name = ((Repository)watchableRepository).getName();
+                    if (watchableRepository instanceof Repository) {
+                        name = ((Repository) watchableRepository).getName();
                     } else {
                         name = "unknown repository type";
                     }
@@ -589,5 +667,5 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         }
 
     }
-    
+
 }

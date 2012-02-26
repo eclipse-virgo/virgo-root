@@ -76,8 +76,8 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
         @NonNull InstallArtifactGraphFactory configInstallArtifactGraphFactory, @NonNull ArtifactStorageFactory artifactStorageFactory,
         @NonNull ArtifactIdentityDeterminer artifactIdentityDeterminer, @NonNull InstallArtifactGraphFactory planInstallArtifactGraphFactory)
         throws DeploymentException {
-        super(identity, true, true, Provisioning.AUTO, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger, refreshHandler,
-            repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST);
+        super(identity, true, true, Provisioning.AUTO, artifactStorage, artifactStateMonitor, scopeServiceRepository, scopeFactory, eventLogger,
+            refreshHandler, repositoryName, EMPTY_ARTIFACT_SPECIFICATION_LIST);
 
         this.artifactStorageFactory = artifactStorageFactory;
         this.configInstallArtifactGraphFactory = configInstallArtifactGraphFactory;
@@ -130,15 +130,14 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
             ArtifactIdentity identity = childArtifact.getFirst();
             ArtifactFSEntry artifactFs = childArtifact.getSecond();
 
+            ArtifactStorage childArtifactStorage = createArtifactStorage(artifactFs, identity);
+
             if (ArtifactIdentityDeterminer.BUNDLE_TYPE.equals(identity.getType())) {
-                subGraph = this.bundleInstallArtifactGraphFactory.constructInstallArtifactGraph(identity,
-                    createArtifactStorage(artifactFs, identity), null, null);
+                subGraph = this.bundleInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, childArtifactStorage, null, null);
             } else if (ArtifactIdentityDeterminer.CONFIGURATION_TYPE.equals(identity.getType())) {
-                subGraph = this.configInstallArtifactGraphFactory.constructInstallArtifactGraph(identity,
-                    createArtifactStorage(artifactFs, identity), null, null);
+                subGraph = this.configInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, childArtifactStorage, null, null);
             } else if (ArtifactIdentityDeterminer.PLAN_TYPE.equals(identity.getType())) {
-                subGraph = this.planInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, createArtifactStorage(artifactFs, identity),
-                    null, null);
+                subGraph = this.planInstallArtifactGraphFactory.constructInstallArtifactGraph(identity, childArtifactStorage, null, null);
             }
 
             if (subGraph == null) {

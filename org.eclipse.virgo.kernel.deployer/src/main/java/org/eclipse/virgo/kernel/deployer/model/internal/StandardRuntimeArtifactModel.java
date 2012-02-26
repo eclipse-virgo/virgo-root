@@ -13,7 +13,10 @@ package org.eclipse.virgo.kernel.deployer.model.internal;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,11 +27,11 @@ import org.eclipse.virgo.kernel.deployer.core.internal.StandardDeploymentIdentit
 import org.eclipse.virgo.kernel.deployer.model.DuplicateDeploymentIdentityException;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateFileNameException;
 import org.eclipse.virgo.kernel.deployer.model.DuplicateLocationException;
+import org.eclipse.virgo.kernel.deployer.model.GCRoots;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.serviceability.Assert;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
-
 
 /**
  * {@link StandardRuntimeArtifactModel} is the default {@link RuntimeArtifactModel} implementation.
@@ -39,7 +42,7 @@ import org.eclipse.virgo.kernel.serviceability.NonNull;
  * This class is thread safe.
  * 
  */
-final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
+final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoots {
 
     private static final String CLASH_MESSAGE_FORMAT = "The artifact %s at URI '%s' cannot be stored in the runtime artifact model as it clashes with the artifact %s which is already present.";
 
@@ -54,9 +57,9 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     private final Map<DeploymentIdentity, URI> uriByIdentity = new HashMap<DeploymentIdentity, URI>();
 
     private final Map<String, URI> uriByFileName = new HashMap<String, URI>();
-    
+
     private final DeployUriNormaliser uriNormaliser;
-        
+
     StandardRuntimeArtifactModel(DeployUriNormaliser uriNormaliser) {
         this.uriNormaliser = uriNormaliser;
     }
@@ -64,7 +67,8 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
     /**
      * {@inheritDoc}
      */
-    public DeploymentIdentity add(@NonNull URI location, @NonNull InstallArtifact installArtifact) throws DuplicateFileNameException, DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
+    public DeploymentIdentity add(@NonNull URI location, @NonNull InstallArtifact installArtifact) throws DuplicateFileNameException,
+        DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
         synchronized (this.monitor) {
 
             // Check the precondition and throw an exception if it is violated.
@@ -113,7 +117,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
         return new StandardDeploymentIdentity(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion().toString());
     }
 
-    private String getFileName(@NonNull URI location) throws DeploymentException {        
+    private String getFileName(@NonNull URI location) throws DeploymentException {
         URI normalisedLocation = this.uriNormaliser.normalise(location);
         String path = normalisedLocation.getPath();
         if (path.endsWith(URI_PATH_SEPARATOR)) {
@@ -197,13 +201,13 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
         this.uriByIdentity.remove(deploymentIdentity);
         this.uriByFileName.remove(fileName);
     }
-    
-    private InstallArtifact getArtifactByUri(URI uri){
+
+    private InstallArtifact getArtifactByUri(URI uri) {
         return this.artifactByUri.get(getCanonicalFileLocation(uri));
     }
-    
-    private URI getCanonicalFileLocation(URI uri){
-        if (SCHEME_FILE.equals(uri.getScheme())) {  
+
+    private URI getCanonicalFileLocation(URI uri) {
+        if (SCHEME_FILE.equals(uri.getScheme())) {
             File file = new File(uri);
             try {
                 return new URI(file.getCanonicalPath());
@@ -212,6 +216,25 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel {
             }
         } else {
             return uri;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isGCRoot(InstallArtifact installArtifact) {
+        synchronized (this.monitor) {
+            return this.artifactByUri.containsValue(installArtifact);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public Iterator<InstallArtifact> iterator() {
+        synchronized (this.monitor) {
+            Collection<InstallArtifact> roots = this.artifactByUri.values();
+            return new HashSet<InstallArtifact>(roots).iterator();
         }
     }
 }

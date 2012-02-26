@@ -13,9 +13,8 @@
 package org.eclipse.virgo.kernel.install.artifact;
 
 import java.io.File;
+import java.util.Map;
 
-import org.eclipse.virgo.kernel.artifact.ArtifactSpecification;
-import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.util.common.GraphNode;
@@ -33,37 +32,19 @@ import org.eclipse.virgo.util.common.GraphNode;
 public interface InstallArtifactGraphInclosure {
 
     /**
-     * Create an install graph consisting of the single artifact matching the supplied {@link ArtifactSpecification}.
+     * Create an install graph consisting of a single artifact with the given identity and file contents, the given
+     * artifact properties, optionally originating from the repository with the given name.
      * 
-     * @param artifactSpecification the <code>ArtifactSpecification</code>.
+     * @param identity the identity of the artifact
+     * @param artifact the file contents of the artifact
+     * @param properties the artifact properties
+     * @param repositoryName the name of the repository from which the artifact originated or <code>null</code> if the
+     *        artifact did not originate from a repository
      * @return an install graph
      * @throws DeploymentException if the graph cannot be created
      */
-    GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification artifactSpecification) throws DeploymentException;
-
-    /**
-     * Create an install graph consisting of the single artifact matching the supplied {@link ArtifactSpecification}. if
-     * the given scope name is non-<code>null</code>, the installation is scoped. If the given scope name is
-     * <code>null</code>, the behaviour of this method is equivalent to that of the <code>createInstallGraph</code>
-     * method with no scope name parameter.
-     * 
-     * @param artifactSpecification the <code>ArtifactSpecification</code>.
-     * @param scopeName the scope name of the artifact or <code>null</code> if it does not belong to a scope
-     * @param provisioning the provisioning behaviour to be inherited
-     * @return an install graph
-     * @throws DeploymentException if the graph cannot be created
-     */
-    GraphNode<InstallArtifact> createInstallGraph(ArtifactSpecification artifactSpecification, String scopeName, Provisioning provisioning)
+    GraphNode<InstallArtifact> constructGraphNode(ArtifactIdentity identity, File artifact, Map<String, String> properties, String repositoryName)
         throws DeploymentException;
-
-    /**
-     * Create an install graph consisting of the single artifact available at the given file URI.
-     * 
-     * @param location the artifact's location
-     * @return an install graph
-     * @throws DeploymentException if the graph cannot be created
-     */
-    GraphNode<InstallArtifact> createInstallGraph(File location) throws DeploymentException;
 
     /**
      * Optionally recover an install graph from the staging area using the given file URI to identify the artifact. The
@@ -74,7 +55,7 @@ public interface InstallArtifactGraphInclosure {
      * @param options the {@link DeploymentOptions} of the artifact
      * @return an install graph or <code>null</code>
      */
-    GraphNode<InstallArtifact> recoverInstallGraph(File location, DeploymentOptions options);
+    GraphNode<InstallArtifact> recoverInstallGraph(ArtifactIdentity identity, File location);
 
     /**
      * Update the copy of the given artefact in the deploy area.

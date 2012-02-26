@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<beans:bean id="hotDeployer"
-		class="org.eclipse.virgo.kernel.deployer.hot.HotDeployer"
+		class="org.eclipse.virgo.kernel.deployer.hotenabler.HotDeployerEnabler"
 		destroy-method="stop">
 		<beans:constructor-arg ref="deployerConfig" />
 		<beans:constructor-arg ref="pipelinedApplicationDeployer" />

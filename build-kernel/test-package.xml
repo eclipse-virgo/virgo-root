@@ -21,7 +21,7 @@
 			</fileset>
 		</chmod>
 		<chmod perm="600">
-			<fileset dir="${test.package.dir}/config">
+			<fileset dir="${test.package.dir}/configuration">
 				<include name="org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</fileset>
 		</chmod>

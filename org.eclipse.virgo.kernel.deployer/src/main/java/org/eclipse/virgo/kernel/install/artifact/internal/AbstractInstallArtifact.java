@@ -68,6 +68,15 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
 
     private volatile boolean isRefreshing;
 
+    // Whether or not this artifact was the target of a deployment operation (rather than a child of such a target).
+    private boolean isTopLevelDeployed = false;
+
+    /*
+     * If isTopLevelDeployed is true, whether or not this artifact is ACTIVE (or STARTING) from the perspective of the
+     * deployer operations that have been performed on it. If isTopLevelDeployed is false, this flag is undefined.
+     */
+    private boolean isTopLevelActive = false;
+
     /**
      * Construct an {@link AbstractInstallArtifact} from the given type, name, version, {@link ArtifactFS}, and
      * {@link ArtifactState}, none of which may be null.
@@ -202,6 +211,9 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
                 signal.signalSuccessfulCompletion();
             }
         } else {
+            if (!hasStartingParent()) {
+                topLevelStart();
+            }
             pushThreadContext();
             try {
                 boolean stateChanged = this.artifactStateMonitor.onStarting(this);
@@ -311,6 +323,7 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
     }
 
     private final void asyncStartFailed(Throwable cause) {
+        topLevelStop();
         pushThreadContext();
         try {
             this.artifactStateMonitor.onStartFailed(this, cause);
@@ -322,6 +335,7 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
     }
 
     private final void asyncStartAborted() {
+        topLevelStop();
         pushThreadContext();
         try {
             this.artifactStateMonitor.onStartAborted(this);
@@ -337,8 +351,8 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
      */
     @Override
     public void stop() throws DeploymentException {
-        // Only stop if ACTIVE or STARTING.
-        if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
+        // Only stop if ACTIVE or STARTING and this artifact should stop given its parent's states.
+        if ((getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) && shouldStop()) {
             pushThreadContext();
             try {
                 this.artifactStateMonitor.onStopping(this);
@@ -354,6 +368,77 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         }
     }
 
+    protected boolean shouldStop() {
+        /*
+         * The artifact should stop if it was explicitly stopped (not via a parent) or if it was implicitly stopped (via
+         * a parents) and it has no parents that are ACTIVE or STARTING.
+         */
+        boolean explicitStop = explicitStop();
+        if (explicitStop) {
+            topLevelStop();
+        }
+        return explicitStop || !hasActiveParent();
+    }
+
+    public boolean explicitStop() {
+        return !hasStoppingParent();
+    }
+
+    private boolean hasActiveParent() {
+        synchronized (this.monitor) {
+            if (this.isTopLevelDeployed && this.isTopLevelActive) {
+                return true;
+            }
+        }
+        for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
+            State parentState = parent.getValue().getState();
+            if (parentState.equals(State.ACTIVE) || parentState.equals(State.STARTING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasStoppingParent() {
+        return hasParentInState(State.STOPPING);
+    }
+
+    private boolean hasParentInState(State state) {
+        for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
+            State parentState = parent.getValue().getState();
+            if (parentState.equals(state)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void topLevelStop() {
+        synchronized (this.monitor) {
+            if (this.isTopLevelDeployed) {
+                this.isTopLevelActive = false;
+            }
+        }
+    }
+
+    protected boolean hasStartingParent() {
+        for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
+            State parentState = parent.getValue().getState();
+            if (parentState.equals(State.STARTING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void topLevelStart() {
+        synchronized (this.monitor) {
+            if (this.isTopLevelDeployed) {
+                this.isTopLevelActive = true;
+            }
+        }
+    }
+
     /**
      * @see stop
      */
@@ -364,25 +449,65 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
      */
     @Override
     public void uninstall() throws DeploymentException {
-        if (getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED)
-            || getState().equals(State.INSTALLED)) {
-            pushThreadContext();
+        if ((getState().equals(State.STARTING) || getState().equals(State.ACTIVE) || getState().equals(State.RESOLVED)
+            || getState().equals(State.INSTALLED) || getState().equals(State.INITIAL))) {
             try {
-                if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
-                    stop();
-                }
-                this.artifactStateMonitor.onUninstalling(this);
-                try {
-                    doUninstall();
-                    this.artifactStateMonitor.onUninstalled(this);
-                } catch (DeploymentException e) {
-                    this.artifactStateMonitor.onUninstallFailed(this, e);
+                if (!getState().equals(State.INITIAL)) {
+                    pushThreadContext();
+                    try {
+                        if (getState().equals(State.ACTIVE) || getState().equals(State.STARTING)) {
+                            stop();
+                        }
+                        if (shouldUninstall()) {
+                            this.artifactStateMonitor.onUninstalling(this);
+                            try {
+                                doUninstall();
+                                this.artifactStateMonitor.onUninstalled(this);
+                            } catch (DeploymentException e) {
+                                this.artifactStateMonitor.onUninstallFailed(this, e);
+                            }
+                        }
+                    } finally {
+                        popThreadContext();
+                    }
                 }
             } finally {
                 this.artifactStorage.delete();
-                popThreadContext();
             }
         }
+    }
+
+    private boolean shouldUninstall() {
+        boolean explicitUninstall = explicitUninstall();
+        if (explicitUninstall) {
+            topLevelUninstall();
+        }
+        return allParentsInState(State.UNINSTALLING);
+    }
+
+    private boolean allParentsInState(State state) {
+        for (GraphNode<InstallArtifact> parent : this.graph.getParents()) {
+            State parentState = parent.getValue().getState();
+            if (!parentState.equals(state)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean explicitUninstall() {
+        return !hasUninstallingParent();
+    }
+
+    private boolean hasUninstallingParent() {
+        return hasParentInState(State.UNINSTALLING);
+    }
+
+    private void topLevelUninstall() {
+        synchronized (this.monitor) {
+            this.isTopLevelDeployed = false;
+        }
+
     }
 
     /**
@@ -519,13 +644,26 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     @Override
     public final GraphNode<InstallArtifact> getGraph() {
         synchronized (this.monitor) {
             return this.graph;
+        }
+    }
+
+    public void setTopLevelDeployed() {
+        synchronized (this.monitor) {
+            this.isTopLevelDeployed = true;
+            this.isTopLevelActive = true;
+        }
+    }
+
+    public boolean getTopLevelDeployed() {
+        synchronized (this.monitor) {
+            return this.isTopLevelDeployed;
         }
     }
 
