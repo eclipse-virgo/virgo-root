@@ -18,6 +18,7 @@
 
 	<dependencies>
 		<!-- === PROVIDED-COMPILE============================================ -->
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="${org.eclipse.virgo.nano}" conf="provided->compile"/>
 	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.shell" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
 	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
 	    <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
