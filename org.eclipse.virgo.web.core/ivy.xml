@@ -25,10 +25,11 @@
 		
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.math" rev="${org.eclipse.virgo.util}" conf="compile->compile"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi.manifest" rev="${org.eclipse.virgo.util}" conf="compile->compile"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="${org.eclipse.virgo.nano}" conf="provided->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.dm" rev="latest.integration" conf="compile->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.artifact" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.kernel}" conf="aspects, provided->compile"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="aspects, provided->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="${org.eclipse.virgo.kernel}" conf="provided->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.stubs" rev="${org.eclipse.virgo.kernel}" conf="test->compile"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.api" rev="${org.slf4j}" conf="compile->runtime"/>
