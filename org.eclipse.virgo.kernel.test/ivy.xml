@@ -26,7 +26,7 @@
 		<dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.command}" conf="test->runtime"/>
 		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo.shell}" conf="test->runtime"/>
 		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="test->runtime" />
-        <dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="test->runtime" />
+		<dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="test->runtime" />
 		
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
@@ -52,7 +52,8 @@
 
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
-
+		
+		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="test->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="test->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
