@@ -53,7 +53,8 @@
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		
-		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="test->runtime"/>
+		<!--  the following conf should be test->runtime but for some reason that does not pull down the dependency -->
+		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="compile->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="test->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
