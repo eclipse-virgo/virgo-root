@@ -42,7 +42,8 @@
 		<exclude org="org.jboss.logging"/>
 		<exclude org="org.jboss.util"/>
 		<exclude org="org.jboss.vfs"/>
-				
+
+		<override org="org.aspectj" rev="${org.aspectj}" />
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		<override org="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}"/>
 		<override org="org.springframework" rev="${org.springframework}"/>
