@@ -17,18 +17,19 @@
 	</publications>
 
 	<dependencies>		
-        <!-- test deps -->
+	<!-- test deps -->
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.test" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
-        <!-- runtime deps -->
-        <dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="compile->runtime"/>
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="latest.integration" conf="compile->runtime"/>	
+		<!-- runtime deps -->
+		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="latest.integration" conf="compile->runtime"/>	
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="compile->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.api" rev="${org.slf4j}" conf="compile->runtime"/>
 
+		<override org="org.aspectj" rev="${org.aspectj}" />
 	</dependencies>
-	
+
 </ivy-module>
