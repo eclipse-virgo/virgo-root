@@ -13,7 +13,7 @@ import org.osgi.service.component.ComponentContext;
 
 public class DSMonitor {
 
-    private static final int PERIOD = 5;
+    private static final int PERIOD = 60;
 
     private static final TimeUnit UNIT = TimeUnit.SECONDS;
 
