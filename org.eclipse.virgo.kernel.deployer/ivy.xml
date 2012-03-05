@@ -19,7 +19,9 @@
 
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}" conf="compile->runtime"/>
-
+		
+		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
+		
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.aop" rev="${org.springframework}" conf="compile->runtime"/>
