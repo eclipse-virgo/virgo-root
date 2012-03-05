@@ -13,7 +13,7 @@
 		<!-- nano runtime -->	
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer" rev="latest.integration" conf="nano-runtime->runtime" />
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.services" rev="latest.integration" conf="nano-runtime->runtime" />
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.hot" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.command}" conf="nano-runtime->runtime" />

@@ -30,7 +30,7 @@
          unpack="false"
          autostart="true"/>
     <plugin
-        id="org.eclipse.virgo.kernel.services"
+        id="org.eclipse.virgo.nano.services"
         download-size="0"
         install-size="0"
         version="@NANO.VERSION@"
