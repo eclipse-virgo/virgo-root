@@ -26,7 +26,5 @@ Import-Package: javax.management;version="0",org.eclipse.virgo.kernel.
  4)",org.eclipse.virgo.util.osgi.manifest;version="[3.0.0,4)",org.juni
  t;version="[4.7.0,5)",org.junit.runner;version="[4.7.0,5)",org.osgi.f
  ramework;version="0",org.springframework.context;version="[2.5.6,4.1)
- ",org.springframework.jmx.export;version="[2.5.6,4.1)",org.springfram
- ework.osgi.context.support;version="[1.2.1,2)",org.springframework.os
- gi.service.importer.support;version="[1.2.1,2)"
+ ",org.springframework.jmx.export;version="[2.5.6,4.1)",org.eclipse.gemini.blueprint.context.support;version="[1.0.0.RELEASE,1.1)",org.eclipse.gemini.blueprint.service.importer.support;version="[1.0.0.RELEASE,1.1)"
 
