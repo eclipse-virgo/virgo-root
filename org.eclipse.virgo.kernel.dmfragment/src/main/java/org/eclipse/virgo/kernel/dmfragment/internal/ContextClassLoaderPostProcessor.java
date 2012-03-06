@@ -19,10 +19,10 @@ import org.osgi.framework.BundleContext;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.osgi.extender.OsgiBeanFactoryPostProcessor;
-import org.springframework.osgi.service.importer.support.ImportContextClassLoader;
-import org.springframework.osgi.service.importer.support.OsgiServiceCollectionProxyFactoryBean;
-import org.springframework.osgi.service.importer.support.OsgiServiceProxyFactoryBean;
+import org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor;
+import org.eclipse.gemini.blueprint.service.importer.support.ImportContextClassLoader;
+import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceCollectionProxyFactoryBean;
+import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
 
 
 /**

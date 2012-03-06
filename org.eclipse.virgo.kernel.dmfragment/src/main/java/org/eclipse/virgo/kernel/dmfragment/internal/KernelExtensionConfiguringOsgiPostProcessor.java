@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.virgo.kernel.dmfragment.ModuleBeanFactoryPostProcessor;
 import org.osgi.framework.BundleContext;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.osgi.extender.OsgiBeanFactoryPostProcessor;
+import org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor;
 
 
 /**

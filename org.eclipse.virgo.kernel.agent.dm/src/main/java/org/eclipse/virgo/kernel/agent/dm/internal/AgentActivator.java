@@ -23,7 +23,7 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
 
 /**
  * ComponentContext activator for the Kernel's Agent bundle

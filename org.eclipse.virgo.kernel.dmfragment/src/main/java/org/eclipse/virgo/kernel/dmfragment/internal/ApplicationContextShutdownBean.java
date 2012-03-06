@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.osgi.service.importer.support.OsgiServiceProxyFactoryBean;
+import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
 
 /**
  * {@link ApplicationContextShutdownBean} manages the shutting down of application contexts in the dm Server. In

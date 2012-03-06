@@ -16,7 +16,7 @@
 		<!-- build -->
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
 
-		<dependency org="org.springframework.osgi" name="org.springframework.osgi.core" rev="${org.springframework.osgi}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.core" rev="${org.eclipse.gemini.blueprint}" conf="compile->runtime"/>
 
 		<!-- testing -->
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>

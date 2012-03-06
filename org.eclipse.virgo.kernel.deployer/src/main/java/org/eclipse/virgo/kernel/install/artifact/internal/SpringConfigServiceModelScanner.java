@@ -68,7 +68,7 @@ final class SpringConfigServiceModelScanner {
 
     private static final String ELEMENT_SERVICE = "service";
 
-    private static final String BEAN_NAME_PROPERTY = "org.springframework.osgi.bean.name";
+    private static final String BEAN_NAME_PROPERTY = "org.eclipse.gemini.blueprint.bean.name";
 
     private final EventLogger eventLogger;
 

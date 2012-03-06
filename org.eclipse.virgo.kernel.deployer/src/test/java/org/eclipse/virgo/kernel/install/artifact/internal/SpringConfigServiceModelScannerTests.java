@@ -52,7 +52,7 @@ public class SpringConfigServiceModelScannerTests {
         assertTrue(repository.scopeHasMatchingService(TEST_SCOPE, Serializable.class.getName(), "(foo=bar)"));
         assertTrue(repository.scopeHasMatchingService(TEST_SCOPE, Appendable.class.getName(), null));
         assertTrue(repository.scopeHasMatchingService(TEST_SCOPE, Appendable.class.getName(), "(foo=bar)"));
-        assertTrue(repository.scopeHasMatchingService(TEST_SCOPE, Appendable.class.getName(), "(org.springframework.osgi.bean.name=service)"));
+        assertTrue(repository.scopeHasMatchingService(TEST_SCOPE, Appendable.class.getName(), "(org.eclipse.gemini.blueprint.bean.name=service)"));
     }
 
     private final void run(ScopeServiceRepository repository, String configLocation) throws Exception {

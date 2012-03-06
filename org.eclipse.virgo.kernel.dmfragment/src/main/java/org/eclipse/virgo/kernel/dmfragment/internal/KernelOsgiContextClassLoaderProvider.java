@@ -12,8 +12,8 @@
 package org.eclipse.virgo.kernel.dmfragment.internal;
 
 import org.osgi.framework.Bundle;
-import org.springframework.osgi.context.support.ContextClassLoaderProvider;
-import org.springframework.osgi.util.BundleDelegatingClassLoader;
+import org.eclipse.gemini.blueprint.context.support.ContextClassLoaderProvider;
+import org.eclipse.gemini.blueprint.util.BundleDelegatingClassLoader;
 
 /**
  * {@link KernelOsgiContextClassLoaderProvider} preserves any existing thread context class loader and uses the bundle

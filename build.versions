@@ -15,6 +15,7 @@ org.eclipse.virgo.repository=3.5.0.D-20120301132441
 org.eclipse.virgo.util=3.5.0.D-20120301131322
 org.slf4j=1.6.1
 org.slf4j.spi=1.6.1
+org.eclipse.gemini.blueprint=1.0.0.RELEASE
 org.springframework.osgi=1.2.1
 org.springframework=3.0.5.RELEASE
 com.springsource.org.apache.mina.core=2.0.2

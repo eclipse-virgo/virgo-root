@@ -25,17 +25,17 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
-import org.springframework.osgi.context.event.OsgiBundleContextClosedEvent;
-import org.springframework.osgi.context.event.OsgiBundleContextFailedEvent;
-import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
-import org.springframework.osgi.extender.event.BootstrappingDependencyEvent;
-import org.springframework.osgi.service.importer.OsgiServiceDependency;
-import org.springframework.osgi.service.importer.event.OsgiServiceDependencyEvent;
-import org.springframework.osgi.service.importer.event.OsgiServiceDependencyWaitEndedEvent;
-import org.springframework.osgi.service.importer.event.OsgiServiceDependencyWaitStartingEvent;
-import org.springframework.osgi.service.importer.event.OsgiServiceDependencyWaitTimedOutEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
+import org.eclipse.gemini.blueprint.extender.event.BootstrappingDependencyEvent;
+import org.eclipse.gemini.blueprint.service.importer.OsgiServiceDependency;
+import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependencyEvent;
+import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependencyWaitEndedEvent;
+import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependencyWaitStartingEvent;
+import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependencyWaitTimedOutEvent;
 
 /**
  * An {@link OsgiBundleApplicationContextListener} implementation that listens to Spring DM events and sends the

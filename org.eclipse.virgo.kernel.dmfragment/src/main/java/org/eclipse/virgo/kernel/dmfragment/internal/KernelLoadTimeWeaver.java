@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
-import org.springframework.osgi.util.BundleDelegatingClassLoader;
+import org.eclipse.gemini.blueprint.util.BundleDelegatingClassLoader;
 
 import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;

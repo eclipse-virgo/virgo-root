@@ -12,9 +12,9 @@
 package org.eclipse.virgo.kernel.dmfragment.internal;
 
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.DelegatedExecutionOsgiBundleApplicationContext;
-import org.springframework.osgi.context.support.OsgiBundleXmlApplicationContext;
-import org.springframework.osgi.extender.support.DefaultOsgiApplicationContextCreator;
+import org.eclipse.gemini.blueprint.context.DelegatedExecutionOsgiBundleApplicationContext;
+import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
+import org.eclipse.gemini.blueprint.extender.support.DefaultOsgiApplicationContextCreator;
 
 /**
  * {@link KernelOsgiApplicationContextCreator} creates user region application contexts.

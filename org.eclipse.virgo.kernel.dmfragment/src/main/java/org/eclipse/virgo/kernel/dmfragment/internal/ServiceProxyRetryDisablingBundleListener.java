@@ -19,7 +19,7 @@ import org.osgi.framework.SynchronousBundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.osgi.service.importer.support.OsgiServiceProxyFactoryBean;
+import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
 
 /**
  * A {@link SynchronousBundleListener} that reacts to a {@link BundleEvent#STOPPING STOPPING} event for the system

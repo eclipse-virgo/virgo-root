@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
-import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
+import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
 
 import org.eclipse.virgo.kernel.module.ModuleContext;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;

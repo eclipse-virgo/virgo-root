@@ -24,7 +24,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.springframework.context.ApplicationContext;
-import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
+import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

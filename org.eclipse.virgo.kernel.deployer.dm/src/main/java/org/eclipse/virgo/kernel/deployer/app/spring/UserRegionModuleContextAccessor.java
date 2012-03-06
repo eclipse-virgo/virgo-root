@@ -23,7 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
-import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
+import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
 
 /**
  * {@link UserRegionModuleContextAccessor} accesses {@link ModuleContext ModuleContexts} in either the the user region or the kernel, but this class must
