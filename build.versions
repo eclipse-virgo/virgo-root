@@ -7,11 +7,11 @@ org.eclipse.equinox.cm=1.0.300.v20101204
 org.eclipse.equinox.region=1.0.0.v20110503
 org.aspectj=1.6.12.RELEASE
 org.eclipse.osgi=3.7.1.R37x_v20110808-1106
-org.eclipse.virgo.osgi=3.5.0.D-20120301131032
-org.eclipse.virgo.medic=3.5.0.D-20120301131924
+org.eclipse.virgo.osgi=3.5.0.M03
+org.eclipse.virgo.medic=3.5.0.M03
 ch.qos.logback=0.9.28
-org.eclipse.virgo.repository=3.5.0.D-20120301132441
-org.eclipse.virgo.util=3.5.0.D-20120301131322
+org.eclipse.virgo.repository=3.5.0.M03
+org.eclipse.virgo.util=3.5.0.M03
 org.eclipse.virgo.build.tools=1.2.1.RELEASE
 org.slf4j=1.6.1
 org.slf4j.spi=1.6.1
@@ -72,5 +72,5 @@ org.eclipse.equinox.simpleconfigurator.manipulator=2.0.0.v20110808-1657
 #Test
 org.easymock=2.3.0
 org.junit=4.7.0
-org.eclipse.virgo.teststubs=3.5.0.D-20120125135853
+org.eclipse.virgo.teststubs=3.5.0.M03
 
