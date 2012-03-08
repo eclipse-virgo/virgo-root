@@ -15,17 +15,23 @@ import java.util.Hashtable;
 
 import javax.management.ObjectName;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.gemini.mgmt.ObjectNameTranslator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 public class VirgoObjectNameTranslator implements ObjectNameTranslator{
 
 	private static final String REGION_KEY = "region";
 	
-	private final RegionDigraph regionDigraph;
+	private final String regionName;
 
-	public VirgoObjectNameTranslator(RegionDigraph regionDigraph) {
-		this.regionDigraph = regionDigraph;
+	public VirgoObjectNameTranslator(BundleContext context) {
+		ServiceReference<RegionDigraph> serviceReference = context.getServiceReference(RegionDigraph.class);
+		RegionDigraph service = context.getService(serviceReference);
+		Region region = service.getRegion(context.getBundle().getBundleId());
+		this.regionName = region.getName();
 	}
 	
 	/**
@@ -33,7 +39,7 @@ public class VirgoObjectNameTranslator implements ObjectNameTranslator{
 	 */
 	public ObjectName translate(ObjectName originalName) {
 		Hashtable<String, String> keyPropertyList = originalName.getKeyPropertyList();
-		keyPropertyList.put(REGION_KEY, this.regionDigraph.getRegion(7l).getName());
+		keyPropertyList.put(REGION_KEY, regionName);
 		try {
 			return new ObjectName(originalName.getDomain(), keyPropertyList);
 		} catch (Exception e) {

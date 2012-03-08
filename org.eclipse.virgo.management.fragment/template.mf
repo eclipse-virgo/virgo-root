@@ -7,6 +7,7 @@ Bundle-Version: ${version}
 GeminiManagement-ObjectNameTranslator: org.eclipse.virgo.management.fragment.VirgoObjectNameTranslator
 Import-Package: 
  org.eclipse.equinox.region;version="${org.eclipse.equinox.region:[=.=.=, =.+1)}",
- javax.management;version="0"
+ javax.management;version="0",
+ org.osgi.framework;version="0"
 Excluded-Imports: org.eclipse.gemini.mgmt
 Excluded-Exports: *
