@@ -20,7 +20,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor;
-import org.eclipse.gemini.blueprint.service.importer.support.ImportContextClassLoader;
+import org.eclipse.gemini.blueprint.service.importer.support.ImportContextClassLoaderEnum;
 import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceCollectionProxyFactoryBean;
 import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
 
@@ -36,21 +36,20 @@ import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFac
  */
 final class ContextClassLoaderPostProcessor implements ModuleBeanFactoryPostProcessor {
 
-    private static final String PROPERTY_CONTEXT_CLASS_LOADER = "contextClassLoader";
+    private static final String PROPERTY_CONTEXT_CLASS_LOADER = "importContextClassLoader";
 
     private static final Set<String> IMPORTER_CLASS_NAMES = createImportClassNames();
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("deprecation")
     public void postProcess(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory) {
         String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
         for (String name : beanDefinitionNames) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition(name);
             if (isServiceImportDefinition(beanDefinition)) {
                 MutablePropertyValues propertyValues = beanDefinition.getPropertyValues();
-                propertyValues.addPropertyValue(PROPERTY_CONTEXT_CLASS_LOADER, ImportContextClassLoader.UNMANAGED.getLabel());
+                propertyValues.addPropertyValue(PROPERTY_CONTEXT_CLASS_LOADER, ImportContextClassLoaderEnum.UNMANAGED);
             }
         }
     }

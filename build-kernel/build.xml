@@ -150,7 +150,7 @@
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
 				<filter token="SLF4J.VERSION" value="${org.slf4j}"/>
-				<filter token="SPRING.DM.VERSION" value="${org.springframework.osgi}"/>	
+				<filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>	
 				<filter token="SPRING.VERSION" value="${org.springframework}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
 				<filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>

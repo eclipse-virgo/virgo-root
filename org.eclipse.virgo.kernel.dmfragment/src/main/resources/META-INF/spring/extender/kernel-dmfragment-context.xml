@@ -22,7 +22,7 @@
 		</constructor-arg>
 	</bean>
 	
-	<osgi:service ref="serverExtensionConfigurer" interface="org.springframework.osgi.extender.OsgiBeanFactoryPostProcessor" />
+	<osgi:service ref="serverExtensionConfigurer" interface="org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor" />
 
 	<bean id="taskExecutor" class="org.eclipse.virgo.kernel.agent.dm.ContextPropagatingTaskExecutor">
 		<constructor-arg value="region-dm-" />

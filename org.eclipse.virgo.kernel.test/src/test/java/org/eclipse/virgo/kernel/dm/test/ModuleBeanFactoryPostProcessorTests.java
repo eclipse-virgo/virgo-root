@@ -17,7 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
+import org.eclipse.gemini.blueprint.service.importer.support.ImportContextClassLoaderEnum;
+import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
 import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
+import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
+import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
+import org.eclipse.virgo.kernel.test.TestSignal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +32,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
-import org.eclipse.gemini.blueprint.service.importer.support.ImportContextClassLoader;
-import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
-import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
-import org.eclipse.virgo.kernel.test.TestSignal;
 
 public class ModuleBeanFactoryPostProcessorTests extends AbstractKernelIntegrationTest {
     
@@ -74,6 +73,6 @@ public class ModuleBeanFactoryPostProcessorTests extends AbstractKernelIntegrati
        
        OsgiServiceProxyFactoryBean referenceBean = (OsgiServiceProxyFactoryBean) applicationContext.getBean("&reference");
        assertNotNull(referenceBean);
-       assertEquals(ImportContextClassLoader.UNMANAGED, referenceBean.getContextClassLoader());
+       assertEquals(ImportContextClassLoaderEnum.UNMANAGED, referenceBean.getImportContextClassLoader());
     }
 }
