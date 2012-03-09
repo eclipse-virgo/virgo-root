@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -31,18 +30,14 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
-
-import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 
 /**
  */
@@ -59,27 +54,8 @@ public class ServiceScopingTests extends AbstractParTests {
 
         BundleContext context = this.framework.getBundleContext();
 
-        // check global is wired to b
-        Collection<ServiceReference<Appendable>> refs = context.getServiceReferences(Appendable.class, "(provider=global)");
-        assertNotNull(refs);
-        assertEquals(1, refs.size());
-        Bundle[] usingBundles = refs.iterator().next().getUsingBundles();
-        assertEquals(1, usingBundles.length);
-        Bundle b = usingBundles[0];
-        assertNotNull(b);
-        assertTrue(b.getSymbolicName().endsWith("scoping.service.module.b"));
-
-        Bundle[] bundles = context.getBundles();
-        for (Bundle bund : bundles) {
-            if (bund.getSymbolicName().contains("scoping.service.module.a")) {
-                assertContainsServiceReference(bund.getServicesInUse(), "(&(objectClass=java.lang.Appendable)(provider=local))");
-            } else if (bund.getSymbolicName().contains("scoping.service.module.b")) {
-                assertContainsServiceReference(bund.getServicesInUse(), "(&(objectClass=java.lang.Appendable)(provider=global))");
-            }
-        }
-
         // check unable to access scoped service from unscoped view
-        refs = context.getServiceReferences(Appendable.class, "(provider=local)");
+        Collection<ServiceReference<Appendable>> refs = context.getServiceReferences(Appendable.class, "(provider=local)");
         assertEquals("refs should be empty", refs.size(), 0);
 
         // check able to publish into global from app
@@ -177,6 +153,7 @@ public class ServiceScopingTests extends AbstractParTests {
         // Check that bundle two is wired to the service from bundle one.
         @SuppressWarnings("rawtypes")
         ServiceReference<List> serviceReference = bundle.getBundleContext().getServiceReference(List.class);
+        assertNotNull(serviceReference);
         assertEquals("service-scoping-1-service.scoping.one", serviceReference.getBundle().getSymbolicName());
         
         // Check that the service is not visible outside the scope
@@ -185,17 +162,7 @@ public class ServiceScopingTests extends AbstractParTests {
         
         this.deployer.undeploy(deployed);
     }
-
-    private void assertContainsServiceReference(ServiceReference<?>[] refs, String filter) throws InvalidSyntaxException {
-        Filter f = FrameworkUtil.createFilter(filter);
-        for (ServiceReference<?> serviceReference : refs) {
-            if (f.match(serviceReference)) {
-                return;
-            }
-        }
-        fail("No service with filter '" + filter + "'");
-    }
-    
+   
     private Set<String> knownScopes() throws Exception {
         BundleContext context = this.framework.getBundleContext();
         ServiceReference<ScopeServiceRepository> reference = context.getServiceReference(ScopeServiceRepository.class);
