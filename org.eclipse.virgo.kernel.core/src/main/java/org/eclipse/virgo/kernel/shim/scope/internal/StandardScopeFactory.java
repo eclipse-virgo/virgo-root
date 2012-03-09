@@ -33,7 +33,7 @@ import org.osgi.framework.ServiceReference;
  */
 public final class StandardScopeFactory implements ScopeFactory {
 
-    private static final String PROPERTY_BEAN_NAME = "org.springframework.osgi.bean.name";
+    private static final String PROPERTY_BEAN_NAME = "org.eclipse.gemini.blueprint.bean.name";
 
     private final EventLogger eventLogger;
 

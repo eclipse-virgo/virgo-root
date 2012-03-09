@@ -19,14 +19,14 @@
    </license>
 
    <plugin
-         id="org.springframework.osgi.core"
+         id="org.eclipse.gemini.blueprint.core"
          download-size="0"
          install-size="0"
          version="@SPRING.DM.VERSION@"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.osgi.extender"
+         id="org.eclipse.gemini.blueprint.extender"
          download-size="0"
          install-size="0"
          version="@SPRING.DM.VERSION@"
@@ -34,7 +34,7 @@
          autostart="true"/>
 
    <plugin
-         id="org.springframework.osgi.io"
+         id="org.eclipse.gemini.blueprint.io"
          download-size="0"
          install-size="0"
          version="@SPRING.DM.VERSION@"
