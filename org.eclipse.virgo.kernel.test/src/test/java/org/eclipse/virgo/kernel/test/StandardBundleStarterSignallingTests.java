@@ -81,13 +81,11 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
 
     @Test
     public void signalAbort() throws Exception {
-        Bundle bundle = installBundle(new File("src/test/resources/monitor/lazy"));
+        Bundle bundle = installBundle(new File("src/test/resources/monitor/abort"));
         assertNotNull(bundle);        
         TestSignal ts = new TestSignal();
         this.monitor.start(bundle, ts);
-        while (bundle.getState() != Bundle.STARTING) {
-            Thread.sleep(100);
-        }
+        Thread.sleep(100);
         bundle.stop();
         while (!ts.isComplete()) {
             Thread.sleep(100);

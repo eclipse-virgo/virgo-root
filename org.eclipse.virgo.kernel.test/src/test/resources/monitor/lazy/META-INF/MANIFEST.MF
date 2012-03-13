@@ -1,4 +1,0 @@
-Manifest-Version: 1
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: monitor.lazy
-Bundle-ActivationPolicy: lazy
