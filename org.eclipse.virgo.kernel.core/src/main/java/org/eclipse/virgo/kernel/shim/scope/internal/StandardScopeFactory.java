@@ -33,6 +33,8 @@ import org.osgi.framework.ServiceReference;
  */
 public final class StandardScopeFactory implements ScopeFactory {
 
+    private static final String PROPERTY_BLUEPRINT_CONTEXT_SERVICE_NAME = "org.eclipse.gemini.blueprint.context.service.name";
+
     private static final String PROPERTY_BEAN_NAME = "org.eclipse.gemini.blueprint.bean.name";
 
     private final EventLogger eventLogger;
@@ -102,15 +104,15 @@ public final class StandardScopeFactory implements ScopeFactory {
              */
             serviceScope = (String) ref.getProperty("com.springsource.service.scope");
             if (serviceScope == null) {
-                String beanName = (String) ref.getProperty(PROPERTY_BEAN_NAME);
-                if (beanName == null) {
+                // Blueprint (application) contexts belong in the global scope.
+                if (ref.getProperty(PROPERTY_BLUEPRINT_CONTEXT_SERVICE_NAME) != null) {
                     serviceScope = Scope.SCOPE_ID_GLOBAL;
+                }
+                else
+                if (isBundleScoped(ref.getBundle())) {
+                    serviceScope = Scope.SCOPE_ID_APP;
                 } else {
-                    if (isBundleScoped(ref.getBundle())) {
-                        serviceScope = Scope.SCOPE_ID_APP;
-                    } else {
-                        serviceScope = Scope.SCOPE_ID_GLOBAL;
-                    }
+                    serviceScope = Scope.SCOPE_ID_GLOBAL;
                 }
             } else {
                 this.eventLogger.log(KernelLogEvents.OLD_SCOPING_PROPERTY_USED, ref.getBundle().getSymbolicName(), ref.getBundle().getVersion(),
