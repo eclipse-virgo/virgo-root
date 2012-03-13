@@ -21,7 +21,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.5.0.D-20120301131924/org.eclipse.virgo.medic-3.5.0.D-20120301131924.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/1.0.0.CI-B20/org.eclipse.virgo.medic-sources-1.0.0.CI-B20.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgicommand"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.5.0.BUILD-20120308134138/org.eclipse.virgo.kernel.core-3.5.0.BUILD-20120308134138.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.5.0.BUILD-20120308134138/org.eclipse.virgo.deployer.api-3.5.0.BUILD-20120308134138.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.5.0.BUILD-20120313132411/org.eclipse.virgo.kernel.core-3.5.0.BUILD-20120313132411.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.5.0.BUILD-20120313132411/org.eclipse.virgo.deployer.api-3.5.0.BUILD-20120313132411.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
