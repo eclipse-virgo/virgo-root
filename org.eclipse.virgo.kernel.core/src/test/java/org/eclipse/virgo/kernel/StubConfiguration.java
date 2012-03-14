@@ -13,7 +13,10 @@ package org.eclipse.virgo.kernel;
 
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.osgi.service.cm.Configuration;
 
@@ -67,7 +70,27 @@ public class StubConfiguration implements Configuration {
         throw new UnsupportedOperationException();
     }
 
-    public void update(Dictionary dictionary) throws IOException {
+    @SuppressWarnings("unchecked")
+	public void update(Dictionary dictionary) throws IOException {
+    	Hashtable<String, String> htable = (Hashtable) dictionary;
+    	Set<String> keySet = htable.keySet();
+    	
+    	Iterator iterator = keySet.iterator();
+    	while (iterator.hasNext()) {
+			String key = (String) iterator.next();
+
+	    	Set<String> keyChecks = new HashSet<String>();
+			keyChecks.addAll(keySet);
+			keyChecks.remove(key);
+			
+			Iterator iterator2 = keyChecks.iterator();
+			while (iterator2.hasNext()) {
+	    		String keyCheck = (String)iterator2.next();
+				if(key.equalsIgnoreCase(keyCheck)){
+	    			throw new IllegalArgumentException(key + " is already present or is a case variant.");
+	    		}
+	    	}
+		}
         this.properties = (Hashtable) dictionary;
     }
 

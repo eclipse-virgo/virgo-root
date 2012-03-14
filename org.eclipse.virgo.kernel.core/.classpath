@@ -41,5 +41,6 @@
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.event/1.2.100.v20110110/org.eclipse.equinox.event-1.2.100.v20110110.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.core/3.5.0.M03/org.eclipse.virgo.medic.core-3.5.0.M03.jar"/>
+	<classpathentry kind="var" path="NANO_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.weaver/1.6.12.RELEASE/com.springsource.org.aspectj.weaver-1.6.12.RELEASE.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
