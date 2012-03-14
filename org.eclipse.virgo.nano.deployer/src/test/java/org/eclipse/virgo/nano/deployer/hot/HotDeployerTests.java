@@ -20,7 +20,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.util.Map;
 
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
@@ -31,7 +30,6 @@ import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.service.event.Event;
 
 /**
  */

@@ -101,9 +101,10 @@ public class BundleInfosUpdater {
         return infos;
     }
 
-    public void updateBundleInfosRepository() throws IOException {
-        HashMap<String, BundleInfo> currentBundleInfos = readBundleInfosInMap(SimpleConfiguratorUtils.readConfiguration(
-            this.bundlesInfoFile.toURI().toURL(), this.baseDir == null ? null : this.baseDir.toURI()));
+    @SuppressWarnings("unchecked")
+	public void updateBundleInfosRepository() throws IOException {
+        List<BundleInfo> readConfiguration = SimpleConfiguratorUtils.readConfiguration(this.bundlesInfoFile.toURI().toURL(), this.baseDir == null ? null : this.baseDir.toURI());
+		HashMap<String, BundleInfo> currentBundleInfos = readBundleInfosInMap(readConfiguration);
 
         currentBundleInfos.putAll(this.toBeAddedInBundlesInfo);
         this.toBeAddedInBundlesInfo.clear();
