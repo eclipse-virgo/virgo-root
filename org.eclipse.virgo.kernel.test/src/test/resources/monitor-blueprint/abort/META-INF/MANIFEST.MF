@@ -1,0 +1,3 @@
+Manifest-Version: 1
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: unsatisfieable.service.reference

@@ -45,10 +45,32 @@ public class StandardBundleStarterTests extends AbstractKernelIntegrationTest {
         
         signal.assertSuccessfulCompletionSignalled(5000);        
     }
+    
+    @Test
+    public void successBlueprint() throws Exception {
+        Bundle bundle = this.context.installBundle(new File("src/test/resources/monitor-blueprint/success").toURI().toString());
+        
+        TestSignal signal = new TestSignal();
+        
+        this.monitor.start(bundle, signal);
+        
+        signal.assertSuccessfulCompletionSignalled(5000);        
+    }
 
     @Test
     public void failure() throws Exception {
         Bundle bundle = this.context.installBundle(new File("src/test/resources/monitor/failure").toURI().toString());
+        
+        TestSignal signal = new TestSignal();
+        
+        this.monitor.start(bundle, signal);
+        
+        signal.assertFailureSignalled(5000);
+    }
+    
+    @Test
+    public void failureBlueprint() throws Exception {
+        Bundle bundle = this.context.installBundle(new File("src/test/resources/monitor-blueprint/failure").toURI().toString());
         
         TestSignal signal = new TestSignal();
         
@@ -70,6 +92,16 @@ public class StandardBundleStarterTests extends AbstractKernelIntegrationTest {
     @Test
     public void signalDelayedSuccess() throws Exception {
         Bundle bundle = this.context.installBundle(new File("src/test/resources/monitor/delay").toURI().toString());
+        TestSignal signal = new TestSignal();
+        this.monitor.start(bundle, signal);
+        
+        signal.assertSuccessfulCompletionSignalled(20000);
+        
+    }
+    
+    @Test
+    public void signalDelayedSuccessBlueprint() throws Exception {
+        Bundle bundle = this.context.installBundle(new File("src/test/resources/monitor-blueprint/delay").toURI().toString());
         TestSignal signal = new TestSignal();
         this.monitor.start(bundle, signal);
         
