@@ -46,6 +46,7 @@ public class DeployerLogMessageTests extends AbstractParTests {
             existingLines++;
             line = reader.readLine();
         }
+        reader.close();
     }
 
     private List<String> findLogMessages(String logCode) throws IOException {
@@ -68,6 +69,7 @@ public class DeployerLogMessageTests extends AbstractParTests {
                 }
             }
         }
+        reader.close();
         return logMessages;
     }
 

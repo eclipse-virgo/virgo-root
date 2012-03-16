@@ -94,6 +94,8 @@ public class ApplicationContextDependencyMonitorIntegrationTests extends Abstrac
             logEntries.add(line);
             line = reader.readLine();
         }
+        
+        reader.close();
 
         List<String> expectedResults = new ArrayList<String>(10);
         expectedResults.add("KE0100W");
@@ -109,5 +111,5 @@ public class ApplicationContextDependencyMonitorIntegrationTests extends Abstrac
             Assert.assertTrue("An entry containing " + er + " was not found in logging file " + loggingOutput.getAbsolutePath() + ".", entryFound);
         }
     }
-
+    
 }
