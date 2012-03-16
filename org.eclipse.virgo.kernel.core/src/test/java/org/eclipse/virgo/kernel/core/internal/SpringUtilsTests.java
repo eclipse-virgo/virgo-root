@@ -12,6 +12,7 @@
 package org.eclipse.virgo.kernel.core.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Dictionary;
@@ -43,6 +44,28 @@ public class SpringUtilsTests {
 	    String result = SpringUtils.getSpringContextHeader(dict);
 	
 	    assertEquals(null, result);
+    }
+    
+    @Test
+    public void successfulGetBundleBlueprintHeader() throws Exception {
+        Dictionary dict = new Properties();
+        dict.put("Bundle-Blueprint", "testValue");
+        dict.put("aHeader", "aValue");
+        
+        String result = SpringUtils.getBundleBlueprintHeader(dict);
+        
+        assertEquals("testValue", result);
+    }
+
+    @Test
+    public void failedGetBundleBlueprintHeader() {
+        
+        Dictionary dict = new Properties();
+        dict.put("aHeader", "aValue");
+    
+        String result = SpringUtils.getBundleBlueprintHeader(dict);
+    
+        assertEquals(null, result);
     }
     
     @Test
@@ -80,6 +103,29 @@ public class SpringUtilsTests {
     }
     
     @Test
+    public void testGetBundleBlueprintHeaderLocations() {
+        //try single location
+        Dictionary dict = new Properties();
+        dict.put("Bundle-Blueprint", "testValue");
+        dict.put("aHeader", "aValue");
+        
+        String[] locations = SpringUtils.getSpringContextHeaderLocations(dict);
+        assertEquals(1, locations.length);
+        assertEquals("testValue", locations[0]);
+        
+        //try with 1+ locations
+        dict = new Properties();
+        dict.put("Bundle-Blueprint", "testValue1,testValue2");
+        dict.put("aHeader", "aValue");
+        
+        locations = SpringUtils.getSpringContextHeaderLocations(dict);
+        assertEquals(2, locations.length);
+        assertEquals("testValue1", locations[0]);
+        assertEquals("testValue2", locations[1]);
+    }
+
+    
+    @Test
     public void testIsSpringPoweredBundle() {
         StubBundle bundle = new StubBundle("org.eclipse.virgo.kernel.startuptest", new Version(1,0,0));
         bundle.addHeader("Spring-Context", "testLocation");
@@ -88,5 +134,22 @@ public class SpringUtilsTests {
         assertTrue(isSpringDMPowered);
     }
 
+    @Test
+    public void testIsBlueprintBundleSpringPoweredBundle() {
+        StubBundle bundle = new StubBundle("org.eclipse.virgo.kernel.startuptest", new Version(1,0,0));
+        bundle.addHeader("Bundle-Blueprint", "testLocation");
+        
+        boolean isSpringDMPowered = SpringUtils.isSpringDMPoweredBundle(bundle);
+        assertTrue(isSpringDMPowered);
+    }
+    
+    @Test
+    public void testIsBlueprintDisabledBundleNotSpringPoweredBundle() {
+        StubBundle bundle = new StubBundle("org.eclipse.virgo.kernel.startuptest", new Version(1,0,0));
+        bundle.addHeader("Bundle-Blueprint", "");
+        
+        boolean isSpringDMPowered = SpringUtils.isSpringDMPoweredBundle(bundle);
+        assertFalse(isSpringDMPowered);
+    }
    
 }

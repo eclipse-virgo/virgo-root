@@ -11,33 +11,20 @@
 
 package org.eclipse.virgo.kernel.core;
 
+import org.eclipse.virgo.util.common.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
-
-import org.eclipse.virgo.kernel.core.internal.SpringUtils;
-import org.eclipse.virgo.util.common.StringUtils;
-
 
 /**
  * <code>BundleUtils</code> provides utility methods for interacting with {@link Bundle Bundles}.
  * <p />
- *
+ * 
  * <strong>Concurrent Semantics</strong><br />
  * Thread-safe
- *
+ * 
  */
 public final class BundleUtils {
-    
-    /**
-     * Queries whether the supplied {@link Bundle} is Spring-DM powered.
-     * 
-     * @param bundle the <code>Bundle</code>.
-     * @return <code>true</code> if the <code>Bundle</code> is Spring-DM powered, otherwise <code>false</code>.
-     */
-    public static boolean isSpringOsgiPoweredBundle(Bundle bundle) {
-        return SpringUtils.isSpringDMPoweredBundle(bundle);
-    }        
-    
+
     /**
      * Queries whether the supplied {@link Bundle} is a fragment
      * 
@@ -49,6 +36,5 @@ public final class BundleUtils {
         String fragmentHostHeader = (String) bundle.getHeaders().get(Constants.FRAGMENT_HOST);
         return StringUtils.hasText(fragmentHostHeader);
     }
-    
-    
+
 }
