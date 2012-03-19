@@ -26,7 +26,7 @@ javax.mail=1.4.0
 javax.portlet=2.0.0.v20110525
 javax.transaction=1.1.0
 javax.faces=1.2.0.09
-org.apache.catalina=7.0.12
+org.apache.catalina=7.0.26
 org.apache.taglibs=1.1.2.v20110517
 javax.servlet.jsp=2.2.0.v201103241009
 javax.servlet.jsp.jstl=1.2.0.v20110728
@@ -48,6 +48,6 @@ org.eclipse.equinox.region=1.0.0.v20110503
 version-RANGE=${version:[=.=.=, =.+1)}
 
 # Eclipse classpath references
-org.apache.catalina=7.0.12
-org.apache.coyote=7.0.12
-org.apache.jasper=7.0.12
+org.apache.catalina=7.0.26
+org.apache.coyote=7.0.26
+org.apache.jasper=7.0.26
