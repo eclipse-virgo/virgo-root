@@ -67,6 +67,8 @@ public final class StandardDumpGenerator implements DumpGenerator {
                 dumpContributor.contribute(dump);
             } catch (DumpContributionFailedException e) {
                 this.eventLogger.log(MedicLogEvents.CONTRIBUTION_FAILED, e, dumpContributor.getName(), dump.getTimestamp());
+            } catch (RuntimeException e) {
+                this.eventLogger.log(MedicLogEvents.CONTRIBUTION_ERROR, e, dumpContributor.getName(), dump.getTimestamp());
             }
         }
         

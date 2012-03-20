@@ -19,7 +19,8 @@ public enum MedicLogEvents implements LogEvent {
     MISSING_MESSAGE(1, Level.WARNING), //
     CONTRIBUTION_FAILED(2, Level.WARNING), //
     DUMP_GENERATED(3, Level.INFO), //
-    DIRECTORY_CREATION_FAILED(4, Level.WARNING);
+    DIRECTORY_CREATION_FAILED(4, Level.WARNING), //
+    CONTRIBUTION_ERROR(2, Level.ERROR);
 
     private static final String PREFIX = "ME";
 

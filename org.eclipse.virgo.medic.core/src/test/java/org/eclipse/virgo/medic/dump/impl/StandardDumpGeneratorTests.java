@@ -61,20 +61,25 @@ public class StandardDumpGeneratorTests {
         dumpContributor2.contribute(isA(Dump.class));
         expect(dumpContributor2.getName()).andReturn("dc2").anyTimes();
 
-        expect(accessor.getDumpContributors()).andReturn(Arrays.asList(dumpContributor1, dumpContributor2));
+        DumpContributor dumpContributor3 = createMock(DumpContributor.class);
+        dumpContributor3.contribute(isA(Dump.class));
+        expectLastCall().andThrow(new RuntimeException());
+        expect(dumpContributor3.getName()).andReturn("dc3").anyTimes();
+        
+        expect(accessor.getDumpContributors()).andReturn(Arrays.asList(dumpContributor1, dumpContributor2, dumpContributor3));
 
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
         Dictionary<String, String> configuration = new Hashtable<String, String>();
         configuration.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();
 
-        replay(accessor, dumpContributor1, dumpContributor2, configurationProvider);
+        replay(accessor, dumpContributor1, dumpContributor2, dumpContributor3, configurationProvider);
 
         DumpGenerator dumpGenerator = new StandardDumpGenerator(accessor, configurationProvider, eventLogger);
         dumpGenerator.generateDump("foo");
         dumpGenerator.generateDump("bar", context);
 
-        verify(accessor, dumpContributor1, dumpContributor2, configurationProvider);
+        verify(accessor, dumpContributor1, dumpContributor2, dumpContributor3, configurationProvider);
     }
 
     @Test
