@@ -41,8 +41,8 @@ public class UserConfigurationPropertiesSourceTests {
         assertNotNull(one);
         assertNotNull(two);
         assertNotNull(three);
-        assertEquals("bar", one.getProperty("foo"));
-        assertEquals("baz", two.getProperty("bar"));
+        assertEquals("bar", one.getProperty("baz"));
+        assertEquals("baz", two.getProperty("foo"));
         assertEquals("three", three.getProperty("foo"));
     }
     

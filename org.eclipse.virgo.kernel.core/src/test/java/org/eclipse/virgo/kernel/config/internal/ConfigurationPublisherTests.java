@@ -12,6 +12,7 @@
 package org.eclipse.virgo.kernel.config.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +105,7 @@ public class ConfigurationPublisherTests {
         String pidTwo = pidOne;
 
         Properties propertiesTwo = new Properties();
-        propertiesTwo.setProperty("bar", "boo");
+        propertiesTwo.setProperty("bat", "boo");
         propertiesTwo.setProperty("boo", "bof");
 
         two.configurationProperties.put(pidTwo, propertiesTwo);
@@ -117,7 +118,8 @@ public class ConfigurationPublisherTests {
         Configuration configuration = configAdmin.getConfiguration(pidOne, null);
 
         assertEquals("bar", configuration.getProperties().get("foo"));
-        assertEquals("boo", configuration.getProperties().get("bar"));
+        assertEquals("baz", configuration.getProperties().get("bar"));
+        assertEquals("boo", configuration.getProperties().get("bat"));
         assertEquals("bof", configuration.getProperties().get("boo"));
     }
 
@@ -146,6 +148,28 @@ public class ConfigurationPublisherTests {
         }
 
         assertEquals(2, factories.size());
+    }
+    
+    @Test
+    public void testSingleSourceBadConfiguration() throws IOException {
+        StubPropertiesSource source = new StubPropertiesSource();
+
+        String pid = "single";
+
+        Properties p = new Properties();
+        p.setProperty("foo", "bar");
+        p.setProperty("FOO", "barbar");
+
+        source.configurationProperties.put(pid, p);
+
+        StubConfigurationAdmin configAdmin = new StubConfigurationAdmin();
+
+        ConfigurationPublisher publisher = new ConfigurationPublisher(configAdmin, source);
+        publisher.publishConfigurations();
+
+        Configuration configuration = configAdmin.getConfiguration(pid, null);
+        assertNull(configuration.getProperties());
+
     }
 
     private void assertConfigurationEquals(Configuration configuration, Properties properties) {

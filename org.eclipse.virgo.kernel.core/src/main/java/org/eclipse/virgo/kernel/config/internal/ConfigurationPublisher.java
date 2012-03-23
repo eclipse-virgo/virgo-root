@@ -21,6 +21,8 @@ import java.util.Map.Entry;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.kernel.core.ConfigurationExporter;
 import org.eclipse.virgo.kernel.serviceability.NonNull;
@@ -44,6 +46,8 @@ import org.eclipse.virgo.util.common.StringUtils;
  */
 final class ConfigurationPublisher {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    
     private final ConfigurationAdmin configAdmin;
 
     private final PropertiesSource[] sources;
@@ -94,8 +98,11 @@ final class ConfigurationPublisher {
             Object value = properties.get(key);
             configProperties.put(key, value);
         }
-
-        config.update(configProperties);
+        try {
+        	config.update(configProperties);
+        } catch (RuntimeException e) {
+			LOGGER.error(String.format("Failed to update configuration for pid '%s'", pid), e);
+		}
     }
 
     /**
