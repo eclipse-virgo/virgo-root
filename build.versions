@@ -1,5 +1,5 @@
 # Compile
-org.eclipse.virgo.kernel=3.5.0.D-20120314114108
+org.eclipse.virgo.kernel=3.5.0.D-20120323105426
 org.eclipse.virgo.repository=3.5.0.M03
 org.eclipse.virgo.util=3.5.0.M03
 org.eclipse.virgo.medic=3.5.0.M03
@@ -9,7 +9,7 @@ org.eclipse.equinox.event=1.2.100.v20110110
 org.springframework=3.0.5.RELEASE
 org.eclipse.gemini.blueprint=1.0.0.RELEASE
 org.eclipse.gemini.web=2.1.0.BUILD-20120306192742
-org.eclipse.virgo.nano=3.5.0.D-20120314104018
+org.eclipse.virgo.nano=3.5.0.BUILD-20120323094700
 org.aspectj=1.6.12.RELEASE
 org.slf4j=1.6.1
 org.slf4j.spi=1.6.1
