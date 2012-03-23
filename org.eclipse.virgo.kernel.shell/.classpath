@@ -49,7 +49,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.equinox.region/1.0.0.v20110503/org.eclipse.equinox.region-1.0.0.v20110503.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.5.0.M03/org.eclipse.virgo.util.osgi.manifest-3.5.0.M03.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.artifact"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.5.0.BUILD-20120323094700/org.eclipse.virgo.deployer.api-3.5.0.BUILD-20120323094700.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.5.0.BUILD-20120323144921/org.eclipse.virgo.deployer.api-3.5.0.BUILD-20120323144921.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
