@@ -91,18 +91,24 @@ public final class ApplicationContextDependencyMonitor implements EventHandler {
 
             if (EVENT_WAITING.equals(event.getTopic())) {
                 List<ServiceDependency> serviceDependencies = createServiceDependencies(event);
-                for (ServiceDependency serviceDependency : serviceDependencies) {
-                    addServiceDependencyTicker(serviceDependency, bundle);
+                if (serviceDependencies != null) {
+                    for (ServiceDependency serviceDependency : serviceDependencies) {
+                        addServiceDependencyTicker(serviceDependency, bundle);
+                    }
                 }
             } else if (EVENT_GRACE_PERIOD.equals(event.getTopic())) {
                 List<ServiceDependency> remainingUnsatisfiedDependencies = createServiceDependencies(event);
-                changeInUnsatisfiedDependencies(remainingUnsatisfiedDependencies, bundle);
+                if (remainingUnsatisfiedDependencies != null) {
+                    changeInUnsatisfiedDependencies(remainingUnsatisfiedDependencies, bundle);
+                }
 
             } else if (EVENT_FAILURE.equals(event.getTopic())) {
                 String[] dependenciesArray = (String[]) event.getProperty("dependencies");
                 if (dependenciesArray != null) {
                     List<ServiceDependency> serviceDependencies = createServiceDependencies(event);
-                    serviceDependenciesTimedOut(serviceDependencies, bundle);
+                    if (serviceDependencies != null) {
+                        serviceDependenciesTimedOut(serviceDependencies, bundle);
+                    }
                 } else {
                     containerCreationFailed(bundle);
                 }
@@ -243,14 +249,20 @@ public final class ApplicationContextDependencyMonitor implements EventHandler {
         String[] beanNames = (String[]) event.getProperty("bean.name");
 
         List<ServiceDependency> serviceDependencies = new ArrayList<ServiceDependency>();
-
         if (filters != null && beanNames != null) {
             for (int i = 0; i < filters.length; i++) {
                 serviceDependencies.add(new ServiceDependency(filters[i], beanNames[i]));
             }
+            return serviceDependencies;
         }
 
-        return serviceDependencies;
+        /*
+         * Return null when filters is non-null and beanNames is null. Blueprint events sometimes lack this information,
+         * but a corresponding event including bean names is posted by
+         * BlueprintEventPostingOsgiBundleApplicationContextListener on receipt of the underlying Spring DM event. A
+         * return value of null indicates that the caller should ignore this event.
+         */
+        return filters == null ? serviceDependencies : null;
     }
 
     private static final class ServiceDependency {
