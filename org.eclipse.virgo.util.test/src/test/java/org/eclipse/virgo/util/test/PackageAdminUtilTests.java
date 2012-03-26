@@ -40,7 +40,7 @@ public class PackageAdminUtilTests extends AbstractEquinoxLaunchingTests {
         return "org.slf4j;version=1.6.1," + "org.eclipse.virgo.util.common;version=2.0.0," + "org.eclipse.virgo.util.math;version=2.0.0";
     }
 
-    @Test
+	@Test
     public void testSynchronousRefreshPackages() throws IllegalArgumentException, SecurityException {
         ServiceReference packageAdminUtilServiceReference = this.bundleContext.getServiceReference(PACKAGE_ADMIN_UTIL_CLASS_NAME);
         Object packageAdminUtil = this.bundleContext.getService(packageAdminUtilServiceReference);

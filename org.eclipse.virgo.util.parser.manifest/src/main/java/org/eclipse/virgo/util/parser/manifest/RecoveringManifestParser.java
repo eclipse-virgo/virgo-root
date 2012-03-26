@@ -380,7 +380,7 @@ public class RecoveringManifestParser implements ManifestParser {
 
 	// ATTRIBUTE := NAME_TOKEN COLON_TOKEN VALUE_TOKEN NEWLINE
 
-	public void eatAttribute(@SuppressWarnings("unused") boolean isMain) {
+	public void eatAttribute(boolean isMain) {
 
 		Token nameToken = tokenStream.next();
 
