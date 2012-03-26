@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.virgo.test.framework.BundleEntry;
+import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
 import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
 import org.junit.Before;
@@ -34,6 +35,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
+import org.osgi.framework.Version;
 
 /**
  * TODO Document RegionDependenciesDmKernelRunnerTests
@@ -81,6 +83,9 @@ public class RegionDependenciesDmKernelRunnerTests {
 
         // set-up user region bundle context
         StubBundleContext userRegionBundleContext = new StubBundleContext();
+        
+        StubBundle stubSystemBundle = new StubBundle(0L, "system-bundle", Version.emptyVersion, "system.bundle.location");
+        userRegionBundleContext.addInstalledBundle(stubSystemBundle);
 
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("org.eclipse.virgo.kernel.regionContext", true);
@@ -104,6 +109,7 @@ public class RegionDependenciesDmKernelRunnerTests {
         try {
             this.testRunner.postProcessTargetBundleContext(userRegionBundleContext, new Properties());
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
 

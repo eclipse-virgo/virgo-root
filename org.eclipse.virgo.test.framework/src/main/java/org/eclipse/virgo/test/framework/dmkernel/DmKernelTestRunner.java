@@ -29,6 +29,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.startlevel.FrameworkStartLevel;
 
 import javax.management.MalformedObjectNameException;
 
@@ -42,6 +43,8 @@ import javax.management.MalformedObjectNameException;
  * 
  */
 public class DmKernelTestRunner extends OsgiTestRunner {
+
+    private static final int DEFAULT_BUNDLE_START_LEVEL = 1000;
 
     private static final long DEFAULT_USER_REGION_START_WAIT_TIME = 60000;
 
@@ -80,6 +83,16 @@ public class DmKernelTestRunner extends OsgiTestRunner {
      */
     @Override
     protected void postProcessTargetBundleContext(BundleContext bundleContext, Properties frameworkConfigurationProperties) throws Exception {
+
+        /*
+         * Use the same default start level for user region bundles as the user region factory. Program the framework
+         * start level instance defensively to allow for stubs which don't understand adapt.
+         */
+        FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel) bundleContext.getBundle(0).adapt(FrameworkStartLevel.class);
+        if (frameworkStartLevel != null) {
+            frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
+        }
+
         final Properties configurationProperties = new Properties(frameworkConfigurationProperties);
 
         // This list is installed post installation of user region bundle that includes bundles listed in the
@@ -110,7 +123,7 @@ public class DmKernelTestRunner extends OsgiTestRunner {
         if (!CollectionUtils.isEmpty(bundleEntries)) {
 
             for (BundleEntry bundleEntry : bundleEntries) {
-                
+
                 String path = bundleEntry.value();
                 boolean autoStart = bundleEntry.autoStart();
 
