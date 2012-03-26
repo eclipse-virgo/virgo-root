@@ -23,7 +23,7 @@ import org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
+import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
 
 public class ServerOsgiBundleXmlWebApplicationContextTests {
     

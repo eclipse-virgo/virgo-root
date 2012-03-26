@@ -26,9 +26,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.core.io.Resource;
-import org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext;
-import org.springframework.osgi.context.support.OsgiBundleXmlApplicationContext;
-import org.springframework.osgi.extender.OsgiBeanFactoryPostProcessor;
+import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
+import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
+import org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor;
 import org.springframework.ui.context.Theme;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.ui.context.support.UiApplicationContextUtils;
@@ -67,7 +67,7 @@ public class ServerOsgiBundleXmlWebApplicationContext extends OsgiBundleXmlAppli
 
     /**
      * {@link ServletContext} attribute name for the {@link BundleContext} to be used to back this
-     * {@link org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext
+     * {@link org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext
      * ConfigurableOsgiBundleApplicationContext}.
      */
     public static final String BUNDLE_CONTEXT_ATTRIBUTE = "osgi-bundlecontext";
