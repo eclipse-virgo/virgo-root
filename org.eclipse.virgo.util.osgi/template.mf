@@ -3,7 +3,6 @@ Bundle-Name: OSGi Utility Code
 Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.osgi
 Bundle-Version: ${version}
-Bundle-Activator: org.eclipse.virgo.util.osgi.OsgiBundleActivator
 Import-Template: 
  org.eclipse.virgo.util.*;version="${version:[=.=.=, =.=.+1)}",
  org.osgi.*;version="0",
