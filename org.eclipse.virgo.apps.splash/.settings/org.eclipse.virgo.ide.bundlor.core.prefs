@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 #Thu Aug 11 12:30:32 BST 2011
 eclipse.preferences.version=1
 org.eclipse.virgo.ide.bundlor.core.bundlor.generated.manifest.autoformatting=false
 org.eclipse.virgo.ide.bundlor.core.byte.code.scanning=true
 org.eclipse.virgo.ide.bundlor.core.template.properties.files=../build.versions;../build.properties
+=======
+#Wed Jun 10 16:16:33 BST 2009
+org.eclipse.virgo.ide.bundlor.core.template.properties.files=../build.properties;../build.versions
+eclipse.preferences.version=1
+>>>>>>> master
