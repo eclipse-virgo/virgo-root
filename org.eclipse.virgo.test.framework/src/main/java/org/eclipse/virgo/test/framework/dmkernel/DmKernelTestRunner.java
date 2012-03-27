@@ -44,7 +44,7 @@ import javax.management.MalformedObjectNameException;
  */
 public class DmKernelTestRunner extends OsgiTestRunner {
 
-    private static final int DEFAULT_BUNDLE_START_LEVEL = 1000;
+    private static final int DEFAULT_BUNDLE_START_LEVEL = 4;
 
     private static final long DEFAULT_USER_REGION_START_WAIT_TIME = 60000;
 
