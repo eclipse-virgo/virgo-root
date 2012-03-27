@@ -24,7 +24,10 @@ import org.junit.runners.model.InitializationError;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.launch.Framework;
+import org.osgi.framework.startlevel.FrameworkStartLevel;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -34,6 +37,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * JUnit TestRunner for running OSGi integration tests on the Equinox framework.
@@ -43,6 +48,8 @@ import java.util.*;
  * TODO Document concurrent semantics of OsgiTestRunner
  */
 public class OsgiTestRunner extends BlockJUnit4ClassRunner {
+    
+    private static final int DEFAULT_BUNDLE_START_LEVEL = 4;
 
     private final ConfigurationPropertiesLoader loader = new ConfigurationPropertiesLoader();
 
@@ -160,6 +167,32 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
         FrameworkBuilder builder = new FrameworkBuilder(configurationProperties, new FrameworkCustomizer() {
 
             public void beforeInstallBundles(Framework framework) {
+
+                /*
+                 * Use the same default start level as the user region bundles. Program the framework start level
+                 * instance defensively to allow for stubs which don't understand adapt.
+                 */
+                FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel) framework.getBundleContext().getBundle(0).adapt(
+                    FrameworkStartLevel.class);
+                if (frameworkStartLevel != null) {
+                    final CountDownLatch latch = new CountDownLatch(1);
+                    frameworkStartLevel.setStartLevel(DEFAULT_BUNDLE_START_LEVEL, new FrameworkListener() {
+
+                        @Override
+                        public void frameworkEvent(FrameworkEvent event) {
+                            if (FrameworkEvent.STARTLEVEL_CHANGED == event.getType()) {
+                                latch.countDown();
+                            }
+                            
+                        }});
+                    try {
+                        latch.await(30000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Start level latch interrupted", e);
+                    }
+                    frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
+                }
+
                 OsgiTestRunner.this.pluginManager.getPluginDelegate().beforeInstallBundles(framework, configurationProperties);
             }
 
