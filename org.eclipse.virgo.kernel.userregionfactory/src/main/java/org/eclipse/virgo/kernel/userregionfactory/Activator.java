@@ -65,9 +65,9 @@ import org.osgi.service.event.EventAdmin;
  */
 public final class Activator {
 
-    private static final int DEFAULT_BUNDLE_START_LEVEL = 1000;
+    private static final int DEFAULT_BUNDLE_START_LEVEL = 4;
 
-	private static final String KERNEL_REGION_NAME = "org.eclipse.equinox.region.kernel";
+    private static final String KERNEL_REGION_NAME = "org.eclipse.equinox.region.kernel";
 
     private static final String CLASS_LIST_SEPARATOR = ",";
 
@@ -117,7 +117,7 @@ public final class Activator {
         this.bundleContext = componentContext.getBundleContext();
         
         FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel)componentContext.getBundleContext().getBundle(0).adapt(FrameworkStartLevel.class);
-		frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
+	frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
         
         this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
         RegionDigraph regionDigraph = getPotentiallyDelayedService(bundleContext, RegionDigraph.class);
