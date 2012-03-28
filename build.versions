@@ -44,11 +44,7 @@ javax.portlet=2.0.0.v20110525
 javax.servlet=3.0.0.v201103241009
 javax.transaction=1.1.0
 org.easymock=2.3.0
-<<<<<<< HEAD
-org.eclipse.virgo.test=3.5.0.D-20120301131734
-=======
 org.eclipse.virgo.test=3.5.0.D-20120327150630
->>>>>>> master
 org.eclipse.virgo.teststubs=3.5.0.M03
 org.hsqldb=1.8.0.9
 org.junit=4.7.0
