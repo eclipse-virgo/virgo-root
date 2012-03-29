@@ -1,3 +1,3 @@
 [submodule "virgo-build"]
 	path = virgo-build
-	url = ssh://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.virgo-build.git
+	url = http://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.virgo-build.git
