@@ -17,6 +17,7 @@
       <feature id="org.eclipse.virgo.kernel.resources" version="0.0.0"/>
       <feature id="org.eclipse.virgo.kernel.springintegration" version="0.0.0"/>
       <feature id="org.eclipse.virgo.springdm" version="0.0.0"/>
+      <feature id="org.eclipse.virgo.management" version="0.0.0" />
    </features>
    
    <configurations>
