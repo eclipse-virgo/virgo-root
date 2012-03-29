@@ -88,7 +88,7 @@
 			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
             <filterset>
 				<filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
-                <filter token="TOMCAT.VERSION" value="${org.apache.tomcat}"/>
+                <filter token="TOMCAT.VERSION" value="${org.apache.catalina}"/>
 				<filter token="NANO.VERSION" value="${bundle.version}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
