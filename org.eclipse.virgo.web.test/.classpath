@@ -5,11 +5,6 @@
 			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src/main/resources">
-		<attributes>
-			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="false"/>
