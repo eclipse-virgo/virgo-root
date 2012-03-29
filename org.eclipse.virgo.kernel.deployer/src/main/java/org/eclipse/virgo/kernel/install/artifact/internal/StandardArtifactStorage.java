@@ -25,9 +25,13 @@ import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.io.JarUtils;
 import org.eclipse.virgo.util.io.PathReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class StandardArtifactStorage implements ArtifactStorage {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandardArtifactStorage.class);
+    
     private static final List<String> JAR_EXTENSIONS = Arrays.asList("jar", "war", "par", "zip");
 
     private final PathReference sourcePathReference;
@@ -109,14 +113,18 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private void stashContent() {
         if (this.baseStagingPathReference.exists()) {
-            this.pastStagingPathReference.delete(true);
+            if (!this.pastStagingPathReference.delete(true)) {
+            	LOGGER.warn(String.format("Unable to delete %s while stashing content", this.pastStagingPathReference.toString()));
+            }
             this.baseStagingPathReference.moveTo(this.pastStagingPathReference);
         }
     }
 
     private void unstashContent() {
         if (this.pastStagingPathReference.exists()) {
-            this.baseStagingPathReference.delete(true);
+            if (!this.baseStagingPathReference.delete(true)) {
+            	LOGGER.warn(String.format("Unable to delete %s while unstashing content", this.baseStagingPathReference.toString()));
+            }
             this.pastStagingPathReference.moveTo(this.baseStagingPathReference);
         }
     }

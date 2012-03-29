@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.junit.Before;
 import org.junit.Test;
 
