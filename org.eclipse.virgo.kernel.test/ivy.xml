@@ -65,6 +65,10 @@
 		<!-- Allow Equinox to be upgraded point-wise before rippling -->
 		<override org="org.aspectj" rev="${org.aspectj}" />
 		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
+		
+		<!-- Override dependency from org.eclipse.equinox.console.supportability -->
+		<override org="org.apache.felix" module="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}"/>
+
 	</dependencies>
 
 </ivy-module>
