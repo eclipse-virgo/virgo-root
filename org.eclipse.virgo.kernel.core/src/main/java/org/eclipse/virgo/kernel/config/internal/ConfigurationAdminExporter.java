@@ -95,16 +95,20 @@ public class ConfigurationAdminExporter implements ConfigurationListener {
     }
 
     private void unexportConfiguration(String pid) {
-        ObjectName objectName;
+        ObjectName objectName = null;
         
         synchronized (this.monitor) {
-            objectName = configurationInfos.remove(pid).getObjectName();
+            if (configurationInfos.containsKey(pid)) {
+                objectName = configurationInfos.remove(pid).getObjectName();
+            }
         }
         
-        try {
-            this.server.unregisterMBean(objectName);
-        } catch (JMException e) {
-            this.logger.warn("Unable to unregister MBean for configuration '{}'", pid);
+        if (objectName != null) {
+            try {
+                this.server.unregisterMBean(objectName);
+            } catch (JMException e) {
+                this.logger.warn("Unable to unregister MBean for configuration '{}'", pid);
+            }
         }
     }
 
