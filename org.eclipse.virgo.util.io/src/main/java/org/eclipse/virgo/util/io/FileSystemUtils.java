@@ -116,7 +116,7 @@ public final class FileSystemUtils {
      * Delete the supplied {@link File} and, for directories, recursively delete any nested directories or files.
      * 
      * @param root the root <code>File</code> to delete.
-     * @return <code>true</code> if the <code>File</code> was deleted, otherwise <code>false</code>.
+     * @return <code>true</code> if the <code>File</code> was deleted or didn't exist in the first place, otherwise <code>false</code>.
      * @see #deleteRecursively(String)
      */
     public static boolean deleteRecursively(File root) {
@@ -128,7 +128,7 @@ public final class FileSystemUtils {
      * nested directories or files.
      * 
      * @param path the path to the file or directory to delete.
-     * @return <code>true</code> if the file or directory was deleted, otherwise <code>false</code>.
+     * @return <code>true</code> if the <code>File</code> or directory was deleted or didn't exist in the first place, otherwise <code>false</code>.
      * @see #deleteRecursively(File)
      */
     public static boolean deleteRecursively(String path) {
@@ -373,6 +373,6 @@ public final class FileSystemUtils {
             }
             return root.delete();
         }
-        return false;
+        return true;
     }
 }

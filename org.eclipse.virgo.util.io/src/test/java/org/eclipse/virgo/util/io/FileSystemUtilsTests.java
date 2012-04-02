@@ -42,10 +42,11 @@ public class FileSystemUtilsTests {
         m.mkdir();
         assertTrue(m.exists());
         
-        FileSystemUtils.deleteRecursively(f);
+        assertTrue(FileSystemUtils.deleteRecursively(f));
         assertFalse(f.exists());
         
-        assertFalse(FileSystemUtils.deleteRecursively("target/work"));
+        assertTrue(FileSystemUtils.deleteRecursively("target/work"));
+        assertFalse(f.exists());
     }
     
     @Test
