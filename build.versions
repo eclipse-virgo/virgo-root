@@ -1,7 +1,7 @@
 # Compile
 org.eclipse.osgi=3.7.1.R37x_v20110808-1106
 org.eclipse.virgo.osgi=3.5.0.D-20120329113120
-org.eclipse.virgo.util=3.5.0.D-20120329113400
+org.eclipse.virgo.util=3.5.0.D-20120403104609
 
 # Test
 org.junit=4.7.0
