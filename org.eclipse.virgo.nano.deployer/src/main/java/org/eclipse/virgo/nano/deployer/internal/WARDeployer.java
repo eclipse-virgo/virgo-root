@@ -274,7 +274,7 @@ public class WARDeployer implements SimpleDeployer {
                 bundle.update();
                 if (this.packageAdmin != null) {
                     this.packageAdmin.refreshPackages(new Bundle[] { bundle });
-                    System.out.println("Update of file with path [" + path + "] is successful.");
+                    this.logger.info("Update of file with path [" + path + "] is successful.");
                 }
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
