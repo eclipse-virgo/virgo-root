@@ -42,6 +42,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("deprecation")
 public class WARDeployer implements SimpleDeployer {
 
     private static final String WAR = "war";

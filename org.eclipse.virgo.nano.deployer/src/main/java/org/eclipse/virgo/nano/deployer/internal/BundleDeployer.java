@@ -27,6 +27,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("deprecation")
 public class BundleDeployer implements SimpleDeployer {
 
     private static final String JAR = "jar";
@@ -55,12 +56,10 @@ public class BundleDeployer implements SimpleDeployer {
 
     private final BundleInfosUpdater bundleInfosUpdater;
 
-    @SuppressWarnings("deprecation")
     private final PackageAdmin packageAdmin;
 
     private final File workBundleInstallLocation;
 
-    @SuppressWarnings("deprecation")
     public BundleDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, EventLogger eventLogger) {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
@@ -74,7 +73,6 @@ public class BundleDeployer implements SimpleDeployer {
         this.workBundleInstallLocation = new File(kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean deploy(URI path) {
         this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
@@ -154,7 +152,6 @@ public class BundleDeployer implements SimpleDeployer {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean update(URI path) {
         final File updatedFile = new File(path);
