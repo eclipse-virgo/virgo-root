@@ -46,11 +46,11 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		readFile("src/main/webapp/js/configuration.js");
 
 		invokePageInit();
-		assertNotNull(Request.onSuccess);
+		assertNotNull(Request.getLastSentOnSuccess());
 
 		readFile("src/test/resources/ConfigurationData.js");
 		Function jsonData = (Function) SCOPE.get("Data", SCOPE);
-		Request.onSuccess.call(CONTEXT, SCOPE, SCOPE, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs)});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs)});
 		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}
 	
@@ -79,7 +79,7 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		
 		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Open it
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
-		Request.onSuccess.call(CONTEXT, SCOPE, configuration, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs)});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, configuration, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs)});
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));

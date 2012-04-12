@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web.stubs.moo;
 
-import junit.framework.Assert;
-
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.FunctionObject;
@@ -28,9 +26,27 @@ public class Request extends ParentStub {
 	
 	private static Scriptable global_scope = null;
 	
-	public static Function onSuccess;
+	private Function onSuccess;
 
-	public static String Url;
+	private String Url;
+	
+	private static Function LAST_SENT_ON_SUCCESS;
+	
+	private static String LAST_SENT_URL;
+	
+	/**
+	 * Test helper method.
+	 */
+	public static Function getLastSentOnSuccess() {
+	    return LAST_SENT_ON_SUCCESS;
+	}
+	
+	/**
+     * Test helper method.
+     */
+	public static String getLastSentUrl() {
+	    return LAST_SENT_URL;
+	}
 	
 	/**
 	 * Prototype constructor
@@ -42,8 +58,8 @@ public class Request extends ParentStub {
 	 * JavaScript Constructor
 	 */
 	public Request(ScriptableObject options) {
-		Url = (String) ScriptableObject.getProperty(options, "url");
-		onSuccess = (Function) ScriptableObject.getProperty(options, "onSuccess");
+		this.Url = (String) ScriptableObject.getProperty(options, "url");
+		this.onSuccess = (Function) ScriptableObject.getProperty(options, "onSuccess");
 	}
 	
 	/**
@@ -58,6 +74,8 @@ public class Request extends ParentStub {
 	}
 	
 	public void jsFunction_send(){
+	    LAST_SENT_ON_SUCCESS = this.onSuccess;
+	    LAST_SENT_URL = this.Url;
 	}
 
 	/**

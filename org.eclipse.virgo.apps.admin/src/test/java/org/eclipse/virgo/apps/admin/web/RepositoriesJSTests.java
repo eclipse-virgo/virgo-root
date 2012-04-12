@@ -32,7 +32,7 @@ public class RepositoriesJSTests extends AbstractJSTests {
 
 		invokePageInit();
 		
-		assertNotNull(Request.onSuccess);
+		assertNotNull(Request.getLastSentOnSuccess());
 		
 		//assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}
