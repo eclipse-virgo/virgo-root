@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ClassPath: WEB-INF/classes
-Bundle-Version: 3.1.0
+Bundle-Version: 3.5.0
 Tool: Bundlor 1.1.0.BUILD-20101220120024
 Bundle-Name: Splash Screen
 Bundle-ManifestVersion: 2
