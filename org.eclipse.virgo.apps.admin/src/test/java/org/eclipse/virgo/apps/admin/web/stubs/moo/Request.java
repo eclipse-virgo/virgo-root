@@ -82,17 +82,11 @@ public class Request extends ParentStub {
 	 * Just return a normal JS Request object, no need to differentiate  
 	 * 
 	 * @param options
-	 * @return
+	 * @return JS Request object
 	 */
 	public static ScriptableObject jsStaticFunction_JSON(ScriptableObject options){
-		Function fObj = (Function) Request.global_scope.get(Request.class.getSimpleName(), Request.global_scope);
-		if (fObj instanceof Function) {
-		    Function constructor = (Function)fObj;
-		    return (ScriptableObject) constructor.construct(Context.getCurrentContext(), constructor.getParentScope(), new Object[]{options});
-		} else {
-			Assert.fail("Request constructor not found");
-			return null;
-		}	
+		Function constructor = (Function)Request.global_scope.get(Request.class.getSimpleName(), Request.global_scope);
+	    return (ScriptableObject) constructor.construct(Context.getCurrentContext(), constructor.getParentScope(), new Object[]{options});
 	}
 	
 }
