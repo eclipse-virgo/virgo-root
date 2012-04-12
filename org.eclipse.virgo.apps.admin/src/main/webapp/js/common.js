@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011 David Normiongton
+* Copyright (c) 2011 VMware Inc.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@
 
 // INIT FUNCTIONS
 
-window.addEvent('domready', function() {
+$(document).ready(function() {
 	util = new Util();
 	util.start();
 	servers = new Servers();
@@ -32,10 +32,16 @@ var Util = function(){
 	this.pageLocation = undefined;
 	
 	this.start = function(){
-		this.spinner = new Spinner('content', {destroyOnHide: false, maskMargins: true});
-		this.spinner.addEvent('hide', function(){this.destroy();});
-		this.spinner.show(true);
-		this.queryHash = window.location.href.slice(window.location.href.indexOf('?') + 1).parseQueryString();
+		this.spinner = $('<div class="spinner-img"></div>').dialog({autoOpen: false, modal: true}).dialog('open');
+		
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		var hash;
+		this.queryHash = {};
+	    for(var i = 0; i < hashes.length; i++) {
+	        hash = hashes[i].split('=');
+	        this.queryHash[hash[0]] = hash[1];
+	    }
+		
 		if(location.hash){
 			this.pageLocation = location.hash.replace("#", "");
 		}
@@ -45,7 +51,7 @@ var Util = function(){
 	 * 
 	 */
 	this.pageReady = function(){
-		this.spinner.hide();
+		this.spinner.dialog('close');
 	};
 
 	/**
@@ -53,8 +59,7 @@ var Util = function(){
 	 * @returns {String}
 	 */
 	this.getCurrentHost = function(){
-		var me = new URI();
-		return me.get('scheme') + '://' + me.get('host') + ':' + me.get('port') + contextPath;
+		return location.protocol + '//' + location.host + contextPath;
 	};
 	
 	/**
@@ -81,14 +86,15 @@ var Util = function(){
 	 * @param formatter
 	 */
 	this.doBulkQuery = function(query, callback){
-		new Request.JSON({
+		$.ajax({
+			type: 'POST',
 			url: this.getCurrentHost() + '/jolokia',
-			data: JSON.encode(query),
-			urlEncoded: false,
-			onSuccess: function (response) {
+			dataType: 'json',
+			data: JSON.stringify(query),
+			success: function (response) {
 				callback(response);
 			}
-		}).send();
+		});
 	};
 	
 	/**
@@ -129,6 +135,29 @@ var Util = function(){
 			$('tooltip').set('styles', {"display": "none"});
 		};
 	};
+	
+	/**
+	 * Create and return a table element populated with the provided rows.
+	 */
+	this.makeTable = function(properties) {
+		var newTable = $('<table></table>');
+		if(properties.headers){
+			var tHead = $('<thead></thead>');
+			newTable.append(tHead);
+			var tHeadRow = $('<tr></tr>');
+			tHead.append(tHeadRow);
+			$.each(properties.headers, function(index, item){
+				tHeadRow.append($('<th>' + item + '</th>'));
+			});
+		}
+		if(properties.class){
+			newTable.addClass(properties.class);
+		}
+		var tBody = $('<tbody></tbody>');
+		newTable.append(tBody);
+		return newTable;
+	};
+	
 };
 
 /**
@@ -155,7 +184,7 @@ var Servers = function(){
 	 * This takes the server string in the URL and sets the servers ServersDisplay.servers to an array of ip address.
 	 */
 	this.loadServers = function() {
-		this.display = new Fx.Reveal($('servers'), {duration: util.fxTime}).dissolve();
+		$('servers').hide("slide", { direction: "up" }, util.fxTime);
 		var rows;
 		if(util.queryHash.s){
 			rows = util.queryHash.s.split(',');
@@ -165,28 +194,31 @@ var Servers = function(){
 		} else {
 			rows = [util.getCurrentHost()];
 		}
-		rows.each(function(item, index){
-			rows[index] = [item, 	{content: 'Status', properties: {'class': "server-status"}}, 
-			               			{content: 'Overview', properties: {'class': "server-link"}},
-			               			{content: 'Artifacts', properties: {'class': "server-link"}},
-			               			{content: 'Repositories', properties: {'class': "server-link"}},
-			               			{content: 'Configuration', properties: {'class': "server-link"}},
-			               			{content: 'Logs', properties: {'class': "server-link"}},
-			               			{content: 'Dumps', properties: {'class': "server-link"}}];
+		
+		var serversTable = util.makeTable({
+			headers: ['Configured Servers'],
+			'class': 'servers-table'
+		});
+
+		var tBody = serversTable.children().last();
+		
+		$.each(rows, function(index, item){
+			var newRow = $('<tr></tr>');
+			newRow.append($('<td>' + item + '</td>\
+							 <td class="server-status">Status</td>\
+							 <td class="server-link">Overview</td>\
+							 <td class="server-link">Artifacts</td>\
+							 <td class="server-link">Repositories</td>\
+							 <td class="server-link">Configuration</td>\
+							 <td class="server-link">Dumps</td>'));
+			tBody.append(newRow);
 		});
 		
-		new HtmlTable({ 
-			properties: {'class': "servers-table"}, 
-			headers: ['Configured Servers'], 
-			rows: rows,
-			zebra: true,
-			selectable: true,
-			allowMultiSelect: false
-		}).replaces($('servers-list'));
+		$('servers-list').replaceWith(serversTable);
 	};
 
 	this.toggle = function() {
-		this.display.toggle();
+		this.display.toggle("slide", { direction: "up" }, util.fxTime);
 		if(this.open) {
 			$('servers-button').removeClass('selected-navigation');
 			this.open = false;
@@ -246,7 +278,7 @@ var Server = function(){
  	 */
 	this.formatter = function(data){
 		var virgo = ["Virgo", data[0].value.info.version];
-		var web = ["Web Container", data[0].value.info.extraInfo.type.capitalize()];
+		var web = ["Web Container", data[0].value.info.extraInfo.type];
 		var runtime = ["Runtime", data[3].value + ' - ' +  data[4].value + ' (' + data[5].value + ')'];
 		var os = ["Operating System", data[1].value + ' (' + data[2].value + ')'];
 		return [virgo, web, os, runtime];
