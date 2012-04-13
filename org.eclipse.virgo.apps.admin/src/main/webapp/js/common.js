@@ -30,20 +30,33 @@ var Util = function(){
 	this.queryHash = undefined; //Global so any page scripts can just grab query vars
 
 	this.pageLocation = undefined;
+
+	this.starting = false;
+	
+	this.started = false;
 	
 	this.start = function(){
-		this.spinner = $('<div class="spinner-img"></div>').dialog({autoOpen: false, modal: true}).dialog('open');
-		
-		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-		var hash;
-		this.queryHash = {};
-	    for(var i = 0; i < hashes.length; i++) {
-	        hash = hashes[i].split('=');
-	        this.queryHash[hash[0]] = hash[1];
-	    }
-		
-		if(location.hash){
-			this.pageLocation = location.hash.replace("#", "");
+		if(!this.starting && !this.started){
+			this.starting = true;
+			this.spinner = $('<div/>').dialog({
+				modal: true,
+				dialogClass: 'spinner-img',
+				closeText: '',
+				draggable: false,
+				resizable: false,
+				width: '48px'
+			});
+			
+			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+			var hash;
+			this.queryHash = {};
+		    for(var i = 0; i < hashes.length; i++) {
+		        hash = hashes[i].split('=');
+		        this.queryHash[hash[0]] = hash[1];
+		    }
+			if(location.hash){
+				this.pageLocation = location.hash.replace("#", "");
+			}
 		}
 	};
 
@@ -51,7 +64,10 @@ var Util = function(){
 	 * 
 	 */
 	this.pageReady = function(){
-		this.spinner.dialog('close');
+		if(this.starting && !this.started){
+			this.started = true;
+			this.spinner.dialog('close');
+		}
 	};
 
 	/**
@@ -140,34 +156,33 @@ var Util = function(){
 	 * Create and return a table element populated with the provided rows.
 	 */
 	this.makeTable = function(properties) {
-		var newTable = $('<table></table>');
+		var newTable = $('<table/>');
 		if(properties.headers){
-			var tHead = $('<thead></thead>');
-			newTable.append(tHead);
-			var tHeadRow = $('<tr></tr>');
-			tHead.append(tHeadRow);
+			//var tHead = $('<thead/>');
+			var tHeadRow = $('<tr/>');
+			//tHead.append(tHeadRow);
 			$.each(properties.headers, function(index, item){
 				tHeadRow.append($('<th>' + item + '</th>'));
 			});
+			newTable.append($('<thead/>').append(tHeadRow));
 		}
 		if(properties.class){
 			newTable.addClass(properties.class);
 		}
 		var tBody = $('<tbody></tbody>');
-		newTable.append(tBody);
 		if(properties.rows){
-			(function(table, rows) {
-				var tBody = table.children().last();
-				
-				$.each(rows, function(i, row){
-					var newRow = $('<tr />');
-					$.each(row, function(j, value){
-						newRow.append($('<td />').append(value));
-					});
-					tBody.append(newRow);
+			$.each(properties.rows, function(i, row){
+				var newRow = $('<tr/>');
+				if(i % 2){
+					newRow.addClass('table-tr-odd');
+				}
+				$.each(row, function(j, value){
+					newRow.append($('<td/>').append(value));
 				});
-			})(newTable, properties.rows);
+				tBody.append(newRow);
+			});
 		}
+		newTable.append(tBody);
 		return newTable;
 	};
 	
@@ -231,7 +246,7 @@ var Servers = function(){
 	};
 
 	this.toggle = function() {
-		this.display.toggle("slide", { direction: "up" }, util.fxTime);
+		$('servers').toggle("slide", { direction: "up" }, util.fxTime);
 		if(this.open) {
 			$('servers-button').removeClass('selected-navigation');
 			this.open = false;
@@ -281,8 +296,6 @@ var Server = function(){
 			callback(this.formatter(response));
 		}.bind(this)); 
 	};
-	
-	/* **************** START PRIVATE METHODS **************** */
 
 	/**
  	 * Format the server info request in to table rows.

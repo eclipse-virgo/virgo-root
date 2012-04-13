@@ -18,8 +18,7 @@ function pageinit() {
 
 		$('#server-overview').replaceWith(util.makeTable({
 			headers: ['Name', 'Value'],
-			rows: rows,
-			'class': 'bordered-table'
+			rows: rows
 		}));
 		
 		util.pageReady();
