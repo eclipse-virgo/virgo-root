@@ -56,7 +56,7 @@ public class DumpsJSTests extends AbstractJSTests {
 		readFile("src/test/resources/DumpData.js");
 		Function jsonData = (Function) SCOPE.get("Location", SCOPE);
 		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		Request.onSuccess.call(CONTEXT, SCOPE, SCOPE, new Object[]{construct});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{construct});
 		
 		Element dollar = (Element) Context.jsToJava(dollarLookupToReturn, Element.class);
 		assertEquals("Location: Testing", dollar.getAppendedText());
@@ -70,7 +70,7 @@ public class DumpsJSTests extends AbstractJSTests {
 
 		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
 		Scriptable construct = jsonData.construct(CONTEXT, dumpViewer, Context.emptyArgs);
-		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
 		
 		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
 		assertEquals("dump-item-content", dollarLookup);
@@ -84,7 +84,7 @@ public class DumpsJSTests extends AbstractJSTests {
 
 		Function jsonData = (Function) SCOPE.get("DataTwo", SCOPE);
 		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
 		
 		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
 		assertEquals("dump-items", dollarLookup);
@@ -97,7 +97,7 @@ public class DumpsJSTests extends AbstractJSTests {
 
 		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
 		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		Request.onSuccess.call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
 		
 		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
 		assertEquals("dump-item-content", dollarLookup);

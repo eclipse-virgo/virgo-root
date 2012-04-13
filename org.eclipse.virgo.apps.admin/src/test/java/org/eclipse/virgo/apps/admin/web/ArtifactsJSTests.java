@@ -54,11 +54,11 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		readFile("src/main/webapp/js/artifacts.js");
 		
 		invokePageInit();
-		assertNotNull(Request.onSuccess);
+		assertNotNull(Request.getLastSentOnSuccess());
 		
 		readFile("src/test/resources/ArtifactData.js");
 		Function jsonData = (Function) SCOPE.get("Data", SCOPE);
-		Request.onSuccess.call(CONTEXT, SCOPE, SCOPE, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs), "type"});
+		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs), "type"});
 		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}
 	
@@ -89,7 +89,7 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		ScriptableObject tree = (ScriptableObject) SCOPE.get("tree", SCOPE);
 		ScriptableObject.callMethod(tree, "renderTopLevel", new Object[]{"testObjectName", "testParent"});
 		assertEquals("testParent", dollarLookup);
-		assertEquals("hostPrefix/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*", Request.Url);
+		assertEquals("hostPrefix/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*", Request.getLastSentUrl());
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		ScriptableObject tree = (ScriptableObject) SCOPE.get("tree", SCOPE);
 		ScriptableObject.callMethod(tree, "renderArtifact", new Object[]{"testObjectName", "testParent"});
 		assertEquals("testParent", dollarLookup);
-		assertEquals("hostPrefix/jolokia/read/testObjectName", Request.Url);
+		assertEquals("hostPrefix/jolokia/read/testObjectName", Request.getLastSentUrl());
 	}
 	
 }
