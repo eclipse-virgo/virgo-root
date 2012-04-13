@@ -155,6 +155,19 @@ var Util = function(){
 		}
 		var tBody = $('<tbody></tbody>');
 		newTable.append(tBody);
+		if(properties.rows){
+			(function(table, rows) {
+				var tBody = table.children().last();
+				
+				$.each(rows, function(i, row){
+					var newRow = $('<tr />');
+					$.each(row, function(j, value){
+						newRow.append($('<td />').append(value));
+					});
+					tBody.append(newRow);
+				});
+			})(newTable, properties.rows);
+		}
 		return newTable;
 	};
 	
