@@ -14,6 +14,38 @@
  */
 function pageinit() {
 	
+	var renderOverviewTable = function(rows) {
+		console.log(rows);
+		
+		var t = util.makeTable({
+			headers: ['Name', 'Value'],
+			'class': 'bordered-table'
+		});
+		
+		var tBody = t.children().last();
+		
+		$.each(rows, function(i, row){
+			var newRow = $('<tr />');
+			newRow.append('<td>' + row[0] + '</td>');
+			newRow.append('<td>' + row[1] + '</td>');
+			tBody.append(newRow);
+		});
+		
+		console.log(t);
+		
+		$('#server-overview').replaceWith(t);
+		
+		util.pageReady();
+		
+	};
+	
+	new Server().getServerOverview(renderOverviewTable);
+	
+};
+
+/*Old MooTools implementation:
+function pageinit() {
+	
 	var renderOverviewTable = function (rows){
 		
 		new HtmlTable({ properties: {'class': 'bordered-table'}, 
@@ -27,4 +59,4 @@ function pageinit() {
 	
 	new Server().getServerOverview(renderOverviewTable);
 	
-}
+}*/
