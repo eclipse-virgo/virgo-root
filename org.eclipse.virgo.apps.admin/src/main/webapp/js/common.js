@@ -158,9 +158,7 @@ var Util = function(){
 	this.makeTable = function(properties) {
 		var newTable = $('<table/>');
 		if(properties.headers){
-			//var tHead = $('<thead/>');
 			var tHeadRow = $('<tr/>');
-			//tHead.append(tHeadRow);
 			$.each(properties.headers, function(index, item){
 				tHeadRow.append($('<th>' + item + '</th>'));
 			});
@@ -177,7 +175,7 @@ var Util = function(){
 					newRow.addClass('table-tr-odd');
 				}
 				$.each(row, function(j, value){
-					newRow.append($('<td/>').append(value));
+					newRow.append($('<td>' + value + '</td>'));
 				});
 				tBody.append(newRow);
 			});
@@ -307,9 +305,9 @@ var Server = function(){
  	 * @param data - the raw JSON to build the table rows from
  	 */
 	this.formatter = function(data){
-		var virgo = ["OSGi Container", data[0].value.info.product + ' ' + data[0].value.info.version + ' (' + data[0].value.info.extraInfo.type + ')'];
-		var runtime = ["Virtual Machine", data[5].value + ' version ' + data[6].value + ' (' + data[4].value + ')'];
-		var os = ["Operating System", data[1].value + ' ' + data[2].value + ' (' + data[3].value + ')'];
+		var virgo = ['OSGi Container', data[0].value.info.product + ' ' + data[0].value.info.version + ' (' + data[0].value.info.extraInfo.type + ')'];
+		var runtime = ['Virtual Machine', data[5].value + ' version ' + data[6].value + ' (' + data[4].value + ')'];
+		var os = ['Operating System', data[1].value + ' ' + data[2].value + ' (' + data[3].value + ')'];
 		return [virgo, runtime, os];
 	};
 
