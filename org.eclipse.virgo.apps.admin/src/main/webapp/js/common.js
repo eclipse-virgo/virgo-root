@@ -264,6 +264,10 @@ var Server = function(){
 			"attribute" : "Version",
 			"type" : "READ"
 		},{
+			"mbean" : "java.lang:type=OperatingSystem",
+			"attribute" : "Arch",
+			"type" : "READ"
+		},{
 			"mbean" : "java.lang:type=Runtime",
 			"attribute" : "VmVendor",
 			"type" : "READ"
@@ -290,11 +294,10 @@ var Server = function(){
  	 * @param data - the raw JSON to build the table rows from
  	 */
 	this.formatter = function(data){
-		var virgo = ["Virgo", data[0].value.info.version];
-		var web = ["Web Container", data[0].value.info.extraInfo.type];
-		var runtime = ["Runtime", data[3].value + ' - ' +  data[4].value + ' (' + data[5].value + ')'];
-		var os = ["Operating System", data[1].value + ' (' + data[2].value + ')'];
-		return [virgo, web, os, runtime];
+		var virgo = ["OSGi Container", data[0].value.info.product + ' ' + data[0].value.info.version + ' (' + data[0].value.info.extraInfo.type + ')'];
+		var runtime = ["Virtual Machine", data[5].value + ' version ' + data[6].value + ' (' + data[4].value + ')'];
+		var os = ["Operating System", data[1].value + ' ' + data[2].value + ' (' + data[3].value + ')'];
+		return [virgo, runtime, os];
 	};
 
 };
