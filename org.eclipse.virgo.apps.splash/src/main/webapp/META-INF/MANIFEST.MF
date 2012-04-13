@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ClassPath: WEB-INF/classes
-Bundle-Version: 3.1.0
+Bundle-Version: 3.5.0
 Tool: Bundlor 1.1.0.BUILD-20101220120024
 Bundle-Name: Splash Screen
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.splash
 Web-ContextPath: /
-Import-Package: javax.servlet;version="[2.5.0,4)",javax.servlet.http;v
- ersion="[2.5.0,4)",org.slf4j;version="[1.6.1,2)"
+Import-Package: org.eclipse.virgo.apps.splash
 
