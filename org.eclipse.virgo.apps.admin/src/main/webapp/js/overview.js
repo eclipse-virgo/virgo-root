@@ -29,21 +29,3 @@ function pageinit() {
 	new Server().getServerOverview(renderOverviewTable);
 	
 };
-
-/*Old MooTools implementation:
-function pageinit() {
-	
-	var renderOverviewTable = function (rows){
-		
-		new HtmlTable({ properties: {'class': 'bordered-table'}, 
-			headers: ['Property', 'Value'], 
-			rows: rows,
-			zebra: true
-		}).replaces($('server-overview'));
-		
-		util.pageReady();
-	};
-	
-	new Server().getServerOverview(renderOverviewTable);
-	
-}*/
