@@ -18,7 +18,9 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
  */
 public class Element extends ParentStub {
     
-    private String creationArgument;
+    private String constructorArgument;
+    
+    private static String LAST_REPLACED_NODE_CONSTRUCTOR_ARGUMENT;
 
     /**
      * Prototype constructor
@@ -29,14 +31,19 @@ public class Element extends ParentStub {
     /**
      * JavaScript Constructor
      */
-    public Element(ScriptableObject name) {
-        creationArgument = ((String) Context.jsToJava(name, String.class));
+    public Element(ScriptableObject constructorArgument) {
+        this.constructorArgument = ((String) Context.jsToJava(constructorArgument, String.class));
     }
     
     public ScriptableObject jsFunction_replaceWith(ScriptableObject replacement){
+        LAST_REPLACED_NODE_CONSTRUCTOR_ARGUMENT = this.constructorArgument;
         return this;
     }
     
-
+    // Test methods
+    
+   public static String getLastReplacedNodeConstructorArgument() {
+       return LAST_REPLACED_NODE_CONSTRUCTOR_ARGUMENT;
+   }
 
 }
