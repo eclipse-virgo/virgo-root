@@ -18,16 +18,13 @@ import javax.script.ScriptException;
 
 import junit.framework.Assert;
 
-import org.eclipse.virgo.apps.admin.web.stubs.common.Server;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Element;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Fx;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.HtmlTable;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Spinner;
 import org.eclipse.virgo.apps.admin.web.stubs.browser.Window;
+import org.eclipse.virgo.apps.admin.web.stubs.common.Server;
 import org.eclipse.virgo.apps.admin.web.stubs.common.Util;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Request;
+import org.eclipse.virgo.apps.admin.web.stubs.jquery.Element;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.FunctionObject;
@@ -56,21 +53,20 @@ public abstract class AbstractJSTests {
 		//printEngine();
 		CONTEXT = Context.enter();
 		SCOPE = CONTEXT.initStandardObjects();
-		dollarLookupToReturn = null;
 
 		//Create the browser environment
-		ScriptableObject.defineClass(SCOPE, HtmlTable.class);
-		ScriptableObject.defineClass(SCOPE, Request.class);
-		ScriptableObject.defineClass(SCOPE, Fx.class);
-		ScriptableObject.defineClass(SCOPE, Spinner.class);
-		ScriptableObject.defineClass(SCOPE, Element.class);
+//		ScriptableObject.defineClass(SCOPE, HtmlTable.class);
+//		ScriptableObject.defineClass(SCOPE, Request.class);
+//		ScriptableObject.defineClass(SCOPE, Fx.class);
+//		ScriptableObject.defineClass(SCOPE, Spinner.class);
+		//ScriptableObject.defineClass(SCOPE, Element.class);
 		ScriptableObject.defineClass(SCOPE, Server.class);
 		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
 		
 		//Add in constructed objects and extensions
-		CONTEXT.evaluateReader(SCOPE, new FileReader("src/test/resources/MooStub.js"), "src/test/resources/MooStub.js", 0, null); 
+		CONTEXT.evaluateReader(SCOPE, new FileReader("src/test/resources/JQueryStub.js"), "src/test/resources/JQueryStub.js", 0, null); 
 
-		FunctionObject dollarFunction = new FunctionObject("$", AbstractJSTests.class.getDeclaredMethod("dollar", Object.class), SCOPE);
+		FunctionObject dollarFunction = new FunctionObject("$", AbstractJSTests.class.getDeclaredMethod("dollar", ScriptableObject.class), SCOPE);
 		ScriptableObject.putProperty(SCOPE, dollarFunction.getFunctionName(), dollarFunction);
 		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), SCOPE);
 		ScriptableObject.putProperty(SCOPE, alertFunction.getFunctionName(), alertFunction);
@@ -81,12 +77,13 @@ public abstract class AbstractJSTests {
 		Context.exit();
 	}
 	
-	public static Object dollar(Object name){
+	public static Object dollar(ScriptableObject name){
 		dollarLookup = (String) Context.jsToJava(name, String.class);
-		if(dollarLookupToReturn != null){
-			return dollarLookupToReturn;
-		}
-		return name;
+		System.out.println(dollarLookup);
+		System.out.println(name);
+		Object element = Context.javaToJS(new Element(name), SCOPE);
+		System.out.println(element);
+        return element;
 	}
 	
 	public static void alert(String msg){
