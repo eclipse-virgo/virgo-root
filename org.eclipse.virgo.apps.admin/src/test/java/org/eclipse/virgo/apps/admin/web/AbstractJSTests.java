@@ -28,6 +28,7 @@ import org.junit.BeforeClass;
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.FunctionObject;
+import sun.org.mozilla.javascript.internal.Scriptable;
 import sun.org.mozilla.javascript.internal.ScriptableObject;
 
 /**
@@ -59,12 +60,12 @@ public abstract class AbstractJSTests {
 //		ScriptableObject.defineClass(SCOPE, Request.class);
 //		ScriptableObject.defineClass(SCOPE, Fx.class);
 //		ScriptableObject.defineClass(SCOPE, Spinner.class);
-		//ScriptableObject.defineClass(SCOPE, Element.class);
+		ScriptableObject.defineClass(SCOPE, Element.class);
 		ScriptableObject.defineClass(SCOPE, Server.class);
 		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
 		
 		//Add in constructed objects and extensions
-		CONTEXT.evaluateReader(SCOPE, new FileReader("src/test/resources/JQueryStub.js"), "src/test/resources/JQueryStub.js", 0, null); 
+		//CONTEXT.evaluateReader(SCOPE, new FileReader("src/test/resources/JQueryStub.js"), "src/test/resources/JQueryStub.js", 0, null); 
 
 		FunctionObject dollarFunction = new FunctionObject("$", AbstractJSTests.class.getDeclaredMethod("dollar", ScriptableObject.class), SCOPE);
 		ScriptableObject.putProperty(SCOPE, dollarFunction.getFunctionName(), dollarFunction);
@@ -79,14 +80,14 @@ public abstract class AbstractJSTests {
 	
 	public static Object dollar(ScriptableObject name){
 		dollarLookup = (String) Context.jsToJava(name, String.class);
-		System.out.println(dollarLookup);
-		System.out.println(name);
-		Object element = Context.javaToJS(new Element(name), SCOPE);
-		System.out.println(element);
-        return element;
+		Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
+		Object[] args = new Object[]{name};
+		Scriptable constructedElement = elementConstructor.construct(CONTEXT, SCOPE, args);
+		return constructedElement;
 	}
 	
 	public static void alert(String msg){
+		System.out.println(msg);
 		alertMsg = msg;
 	}
 	

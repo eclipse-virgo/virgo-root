@@ -15,7 +15,7 @@
 function pageinit() {
 	
 	var renderOverviewTable = function(rows) {
-
+				
 		$('#server-overview').replaceWith(util.makeTable({
 			headers: ['Name', 'Value'],
 			rows: rows

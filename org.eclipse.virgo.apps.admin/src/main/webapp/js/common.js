@@ -44,6 +44,7 @@ var Util = function(){
 				closeText: '',
 				draggable: false,
 				resizable: false,
+				closeOnEscape: false,
 				width: '48px'
 			});
 			
@@ -67,6 +68,8 @@ var Util = function(){
 		if(this.starting && !this.started){
 			this.started = true;
 			this.spinner.dialog('close');
+			this.spinner = undefined;
+			$('.spinner-img').remove();
 		}
 	};
 
