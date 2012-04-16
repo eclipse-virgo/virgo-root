@@ -30,6 +30,8 @@ import sun.org.mozilla.javascript.internal.Function;
 public class OverviewJSTests extends AbstractJSTests {
     
     private static String[] EXPECTED_HEADERS = {"Name", "Value"};
+    
+    private static String[] TEST_ROW = {"TestName", "TestValue"};
 	
 	@Test
 	public void testPageinit() throws ScriptException, NoSuchMethodException, IOException{
@@ -39,12 +41,11 @@ public class OverviewJSTests extends AbstractJSTests {
 		invokePageInit();
 		
 		Function callback = Server.getCallbackFunction();
-		Object[] args = new Object[]{new String[]{"TestRowData"}};
-		callback.call(CONTEXT, SCOPE, SCOPE, args);
+		callback.call(CONTEXT, SCOPE, SCOPE, new Object[]{TEST_ROW});
 		
 		assertEquals("Wrong DOM node replaced", "#server-overview", Element.getLastReplacedNodeConstructorArgument());
 		assertArrayEquals("Wrong table headers", EXPECTED_HEADERS, this.commonUtil.getLastMakeTableHeaders());
-		assertEquals("Wrong table rows", args[0], this.commonUtil.getLastMakeTableRows());
+		assertArrayEquals("Wrong table rows", TEST_ROW, this.commonUtil.getLastMakeTableRows());
 		
 		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}
