@@ -1,6 +1,5 @@
 Bundle-ManifestVersion: 2
 Bundle-Name: OSGi Manifest Utility Code
-Bundle-Vendor: SpringSource Inc.
 Bundle-SymbolicName: org.eclipse.virgo.util.osgi.manifest
 Bundle-Version: ${version}
 Import-Template: 
