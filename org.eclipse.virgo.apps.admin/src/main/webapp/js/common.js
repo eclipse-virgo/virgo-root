@@ -170,6 +170,12 @@ var Util = function(){
 		if(properties.class){
 			newTable.addClass(properties.class);
 		}
+		if(properties.sortable){
+			newTable.addClass('table-sortable');
+		}
+		if(properties.selectable){
+			newTable.addClass('table-selectable');
+		}
 		var tBody = $('<tbody></tbody>');
 		if(properties.rows){
 			$.each(properties.rows, function(i, row){
@@ -178,7 +184,11 @@ var Util = function(){
 					newRow.addClass('table-tr-odd');
 				}
 				$.each(row, function(j, value){
-					newRow.append($('<td>' + value + '</td>'));
+					if(value instanceof Object){
+						newRow.append(value);
+					}else{
+						newRow.append($('<td>' + value + '</td>'));
+					}
 				});
 				tBody.append(newRow);
 			});
@@ -200,6 +210,13 @@ var ObjectName = function(domain, properties, objectName){
 		return this.properties[key];
 	};
 	this.toString = objectName;
+};
+
+/**
+ * Create a new div element of the given class.
+ */
+var makeDiv = function(clazz){
+	return $('<div />').addClass(clazz);
 };
 
 
