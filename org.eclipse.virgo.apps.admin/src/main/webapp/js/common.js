@@ -200,7 +200,7 @@ var Util = function(){
 	/**
 	 * Create a new div element of the given class.
 	 */
-	var makeDiv = function(clazz) {
+	this.makeDiv = function(clazz) {
 		return $('<div />', {'class' : clazz});
 	};
 	

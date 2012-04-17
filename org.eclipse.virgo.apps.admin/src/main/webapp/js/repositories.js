@@ -34,7 +34,7 @@ renderRepositoryMBeans: function(mbeanNames){
 	};
 	
 	$.each(mbeanNames, function(i, mbeanName){
-		var button = makeDiv('button').append(util.makeDiv('button-cap-left-blue'), util.makeDiv('button-text').text(getNameAttribute(mbeanName)), util.makeDiv('button-cap-right-blue'));
+		var button = util.makeDiv('button').append(util.makeDiv('button-cap-left-blue'), util.makeDiv('button-text').text(getNameAttribute(mbeanName)), util.makeDiv('button-cap-right-blue'));
 		$('#repository-controls').append(button);
 		button.mbeanName = mbeanName;
 		button.click(button, Repositories.display);
