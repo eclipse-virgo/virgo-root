@@ -13,14 +13,24 @@
  * Scripts to be loaded in to the head of the configuration view
  */
 function pageinit(){
-	new Request.JSON({
-		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Configuration,*', 
-		method: 'get',
-		onSuccess: function (responseJSON){
+//	new Request.JSON({
+//		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Configuration,*', 
+//		method: 'get',
+//		onSuccess: function (responseJSON){
+//			configurationViewer = new ConfigurationViewer();
+//			configurationViewer.renderConfigurationMBeans(responseJSON.value);
+//		}
+//	}).send();
+	
+	$.ajax({
+		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Configuration,*',
+		dataType: 'json',
+		success: function (responseJSON){
 			configurationViewer = new ConfigurationViewer();
 			configurationViewer.renderConfigurationMBeans(responseJSON.value);
 		}
-	}).send();
+	});
+	
 }
 
 var ConfigurationViewer = function(){
@@ -29,7 +39,7 @@ var ConfigurationViewer = function(){
 	
 	this.renderConfigurationMBeans = function(mbeans){
 		
-		mbeans.each(function(item, index){
+		$.each(mbeans, function(index, item){
 			var objectName = util.readObjectName(item);
 			var label = this.getConfigurationLabel(objectName.get('name'), $('config-list'));
 			label.firstChild.set('onclick', "configurationViewer.configs[" + index + "].toggle()");
@@ -46,22 +56,22 @@ var ConfigurationViewer = function(){
 	// Private methods
 	
 	this.getConfigurationLabel = function(labelText, parentElement){
-		var configContainer = new Element('div');
+		var configContainer = $('div');
 		configContainer.addClass('config-container');
 		
-		var configLabel = new Element('div');
+		var configLabel = $('div');
 		configLabel.addClass('config-label');
 		
 		var configIcon = getIconElement('tree-icons/plus.png');
 		configIcon.addClass('plus');
-		configIcon.inject(configLabel);
+		configLabel.append(configIcon);
 		
-		var text = new Element('span');
-		text.appendText(labelText);
-		text.inject(configLabel);
+		var text = $('span');
+		text.text(labelText);
+		configLabel.append(text);
 	
-		configLabel.inject(configContainer);
-		configContainer.inject(parentElement);
+		configContainer.append(configLabel);
+		parentElement.append(configContainer);
 		return configContainer;
 	};
 };
@@ -81,11 +91,19 @@ var Configuration = function(objectName, label){
 		var isClosed = this.icon.hasClass('plus');
 		this.setPlusMinusIcon('loader-small.gif', 'spinnerIcon');
 		if(isClosed){
-			new Request.JSON({
-				url: util.getCurrentHost() + '/jolokia/read/' + this.objectName.toString, 
-				method: 'get',
-				onSuccess: this.createTable.bind(this)
-			}).send();
+//			new Request.JSON({
+//				url: util.getCurrentHost() + '/jolokia/read/' + this.objectName.toString, 
+//				method: 'get',
+//				onSuccess: this.createTable.bind(this)
+//			}).send();
+//			
+			
+			$.ajax({
+				url: util.getCurrentHost() + '/jolokia/read/' + this.objectName.toString,
+				dataType: 'json',
+				success: this.createTable.bind(this)
+			});
+			
 		} else {
 			this.label.getChildren()[1].nix(true);
 			this.setPlusMinusIcon('tree-icons/plus.png', 'plus');
@@ -105,19 +123,18 @@ var Configuration = function(objectName, label){
 	
 	this.createTable = function(json){
 		var tableRows = [];
-		Object.each(json.value.Properties, function(value, key){
-			tableRows.push([key, value]);
+		$.each(json.value.Properties, function(index, item){
+			tableRows.push([item.key, item.value]);
 		});
 							
-		var tableHolder = new Element('div');
+		var tableHolder = $('<div>');
 		tableHolder.addClass('config-properties');
 		tableHolder.inject(this.label);
 			
-		var propertiesTable = new HtmlTable({ 
-			properties: {'class': "config-table"}, 
+		var propertiesTable = util.makeTable({ 
+			'class': "config-table", 
 			headers: ['Key', 'Value'], 
-			rows: tableRows,
-			zebra: true
+			rows: tableRows
 		});
 		propertiesTable.inject(tableHolder);
 		tableHolder.set('reveal', {duration: util.fxTime});
@@ -133,8 +150,8 @@ var Configuration = function(objectName, label){
  * @param iconName - for the image
  */
 function getIconElement(icon){
-	var imageElement = new Element('div');
+	var imageElement = $('<div>');
 	imageElement.addClass('tree-icon');
-	imageElement.set('styles', {'background': 'url("' + util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center'});
+	imageElement.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center');
 	return imageElement;
 };

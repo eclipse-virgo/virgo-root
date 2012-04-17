@@ -53,14 +53,14 @@ var DumpViewer = function(){
 	this.displayDumpsResponse = function(json){
 		if(json && json.length > 0){
 			json.each(function(item){
-				var dumpListItem = new Element('li.dump');
+				var dumpListItem = $('li.dump');
 				dumpListItem.set('id', item );
-				new Element('div.label').appendText(item).set('onClick', 'dumpViewer.displayDumpEntries("' + item + '")').inject(dumpListItem);
-				new Element('div.delete').appendText("Delete").set('onClick', 'dumpViewer.deleteDump("' + item + '")').inject(dumpListItem);
+				$('div.label').appendText(item).set('onClick', 'dumpViewer.displayDumpEntries("' + item + '")').inject(dumpListItem);
+				$('div.delete').appendText("Delete").set('onClick', 'dumpViewer.deleteDump("' + item + '")').inject(dumpListItem);
 				dumpListItem.inject($('dumps'));
 			}, this);
 		} else {
-			var dumpListItem = new Element('li');
+			var dumpListItem = $('li');
 			dumpListItem.appendText('No dumps found.');
 			dumpListItem.inject($('dumps'));
 		}
@@ -85,16 +85,16 @@ var DumpViewer = function(){
 		$('dump-item-content').empty();
 		if(json && json.length > 0){
 			json.each(function(item){
-				var dumpEntryListItem = new Element('li.dump-item');
+				var dumpEntryListItem = $('li.dump-item');
 				dumpEntryListItem.set('id', id + item[0]);
-				new Element('div.label').appendText(item[0]).set('onClick', 'dumpViewer.displayDumpEntry("' + id + item[0] + '","' + item[1] + '")').inject(dumpEntryListItem);
+				$('div.label').appendText(item[0]).set('onClick', 'dumpViewer.displayDumpEntry("' + id + item[0] + '","' + item[1] + '")').inject(dumpEntryListItem);
 				dumpEntryListItem.inject($('dump-items'));
 				if('summary.txt' == item[0]){
 					this.displayDumpEntry(id + item[0], item[1]);
 				}
 			}, this);
 		} else {
-			var dumpEntryListItem = new Element('li');
+			var dumpEntryListItem = $('li');
 			dumpEntryListItem.appendText('No dump entries found.');
 			dumpEntryListItem.inject($('dump-items'));
 		}
@@ -116,7 +116,7 @@ var DumpViewer = function(){
 		$('dump-item-content').empty();
 		if(json && json.length > 0){
 			json.each(function(item){
-				var dumpListItem = new Element('div.dump-file-line');
+				var dumpListItem = $('div.dump-file-line');
 				dumpListItem.appendText(item);
 				dumpListItem.inject($('dump-item-content'));
 			}, this);

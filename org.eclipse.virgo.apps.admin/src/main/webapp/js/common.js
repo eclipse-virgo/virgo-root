@@ -91,7 +91,7 @@ var Util = function(){
 		domain = objectName.substring(0, marker);
 		propertyParts = objectName.substring(marker + 1).split(',');
 		properties = new Object();
-		propertyParts.each(function(item){
+		$.each(propertyParts, function(index, item){
 			marker = item.indexOf('=');
 			properties[item.substring(0, marker)] = item.substring(marker + 1);
 		});
@@ -137,7 +137,7 @@ var Util = function(){
 	 */
 	this.tooltip = function(el, text) {
 		if ($('tooltip') == null) {
-			var div = new Element("div");
+			var div = $("div");
 			div.appendText('');
 			document.childNodes[1].appendChild(div);
 			div.setProperty('id', 'tooltip');

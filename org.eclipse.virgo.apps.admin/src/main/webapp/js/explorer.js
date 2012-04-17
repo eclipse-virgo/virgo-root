@@ -232,18 +232,18 @@ var GeminiDataSource = function(){
 			"type" : "exec"
 		}];
 		util.doBulkQuery(serviceRequest, function(response) {
-			var content = new Element('ul.infoContent');
-			new Element('li').inject(content).appendText('Service provided by bundle: ' + this.bundles[response[3].value].summary());
-			new Element('li').inject(content).appendText('Objectclass: ' + response[2].value);
-			new Element('li').inject(content).appendText('Properties');
-			var propertiesList = new Element('ul.infoContent').inject(content);
+			var content = $('ul.infoContent');
+			$('li').inject(content).appendText('Service provided by bundle: ' + this.bundles[response[3].value].summary());
+			$('li').inject(content).appendText('Objectclass: ' + response[2].value);
+			$('li').inject(content).appendText('Properties');
+			var propertiesList = $('ul.infoContent').inject(content);
 			Object.each(response[0].value, function(property){
-				new Element('li').inject(propertiesList).appendText(property.Key + ' - ' + property.Value);
+				$('li').inject(propertiesList).appendText(property.Key + ' - ' + property.Value);
 			});
-			new Element('li').inject(content).appendText('Consumers');
-			var consumersList = new Element('ul.infoContent').inject(content);
+			$('li').inject(content).appendText('Consumers');
+			var consumersList = $('ul.infoContent').inject(content);
 			response[1].value.each(function(bundleId){
-				new Element('li').inject(consumersList).appendText(this.bundles[bundleId].summary());
+				$('li').inject(consumersList).appendText(this.bundles[bundleId].summary());
 			}.bind(this));
 			callBack(content);
 		}.bind(this)); 
@@ -638,16 +638,16 @@ var InfoBox = function() {
 		'id' : 'info-box-mask'
 	});
 	
-	this.infoElement = new Element('div#info-box').inject(this.mask.toElement());
+	this.infoElement = $('div#info-box').inject(this.mask.toElement());
 	
-	new Element('div#info-box-content').inject(this.infoElement);
-	var buttonContainer = new Element('div.button-container').inject(this.infoElement);
-	new Element('div.control-cap-left').inject(buttonContainer);
-	var okButton = new Element('div.button').inject(new Element('div.controls').inject(buttonContainer));
-	new Element('div.button-cap-left-blue').inject(okButton);
-	new Element('div.button-text').appendText('OK').inject(okButton);
-	new Element('div.button-cap-right-blue').inject(okButton);
-	new Element('div.control-cap-right').inject(buttonContainer);
+	$('div#info-box-content').inject(this.infoElement);
+	var buttonContainer = $('div.button-container').inject(this.infoElement);
+	$('div.control-cap-left').inject(buttonContainer);
+	var okButton = $('div.button').inject($('div.controls').inject(buttonContainer));
+	$('div.button-cap-left-blue').inject(okButton);
+	$('div.button-text').appendText('OK').inject(okButton);
+	$('div.button-cap-right-blue').inject(okButton);
+	$('div.control-cap-right').inject(buttonContainer);
 	
 	okButton.addEvent('click', function() {
 		this.mask.hide();

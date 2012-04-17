@@ -182,7 +182,7 @@ var Tree = function(mbeans) {
 	 */
 	this.renderTopLevelRequest = function(json, parent, filter){
 		var parentElement = $(parent);
-		var fxContainer = new Element('div.fx-container');
+		var fxContainer = $('div.fx-container');
 		json.each(function(mbean){
 			var artifact = new Artifact(util.readObjectName(mbean));
 			if(artifact[filter] == parent){
@@ -204,12 +204,12 @@ var Tree = function(mbeans) {
 	 */
 	this.renderArtifactRequest = function(json, objectName, parent){	
 		var parentElement = $(parent);
-		var fxContainer = new Element('div.fx-container');
+		var fxContainer = $('div.fx-container');
 		var fullArtifact = new FullArtifact(json, objectName);
 		
 		var artifactControlBar = this.getArtifactControlBar(fullArtifact);
 		if(fullArtifact.type == 'configuration'){
-			var configControl = new Element('a.artifact-control');
+			var configControl = $('a.artifact-control');
 			configControl.set('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
 			configControl.appendText('View');
 			configControl.inject(artifactControlBar);
@@ -252,7 +252,7 @@ var Tree = function(mbeans) {
 	 * Create an artifact label element with text, icons etc for the supplied artifact
 	 * 
 	 * @param artifact - to construct
-	 * @param parent - element to insert the new element in to
+	 * @param parent - element to insert the $ in to
 	 */
 	this.getArtifactLabel = function(artifact, parent){
 		var label = this.getNodeContainer(artifact.name + '_' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
@@ -268,18 +268,18 @@ var Tree = function(mbeans) {
 	 * @param id - unique id of the label
 	 */
 	this.getNodeContainer = function(text, icon, id, key){
-		var artifactContainer = new Element('div.artifact-container');
+		var artifactContainer = $('div.artifact-container');
 		artifactContainer.addClass(key);
 		artifactContainer.setProperty('id', id);
 		
-		var artifactLabel = new Element('div.artifact-label');
+		var artifactLabel = $('div.artifact-label');
 		artifactLabel.inject(artifactContainer);
 
 		var plusMinus = this.getIconElement('tree-icons/plus.png');
 		plusMinus.addClass('plus');
 		plusMinus.inject(artifactLabel);
 		this.getIconElement('tree-icons/node-' + icon + '.png').inject(artifactLabel);
-		var span  = new Element('span.label-text');
+		var span  = $('span.label-text');
 		span.appendText(text);
 		span.inject(artifactLabel);
 		
@@ -287,9 +287,9 @@ var Tree = function(mbeans) {
 	};
 	
 	this.getArtifactControlBar = function(artifact) {
-		var controlBar = new Element('div.artifact-attribute');
+		var controlBar = $('div.artifact-attribute');
 		this.getIconElement('tree-icons/attribute-default.png').inject(controlBar);
-		var span  = new Element('span.label-text');
+		var span  = $('span.label-text');
 		span.appendText('Actions:');
 		span.inject(controlBar);
 		this.getArtifactControl('start', artifact.objectName).inject(controlBar);
@@ -300,7 +300,7 @@ var Tree = function(mbeans) {
 	};
 	
 	this.getArtifactControl = function(action, objectName) {
-		var control = new Element('div.artifact-control');
+		var control = $('div.artifact-control');
 		control.appendText(action.capitalize());
 		control.set('onclick', 'tree.doArtifactOperation("' + objectName.toString + '", "' + action + '")');
 		return control;
@@ -313,17 +313,17 @@ var Tree = function(mbeans) {
 	 * @param icon - the icon name
 	 */
 	this.getArtifactAttribute = function(text, icon, link) {
-		var property = new Element('div.artifact-attribute');
+		var property = $('div.artifact-attribute');
 		this.getIconElement('tree-icons/attribute-default.png').inject(property);
 		if(icon){
 			this.getIconElement('tree-icons/attribute-' + icon + '.png').inject(property);
 		}
 		var label;
 		if(link){
-			label = new Element('a');
+			label = $('a');
 			label.set('href', link);
 		} else {
-			label  = new Element('span');
+			label  = $('span');
 		}
 		label.appendText(text);
 		label.addClass('label-text');
@@ -337,7 +337,7 @@ var Tree = function(mbeans) {
 	 * @param iconName - for the image
 	 */
 	this.getIconElement = function(iconName){
-		var imageElement = new Element('div.tree-icon');
+		var imageElement = $('div.tree-icon');
 		imageElement.set('styles', {'background': 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center'});
 		return imageElement;
 	};
@@ -459,11 +459,11 @@ var UploadManager = function() {
 	/* **************** START PRIVATE METHODS **************** */
 	
 	this.getUploadFormElement = function(number){
-		var uploadBox = new Element('input');
+		var uploadBox = $('input');
 		uploadBox.setProperty('type', 'file');
 		uploadBox.setProperty('size', '70');
 		uploadBox.setProperty('name', number);
-		var listItem = new Element('li');
+		var listItem = $('li');
 		uploadBox.inject(listItem);
 		return listItem;
 	};
