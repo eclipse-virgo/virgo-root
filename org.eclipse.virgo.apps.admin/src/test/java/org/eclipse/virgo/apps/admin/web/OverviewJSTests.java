@@ -43,7 +43,8 @@ public class OverviewJSTests extends AbstractJSTests {
 		Function callback = Server.getCallbackFunction();
 		callback.call(CONTEXT, SCOPE, SCOPE, new Object[]{TEST_ROW});
 		
-		assertEquals("Wrong DOM node replaced", "#server-overview", Element.getLastReplacedNodeConstructorArgument());
+		assertEquals("Wrong DOM node replaced", "#server-overview", Element.getConstructorArgumentTrace().get(0));
+		assertEquals("Wrong replacement DOM node", this.commonUtil.getLastMakeTableTable(), Element.getLastReplacement());
 		assertArrayEquals("Wrong table headers", EXPECTED_HEADERS, this.commonUtil.getLastMakeTableHeaders());
 		assertArrayEquals("Wrong table rows", TEST_ROW, this.commonUtil.getLastMakeTableRows());
 		

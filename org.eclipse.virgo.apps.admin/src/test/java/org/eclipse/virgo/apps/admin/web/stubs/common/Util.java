@@ -28,6 +28,8 @@ public class Util {
     private String[] lastMakeTableRows;
 
     private String[] lastMakeTableHeaders;
+
+    private Scriptable lastMakeTableTable;
 	
 	public static int fxTime = 200;
 	
@@ -61,6 +63,7 @@ public class Util {
 	    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
         Object[] args = new Object[]{properties};
         Scriptable table = elementConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        this.lastMakeTableTable = table;
         return table;
 	}
 	
@@ -76,6 +79,10 @@ public class Util {
 	
 	public String[] getLastMakeTableRows() {
 	    return this.lastMakeTableRows;
+	}
+	
+	public Scriptable getLastMakeTableTable() {
+	    return this.lastMakeTableTable;
 	}
 	
 }

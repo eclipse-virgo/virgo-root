@@ -11,6 +11,9 @@
 
 package org.eclipse.virgo.apps.admin.web.stubs.jquery;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.ScriptableObject;
 
@@ -18,14 +21,20 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
  */
 public class Element extends ParentStub {
     
-    private String constructorArgument;
-    
-    private static String LAST_REPLACED_NODE_CONSTRUCTOR_ARGUMENT;
+    private static final long serialVersionUID = 1L;
 
+
+    private static List<String> CONSTRUCTOR_ARGUMENT_TRACE = new ArrayList<String>();
+
+    private static Element LAST_REPLACEMENT;
+    
+    private final String constructorArgument;
+    
     /**
      * Prototype constructor
      */
     public Element() {
+        this.constructorArgument = null;
     }
     
     /**
@@ -33,17 +42,26 @@ public class Element extends ParentStub {
      */
     public Element(ScriptableObject constructorArgument) {
         this.constructorArgument = ((String) Context.jsToJava(constructorArgument, String.class));
+        CONSTRUCTOR_ARGUMENT_TRACE.add(this.constructorArgument);
     }
     
     public ScriptableObject jsFunction_replaceWith(ScriptableObject replacement){
-        LAST_REPLACED_NODE_CONSTRUCTOR_ARGUMENT = this.constructorArgument;
+        LAST_REPLACEMENT = ((Element) Context.jsToJava(replacement, Element.class));
         return this;
     }
     
     // Test methods
     
-   public static String getLastReplacedNodeConstructorArgument() {
-       return LAST_REPLACED_NODE_CONSTRUCTOR_ARGUMENT;
+   public String getConstructorArgument() {
+       return this.constructorArgument;
+   }
+    
+   public static List<String> getConstructorArgumentTrace() {
+       return CONSTRUCTOR_ARGUMENT_TRACE;
+   }
+   
+   public static Element getLastReplacement() {
+       return LAST_REPLACEMENT;
    }
 
 }
