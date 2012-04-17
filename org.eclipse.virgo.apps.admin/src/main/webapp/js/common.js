@@ -38,7 +38,7 @@ var Util = function(){
 	this.start = function(){
 		if(!this.starting && !this.started){
 			this.starting = true;
-			this.spinner = $('<div/>').dialog({
+			this.spinner = $('<div />').dialog({
 				modal: true,
 				dialogClass: 'spinner-img',
 				closeText: '',
@@ -159,21 +159,21 @@ var Util = function(){
 	 * Create and return a table element populated with the provided rows.
 	 */
 	this.makeTable = function(properties) {
-		var newTable = $('<table/>');
+		var newTable = $('<table />');
 		if(properties.headers){
-			var tHeadRow = $('<tr/>');
+			var tHeadRow = $('<tr />');
 			$.each(properties.headers, function(index, item){
 				tHeadRow.append($('<th>' + item + '</th>'));
 			});
-			newTable.append($('<thead/>').append(tHeadRow));
+			newTable.append($('<thead />').append(tHeadRow));
 		}
 		if(properties.class){
 			newTable.addClass(properties.class);
 		}
-		var tBody = $('<tbody></tbody>');
+		var tBody = $('<tbody />');
 		if(properties.rows){
 			$.each(properties.rows, function(i, row){
-				var newRow = $('<tr/>');
+				var newRow = $('<tr />');
 				if(i % 2){
 					newRow.addClass('table-tr-odd');
 				}
@@ -232,7 +232,7 @@ var Servers = function(){
 		var tBody = serversTable.children().last();
 		
 		$.each(rows, function(index, item){
-			var newRow = $('<tr></tr>');
+			var newRow = $('<tr />');
 			newRow.append($('<td>' + item + '</td>\
 							 <td class="server-status">Status</td>\
 							 <td class="server-link">Overview</td>\
