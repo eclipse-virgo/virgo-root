@@ -180,6 +180,12 @@ var Util = function(){
 		if(properties.rows){
 			$.each(properties.rows, function(i, row){
 				var newRow = $('<tr />');
+				newRow.mouseenter(function(){
+					$(this).addClass('table-tr-hovered');
+				});
+				newRow.mouseleave(function(){
+					$(this).removeClass('table-tr-hovered');
+				});
 				if(i % 2){
 					newRow.addClass('table-tr-odd');
 				}

@@ -34,7 +34,8 @@ renderRepositoryMBeans: function(mbeanNames){
 	};
 	
 	$.each(mbeanNames, function(i, mbeanName){
-		var button = util.makeDiv('button').append(util.makeDiv('button-cap-left-blue'), util.makeDiv('button-text').text(getNameAttribute(mbeanName)), util.makeDiv('button-cap-right-blue'));
+		var button = util.makeDiv('button').append(util.makeDiv('button-cap-left-blue'), util.makeDiv('button-text').text(getNameAttribute(mbeanName)),
+				                                   util.makeDiv('button-cap-right-blue'));
 		$('#repository-controls').append(button);
 		button.mbeanName = mbeanName;
 		button.click(button, Repositories.display);
@@ -70,8 +71,7 @@ renderArtifactDescriptorSummaries: function(artifactDescriptorSummaries){
 		rows.push([summary.type, 
 		           summary.name, 
 		           summary.version,
-		           $('<td />', {'class' : 'repository-deploy'}).text('deploy')]);
-		           //{content: 'deploy', properties: {'class': 'repository-deploy', 'onClick': 'Repositories.deploy("repository:' + summary.type + '/' + summary.name + '")'}}]);
+		           $('<td />', {'class' : 'repository-deploy', 'onClick': 'Repositories.deploy("repository:' + summary.type + '/' + summary.name + '")'}).text('deploy')]);
 	});
 	
 	var descriptorTable = util.makeTable({
@@ -119,7 +119,7 @@ renderArtifactDescriptorSummaries: function(artifactDescriptorSummaries){
 },
 
 deploy: function(artifact){
-	
+	console.log(artifact);
 }
 
 };
