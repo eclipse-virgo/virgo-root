@@ -102,7 +102,6 @@ var Util = function(){
 	 * 
 	 * @param query
 	 * @param callback
-	 * @param formatter
 	 */
 	this.doBulkQuery = function(query, callback){
 		$.ajax({
@@ -112,6 +111,26 @@ var Util = function(){
 			data: JSON.stringify(query),
 			success: function (response) {
 				callback(response);
+			}
+		});
+	};
+	
+	/**
+	 * 
+	 * @param query
+	 * @param callback
+	 */
+	this.doBulkQuery = function(query, successCallback, errorCallback){
+		$.ajax({
+			type: 'POST',
+			url: this.getCurrentHost() + '/jolokia',
+			dataType: 'json',
+			data: JSON.stringify(query),
+			success: function (response) {
+				successCallback(response);
+			},
+			error: function(xmlHttpRequest, textStatus, errorThrown) {
+				errorCallback(xmlHttpRequest, textStatus, errorThrown);
 			}
 		});
 	};
