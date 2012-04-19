@@ -186,13 +186,9 @@ var Util = function(){
 			bodyRows.filter(':odd').addClass('table-tr-odd');
 		};
 		
-		var findIndex = function(table, th){
-			return th.col; //TODO: use JQuery built-in instead
-		};
-		
 		var doSort = function(table, th){
 			
-			var index = findIndex(table, th);
+			var index = th.col;
 
 			var compare = function(tr1, tr2){
 				var getText = function(tr){
