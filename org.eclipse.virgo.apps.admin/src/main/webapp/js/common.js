@@ -179,11 +179,19 @@ var Util = function(){
 	 */
 	this.makeTable = function(properties) {
 		
-		var zebra = function(table){
+		var decorate = function(table){
 			var tBody = $(table).children('tbody');
 			var bodyRows = tBody.children('tr');
 			bodyRows.removeClass('table-tr-odd');
 			bodyRows.filter(':odd').addClass('table-tr-odd');
+			bodyRows.each(function(index, row){
+				$(row).mouseenter(function(){
+					$(this).addClass('table-tr-hovered');
+				});
+				$(row).mouseleave(function(){
+					$(this).removeClass('table-tr-hovered');
+				});
+			});
 		};
 		
 		var doSort = function(table, th){
@@ -246,7 +254,7 @@ var Util = function(){
 			var th = clickEvent.data;
 			var table = th.parents('table');
 			doSort(table, th);
-			zebra(table);
+			decorate(table);
 		};
 		
 		var newTable = $('<table />');
@@ -300,7 +308,7 @@ var Util = function(){
 		if(properties.sortable && sortTh != null){
 			doSort(newTable, sortTh);
 		};
-		zebra(newTable);
+		decorate(newTable);
 		
 		return newTable;
 	};
