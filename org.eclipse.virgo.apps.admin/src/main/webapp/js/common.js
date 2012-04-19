@@ -183,7 +183,16 @@ var Util = function(){
 			return th.col; //TODO: use JQuery built-in instead
 		};
 		
-		var doSort = function(table, index){
+		var doSort = function(table, index, compare){
+			
+			var tBody = table.children('tbody');
+			var tRows = tBody.children();
+			tRows.remove();
+			tRows.sort(compare);
+			tBody.append(tRows);
+		};
+		
+		var sortTable = function(clickEvent){
 			var compare = function(tr1, tr2){
 				var getText = function(tr){
 					var cell = tr.children[index];
@@ -193,23 +202,30 @@ var Util = function(){
 				var text2 = getText(tr2);
 				return ((text1 < text2) ? -1 : ((text1 > text2) ? 1 : 0));
 			};
-			console.log(index);
-			var tBody = table.children('tbody');
-			var tRows = tBody.children();
-			tRows.remove();
-			console.log("doSort entry: " + tRows);
-			tRows.sort(compare);
-			console.log("doSort exit: " + tRows);
-			tBody.append(tRows);
-		};
-		
-		var sortTable = function(clickEvent){
+			
+			var revCompare = function(tr1, tr2) {
+				return -compare(tr1, tr2);
+			};
+			
 			var th = clickEvent.data;
 			var table = th.parents('table');
 			
+			var ths = $(th).siblings();
+			ths.removeClass('table-th-sort');
+			ths.removeClass('table-th-sort-rev');
+			
+			var isSorted = th.hasClass('table-th-sort');
+			if(isSorted){
+				th.removeClass('table-th-sort');
+				th.addClass('table-th-sort-rev');
+			}else{
+				th.removeClass('table-th-sort-rev');
+				th.addClass('table-th-sort');
+			}
+			
 			var index = findIndex(table, th);
 			
-			doSort(table, index);
+			doSort(table, index, isSorted ? revCompare : compare);
 		};
 		
 		var newTable = $('<table />');
