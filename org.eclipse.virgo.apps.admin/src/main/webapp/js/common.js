@@ -179,6 +179,13 @@ var Util = function(){
 	 */
 	this.makeTable = function(properties) {
 		
+		var zebra = function(table){
+			var tBody = $(table).children('tbody');
+			var bodyRows = tBody.children('tr');
+			bodyRows.removeClass('table-tr-odd');
+			bodyRows.filter(':odd').addClass('table-tr-odd');
+		};
+		
 		var findIndex = function(table, th){
 			return th.col; //TODO: use JQuery built-in instead
 		};
@@ -226,6 +233,8 @@ var Util = function(){
 			var index = findIndex(table, th);
 			
 			doSort(table, index, isSorted ? revCompare : compare);
+			
+			zebra(table);
 		};
 		
 		var newTable = $('<table />');
@@ -260,9 +269,6 @@ var Util = function(){
 				newRow.mouseleave(function(){
 					$(this).removeClass('table-tr-hovered');
 				});
-				if(i % 2){
-					newRow.addClass('table-tr-odd');
-				}
 				$.each(row, function(j, value){
 					if(value instanceof Object){
 						newRow.append(value);
@@ -276,7 +282,10 @@ var Util = function(){
 		newTable.append(tBody);
 		if(properties.sortable){
 			// doSort(newTable, ??); sortIndex if defined else 0
-		}
+		};
+		
+		zebra(newTable);
+		
 		return newTable;
 	};
 
