@@ -178,11 +178,50 @@ var Util = function(){
 	 * Create and return a table element populated with the provided rows.
 	 */
 	this.makeTable = function(properties) {
+		
+		var findIndex = function(table, th){
+			return th.col; //TODO: use JQuery built-in instead
+		};
+		
+		var doSort = function(table, index){
+			var compare = function(tr1, tr2){
+				var getText = function(tr){
+					var cell = tr.children[index];
+					return $(cell).text();
+				};
+				var text1 = getText(tr1);
+				var text2 = getText(tr2);
+				return ((text1 < text2) ? -1 : ((text1 > text2) ? 1 : 0));
+			};
+			console.log(index);
+			var tBody = table.children('tbody');
+			var tRows = tBody.children();
+			tRows.remove();
+			console.log("doSort entry: " + tRows);
+			tRows.sort(compare);
+			console.log("doSort exit: " + tRows);
+			tBody.append(tRows);
+		};
+		
+		var sortTable = function(clickEvent){
+			var th = clickEvent.data;
+			var table = th.parents('table');
+			
+			var index = findIndex(table, th);
+			
+			doSort(table, index);
+		};
+		
 		var newTable = $('<table />');
 		if(properties.headers){
 			var tHeadRow = $('<tr />');
 			$.each(properties.headers, function(index, item){
-				tHeadRow.append($('<th>' + item + '</th>'));
+				var th = $('<th>' + item + '</th>');
+				th.col = index;
+				if (properties.sortable) {
+					th.click(th, sortTable);
+				}
+				tHeadRow.append(th);
 			});
 			newTable.append($('<thead />').append(tHeadRow));
 		}
@@ -219,6 +258,9 @@ var Util = function(){
 			});
 		}
 		newTable.append(tBody);
+		if(properties.sortable){
+			// doSort(newTable, ??); sortIndex if defined else 0
+		}
 		return newTable;
 	};
 
