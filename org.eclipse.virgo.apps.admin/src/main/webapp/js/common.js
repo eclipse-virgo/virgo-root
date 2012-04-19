@@ -190,16 +190,10 @@ var Util = function(){
 			return th.col; //TODO: use JQuery built-in instead
 		};
 		
-		var doSort = function(table, index, compare){
+		var doSort = function(table, th){
 			
-			var tBody = table.children('tbody');
-			var tRows = tBody.children();
-			tRows.remove();
-			tRows.sort(compare);
-			tBody.append(tRows);
-		};
-		
-		var sortTable = function(clickEvent){
+			var index = findIndex(table, th);
+
 			var compare = function(tr1, tr2){
 				var getText = function(tr){
 					var cell = tr.children[index];
@@ -214,9 +208,6 @@ var Util = function(){
 				return -compare(tr1, tr2);
 			};
 			
-			var th = clickEvent.data;
-			var table = th.parents('table');
-			
 			var ths = $(th).siblings();
 			ths.removeClass('table-th-sort');
 			ths.removeClass('table-th-sort-rev');
@@ -230,14 +221,23 @@ var Util = function(){
 				th.addClass('table-th-sort');
 			}
 			
-			var index = findIndex(table, th);
-			
-			doSort(table, index, isSorted ? revCompare : compare);
+			var tBody = table.children('tbody');
+			var tRows = tBody.children();
+			tRows.remove();
+			tRows.sort(isSorted ? revCompare : compare);
+			tBody.append(tRows);
 			
 			zebra(table);
 		};
 		
+		var sortTable = function(clickEvent){
+			var th = clickEvent.data;
+			var table = th.parents('table');
+			doSort(table, th);			
+		};
+		
 		var newTable = $('<table />');
+		var sortTh = null;
 		if(properties.headers){
 			var tHeadRow = $('<tr />');
 			$.each(properties.headers, function(index, item){
@@ -247,6 +247,9 @@ var Util = function(){
 					th.click(th, sortTable);
 				}
 				tHeadRow.append(th);
+				if (properties.sortable && index == properties.sortIndex) {
+					sortTh = th;
+				}
 			});
 			newTable.append($('<thead />').append(tHeadRow));
 		}
@@ -280,11 +283,10 @@ var Util = function(){
 			});
 		}
 		newTable.append(tBody);
-		if(properties.sortable){
-			// doSort(newTable, ??); sortIndex if defined else 0
-		};
 		
-		zebra(newTable);
+		if(properties.sortable && sortTh != null){
+			doSort(newTable, sortTh);
+		};
 		
 		return newTable;
 	};
