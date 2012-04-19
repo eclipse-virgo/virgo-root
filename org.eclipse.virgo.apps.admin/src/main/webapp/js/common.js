@@ -188,11 +188,23 @@ var Util = function(){
 		
 		var doSort = function(table, th){
 			
+			var upArrow = '\u2191';
+			var downArrow = '\u2193';
+			
+			var stripArrow = function(text){
+				var lastChar = text[text.length - 1] ;
+				if(lastChar === upArrow || lastChar == downArrow){
+					return stripArrow(text.slice(0, text.length - 1));
+				}else{
+					return text;
+				};
+			};
+			
 			var index = th.col;
 
 			var compare = function(tr1, tr2){
 				var getText = function(tr){
-					var cell = tr.children[index];
+					var cell = tr.children[index]; // raw javascript!!
 					return $(cell).text();
 				};
 				var text1 = getText(tr1);
@@ -207,14 +219,20 @@ var Util = function(){
 			var ths = $(th).siblings();
 			ths.removeClass('table-th-sort');
 			ths.removeClass('table-th-sort-rev');
+			ths.each(function(i,th){
+				var thx = $(th);
+				thx.text(stripArrow(thx.text()));
+			});
 			
 			var isSorted = th.hasClass('table-th-sort');
 			if(isSorted){
 				th.removeClass('table-th-sort');
 				th.addClass('table-th-sort-rev');
+				th.text(stripArrow(th.text()) + ' ' + upArrow);
 			}else{
 				th.removeClass('table-th-sort-rev');
 				th.addClass('table-th-sort');
+				th.text(stripArrow(th.text()) + ' ' + downArrow);
 			}
 			
 			var tBody = table.children('tbody');
@@ -222,14 +240,13 @@ var Util = function(){
 			tRows.remove();
 			tRows.sort(isSorted ? revCompare : compare);
 			tBody.append(tRows);
-			
-			zebra(table);
 		};
 		
 		var sortTable = function(clickEvent){
 			var th = clickEvent.data;
 			var table = th.parents('table');
-			doSort(table, th);			
+			doSort(table, th);
+			zebra(table);
 		};
 		
 		var newTable = $('<table />');
@@ -283,6 +300,7 @@ var Util = function(){
 		if(properties.sortable && sortTh != null){
 			doSort(newTable, sortTh);
 		};
+		zebra(newTable);
 		
 		return newTable;
 	};

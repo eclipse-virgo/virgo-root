@@ -20,6 +20,10 @@
 	color: #0095CA;
 }
 
+.repository-table .table-th-sort-rev {
+	color: #0095CA;
+}
+
 .repository-table .repository-deploy {
 	color: transparent;
 }
