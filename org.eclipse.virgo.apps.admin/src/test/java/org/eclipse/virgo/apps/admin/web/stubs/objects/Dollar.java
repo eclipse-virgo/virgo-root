@@ -45,7 +45,6 @@ public class Dollar {
 
     // JavaScript Functions
 
-
 	public static Object dollar(ScriptableObject name){
 		Dollar.dollarLookup = (String) Context.jsToJava(name, String.class);
 		Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);

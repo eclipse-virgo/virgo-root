@@ -16,8 +16,8 @@
 $(document).ready(function() {
 	util = new Util();
 	util.start();
-	servers = new Servers();
-	servers.loadServers();
+	v_servers = new Servers();
+	v_servers.loadServers();
 	pageinit();
 });
 
@@ -27,10 +27,10 @@ var Util = function(){
 	
 	this.fxTime = 200;
 		
-	this.queryHash = undefined; //Global so any page scripts can just grab query vars
+	this.queryHash = undefined; 
 
 	this.pageLocation = undefined;
-
+	
 	this.starting = false;
 	
 	this.started = false;
@@ -323,7 +323,6 @@ var Util = function(){
 
 /**
  * 
- * 
  */
 var ObjectName = function(domain, properties, objectName){
 	this.domain = domain;
@@ -344,7 +343,6 @@ var Servers = function(){
 	 * This takes the server string in the URL and sets the servers ServersDisplay.servers to an array of ip address.
 	 */
 	this.loadServers = function() {
-		$('servers').hide("slide", { direction: "up" }, util.fxTime);
 		var rows;
 		if(util.queryHash.s){
 			rows = util.queryHash.s.split(',');
@@ -357,10 +355,10 @@ var Servers = function(){
 		
 		var serversTable = util.makeTable({
 			headers: ['Configured Servers'],
-			'class': 'servers-table'
+			clazz: 'servers-table'
 		});
 
-		var tBody = serversTable.children().last();
+		var tBody = $('tbody', serversTable);
 		
 		$.each(rows, function(index, item){
 			var newRow = $('<tr />');
@@ -374,16 +372,17 @@ var Servers = function(){
 			tBody.append(newRow);
 		});
 		
-		$('servers-list').replaceWith(serversTable);
+		$('#servers-list').replaceWith(serversTable);
 	};
 
 	this.toggle = function() {
-		$('servers').toggle("slide", { direction: "up" }, util.fxTime);
+		console.log('servers toggle');
+		$('#servers').slideToggle(util.fxTime);
 		if(this.open) {
-			$('servers-button').removeClass('selected-navigation');
+			$('#servers-button').removeClass('selected-navigation');
 			this.open = false;
 		} else {
-			$('servers-button').addClass('selected-navigation');
+			$('#servers-button').addClass('selected-navigation');
 			this.open = true;
 		}
 	};
@@ -429,20 +428,11 @@ var Server = function(){
 		}];
 		
 		util.doBulkQuery(request, function(response) {
-			callback(this.formatter(response));
-		}.bind(this)); 
-	};
-
-	/**
- 	 * Format the server info request in to table rows.
- 	 * 
- 	 * @param data - the raw JSON to build the table rows from
- 	 */
-	this.formatter = function(data){
-		var virgo = ['OSGi Container', data[0].value.info.product + ' ' + data[0].value.info.version + ' (' + data[0].value.info.extraInfo.type + ')'];
-		var runtime = ['Virtual Machine', data[5].value + ' version ' + data[6].value + ' (' + data[4].value + ')'];
-		var os = ['Operating System', data[1].value + ' ' + data[2].value + ' (' + data[3].value + ')'];
-		return [virgo, runtime, os];
+			var virgo = ['OSGi Container', response[0].value.info.product + ' ' + response[0].value.info.version + ' (' + response[0].value.info.extraInfo.type + ')'];
+			var runtime = ['Virtual Machine', response[5].value + ' version ' + response[6].value + ' (' + response[4].value + ')'];
+			var os = ['Operating System', response[1].value + ' ' + response[2].value + ' (' + response[3].value + ')'];
+			callback([virgo, runtime, os]);
+		}); 
 	};
 
 };
