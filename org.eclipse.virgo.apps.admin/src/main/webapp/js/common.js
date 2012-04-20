@@ -376,7 +376,6 @@ var Servers = function(){
 	};
 
 	this.toggle = function() {
-		console.log('servers toggle');
 		$('#servers').slideToggle(util.fxTime);
 		if(this.open) {
 			$('#servers-button').removeClass('selected-navigation');
