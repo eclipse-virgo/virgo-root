@@ -178,11 +178,99 @@ var Util = function(){
 	 * Create and return a table element populated with the provided rows.
 	 */
 	this.makeTable = function(properties) {
+		
+		var decorate = function(table){
+			var tBody = $(table).children('tbody');
+			var bodyRows = tBody.children('tr');
+			bodyRows.removeClass('table-tr-odd');
+			bodyRows.filter(':odd').addClass('table-tr-odd');
+			bodyRows.each(function(index, row){
+				$(row).mouseenter(function(){
+					$(this).addClass('table-tr-hovered');
+				});
+				$(row).mouseleave(function(){
+					$(this).removeClass('table-tr-hovered');
+				});
+			});
+		};
+		
+		var doSort = function(table, th){
+			
+			var upArrow = '\u2191';
+			var downArrow = '\u2193';
+			
+			var stripArrow = function(text){
+				var lastChar = text[text.length - 1] ;
+				if(lastChar === upArrow || lastChar == downArrow){
+					return stripArrow(text.slice(0, text.length - 1));
+				}else{
+					return text;
+				};
+			};
+			
+			var index = th.col;
+
+			var compare = function(tr1, tr2){
+				var getText = function(tr){
+					var cell = tr.children[index]; // raw javascript!!
+					return $(cell).text();
+				};
+				var text1 = getText(tr1);
+				var text2 = getText(tr2);
+				return ((text1 < text2) ? -1 : ((text1 > text2) ? 1 : 0));
+			};
+			
+			var revCompare = function(tr1, tr2) {
+				return -compare(tr1, tr2);
+			};
+			
+			var ths = $(th).siblings();
+			ths.removeClass('table-th-sort');
+			ths.removeClass('table-th-sort-rev');
+			ths.each(function(i,th){
+				var thx = $(th);
+				thx.text(stripArrow(thx.text()));
+			});
+			
+			var isSorted = th.hasClass('table-th-sort');
+			if(isSorted){
+				th.removeClass('table-th-sort');
+				th.addClass('table-th-sort-rev');
+				th.text(stripArrow(th.text()) + ' ' + upArrow);
+			}else{
+				th.removeClass('table-th-sort-rev');
+				th.addClass('table-th-sort');
+				th.text(stripArrow(th.text()) + ' ' + downArrow);
+			}
+			
+			var tBody = table.children('tbody');
+			var tRows = tBody.children();
+			tRows.remove();
+			tRows.sort(isSorted ? revCompare : compare);
+			tBody.append(tRows);
+		};
+		
+		var sortTable = function(clickEvent){
+			var th = clickEvent.data;
+			var table = th.parents('table');
+			doSort(table, th);
+			decorate(table);
+		};
+		
 		var newTable = $('<table />');
+		var sortTh = null;
 		if(properties.headers){
 			var tHeadRow = $('<tr />');
 			$.each(properties.headers, function(index, item){
-				tHeadRow.append($('<th>' + item + '</th>'));
+				var th = $('<th>' + item + '</th>');
+				th.col = index;
+				if (properties.sortable) {
+					th.click(th, sortTable);
+				}
+				tHeadRow.append(th);
+				if (properties.sortable && index == properties.sortIndex) {
+					sortTh = th;
+				}
 			});
 			newTable.append($('<thead />').append(tHeadRow));
 		}
@@ -205,9 +293,6 @@ var Util = function(){
 				newRow.mouseleave(function(){
 					$(this).removeClass('table-tr-hovered');
 				});
-				if(i % 2){
-					newRow.addClass('table-tr-odd');
-				}
 				$.each(row, function(j, value){
 					if(value instanceof Object){
 						newRow.append(value);
@@ -219,6 +304,12 @@ var Util = function(){
 			});
 		}
 		newTable.append(tBody);
+		
+		if(properties.sortable && sortTh != null){
+			doSort(newTable, sortTh);
+		};
+		decorate(newTable);
+		
 		return newTable;
 	};
 

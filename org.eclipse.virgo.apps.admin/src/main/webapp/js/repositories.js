@@ -79,8 +79,8 @@ renderArtifactDescriptorSummaries: function(artifactDescriptorSummaries){
 		headers: ['Type', 'Name', 'Version'],
 		rows: rows,
 		selectable: true,
-		sortable: true, // not yet supported
-		sortIndex: 1 // not yet supported
+		sortable: true,
+		sortIndex: 1
 	});
 	
 	
