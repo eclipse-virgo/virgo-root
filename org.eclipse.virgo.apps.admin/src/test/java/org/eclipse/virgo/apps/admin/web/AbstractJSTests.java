@@ -18,10 +18,11 @@ import javax.script.ScriptException;
 
 import junit.framework.Assert;
 
-import org.eclipse.virgo.apps.admin.web.stubs.browser.Window;
-import org.eclipse.virgo.apps.admin.web.stubs.common.Server;
-import org.eclipse.virgo.apps.admin.web.stubs.common.Util;
-import org.eclipse.virgo.apps.admin.web.stubs.jquery.Element;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.Util;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.Window;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Element;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Server;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -40,10 +41,6 @@ public abstract class AbstractJSTests {
 	protected static Context CONTEXT; 
 	
 	protected static ScriptableObject SCOPE;
-	
-	protected static String dollarLookup = "";
-	
-	protected static ScriptableObject dollarLookupToReturn = null;
 
 	protected static String alertMsg;
 	
@@ -51,24 +48,20 @@ public abstract class AbstractJSTests {
 	
 	@BeforeClass
 	public static void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
-		//printEngine();
 		CONTEXT = Context.enter();
 		SCOPE = CONTEXT.initStandardObjects();
 
 		//Create the browser environment
-//		ScriptableObject.defineClass(SCOPE, HtmlTable.class);
-//		ScriptableObject.defineClass(SCOPE, Request.class);
-//		ScriptableObject.defineClass(SCOPE, Fx.class);
-//		ScriptableObject.defineClass(SCOPE, Spinner.class);
 		ScriptableObject.defineClass(SCOPE, Element.class);
 		ScriptableObject.defineClass(SCOPE, Server.class);
 		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
 		
-		//Add in constructed objects and extensions
-		//CONTEXT.evaluateReader(SCOPE, new FileReader("src/test/resources/JQueryStub.js"), "src/test/resources/JQueryStub.js", 0, null); 
-
-		FunctionObject dollarFunction = new FunctionObject("$", AbstractJSTests.class.getDeclaredMethod("dollar", ScriptableObject.class), SCOPE);
-		ScriptableObject.putProperty(SCOPE, dollarFunction.getFunctionName(), dollarFunction);
+		Dollar.init(CONTEXT, SCOPE);
+		FunctionObject dollarFunction = new FunctionObject("$", Dollar.class.getDeclaredMethod("dollar", ScriptableObject.class), SCOPE);
+		ScriptableObject.putProperty(SCOPE, "$", dollarFunction);
+		ScriptableObject.putProperty(dollarFunction, "ajax", new FunctionObject("ajax", Dollar.class.getDeclaredMethod("ajax", Scriptable.class), dollarFunction));
+		ScriptableObject.putProperty(dollarFunction, "each", new FunctionObject("each", Dollar.class.getDeclaredMethod("each", Scriptable.class, Function.class), dollarFunction));
+		
 		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), SCOPE);
 		ScriptableObject.putProperty(SCOPE, alertFunction.getFunctionName(), alertFunction);
 	}
@@ -76,14 +69,6 @@ public abstract class AbstractJSTests {
 	@AfterClass
 	public static void closeDown(){
 		Context.exit();
-	}
-	
-	public static Object dollar(ScriptableObject name){
-		dollarLookup = (String) Context.jsToJava(name, String.class);
-		Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
-		Object[] args = new Object[]{name};
-		Scriptable constructedElement = elementConstructor.construct(CONTEXT, SCOPE, args);
-		return constructedElement;
 	}
 	
 	public static void alert(String msg){
@@ -99,6 +84,10 @@ public abstract class AbstractJSTests {
 	
 	protected final void readFile(String fileName) throws IOException{
 		CONTEXT.evaluateReader(SCOPE, new FileReader(fileName), fileName, 0, null);
+	}
+	
+	protected final void readString(String js) throws IOException{
+		CONTEXT.evaluateString(SCOPE, js, "snippet", 0, null);
 	}
 	
 	protected final void addCommonObjects(){

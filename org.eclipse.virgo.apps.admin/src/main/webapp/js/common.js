@@ -156,8 +156,7 @@ var Util = function(){
 	 */
 	this.tooltip = function(el, text) {
 		if ($('tooltip') == null) {
-			var div = $("div");
-			div.appendText('');
+			var div = $("<div />");
 			document.childNodes[1].appendChild(div);
 			div.setProperty('id', 'tooltip');
 			div.set('style','display: none;');
@@ -274,8 +273,8 @@ var Util = function(){
 			});
 			newTable.append($('<thead />').append(tHeadRow));
 		}
-		if(properties.class){
-			newTable.addClass(properties.class);
+		if(properties.clazz){
+			newTable.addClass(properties.clazz);
 		}
 		if(properties.sortable){
 			newTable.addClass('table-sortable');

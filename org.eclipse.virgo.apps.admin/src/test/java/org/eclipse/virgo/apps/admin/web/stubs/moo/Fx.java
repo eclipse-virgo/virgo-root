@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web.stubs.moo;
 
-import org.eclipse.virgo.apps.admin.web.stubs.common.Util;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.Util;
 
 import junit.framework.Assert;
 

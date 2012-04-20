@@ -16,6 +16,10 @@ import javax.script.ScriptException;
 
 import org.junit.Test;
 
+import sun.org.mozilla.javascript.internal.Function;
+import sun.org.mozilla.javascript.internal.Scriptable;
+import sun.org.mozilla.javascript.internal.ScriptableObject;
+
 /**
  *
  *
@@ -24,6 +28,9 @@ public class CommonJSTests extends AbstractJSTests {
 	
 	@Test
 	public void testParse() throws ScriptException, IOException{
+		Scriptable document = ((Function) SCOPE.get("Element", SCOPE)).construct(CONTEXT, SCOPE, new Object[]{"<div />"});
+		ScriptableObject.putProperty(SCOPE, "document", document);
+		
 		readFile("src/main/webapp/js/common.js");
 
 	}

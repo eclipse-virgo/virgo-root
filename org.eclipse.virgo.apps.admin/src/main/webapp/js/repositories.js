@@ -75,7 +75,7 @@ renderArtifactDescriptorSummaries: function(artifactDescriptorSummaries){
 	});
 	
 	var descriptorTable = util.makeTable({
-		'class': 'repository-table table-selectable',
+		clazz: 'repository-table table-selectable',
 		headers: ['Type', 'Name', 'Version'],
 		rows: rows,
 		selectable: true,

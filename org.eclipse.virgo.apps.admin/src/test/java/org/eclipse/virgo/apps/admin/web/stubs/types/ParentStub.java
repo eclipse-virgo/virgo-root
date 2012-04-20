@@ -8,7 +8,7 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-package org.eclipse.virgo.apps.admin.web.stubs.jquery;
+package org.eclipse.virgo.apps.admin.web.stubs.types;
 
 import sun.org.mozilla.javascript.internal.ScriptableObject;
 
