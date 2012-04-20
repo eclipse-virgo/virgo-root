@@ -17,7 +17,7 @@
 	background: #BAD9EC;
 }
 
-.config-container td {
+.config-container td + td {
 	 word-wrap: break-word;
 	 word-break: break-all;
 }
