@@ -8,7 +8,7 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-package org.eclipse.virgo.apps.admin.web.stubs.browser;
+package org.eclipse.virgo.apps.admin.web.stubs.types;
 
 import sun.org.mozilla.javascript.internal.Function;
 
@@ -16,18 +16,25 @@ import sun.org.mozilla.javascript.internal.Function;
  * 
  *
  */
-public class Window {
+public class Server extends ParentStub{
 
-	public Window() {
-
+	private static final long serialVersionUID = 1L;
+	
+	private static Function callbackFunction;
+	
+	public Server() {
 	}
 	
-	public void addEvent(String name, Function function){
-		
-	}
+	// Stub methods
 
-	public void log(String msg){
-		System.out.println(msg);
+	public void jsFunction_getServerOverview(Function callbackFunction){
+		Server.callbackFunction = callbackFunction;
+	}
+	
+	// Test methods
+
+	public static Function getCallbackFunction() {
+		return Server.callbackFunction;
 	}
 	
 }

@@ -18,8 +18,8 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
-import org.eclipse.virgo.apps.admin.web.stubs.common.Server;
-import org.eclipse.virgo.apps.admin.web.stubs.jquery.Element;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Element;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Server;
 import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Function;
@@ -42,8 +42,8 @@ public class OverviewJSTests extends AbstractJSTests {
 		
 		Function callback = Server.getCallbackFunction();
 		callback.call(CONTEXT, SCOPE, SCOPE, new Object[]{TEST_ROW});
-		
-		assertEquals("Wrong DOM node replaced", "#server-overview", Element.getConstructorArgumentTrace().get(0));
+
+		assertTrue("Replaced DOM node not looked up", Element.getConstructorArgumentTrace().contains("#server-overview"));
 		assertEquals("Wrong replacement DOM node", this.commonUtil.getLastMakeTableTable(), Element.getLastReplacement());
 		assertArrayEquals("Wrong table headers", EXPECTED_HEADERS, this.commonUtil.getLastMakeTableHeaders());
 		assertArrayEquals("Wrong table rows", TEST_ROW, this.commonUtil.getLastMakeTableRows());

@@ -8,30 +8,26 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
+package org.eclipse.virgo.apps.admin.web.stubs.objects;
+
+import sun.org.mozilla.javascript.internal.Function;
 
 /**
- * Used during testing to fake out required parts of MooTools
+ * 
+ *
  */
+public class Window {
 
+	public Window() {
 
-Function.prototype.bind = function(bind){
-	return this;
-};
-
-Object.prototype.each = function(object, someFunction, scope){
-
-};
-
-String.prototype.capitalize = function(){
-	return this;
-};
-
-Array.prototype.contains = function(something){
-	return false;
-};
-
-Array.prototype.each = function(someFunction, scope){
-	for (var i = 0, l = this.length; i < l; i++){
-		if (i in this) someFunction.call(scope, this[i], i, this);
 	}
-};
+	
+	public void addEvent(String name, Function function){
+		
+	}
+
+	public void log(String msg){
+		System.out.println(msg);
+	}
+	
+}

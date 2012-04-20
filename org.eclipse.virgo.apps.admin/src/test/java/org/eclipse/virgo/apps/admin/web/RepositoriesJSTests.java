@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Request;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
 import org.junit.Test;
 
 /**
@@ -32,7 +32,7 @@ public class RepositoriesJSTests extends AbstractJSTests {
 
 		invokePageInit();
 		
-		assertNotNull(Request.getLastSentOnSuccess());
+		assertNotNull(Dollar.getAjaxSuccess());
 		
 		//assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}

@@ -19,9 +19,9 @@ import java.util.HashMap;
 
 import javax.script.ScriptException;
 
-import org.eclipse.virgo.apps.admin.web.stubs.common.ObjectName;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Element;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Request;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Element;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
+import org.eclipse.virgo.apps.admin.web.stubs.objects.ObjectName;
 import org.junit.Test;
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
@@ -46,48 +46,55 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		readFile("src/main/webapp/js/configuration.js");
 
 		invokePageInit();
-		assertNotNull(Request.getLastSentOnSuccess());
+		assertNotNull(Dollar.getAjaxSuccess());
 
-		readFile("src/test/resources/ConfigurationData.js");
-		Function jsonData = (Function) SCOPE.get("Data", SCOPE);
-		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs)});
+		Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{getTestData()});
 		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}
 	
 	/**
 	 * Tests that the css class applied to the twisty changes from plus to minus as toggle is called.
+	 * @throws IOException 
 	 * 
 	 */
 	@Test
-	public void testConfigToggle() {
+	public void testConfigToggle() throws IOException {
 		Function configurationConstructor = (Function) SCOPE.get("Configuration", SCOPE);
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
 		ObjectName value = new ObjectName("domain", "objectNameString", properties);
 
-		Function treeLabel = (Function) SCOPE.get("Label", SCOPE);
-		Scriptable constructedTreeLabel = treeLabel.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		
-		Scriptable configuration = configurationConstructor.construct(CONTEXT, SCOPE, new Object[]{Context.javaToJS(value, SCOPE), constructedTreeLabel});
-		Function toggleFunction = (Function) configuration.get("toggle", SCOPE);
+		Scriptable labelElement = ((Function) SCOPE.get("Element", SCOPE)).construct(CONTEXT, SCOPE, new Object[]{"<div />"});
+		Scriptable configuration = configurationConstructor.construct(CONTEXT, SCOPE, new Object[]{Context.javaToJS(value, SCOPE), labelElement});
 
-		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
 
-		Function jsonData = (Function) SCOPE.get("Data", SCOPE);
-		
-		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Open it
-		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
-		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, configuration, new Object[]{jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs)});
-		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
-		
+		Function toggleFunction = (Function) configuration.get("toggle", SCOPE);
 		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Close it
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+		
+		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Open it
+		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+
+		Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, configuration, new Object[]{getTestData()});
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
+		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+	}
+	
+	private Scriptable getTestData() throws IOException{
+		
+		readString( "var Data = function() {" +
+					"	this.value = {};" +
+					"	this.value.Properties = {};" +
+					"};");
+		
+		Function testData = (Function) SCOPE.get("Data", SCOPE);
+		return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
 	}
 	
 }

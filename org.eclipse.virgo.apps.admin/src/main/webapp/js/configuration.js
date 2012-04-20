@@ -72,7 +72,7 @@ var Configuration = function(objectName, label){
 			
 		} else {
 			$('.config-properties', this.label).slideToggle(util.fxTime, function(){
-				$('.config-properties', this.label).remove();
+				$(this).remove();
 			});
 			this.setPlusMinusIcon('tree-icons/plus.png', 'plus');
 		}
@@ -87,13 +87,13 @@ var Configuration = function(objectName, label){
 	};
 	
 	this.createTable = function(json){
-		var tableRows = [];
+		var tableRows = new Array();
 		$.each(json.value.Properties, function(index, item){
 			tableRows.push([index, item]);
 		});
 			
 		var propertiesTable = util.makeTable({ 
-			'class': "config-table", 
+			clazz: "config-table", 
 			headers: ['Key', 'Value'], 
 			rows: tableRows
 		});

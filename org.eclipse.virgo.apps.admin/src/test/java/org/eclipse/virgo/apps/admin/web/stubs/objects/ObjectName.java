@@ -8,7 +8,7 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-package org.eclipse.virgo.apps.admin.web.stubs.common;
+package org.eclipse.virgo.apps.admin.web.stubs.objects;
 
 import java.util.Map;
 
