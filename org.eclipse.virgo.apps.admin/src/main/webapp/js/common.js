@@ -179,8 +179,8 @@ var Util = function(){
 	this.makeTable = function(properties) {
 		
 		var decorate = function(table){
-			var tBody = $(table).children('tbody');
-			var bodyRows = tBody.children('tr');
+			var tBody = $('tbody', table);
+			var bodyRows = $('tr', tBody);
 			bodyRows.removeClass('table-tr-odd');
 			bodyRows.filter(':odd').addClass('table-tr-odd');
 			bodyRows.each(function(index, row){
@@ -211,7 +211,7 @@ var Util = function(){
 
 			var compare = function(tr1, tr2){
 				var getText = function(tr){
-					var cell = tr.children[index]; // raw javascript!!
+					var cell = $('*:nth-child(' + index + ')', tr);
 					return $(cell).text();
 				};
 				var text1 = getText(tr1);
@@ -242,7 +242,7 @@ var Util = function(){
 				th.text(stripArrow(th.text()) + ' ' + downArrow);
 			}
 			
-			var tBody = table.children('tbody');
+			var tBody = $('tbody', table);
 			var tRows = tBody.children();
 			tRows.remove();
 			tRows.sort(isSorted ? revCompare : compare);
