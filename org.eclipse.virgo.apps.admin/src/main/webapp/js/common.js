@@ -242,7 +242,7 @@ var Util = function(){
 				th.text(stripArrow(th.text()) + ' ' + downArrow);
 			}
 			
-			var tBody = table.children('tbody');
+			var tBody = $('tbody', table);
 			var tRows = tBody.children();
 			tRows.remove();
 			tRows.sort(isSorted ? revCompare : compare);
