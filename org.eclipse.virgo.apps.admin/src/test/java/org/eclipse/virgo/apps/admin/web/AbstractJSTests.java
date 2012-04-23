@@ -91,7 +91,7 @@ public abstract class AbstractJSTests {
 	}
 	
 	protected final void addCommonObjects(){
-		this.commonUtil = new Util(SCOPE);
+		this.commonUtil = new Util(CONTEXT, SCOPE);
 		addObject(commonUtil, "util");
 	}
 	

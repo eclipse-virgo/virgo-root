@@ -32,7 +32,7 @@ renderRepositoryMBeans: function(mbeanNames){
 	var getNameAttribute = function(mbeanName){
 		return util.readObjectName(mbeanName).get('name');
 	};
-	
+		
 	$.each(mbeanNames, function(i, mbeanName){
 		var button = util.makeDiv('button').append(util.makeDiv('button-cap-left-blue'), util.makeDiv('button-text').text(getNameAttribute(mbeanName)),
 				                                   util.makeDiv('button-cap-right-blue'));

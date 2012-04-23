@@ -26,13 +26,14 @@ import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.Scriptable;
 
 /**
- *
- *
+ * All the methods in this test class should be run in the defined order. In particular, testPageInit must be run first
+ * to perform common setup.
  */
 public class RepositoriesJSTests extends AbstractJSTests {
 
     @Test
     public void testPageinit() throws ScriptException, IOException, NoSuchMethodException {
+        // The next two lines are common setup that will be used by other test methods.
         addCommonObjects();
         readFile("src/main/webapp/js/repositories.js");
 
@@ -40,6 +41,9 @@ public class RepositoriesJSTests extends AbstractJSTests {
 
         assertNotNull(Dollar.getAjaxSuccess());
         Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestData() });
+        
+        Function eachOperation = Dollar.getEachOperation();
+        eachOperation.call(CONTEXT, SCOPE, SCOPE, new Object[] {0, "org.eclipse.virgo.kernel:name=usr,type=Repository"});
 
         assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 
@@ -47,7 +51,10 @@ public class RepositoriesJSTests extends AbstractJSTests {
 
     private Scriptable getTestData() throws IOException {
 
-        readString("var Data = function() {" + "   this.value = {};" + "   this.value.Properties = {};" + "};");
+        readString("var Data = function() {" + //
+            "   this.value = ['org.eclipse.virgo.kernel:name=usr,type=Repository', 'org.eclipse.virgo.kernel:name=ext,type=Repository'];" + //
+            "   this.value.Properties = {};" + //
+            "};");
 
         Function testData = (Function) SCOPE.get("Data", SCOPE);
         return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);

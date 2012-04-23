@@ -77,6 +77,9 @@ public class Element extends ParentStub {
         return this;
     }
 
+    public void jsFunction_click(){
+    }
+    
 	public boolean jsFunction_hasClass(String className){
 		return CLASSES.contains(className);
 	}
@@ -84,6 +87,10 @@ public class Element extends ParentStub {
 	public boolean jsFunction_removeClass(String className){
 		return CLASSES.remove(className);
 	}
+	
+    public void jsFunction_text(String text){
+    }
+
 
 	public ScriptableObject jsFunction_css(String key, String value){
 		CSS.put(key, value);

@@ -33,7 +33,7 @@ public class Dollar {
 
 	private static Scriptable each_array;
 
-	private static Function each_opteration;
+	private static Function each_operation;
 
     private Dollar(Context context, ScriptableObject scope) {
     }
@@ -60,7 +60,7 @@ public class Dollar {
 
 	public static void each(Scriptable array, Function operation){
     	Dollar.each_array = array;
-    	Dollar.each_opteration = operation;
+    	Dollar.each_operation = operation;
 	}
 	
 	// Test Helper Methods
@@ -82,7 +82,7 @@ public class Dollar {
 	}
 
 	public static Function getEachOperation() {
-		return Dollar.each_opteration;
+		return Dollar.each_operation;
 	}
     
 }

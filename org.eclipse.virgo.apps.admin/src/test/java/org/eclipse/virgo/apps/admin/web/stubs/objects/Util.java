@@ -21,6 +21,8 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
  */
 public class Util {
 
+    private final Context context;
+    
 	private final ScriptableObject SCOPE;
 	
 	private boolean pageReady = false;
@@ -30,10 +32,11 @@ public class Util {
     private String[] lastMakeTableHeaders;
 
     private Scriptable lastMakeTableTable;
-	
+
 	public static int fxTime = 200;
 	
-	public Util(ScriptableObject SCOPE) {
+	public Util(Context context, ScriptableObject SCOPE) {
+	    this.context = context;
 		this.SCOPE = SCOPE;
 	}
 	
@@ -48,8 +51,8 @@ public class Util {
 	}
 	
 	
-	public Object readObjectName(Object mbean){
-		return mbean;	
+	public Object readObjectName(String mbeanName){
+		return new MBean(mbeanName);	
 	}
 	
 	public void loadScript(Object scriptName, Object async){
@@ -65,6 +68,12 @@ public class Util {
         Scriptable table = elementConstructor.construct(Context.getCurrentContext(), SCOPE, args);
         this.lastMakeTableTable = table;
         return table;
+	}
+	
+	public Object makeDiv(String clazz) {
+	    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
+        Object[] args = new Object[]{clazz};
+        return elementConstructor.construct(this.context, SCOPE, args);
 	}
 	
 	// Test methods
