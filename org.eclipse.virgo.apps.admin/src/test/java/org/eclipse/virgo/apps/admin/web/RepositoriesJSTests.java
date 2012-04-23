@@ -60,4 +60,38 @@ public class RepositoriesJSTests extends AbstractJSTests {
         return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
     }
 
+    @Test
+    public void testDisplay() throws Exception {
+        Scriptable repositories = (Scriptable) SCOPE.get("Repositories", SCOPE);
+
+        Function displayFunction = (Function) repositories.get("display", SCOPE);
+        
+        readString("var ClickEvent = function() {" + //
+            "   this.data = new Element('<div />');" + //
+            "   this.mbeanName = 'mbeanName';" + //
+            "};");
+        
+        Function eventConstructor = (Function) SCOPE.get("ClickEvent", SCOPE);
+        Object[] args = new Object[]{};
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        
+        displayFunction.call(CONTEXT, SCOPE, repositories, new Object[]{event});
+        
+        assertNotNull(Dollar.getAjaxSuccess());
+        Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[] { getDisplayTestData() });
+
+    }
+    
+    private Scriptable getDisplayTestData() throws IOException {
+
+        readString("var Data = function() {" + //
+            "   this.value = {AllArtifactDescriptorSummaries : []};" + //
+            "   this.value.Properties = {};" + //
+            "};");
+
+        Function testData = (Function) SCOPE.get("Data", SCOPE);
+        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+    }
+
+
 }

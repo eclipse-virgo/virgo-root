@@ -13,10 +13,7 @@ package org.eclipse.virgo.apps.admin.web.stubs.objects;
 
 public class MBean {
 
-    private final String mbeanName;
-
     public MBean(String mbeanName) {
-        this.mbeanName = mbeanName;
     }
     
     public String get(String property) {

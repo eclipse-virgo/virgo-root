@@ -57,7 +57,10 @@ public class Element extends ParentStub {
         this.constructorArgument = ((String) Context.jsToJava(constructorArgument, String.class));
         CONSTRUCTOR_ARGUMENT_TRACE.add(this.constructorArgument);
     }
-    
+
+    public void jsFunction_empty(){
+    }
+
 	public void jsFunction_ready(Function readyFunction){
 		READY = readyFunction;
 	}
