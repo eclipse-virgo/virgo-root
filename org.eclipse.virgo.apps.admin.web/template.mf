@@ -17,7 +17,6 @@ Import-Template:
  org.osgi.service.cm.*;version=0,
  org.slf4j;version="${org.slf4j:[=.=.=,+1)}",
  org.springframework.*;version="${org.springframework:[2.5.6, +1)}"
-Require-TldBundle: org.apache.taglibs.standard.glassfish
 Import-Package: 
  org.apache.taglibs.standard;version="[1.1.2,2.0.0)",
  org.apache.taglibs.standard.extra.spath;version="[1.1.2,2.0.0)",
