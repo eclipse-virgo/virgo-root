@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -374,14 +375,21 @@ public final class DependencyCalculator {
         BundleDescription[] bundleDescriptions = state.getBundles(bundleSymbolicName);
         for (BundleDescription bundleDescription : bundleDescriptions) {
             if (bundleDescription.getVersion().equals(version)) {
+                long bundleId = bundleDescription.getBundleId();
+                if (bundleId == 0L || this.coregion.contains(bundleId)) {
+                    return true;
+                }
                 // XXX Refactoring required here. This temporary code only traverses the coregion and user region.
                 Set<FilteredRegion> edges = this.coregion.getEdges();
-                FilteredRegion edge = edges.iterator().next();
-                Region userRegion = edge.getRegion();
-                RegionFilter filter = edge.getFilter();
-                long bundleId = bundleDescription.getBundleId();
-                if ((bundleId == 0L || this.coregion.contains(bundleId) || (filter.isAllowed(bundleDescription) && userRegion.contains(bundleId)))) {
-                    return true;
+                Iterator<FilteredRegion> iterator = edges.iterator();
+                // Bug 377392: cope with the unexpected case of a coregion with no edges.
+                if (iterator.hasNext()) {
+                    FilteredRegion edge = iterator.next();
+                    Region userRegion = edge.getRegion();
+                    RegionFilter filter = edge.getFilter();
+                    if (filter.isAllowed(bundleDescription) && userRegion.contains(bundleId)) {
+                        return true;
+                    }
                 }
             }
 
