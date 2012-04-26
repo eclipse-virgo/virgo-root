@@ -7,6 +7,8 @@ import org.osgi.framework.Bundle;
 
 
 public interface SimpleDeployer {
+    
+    public final int HOT_DEPLOYED_ARTIFACTS_START_LEVEL = 5;
 
     public boolean deploy(URI path);
     

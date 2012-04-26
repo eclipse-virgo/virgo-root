@@ -289,7 +289,7 @@ public class BundleDeployer implements SimpleDeployer {
         }
         String symbolicName = bundle.getSymbolicName();
         this.bundleInfosUpdater.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-            bundle.getVersion().toString(), 4, !isFragment);
+            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
         this.bundleInfosUpdater.updateBundleInfosRepository();
     }
 
@@ -302,7 +302,7 @@ public class BundleDeployer implements SimpleDeployer {
         }
         String symbolicName = bundle.getSymbolicName();
         this.bundleInfosUpdater.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-            bundle.getVersion().toString(), 4, !isFragment);
+            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
         this.bundleInfosUpdater.updateBundleInfosRepository();
     }
 

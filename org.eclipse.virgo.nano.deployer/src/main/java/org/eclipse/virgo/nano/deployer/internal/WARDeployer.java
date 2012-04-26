@@ -451,7 +451,7 @@ public class WARDeployer implements SimpleDeployer {
             }
             String symbolicName = bundle.getSymbolicName();
             this.bundleInfosUpdaterUtil.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-                bundle.getVersion().toString(), 4, true);
+                bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
             this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
         }
     }
@@ -467,7 +467,7 @@ public class WARDeployer implements SimpleDeployer {
                 }
                 String symbolicName = bundle.getSymbolicName();
                 this.bundleInfosUpdaterUtil.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-                    bundle.getVersion().toString(), 4, true);
+                    bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
                 this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
             }
         } catch (Exception e) {

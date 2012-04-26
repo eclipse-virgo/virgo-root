@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Nano Deployer
 Bundle-SymbolicName: org.eclipse.virgo.nano.deployer
 Bundle-Version: ${version}
-Service-Component: OSGI-INF/virgo.nano.deployer.component.xml,OSGI-INF/virgo.nano.war.deployer.component.xml
+Service-Component: OSGI-INF/virgo.nano.deployer.component.xml
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
