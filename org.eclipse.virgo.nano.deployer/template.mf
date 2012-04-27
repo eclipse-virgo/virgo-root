@@ -15,7 +15,6 @@ Import-Template:
  org.xml.*;version="0",
  org.w3c.*;version="0",
  org.osgi.service.component;version="0",
- org.eclipse.gemini.web.core;version="0",
  org.osgi.service.packageadmin;version="0",
  org.eclipse.equinox.internal.simpleconfigurator.*;version="0",
  org.eclipse.osgi.util;version="0",
