@@ -1,4 +1,4 @@
-package org.eclipse.virgo.nano.deployer.internal;
+package org.eclipse.virgo.nano.deployer;
 
 /*******************************************************************************
  * Copyright (c) 2008, 2012 VMware Inc.

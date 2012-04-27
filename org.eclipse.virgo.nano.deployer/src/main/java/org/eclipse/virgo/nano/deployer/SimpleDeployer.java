@@ -1,6 +1,8 @@
 package org.eclipse.virgo.nano.deployer;
 
+import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.osgi.framework.Bundle;
@@ -21,5 +23,9 @@ public interface SimpleDeployer {
     public boolean isDeployed(URI path);
     
     public DeploymentIdentity getDeploymentIdentity(URI path);
+    
+    public List<String> getAcceptedFileTypes();
+    
+    public boolean isDeployFileValid(File file);
     
 }

@@ -21,4 +21,4 @@ Import-Template:
  org.eclipse.osgi.util;version="0",
  org.slf4j;version="0"
 Excluded-Exports:
- *
+ *.internal.*

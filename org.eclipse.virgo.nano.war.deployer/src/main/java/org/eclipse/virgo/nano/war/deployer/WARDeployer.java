@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.nano.deployer.internal;
+package org.eclipse.virgo.nano.war.deployer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,9 +14,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -28,6 +30,7 @@ import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
+import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
@@ -38,6 +41,7 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,38 +99,40 @@ public class WARDeployer implements SimpleDeployer {
 
     private EventLogger eventLogger;
 
-    private final BundleInfosUpdater bundleInfosUpdaterUtil;
+    private BundleInfosUpdater bundleInfosUpdaterUtil;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final BundleContext bundleContext;
+    private BundleContext bundleContext;
 
-    private final PackageAdmin packageAdmin;
+    private PackageAdmin packageAdmin;
 
-    private final WebBundleManifestTransformer webBundleManifestTransformer;
+    private WebBundleManifestTransformer webBundleManifestTransformer;
 
     private long largeFileCopyTimeout = 4000;
 
-    private final File pickupDir;
+    private File pickupDir;
 
-    private final File webAppsDir;
+    private File webAppsDir;
 
+    public WARDeployer() {
+    	warDeployerInternalInit(null);
+    }
+    
     public WARDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, WebBundleManifestTransformer webBundleManifestTransformer, EventLogger eventLogger) {
-        String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
-        File kernelHomeFile = new File(kernelHome);
-        File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
-        this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);
-        this.webAppsDir = new File(kernelHomeFile, WEBAPPS_DIR);
-        this.bundleContext = bundleContext;
-        this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+        warDeployerInternalInit(bundleContext);
         this.packageAdmin = packageAdmin;
         this.webBundleManifestTransformer = webBundleManifestTransformer;
         this.eventLogger = eventLogger;
     }
+    
+    public void activate(ComponentContext context) {
+    	warDeployerInternalInit(context.getBundleContext());
+    }
 
     @Override
     public final boolean deploy(URI path) {
-        this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
         final String warName = extractWarNameFromString(path.toString());
         final File deployedFile = new File(path);
         final File warDir = new File(this.webAppsDir, warName);
@@ -139,7 +145,7 @@ public class WARDeployer implements SimpleDeployer {
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
-            this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING_ERROR, path);
             return STATUS_ERROR;
         }
         final Bundle installed;
@@ -158,20 +164,20 @@ public class WARDeployer implements SimpleDeployer {
             // install the bundle
             installed = this.bundleContext.installBundle(createInstallLocation(warDir));
         } catch (Exception e) {
-            this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
             return STATUS_ERROR;
         }
 
-        this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
-        this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installed.getSymbolicName(), installed.getVersion());
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTING, installed.getSymbolicName(), installed.getVersion());
         try {
             installed.start();
         } catch (Exception e) {
-            this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
             return STATUS_ERROR;
         }
 
-        this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installed.getSymbolicName(), installed.getVersion());
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTED, installed.getSymbolicName(), installed.getVersion());
 
         bundleId = installed.getBundleId();
         // now update bundle's info
@@ -184,14 +190,26 @@ public class WARDeployer implements SimpleDeployer {
                 registerToBundlesInfo(installed);
             }
         } catch (Exception e) {
-            this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
         }
 
         createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
         return STATUS_OK;
     }
 
-    private String createInstallLocation(final File warDir) {
+    @Override
+    public boolean isDeployFileValid(File file) {
+		try {
+			@SuppressWarnings("unused")
+			JarFile jarFile = new JarFile(file);
+		} catch (IOException e) {
+			this.logger.error("The deployed file '"+ file.getAbsolutePath() +"' is an invalid zip file.");
+			return false;
+		}
+		return true;
+	}
+
+	private String createInstallLocation(final File warDir) {
         return INSTALL_BY_REFERENCE_PREFIX + warDir.getAbsolutePath();
     }
 
@@ -220,15 +238,15 @@ public class WARDeployer implements SimpleDeployer {
                     this.logger.error("BundleInfosUpdater not available. Failed to remove bundle '" + bundle.getSymbolicName() + "' version '"
                         + bundle.getVersion() + "' from bundles.info.");
                 }
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_STOPPING, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STOPPING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.stop();
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_STOPPED, bundle.getSymbolicName(), bundle.getVersion());
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLING, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STOPPED, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UNINSTALLING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.uninstall();
                 FileSystemUtils.deleteRecursively(warDir);
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (BundleException e) {
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
                 return STATUS_ERROR;
             }
         }
@@ -255,7 +273,7 @@ public class WARDeployer implements SimpleDeployer {
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file [" + path + "] for writing. Timeout is [" + this.largeFileCopyTimeout + "].");
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
-            this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATING_ERROR, path);
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING_ERROR, path);
             return STATUS_ERROR;
         }
 
@@ -271,15 +289,15 @@ public class WARDeployer implements SimpleDeployer {
                     manifest.createNewFile();
                 }
                 transformManifest(updatedFile, manifest, warName);
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
                 if (this.packageAdmin != null) {
                     this.packageAdmin.refreshPackages(new Bundle[] { bundle });
                     this.logger.info("Update of file with path [" + path + "] is successful.");
                 }
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
-                this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+                this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
             }
 
             createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
@@ -395,6 +413,11 @@ public class WARDeployer implements SimpleDeployer {
                 mfIS = getDefaultManifestStream();
             }
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
+            if (WebBundleUtils.isWebApplicationBundle(manifest)) {
+            	//we already have a web bundle - skip transformation
+            	this.logger.info("Skipping transformation of application '"+ warName +"' because it is already a web bundle.");
+            	return;
+            }
             Map<String, String> map = new HashMap<String, String>();
             String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
             if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
@@ -505,6 +528,47 @@ public class WARDeployer implements SimpleDeployer {
             return null;
         }
         return new StandardDeploymentIdentity(WAR, bundle.getSymbolicName(), bundle.getVersion().toString());
+    }
+    
+	@Override
+	public List<String> getAcceptedFileTypes() {
+		List<String> types = new ArrayList<String>();
+		types.add(WAR);
+		return types;
+	}
+    
+	private void warDeployerInternalInit(BundleContext bundleContext) {
+		String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
+        File kernelHomeFile = new File(kernelHome);
+        File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
+        this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);
+        this.webAppsDir = new File(kernelHomeFile, WEBAPPS_DIR);
+        this.bundleContext = bundleContext;
+        this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+	}
+	
+    public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
+        this.webBundleManifestTransformer = transformer;
+    }
+
+    public void unbindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
+        this.webBundleManifestTransformer = null;
+    }
+
+    public void bindEventLogger(EventLogger logger) {
+        this.eventLogger = logger;
+    }
+
+    public void unbindEventLogger(EventLogger logger) {
+        this.eventLogger = null;
+    }
+
+    public void bindPackageAdmin(PackageAdmin packageAdmin) {
+        this.packageAdmin = packageAdmin;
+    }
+
+    public void unbindPackageAdmin(PackageAdmin packageAdmin) {
+        this.packageAdmin = null;
     }
 
 }

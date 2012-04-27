@@ -1,15 +1,13 @@
-package org.eclipse.virgo.nano.deployer.internal;
+package org.eclipse.virgo.nano.war.deployer;
 
 import org.eclipse.virgo.kernel.serviceability.LogEventDelegate;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 
-public enum NanoDeployerLogEvents implements LogEvent {
+public enum NanoWARDeployerLogEvents implements LogEvent {
 
     NANO_INSTALLING(1, Level.INFO), //
     NANO_INSTALLED(2, Level.INFO), //
-    NANO_STARTING(3, Level.INFO), //
-    NANO_STARTED(4, Level.INFO), //
     NANO_STOPPING(5, Level.INFO), //
     NANO_STOPPED(6, Level.INFO), //
     NANO_UNINSTALLING(7, Level.INFO), //
@@ -23,16 +21,13 @@ public enum NanoDeployerLogEvents implements LogEvent {
     NANO_UPDATING(15, Level.INFO), //
     NANO_UPDATED(16, Level.INFO), //
     NANO_UPDATE_ERROR(17, Level.ERROR), //
-    NANO_UNDEPLOY_ERROR(18, Level.ERROR), //
-    NANO_REFRESHING_HOST(19, Level.INFO), //
-    NANO_REFRESHED_HOST(20, Level.INFO), //
-    NANO_REFRESH_HOST_ERROR(21, Level.ERROR); //
-
+    NANO_UNDEPLOY_ERROR(18, Level.ERROR); //
+    
     private static final String PREFIX = "DE";
 
     private final LogEventDelegate delegate;
 
-    private NanoDeployerLogEvents(int code, Level level) {
+    private NanoWARDeployerLogEvents(int code, Level level) {
         this.delegate = new LogEventDelegate(PREFIX, code, level);
     }
 

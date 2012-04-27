@@ -23,13 +23,6 @@
 		bind="bindKernelConfig" 
 		unbind="unbindKernelConfig"/>
 		
-	<reference name="WBMT"
-		interface="org.eclipse.gemini.web.core.WebBundleManifestTransformer"  
-		policy="static" 
-		cardinality="1..1" 
-		bind="bindWebBundleManifestTransformer" 
-		unbind="unbindWebBundleManifestTransformer"/>
-		
 	<reference name="SimpleDeployer"
 		interface="org.eclipse.virgo.nano.deployer.SimpleDeployer"  
 		policy="dynamic" 

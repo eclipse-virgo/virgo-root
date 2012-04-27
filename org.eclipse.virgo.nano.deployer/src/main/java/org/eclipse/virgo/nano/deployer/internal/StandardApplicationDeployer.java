@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.virgo.kernel.core.KernelConfig;
 import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
@@ -14,6 +13,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.hot.HotDeployerEnabler;
 import org.osgi.framework.Bundle;
@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private EventLogger eventLogger;
-
-    private WebBundleManifestTransformer transformer;
 
     private PackageAdmin packageAdmin;
 
@@ -48,7 +46,6 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         this.bundleContext = context.getBundleContext();
         this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
         this.simpleDeployers.add(defaultDeployer);
-        this.simpleDeployers.add(new WARDeployer(context.getBundleContext(), this.packageAdmin, this.transformer, this.eventLogger));
         initialiseHotDeployer();
 
         // TODO register the deployer MBean when the management classes are factored out in a new bundle.
@@ -75,19 +72,23 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         for (SimpleDeployer deployer : this.simpleDeployers) {
             if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
                 isThereSuitableDeployer = true;
-                if (deployer.isDeployed(uri)) {
-                    deployer.update(uri);
-                } else {
-                    deployer.deploy(uri);
-                }
+                if (!deployer.isDeployFileValid(new File(uri))) {
+                	this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
+				} else {
+					if (deployer.isDeployed(uri)) {
+						deployer.update(uri);
+					} else {
+						deployer.deploy(uri);
+					}
+				}
             }
         }
         if (!isThereSuitableDeployer) {
-            if (this.defaultDeployer.isDeployed(uri)) {
-                this.defaultDeployer.update(uri);
-            } else {
-                this.defaultDeployer.deploy(uri);
-            }
+        	List<String> acceptedTypes = new ArrayList<String>();
+        	for (SimpleDeployer deployer : this.simpleDeployers) {
+        		acceptedTypes.addAll(deployer.getAcceptedFileTypes());
+        	}
+        	this.eventLogger.log(NanoDeployerLogEvents.NANO_UNRECOGNIZED_TYPE, uri, acceptedTypes);
         }
         return null;
     }
@@ -200,14 +201,6 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     @Override
     public DeploymentIdentity[] getDeploymentIdentities() {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
-    }
-
-    public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
-        this.transformer = transformer;
-    }
-
-    public void unbindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
-        this.transformer = null;
     }
 
     public void bindEventLogger(EventLogger logger) {

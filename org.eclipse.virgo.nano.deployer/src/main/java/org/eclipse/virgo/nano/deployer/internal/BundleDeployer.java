@@ -8,11 +8,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarFile;
 
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
+import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
@@ -77,7 +81,7 @@ public class BundleDeployer implements SimpleDeployer {
     public boolean deploy(URI path) {
         this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
         final File deployedFile = new File(path);
-
+        
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
@@ -314,4 +318,23 @@ public class BundleDeployer implements SimpleDeployer {
         final String warName = path.substring(path.lastIndexOf(SLASH) + 1);
         return warName;
     }
+    
+    @Override
+    public boolean isDeployFileValid(File file) {
+		try {
+			@SuppressWarnings("unused")
+			JarFile jarFile = new JarFile(file);
+		} catch (IOException e) {
+			this.logger.error("The deployed file '"+ file.getAbsolutePath() +"' is an invalid zip file.");
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public List<String> getAcceptedFileTypes() {
+		List<String> types = new ArrayList<String>();
+		types.add(JAR);
+		return types;
+	}
 }
