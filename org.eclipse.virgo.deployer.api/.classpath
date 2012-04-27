@@ -21,10 +21,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.D-20120424005002/org.eclipse.virgo.util.io-3.5.0.D-20120424005002.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.D-20111205151812/org.eclipse.virgo.util.io-sources-3.1.0.D-20111205151812.jar"/>
+	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.M04/org.eclipse.virgo.util.io-3.5.0.M04.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.D-20111205151812/org.eclipse.virgo.util.io-sources-3.1.0.D-20111205151812.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-sources-3.7.1.R37x_v20110808-1106.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.core"/>
-	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.5.0.D-20120424005802/org.eclipse.virgo.medic-3.5.0.D-20120424005802.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-sources-3.1.0.D-20111205152504.jar"/>
+	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.5.0.M04/org.eclipse.virgo.medic-3.5.0.M04.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-sources-3.1.0.D-20111205152504.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/NANO_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.runtime/1.6.12.RELEASE/com.springsource.org.aspectj.runtime-1.6.12.RELEASE.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
