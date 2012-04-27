@@ -3,6 +3,7 @@
     <path id="unit.test.bundles">
 		<pathelement location="../org.eclipse.virgo.kernel.core"/>
         <pathelement location="../org.eclipse.virgo.nano.services.ds"/>
+        <pathelement location="../org.eclipse.virgo.nano.services.concurrent"/>
         <pathelement location="../org.eclipse.virgo.deployer.api"/>
         <pathelement location="../org.eclipse.virgo.deployer.hot"/>
         <pathelement location="../org.eclipse.virgo.nano.deployer"/>
