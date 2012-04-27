@@ -33,6 +33,12 @@ public class Util {
 
     private Scriptable lastMakeTableTable;
 
+    private Scriptable lastBulkQuery;
+
+    private Function lastBulkQueryCallBack;
+
+    private Function lastBulkQueryErrorCallBack;
+
 	public static int fxTime = 200;
 	
 	public Util(Context context, ScriptableObject SCOPE) {
@@ -76,6 +82,12 @@ public class Util {
         return elementConstructor.construct(this.context, SCOPE, args);
 	}
 	
+	public void doBulkQuery(Scriptable query, Function callBack, Function errorCallBack) {
+	    this.lastBulkQuery = query;
+	    this.lastBulkQueryCallBack = callBack;
+	    this.lastBulkQueryErrorCallBack = errorCallBack;
+	}
+	
 	// Test methods
 	
 	public boolean isPageReady(){
@@ -93,5 +105,17 @@ public class Util {
 	public Scriptable getLastMakeTableTable() {
 	    return this.lastMakeTableTable;
 	}
+
+    public Scriptable getLastBulkQuery() {
+        return lastBulkQuery;
+    }
+
+    public Function getLastBulkQueryCallBack() {
+        return lastBulkQueryCallBack;
+    }
+
+    public Function getLastBulkQueryErrorCallBack() {
+        return lastBulkQueryErrorCallBack;
+    }
 	
 }
