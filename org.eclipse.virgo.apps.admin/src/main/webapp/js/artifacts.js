@@ -14,15 +14,11 @@
  */
 function pageinit(){
 	uploadManager = new UploadManager();
-	new Request.JSON({
-		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
-		method: 'get',
-		onSuccess: function (responseJSON, responseText){
-			tree = new Tree();
-			tree.setup(responseJSON.value, 'type');
-			util.pageReady();
-		}
-	}).send();
+	util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
+		tree = new Tree();
+		tree.setup(response.value, 'type');
+		util.pageReady();
+	});
 }
 
 /**
@@ -33,6 +29,8 @@ function pageinit(){
  */
 var Tree = function(mbeans) {
 	
+	var self = this;
+	
 	/**
 	 * Do the initial population of the tree
 	 * 
@@ -41,24 +39,24 @@ var Tree = function(mbeans) {
 	 */
 	this.setup = function (mbeans, filter){
 		var filterMatches = new Array();
-		mbeans.each(function(mbean){
+		$.each(mbeans, function(index, mbean){
 			var artifact = new Artifact(util.readObjectName(mbean));
 			var artifactFilterValue = artifact[filter];
-			if(!filterMatches.contains(artifactFilterValue)){
+			if(-1 == filterMatches.indexOf(artifactFilterValue)){
 				filterMatches.push(artifactFilterValue);
 			};
 			
-		}, this);
-		filterMatches.each(function(filterMatch){
+		});
+		$.each(filterMatches, function(filterMatch){
 			var filterContainer;
 			if(filter == 'type'){
-				filterContainer = this.getNodeContainer(filterMatch.capitalize(), filterMatch, filterMatch, filter);
+				filterContainer = self.getNodeContainer(filterMatch, filterMatch, filterMatch, filter);
 			} else {
-				filterContainer = this.getNodeContainer(filterMatch, 'default', filterMatch, filter);
+				filterContainer = self.getNodeContainer(filterMatch, 'default', filterMatch, filter);
 			}
 			filterContainer.firstChild.set('onclick', 'tree.renderTopLevel("' + filter + '", "' + filterMatch + '")');
-			filterContainer.inject($('artifacts-tree'));
-		}, this);
+			$('.artifacts-tree').append(filterContainer);
+		});
 	};
 
 	/**
@@ -68,13 +66,9 @@ var Tree = function(mbeans) {
 	 */
 	this.reRenderWithFilter = function (filter){
 		$('artifacts-tree').empty();
-		new Request.JSON({
-			url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
-			method: 'get',
-			onSuccess: function (responseJSON, responseText){
-				this.setup(responseJSON.value, filter);
-			}.bind(this)
-		}).send();
+		util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
+			setup(response.value, filter);
+		});
 		if(filter == 'type') {
 			$('type-filter-button').addClass('button-selected');
 			$('region-filter-button').removeClass('button-selected');
@@ -94,19 +88,15 @@ var Tree = function(mbeans) {
 	this.renderTopLevel = function(filter, parent){
 		var parentElement = $(parent);
 		var children = parentElement.getChildren();
-		this.getIconElement('loader-small.gif').replaces(children[0].firstChild);// Set the plus/minus icon
-		if(children.length == 1){//It's closed	
-			new Request.JSON({
-				url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*', 
-				method: 'get',
-				onSuccess: function (responseJSON, responseText){
-					this.renderTopLevelRequest(responseJSON.value, parent, filter);
-					this.getIconElement('tree-icons/minus.png').replaces(children[0].firstChild);// Set the plus/minus icon
-				}.bind(this)
-			}).send();
+		children[0].firstChild.replaceWith(this.getIconElement('loader-small.gif'));// Set the plus/minus icon
+		if(children.length == 1){//It's closed
+			util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
+				renderTopLevelRequest(response.value, parent, filter);
+				children[0].firstChild.replaceWith(this.getIconElement('tree-icons/minus.png'));// Set the plus/minus icon
+			});
 		} else {//It's open
-			parentElement.children[1].nix(true);
-			this.getIconElement('tree-icons/plus.png').replaces(children[0].firstChild);// Set the plus/minus icon
+			parentElement.children[1].destroy();
+			children[0].firstChild.replaceWith(this.getIconElement('tree-icons/plus.png'));// Set the plus/minus icon
 		}	
 	};
 	
@@ -119,19 +109,15 @@ var Tree = function(mbeans) {
 	this.renderArtifact = function (objectName, parent){		
 		var parentElement = $(parent);
 		var children = parentElement.getChildren();
-		this.getIconElement('loader-small.gif').replaces(children[0].firstChild);// Set the plus/minus icon
-		if(children.length == 1){//It's closed	
-			new Request.JSON({ 
-				url: util.getCurrentHost() + '/jolokia/read/' + objectName,
-				method: 'get',
-				onSuccess: function(responseJSON, responseText){
-					this.renderArtifactRequest(responseJSON.value, util.readObjectName(objectName), parent);
-					this.getIconElement('tree-icons/minus.png').replaces(children[0].firstChild);// Set the plus/minus icon
-				}.bind(this)
-			}).send();
+		children[0].firstChild.replaceWith(this.getIconElement('loader-small.gif'));// Set the plus/minus icon
+		if(children.length == 1){//It's closed
+			util.doQuery('read/' + objectName, function(response){
+				renderArtifactRequest(response.value, util.readObjectName(objectName), parent);
+				children[0].firstChild.replaceWith(this.getIconElement('tree-icons/minus.png'));// Set the plus/minus icon
+			});
 		} else {//It's open
-			parentElement.children[1].nix(true);
-			this.getIconElement('tree-icons/plus.png').replaces(children[0].firstChild);// Set the plus/minus icon
+			parentElement.children[1].destroy();
+			children[0].firstChild.replaceWith(this.getIconElement('tree-icons/plus.png'));// Set the plus/minus icon
 		}
 	};
 	
@@ -140,32 +126,24 @@ var Tree = function(mbeans) {
 	 * 
 	 */
 	this.doArtifactOperation = function(objectName, operation){
-		new Request({ 
-			url: util.getCurrentHost() + '/jolokia/exec/' + objectName + '/' + operation,
-			method: 'get',
-			onSuccess: function(response){
-				new Request.JSON({ 
-					url: util.getCurrentHost() + '/jolokia/read/' + objectName,
-					method: 'get',
-					onSuccess: function(responseJSON, responseText){
-						this.renderOperationResult(responseJSON, util.readObjectName(objectName));
-					}.bind(this)
-				}).send();
-			}.bind(this)
-		}).send();
+		util.doQuery('exec/' + objectName + '/' + operation, function(response){
+			util.doQuery('read/' + objectName, function(response){
+				renderOperationResult(response, util.readObjectName(objectName));
+			});
+		});
 	};
 	
 	this.renderOperationResult = function(responseJSON, objectName){
 		var artifact = new Artifact(objectName);
 		if(responseJSON.status == 404){
-			$$('.' + artifact.key).nix(true);
+			$('.' + artifact.key).destroy();
 		} else if(responseJSON.value){
-			$$('.' + artifact.key).each(function(nodeToUpdate){
+			$.each($('.' + artifact.key), function(nodeToUpdate){
 				if(nodeToUpdate.getChildren().length > 1){
-					nodeToUpdate.getChildren()[1].nix(true);
-					this.renderArtifactRequest(responseJSON.value, objectName, nodeToUpdate.id);
+					nodeToUpdate.getChildren()[1].destroy();
+					renderArtifactRequest(responseJSON.value, objectName, nodeToUpdate.id);
 				}
-			}, this);
+			});
 		} else {
 			alert('Unable to retrieve information about the modified Artifact, please refresh the page.');
 		}
@@ -182,16 +160,15 @@ var Tree = function(mbeans) {
 	 */
 	this.renderTopLevelRequest = function(json, parent, filter){
 		var parentElement = $(parent);
-		var fxContainer = $('div.fx-container');
+		var fxContainer = $('<div />', {'class': 'fx-container'});
 		json.each(function(mbean){
 			var artifact = new Artifact(util.readObjectName(mbean));
 			if(artifact[filter] == parent){
 				this.getArtifactLabel(artifact, parent).inject(fxContainer);
 			}
 		}, this);
-		fxContainer.inject(parentElement);
-		fxContainer.set('reveal', {duration: util.fxTime});
-		fxContainer.reveal();
+		parentElement.append(fxContainer);
+		fxContainer.slideToggle(util.fxTime);
 	};
 	
 	/**
@@ -204,48 +181,47 @@ var Tree = function(mbeans) {
 	 */
 	this.renderArtifactRequest = function(json, objectName, parent){	
 		var parentElement = $(parent);
-		var fxContainer = $('div.fx-container');
+		var fxContainer = $('<div />', {'class': 'fx-container'});
 		var fullArtifact = new FullArtifact(json, objectName);
 		
 		var artifactControlBar = this.getArtifactControlBar(fullArtifact);
 		if(fullArtifact.type == 'configuration'){
-			var configControl = $('a.artifact-control');
+			var configControl = $('<a />', {'class': 'artifact-control'});
 			configControl.set('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
-			configControl.appendText('View');
-			configControl.inject(artifactControlBar);
+			configControl.text('View');
+			artifactControlBar.append(configControl);
 		}
 
-		artifactControlBar.inject(fxContainer);
-		this.getArtifactAttribute('Name: ' + fullArtifact.name).inject(fxContainer);
-		this.getArtifactAttribute('Version: ' + fullArtifact.version).inject(fxContainer);
-		this.getArtifactAttribute('Region: ' + fullArtifact.region).inject(fxContainer);
-		this.getArtifactAttribute('Type: ' + fullArtifact.type.capitalize()).inject(fxContainer);
-		this.getArtifactAttribute(fullArtifact.state.toLowerCase().capitalize(), 'state-' + fullArtifact.state).inject(fxContainer);
+		fxContainer.append(artifactControlBar);
+		fxContainer.append(this.getArtifactAttribute('Name: ' + fullArtifact.name));
+		fxContainer.append(this.getArtifactAttribute('Version: ' + fullArtifact.version));
+		fxContainer.append(this.getArtifactAttribute('Region: ' + fullArtifact.region));
+		fxContainer.append(this.getArtifactAttribute('Type: ' + fullArtifact.type.capitalize()));
+		fxContainer.append(this.getArtifactAttribute(fullArtifact.state.toLowerCase().capitalize(), 'state-' + fullArtifact.state));
 		
-		Object.each(fullArtifact.properties, function(value, key){
+		$.each(fullArtifact.properties, function(key, value){
 			if(value == 'true' || value == true){
 				if(key == 'Spring' || key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
-					this.getArtifactAttribute(key, key).inject(fxContainer);
+					fxContainer.append(this.getArtifactAttribute(key, key));
 				} else {
-					this.getArtifactAttribute(key).inject(fxContainer);
+					fxContainer.append(this.getArtifactAttribute(key));
 				}
 			} else {
 				if(key == 'Bundle Id'){
-					this.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/explorer#' + value).inject(fxContainer);
+					fxContainer.append(this.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/explorer#' + value));
 				} else {
-					this.getArtifactAttribute(key + ': ' + value).inject(fxContainer);
+					fxContainer.append(this.getArtifactAttribute(key + ': ' + value));
 				}
 			}
-		}, this);
+		});
 		
-		fullArtifact.dependents.each(function(objectName){
+		$.each(fullArtifact.dependents, function(objectName){
 			var dependentArtifact = new Artifact(objectName);
-			this.getArtifactLabel(dependentArtifact, parent).inject(fxContainer);
-		}, this);
+			fxContainer.append(this.getArtifactLabel(dependentArtifact, parent));
+		});
 
-		fxContainer.inject(parentElement);
-		fxContainer.set('reveal', {duration: util.fxTime});
-		fxContainer.reveal();	
+		parentElement.append(fxContainer);
+		fxContainer.slideToggle(util.fxTime);
 	};
 	
 	/**
@@ -268,40 +244,41 @@ var Tree = function(mbeans) {
 	 * @param id - unique id of the label
 	 */
 	this.getNodeContainer = function(text, icon, id, key){
-		var artifactContainer = $('div.artifact-container');
+		var artifactContainer = $('div', {'class': 'artifact-container'});
 		artifactContainer.addClass(key);
-		artifactContainer.setProperty('id', id);
-		
-		var artifactLabel = $('div.artifact-label');
-		artifactLabel.inject(artifactContainer);
+		artifactContainer.prop('id', id);
+
+		var artifactLabel = $('div', {'class': 'artifact-label'});
+		artifactContainer.append(artifactLabel);
 
 		var plusMinus = this.getIconElement('tree-icons/plus.png');
 		plusMinus.addClass('plus');
-		plusMinus.inject(artifactLabel);
-		this.getIconElement('tree-icons/node-' + icon + '.png').inject(artifactLabel);
+		artifactLabel.append(plusMinus);
+		artifactLabel.append(this.getIconElement('tree-icons/node-' + icon + '.png'));
 		var span  = $('span.label-text');
-		span.appendText(text);
-		span.inject(artifactLabel);
+		span.text(text);
+		artifactLabel.append(span);
 		
 		return artifactContainer;
 	};
 	
 	this.getArtifactControlBar = function(artifact) {
-		var controlBar = $('div.artifact-attribute');
+		var controlBar = $('div', {'class': 'artifact-attribute'});
 		this.getIconElement('tree-icons/attribute-default.png').inject(controlBar);
 		var span  = $('span.label-text');
-		span.appendText('Actions:');
-		span.inject(controlBar);
-		this.getArtifactControl('start', artifact.objectName).inject(controlBar);
-		this.getArtifactControl('refresh', artifact.objectName).inject(controlBar);
-		this.getArtifactControl('stop', artifact.objectName).inject(controlBar);
-		this.getArtifactControl('uninstall', artifact.objectName).inject(controlBar);
+		span.text('Actions:');
+		
+		controlBar.append(span);
+		controlBar.append(this.getArtifactControl('start', artifact.objectName));
+		controlBar.append(this.getArtifactControl('refresh', artifact.objectName));
+		controlBar.append(this.getArtifactControl('stop', artifact.objectName));
+		controlBar.append(this.getArtifactControl('uninstall', artifact.objectName));
 		return controlBar;
 	};
 	
 	this.getArtifactControl = function(action, objectName) {
-		var control = $('div.artifact-control');
-		control.appendText(action.capitalize());
+		var control = $('<div />', {'class': 'artifact-control'});
+		control.text(action.capitalize());
 		control.set('onclick', 'tree.doArtifactOperation("' + objectName.toString + '", "' + action + '")');
 		return control;
 	};
@@ -313,10 +290,10 @@ var Tree = function(mbeans) {
 	 * @param icon - the icon name
 	 */
 	this.getArtifactAttribute = function(text, icon, link) {
-		var property = $('div.artifact-attribute');
-		this.getIconElement('tree-icons/attribute-default.png').inject(property);
+		var property = $('<div />', {'class': 'artifact-attribute'});
+		property.append(this.getIconElement('tree-icons/attribute-default.png'));
 		if(icon){
-			this.getIconElement('tree-icons/attribute-' + icon + '.png').inject(property);
+			property.append(this.getIconElement('tree-icons/attribute-' + icon + '.png'));
 		}
 		var label;
 		if(link){
@@ -325,9 +302,9 @@ var Tree = function(mbeans) {
 		} else {
 			label  = $('span');
 		}
-		label.appendText(text);
+		label.text(text);
 		label.addClass('label-text');
-		label.inject(property);
+		property.append(label);
 		return property;
 	};
 	
@@ -337,8 +314,8 @@ var Tree = function(mbeans) {
 	 * @param iconName - for the image
 	 */
 	this.getIconElement = function(iconName){
-		var imageElement = $('div.tree-icon');
-		imageElement.set('styles', {'background': 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center'});
+		var imageElement = $('<div />', {'class': 'tree-icon'});
+		imageElement.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center');
 		return imageElement;
 	};
 	
@@ -373,16 +350,16 @@ var FullArtifact = function(metaData, objectName) {
 	this.objectName = objectName;
 	
 	this.dependents = [];
-	metaData['Dependents'].each(function(item){
-		this.dependents.push(util.readObjectName(item.objectName));
-	}, this);
+	$each(metaData['Dependents'], function(item){
+		dependents.push(util.readObjectName(item.objectName));
+	});
 	
 	this.properties = {};
-	Object.each(metaData['Properties'], function(value, key){
+	$.each(metaData['Properties'], function(value, key){
 		if(!(value == false || value == 'false')){
-			this.properties[key] = value;
+			properties[key] = value;
 		}
-	}, this);
+	});
 	
 	//Special processing for scoped/atomic artifacts
 	if(this.type == 'plan' || this.type == 'par'){
@@ -404,28 +381,24 @@ var FullArtifact = function(metaData, objectName) {
 	
 
 var UploadManager = function() {
-
-	this.display = new Fx.Reveal($('upload-manager'), {duration: util.fxTime}).dissolve();
-	
-	this.spinner = new Spinner('upload-manager');
 	
 	this.uploading = false;
 	
 	this.open = false;
 	
 	this.toggle = function() {
-		this.display.toggle();
+		$('.upload-manager').slideToggle(util.fxTime);
 		if(this.open) {
-			$('upload-toggle-button').removeClass('button-selected');
+			$('.upload-toggle-button').removeClass('button-selected');
 			this.open = false;
 		} else {
-			$('upload-toggle-button').addClass('button-selected');
+			$('.upload-toggle-button').addClass('button-selected');
 			this.open = true;
 		}
 	};
 	
 	this.addUploadBox = function() {
-		this.getUploadFormElement($('upload-list').getChildren(['li']).length).inject($('upload-list'));
+		$('.upload-list').append(this.getUploadFormElement($('.upload-list').getChildren('li').length));
 	};
 	
 	this.minusUploadBox = function() {
@@ -437,34 +410,31 @@ var UploadManager = function() {
 	
 	this.startUpload = function() {
 		this.uploading = true;
-		this.spinner.position();
-		this.spinner.show(true);
+		//this.spinner.show(true);
 		$('upload-form').submit();
 	};
 	
 	this.resetForm = function() {
-		$('upload-list').empty();
-		this.getUploadFormElement('1').inject($('upload-list'));
+		$('.upload-list').empty();
+		$('.upload-list').append(this.getUploadFormElement('1'));
 	};
 	
 	this.uploadComplete = function(){
 		if(this.uploading){
 			this.uploading = false;
 			alert("Upload Complete");
-			this.spinner.hide();
+			//this.spinner.hide();
 			this.resetForm();
 		}
 	};
-
-	/* **************** START PRIVATE METHODS **************** */
 	
 	this.getUploadFormElement = function(number){
-		var uploadBox = $('input');
-		uploadBox.setProperty('type', 'file');
-		uploadBox.setProperty('size', '70');
-		uploadBox.setProperty('name', number);
-		var listItem = $('li');
-		uploadBox.inject(listItem);
+		var uploadBox = $('<input />');
+		uploadBox.prop('type', 'file');
+		uploadBox.prop('size', '70');
+		uploadBox.prop('name', number);
+		var listItem = $('<li />');
+		listItem.append(uploadBox);
 		return listItem;
 	};
 	

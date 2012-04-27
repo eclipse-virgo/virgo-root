@@ -47,7 +47,6 @@ var Util = function(){
 				closeOnEscape: false,
 				width: '48px'
 			});
-			
 			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
 			var hash;
 			this.queryHash = {};
@@ -60,7 +59,7 @@ var Util = function(){
 			}
 		}
 	};
-
+	
 	/**
 	 * 
 	 */
@@ -100,24 +99,26 @@ var Util = function(){
 	
 	/**
 	 * 
-	 * @param query
-	 * @param callback
+	 * @param query string for jolokia
 	 */
-	this.doBulkQuery = function(query, callback){
+	this.doQuery = function(query, successCallback, errorCallback){
 		$.ajax({
-			type: 'POST',
-			url: this.getCurrentHost() + '/jolokia',
+			url: util.getCurrentHost() + '/jolokia/' + query,
 			dataType: 'json',
-			data: JSON.stringify(query),
 			success: function (response) {
-				callback(response);
+				successCallback(response);
+			},
+			error: function(xmlHttpRequest, textStatus, errorThrown) {
+				if(errorCallback){
+					errorCallback(xmlHttpRequest, textStatus, errorThrown);
+				}
 			}
 		});
 	};
 	
 	/**
 	 * 
-	 * @param query
+	 * @param query object of keys and values
 	 * @param callback
 	 */
 	this.doBulkQuery = function(query, successCallback, errorCallback){
@@ -130,7 +131,9 @@ var Util = function(){
 				successCallback(response);
 			},
 			error: function(xmlHttpRequest, textStatus, errorThrown) {
-				errorCallback(xmlHttpRequest, textStatus, errorThrown);
+				if(errorCallback){
+					errorCallback(xmlHttpRequest, textStatus, errorThrown);
+				}
 			}
 		});
 	};
