@@ -49,6 +49,8 @@
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		<override org="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}"/>
 		<override org="org.springframework" rev="${org.springframework}"/>
+		<!-- Override dependency from org.eclipse.equinox.console.supportability -->
+		<override org="org.apache.felix" module="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}"/>
 	</dependencies>
 
 </ivy-module>
