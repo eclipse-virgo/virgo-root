@@ -51,11 +51,7 @@ var DumpViewer = function(){
 					}
 				
 				}
-				if (!self.selectedDump){
-					self.selectedDump = null;
-					$('#dump-items').empty();
-					$('#dump-item-content').empty();
-				}
+				self.displaySelectedDumpEntries();
 			}
 		});
 	};
@@ -89,14 +85,23 @@ var DumpViewer = function(){
 		});
 		dumpListItem.addClass('selected-item');
 		self.selectedDump = dumpListItem;
-		var dumpId = dumpListItem.attr("id");
-		$.ajax({
-			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
-			dataType: 'json',
-			success: function (response){
-				self.displayDumpEntriesResponse(response.value, dumpListItem);
-			}
-		});
+		self.displaySelectedDumpEntries();
+	};
+	
+	self.displaySelectedDumpEntries = function(){
+		if(self.selectedDump){			
+			var dumpId = self.selectedDump.attr("id");
+			$.ajax({
+				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
+				dataType: 'json',
+				success: function (response){
+					self.displayDumpEntriesResponse(response.value, self.selectedDump);
+				}
+			});
+		}else{
+			$('#dump-items').empty();
+			$('#dump-item-content').empty();
+		}
 	};
 	
 	self.displayDumpEntriesResponse = function(json, dumpListItem){
