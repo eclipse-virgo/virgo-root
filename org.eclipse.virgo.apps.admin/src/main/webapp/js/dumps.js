@@ -15,136 +15,162 @@
 function pageinit(){
 	dumpViewer = new DumpViewer();
 	dumpViewer.displayDumps();
-	new Request.JSON({
+	$.ajax({
 		url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
-		method: 'get',
-		onSuccess: function (responseJSON){
-			setDumpDirectory(responseJSON.value);
+		dataType: 'json',
+		success: function (response) {
+			setDumpDirectory(response.value);
 		}
-	}).send();
+	});
 }
 
 function setDumpDirectory(json) {
-	$('dumpLocation').appendText("Location: " + json);
+	$('#dumpLocation').text("Location: " + json);
 }
 
 var DumpViewer = function(){
-
-	this.selectedDump = null;
 	
-	this.displayDumps = function(){
-		$('dumps').empty();
-		new Request.JSON({
+	var self = this;
+
+	self.selectedDump = null;
+	
+	self.displayDumps = function(){
+		$('#dumps').empty();
+		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
-			method: 'get',
-			onSuccess: function (responseJSON){
-				this.displayDumpsResponse(responseJSON.value);
-				if(this.selectedDump){
-					$(this.selectedDump).addClass('selected-item');
-				}else{
-					this.selectedDump = null;
-					$('dump-items').empty();
-					$('dump-item-content').empty();
+			dataType: 'json',
+			success: function (response){
+				self.displayDumpsResponse(response.value);
+				if(self.selectedDump){
+					// Look up the id of the selected dump again.
+					var dumpId = self.selectedDump.attr("id");
+					self.selectedDump = $('#' + dumpId);
+					
+					if (self.selectedDump){
+						$(self.selectedDump).addClass('selected-item');
+					}
+				
 				}
-			}.bind(this)
-		}).send();
+				if (!self.selectedDump){
+					self.selectedDump = null;
+					$('#dump-items').empty();
+					$('#dump-item-content').empty();
+				}
+			}
+		});
 	};
 	
-	this.displayDumpsResponse = function(json){
+	self.displayDumpsResponse = function(json){
 		if(json && json.length > 0){
-			json.each(function(item){
-				var dumpListItem = $('li.dump');
-				dumpListItem.set('id', item );
-				$('div.label').appendText(item).set('onClick', 'dumpViewer.displayDumpEntries("' + item + '")').inject(dumpListItem);
-				$('div.delete').appendText("Delete").set('onClick', 'dumpViewer.deleteDump("' + item + '")').inject(dumpListItem);
-				dumpListItem.inject($('dumps'));
-			}, this);
+			$.each(json, function(index, item){
+				var dumpListItem = $('<li />', {'class' : 'dump'});
+				dumpListItem.attr("id", item);
+				var label = $('<div />', {'class' : 'label'});
+				label.text(item);
+				label.click(dumpListItem, dumpViewer.displayDumpEntries);
+				dumpListItem.append(label);
+				dumpListItem.append($('<div />', {'class' : 'delete'}).text("Delete").click(dumpListItem, dumpViewer.deleteDump));
+				$('#dumps').append(dumpListItem);
+			});
 		} else {
-			var dumpListItem = $('li');
-			dumpListItem.appendText('No dumps found.');
-			dumpListItem.inject($('dumps'));
+			var dumpListItem = $('<li />');
+			dumpListItem.text('No dumps found.');
+			$('#dumps').append(dumpListItem);
 		}
 		util.pageReady();
 	};
 
-	this.displayDumpEntries = function(id){
-		$('dumps').getChildren().each(function(dump){dump.removeClass('selected-item');});
-		$(id).addClass('selected-item');
-		this.selectedDump = id;
-		new Request.JSON({
-			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + id, 
-			method: 'get',
-			onSuccess: function (responseJSON){
-				this.displayDumpEntriesResponse(responseJSON.value, id);
-			}.bind(this)
-		}).send();
+	self.displayDumpEntries = function(event){
+		var dumpListItem = event.data;
+		var dumpParent = $('#dumps');
+		var dumps = dumpParent.children();
+		$.each(dumps, function(index, dump){
+			$(dump).removeClass('selected-item');
+		});
+		dumpListItem.addClass('selected-item');
+		self.selectedDump = dumpListItem;
+		var dumpId = dumpListItem.attr("id");
+		$.ajax({
+			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
+			dataType: 'json',
+			success: function (response){
+				self.displayDumpEntriesResponse(response.value, dumpListItem);
+			}
+		});
 	};
 	
-	this.displayDumpEntriesResponse = function(json, id){
-		$('dump-items').empty();
-		$('dump-item-content').empty();
+	self.displayDumpEntriesResponse = function(json, dumpListItem){
+		var dumpId = dumpListItem.attr("id");
+		$('#dump-items').empty();
+		$('#dump-item-content').empty();
 		if(json && json.length > 0){
-			json.each(function(item){
-				var dumpEntryListItem = $('li.dump-item');
-				dumpEntryListItem.set('id', id + item[0]);
-				$('div.label').appendText(item[0]).set('onClick', 'dumpViewer.displayDumpEntry("' + id + item[0] + '","' + item[1] + '")').inject(dumpEntryListItem);
-				dumpEntryListItem.inject($('dump-items'));
+			$.each(json, function(index, item){
+				var dumpEntryListItem = $('<li />', {'class' : 'dump-item'});
+				dumpEntryListItem.attr('id', dumpId + item[0]);
+				var dumpEntryItem = $('<div />', {'class' : 'label'}).text(item[0]);
+				dumpEntryItem.attr('onClick', 'dumpViewer.displayDumpEntry("' + dumpId + item[0] + '","' + item[1] + '")');
+				dumpEntryListItem.append(dumpEntryItem);
+				$('#dump-items').append(dumpEntryListItem);
 				if('summary.txt' == item[0]){
-					this.displayDumpEntry(id + item[0], item[1]);
+					self.displayDumpEntry(dumpId + item[0], item[1]);
 				}
-			}, this);
+			});
 		} else {
-			var dumpEntryListItem = $('li');
-			dumpEntryListItem.appendText('No dump entries found.');
-			dumpEntryListItem.inject($('dump-items'));
+			var dumpEntryListItem = $('<li />');
+			dumpEntryListItem.text('No dump entries found.');
+			$('#dump-items').append(dumpEntryListItem);
 		}
 	};
 	
-	this.displayDumpEntry = function(id, queryString){
-		$('dump-items').getChildren().each(function(dump){dump.removeClass('selected-item');});
+	self.displayDumpEntry = function(id, queryString){
+		$.each($('#dump-items').children(), function(index, dump){
+			$(dump).removeClass('selected-item');
+		});
 		$(id).addClass('selected-item');
-		new Request.JSON({
+		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + queryString, 
-			method: 'get',
-			onSuccess: function (responseJSON){
-				this.displayDumpEntryResponse(responseJSON.value);
-			}.bind(this)
-		}).send();
+			dataType: 'json',
+			success: function (response){
+				self.displayDumpEntryResponse(response.value);
+			}
+		});
 	};
 	
-	this.displayDumpEntryResponse = function(json){
-		$('dump-item-content').empty();
+	self.displayDumpEntryResponse = function(json){
+		$('#dump-item-content').empty();
 		if(json && json.length > 0){
-			json.each(function(item){
-				var dumpListItem = $('div.dump-file-line');
-				dumpListItem.appendText(item);
-				dumpListItem.inject($('dump-item-content'));
-			}, this);
+			$.each(json, function(index, item){
+				var dumpListItem = $('<div />', {'class' : 'dump-file-line'});
+				dumpListItem.text(item);
+				$('#dump-item-content').append(dumpListItem);
+			});
 		}
 	};
 	
-	this.createDump = function(){
-		new Request.JSON({
+	self.createDump = function(){
+		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
-			method: 'get',
-			onSuccess: function (responseJSON){
-				this.displayDumps();
-			}.bind(this)
-		}).send();
+			dataType: 'json',
+			success: function (response){
+				self.displayDumps();
+			}
+		});
 	};
 
-	this.deleteDump = function(dumpId){
-		new Request.JSON({
-			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' + dumpId, 
-			method: 'get',
-			onSuccess: function (responseJSON){
-				if(dumpId == this.selectedDump){
-					this.selectedDump = null;
+	self.deleteDump = function(event){
+		var dumpListItem = event.data;
+		var dumpId = dumpListItem.attr("id");
+		$.ajax({
+			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' +  dumpId, 
+			dataType: 'json',
+			success: function (response){
+				if(dumpListItem == self.selectedDump){
+					self.selectedDump = null;
 				}
-				this.displayDumps();
+				self.displayDumps();
 				alert("Dump with id " + dumpId + " has been deleted.");
-			}.bind(this)
-		}).send();
+			}
+		});
 	};
 	
 };
