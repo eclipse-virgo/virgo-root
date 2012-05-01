@@ -47,15 +47,15 @@ var Tree = function(mbeans) {
 			};
 			
 		});
-		$.each(filterMatches, function(filterMatch){
-			var filterContainer;
+		$.each(filterMatches, function(index, filterMatch){
+			var node;
 			if(filter == 'type'){
-				filterContainer = self.getNodeContainer(filterMatch, filterMatch, filterMatch, filter);
+				node = self.getNodeContainer(filterMatch, filterMatch, filterMatch, filter);
 			} else {
-				filterContainer = self.getNodeContainer(filterMatch, 'default', filterMatch, filter);
+				node = self.getNodeContainer(filterMatch, 'default', filterMatch, filter);
 			}
-			filterContainer.firstChild.set('onclick', 'tree.renderTopLevel("' + filter + '", "' + filterMatch + '")');
-			$('.artifacts-tree').append(filterContainer);
+			$('.artifact-label', node).click({'node': node, 'filter': filter}, tree.renderTopLevel);
+			$('#artifacts-tree').append(node);
 		});
 	};
 
@@ -65,16 +65,16 @@ var Tree = function(mbeans) {
 	 * @param filter - the artifact property to filter on
 	 */
 	this.reRenderWithFilter = function (filter){
-		$('artifacts-tree').empty();
+		$('#artifacts-tree').empty();
 		util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
-			setup(response.value, filter);
+			self.setup(response.value, filter);
 		});
 		if(filter == 'type') {
-			$('type-filter-button').addClass('button-selected');
-			$('region-filter-button').removeClass('button-selected');
+			$('#type-filter-button').addClass('button-selected');
+			$('#region-filter-button').removeClass('button-selected');
 		} else {
-			$('region-filter-button').addClass('button-selected');
-			$('type-filter-button').removeClass('button-selected');
+			$('#region-filter-button').addClass('button-selected');
+			$('#type-filter-button').removeClass('button-selected');
 		}
 		
 	};
@@ -85,39 +85,41 @@ var Tree = function(mbeans) {
 	 * @param filter - the artifact property to sort by
 	 * @param parent - the unique key of the parent node
 	 */
-	this.renderTopLevel = function(filter, parent){
-		var parentElement = $(parent);
-		var children = parentElement.getChildren();
-		children[0].firstChild.replaceWith(this.getIconElement('loader-small.gif'));// Set the plus/minus icon
-		if(children.length == 1){//It's closed
+	this.renderTopLevel = function(eventData){
+		var node = eventData.data.node;
+		self.setIconElement(node.children('.artifact-label').children('.twisty'), 'loader-small.gif');
+		if(node.children().length == 1){//It's closed
 			util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
-				renderTopLevelRequest(response.value, parent, filter);
-				children[0].firstChild.replaceWith(this.getIconElement('tree-icons/minus.png'));// Set the plus/minus icon
+				self.renderTopLevelRequest(response, node, eventData.data.filter);
+				self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/minus.png');
 			});
 		} else {//It's open
-			parentElement.children[1].destroy();
-			children[0].firstChild.replaceWith(this.getIconElement('tree-icons/plus.png'));// Set the plus/minus icon
-		}	
+			node.children('.fx-container').slideToggle(util.fxTime, function(){
+				$(this).remove();
+			});
+			self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
+		}
 	};
-	
+
 	/**
 	 * Called when any artifact in the tree is expanded
 	 * 
 	 * @param objectName - the unique key of the artifact to render
 	 * @param parent - id of the element to render the artifact under
 	 */
-	this.renderArtifact = function (objectName, parent){		
-		var parentElement = $(parent);
-		var children = parentElement.getChildren();
-		children[0].firstChild.replaceWith(this.getIconElement('loader-small.gif'));// Set the plus/minus icon
-		if(children.length == 1){//It's closed
-			util.doQuery('read/' + objectName, function(response){
-				renderArtifactRequest(response.value, util.readObjectName(objectName), parent);
-				children[0].firstChild.replaceWith(this.getIconElement('tree-icons/minus.png'));// Set the plus/minus icon
+	this.renderArtifact = function (eventData){
+		var node = eventData.data.node;
+		self.setIconElement(node.children('.artifact-label').children('.twisty'), 'loader-small.gif');
+		if(node.children().length == 1){//It's closed
+			util.doQuery('read/' + eventData.data.objectName.toString, function(response){
+				self.renderArtifactRequest(response, eventData.data.objectName, node);
+				self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/minus.png');
 			});
 		} else {//It's open
-			parentElement.children[1].destroy();
-			children[0].firstChild.replaceWith(this.getIconElement('tree-icons/plus.png'));// Set the plus/minus icon
+			node.children('.fx-container').slideToggle(util.fxTime, function(){
+				$(this).remove();
+			});
+			self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
 		}
 	};
 	
@@ -125,10 +127,10 @@ var Tree = function(mbeans) {
 	 * Accepted operations are 'start', 'stop', 'uninstall' and 'refresh'
 	 * 
 	 */
-	this.doArtifactOperation = function(objectName, operation){
-		util.doQuery('exec/' + objectName + '/' + operation, function(response){
-			util.doQuery('read/' + objectName, function(response){
-				renderOperationResult(response, util.readObjectName(objectName));
+	this.doArtifactOperation = function(event){
+		util.doQuery('exec/' + event.data.objectName.toString + '/' + event.data.action, function(response){
+			util.doQuery('read/' + event.data.objectName.toString, function(response){
+				self.renderOperationResult(response, event.data.objectName);
 			});
 		});
 	};
@@ -136,12 +138,13 @@ var Tree = function(mbeans) {
 	this.renderOperationResult = function(responseJSON, objectName){
 		var artifact = new Artifact(objectName);
 		if(responseJSON.status == 404){
-			$('.' + artifact.key).destroy();
+			$('.' + artifact.key).remove();
 		} else if(responseJSON.value){
-			$.each($('.' + artifact.key), function(nodeToUpdate){
-				if(nodeToUpdate.getChildren().length > 1){
-					nodeToUpdate.getChildren()[1].destroy();
-					renderArtifactRequest(responseJSON.value, objectName, nodeToUpdate.id);
+			$.each($('.' + artifact.key), function(index, nodeToUpdate){
+				var fxContainer = $(nodeToUpdate).children('.fx-container');
+				if(fxContainer){
+					fxContainer.remove();
+					self.renderArtifactRequest(responseJSON, objectName, $(nodeToUpdate));
 				}
 			});
 		} else {
@@ -159,15 +162,14 @@ var Tree = function(mbeans) {
 	 * @param parent - element to put the artifact under
 	 */
 	this.renderTopLevelRequest = function(json, parent, filter){
-		var parentElement = $(parent);
 		var fxContainer = $('<div />', {'class': 'fx-container'});
-		json.each(function(mbean){
+		$.each(json.value, function(index, mbean){
 			var artifact = new Artifact(util.readObjectName(mbean));
-			if(artifact[filter] == parent){
-				this.getArtifactLabel(artifact, parent).inject(fxContainer);
+			if(artifact[filter] == parent.attr('id')){
+				fxContainer.append(self.getArtifactLabel(artifact, parent.attr('id')));
 			}
-		}, this);
-		parentElement.append(fxContainer);
+		});
+		parent.append(fxContainer);
 		fxContainer.slideToggle(util.fxTime);
 	};
 	
@@ -179,48 +181,47 @@ var Tree = function(mbeans) {
 	 * @param objectName - of the artifact
 	 * @param parent - element to put the artifact under
 	 */
-	this.renderArtifactRequest = function(json, objectName, parent){	
-		var parentElement = $(parent);
+	this.renderArtifactRequest = function(json, objectName, parent){
 		var fxContainer = $('<div />', {'class': 'fx-container'});
-		var fullArtifact = new FullArtifact(json, objectName);
+		var fullArtifact = new FullArtifact(json.value, objectName);
 		
-		var artifactControlBar = this.getArtifactControlBar(fullArtifact);
+		var artifactControlBar = self.getArtifactControlBar(fullArtifact);
 		if(fullArtifact.type == 'configuration'){
 			var configControl = $('<a />', {'class': 'artifact-control'});
-			configControl.set('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
+			configControl.attr('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
 			configControl.text('View');
 			artifactControlBar.append(configControl);
 		}
 
 		fxContainer.append(artifactControlBar);
-		fxContainer.append(this.getArtifactAttribute('Name: ' + fullArtifact.name));
-		fxContainer.append(this.getArtifactAttribute('Version: ' + fullArtifact.version));
-		fxContainer.append(this.getArtifactAttribute('Region: ' + fullArtifact.region));
-		fxContainer.append(this.getArtifactAttribute('Type: ' + fullArtifact.type.capitalize()));
-		fxContainer.append(this.getArtifactAttribute(fullArtifact.state.toLowerCase().capitalize(), 'state-' + fullArtifact.state));
+		fxContainer.append(self.getArtifactAttribute('Name: ' + fullArtifact.name));
+		fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
+		fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
+		fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
+		fxContainer.append(self.getArtifactAttribute(fullArtifact.state, 'state-' + fullArtifact.state));
 		
 		$.each(fullArtifact.properties, function(key, value){
 			if(value == 'true' || value == true){
 				if(key == 'Spring' || key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
-					fxContainer.append(this.getArtifactAttribute(key, key));
+					fxContainer.append(self.getArtifactAttribute(key, key));
 				} else {
-					fxContainer.append(this.getArtifactAttribute(key));
+					fxContainer.append(self.getArtifactAttribute(key));
 				}
 			} else {
 				if(key == 'Bundle Id'){
-					fxContainer.append(this.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/explorer#' + value));
+					fxContainer.append(self.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/explorer#' + value));
 				} else {
-					fxContainer.append(this.getArtifactAttribute(key + ': ' + value));
+					fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
 				}
 			}
 		});
 		
-		$.each(fullArtifact.dependents, function(objectName){
+		$.each(fullArtifact.dependents, function(index, objectName){
 			var dependentArtifact = new Artifact(objectName);
-			fxContainer.append(this.getArtifactLabel(dependentArtifact, parent));
+			fxContainer.append(self.getArtifactLabel(dependentArtifact, parent.attr('id')));
 		});
 
-		parentElement.append(fxContainer);
+		parent.append(fxContainer);
 		fxContainer.slideToggle(util.fxTime);
 	};
 	
@@ -231,9 +232,9 @@ var Tree = function(mbeans) {
 	 * @param parent - element to insert the $ in to
 	 */
 	this.getArtifactLabel = function(artifact, parent){
-		var label = this.getNodeContainer(artifact.name + '_' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
-		label.firstChild.set('onclick', 'tree.renderArtifact("' + artifact.objectName.toString + '", "' + parent + artifact.key + '")');
-		return label;
+		var node = self.getNodeContainer(artifact.name + '_' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
+		$('.artifact-label', node).click({'objectName': artifact.objectName, 'node': node}, tree.renderArtifact);
+		return node;
 	};
 	
 	/**
@@ -244,18 +245,18 @@ var Tree = function(mbeans) {
 	 * @param id - unique id of the label
 	 */
 	this.getNodeContainer = function(text, icon, id, key){
-		var artifactContainer = $('div', {'class': 'artifact-container'});
+		var artifactContainer = $('<div />', {'class': 'artifact-container'});
 		artifactContainer.addClass(key);
 		artifactContainer.prop('id', id);
 
-		var artifactLabel = $('div', {'class': 'artifact-label'});
+		var artifactLabel = $('<div />', {'class': 'artifact-label'});
 		artifactContainer.append(artifactLabel);
 
-		var plusMinus = this.getIconElement('tree-icons/plus.png');
-		plusMinus.addClass('plus');
+		var plusMinus = self.getIconElement('tree-icons/plus.png');
+		plusMinus.addClass('plus twisty');
 		artifactLabel.append(plusMinus);
-		artifactLabel.append(this.getIconElement('tree-icons/node-' + icon + '.png'));
-		var span  = $('span.label-text');
+		artifactLabel.append(self.getIconElement('tree-icons/node-' + icon + '.png'));
+		var span  = $('<span />', {'class': 'label-text'});
 		span.text(text);
 		artifactLabel.append(span);
 		
@@ -263,23 +264,23 @@ var Tree = function(mbeans) {
 	};
 	
 	this.getArtifactControlBar = function(artifact) {
-		var controlBar = $('div', {'class': 'artifact-attribute'});
-		this.getIconElement('tree-icons/attribute-default.png').inject(controlBar);
-		var span  = $('span.label-text');
+		var controlBar = $('<div />', {'class': 'artifact-attribute'});
+		controlBar.append(self.getIconElement('tree-icons/attribute-default.png'));
+		var span  = $('<span />', {'class': 'label-text'});
 		span.text('Actions:');
 		
 		controlBar.append(span);
-		controlBar.append(this.getArtifactControl('start', artifact.objectName));
-		controlBar.append(this.getArtifactControl('refresh', artifact.objectName));
-		controlBar.append(this.getArtifactControl('stop', artifact.objectName));
-		controlBar.append(this.getArtifactControl('uninstall', artifact.objectName));
+		controlBar.append(self.getArtifactControl('start', artifact.objectName));
+		controlBar.append(self.getArtifactControl('refresh', artifact.objectName));
+		controlBar.append(self.getArtifactControl('stop', artifact.objectName));
+		controlBar.append(self.getArtifactControl('uninstall', artifact.objectName));
 		return controlBar;
 	};
 	
 	this.getArtifactControl = function(action, objectName) {
 		var control = $('<div />', {'class': 'artifact-control'});
-		control.text(action.capitalize());
-		control.set('onclick', 'tree.doArtifactOperation("' + objectName.toString + '", "' + action + '")');
+		control.text(action.toUpperCase());
+		control.click({'action': action, 'objectName': objectName}, tree.doArtifactOperation);
 		return control;
 	};
 	
@@ -291,19 +292,18 @@ var Tree = function(mbeans) {
 	 */
 	this.getArtifactAttribute = function(text, icon, link) {
 		var property = $('<div />', {'class': 'artifact-attribute'});
-		property.append(this.getIconElement('tree-icons/attribute-default.png'));
+		property.append(self.getIconElement('tree-icons/attribute-default.png'));
 		if(icon){
-			property.append(this.getIconElement('tree-icons/attribute-' + icon + '.png'));
+			property.append(self.getIconElement('tree-icons/attribute-' + icon + '.png'));
 		}
 		var label;
 		if(link){
-			label = $('a');
-			label.set('href', link);
+			label = $('<a />', {'class': 'label-text'});
+			label.attr('href', link);
 		} else {
-			label  = $('span');
+			label  = $('<span />', {'class': 'label-text'});
 		}
 		label.text(text);
-		label.addClass('label-text');
 		property.append(label);
 		return property;
 	};
@@ -314,9 +314,18 @@ var Tree = function(mbeans) {
 	 * @param iconName - for the image
 	 */
 	this.getIconElement = function(iconName){
-		var imageElement = $('<div />', {'class': 'tree-icon'});
-		imageElement.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center');
-		return imageElement;
+		return self.setIconElement($('<div />', {'class': 'tree-icon'}), iconName);
+	};
+	
+	/**
+	 * Set an element with a background image applied
+	 * 
+	 * @param element - element to set the image on
+	 * @param iconName - for the image
+	 */
+	this.setIconElement = function(element, iconName){
+		element.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center');
+		return element;
 	};
 	
 };
@@ -342,6 +351,9 @@ var Artifact = function(objectName) {
  * @param objectName
  */
 var FullArtifact = function(metaData, objectName) {
+	
+	var self = this;
+	
 	this.name = metaData['Name'];
 	this.version = metaData['Version'];
 	this.region = metaData['Region'];
@@ -350,14 +362,14 @@ var FullArtifact = function(metaData, objectName) {
 	this.objectName = objectName;
 	
 	this.dependents = [];
-	$each(metaData['Dependents'], function(item){
-		dependents.push(util.readObjectName(item.objectName));
+	$.each(metaData['Dependents'], function(index, item){
+		self.dependents.push(util.readObjectName(item.objectName));
 	});
 	
 	this.properties = {};
-	$.each(metaData['Properties'], function(value, key){
+	$.each(metaData['Properties'], function(key, value){
 		if(!(value == false || value == 'false')){
-			properties[key] = value;
+			self.properties[key] = value;
 		}
 	});
 	
@@ -366,65 +378,67 @@ var FullArtifact = function(metaData, objectName) {
 		var scoped = metaData['Scoped'];
 		var atomic = metaData['Atomic'];
 		if(scoped == true && atomic == true){
-			this.properties['Scoped-Atomic'] = 'true';
+			self.properties['Scoped-Atomic'] = 'true';
 		} else {
 			if(scoped == true){
-				this.properties['Scoped'] = 'true';
+				self.properties['Scoped'] = 'true';
 			}
 			if(atomic == true){
-				this.properties['Atomic'] = 'true';
+				self.properties['Atomic'] = 'true';
 			}
 		}
 	}
-	this.key = (this.name + this.version + this.region).replace(new RegExp('\\.', 'g'), '_');//Converts the dots to underscores so the osgi symbolic-name grammar complies to the CSS class identifier grammar 
+	this.key = (self.name + self.version + self.region).replace(new RegExp('\\.', 'g'), '_');//Converts the dots to underscores so the osgi symbolic-name grammar complies to the CSS class identifier grammar 
 };
 	
 
 var UploadManager = function() {
+
+	var self = this;
 	
 	this.uploading = false;
 	
 	this.open = false;
 	
 	this.toggle = function() {
-		$('.upload-manager').slideToggle(util.fxTime);
-		if(this.open) {
-			$('.upload-toggle-button').removeClass('button-selected');
-			this.open = false;
+		$('#upload-manager').slideToggle(util.fxTime);
+		if(self.open) {
+			$('#upload-toggle-button').removeClass('button-selected');
+			self.open = false;
 		} else {
-			$('.upload-toggle-button').addClass('button-selected');
-			this.open = true;
+			$('#upload-toggle-button').addClass('button-selected');
+			self.open = true;
 		}
 	};
 	
 	this.addUploadBox = function() {
-		$('.upload-list').append(this.getUploadFormElement($('.upload-list').getChildren('li').length));
+		$('#upload-list').append(self.getUploadFormElement($('#upload-list').children('li').length));
 	};
 	
 	this.minusUploadBox = function() {
-		var uploadBoxes = $('upload-list').getChildren(['li']);
+		var uploadBoxes = $('#upload-list').children('li');
 		if(uploadBoxes.length > 1){
-			uploadBoxes.getLast().destroy();
+			uploadBoxes.last().remove();
 		}
 	};
 	
 	this.startUpload = function() {
-		this.uploading = true;
+		self.uploading = true;
 		//this.spinner.show(true);
 		$('upload-form').submit();
 	};
 	
 	this.resetForm = function() {
-		$('.upload-list').empty();
-		$('.upload-list').append(this.getUploadFormElement('1'));
+		$('#upload-list').empty();
+		$('#upload-list').append(self.getUploadFormElement('1'));
 	};
 	
 	this.uploadComplete = function(){
-		if(this.uploading){
-			this.uploading = false;
+		if(self.uploading){
+			self.uploading = false;
 			alert("Upload Complete");
 			//this.spinner.hide();
-			this.resetForm();
+			self.resetForm();
 		}
 	};
 	
