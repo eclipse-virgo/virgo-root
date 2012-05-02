@@ -328,12 +328,25 @@ var Util = function(){
  * 
  */
 var ObjectName = function(domain, properties, objectName){
+	
 	this.domain = domain;
 	this.properties = properties;
+	this.toString = objectName;
+	
 	this.get = function(key){
 		return this.properties[key];
 	};
-	this.toString = objectName;
+	
+	this.compare = function(other){
+		 if (this.toString < other.toString) {
+			 return -1;
+		 }
+		 if (this.toString > other.toString) {
+			 return 1;
+		 }
+		 return 0; 
+	};
+	
 };
 
 // SERVERS GUI SECTION

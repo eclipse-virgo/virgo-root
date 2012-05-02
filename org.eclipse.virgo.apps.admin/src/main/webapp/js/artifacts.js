@@ -163,7 +163,8 @@ var Tree = function(mbeans) {
 	 */
 	this.renderTopLevelRequest = function(json, parent, filter){
 		var fxContainer = $('<div />', {'class': 'fx-container'});
-		$.each(json.value, function(index, mbean){
+		var mbeans = json.value.sort();
+		$.each(mbeans, function(index, mbean){
 			var artifact = new Artifact(util.readObjectName(mbean));
 			if(artifact[filter] == parent.attr('id')){
 				fxContainer.append(self.getArtifactLabel(artifact, parent.attr('id')));
@@ -189,7 +190,7 @@ var Tree = function(mbeans) {
 		if(fullArtifact.type == 'configuration'){
 			var configControl = $('<a />', {'class': 'artifact-control'});
 			configControl.attr('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
-			configControl.text('View');
+			configControl.text('VIEW');
 			artifactControlBar.append(configControl);
 		}
 
@@ -216,7 +217,11 @@ var Tree = function(mbeans) {
 			}
 		});
 		
-		$.each(fullArtifact.dependents, function(index, objectName){
+		var dependents = fullArtifact.dependents.sort(function(a, b){
+			return a.compare(b);
+		});
+		
+		$.each(dependents, function(index, objectName){
 			var dependentArtifact = new Artifact(objectName);
 			fxContainer.append(self.getArtifactLabel(dependentArtifact, parent.attr('id')));
 		});
@@ -354,19 +359,19 @@ var FullArtifact = function(metaData, objectName) {
 	
 	var self = this;
 	
-	this.name = metaData['Name'];
-	this.version = metaData['Version'];
-	this.region = metaData['Region'];
-	this.type = metaData['Type'];
-	this.state = metaData['State'];
-	this.objectName = objectName;
+	self.name = metaData['Name'];
+	self.version = metaData['Version'];
+	self.region = metaData['Region'];
+	self.type = metaData['Type'];
+	self.state = metaData['State'];
+	self.objectName = objectName;
 	
-	this.dependents = [];
+	self.dependents = [];
 	$.each(metaData['Dependents'], function(index, item){
 		self.dependents.push(util.readObjectName(item.objectName));
 	});
 	
-	this.properties = {};
+	self.properties = {};
 	$.each(metaData['Properties'], function(key, value){
 		if(!(value == false || value == 'false')){
 			self.properties[key] = value;
@@ -374,7 +379,7 @@ var FullArtifact = function(metaData, objectName) {
 	});
 	
 	//Special processing for scoped/atomic artifacts
-	if(this.type == 'plan' || this.type == 'par'){
+	if(self.type == 'plan' || self.type == 'par'){
 		var scoped = metaData['Scoped'];
 		var atomic = metaData['Atomic'];
 		if(scoped == true && atomic == true){
@@ -388,7 +393,7 @@ var FullArtifact = function(metaData, objectName) {
 			}
 		}
 	}
-	this.key = (self.name + self.version + self.region).replace(new RegExp('\\.', 'g'), '_');//Converts the dots to underscores so the osgi symbolic-name grammar complies to the CSS class identifier grammar 
+	self.key = (self.name + self.version + self.region).replace(new RegExp('\\.', 'g'), '_');//Converts the dots to underscores so the osgi symbolic-name grammar complies to the CSS class identifier grammar 
 };
 	
 
