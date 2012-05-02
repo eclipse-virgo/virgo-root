@@ -11,101 +11,72 @@
 package org.eclipse.virgo.apps.admin.web;
 
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.script.ScriptException;
 
-import junit.framework.Assert;
-
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Element;
-import org.eclipse.virgo.apps.admin.web.stubs.moo.Request;
 import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.Scriptable;
-import sun.org.mozilla.javascript.internal.ScriptableObject;
 
 /**
- * 
- *
+ * All the methods in this test class should be run in the defined order. In particular, testPageInit must be run first
+ * to perform common setup.
  */
 public class DumpsJSTests extends AbstractJSTests {
+    
+    private static final String DUMPDIR_URL = "hostPrefix/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory";
+    
+    private static final String DUMPS_URL = "hostPrefix/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps";
 	
-	@BeforeClass
-	public static void setup(){
-		Function fObj = (Function) SCOPE.get(Element.class.getSimpleName(), SCOPE);
-		if (fObj instanceof Function) {
-//		    Function constructor = (Function)fObj;
-//			dollarLookupToReturn = (ScriptableObject) constructor.construct(Context.getCurrentContext(), constructor.getParentScope(), new Object[]{"testElement"});
-		} else {
-			Assert.fail("Element constructor not found");
-		}
-	}
-	
-	@Test
-	@Ignore
-	public void testSetLocationString() throws ScriptException, IOException, NoSuchMethodException{
-		addCommonObjects();
-		readFile("src/main/webapp/js/dumps.js");
-		invokePageInit();
-		
-		readFile("src/test/resources/DumpData.js");
-		Function jsonData = (Function) SCOPE.get("Location", SCOPE);
-		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{construct});
-		
-//		Element dollar = (Element) Context.jsToJava(dollarLookupToReturn, Element.class);
-//		assertEquals("Location: Testing", dollar.getAppendedText());
-	}
+    @Test
+    public void testPageinit() throws ScriptException, IOException, NoSuchMethodException {
 
-	@Test
-	@Ignore
-	public void testDisplayDumps() throws IOException {
-		addCommonObjects();
-		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
-		ScriptableObject.callMethod(dumpViewer, "displayDumps", new Object[]{});
+        // Common setup that will be used by other test methods.
+        readFile("src/main/webapp/js/dumps.js");
 
-		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
-		Scriptable construct = jsonData.construct(CONTEXT, dumpViewer, Context.emptyArgs);
-		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
-		
-//		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
-//		assertEquals("dump-item-content", dollarLookup);
-		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
-	}
-	
-	@Test
-	@Ignore
-	public void testDisplayDumpEntries(){
-		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
-		ScriptableObject.callMethod(dumpViewer, "displayDumpEntries", new Object[]{"testId"});
+        addCommonObjects();
 
-		Function jsonData = (Function) SCOPE.get("DataTwo", SCOPE);
-		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
-		
-//		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
-//		assertEquals("dump-items", dollarLookup);
-	}
-	
-	@Test
-	@Ignore
-	public void testDisplayDumpEntry(){
-		ScriptableObject dumpViewer = (ScriptableObject) ScriptableObject.getProperty(SCOPE, "dumpViewer");
-		ScriptableObject.callMethod(dumpViewer, "displayDumpEntry", new Object[]{"testId", "testQueryString"});
+        invokePageInit();
+        
+        Map<String, Function> successByUrl = Dollar.getAndClearAjaxSuccessByUrl();
+        
+        assertTrue(successByUrl.containsKey(DUMPDIR_URL));
+        successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpDirectory() });
+        
+        assertTrue(successByUrl.containsKey(DUMPS_URL));
+        successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpList() });
 
-		Function jsonData = (Function) SCOPE.get("DataOne", SCOPE);
-		Scriptable construct = jsonData.construct(CONTEXT, SCOPE, Context.emptyArgs);
-		Request.getLastSentOnSuccess().call(CONTEXT, SCOPE, dumpViewer, new Object[]{construct});
-		
-//		assertEquals(dollarLookupToReturn, Element.getInjectedInto());
-//		assertEquals("dump-item-content", dollarLookup);
-	}
-	
+        assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+    }
+    
+    private Scriptable getTestDumpDirectory() throws IOException {
+
+        readString("var Data = function() {" + //
+            "   this.value = ['servicability/dump'];" + //
+            "   this.value.Properties = {};" + //
+            "};");
+
+        Function testData = (Function) SCOPE.get("Data", SCOPE);
+        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+    }
+
+    private Scriptable getTestDumpList() throws IOException {
+
+        readString("var Data = function() {" + //
+            "   this.value = ['2012-05-02-13-30-643'];" + //
+            "   this.value.Properties = {};" + //
+            "};");
+
+        Function testData = (Function) SCOPE.get("Data", SCOPE);
+        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+    }
+
 }
