@@ -13,11 +13,7 @@
  * Scripts to be loaded in to the head of the configuration view
  */
 function pageinit(){
-	$.ajax({
-		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Configuration,*',
-		dataType: 'json',
-		success: ConfigurationInit.init
-	});
+	util.doQuery('search/org.eclipse.virgo.kernel:type=Configuration,*', ConfigurationInit.init);
 }
 
 ConfigurationInit = {
@@ -51,42 +47,34 @@ ConfigurationInit = {
 
 var Configuration = function(objectName, label){
 	
-	this.objectName = objectName;
+	var self = this;
 	
-	this.name = objectName.get('name');
+	self.objectName = objectName;
 	
-	this.label = label;
+	self.name = objectName.get('name');
 	
-	this.icon = $('.tree-icon', label);
+	self.label = label;
 	
-	this.toggle = function(){
-		var isClosed = this.icon.hasClass('plus');
-		this.setPlusMinusIcon('loader-small.gif', 'spinnerIcon');
-		if(isClosed){
-			$.ajax({
-				url: util.getCurrentHost() + '/jolokia/read/' + this.objectName.toString,
-				dataType: 'json',
-				context: this,
-				success: this.createTable
-			});
-			
+	self.icon = $('.tree-icon', label);
+	
+	self.toggle = function(){
+		if(self.icon.hasClass('plus')){
+			self.setPlusMinusIcon('loader-small.gif', 'spinnerIcon');
+			util.doQuery('read/' + self.objectName.toString, self.createTable);
 		} else {
-			$('.config-properties', this.label).slideToggle(util.fxTime, function(){
+			$('.config-properties', self.label).slideToggle(util.fxTime, function(){
 				$(this).remove();
 			});
-			this.setPlusMinusIcon('tree-icons/plus.png', 'plus');
+			self.setPlusMinusIcon('tree-icons/plus.png', 'plus');
 		}
 	};
 	
-	this.setPlusMinusIcon = function (icon, className){
-		this.icon.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center');
-		this.icon.removeClass('plus');
-		this.icon.removeClass('minus');
-		this.icon.removeClass('spinnerIcon');
-		this.icon.addClass(className);
+	self.setPlusMinusIcon = function (icon, className){
+		self.icon.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center');
+		self.icon.removeClass('plus').removeClass('minus').removeClass('spinnerIcon').addClass(className);
 	};
 	
-	this.createTable = function(json){
+	self.createTable = function(json){
 		var tableRows = new Array();
 		$.each(json.value.Properties, function(index, item){
 			tableRows.push([index, item]);
@@ -99,9 +87,9 @@ var Configuration = function(objectName, label){
 		});
 
 		var tableHolder = $('<div />', {'class' : 'config-properties'}).append(propertiesTable);
-		this.label.append(tableHolder);
+		self.label.append(tableHolder);
 		tableHolder.slideToggle(util.fxTime);
-		this.setPlusMinusIcon('tree-icons/minus.png', 'minus');
+		self.setPlusMinusIcon('tree-icons/minus.png', 'minus');
 	};
 	
 };
