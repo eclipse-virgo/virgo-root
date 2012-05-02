@@ -214,7 +214,7 @@ var Util = function(){
 
 			var compare = function(tr1, tr2){
 				var getText = function(tr){
-					var cell = $('*:nth-child(' + index + ')', tr);
+					var cell = $('*:nth-child(' + (index+1) + ')', tr);
 					return $(cell).text();
 				};
 				var text1 = getText(tr1);
