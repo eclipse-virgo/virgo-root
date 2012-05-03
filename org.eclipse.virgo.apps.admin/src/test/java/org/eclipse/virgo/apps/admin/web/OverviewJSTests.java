@@ -44,11 +44,11 @@ public class OverviewJSTests extends AbstractJSTests {
 		callback.call(CONTEXT, SCOPE, SCOPE, new Object[]{TEST_ROW});
 
 		assertTrue("Replaced DOM node not looked up", Element.getConstructorArgumentTrace().contains("#server-overview"));
-		assertEquals("Wrong replacement DOM node", this.commonUtil.getLastMakeTableTable(), Element.getLastReplacement());
-		assertArrayEquals("Wrong table headers", EXPECTED_HEADERS, this.commonUtil.getLastMakeTableHeaders());
-		assertArrayEquals("Wrong table rows", TEST_ROW, this.commonUtil.getLastMakeTableRows());
+		assertEquals("Wrong replacement DOM node", commonUtil.getLastMakeTableTable(), Element.getLastReplacement());
+		assertArrayEquals("Wrong table headers", EXPECTED_HEADERS, commonUtil.getLastMakeTableHeaders());
+		assertArrayEquals("Wrong table rows", TEST_ROW, commonUtil.getLastMakeTableRows());
 		
-		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
 	
 }

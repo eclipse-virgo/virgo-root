@@ -44,7 +44,7 @@ public abstract class AbstractJSTests {
 
 	protected static String alertMsg;
 	
-	protected Util commonUtil = null;
+	protected static Util commonUtil = null;
 	
 	@BeforeClass
 	public static void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
@@ -91,7 +91,7 @@ public abstract class AbstractJSTests {
 	}
 	
 	protected final void addCommonObjects(){
-		this.commonUtil = new Util(CONTEXT, SCOPE);
+		commonUtil = new Util(CONTEXT, SCOPE);
 		addObject(commonUtil, "util");
 	}
 	
