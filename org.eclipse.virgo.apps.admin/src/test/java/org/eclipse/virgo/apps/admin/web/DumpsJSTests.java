@@ -151,5 +151,16 @@ public class DumpsJSTests extends AbstractJSTests {
         eachOperation = Dollar.getEachOperation();
         eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"dumpEntry"}});
     }
+    
+    @Test
+    public void testCreateDump() throws ScriptException, IOException, NoSuchMethodException {
+        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        Function createDumpFunction = (Function) dumpViewer.get("createDump", SCOPE);
+        createDumpFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {});
+        
+        String ajaxUrl = Dollar.getAjaxUrl();
+        assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump", ajaxUrl);
+    }
 
 }
