@@ -49,7 +49,7 @@ public class RepositoriesJSTests extends AbstractJSTests {
         Function eachOperation = Dollar.getEachOperation();
         eachOperation.call(CONTEXT, SCOPE, SCOPE, new Object[] { 0, "org.eclipse.virgo.kernel:name=usr,type=Repository" });
 
-        assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+        assertTrue("Page ready has not been called", commonUtil.isPageReady());
 
     }
 
@@ -88,15 +88,13 @@ public class RepositoriesJSTests extends AbstractJSTests {
 
     @Test
     public void testDeploy() throws Exception {
-        addCommonObjects();
-
         Scriptable repositories = (Scriptable) SCOPE.get("Repositories", SCOPE);
 
         Function deployFunction = (Function) repositories.get("deploy", SCOPE);
 
         deployFunction.call(CONTEXT, SCOPE, repositories, new Object[] { "anArtifact" });
 
-        Scriptable lastBulkQuery = this.commonUtil.getLastBulkQuery();
+        Scriptable lastBulkQuery = commonUtil.getLastBulkQuery();
         Scriptable[] lastBulkQueryArray = (Scriptable[])Context.jsToJava(lastBulkQuery, Scriptable[].class);
         Scriptable argumentsProperty = (Scriptable)ScriptableObject.getProperty(lastBulkQueryArray[0], "arguments");
         String[] arguments = (String[])Context.jsToJava(argumentsProperty, String[].class);
@@ -110,10 +108,10 @@ public class RepositoriesJSTests extends AbstractJSTests {
             "   }" + //
             "}];");
         Scriptable aResponse = (Scriptable) SCOPE.get("aResponse", SCOPE);
-        this.commonUtil.getLastBulkQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[] { aResponse });
+        commonUtil.getLastBulkQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[] { aResponse });
         
         readString("var console = { log : function(xmlHttpRequest, textStatus, errorThrown) {}};");
-        this.commonUtil.getLastBulkQueryErrorCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[] { "xmlHttpRequest", "textStatus", "errorThrown" });
+        commonUtil.getLastBulkQueryErrorCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[] { "xmlHttpRequest", "textStatus", "errorThrown" });
     }
 
     private Scriptable getDisplayTestData() throws IOException {

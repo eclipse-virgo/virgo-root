@@ -19,7 +19,6 @@ import java.io.IOException;
 import javax.script.ScriptException;
 
 import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Context;
@@ -33,8 +32,8 @@ import sun.org.mozilla.javascript.internal.Scriptable;
 public class ArtifactsJSTests extends AbstractJSTests {
 	
 	
-	@BeforeClass
-	public static void setup(){
+//	@BeforeClass
+//	public static void setup(){
 //		Function fObj = (Function) SCOPE.get(Element.class.getSimpleName(), SCOPE);
 //		if (fObj instanceof Function) {
 //		    Function constructor = (Function)fObj;
@@ -42,7 +41,7 @@ public class ArtifactsJSTests extends AbstractJSTests {
 //		} else {
 //			Assert.fail("Element constructor not found");
 //		}
-	}
+//	}
 	
 	@Test
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
@@ -53,7 +52,7 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		assertNotNull(commonUtil.getLastQueryCallBack());
 		
 		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[]{this.getTestData(), "type"});
-		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
 	
 	@Test

@@ -53,7 +53,7 @@ public class DumpsJSTests extends AbstractJSTests {
         assertTrue(successByUrl.containsKey(DUMPS_URL));
         successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpList() });
 
-        assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+        assertTrue("Page ready has not been called", commonUtil.isPageReady());
     }
     
     private Scriptable getTestDumpDirectory() throws IOException {

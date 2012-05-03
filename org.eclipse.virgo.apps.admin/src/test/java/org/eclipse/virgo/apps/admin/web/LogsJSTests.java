@@ -31,7 +31,7 @@ public class LogsJSTests extends AbstractJSTests {
 		
 		invokePageInit();
 		
-		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
 	
 }

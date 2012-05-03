@@ -48,7 +48,7 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		assertNotNull(commonUtil.getLastQueryCallBack());
 
 		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[]{getTestData()});
-		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
 	
 	/**
@@ -80,7 +80,6 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Open it
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
 
-		//System.out.println("foo " + commonUtil);
 		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, configuration, new Object[]{getTestData()});
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
