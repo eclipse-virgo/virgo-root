@@ -28,8 +28,8 @@ public class CommonJSTests extends AbstractJSTests {
 	
 	@Test
 	public void testParse() throws ScriptException, IOException{
-		Scriptable document = ((Function) SCOPE.get("Element", SCOPE)).construct(CONTEXT, SCOPE, new Object[]{"<div />"});
-		ScriptableObject.putProperty(SCOPE, "document", document);
+		Scriptable document = ((Function) scope.get("Element", scope)).construct(context, scope, new Object[]{"<div />"});
+		ScriptableObject.putProperty(scope, "document", document);
 		
 		readFile("src/main/webapp/js/common.js");
 

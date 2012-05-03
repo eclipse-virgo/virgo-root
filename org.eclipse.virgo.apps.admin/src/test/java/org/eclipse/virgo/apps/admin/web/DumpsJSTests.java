@@ -49,10 +49,10 @@ public class DumpsJSTests extends AbstractJSTests {
         Map<String, Function> successByUrl = Dollar.getAndClearAjaxSuccessByUrl();
         
         assertTrue(successByUrl.containsKey(DUMPDIR_URL));
-        successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpDirectory() });
+        successByUrl.get(DUMPS_URL).call(context, scope, scope, new Object[] { getTestDumpDirectory() });
         
         assertTrue(successByUrl.containsKey(DUMPS_URL));
-        successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpList() });
+        successByUrl.get(DUMPS_URL).call(context, scope, scope, new Object[] { getTestDumpList() });
 
         assertTrue("Page ready has not been called", commonUtil.isPageReady());
     }
@@ -64,8 +64,8 @@ public class DumpsJSTests extends AbstractJSTests {
             "   this.value.Properties = {};" + //
             "};");
 
-        Function testData = (Function) SCOPE.get("Data", SCOPE);
-        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
     }
 
     private Scriptable getTestDumpList() throws IOException {
@@ -75,42 +75,42 @@ public class DumpsJSTests extends AbstractJSTests {
             "   this.value.Properties = {};" + //
             "};");
 
-        Function testData = (Function) SCOPE.get("Data", SCOPE);
-        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
     }
     
     @Test
     public void testDisplayDumpEntries() throws ScriptException, IOException, NoSuchMethodException {
         
-        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
-        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        Function dumpViewerConstructor = (Function) scope.get("DumpViewer", scope);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(context, scope, new Object[]{});
         
         readString( "var DumpEntryList = function() {" +
             "   this.children = function() {return [];};" +
             "};");
-        Function dumpEntryList = (Function) SCOPE.get("DumpEntryList", SCOPE);
-        Scriptable listElement = dumpEntryList.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function dumpEntryList = (Function) scope.get("DumpEntryList", scope);
+        Scriptable listElement = dumpEntryList.construct(context, scope, Context.emptyArgs);
         Dollar.setDollarLookupResultForIds(listElement);
 
         readString("var ClickEvent = function() {" + //
             "   this.data = new Element('<div />');" + //
             "};");
         
-        Function eventConstructor = (Function) SCOPE.get("ClickEvent", SCOPE);
+        Function eventConstructor = (Function) scope.get("ClickEvent", scope);
         Object[] args = new Object[] {};
-        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
-        Function displayDumpEntriesFunction = (Function) dumpViewer.get("displayDumpEntries", SCOPE);
-        displayDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {event});
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), scope, args);
+        Function displayDumpEntriesFunction = (Function) dumpViewer.get("displayDumpEntries", scope);
+        displayDumpEntriesFunction.call(context, scope, dumpViewer, new Object[] {event});
 
-        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", SCOPE);
-        displaySelectedDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {});
+        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", scope);
+        displaySelectedDumpEntriesFunction.call(context, scope, dumpViewer, new Object[] {});
     }
     
     @Test
     public void testDisplayDumpEntriesResponse() throws ScriptException, IOException, NoSuchMethodException {
         
-        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
-        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        Function dumpViewerConstructor = (Function) scope.get("DumpViewer", scope);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(context, scope, new Object[]{});
         
         Object[][] json = new Object[][]{{"a","b"},{"c","d"}};
 
@@ -118,23 +118,23 @@ public class DumpsJSTests extends AbstractJSTests {
             "   this.attr = function(id){return 'anId'};" + //
             "};");
         
-        Function dumpListItemConstructor = (Function) SCOPE.get("DumpListItem", SCOPE);
+        Function dumpListItemConstructor = (Function) scope.get("DumpListItem", scope);
         Object[] args = new Object[] {};
-        Scriptable dumpListItem = dumpListItemConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        Scriptable dumpListItem = dumpListItemConstructor.construct(Context.getCurrentContext(), scope, args);
 
-        Function displaySelectedDumpEntriesResponseFunction = (Function) dumpViewer.get("displayDumpEntriesResponse", SCOPE);
-        displaySelectedDumpEntriesResponseFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {Context.javaToJS(json, SCOPE), dumpListItem});
+        Function displaySelectedDumpEntriesResponseFunction = (Function) dumpViewer.get("displayDumpEntriesResponse", scope);
+        displaySelectedDumpEntriesResponseFunction.call(context, scope, dumpViewer, new Object[] {Context.javaToJS(json, scope), dumpListItem});
         
         readString( "var DumpEntryList = function() {" +
             "   this.children = function() {return [];};" +
             "   this.append = function(dumpEntryListItem) {return this;};" +
             "};");
-        Function dumpEntryList = (Function) SCOPE.get("DumpEntryList", SCOPE);
-        Scriptable listElement = dumpEntryList.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function dumpEntryList = (Function) scope.get("DumpEntryList", scope);
+        Scriptable listElement = dumpEntryList.construct(context, scope, Context.emptyArgs);
         Dollar.setDollarLookupResultForIds(listElement, 2);
         
         Function eachOperation = Dollar.getEachOperation();
-        eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"summary.txt","b"}});
+        eachOperation.call(context, scope, eachOperation, new Object[]{Context.javaToJS(1, scope), new Object[]{"summary.txt","b"}});
         
         String ajaxUrl = Dollar.getAjaxUrl();
         assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=b", ajaxUrl);
@@ -143,21 +143,21 @@ public class DumpsJSTests extends AbstractJSTests {
         readString( "var Response = function() {" +
             "   this.value = ['x'];" +
             "};");
-        Function responseConstructor = (Function) SCOPE.get("Response", SCOPE);
-        Scriptable response = responseConstructor.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function responseConstructor = (Function) scope.get("Response", scope);
+        Scriptable response = responseConstructor.construct(context, scope, Context.emptyArgs);
         
-        ajaxSuccess.call(CONTEXT, SCOPE, SCOPE, new Object[] { response });
+        ajaxSuccess.call(context, scope, scope, new Object[] { response });
         
         eachOperation = Dollar.getEachOperation();
-        eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"dumpEntry"}});
+        eachOperation.call(context, scope, eachOperation, new Object[]{Context.javaToJS(1, scope), new Object[]{"dumpEntry"}});
     }
     
     @Test
     public void testCreateDump() throws ScriptException, IOException, NoSuchMethodException {
-        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
-        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
-        Function createDumpFunction = (Function) dumpViewer.get("createDump", SCOPE);
-        createDumpFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {});
+        Function dumpViewerConstructor = (Function) scope.get("DumpViewer", scope);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(context, scope, new Object[]{});
+        Function createDumpFunction = (Function) dumpViewer.get("createDump", scope);
+        createDumpFunction.call(context, scope, dumpViewer, new Object[] {});
         
         String ajaxUrl = Dollar.getAjaxUrl();
         assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump", ajaxUrl);
@@ -165,19 +165,19 @@ public class DumpsJSTests extends AbstractJSTests {
     
     @Test
     public void testDeleteDump() throws ScriptException, IOException, NoSuchMethodException {
-        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
-        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
-        Function deleteDumpFunction = (Function) dumpViewer.get("deleteDump", SCOPE);
+        Function dumpViewerConstructor = (Function) scope.get("DumpViewer", scope);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(context, scope, new Object[]{});
+        Function deleteDumpFunction = (Function) dumpViewer.get("deleteDump", scope);
         
         readString("var Event = function() {" + //
             "   this.data = {attr : function(id){return 'anId'}};" + //
             "};");
         
-        Function eventConstructor = (Function) SCOPE.get("Event", SCOPE);
+        Function eventConstructor = (Function) scope.get("Event", scope);
         Object[] args = new Object[] {};
-        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), scope, args);
         
-        deleteDumpFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {event});
+        deleteDumpFunction.call(context, scope, dumpViewer, new Object[] {event});
         
         String ajaxUrl = Dollar.getAjaxUrl();
         assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/anId", ajaxUrl);

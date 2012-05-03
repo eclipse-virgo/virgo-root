@@ -47,7 +47,7 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		invokePageInit();
 		assertNotNull(commonUtil.getLastQueryCallBack());
 
-		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[]{getTestData()});
+		commonUtil.getLastQueryCallBack().call(context, scope, scope, new Object[]{getTestData()});
 		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
 	
@@ -58,32 +58,32 @@ public class ConfigurationJSTests extends AbstractJSTests {
 	 */
 	@Test
 	public void testConfigToggle() throws IOException {
-		Function configurationConstructor = (Function) SCOPE.get("Configuration", SCOPE);
+		Function configurationConstructor = (Function) scope.get("Configuration", scope);
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
 		properties.put("name", "testName");
 		ObjectName value = new ObjectName("domain", "objectNameString", properties);
 
-		Scriptable labelElement = ((Function) SCOPE.get("Element", SCOPE)).construct(CONTEXT, SCOPE, new Object[]{"<div />"});
-		Scriptable configuration = configurationConstructor.construct(CONTEXT, SCOPE, new Object[]{Context.javaToJS(value, SCOPE), labelElement});
+		Scriptable labelElement = ((Function) scope.get("Element", scope)).construct(context, scope, new Object[]{"<div />"});
+		Scriptable configuration = configurationConstructor.construct(context, scope, new Object[]{Context.javaToJS(value, scope), labelElement});
 
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("plus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("minus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("spinnerIcon"));
 
-		Function toggleFunction = (Function) configuration.get("toggle", SCOPE);
-		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Close it
-		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+		Function toggleFunction = (Function) configuration.get("toggle", scope);
+		toggleFunction.call(context, scope, configuration, Context.emptyArgs); //Close it
+		assertTrue("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("plus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("minus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("spinnerIcon"));
 		
-		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Open it
-		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+		toggleFunction.call(context, scope, configuration, Context.emptyArgs); //Open it
+		assertTrue("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("spinnerIcon"));
 
-		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, configuration, new Object[]{getTestData()});
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
-		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
-		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
+		commonUtil.getLastQueryCallBack().call(context, scope, configuration, new Object[]{getTestData()});
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("plus"));
+		assertTrue("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("minus"));
+		assertFalse("Icon not toggled", ((Element)configuration.get("icon", scope)).jsFunction_hasClass("spinnerIcon"));
 	}
 	
 	private Scriptable getTestData() throws IOException{
@@ -93,8 +93,8 @@ public class ConfigurationJSTests extends AbstractJSTests {
 					"	this.value.Properties = {};" +
 					"};");
 		
-		Function testData = (Function) SCOPE.get("Data", SCOPE);
-		return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+		Function testData = (Function) scope.get("Data", scope);
+		return testData.construct(context, scope, Context.emptyArgs);
 	}
 	
 }

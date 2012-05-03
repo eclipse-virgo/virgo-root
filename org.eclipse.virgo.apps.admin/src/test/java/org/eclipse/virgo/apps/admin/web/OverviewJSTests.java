@@ -41,7 +41,7 @@ public class OverviewJSTests extends AbstractJSTests {
 		invokePageInit();
 		
 		Function callback = Server.getCallbackFunction();
-		callback.call(CONTEXT, SCOPE, SCOPE, new Object[]{TEST_ROW});
+		callback.call(context, scope, scope, new Object[]{TEST_ROW});
 
 		assertTrue("Replaced DOM node not looked up", Element.getConstructorArgumentTrace().contains("#server-overview"));
 		assertEquals("Wrong replacement DOM node", commonUtil.getLastMakeTableTable(), Element.getLastReplacement());

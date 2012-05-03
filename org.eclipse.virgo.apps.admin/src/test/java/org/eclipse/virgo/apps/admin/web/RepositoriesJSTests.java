@@ -44,10 +44,10 @@ public class RepositoriesJSTests extends AbstractJSTests {
         invokePageInit();
 
         assertNotNull(Dollar.getAjaxSuccess());
-        Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestData() });
+        Dollar.getAjaxSuccess().call(context, scope, scope, new Object[] { getTestData() });
 
         Function eachOperation = Dollar.getEachOperation();
-        eachOperation.call(CONTEXT, SCOPE, SCOPE, new Object[] { 0, "org.eclipse.virgo.kernel:name=usr,type=Repository" });
+        eachOperation.call(context, scope, scope, new Object[] { 0, "org.eclipse.virgo.kernel:name=usr,type=Repository" });
 
         assertTrue("Page ready has not been called", commonUtil.isPageReady());
 
@@ -60,39 +60,39 @@ public class RepositoriesJSTests extends AbstractJSTests {
             "   this.value.Properties = {};" + //
             "};");
 
-        Function testData = (Function) SCOPE.get("Data", SCOPE);
-        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
     }
 
     @Test
     public void testDisplay() throws Exception {
-        Scriptable repositories = (Scriptable) SCOPE.get("Repositories", SCOPE);
+        Scriptable repositories = (Scriptable) scope.get("Repositories", scope);
 
-        Function displayFunction = (Function) repositories.get("display", SCOPE);
+        Function displayFunction = (Function) repositories.get("display", scope);
 
         readString("var ClickEvent = function() {" + //
             "   this.data = new Element('<div />');" + //
             "   this.mbeanName = 'mbeanName';" + //
             "};");
 
-        Function eventConstructor = (Function) SCOPE.get("ClickEvent", SCOPE);
+        Function eventConstructor = (Function) scope.get("ClickEvent", scope);
         Object[] args = new Object[] {};
-        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), scope, args);
 
-        displayFunction.call(CONTEXT, SCOPE, repositories, new Object[] { event });
+        displayFunction.call(context, scope, repositories, new Object[] { event });
 
         assertNotNull(Dollar.getAjaxSuccess());
-        Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[] { getDisplayTestData() });
+        Dollar.getAjaxSuccess().call(context, scope, scope, new Object[] { getDisplayTestData() });
 
     }
 
     @Test
     public void testDeploy() throws Exception {
-        Scriptable repositories = (Scriptable) SCOPE.get("Repositories", SCOPE);
+        Scriptable repositories = (Scriptable) scope.get("Repositories", scope);
 
-        Function deployFunction = (Function) repositories.get("deploy", SCOPE);
+        Function deployFunction = (Function) repositories.get("deploy", scope);
 
-        deployFunction.call(CONTEXT, SCOPE, repositories, new Object[] { "anArtifact" });
+        deployFunction.call(context, scope, repositories, new Object[] { "anArtifact" });
 
         Scriptable lastBulkQuery = commonUtil.getLastBulkQuery();
         Scriptable[] lastBulkQueryArray = (Scriptable[])Context.jsToJava(lastBulkQuery, Scriptable[].class);
@@ -107,11 +107,11 @@ public class RepositoriesJSTests extends AbstractJSTests {
             "       version : '2.1'" + //
             "   }" + //
             "}];");
-        Scriptable aResponse = (Scriptable) SCOPE.get("aResponse", SCOPE);
-        commonUtil.getLastBulkQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[] { aResponse });
+        Scriptable aResponse = (Scriptable) scope.get("aResponse", scope);
+        commonUtil.getLastBulkQueryCallBack().call(context, scope, scope, new Object[] { aResponse });
         
         readString("var console = { log : function(xmlHttpRequest, textStatus, errorThrown) {}};");
-        commonUtil.getLastBulkQueryErrorCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[] { "xmlHttpRequest", "textStatus", "errorThrown" });
+        commonUtil.getLastBulkQueryErrorCallBack().call(context, scope, scope, new Object[] { "xmlHttpRequest", "textStatus", "errorThrown" });
     }
 
     private Scriptable getDisplayTestData() throws IOException {
@@ -121,8 +121,8 @@ public class RepositoriesJSTests extends AbstractJSTests {
             "   this.value.Properties = {};" + //
             "};");
 
-        Function testData = (Function) SCOPE.get("Data", SCOPE);
-        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
     }
 
 }

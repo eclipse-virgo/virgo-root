@@ -22,7 +22,7 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
 /**
  * 
  */
-public class Dollar {
+public final class Dollar {
 	
 	private static Context CONTEXT; 
 	
@@ -48,6 +48,7 @@ public class Dollar {
     }
     
     public static void init(Context context, ScriptableObject scope) {
+    	Dollar.lookupResultForIds = null;
     	CONTEXT = context;
     	SCOPE = scope;
     }

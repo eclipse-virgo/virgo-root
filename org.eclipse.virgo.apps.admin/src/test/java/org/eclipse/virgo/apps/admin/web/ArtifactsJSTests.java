@@ -19,11 +19,14 @@ import java.io.IOException;
 import javax.script.ScriptException;
 
 import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Element;
 import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.Scriptable;
+import sun.org.mozilla.javascript.internal.ScriptableObject;
+
 
 /**
  *
@@ -51,36 +54,42 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		invokePageInit();
 		assertNotNull(commonUtil.getLastQueryCallBack());
 		
-		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[]{this.getTestData(), "type"});
+		commonUtil.getLastQueryCallBack().call(context, scope, scope, new Object[]{this.getTestData(), "type"});
 		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
 	
 	@Test
 	public void testTreeLoad() {
-		Dollar.getEachOperation().call(CONTEXT, SCOPE, SCOPE, new Object[]{1, "filterMatch"});
+		Dollar.getEachOperation().call(context, scope, scope, new Object[]{1, "filterMatch"});
 		assertEquals("Tree inserted in to the wrong dom node", "#artifacts-tree", Dollar.getDollarLookup());
 	}
 	
 	@Test
 	public void testFileUpload() {
 //		setup();
-//		ScriptableObject uploadManager = (ScriptableObject) SCOPE.get("uploadManager", SCOPE);
-//		ScriptableObject.callMethod(uploadManager, "toggle", new Object[0]);
-//		Element dollar = (Element) Context.jsToJava(dollarLookupToReturn, Element.class);
-//		assertTrue(dollar.getClassNames().contains("button-selected"));
-//
+		ScriptableObject uploadManager = (ScriptableObject) scope.get("uploadManager", scope);
+
+		Element element = (Element) ((Function) scope.get("Element", scope)).construct(context, scope, new Object[]{"<div />"});
+		Dollar.setDollarLookupResultForIds(element, 3);
+		ScriptableObject.callMethod(uploadManager, "toggle", new Object[]{});
+
+		assertTrue(element.getClasses().contains("button-selected"));
+
+		
+		
+		
 //		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
-//		ScriptableObject.callMethod(uploadManager, "startUpload", new Object[0]);
+//		ScriptableObject.callMethod(uploadManager, "startUpload", new Object[]{});
 //		assertTrue(dollar.isSubmitted());
 //		assertTrue((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
-//		ScriptableObject.callMethod(uploadManager, "uploadComplete", new Object[0]);
+//		ScriptableObject.callMethod(uploadManager, "uploadComplete", new Object[]{});
 //		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
 	}
 
 	@Test
 	public void testTreeTopLevelTwisty() {
 //		setup();
-//		ScriptableObject tree = (ScriptableObject) SCOPE.get("tree", SCOPE);
+//		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
 //		ScriptableObject.callMethod(tree, "renderTopLevel", new Object[]{"testObjectName", "testParent"});
 //		assertEquals("testParent", dollarLookup);
 //		assertEquals("hostPrefix/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*", Request.getLastSentUrl());
@@ -89,19 +98,17 @@ public class ArtifactsJSTests extends AbstractJSTests {
 	@Test
 	public void testTreeTwisty() {
 //		setup();
-//		ScriptableObject tree = (ScriptableObject) SCOPE.get("tree", SCOPE);
+//		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
 //		ScriptableObject.callMethod(tree, "renderArtifact", new Object[]{"testObjectName", "testParent"});
 //		assertEquals("testParent", dollarLookup);
 //		assertEquals("hostPrefix/jolokia/read/testObjectName", Request.getLastSentUrl());
 	}
 	
 	private Scriptable getTestData() throws IOException{
-		
 		readString( "var Data = function() {" +
 					"	this.value = {};" +
 					"};");
-		
-		Function testData = (Function) SCOPE.get("Data", SCOPE);
-		return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+		Function testData = (Function) scope.get("Data", scope);
+		return testData.construct(context, scope, Context.emptyArgs);
 	}
 }
