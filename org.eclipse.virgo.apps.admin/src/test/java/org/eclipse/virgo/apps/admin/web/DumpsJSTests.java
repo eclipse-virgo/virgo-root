@@ -104,5 +104,28 @@ public class DumpsJSTests extends AbstractJSTests {
         Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", SCOPE);
         displaySelectedDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {});
     }
+    
+    @Test
+    public void testDisplayDumpEntriesResponse() throws ScriptException, IOException, NoSuchMethodException {
+        
+        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        
+        Object[][] json = new Object[][]{{"a","b"},{"c","d"}};
+
+        readString("var DumpListItem = function() {" + //
+            "   this.attr = function(id){return 'anId'};" + //
+            "};");
+        
+        Function dumpListItemConstructor = (Function) SCOPE.get("DumpListItem", SCOPE);
+        Object[] args = new Object[] {};
+        Scriptable dumpListItem = dumpListItemConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+
+        Function displaySelectedDumpEntriesResponseFunction = (Function) dumpViewer.get("displayDumpEntriesResponse", SCOPE);
+        displaySelectedDumpEntriesResponseFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {Context.javaToJS(json, SCOPE), dumpListItem});
+        
+        Function eachOperation = Dollar.getEachOperation();
+        eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"a","b"}});
+    }
 
 }

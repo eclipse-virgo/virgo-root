@@ -89,12 +89,16 @@ public class Element extends ParentStub {
         return this;
 	}
 	
-    public void jsFunction_text(String text){
+    public ScriptableObject jsFunction_text(String text){
+        return this;
     }
 	
     public void jsFunction_attr(String attr){
     }
-	
+
+    public void jsFunction_attr(String attr, String value){
+    }
+    
     public void jsFunction_prop(String prop){
     }
 

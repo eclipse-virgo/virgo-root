@@ -51,6 +51,10 @@ public class Dollar {
     }
 
     // JavaScript Functions
+    
+    public static Object dollar(ScriptableObject name, Scriptable xxx) {
+        return dollar(name); // ignore xxx for now
+    }
 
 	public static Object dollar(ScriptableObject name){
 		Dollar.dollarLookup = (String) Context.jsToJava(name, String.class);
