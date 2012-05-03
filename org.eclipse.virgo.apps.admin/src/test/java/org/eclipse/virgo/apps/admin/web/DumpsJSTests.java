@@ -11,6 +11,7 @@
 package org.eclipse.virgo.apps.admin.web;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -124,8 +125,31 @@ public class DumpsJSTests extends AbstractJSTests {
         Function displaySelectedDumpEntriesResponseFunction = (Function) dumpViewer.get("displayDumpEntriesResponse", SCOPE);
         displaySelectedDumpEntriesResponseFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {Context.javaToJS(json, SCOPE), dumpListItem});
         
+        readString( "var DumpEntryList = function() {" +
+            "   this.children = function() {return [];};" +
+            "   this.append = function(dumpEntryListItem) {return this;};" +
+            "};");
+        Function dumpEntryList = (Function) SCOPE.get("DumpEntryList", SCOPE);
+        Scriptable listElement = dumpEntryList.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Dollar.setDollarLookupResultForIds(listElement, 2);
+        
         Function eachOperation = Dollar.getEachOperation();
-        eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"a","b"}});
+        eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"summary.txt","b"}});
+        
+        String ajaxUrl = Dollar.getAjaxUrl();
+        assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=b", ajaxUrl);
+        Function ajaxSuccess = Dollar.getAjaxSuccess();
+        
+        readString( "var Response = function() {" +
+            "   this.value = ['x'];" +
+            "};");
+        Function responseConstructor = (Function) SCOPE.get("Response", SCOPE);
+        Scriptable response = responseConstructor.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        
+        ajaxSuccess.call(CONTEXT, SCOPE, SCOPE, new Object[] { response });
+        
+        eachOperation = Dollar.getEachOperation();
+        eachOperation.call(CONTEXT, SCOPE, eachOperation, new Object[]{Context.javaToJS(1, SCOPE), new Object[]{"dumpEntry"}});
     }
 
 }

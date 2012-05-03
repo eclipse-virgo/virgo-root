@@ -42,6 +42,8 @@ public class Dollar {
 
     private static Scriptable lookupResultForIds;
 
+    private static int lookupResultForIdsCount;
+
     private Dollar(Context context, ScriptableObject scope) {
     }
     
@@ -56,7 +58,9 @@ public class Dollar {
 		Dollar.dollarLookup = (String) Context.jsToJava(name, String.class);
 		if (Dollar.dollarLookup.startsWith("#") && Dollar.lookupResultForIds != null) {
 		    Scriptable result = Dollar.lookupResultForIds;
-		    Dollar.lookupResultForIds = null;
+		    if (--Dollar.lookupResultForIdsCount == 0) {
+		        Dollar.lookupResultForIds = null;
+		    }
             return result;
 		} else {
 		    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
@@ -80,8 +84,13 @@ public class Dollar {
 	// Test Helper Methods
 	
 	public static void setDollarLookupResultForIds(Scriptable dollarLookupResultForIds) {
-	    Dollar.lookupResultForIds = dollarLookupResultForIds;
+	    setDollarLookupResultForIds(dollarLookupResultForIds, 1);
 	}
+	
+	public static void setDollarLookupResultForIds(Scriptable dollarLookupResultForIds, int count) {
+        Dollar.lookupResultForIds = dollarLookupResultForIds;
+        Dollar.lookupResultForIdsCount = count;
+    }
 	
 	public static String getDollarLookup() {
 		return Dollar.dollarLookup;
