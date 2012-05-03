@@ -88,8 +88,8 @@ public class Util {
 	}
 	
 	public void doQuery(String query, Function callBack) {
-		System.out.println("query " + query);
-		System.out.println("callBack " + callBack);
+		//System.out.println("query " + query);
+		//System.out.println("callBack " + callBack);
 	    this.lastQuery = query;
 	    this.lastQueryCallBack = callBack;
 	//    this.lastQueryErrorCallBack = errorCallBack;
