@@ -77,5 +77,32 @@ public class DumpsJSTests extends AbstractJSTests {
         Function testData = (Function) SCOPE.get("Data", SCOPE);
         return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
     }
+    
+    @Test
+    public void testDisplayDumpEntries() throws ScriptException, IOException, NoSuchMethodException {
+        
+        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        
+        readString( "var DumpEntryList = function() {" +
+            "   this.children = function() {return [];};" +
+            "};");
+        Function dumpEntryList = (Function) SCOPE.get("DumpEntryList", SCOPE);
+        Scriptable listElement = dumpEntryList.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Dollar.setDollarLookupResultForIds(listElement);
+
+        readString("var ClickEvent = function() {" + //
+            "   this.data = new Element('<div />');" + //
+            "};");
+        
+        Function eventConstructor = (Function) SCOPE.get("ClickEvent", SCOPE);
+        Object[] args = new Object[] {};
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        Function displayDumpEntriesFunction = (Function) dumpViewer.get("displayDumpEntries", SCOPE);
+        displayDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {event});
+
+        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", SCOPE);
+        displaySelectedDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {});
+    }
 
 }
