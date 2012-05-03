@@ -162,5 +162,24 @@ public class DumpsJSTests extends AbstractJSTests {
         String ajaxUrl = Dollar.getAjaxUrl();
         assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump", ajaxUrl);
     }
-
+    
+    @Test
+    public void testDeleteDump() throws ScriptException, IOException, NoSuchMethodException {
+        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        Function deleteDumpFunction = (Function) dumpViewer.get("deleteDump", SCOPE);
+        
+        readString("var Event = function() {" + //
+            "   this.data = {attr : function(id){return 'anId'}};" + //
+            "};");
+        
+        Function eventConstructor = (Function) SCOPE.get("Event", SCOPE);
+        Object[] args = new Object[] {};
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
+        
+        deleteDumpFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {event});
+        
+        String ajaxUrl = Dollar.getAjaxUrl();
+        assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/anId", ajaxUrl);
+    }
 }
