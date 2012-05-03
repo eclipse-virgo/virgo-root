@@ -22,7 +22,7 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
 /**
  * 
  */
-public class Dollar {
+public final class Dollar {
 	
 	private static Context CONTEXT; 
 	
@@ -46,6 +46,7 @@ public class Dollar {
     }
     
     public static void init(Context context, ScriptableObject scope) {
+    	Dollar.lookupResultForIds = null;
     	CONTEXT = context;
     	SCOPE = scope;
     }
@@ -55,9 +56,9 @@ public class Dollar {
 	public static Object dollar(ScriptableObject name){
 		Dollar.dollarLookup = (String) Context.jsToJava(name, String.class);
 		if (Dollar.dollarLookup.startsWith("#") && Dollar.lookupResultForIds != null) {
-		    Scriptable result = Dollar.lookupResultForIds;
-		    Dollar.lookupResultForIds = null;
-            return result;
+		    //Scriptable result = Dollar.lookupResultForIds;
+		    //Dollar.lookupResultForIds = null;
+            return Dollar.lookupResultForIds;
 		} else {
 		    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
 		    Object[] args = new Object[]{name};

@@ -38,9 +38,9 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
  */
 public abstract class AbstractJSTests {
 	
-	protected static Context CONTEXT; 
+	protected static Context context; 
 	
-	protected static ScriptableObject SCOPE;
+	protected static ScriptableObject scope;
 
 	protected static String alertMsg;
 	
@@ -48,22 +48,22 @@ public abstract class AbstractJSTests {
 	
 	@BeforeClass
 	public static void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
-		CONTEXT = Context.enter();
-		SCOPE = CONTEXT.initStandardObjects();
+		context = Context.enter();
+		scope = context.initStandardObjects();
 
 		//Create the browser environment
-		ScriptableObject.defineClass(SCOPE, Element.class);
-		ScriptableObject.defineClass(SCOPE, Server.class);
-		ScriptableObject.putProperty(SCOPE, "window", Context.javaToJS(new Window(), SCOPE));
+		ScriptableObject.defineClass(scope, Element.class);
+		ScriptableObject.defineClass(scope, Server.class);
+		ScriptableObject.putProperty(scope, "window", Context.javaToJS(new Window(), scope));
 		
-		Dollar.init(CONTEXT, SCOPE);
-		FunctionObject dollarFunction = new FunctionObject("$", Dollar.class.getDeclaredMethod("dollar", ScriptableObject.class), SCOPE);
-		ScriptableObject.putProperty(SCOPE, "$", dollarFunction);
+		Dollar.init(context, scope);
+		FunctionObject dollarFunction = new FunctionObject("$", Dollar.class.getDeclaredMethod("dollar", ScriptableObject.class), scope);
+		ScriptableObject.putProperty(scope, "$", dollarFunction);
 		ScriptableObject.putProperty(dollarFunction, "ajax", new FunctionObject("ajax", Dollar.class.getDeclaredMethod("ajax", Scriptable.class), dollarFunction));
 		ScriptableObject.putProperty(dollarFunction, "each", new FunctionObject("each", Dollar.class.getDeclaredMethod("each", Scriptable.class, Function.class), dollarFunction));
 		
-		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), SCOPE);
-		ScriptableObject.putProperty(SCOPE, alertFunction.getFunctionName(), alertFunction);
+		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), scope);
+		ScriptableObject.putProperty(scope, alertFunction.getFunctionName(), alertFunction);
 	}
 	
 	@AfterClass
@@ -77,29 +77,29 @@ public abstract class AbstractJSTests {
 	}
 	
 	protected final Object addObject(Object object, String name){
-		Object wrapped = Context.javaToJS(object, SCOPE);
-		ScriptableObject.putProperty(SCOPE, name, wrapped);
+		Object wrapped = Context.javaToJS(object, scope);
+		ScriptableObject.putProperty(scope, name, wrapped);
 		return wrapped;
 	}
 	
 	protected final void readFile(String fileName) throws IOException{
-		CONTEXT.evaluateReader(SCOPE, new FileReader(fileName), fileName, 0, null);
+		context.evaluateReader(scope, new FileReader(fileName), fileName, 0, null);
 	}
 	
 	protected final void readString(String js) throws IOException{
-		CONTEXT.evaluateString(SCOPE, js, "snippet", 0, null);
+		context.evaluateString(scope, js, "snippet", 0, null);
 	}
 	
 	protected final void addCommonObjects(){
-		commonUtil = new Util(CONTEXT, SCOPE);
+		commonUtil = new Util(context, scope);
 		addObject(commonUtil, "util");
 	}
 	
 	protected final void invokePageInit() throws ScriptException, NoSuchMethodException{
-		Object fObj = SCOPE.get("pageinit", SCOPE);
+		Object fObj = scope.get("pageinit", scope);
 		if (fObj instanceof Function) {
 		    Function f = (Function)fObj;
-		    f.call(CONTEXT, SCOPE, SCOPE, Context.emptyArgs);
+		    f.call(context, scope, scope, Context.emptyArgs);
 		} else {
 			Assert.fail("pageinit function not found");
 		}		

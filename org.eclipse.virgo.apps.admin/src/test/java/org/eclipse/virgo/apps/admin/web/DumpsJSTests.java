@@ -48,10 +48,10 @@ public class DumpsJSTests extends AbstractJSTests {
         Map<String, Function> successByUrl = Dollar.getAndClearAjaxSuccessByUrl();
         
         assertTrue(successByUrl.containsKey(DUMPDIR_URL));
-        successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpDirectory() });
+        successByUrl.get(DUMPS_URL).call(context, scope, scope, new Object[] { getTestDumpDirectory() });
         
         assertTrue(successByUrl.containsKey(DUMPS_URL));
-        successByUrl.get(DUMPS_URL).call(CONTEXT, SCOPE, SCOPE, new Object[] { getTestDumpList() });
+        successByUrl.get(DUMPS_URL).call(context, scope, scope, new Object[] { getTestDumpList() });
 
         assertTrue("Page ready has not been called", commonUtil.isPageReady());
     }
@@ -63,8 +63,8 @@ public class DumpsJSTests extends AbstractJSTests {
             "   this.value.Properties = {};" + //
             "};");
 
-        Function testData = (Function) SCOPE.get("Data", SCOPE);
-        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
     }
 
     private Scriptable getTestDumpList() throws IOException {
@@ -74,35 +74,35 @@ public class DumpsJSTests extends AbstractJSTests {
             "   this.value.Properties = {};" + //
             "};");
 
-        Function testData = (Function) SCOPE.get("Data", SCOPE);
-        return testData.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
     }
     
     @Test
     public void testDisplayDumpEntries() throws ScriptException, IOException, NoSuchMethodException {
         
-        Function dumpViewerConstructor = (Function) SCOPE.get("DumpViewer", SCOPE);        
-        Scriptable dumpViewer = dumpViewerConstructor.construct(CONTEXT, SCOPE, new Object[]{});
+        Function dumpViewerConstructor = (Function) scope.get("DumpViewer", scope);        
+        Scriptable dumpViewer = dumpViewerConstructor.construct(context, scope, new Object[]{});
         
         readString( "var DumpEntryList = function() {" +
             "   this.children = function() {return [];};" +
             "};");
-        Function dumpEntryList = (Function) SCOPE.get("DumpEntryList", SCOPE);
-        Scriptable listElement = dumpEntryList.construct(CONTEXT, SCOPE, Context.emptyArgs);
+        Function dumpEntryList = (Function) scope.get("DumpEntryList", scope);
+        Scriptable listElement = dumpEntryList.construct(context, scope, Context.emptyArgs);
         Dollar.setDollarLookupResultForIds(listElement);
 
         readString("var ClickEvent = function() {" + //
             "   this.data = new Element('<div />');" + //
             "};");
         
-        Function eventConstructor = (Function) SCOPE.get("ClickEvent", SCOPE);
+        Function eventConstructor = (Function) scope.get("ClickEvent", scope);
         Object[] args = new Object[] {};
-        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), SCOPE, args);
-        Function displayDumpEntriesFunction = (Function) dumpViewer.get("displayDumpEntries", SCOPE);
-        displayDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {event});
+        Scriptable event = eventConstructor.construct(Context.getCurrentContext(), scope, args);
+        Function displayDumpEntriesFunction = (Function) dumpViewer.get("displayDumpEntries", scope);
+        displayDumpEntriesFunction.call(context, scope, dumpViewer, new Object[] {event});
 
-        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", SCOPE);
-        displaySelectedDumpEntriesFunction.call(CONTEXT, SCOPE, dumpViewer, new Object[] {});
+        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", scope);
+        displaySelectedDumpEntriesFunction.call(context, scope, dumpViewer, new Object[] {});
     }
 
 }
