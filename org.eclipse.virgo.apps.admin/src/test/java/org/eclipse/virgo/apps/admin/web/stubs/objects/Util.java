@@ -21,28 +21,34 @@ import sun.org.mozilla.javascript.internal.ScriptableObject;
  */
 public class Util {
 
-    private final Context context;
+    private final Context CONTEXT;
     
 	private final ScriptableObject SCOPE;
 	
 	private boolean pageReady = false;
 
-    private String[] lastMakeTableRows;
+    private String[] lastMakeTableRows = null;
 
-    private String[] lastMakeTableHeaders;
+    private String[] lastMakeTableHeaders = null;
 
-    private Scriptable lastMakeTableTable;
+    private Scriptable lastMakeTableTable = null;
 
-    private Scriptable lastBulkQuery;
+    private String lastQuery = null;
 
-    private Function lastBulkQueryCallBack;
+    private Function lastQueryCallBack = null;
 
-    private Function lastBulkQueryErrorCallBack;
+    private Function lastQueryErrorCallBack = null;
+
+    private Scriptable lastBulkQuery = null;
+
+    private Function lastBulkQueryCallBack = null;
+
+    private Function lastBulkQueryErrorCallBack = null;
 
 	public static int fxTime = 200;
 	
 	public Util(Context context, ScriptableObject SCOPE) {
-	    this.context = context;
+	    this.CONTEXT = context;
 		this.SCOPE = SCOPE;
 	}
 	
@@ -55,7 +61,6 @@ public class Util {
 	public Object getCurrentHost(){
 		return Context.javaToJS("hostPrefix", SCOPE);
 	}
-	
 	
 	public Object readObjectName(String mbeanName){
 		return new MBean(mbeanName);	
@@ -79,7 +84,15 @@ public class Util {
 	public Object makeDiv(String clazz) {
 	    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
         Object[] args = new Object[]{clazz};
-        return elementConstructor.construct(this.context, SCOPE, args);
+        return elementConstructor.construct(this.CONTEXT, SCOPE, args);
+	}
+	
+	public void doQuery(String query, Function callBack) {
+		System.out.println("query " + query);
+		System.out.println("callBack " + callBack);
+	    this.lastQuery = query;
+	    this.lastQueryCallBack = callBack;
+	//    this.lastQueryErrorCallBack = errorCallBack;
 	}
 	
 	public void doBulkQuery(Scriptable query, Function callBack, Function errorCallBack) {
@@ -105,6 +118,18 @@ public class Util {
 	public Scriptable getLastMakeTableTable() {
 	    return this.lastMakeTableTable;
 	}
+
+    public String getLastQuery() {
+        return lastQuery;
+    }
+
+    public Function getLastQueryCallBack() {
+        return lastQueryCallBack;
+    }
+
+    public Function getLastQueryErrorCallBack() {
+        return lastQueryErrorCallBack;
+    }
 
     public Scriptable getLastBulkQuery() {
         return lastBulkQuery;

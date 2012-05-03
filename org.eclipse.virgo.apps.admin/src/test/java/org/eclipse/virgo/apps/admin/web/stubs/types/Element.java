@@ -38,7 +38,7 @@ public class Element extends ParentStub {
 	private static Function READY;
     
     private final String constructorArgument;
-    
+	
     private List<String> CLASSES = new ArrayList<String>();
     
     private Map<String, String> CSS = new HashMap<String, String>();
@@ -79,21 +79,27 @@ public class Element extends ParentStub {
     	CLASSES.add(newClass);
         return this;
     }
-
-    public void jsFunction_click(){
-    }
     
 	public boolean jsFunction_hasClass(String className){
 		return CLASSES.contains(className);
 	}
 
-	public boolean jsFunction_removeClass(String className){
-		return CLASSES.remove(className);
+	public ScriptableObject jsFunction_removeClass(String className){
+		CLASSES.remove(className);
+        return this;
 	}
 	
     public void jsFunction_text(String text){
     }
+	
+    public void jsFunction_attr(String attr){
+    }
+	
+    public void jsFunction_prop(String prop){
+    }
 
+    public void jsFunction_click(){
+    }
 
 	public ScriptableObject jsFunction_css(String key, String value){
 		CSS.put(key, value);
@@ -108,6 +114,10 @@ public class Element extends ParentStub {
     
 	public static Function getReadyFunction(){
 		return READY;
+	}
+	
+	public List<String> getClasses(){
+		return CLASSES;
 	}
     
 	public static List<String> getConstructorArgumentTrace() {

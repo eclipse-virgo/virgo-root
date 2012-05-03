@@ -14,24 +14,6 @@
  */
 
 
-var Data = function() {
-	
-	this.value = {};
-
-	this.value.each = function(mbeansProcessingFunction){
-		var props = {
-				'name': 'Fake', 
-				'version': 'Foo', 
-				'region': 'Somewhere',
-				'artifact-type': 'something'
-			};
-		mbeansProcessingFunction(new SampleArtifact('aDomain', props, 'anObjectName'));
-	};		
-	
-	this.value.Properties = {};
-	
-};
-
 var SampleArtifact = function(domain, properties, objectName){
 	this.domain = domain;
 	this.properties = properties;

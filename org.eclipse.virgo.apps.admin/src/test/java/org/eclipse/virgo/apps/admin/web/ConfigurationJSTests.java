@@ -20,7 +20,6 @@ import java.util.HashMap;
 import javax.script.ScriptException;
 
 import org.eclipse.virgo.apps.admin.web.stubs.types.Element;
-import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
 import org.eclipse.virgo.apps.admin.web.stubs.objects.ObjectName;
 import org.junit.Test;
 import sun.org.mozilla.javascript.internal.Context;
@@ -46,9 +45,9 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		readFile("src/main/webapp/js/configuration.js");
 
 		invokePageInit();
-		assertNotNull(Dollar.getAjaxSuccess());
+		assertNotNull(commonUtil.getLastQueryCallBack());
 
-		Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, SCOPE, new Object[]{getTestData()});
+		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, SCOPE, new Object[]{getTestData()});
 		assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
 	}
 	
@@ -62,6 +61,7 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		Function configurationConstructor = (Function) SCOPE.get("Configuration", SCOPE);
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("name", "testName");
 		ObjectName value = new ObjectName("domain", "objectNameString", properties);
 
 		Scriptable labelElement = ((Function) SCOPE.get("Element", SCOPE)).construct(CONTEXT, SCOPE, new Object[]{"<div />"});
@@ -80,7 +80,8 @@ public class ConfigurationJSTests extends AbstractJSTests {
 		toggleFunction.call(CONTEXT, SCOPE, configuration, Context.emptyArgs); //Open it
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));
 
-		Dollar.getAjaxSuccess().call(CONTEXT, SCOPE, configuration, new Object[]{getTestData()});
+		System.out.println("foo " + commonUtil);
+		commonUtil.getLastQueryCallBack().call(CONTEXT, SCOPE, configuration, new Object[]{getTestData()});
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("plus"));
 		assertTrue("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("minus"));
 		assertFalse("Icon not toggled", ((Element)configuration.get("icon", SCOPE)).jsFunction_hasClass("spinnerIcon"));

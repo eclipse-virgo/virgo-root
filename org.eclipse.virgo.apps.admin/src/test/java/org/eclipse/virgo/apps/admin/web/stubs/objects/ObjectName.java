@@ -21,12 +21,12 @@ public class ObjectName {
 	private final String domain;
 
 	private final Map<String, String> properties;
-
-	private final String objectNameString;
+	
+	public String toString;
 	
 	public ObjectName(String domain, String objectNameString, Map<String, String> properties) {
 		this.domain = domain;
-		this.objectNameString = objectNameString;
+		this.toString = objectNameString;
 		this.properties = properties;
 	}
 	
@@ -39,12 +39,5 @@ public class ObjectName {
 	public String domain(){
 		return domain;
 	}
-	
-	@Override
-	public String toString() {
-		return objectNameString;
-	}
-
-	// Test methods
 	
 }

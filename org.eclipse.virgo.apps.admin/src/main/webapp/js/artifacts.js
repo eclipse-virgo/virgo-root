@@ -27,7 +27,7 @@ function pageinit(){
  * @param mbeans
  * @returns
  */
-var Tree = function(mbeans) {
+var Tree = function() {
 	
 	var self = this;
 	

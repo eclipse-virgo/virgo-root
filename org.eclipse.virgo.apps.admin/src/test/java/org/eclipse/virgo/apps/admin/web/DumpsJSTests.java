@@ -11,7 +11,6 @@
 package org.eclipse.virgo.apps.admin.web;
 
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
