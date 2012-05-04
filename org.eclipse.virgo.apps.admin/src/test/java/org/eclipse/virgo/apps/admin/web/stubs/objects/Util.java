@@ -101,6 +101,19 @@ public class Util {
 	
 	// Test methods
 	
+	public void clean(){
+		this.pageReady = false;
+		this.lastMakeTableRows = null;
+		this.lastMakeTableHeaders = null;
+		this.lastMakeTableTable = null;
+		this.lastQuery = null;
+		this.lastQueryCallBack = null;
+		this.lastQueryErrorCallBack = null;
+		this.lastBulkQuery = null;
+		this.lastBulkQueryCallBack = null;
+		this.lastBulkQueryErrorCallBack = null;
+	}
+	
 	public boolean isPageReady(){
 		return pageReady;
 	}

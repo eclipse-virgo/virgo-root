@@ -11,6 +11,7 @@
 package org.eclipse.virgo.apps.admin.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -27,24 +28,11 @@ import sun.org.mozilla.javascript.internal.Function;
 import sun.org.mozilla.javascript.internal.Scriptable;
 import sun.org.mozilla.javascript.internal.ScriptableObject;
 
-
 /**
  *
  *
  */
 public class ArtifactsJSTests extends AbstractJSTests {
-	
-	
-//	@BeforeClass
-//	public static void setup(){
-//		Function fObj = (Function) SCOPE.get(Element.class.getSimpleName(), SCOPE);
-//		if (fObj instanceof Function) {
-//		    Function constructor = (Function)fObj;
-//			dollarLookupToReturn = (ScriptableObject) constructor.construct(Context.getCurrentContext(), constructor.getParentScope(), new Object[]{"testElement"});
-//		} else {
-//			Assert.fail("Element constructor not found");
-//		}
-//	}
 	
 	@Test
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
@@ -66,49 +54,60 @@ public class ArtifactsJSTests extends AbstractJSTests {
 	
 	@Test
 	public void testFileUpload() {
-//		setup();
 		ScriptableObject uploadManager = (ScriptableObject) scope.get("uploadManager", scope);
 
 		Element element = (Element) ((Function) scope.get("Element", scope)).construct(context, scope, new Object[]{"<div />"});
 		Dollar.setDollarLookupResultForIds(element, 3);
 		ScriptableObject.callMethod(uploadManager, "toggle", new Object[]{});
-
 		assertTrue(element.getClasses().contains("button-selected"));
 
-		
-		
-		
-//		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
-//		ScriptableObject.callMethod(uploadManager, "startUpload", new Object[]{});
-//		assertTrue(dollar.isSubmitted());
-//		assertTrue((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
-//		ScriptableObject.callMethod(uploadManager, "uploadComplete", new Object[]{});
-//		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
+		Element element2 = (Element) ((Function) scope.get("Element", scope)).construct(context, scope, new Object[]{"#upload-form"});
+		Dollar.setDollarLookupResultForIds(element2, 1);
+		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
+		ScriptableObject.callMethod(uploadManager, "startUpload", new Object[]{});
+		assertTrue((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
+		assertTrue(element2.isSubmitted());
+				
+		ScriptableObject.callMethod(uploadManager, "uploadComplete", new Object[]{});
+		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
 	}
 
 	@Test
-	public void testTreeTopLevelTwisty() {
-//		setup();
-//		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
-//		ScriptableObject.callMethod(tree, "renderTopLevel", new Object[]{"testObjectName", "testParent"});
-//		assertEquals("testParent", dollarLookup);
-//		assertEquals("hostPrefix/jolokia/search/org.eclipse.virgo.kernel:type=ArtifactModel,*", Request.getLastSentUrl());
+	public void testTreeTopLevelTwisty() throws IOException {
+		commonUtil.clean();
+		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
+		ScriptableObject.callMethod(tree, "renderTopLevel", new Object[]{getTestEventData()});
+		assertEquals("<li />", Dollar.getDollarLookup());
+		assertEquals("search/org.eclipse.virgo.kernel:type=ArtifactModel,*", commonUtil.getLastQuery());
 	}
 	
 	@Test
-	public void testTreeTwisty() {
-//		setup();
-//		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
-//		ScriptableObject.callMethod(tree, "renderArtifact", new Object[]{"testObjectName", "testParent"});
-//		assertEquals("testParent", dollarLookup);
-//		assertEquals("hostPrefix/jolokia/read/testObjectName", Request.getLastSentUrl());
+	public void testTreeTwisty() throws IOException {
+		commonUtil.clean();
+		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
+		ScriptableObject.callMethod(tree, "renderArtifact", new Object[]{getTestEventData()});
+		assertEquals("<li />", Dollar.getDollarLookup());
+		assertEquals("read/objectName", commonUtil.getLastQuery());
 	}
 	
 	private Scriptable getTestData() throws IOException{
-		readString( "var Data = function() {" +
+		readString( "var TestData = function() {" +
 					"	this.value = {};" +
 					"};");
-		Function testData = (Function) scope.get("Data", scope);
+		Function testData = (Function) scope.get("TestData", scope);
+		return testData.construct(context, scope, Context.emptyArgs);
+	}
+	
+	private Scriptable getTestEventData() throws IOException{
+		readString( "var TestEventData = function() {" +
+					"	this.data = {};" +
+					"	this.data.node = new Element('node');" +
+					"	this.data.filter = {};" +
+					"	this.data.objectName = {};" +
+					"	this.data.objectName.toString = 'objectName';" +
+					"	this.data.node.length = 1" +
+					"};");
+		Function testData = (Function) scope.get("TestEventData", scope);
 		return testData.construct(context, scope, Context.emptyArgs);
 	}
 }

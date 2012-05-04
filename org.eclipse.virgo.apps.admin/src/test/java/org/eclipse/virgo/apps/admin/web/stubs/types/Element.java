@@ -12,6 +12,7 @@
 package org.eclipse.virgo.apps.admin.web.stubs.types;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,8 @@ public class Element extends ParentStub {
     private List<String> CLASSES = new ArrayList<String>();
     
     private Map<String, String> CSS = new HashMap<String, String>();
+
+	private boolean isSubmitted;
     
     /**
      * Prototype constructor
@@ -57,7 +60,7 @@ public class Element extends ParentStub {
         this.constructorArgument = ((String) Context.jsToJava(constructorArgument, String.class));
         CONSTRUCTOR_ARGUMENT_TRACE.add(this.constructorArgument);
     }
-
+    
     public void jsFunction_empty(){
     }
 
@@ -84,28 +87,36 @@ public class Element extends ParentStub {
 		return CLASSES.contains(className);
 	}
 
-	public ScriptableObject jsFunction_removeClass(String className){
+	public ScriptableObject jsFunction_removeClass(String className) {
 		CLASSES.remove(className);
         return this;
 	}
 	
-    public ScriptableObject jsFunction_text(String text){
+    public ScriptableObject jsFunction_text(String text) {
         return this;
     }
 	
-    public void jsFunction_attr(String attr){
+    public void jsFunction_attr(String attr) {
     }
 
-    public void jsFunction_attr(String attr, String value){
+    public void jsFunction_attr(String attr, String value) {
     }
     
     public void jsFunction_prop(String prop){
     }
 
-    public void jsFunction_click(){
+    public void jsFunction_click() {
     }
 
-	public ScriptableObject jsFunction_css(String key, String value){
+    public void jsFunction_submit() {
+    	this.isSubmitted = true;
+    }
+    
+    public ScriptableObject jsFunction_children(String filter) {
+    	return this;
+    }
+
+	public ScriptableObject jsFunction_css(String key, String value) {
 		CSS.put(key, value);
 		return this;
 	}
@@ -115,7 +126,7 @@ public class Element extends ParentStub {
 	}
     
     // Test helper methods
-    
+	
 	public static Function getReadyFunction(){
 		return READY;
 	}
@@ -139,4 +150,9 @@ public class Element extends ParentStub {
 	public String getConstructorArgument() {
 		return this.constructorArgument;
 	}
+	
+	public boolean isSubmitted() {
+		return this.isSubmitted;
+	}
+	
 }

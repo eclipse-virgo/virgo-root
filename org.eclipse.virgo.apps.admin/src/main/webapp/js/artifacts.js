@@ -430,7 +430,7 @@ var UploadManager = function() {
 	this.startUpload = function() {
 		self.uploading = true;
 		//this.spinner.show(true);
-		$('upload-form').submit();
+		$('#upload-form').submit();
 	};
 	
 	this.resetForm = function() {
