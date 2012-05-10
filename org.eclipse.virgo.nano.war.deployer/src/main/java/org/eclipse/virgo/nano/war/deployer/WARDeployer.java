@@ -207,7 +207,7 @@ public class WARDeployer implements SimpleDeployer {
             ServiceReference[] refs = installed.getRegisteredServices();
             if (refs != null) {
                 for (ServiceReference ref : refs) {
-                    if (ref.getClass().equals(ServletContext.class)) {
+                    if (((String[])ref.getProperty("objectClass"))[0].equals(ServletContext.class.getCanonicalName())) {
                         return true;
                     }
                 }
