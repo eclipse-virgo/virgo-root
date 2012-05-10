@@ -430,6 +430,8 @@ public class WARDeployer implements SimpleDeployer {
         try {
             mfIS = new FileInputStream(srcFile + File.separator + JarFile.MANIFEST_NAME);
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
+            //TODO this is a temporary fix until bug 377399 is fixed
+            manifest.setHeader("Manifest-Version", "1.0");
             if (WebBundleUtils.isWebApplicationBundle(manifest)) {
                 // we already have a web bundle - skip transformation
                 this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
