@@ -13,6 +13,7 @@ Import-Template:
  org.osgi.framework.*;version="0",
  org.osgi.service.component;version="0",
  org.osgi.service.packageadmin;version="0",
- org.slf4j;version="0"
+ org.slf4j;version="0",
+ javax.servlet;version="0"
 Excluded-Exports:
  *

@@ -22,6 +22,14 @@
 		cardinality="1..1" 
 		bind="bindWebBundleManifestTransformer" 
 		unbind="unbindWebBundleManifestTransformer"/>
+		
+	<reference name="KernelConfig"
+		interface="org.eclipse.virgo.kernel.core.KernelConfig"  
+		policy="static" 
+		cardinality="1..1" 
+		bind="bindKernelConfig" 
+		unbind="unbindKernelConfig"/>
+		
  <service>
     <provide interface="org.eclipse.virgo.nano.deployer.SimpleDeployer"/>
  </service>

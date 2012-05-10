@@ -1,8 +1,6 @@
 
 package org.eclipse.virgo.nano.war.deployer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -23,10 +20,12 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
+
+import javax.servlet.ServletContext;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
+import org.eclipse.virgo.kernel.core.KernelConfig;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
@@ -41,6 +40,7 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
@@ -87,8 +87,6 @@ public class WARDeployer implements SimpleDeployer {
 
     private static final String WEBAPPS_DIR = "webapps";
 
-    private static final String MANIFEST_VERSION_HEADER = "Manifest-Version: 1.0\n\n";
-
     private static final String WEBBUNDLE_PROTOCOL = "webbundle";
 
     private static final String FILE_PROTOCOL = "file";
@@ -115,19 +113,23 @@ public class WARDeployer implements SimpleDeployer {
 
     private File webAppsDir;
 
+    private KernelConfig kernelConfig;
+
     public WARDeployer() {
-    	warDeployerInternalInit(null);
+        warDeployerInternalInit(null);
     }
-    
-    public WARDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, WebBundleManifestTransformer webBundleManifestTransformer, EventLogger eventLogger) {
+
+    public WARDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, WebBundleManifestTransformer webBundleManifestTransformer,
+        EventLogger eventLogger, KernelConfig kernelConfig) {
         warDeployerInternalInit(bundleContext);
         this.packageAdmin = packageAdmin;
         this.webBundleManifestTransformer = webBundleManifestTransformer;
         this.eventLogger = eventLogger;
+        this.kernelConfig = kernelConfig;
     }
-    
+
     public void activate(ComponentContext context) {
-    	warDeployerInternalInit(context.getBundleContext());
+        warDeployerInternalInit(context.getBundleContext());
     }
 
     @Override
@@ -167,6 +169,9 @@ public class WARDeployer implements SimpleDeployer {
         this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTING, installed.getSymbolicName(), installed.getVersion());
         try {
             installed.start();
+            if (!isWebAppEnabled(installed)) {
+                throw new Exception("Failed to enable application.");
+            }
         } catch (Exception e) {
             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
@@ -195,19 +200,37 @@ public class WARDeployer implements SimpleDeployer {
         return STATUS_OK;
     }
 
+    private boolean isWebAppEnabled(final Bundle installed) throws InterruptedException {
+        int counter = 0;
+        int retries = Integer.valueOf(this.kernelConfig.getProperty("application.init.timeout"));
+        while (counter < retries) {
+            ServiceReference[] refs = installed.getRegisteredServices();
+            if (refs != null) {
+                for (ServiceReference ref : refs) {
+                    if (ref.getClass().equals(ServletContext.class)) {
+                        return true;
+                    }
+                }
+            }
+            counter++;
+            Thread.sleep(1000);
+        }
+        return false;
+    }
+
     @Override
     public boolean isDeployFileValid(File file) {
-		try {
-			@SuppressWarnings("unused")
-			JarFile jarFile = new JarFile(file);
-		} catch (IOException e) {
-			this.logger.error("The deployed file '"+ file.getAbsolutePath() +"' is an invalid zip file.");
-			return false;
-		}
-		return true;
-	}
+        try {
+            @SuppressWarnings("unused")
+            JarFile jarFile = new JarFile(file);
+        } catch (IOException e) {
+            this.logger.error("The deployed file '" + file.getAbsolutePath() + "' is an invalid zip file.");
+            return false;
+        }
+        return true;
+    }
 
-	private String createInstallLocation(final File warDir) {
+    private String createInstallLocation(final File warDir) {
         return INSTALL_BY_REFERENCE_PREFIX + warDir.getAbsolutePath();
     }
 
@@ -284,6 +307,9 @@ public class WARDeployer implements SimpleDeployer {
                 transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
+                if (!isWebAppEnabled(bundle)) {
+                    throw new Exception("Failed to enable application.");
+                }
                 if (this.packageAdmin != null) {
                     this.packageAdmin.refreshPackages(new Bundle[] { bundle });
                     this.logger.info("Update of file with path [" + path + "] is successful.");
@@ -398,16 +424,16 @@ public class WARDeployer implements SimpleDeployer {
         if (!destFile.isFile() || !destFile.canRead()) {
             throw new IllegalArgumentException("Destination file must be a readable file [" + destFile + "].");
         }
-        
+
         FileOutputStream fos = null;
         InputStream mfIS = null;
         try {
             mfIS = new FileInputStream(srcFile + File.separator + JarFile.MANIFEST_NAME);
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
             if (WebBundleUtils.isWebApplicationBundle(manifest)) {
-            	//we already have a web bundle - skip transformation
-            	this.logger.info("Skipping transformation of application '"+ warName +"' because it is already a web bundle.");
-            	return;
+                // we already have a web bundle - skip transformation
+                this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
+                return;
             }
             Map<String, String> map = new HashMap<String, String>();
             String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
@@ -502,24 +528,24 @@ public class WARDeployer implements SimpleDeployer {
         }
         return new StandardDeploymentIdentity(WAR, bundle.getSymbolicName(), bundle.getVersion().toString());
     }
-    
-	@Override
-	public List<String> getAcceptedFileTypes() {
-		List<String> types = new ArrayList<String>();
-		types.add(WAR);
-		return types;
-	}
-    
-	private void warDeployerInternalInit(BundleContext bundleContext) {
-		String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
+
+    @Override
+    public List<String> getAcceptedFileTypes() {
+        List<String> types = new ArrayList<String>();
+        types.add(WAR);
+        return types;
+    }
+
+    private void warDeployerInternalInit(BundleContext bundleContext) {
+        String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
         File kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);
         this.webAppsDir = new File(kernelHomeFile, WEBAPPS_DIR);
         this.bundleContext = bundleContext;
         this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
-	}
-	
+    }
+
     public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
         this.webBundleManifestTransformer = transformer;
     }
@@ -542,6 +568,14 @@ public class WARDeployer implements SimpleDeployer {
 
     public void unbindPackageAdmin(PackageAdmin packageAdmin) {
         this.packageAdmin = null;
+    }
+    
+    public void bindKernelConfig(KernelConfig kernelConfig) {
+        this.kernelConfig = kernelConfig;
+    }
+
+    public void unbindKernelConfig(KernelConfig kernelConfig) {
+        this.kernelConfig = null;
     }
 
 }
