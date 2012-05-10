@@ -152,19 +152,14 @@ public class WARDeployer implements SimpleDeployer {
         try {
             // extract the war file to the webapps directory
             JarUtils.unpackTo(new PathReference(deployedFile), new PathReference(warDir));
-
-            // make the manifest transformation
-            File manifest = new File(warDir, JarFile.MANIFEST_NAME);
-            if (!manifest.exists()) {
-                manifest.getParentFile().mkdirs();
-                manifest.createNewFile();
-            }
-            transformManifest(deployedFile, manifest, warName);
+            // make the manifest transformation in the unpacked location
+            transformUnpackedManifest(warDir, warName);
 
             // install the bundle
             installed = this.bundleContext.installBundle(createInstallLocation(warDir));
         } catch (Exception e) {
             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             return STATUS_ERROR;
         }
 
@@ -174,6 +169,7 @@ public class WARDeployer implements SimpleDeployer {
             installed.start();
         } catch (Exception e) {
             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             return STATUS_ERROR;
         }
 
@@ -191,6 +187,8 @@ public class WARDeployer implements SimpleDeployer {
             }
         } catch (Exception e) {
             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+            return STATUS_ERROR;
         }
 
         createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
@@ -282,13 +280,8 @@ public class WARDeployer implements SimpleDeployer {
             try {
                 // extract the war file to the webapps directory
                 JarUtils.unpackTo(new PathReference(updatedFile), new PathReference(warDir));
-                // make the manifest transformation
-                File manifest = new File(warDir, JarFile.MANIFEST_NAME);
-                if (!manifest.exists()) {
-                    manifest.getParentFile().mkdirs();
-                    manifest.createNewFile();
-                }
-                transformManifest(updatedFile, manifest, warName);
+                // make the manifest transformation in the unpacked location
+                transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
                 if (this.packageAdmin != null) {
@@ -298,6 +291,8 @@ public class WARDeployer implements SimpleDeployer {
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+                createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+                return STATUS_ERROR;
             }
 
             createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
@@ -388,30 +383,26 @@ public class WARDeployer implements SimpleDeployer {
         return isWritable;
     }
 
-    private final void transformManifest(File srcFile, File destFile, String warName) throws IOException {
+    private final void transformUnpackedManifest(File srcFile, String warName) throws IOException {
         if (srcFile == null) {
             throw new NullPointerException("Source file is null.");
         }
-        if (destFile == null) {
-            throw new NullPointerException("Destination file is null.");
+        if (!srcFile.isDirectory() || !srcFile.canRead()) {
+            throw new IllegalArgumentException("Source file must be a readable directory [" + srcFile + "].");
         }
-        if (!srcFile.isFile() || !srcFile.canRead()) {
-            throw new IllegalArgumentException("Source file must be a readable file [" + srcFile + "].");
+        File destFile = new File(srcFile, JarFile.MANIFEST_NAME);
+        if (!destFile.exists()) {
+            destFile.getParentFile().mkdirs();
+            destFile.createNewFile();
         }
         if (!destFile.isFile() || !destFile.canRead()) {
             throw new IllegalArgumentException("Destination file must be a readable file [" + destFile + "].");
         }
-
-        JarFile zip = new JarFile(srcFile);
+        
         FileOutputStream fos = null;
         InputStream mfIS = null;
         try {
-            ZipEntry mfZipEntry = zip.getEntry(JarFile.MANIFEST_NAME);
-            if (mfZipEntry != null) {
-                mfIS = zip.getInputStream(mfZipEntry);
-            } else {
-                mfIS = getDefaultManifestStream();
-            }
+            mfIS = new FileInputStream(srcFile + File.separator + JarFile.MANIFEST_NAME);
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
             if (WebBundleUtils.isWebApplicationBundle(manifest)) {
             	//we already have a web bundle - skip transformation
@@ -427,15 +418,6 @@ public class WARDeployer implements SimpleDeployer {
             fos = new FileOutputStream(destFile);
             toManifest(manifest.toDictionary()).write(fos);
         } finally {
-            if (zip != null) {
-                try {
-                    zip.close();
-                } catch (Exception e) {
-                    if (this.logger.isInfoEnabled()) {
-                        this.logger.info("Cannot close jar file with name [" + zip.getName() + "].", e);
-                    }
-                }
-            }
             IOUtils.closeQuietly(fos);
             IOUtils.closeQuietly(mfIS);
         }
@@ -453,15 +435,6 @@ public class WARDeployer implements SimpleDeployer {
             attributes.putValue(name, value);
         }
         return manifest;
-    }
-
-    private InputStream getDefaultManifestStream() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(baos);
-        writer.println(MANIFEST_VERSION_HEADER);
-        writer.println();
-        writer.close();
-        return new ByteArrayInputStream(baos.toByteArray());
     }
 
     private final void registerToBundlesInfo(Bundle bundle) throws URISyntaxException, IOException, BundleException {
