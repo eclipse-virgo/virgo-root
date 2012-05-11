@@ -58,6 +58,18 @@ public class StandardBundleManifestTests {
     }
     
     @Test
+    public void constructFromManifestWithMissingVersion() throws IOException {                
+        BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), new FileReader(new File(resources, "badManifest.mf")));
+        assertEquals(StandardBundleManifest.MANIFEST_VERSION_VALUE, bundleManifest.toDictionary().get("Manifest-Version"));
+    }
+    
+    @Test
+    public void constructionFromManifestWithVersion() throws IOException {                
+        BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), new FileReader(new File(resources, "goodManifest.mf")));
+        assertEquals("2.0", bundleManifest.toDictionary().get("Manifest-Version"));
+    }
+    
+    @Test
     public void constructionFromDictionary() {
         Dictionary<String, String> dictionary = new Hashtable<String, String>();
         dictionary.put("Bundle-SymbolicName", "com.foo.bar");
@@ -313,7 +325,7 @@ public class StandardBundleManifestTests {
         
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            if (!"BunDLE-SymBOLICnAME".equals(key) && !"Bundle-Name".equals(key)) {
+            if (!"BunDLE-SymBOLICnAME".equals(key) && !"Bundle-Name".equals(key) && !"Manifest-Version".equals(key)) {
                 fail("Unexpected key " + key);
             }
         }

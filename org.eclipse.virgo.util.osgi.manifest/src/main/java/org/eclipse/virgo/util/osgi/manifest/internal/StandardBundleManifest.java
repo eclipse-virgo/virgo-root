@@ -59,6 +59,8 @@ import org.osgi.framework.Version;
 public class StandardBundleManifest implements BundleManifest {
 
     private static final String MANIFEST_VERSION = "Manifest-Version";
+    
+    static final String MANIFEST_VERSION_VALUE = "1.0";
 
     private final CaseInsensitiveMap<String> contents = new CaseInsensitiveMap<String>();
 
@@ -70,6 +72,9 @@ public class StandardBundleManifest implements BundleManifest {
 
     public StandardBundleManifest(ParserLogger logger, Map<String, String> contents) {
         this.contents.putAll(contents);
+        if (!this.contents.containsKey(MANIFEST_VERSION)) {
+            this.contents.put(MANIFEST_VERSION, MANIFEST_VERSION_VALUE);
+        }
         this.headers = initializeHeaders(this.contents, new StandardHeaderParser(logger));
     }
 
@@ -409,10 +414,6 @@ public class StandardBundleManifest implements BundleManifest {
         Attributes attributes = manifest.getMainAttributes();
 
         Dictionary<String, String> dictionary = toDictionary();
-
-        if (dictionary.get(MANIFEST_VERSION) == null) {
-            dictionary.put(MANIFEST_VERSION, "1.0");
-        }
 
         Enumeration<String> keys = dictionary.keys();
 
