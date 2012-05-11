@@ -94,6 +94,8 @@ public class WARDeployer implements SimpleDeployer {
     private static final String UNKNOWN = "unknown";
 
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
+    
+    private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
 
     private EventLogger eventLogger;
 
@@ -155,7 +157,7 @@ public class WARDeployer implements SimpleDeployer {
             // extract the war file to the webapps directory
             JarUtils.unpackTo(new PathReference(deployedFile), new PathReference(warDir));
             // make the manifest transformation in the unpacked location
-            transformUnpackedManifest(path, warDir, warName);
+            transformUnpackedManifest(warDir, warName);
 
             // install the bundle
             installed = this.bundleContext.installBundle(createInstallLocation(warDir));
@@ -304,7 +306,7 @@ public class WARDeployer implements SimpleDeployer {
                 // extract the war file to the webapps directory
                 JarUtils.unpackTo(new PathReference(updatedFile), new PathReference(warDir));
                 // make the manifest transformation in the unpacked location
-                transformUnpackedManifest(path, warDir, warName);
+                transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
                 if (!isWebAppEnabled(bundle)) {
@@ -409,7 +411,7 @@ public class WARDeployer implements SimpleDeployer {
         return isWritable;
     }
 
-    private final void transformUnpackedManifest(URI appUri, File srcFile, String warName) throws IOException {
+    private final void transformUnpackedManifest(File srcFile, String warName) throws IOException {
         if (srcFile == null) {
             throw new NullPointerException("Source file is null.");
         }
@@ -438,16 +440,24 @@ public class WARDeployer implements SimpleDeployer {
                 return;
             }
             Map<String, String> map = new HashMap<String, String>();
-            String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
-            if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
-                map.put(HEADER_WEB_CONTEXT_PATH, warName);
-            }
-            this.webBundleManifestTransformer.transform(manifest, appUri.toURL(), new InstallationOptions(map), false);
+            prepareInstallationOptions(warName, manifest, map);
+            this.webBundleManifestTransformer.transform(manifest, srcFile.toURI().toURL(), new InstallationOptions(map), false);
             fos = new FileOutputStream(destFile);
             toManifest(manifest.toDictionary()).write(fos);
         } finally {
             IOUtils.closeQuietly(fos);
             IOUtils.closeQuietly(mfIS);
+        }
+    }
+
+    private void prepareInstallationOptions(String warName, BundleManifest manifest, Map<String, String> map) {
+        String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
+        if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
+            map.put(HEADER_WEB_CONTEXT_PATH, warName);
+        }
+        String bundleSymbolicNameHeader = manifest.getHeader(HEADER_BUNDLE_SYMBOLIC_NAME);
+        if (bundleSymbolicNameHeader == null || bundleSymbolicNameHeader.trim().length() == 0) {
+            map.put(HEADER_BUNDLE_SYMBOLIC_NAME, warName);
         }
     }
 
