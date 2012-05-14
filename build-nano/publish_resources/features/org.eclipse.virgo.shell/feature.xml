@@ -59,7 +59,15 @@
          autostart="true"/>
 
    <plugin
-         id="org.eclipse.equinox.console.supportability"
+         id="org.eclipse.equinox.console"
+         download-size="0"
+         install-size="0"
+         version="@EQUINOX.CONSOLE.VERSION@"
+         unpack="false"
+         autostart="true"/>
+         
+   <plugin
+         id="org.eclipse.equinox.console.ssh"
          download-size="0"
          install-size="0"
          version="@EQUINOX.CONSOLE.VERSION@"
