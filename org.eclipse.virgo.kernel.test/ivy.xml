@@ -32,7 +32,8 @@
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
 		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.supportability" rev="${org.eclipse.equinox.console.supportability}" conf="test->runtime" />
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console" rev="${org.eclipse.equinox.console}" conf="test->runtime" />
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.ssh" rev="${org.eclipse.equinox.console}" conf="test->runtime" />
 
 		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
