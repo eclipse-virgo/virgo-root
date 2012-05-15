@@ -12,7 +12,7 @@ if "%KERNEL_HOME%" == "" (
 rem Construct the CLASSPATH list from the Kernel lib directory.
 for %%G in ("%KERNEL_HOME%\lib\*.jar") do call :AppendToClasspath "%%G"
 for %%G in ("%KERNEL_HOME%\plugins\org.eclipse.osgi_*.jar") do call :AppendToClasspath "%%G"
-for %%G in ("%KERNEL_HOME%\plugins\org.eclipse.equinox.console.supportability_*.jar") do call :AppendToClasspath "%%G"
+for %%G in ("%KERNEL_HOME%\plugins\org.eclipse.equinox.console.ssh_*.jar") do call :AppendToClasspath "%%G"
 
 rem Check if there are JAR files in the lib directory.
 if "%CLASSPATH%" == "" (
