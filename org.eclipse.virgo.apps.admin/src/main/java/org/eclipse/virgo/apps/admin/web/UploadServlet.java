@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +25,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,18 +35,33 @@ import org.slf4j.LoggerFactory;
  */
 public class UploadServlet extends HttpServlet {
 
+	private static final String ORG_ECLIPSE_VIRGO_KERNEL_HOME = "org.eclipse.virgo.kernel.home";
+	
 	private static final long serialVersionUID = 1L;
 	
 	private static final String PICKUP_DIR = "/pickup";
 	
 	private static final Logger log = LoggerFactory.getLogger(UploadServlet.class);
 
-	private final String serverHome;
+	private String serverHome;
 
+	/**
+	 * 
+	 * Do not use this constructor with the HTTPService as it will 
+	 */
+	public UploadServlet() {
+	}
+	
 	public UploadServlet(String serverHome) {
 		this.serverHome = serverHome;
 	}
 
+    public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+		BundleContext bc = (BundleContext) this.getServletContext().getAttribute("osgi-bundlecontext");
+		this.serverHome = bc.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME);
+    }
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		FileItemFactory factory = new DiskFileItemFactory();
