@@ -445,11 +445,42 @@ var UploadManager = function() {
 			var locationLIs = $('#uploadLocations', iframe[0].contentDocument).children();
 		    $.each(locationLIs, function(i, locationLI){
 		    	var location = $(locationLI).text();
-		    	//TODO: drive mbean to deploy artefact at location
+		    	self.deploy('file:' + location);
 		    });
 			alert("Upload Complete");
 			self.resetForm();
 		}
+	};
+	
+	this.deploy = function(artifact){
+		
+// For some reason, this gives a syntax error...
+//		var request = [{
+//			"type":"EXEC",
+//			"mbean":"org.eclipse.virgo.kernel:category=Control,type=Deployer",
+//			"operation":"deploy(java.lang.String)",
+//			"arguments":[artifact]
+//		}];
+// so do this instead:
+		var request = new Array();
+		request.push({
+			"type":"EXEC",
+			"mbean":"org.eclipse.virgo.kernel:category=Control,type=Deployer",
+			"operation":"deploy(java.lang.String)",
+			"arguments":[artifact]
+		});
+		
+		util.doBulkQuery(request, function(response){
+			var error = response[0].error;
+			if (error){
+				console.log(error);
+				alert(error);
+			}
+		}, function(xmlHttpRequest, textStatus, errorThrown){
+			console.log(xmlHttpRequest, textStatus, errorThrown);
+			alert('Deployment failed \'' + textStatus + '\': ' + xmlHttpRequest + ' ' + errorThrown);
+		});
+
 	};
 	
 	this.getUploadFormElement = function(number){
