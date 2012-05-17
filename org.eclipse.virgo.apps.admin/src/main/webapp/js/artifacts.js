@@ -448,8 +448,11 @@ var UploadManager = function() {
 		    	var location = $(locationLI).text();
 		    	URLs.push('file:' + location);
 		    });
+		    var numURLs = URLs.length;
 		    self.deploy(URLs, function(){
-		    	alert("Upload Complete");		    	
+		    	if (--numURLs == 0){
+		    		alert("Upload Complete");
+		    	}
 		    });
 			self.resetForm();
 		}
@@ -458,7 +461,7 @@ var UploadManager = function() {
 	this.deploy = function(URLs, successFunction){
 		var artifact = URLs.shift();
 		var done = URLs.length == 0;
-		var succ = done ? successFunction : function(){};
+		var succ = successFunction;
 		
 // For some reason, this gives a syntax error...
 //		var request = [{
