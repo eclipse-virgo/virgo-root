@@ -8,6 +8,7 @@ Web-ContextPath: /admin
 Bundle-Activator: org.eclipse.virgo.apps.admin.web.Activator
 Import-Template: 
  javax.servlet.*;version="${javax.servlet:[=.=.=,=.+1)}",
+ org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
  org.jolokia.osgi.servlet;version="${org.jolokia.osgi:[=.=,+1.=)}",
  org.slf4j;version="${org.slf4j:[=.=.=,+1)}",
  org.apache.commons.fileupload.*;version="0",

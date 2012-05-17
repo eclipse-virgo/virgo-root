@@ -25,6 +25,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.eclipse.virgo.util.io.PathReference;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class UploadServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String PICKUP_DIR = "/pickup";
+	private static final String STAGING_DIR = "/work/org.eclipse.virgo.apps.admin.web.UploadServlet";
 	
 	private static final Logger log = LoggerFactory.getLogger(UploadServlet.class);
 
@@ -64,6 +65,8 @@ public class UploadServlet extends HttpServlet {
     }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    
+	    createStagingDirectory();
 
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
@@ -77,7 +80,7 @@ public class UploadServlet extends HttpServlet {
 				if (!fileItem.isFormField()) {
 					String name = fileItem.getName();
 					if(name != null && name.length() > 0){
-						File uploadedFile = new File(String.format("%s%s/%s", this.serverHome, PICKUP_DIR, name));
+						File uploadedFile = new File(String.format("%s%s/%s", this.serverHome, STAGING_DIR, name));
 						fileItem.write(uploadedFile);
 						log.info(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
 						writer.append("<li>" + uploadedFile.getAbsolutePath() + "</li>");
@@ -92,5 +95,12 @@ public class UploadServlet extends HttpServlet {
 			response.sendError(HTTP_RESPONSE_INTERNAL_SERVER_ERROR);
 		}
 	}
+
+    private void createStagingDirectory() {
+        PathReference pathReference = new PathReference(new File(String.format("%s%s", this.serverHome, STAGING_DIR)));
+        if (!pathReference.exists()) {
+            pathReference.createDirectory();
+        }
+    }
 
 }
