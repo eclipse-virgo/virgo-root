@@ -1,13 +1,11 @@
    
 <!--@&header@-->
 
-	<h1>Installed Artifacts</h1>
+	<h1>Deployed Artifacts</h1>
 
  	<div id="upload-manager" class="container">
-		<h2>Upload Artifact(s)</h2> 
-		
-		<div class="consoleFootnote">Artifacts will be uploaded in order to the pickup directory.</div>
-		
+		<h2>Deploy Artifact(s)</h2> 
+				
 		<form id="upload-form" name="upload-form" enctype="multipart/form-data" method="POST" action="<!--@<contextPath@-->/upload" target="upload-target" >
 			<ul id="upload-list">
 				<li><input name="1" type="file" size="70"></input></li>
@@ -22,7 +20,7 @@
        		<div class="control-cap-left"></div>
        		<div class="controls">
 				<div class="button" onclick="uploadManager.startUpload()">
-					<div class="button-cap-left-blue"></div><div class="button-text">Start Upload</div><div class="button-cap-right-blue"></div>
+					<div class="button-cap-left-blue"></div><div class="button-text">Deploy</div><div class="button-cap-right-blue"></div>
 				</div>
 				<div class="button" onclick="uploadManager.resetForm()">
 					<div class="button-cap-left-blue"></div><div class="button-text">Reset Form</div><div class="button-cap-right-blue"></div>
@@ -36,7 +34,7 @@
 		<div class="control-cap-left"></div>
 		<div class="controls">
 			<div id="upload-toggle-button" class="button" onclick="uploadManager.toggle()">
-				<div class="button-cap-left-blue"></div><div class="button-text">Upload Artifact(s)</div><div class="button-cap-right-blue"></div>
+				<div class="button-cap-left-blue"></div><div class="button-text">Artifact Deployment</div><div class="button-cap-right-blue"></div>
 			</div>
 		</div>
 		<div class="control-cap-right"></div>

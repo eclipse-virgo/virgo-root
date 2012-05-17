@@ -449,28 +449,23 @@ var UploadManager = function() {
 		    	URLs.push('file:' + location);
 		    });
 		    var numURLs = URLs.length;
+		    var error = false;
 		    self.deploy(URLs, function(){
-		    	if (--numURLs == 0){
-		    		alert("Upload Complete");
+		    	if (--numURLs == 0 && !error){
+		    		alert("Deployment successful");
 		    	}
+		    }, function(){
+		    	--numURLs;
+		    	error = true;
 		    });
 			self.resetForm();
 		}
 	};
 	
-	this.deploy = function(URLs, successFunction){
+	this.deploy = function(URLs, successFunction, failureFunction){
 		var artifact = URLs.shift();
 		var done = URLs.length == 0;
-		var succ = successFunction;
 		
-// For some reason, this gives a syntax error...
-//		var request = [{
-//			"type":"EXEC",
-//			"mbean":"org.eclipse.virgo.kernel:category=Control,type=Deployer",
-//			"operation":"deploy(java.lang.String)",
-//			"arguments":[artifact]
-//		}];
-// so do this instead:
 		var request = new Array();
 		request.push({
 			"type":"EXEC",
@@ -484,16 +479,19 @@ var UploadManager = function() {
 			if (error){
 				console.log(error);
 				alert(error);
+				failureFunction();
 			}else{
-				succ();
+				successFunction();
 			}
 		}, function(xmlHttpRequest, textStatus, errorThrown){
 			console.log(xmlHttpRequest, textStatus, errorThrown);
 			alert('Deployment failed \'' + textStatus + '\': ' + xmlHttpRequest + ' ' + errorThrown);
+			failureFunction();
 		});
 		
+		// Tail recursion instead of a loop. Variety is the spice of life.
 		if (!done){
-			self.deploy(URLs, successFunction);
+			self.deploy(URLs, successFunction, failureFunction);
 		}
 	};
 	
