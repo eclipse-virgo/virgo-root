@@ -441,8 +441,13 @@ var UploadManager = function() {
 	this.uploadComplete = function(){
 		if(self.uploading){
 			self.uploading = false;
+			var iframe = $('#upload-target-id');
+			var locationLIs = $('#uploadLocations', iframe[0].contentDocument).children();
+		    $.each(locationLIs, function(i, locationLI){
+		    	var location = $(locationLI).text();
+		    	//TODO: drive mbean to deploy artefact at location
+		    });
 			alert("Upload Complete");
-			//this.spinner.hide();
 			self.resetForm();
 		}
 	};

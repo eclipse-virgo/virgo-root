@@ -35,7 +35,9 @@ import org.slf4j.LoggerFactory;
  */
 public class UploadServlet extends HttpServlet {
 
-	private static final String ORG_ECLIPSE_VIRGO_KERNEL_HOME = "org.eclipse.virgo.kernel.home";
+	private static final int HTTP_RESPONSE_INTERNAL_SERVER_ERROR = 500;
+
+    private static final String ORG_ECLIPSE_VIRGO_KERNEL_HOME = "org.eclipse.virgo.kernel.home";
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -45,10 +47,6 @@ public class UploadServlet extends HttpServlet {
 
 	private String serverHome;
 
-	/**
-	 * 
-	 * Do not use this constructor with the HTTPService as it will 
-	 */
 	public UploadServlet() {
 	}
 	
@@ -56,6 +54,9 @@ public class UploadServlet extends HttpServlet {
 		this.serverHome = serverHome;
 	}
 
+	/**
+	 * Do not use this method with the HTTPService.
+	 */
     public void init(ServletConfig config) throws ServletException {
     	super.init(config);
 		BundleContext bc = (BundleContext) this.getServletContext().getAttribute("osgi-bundlecontext");
@@ -67,6 +68,9 @@ public class UploadServlet extends HttpServlet {
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		try {
+		    response.setContentType("text/html");
+		    PrintWriter writer = response.getWriter();
+            writer.append("<ol id=\"uploadLocations\">");
 			@SuppressWarnings("unchecked")
 			List<FileItem> items = (List<FileItem>) upload.parseRequest(request);
 			for (FileItem fileItem : items) {
@@ -75,17 +79,17 @@ public class UploadServlet extends HttpServlet {
 					if(name != null && name.length() > 0){
 						File uploadedFile = new File(String.format("%s%s/%s", this.serverHome, PICKUP_DIR, name));
 						fileItem.write(uploadedFile);
-						log.warn(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
+						log.info(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
+						writer.append("<li>" + uploadedFile.getAbsolutePath() + "</li>");
 					}
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace(System.out);
-		} finally {
-			response.setContentType("text/plain");
-			PrintWriter writer = response.getWriter();
-			writer.append("Complete");
+            writer.append("</ol>");
 			writer.close();
+		} catch (Exception e) {
+		    log.error(e.toString());
+			e.printStackTrace();
+			response.sendError(HTTP_RESPONSE_INTERNAL_SERVER_ERROR);
 		}
 	}
 
