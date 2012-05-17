@@ -57,6 +57,11 @@
   </error-page>
   
   <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/layouts/error.html</location>
+  </error-page>
+  
+  <error-page>
     <exception-type>java.lang.Exception</exception-type>
     <location>/WEB-INF/layouts/error.html</location>
   </error-page>
@@ -67,6 +72,7 @@
       <url-pattern>/resources/*</url-pattern>
       <url-pattern>/content/*</url-pattern>
       <url-pattern>/jolokia/*</url-pattern>
+      <url-pattern>/upload/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>

@@ -143,12 +143,8 @@ var Util = function(){
 	 * 
 	 * @param name - the name of the script file to load, .js is not required on the end
 	 */
-	this.loadScript = function(name, async){
-		new Request({
-			url: this.getCurrentHost() + '/resources/js/' + name + '.js',
-			method: 'get',
-			async: async
-		}).send();
+	this.loadScript = function(name, callback){
+		$.getScript(this.getCurrentHost() + '/resources/js/' + name + '.js', callback);
 	};
 	
 	/**
@@ -278,6 +274,9 @@ var Util = function(){
 		}
 		if(properties.clazz){
 			newTable.addClass(properties.clazz);
+		}
+		if(properties.id){
+			newTable.attr(properties.id);
 		}
 		if(properties.sortable){
 			newTable.addClass('table-sortable');
