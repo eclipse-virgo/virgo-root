@@ -443,16 +443,22 @@ var UploadManager = function() {
 			self.uploading = false;
 			var iframe = $('#upload-target-id');
 			var locationLIs = $('#uploadLocations', iframe[0].contentDocument).children();
+			var URLs = new Array();
 		    $.each(locationLIs, function(i, locationLI){
 		    	var location = $(locationLI).text();
-		    	self.deploy('file:' + location);
+		    	URLs.push('file:' + location);
 		    });
-			alert("Upload Complete");
+		    self.deploy(URLs, function(){
+		    	alert("Upload Complete");		    	
+		    });
 			self.resetForm();
 		}
 	};
 	
-	this.deploy = function(artifact){
+	this.deploy = function(URLs, successFunction){
+		var artifact = URLs.shift();
+		var done = URLs.length == 0;
+		var succ = done ? successFunction : function(){};
 		
 // For some reason, this gives a syntax error...
 //		var request = [{
@@ -475,12 +481,17 @@ var UploadManager = function() {
 			if (error){
 				console.log(error);
 				alert(error);
+			}else{
+				succ();
 			}
 		}, function(xmlHttpRequest, textStatus, errorThrown){
 			console.log(xmlHttpRequest, textStatus, errorThrown);
 			alert('Deployment failed \'' + textStatus + '\': ' + xmlHttpRequest + ' ' + errorThrown);
 		});
-
+		
+		if (!done){
+			self.deploy(URLs, successFunction);
+		}
 	};
 	
 	this.getUploadFormElement = function(number){
