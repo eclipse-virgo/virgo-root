@@ -45,6 +45,8 @@ public class Element extends ParentStub {
     private Map<String, String> CSS = new HashMap<String, String>();
 
 	private boolean isSubmitted;
+
+    private Element contentDocument;
     
     /**
      * Prototype constructor
@@ -124,6 +126,10 @@ public class Element extends ParentStub {
 	public void jsFunction_slideToggle(int time){
 		assertEquals(Util.fxTime, time);
 	}
+	
+	public Element jsFunction_contentDocument(){
+	    return this.contentDocument;
+	}
     
     // Test helper methods
 	
@@ -153,6 +159,10 @@ public class Element extends ParentStub {
 	
 	public boolean isSubmitted() {
 		return this.isSubmitted;
+	}
+	
+	public void setContentDocument(Element contentDocument){
+	    this.contentDocument = contentDocument;
 	}
 	
 }

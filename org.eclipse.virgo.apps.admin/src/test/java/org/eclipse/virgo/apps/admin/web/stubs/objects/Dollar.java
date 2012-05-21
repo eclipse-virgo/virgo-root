@@ -42,6 +42,8 @@ public final class Dollar {
 
     private static Scriptable lookupResultForIds;
 
+    private static Scriptable[] lookupResultArrayForIds;
+
     private static int lookupResultForIdsCount;
 
     private Dollar(Context context, ScriptableObject scope) {
@@ -62,6 +64,12 @@ public final class Dollar {
 		    if (--Dollar.lookupResultForIdsCount == 0) {
 		        Dollar.lookupResultForIds = null;
 		    }
+            return result;
+		} else if (Dollar.dollarLookup.startsWith("#") && Dollar.lookupResultArrayForIds != null) {
+		    Scriptable[] result = Dollar.lookupResultArrayForIds;
+            if (--Dollar.lookupResultForIdsCount == 0) {
+                Dollar.lookupResultArrayForIds = null;
+            }
             return result;
 		} else {
 		    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);
@@ -90,6 +98,11 @@ public final class Dollar {
 	
 	public static void setDollarLookupResultForIds(Scriptable dollarLookupResultForIds, int count) {
         Dollar.lookupResultForIds = dollarLookupResultForIds;
+        Dollar.lookupResultForIdsCount = count;
+    }
+	
+	public static void setDollarLookupResultForIds(Scriptable[] dollarLookupArrayResultForIds, int count) {
+        Dollar.lookupResultArrayForIds = dollarLookupArrayResultForIds;
         Dollar.lookupResultForIdsCount = count;
     }
 	
