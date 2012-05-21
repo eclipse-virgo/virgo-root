@@ -28,7 +28,7 @@ svg:not(:root) {
 #display {
 	display: inline-block;
 	width: 65%;
-	visibility: hidden;
+/*	visibility: hidden;*/
 }
 
 #bundle-canvas {
