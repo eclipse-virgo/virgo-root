@@ -8,22 +8,6 @@
  * Christopher Frost - 2011
  */
 
-.repository-table .table-tr-hovered {
-	background:#BAD9EC;
-}
-
-.repository-table th {
-	cursor: pointer;
-}
-
-.repository-table .table-th-sort {
-	color: #0095CA;
-}
-
-.repository-table .table-th-sort-rev {
-	color: #0095CA;
-}
-
 .repository-table .repository-deploy {
 	color: transparent;
 }

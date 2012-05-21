@@ -301,9 +301,22 @@ td {
 	padding: 4px 6px 4px 6px;
 	vertical-align: top;
 }
+
+.table-sortable th {
+	cursor: pointer;
+}
+
+.table-sortable .table-th-sort, .table-sortable .table-th-sort-rev {
+	color: #0095CA;
+}
  
 .table-tr-odd {
 	background:#E8F6FF;
+}
+
+.table-selectable .table-tr-hovered {
+	background:#BAD9EC;
+	cursor: pointer;
 }
 
 /*
