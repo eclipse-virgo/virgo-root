@@ -35,7 +35,7 @@ var SideBar = function(layoutManager, dataSource){
 	self.layoutManager = layoutManager;
 	
 	self.layoutManager.setFocusListener(function(bundleId){
-		//Scroll to the selected bundleId
+		//self.bundlesTable; scrollIntoView(true);
 	});
 	
 	self.init = function(){
@@ -55,8 +55,8 @@ var SideBar = function(layoutManager, dataSource){
 		$('#side-bar').append(self.bundlesTable);
 	};
 	
-	self.clickEvent = function(eventData){
-		
+	self.clickEvent = function(row){
+		self.layoutManager.displayBundle($('td:first-child', row).text());
 	};
 	
 };
@@ -64,6 +64,8 @@ var SideBar = function(layoutManager, dataSource){
 /**
  * As a datasource to the bundles gui layout manager this object must provide the following methods.
  * 
+ * UpdateData
+ * UpdateBundle
  * 
  */
 var GeminiDataSource = function(){
@@ -71,6 +73,8 @@ var GeminiDataSource = function(){
 	var self = this;
 
 	self.bundles = {};
+	
+	self.services = {};
 	
 	self.updateData = function(callback){
 		util.doQuery('search/org.eclipse.equinox.region.domain:type=Region,*', function(response){
@@ -106,6 +110,62 @@ var GeminiDataSource = function(){
 	};
 	
 
+	self.updateBundle = function(bundleId, callback){
+		var region = self.bundles[bundleId].Region[0];
+
+		var bundleQuery = new Array({
+			'mbean' : 'osgi.core:version=1.0,type=wiringState,region=' + region,
+			'operation' : "getCurrentWiring(long,java.lang.String)",
+			'arguments' : [bundleId, 'osgi.wiring.all'],
+			'type' : 'exec'
+		},{
+			'mbean' : 'osgi.core:version=1.5,type=bundleState,region=' + region,
+			'operation' : 'getRegisteredServices(long)',
+			'arguments' : [bundleId],
+			'type' : 'exec'
+		},{
+			'mbean' : 'osgi.core:version=1.5,type=bundleState,region=' + region,
+			'operation' : 'getServicesInUse(long)',
+			'arguments' : [bundleId],
+			'type' : 'exec'
+		});
+		
+		util.doBulkQuery(bundleQuery, function(response){
+			self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
+			self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
+			self.bundles[bundleId].Capabilities = response[0].value.Capabilities;
+			self.bundles[bundleId].Requirements = response[0].value.Requirements;
+			self.bundles[bundleId].RegisteredServices = response[1].value;
+			self.bundles[bundleId].ServicesInUse = response[2].value;
+			
+			var servicesQuery = new Array();
+			
+			$.each(self.bundles[bundleId].RegisteredServices, function(index, serviceId){
+				servicesQuery.push({
+					'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
+					'operation' : 'getService(long)',
+					'arguments' : [serviceId],
+					'type' : 'exec'});
+			});
+
+			$.each(self.bundles[bundleId].ServicesInUse, function(index, serviceId){
+				servicesQuery.push({
+					'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
+					'operation' : 'getService(long)',
+					'arguments' : [serviceId],
+					'type' : 'exec'});
+			});
+			
+			util.doBulkQuery(servicesQuery, function(response){
+				$.each(response, function(index, service){
+					if(service.value != null){
+						self.services[service.value.Identifier] = service.value;
+					}
+				});
+				callback();
+			});
+		});
+	};
 	
 //	
 //	
@@ -162,12 +222,6 @@ var GeminiDataSource = function(){
 //		}, this);
 //	};
 //	
-//	this.bundleClicked = function(bundleId){
-//		console.log('Scrolling table to', $('bundle-' + bundleId));
-//		$('side-bar').retrieve('scroller').toElementCenter($('bundle-' + bundleId), 'y');
-//		$('bundle-table').retrieve('HtmlTable').selectNone();
-//		$('bundle-table').retrieve('HtmlTable').selectRow($('bundle-' + bundleId));
-//	};
 //	
 //	// ****** BUNDLES VIEW ****** //
 //	

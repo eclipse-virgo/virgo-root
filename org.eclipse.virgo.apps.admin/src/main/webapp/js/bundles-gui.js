@@ -14,47 +14,126 @@ var LayoutManager = function(width, height, dataSource){
 
 	var self = this;
 
+	self.relationships = 'wires';
+
+	self.dataSource = dataSource;
+
+	self.bundles = {};
+
+	self.bundleSpacing = 10; //Pixels to leave between bundles when rendering
+	
+	self.focused = -1;
+	
 	util.loadScript('raphael', function(){
 		self.paper = Raphael('bundle-canvas', width, height);	
 	});
 	
-	
 	self.setFocusListener = function(listener) {
 		self.focusListener = listener;
 	};
-//	
-//	this.display = function(type, callback){
-//		if(type == 'bundles') {
-//			$('view-bundles-button').addClass('button-selected');
-//			$('view-services-button').removeClass('button-selected');
-//			this.relationships = type;
-//			var currentRow = $('bundle-table').retrieve('HtmlTable').getSelected()[0];
-//			if(currentRow){
-//				$('bundle-table').retrieve('HtmlTable').selectNone();
-//				$('bundle-table').retrieve('HtmlTable').selectRow(currentRow);
-//			};
-//		} else if(type == 'services'){
-//			$('view-services-button').addClass('button-selected');
-//			$('view-bundles-button').removeClass('button-selected');
-//			this.relationships = type;
-//			var currentRow = $('bundle-table').retrieve('HtmlTable').getSelected()[0];
-//			if(currentRow){
-//				$('bundle-table').retrieve('HtmlTable').selectNone();
-//				$('bundle-table').retrieve('HtmlTable').selectRow(currentRow);
-//			};
-//		}
-//		if(callback){
-//			callback();
-//		};
+	
+	self.displayType = function(type){
+		console.log(type);
+		self.hideAll();
+		if(self.focused != -1){
+			self.focused.show();
+		}
+		if(type == 'wires') {
+			$('#view-bundles-button').addClass('button-selected');
+			$('#view-services-button').removeClass('button-selected');
+			self.relationships = type;
+			self.renderWires(self.focused);
+		} else if(type == 'services'){
+			$('#view-services-button').addClass('button-selected');
+			$('#view-bundles-button').removeClass('button-selected');
+			self.relationships = type;
+			self.renderServices(self.focused);
+		}
+	};
+	
+	self.displayBundle = function(bundleId){
+		self.hideAll();
+		self.focused = -1;
+		var bundle;
+		if(self.bundles[bundleId]){
+			bundle = self.bundles[bundleId];
+		}else{
+			bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId]);
+			self.bundles[bundleId] = bundle;
+		}
+		self.focused = bundle;
+		self.dataSource.updateBundle(bundleId, function(){
+			bundle.show();
+			if(self.relationships == 'wires'){
+				self.renderWires(bundle);
+			}else{
+				self.renderServices(bundle);
+			}
+		});
+		bundle.move(Math.round(self.paper.width/2), Math.round(self.paper.height/2));
+	};
+	
+	self.renderWires = function(bundle){
+		console.log(bundle);
+		var bundleIds = new Array();
+		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
+			bundleIds.push(wire.ProviderBundleId);
+		});
+		var topWidth = self.renderBundleRow(bundleIds, -239);
+		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
+			bundleIds.push(wire.RequirerBundleId);
+		});
+		var bottomWidth = self.renderBundleRow(bundleIds, 239);
+		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
+		newWidth < 900 ? self.paper.setSize(900, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
+	};
+	
+	self.renderServices = function(bundle){
+		var bundleIds = new Array();
+		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
+			//console.log(service);
+		});
+		var topWidth = self.renderBundleRow(bundleIds, -239);
+		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
+			//console.log(service);
+		});
+		var bottomWidth = self.renderBundleRow(bundleIds, 239);
+		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
+		newWidth < 900 ? self.paper.setSize(900, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
+	};
+
+	self.renderBundleRow = function(bundleIds, offset){
+		var yPos = Math.round(self.paper.height/2) + offset;
+		var xPos = this.bundleSpacing;
+		var bundle;
+		$.each(bundleIds, function(index, bundleId){
+			if(self.bundles[bundleId]){
+				bundle = self.bundles[bundleId];
+			}else{
+				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId]);
+				self.bundles[bundleId] = bundle;
+			}
+			if(!bundle.isVisible){
+				xPos = xPos + Math.round(bundle.boxWidth/2);
+				bundle.move(xPos, yPos);
+				bundle.show();
+				xPos = xPos + Math.round(bundle.boxWidth/2) + self.bundleSpacing;
+			}
+		});
+		return xPos;
+	};
+
+//	self.empty = function(){
+//		self.hideAll();
+//		self.bundles = {};
 //	};
-//	
-//	self.dataSource = dataSource;
-//	
-//	this.bundles = {};
-//	
-//	this.bundleSpacing = 10; //Pixels to leave between bundles when rendering
-//	
-//	this.relationships = {};
+
+	self.hideAll = function(){
+		$.each(self.bundles, function(index, value){
+			value.hide();
+		});
+	};
+	
 //	
 //	this.shuffle = function(bundleId, newRelationships){
 //		$.each(this.relationships, function(index, oldRelationship){
@@ -83,29 +162,7 @@ var LayoutManager = function(width, height, dataSource){
 //		$('display').setStyle('visibility', 'visible');
 //	};
 //	
-//	this.addBundle = function(bundle){
-//		this.bundles[bundle.id] = bundle;
-//	};
 //	
-//	this.removeBundle = function(bundleId){
-//		this.bundles[bundleId].hide();
-//		Object.erase(this.bundles, bundleId);
-//	};
-//	
-//	this.empty = function(){
-//		this.hideAll();
-//		this.bundles = {};
-//	};
-//	
-//	this.hide = function(bundleId){
-//		this.bundles[bundleId].hide();
-//	};
-//	
-//	this.hideAll = function(){
-//		$.each(this.bundles, function(index, value){
-//			value.hide();
-//		});
-//	};
 //
 //	this.renderBundlesRow = function(focused, isFrom, relations, offSet){
 //		var yPos = (paper.height/2).round() + offSet;
@@ -160,99 +217,85 @@ var LayoutManager = function(width, height, dataSource){
 	
 };
 
-///**
-// * Bundle
-// */
-//var Bundle = function(name, version, region, id, state, location, headers, isFragment, hosts, fragments, importedPackages, exportedPackages, requiredBundles, requiringBundles, providedServices, consumedServices, dblClickCallback){
-//
-//	var self = this;
-//	
-//	//Data about the bundle
-//	this.name = name;
-//	this.version = version;
-//	this.region = region;
-//	this.id = id;
-//	this.state = state;
-//	this.location = location;
-//	this.headers = headers; 
-//	this.isFragment = isFragment;
-//	this.hosts = hosts;
-//	this.fragments = fragments;
-//	this.importedPackages = importedPackages;
-//	this.exportedPackages = exportedPackages;
-//	this.requiredBundles = requiredBundles;
-//	this.requiringBundles = requiringBundles;
-//	this.providedServices = providedServices;
-//	this.consumedServices = consumedServices;
-//	this.dblClickCallback = dblClickCallback;
-//	
-//	this.isVisible = false; 
-//	
-//	this.relationships = {};
-//	
-//	//Display attributes
-//	this.bundleMargin = 8;
-//	this.x = 5;
-//	this.y = 5;
-//	
-//	this.summary = function(){
-//		return "[" + this.id + "] " + this.name + "\n" + this.version;
-//	};
-//	
-//	this.text = paper.text(this.x, this.y, this.summary()).attr({
-//		"text-anchor" : "start", 
-//		"font" : "12px Arial"
-//	}).hide();
-//	
-//	this.boxWidth = this.text.getBBox().width.round() + 2*this.bundleMargin;
-//	this.boxHeight = this.text.getBBox().height.round() + 2*this.bundleMargin;
-//	
-//	this.box = paper.rect(this.x, this.y, this.boxWidth, this.boxHeight, 8).attr({
-//		"fill" : "#E8F6FF", 
-//		"stroke" : "#002F5E"
-//	}).hide();
-//	
-//	this.box.toBack();
-//	
-//	this.box.dblclick(function(){this.dblClickCallback(this.id);}.bind(this));
-//	this.text.dblclick(function(){this.dblClickCallback(this.id);}.bind(this));
-//	
-//	this.hide = function(){
-//		this.text.hide();
-//		this.box.hide();
-//		this.isVisible = false; 
-//	};
-//	
-//	this.show = function(){
-//		this.text.show();
-//		this.box.show();
-//		this.isVisible = true; 
-//	};
-//	
-//	this.move = function(x, y) {
-//		this.x = x;
-//		this.y = y;
-//		this.box.attr({
-//			'x' : x - (this.boxWidth/2), 
-//			'y' : y - (this.boxHeight/2)
-//		});
-//		this.text.attr({
-//			'x' : x - (this.boxWidth/2) + this.bundleMargin, 
-//			'y' : y
-//		});
-//		
-//	};
-//
-//	this.addRelationship = function(relationship){
-//		this.relationships[relationship.key] = relationship;
-//	};
-//
-//	this.removeRelationship = function(relationshipKey){
-//		Object.erase(this.relationships, relationshipKey);
-//	};
-//
-//};
-//
+/**
+ * Bundle
+ */
+var Bundle = function(paper, rawBundle, dblClickCallback){
+
+	var self = this;
+	
+	self.paper = paper;
+	self.rawBundle = rawBundle;
+	self.dblClickCallback = dblClickCallback;
+	self.isVisible = false; 
+	self.relationships = {};
+	
+	//Display attributes
+	self.bundleMargin = 8;
+	self.x = 5;
+	self.y = 5;
+	
+	self.summary = "[" + self.rawBundle.Identifier + "] " + self.rawBundle.SymbolicName + "\n" + self.rawBundle.Version;
+	
+	self.text = self.paper.text(self.x, self.y, self.summary).attr({
+		"text-anchor" : "start", 
+		"font" : "12px Arial"
+	}).hide();
+	
+	self.boxWidth = self.text.getBBox().width + 2*self.bundleMargin + 2;
+	self.boxHeight = self.text.getBBox().height + 2*self.bundleMargin + 2;
+	
+	self.box = self.paper.rect(self.x, self.y, self.boxWidth, self.boxHeight, 8).attr({
+		"fill" : "#E8F6FF", 
+		"stroke" : "#002F5E"
+	}).hide();
+	
+	self.box.toBack();
+	
+	self.box.dblclick(function(){
+		self.dblClickCallback(self.rawBundle.Identifier);
+	});
+	
+	self.text.dblclick(function(){
+		self.dblClickCallback(self.rawBundle.Identifier);
+	});
+	
+	self.hide = function(){
+		self.text.hide();
+		self.box.hide();
+		self.isVisible = false; 
+	};
+	
+	self.show = function(){
+		self.text.show();
+		self.box.show();
+		self.isVisible = true; 
+	};
+	
+	self.move = function(x, y) {
+		self.x = x;
+		self.y = y;
+		self.box.attr({
+			'x' : x - (self.boxWidth/2), 
+			'y' : y - (self.boxHeight/2)
+		});
+		self.text.attr({
+			'x' : x - (self.boxWidth/2) + self.bundleMargin, 
+			'y' : y
+		});
+		
+	};
+
+	self.addRelationship = function(relationship){
+		self.relationships[relationship.key] = relationship;
+	};
+
+	self.removeRelationship = function(relationshipKey){
+		Object.erase(self.relationships, relationshipKey);
+	};
+
+};
+
 //var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip) {
 //
 //	var self = this;

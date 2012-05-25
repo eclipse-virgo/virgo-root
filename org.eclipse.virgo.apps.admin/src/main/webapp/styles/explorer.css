@@ -39,10 +39,6 @@ svg:not(:root) {
 	overflow-x: auto;
 }
 
-#bundle-table .table-tr-hovered {
-	cursor: pointer;
-}
-
 circle {
 	cursor: pointer;
 }

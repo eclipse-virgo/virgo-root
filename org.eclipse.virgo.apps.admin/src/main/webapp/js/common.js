@@ -189,6 +189,13 @@ var Util = function(){
 				$(row).mouseleave(function(){
 					$(this).removeClass('table-tr-hovered');
 				});
+				if(properties.selectable){
+					$(row).click(function(evenData){
+						$('.table-tr-selected', newTable).removeClass('table-tr-selected');
+						$(this).addClass('table-tr-selected');
+						properties.selectable($(this));
+					});
+				}
 			});
 		};
 		
@@ -288,12 +295,6 @@ var Util = function(){
 		if(properties.rows){
 			$.each(properties.rows, function(i, row){
 				var newRow = $('<tr />');
-				newRow.mouseenter(function(){
-					$(this).addClass('table-tr-hovered');
-				});
-				newRow.mouseleave(function(){
-					$(this).removeClass('table-tr-hovered');
-				});
 				$.each(row, function(j, value){
 					if(value instanceof Object){
 						newRow.append(value);

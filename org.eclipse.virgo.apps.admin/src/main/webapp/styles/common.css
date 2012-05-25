@@ -319,6 +319,9 @@ td {
 	cursor: pointer;
 }
 
+.table-selectable .table-tr-selected {
+	background: #BAD9EC;
+}
 /*
  * SERVERS STYLES
  */
