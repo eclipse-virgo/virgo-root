@@ -40,6 +40,7 @@
 		
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.log" rev="${org.eclipse.equinox.log}" conf="test->runtime"/>
 		
 		<!-- Prevent org.eclipse.osgi.services dragging in old Equinox -->
 		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
