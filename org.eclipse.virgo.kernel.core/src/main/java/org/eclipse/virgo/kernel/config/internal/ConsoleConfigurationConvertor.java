@@ -95,7 +95,7 @@ public class ConsoleConfigurationConvertor {
     	
         try {
             Configuration configuration = this.configAdmin.getConfiguration(pid, null);
-            Properties properties = new Properties();
+            Dictionary<String, String> properties = new Hashtable<String, String>();
             properties.put(HOST, host);
             properties.put(PORT, port);
             properties.put(ENABLED, enabled);
