@@ -36,7 +36,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
     @Test
     public void getConfigurationWithoutConfigurationAdmin() {
         ConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(bundleContext);
-        Dictionary<String, String> configuration = configurationProvider.getConfiguration();
+        Dictionary<String, Object> configuration = configurationProvider.getConfiguration();
         assertNotNull(configuration);
         assertEquals(".", configuration.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
     }
@@ -54,7 +54,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
 
         ConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(bundleContext);
 
-        Dictionary<String, String> configDictionary = configurationProvider.getConfiguration();
+        Dictionary<String, Object> configDictionary = configurationProvider.getConfiguration();
         assertNotNull(configDictionary);
         assertEquals(".", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
 
@@ -66,13 +66,13 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
         properties.put("a.b.c", "d.e.f");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
 
         ConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(bundleContext);
-        Dictionary<String, String> configDictionary = configurationProvider.getConfiguration();
+        Dictionary<String, Object> configDictionary = configurationProvider.getConfiguration();
         assertNotNull(configDictionary);
         assertEquals("target", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
         assertEquals("d.e.f", configDictionary.get("a.b.c"));
@@ -85,10 +85,10 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
         properties.put("a.b.c", "d.e.f");
-        ServiceRegistration<?> serviceRegistration = createConfigurationMocks(configurationAdmin, configuration, properties, 5);
+        ServiceRegistration<ConfigurationAdmin> serviceRegistration = createConfigurationMocks(configurationAdmin, configuration, properties, 5);
 
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(bundleContext);
         ConfigurationEvent event = new ConfigurationEvent(serviceRegistration.getReference(), ConfigurationEvent.CM_UPDATED, null, CONFIG_ADMIN_PID);
@@ -113,10 +113,10 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
         properties.put("a.b.c", "d.e.f");
-        ServiceRegistration<?> serviceRegistration = createConfigurationMocks(configurationAdmin, configuration, properties, 2);
+        ServiceRegistration<ConfigurationAdmin> serviceRegistration = createConfigurationMocks(configurationAdmin, configuration, properties, 2);
 
         // Initial configuration publishing
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(bundleContext);
@@ -130,7 +130,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         verify(configurationAdmin, configuration);
 
         // Update the configuration
-        Dictionary<String, String> newProperties = new Hashtable<String, String>((Hashtable<String, String>) properties);
+        Dictionary<String, Object> newProperties = new Hashtable<String, Object>((Hashtable<String, Object>) properties);
         newProperties.put("1.2.3", "4.5.6");
 
         reset(configurationAdmin, configuration);
@@ -142,7 +142,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         configurationProvider.addChangeListener(this);
         updateConfigurationAndCheckForNotification(configurationProvider, event, 2);
 
-        Dictionary<String, String> configDictionary = configurationProvider.getConfiguration();
+        Dictionary<String, Object> configDictionary = configurationProvider.getConfiguration();
         assertNotNull(configDictionary);
         assertEquals("target", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
         assertEquals("d.e.f", configDictionary.get("a.b.c"));
@@ -151,7 +151,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         verify(configurationAdmin, configuration);
     }
 
-    private ServiceRegistration<ConfigurationAdmin> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, String> properties, int times) throws IOException {
+    private ServiceRegistration<ConfigurationAdmin> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, Object> properties, int times) throws IOException {
         ServiceRegistration<ConfigurationAdmin> serviceRegistration = this.bundleContext.registerService(ConfigurationAdmin.class, configurationAdmin, null);
 
         expect(configurationAdmin.getConfiguration("org.eclipse.virgo.medic", null)).andReturn(configuration).times(times);

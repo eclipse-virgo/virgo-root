@@ -53,7 +53,7 @@ public class LogControllerTests {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
@@ -82,7 +82,7 @@ public class LogControllerTests {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "false");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "false");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
@@ -108,7 +108,7 @@ public class LogControllerTests {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
@@ -138,7 +138,7 @@ public class LogControllerTests {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
 
@@ -159,7 +159,7 @@ public class LogControllerTests {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER, "false");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
 
@@ -201,7 +201,7 @@ public class LogControllerTests {
         return foundMatch;
     }
 
-    private ServiceRegistration<?> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, String> properties, int times) throws IOException {
+    private ServiceRegistration<?> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, Object> properties, int times) throws IOException {
         ServiceRegistration<?> serviceRegistration = this.bundleContext.registerService(ConfigurationAdmin.class.getName(), configurationAdmin, null);
 
         expect(configurationAdmin.getConfiguration("org.eclipse.virgo.medic", null)).andReturn(configuration).times(times);
