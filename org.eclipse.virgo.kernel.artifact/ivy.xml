@@ -26,7 +26,7 @@
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.dbcp" rev="${commons.dbcp}" conf="test->runtime" />
 		<dependency org="org.aopalliance" name="com.springsource.org.aopalliance" rev="${org.aopalliance}" conf="test->runtime" />
 		
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
 
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
     </dependencies>
