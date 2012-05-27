@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-nano" xmlns:ivy="antlib:org.apache.ivy.ant">
     <path id="unit.test.bundles">
+        <pathelement location="../org.eclipse.virgo.servlet.adapter"/>
 		<pathelement location="../org.eclipse.virgo.kernel.core"/>
         <pathelement location="../org.eclipse.virgo.nano.services.ds"/>
         <pathelement location="../org.eclipse.virgo.nano.services.concurrent"/>

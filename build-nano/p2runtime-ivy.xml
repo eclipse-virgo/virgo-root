@@ -25,6 +25,7 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.ecf.provider.filetransfer" rev="${org.eclipse.ecf.provider.filetransfer}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.ecf.ssl" rev="${org.eclipse.ecf.ssl}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.app" rev="${org.eclipse.equinox.app}" conf="p2-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.common" rev="${org.eclipse.equinox.common}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.frameworkadmin" rev="${org.eclipse.equinox.frameworkadmin}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.frameworkadmin.equinox" rev="${org.eclipse.equinox.frameworkadmin.equinox}" conf="p2-runtime->runtime"/>
