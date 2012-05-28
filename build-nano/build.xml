@@ -105,7 +105,6 @@
 				<filter token="MINA.CORE.VERSION" value="${org.apache.mina.core}"/>
 				<filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
 				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console}"/>
-                <filter token="EQUINOX.CONSOLE.SSH.VERSION" value="${org.eclipse.equinox.console.ssh}"/>
 				<filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
                 <filter token="CONTENTTYPE.VERSION" value="${org.eclipse.core.contenttype}"/>

@@ -70,7 +70,7 @@
          id="org.eclipse.equinox.console.ssh"
          download-size="0"
          install-size="0"
-         version="@EQUINOX.CONSOLE.SSH.VERSION@"
+         version="@EQUINOX.CONSOLE.VERSION@"
          unpack="false"
          autostart="true"/>
 
