@@ -75,17 +75,17 @@ public class LogBackEventLoggerTests {
         loggingEvent = defaultEvents.get(0);
         assertEquals(ch.qos.logback.classic.Level.ERROR, loggingEvent.getLevel());
         assertEquals("the english message true 63", loggingEvent.getMessage());
-//        assertEquals("UT0001E", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
+        assertEquals("UT0001E", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
 
         loggingEvent = defaultEvents.get(1);
         assertEquals(ch.qos.logback.classic.Level.WARN, loggingEvent.getLevel());
         assertEquals("the english message true 63", loggingEvent.getMessage());
-//        assertEquals("UT0002W", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
+        assertEquals("UT0002W", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
 
         loggingEvent = defaultEvents.get(2);
         assertEquals(ch.qos.logback.classic.Level.INFO, loggingEvent.getLevel());
         assertEquals("the english message true 63", loggingEvent.getMessage());
-//        assertEquals("UT0003I", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
+        assertEquals("UT0003I", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class LogBackEventLoggerTests {
         assertEquals(ch.qos.logback.classic.Level.WARN, loggingEvent.getLevel());
         assertEquals("A message with the key 'UT0001' was not found. The inserts for the message were '[apple, orange, 345]'",
             loggingEvent.getMessage());
-//        assertEquals("ME0001W", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
+        assertEquals("ME0001W", loggingEvent.getMDCPropertyMap().get("medic.eventCode"));
 
         List<LoggingEvent> localizedEvents = LocalizedOutputAppender.getAndResetLoggingEvents();
         assertEquals(1, localizedEvents.size());

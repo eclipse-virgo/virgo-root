@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.medic.logbackclassicfragment
 Bundle-Name: Medic Logback Core Fragment
 Bundle-Version: ${version}
-Fragment-Host: ch.qos.logback.classic;bundle-version="${ch.qos.logback.classic:[=.=.=, +1.0.0)}"
+Fragment-Host: com.springsource.ch.qos.logback.classic;bundle-version="${ch.qos.logback:[=.=.=, +1.0.0)}"
 Import-Package: 
  org.eclipse.virgo.medic.log.logback;version="${version:[=.=.=, =.+1)}"

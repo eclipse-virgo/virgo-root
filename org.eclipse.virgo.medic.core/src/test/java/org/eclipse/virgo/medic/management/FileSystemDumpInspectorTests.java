@@ -37,8 +37,8 @@ public class FileSystemDumpInspectorTests {
 			}
 			
 			@Override
-			public Dictionary<String, Object> getConfiguration() {
-				Dictionary<String, Object> props = new Hashtable<String, Object>();
+			public Dictionary<String, String> getConfiguration() {
+				Dictionary<String, String> props = new Hashtable<String, String>();
 				props.put(KEY_DUMP_ROOT_DIRECTORY, "src/test/resources/testDumps/serviceability/dump");
 				return props;
 			}

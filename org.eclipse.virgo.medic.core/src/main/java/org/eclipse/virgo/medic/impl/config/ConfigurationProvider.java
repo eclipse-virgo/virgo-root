@@ -29,7 +29,7 @@ public interface ConfigurationProvider {
 
     public static final String KEY_ENABLE_JUL_CONSOLE_HANDLER = "log.jul.consoleHandler";
 
-    Dictionary<String, Object> getConfiguration();
+    Dictionary<String, String> getConfiguration();
 
     /**
      * Adds listener that will be notified when the configuration changes
