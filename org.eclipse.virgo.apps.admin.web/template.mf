@@ -15,7 +15,7 @@ Import-Template:
  org.eclipse.virgo.web.*;version="${org.eclipse.virgo.web:[=.=,+1)}",
  org.osgi.framework.*;version=0,
  org.osgi.service.cm.*;version=0,
- org.slf4j;version="${org.slf4j.api:[=.=.=,+1)}",
+ org.slf4j;version="${org.slf4j:[=.=.=,+1)}",
  org.springframework.*;version="${org.springframework:[2.5.6, +1)}"
 Import-Package: 
  org.apache.taglibs.standard;version="[1.1.2,2.0.0)",
