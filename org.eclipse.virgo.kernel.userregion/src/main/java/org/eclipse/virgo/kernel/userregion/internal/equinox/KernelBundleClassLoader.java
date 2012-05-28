@@ -21,6 +21,7 @@ import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -62,7 +63,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
     private static final String[] EXCLUDED_PACKAGES = new String[] { "java.", "javax.", "sun.", "oracle." };
 
     private static final String HEADER_INSTRUMENT_PACKAGE = "Instrument-Package";
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(KernelBundleClassLoader.class);
 
     private final List<ClassFileTransformer> classFileTransformers = new CopyOnWriteArrayList<ClassFileTransformer>();
@@ -72,13 +73,13 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
     private final String[] classpath;
 
     private final String bundleScope;
-    
+
     private final Set<Class<Driver>> loadedDriverClasses = new HashSet<Class<Driver>>();
-    
+
     private final Object monitor = new Object();
 
     private volatile boolean instrumented;
-    
+
     /**
      * Constructs a new <code>ServerBundleClassLoader</code>.
      * 
@@ -208,9 +209,10 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
         final ClasspathManager manager = new ClasspathManager(this.manager.getBaseData(), this.classpath, this);
         manager.initialize();
         return AccessController.doPrivileged(new PrivilegedAction<ThrowAwayClassLoader>() {
+
             public ThrowAwayClassLoader run() {
                 return new ThrowAwayClassLoader(manager);
-            }           
+            }
         });
     }
 
@@ -249,32 +251,32 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
     @SuppressWarnings("unchecked")
     private void storeClassIfDriver(Class<?> candidateClass) {
         if (Driver.class.isAssignableFrom(candidateClass)) {
-            synchronized(this.monitor) {
-                this.loadedDriverClasses.add((Class<Driver>)candidateClass);
+            synchronized (this.monitor) {
+                this.loadedDriverClasses.add((Class<Driver>) candidateClass);
             }
         }
     }
-    
+
     @Override
     public void close() {
         clearJdbcDrivers();
     }
-    
+
     private void clearJdbcDrivers() {
         Set<Class<Driver>> localLoadedDriverClasses;
         synchronized (this.monitor) {
             localLoadedDriverClasses = new HashSet<Class<Driver>>(this.loadedDriverClasses);
         }
-        
-        synchronized(DriverManager.class) {
-            try {
+
+        synchronized (DriverManager.class) {
+            try { // Java 6
                 Field writeDriversField = DriverManager.class.getDeclaredField("writeDrivers");
                 writeDriversField.setAccessible(true);
-                Vector<?> writeDrivers = (Vector<?>)writeDriversField.get(null);
-                    
+                Vector<?> writeDrivers = (Vector<?>) writeDriversField.get(null);
+
                 Iterator<?> driverElements = writeDrivers.iterator();
-                    
-                while(driverElements.hasNext()) {
+
+                while (driverElements.hasNext()) {
                     Object driverObj = driverElements.next();
                     Field driverField = driverObj.getClass().getDeclaredField("driver");
                     driverField.setAccessible(true);
@@ -282,15 +284,39 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
                         driverElements.remove();
                     }
                 }
-                    
-                Vector<?> readDrivers = (Vector<?>)writeDrivers.clone();                
+
+                Vector<?> readDrivers = (Vector<?>) writeDrivers.clone();
                 Field readDriversField = DriverManager.class.getDeclaredField("readDrivers");
                 readDriversField.setAccessible(true);
                 readDriversField.set(null, readDrivers);
-            } catch (Exception e) {
-                LOGGER.warn("Failure when clearing JDBC drivers for " + this, e);
+                LOGGER.debug("Cleared JDBC drivers for " + this + " using Java 6 strategy");
+            } catch (Exception _) {
+                try { // Java 7
+                    Field registeredDriversField = DriverManager.class.getDeclaredField("registeredDrivers");
+                    registeredDriversField.setAccessible(true);
+                    CopyOnWriteArrayList<?> registeredDrivers = (CopyOnWriteArrayList<?>) registeredDriversField.get(null);
+
+                    Iterator<?> driverElements = registeredDrivers.iterator();
+                    List<Object> driverElementsToRemove = new ArrayList<Object>();
+
+                    while (driverElements.hasNext()) {
+                        Object driverObj = driverElements.next();
+                        Field driverField = driverObj.getClass().getDeclaredField("driver");
+                        driverField.setAccessible(true);
+                        if (localLoadedDriverClasses.contains(driverField.get(driverObj).getClass())) {
+                            driverElementsToRemove.add(driverObj);
+                        }
+                    }
+
+                    for (Object driverObj : driverElementsToRemove) {
+                        registeredDrivers.remove(driverObj);
+                    }
+                    LOGGER.debug("Cleared JDBC drivers for " + this + " using Java 7 strategy");
+                } catch (Exception e) {
+                    LOGGER.warn("Failure when clearing JDBC drivers for " + this, e);
+                }
             }
-        }       
+        }
     }
 
     @Override
