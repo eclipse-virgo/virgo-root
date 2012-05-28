@@ -76,13 +76,13 @@
      
      <target name="prepare-bundles-and-features">
         <!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
-		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="false"/>
+		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
 
 		<ivy:resolve resolveId="copy.path" file="${basedir}/p2runtime-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
         
-        <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="false"/>
+        <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
         
         <!-- Prepare the features for publishing -->
@@ -90,20 +90,16 @@
 			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
             <filterset>
 				<filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
-                <filter token="HA.VERSION" value="${org.apache.catalina.ha}"/>
-                <filter token="JASPER.VERSION" value="${org.apache.jasper}"/>
-                <filter token="TRIBES.VERSION" value="${org.apache.catalina.tribes}"/>
+                <filter token="TOMCAT.VERSION" value="${org.apache.catalina}"/>
 				<filter token="NANO.VERSION" value="${bundle.version}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
-                <filter token="LOGBACK.CLASSIC.VERSION" value="${ch.qos.logback.classic}"/>
-                <filter token="LOGBACK.CORE.VERSION" value="${ch.qos.logback.core}"/>
-                <filter token="LOGBACK.SLF4J.VERSION" value="${ch.qos.logback.slf4j}"/>
+                <filter token="LOGBACK.VERSION" value="${ch.qos.logback}"/>
 				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
                 <filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
                 <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
-				<filter token="MINA.CORE.VERSION" value="${org.apache.mina.core}"/>
-				<filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
+				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
+				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
 				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console}"/>
 				<filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
@@ -139,6 +135,7 @@
                 <filter token="EQUINOX.SECURITY.VERSION" value="${org.eclipse.equinox.security}"/>
                 <filter token="EQUINOX.SC.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
                 <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
+                <filter token="COMMONS.LOGGING" value="${com.springsource.org.apache.commons.logging}"/>
 			</filterset>
 		</copy>
      </target>

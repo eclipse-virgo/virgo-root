@@ -44,21 +44,15 @@
          version="@MEDIC.VERSION@"
          unpack="false"/>
    <plugin
-         id="ch.qos.logback.classic"
+         id="com.springsource.ch.qos.logback.classic"
          download-size="0"
          install-size="0"
-         version="@LOGBACK.CLASSIC.VERSION@"
+         version="@LOGBACK.VERSION@"
          unpack="false"/>
    <plugin
-         id="ch.qos.logback.core"
+         id="com.springsource.ch.qos.logback.core"
          download-size="0"
          install-size="0"
-         version="@LOGBACK.CORE.VERSION@"
+         version="@LOGBACK.VERSION@"
          unpack="false"/>
-    <plugin
-        id="ch.qos.logback.slf4j"
-        download-size="0"
-        install-size="0"
-        version="@LOGBACK.SLF4J.VERSION@"
-    unpack="false"/>
 </feature>

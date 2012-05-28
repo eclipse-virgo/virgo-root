@@ -19,7 +19,7 @@
    </license>
 
    <plugin
-         id="org.apache.mina.core"
+         id="com.springsource.org.apache.mina.core"
          download-size="0"
          install-size="0"
          version="@MINA.CORE.VERSION@"
@@ -27,7 +27,7 @@
          autostart="true"/>
 
    <plugin
-         id="org.apache.sshd.core"
+         id="com.springsource.org.apache.sshd.core"
          download-size="0"
          install-size="0"
          version="@SSHD.CORE.VERSION@"
