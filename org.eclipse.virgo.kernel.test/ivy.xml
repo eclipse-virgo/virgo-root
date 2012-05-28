@@ -14,7 +14,7 @@
 
 	<dependencies>
 		<!-- build -->
-		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="compile->runtime"/>
 
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.core" rev="${org.eclipse.gemini.blueprint}" conf="compile->runtime"/>
 
@@ -22,18 +22,18 @@
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 		
-		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.command}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo.shell}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.mina.core" rev="${org.apache.mina.core}" conf="test->runtime" />
-		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.sshd.core" rev="${org.apache.sshd.core}" conf="test->runtime" />
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.command}" conf="test->runtime"/>
+		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo.shell}" conf="test->runtime"/>
+		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="test->runtime" />
+		<dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="test->runtime" />
 		
-		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
-		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.console" rev="${org.eclipse.equinox.console}" conf="test->runtime" />
-		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.console.ssh" rev="${org.eclipse.equinox.console.ssh}" conf="test->runtime" />
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
+		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console" rev="${org.eclipse.equinox.console}" conf="test->runtime" />
+		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.ssh" rev="${org.eclipse.equinox.console}" conf="test->runtime" />
 
 		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
@@ -44,9 +44,8 @@
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.classic" rev="${ch.qos.logback.classic}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.core" rev="${ch.qos.logback.core}" conf="test->runtime"/>
-        <dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.slf4j" rev="${ch.qos.logback.slf4j}" conf="test->runtime"/>
+		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="test->runtime"/>
+		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="test->runtime"/>
 
 		<dependency org="org.eclipse.virgo.repository" name="org.eclipse.virgo.repository" rev="${org.eclipse.virgo.repository}" conf="test->runtime"/>
 		
@@ -58,15 +57,15 @@
 		<!--  the following conf should be test->runtime but for some reason that does not pull down the dependency -->
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="test->runtime"/>
 		<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
+		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="test->runtime"/>
+		<dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
 
 		<!-- Prevent Xerces from being on the classpath to work around Java bug 6723276 during integration testing -->
 		<exclude org="org.apache.xerces"/>
 
 		<!-- Allow Equinox to be upgraded point-wise before rippling -->
 		<override org="org.aspectj" rev="${org.aspectj}" />
-		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
+		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 	</dependencies>
 
 </ivy-module>
