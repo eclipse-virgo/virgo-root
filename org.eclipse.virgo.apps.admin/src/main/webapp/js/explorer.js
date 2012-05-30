@@ -34,8 +34,20 @@ var SideBar = function(layoutManager, dataSource){
 	
 	self.layoutManager = layoutManager;
 	
+	self.focused = -1;
+	
 	self.layoutManager.setFocusListener(function(bundleId){
-		//self.bundlesTable; scrollIntoView(true);
+		if(bundleId != self.focused){
+			self.focused = bundleId;
+			var rowIds = $('td:first-child', self.bundlesTable);
+			$.each(rowIds, function(index, rowId){
+				if($(rowId).text() == bundleId){
+					rowId.scrollIntoView(true);
+					$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
+					$(rowId).parent().addClass('table-tr-selected');
+				}
+			});
+		}
 	});
 	
 	self.init = function(){
@@ -56,7 +68,9 @@ var SideBar = function(layoutManager, dataSource){
 	};
 	
 	self.clickEvent = function(row){
-		self.layoutManager.displayBundle($('td:first-child', row).text());
+		var bundleId = $('td:first-child', row).text();
+		self.focused = bundleId;
+		self.layoutManager.displayBundle(bundleId);
 	};
 	
 };
@@ -119,12 +133,12 @@ var GeminiDataSource = function(){
 			'arguments' : [bundleId, 'osgi.wiring.all'],
 			'type' : 'exec'
 		},{
-			'mbean' : 'osgi.core:version=1.5,type=bundleState,region=' + region,
+			'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
 			'operation' : 'getRegisteredServices(long)',
 			'arguments' : [bundleId],
 			'type' : 'exec'
 		},{
-			'mbean' : 'osgi.core:version=1.5,type=bundleState,region=' + region,
+			'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
 			'operation' : 'getServicesInUse(long)',
 			'arguments' : [bundleId],
 			'type' : 'exec'
@@ -138,32 +152,7 @@ var GeminiDataSource = function(){
 			self.bundles[bundleId].RegisteredServices = response[1].value;
 			self.bundles[bundleId].ServicesInUse = response[2].value;
 			
-			var servicesQuery = new Array();
-			
-			$.each(self.bundles[bundleId].RegisteredServices, function(index, serviceId){
-				servicesQuery.push({
-					'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
-					'operation' : 'getService(long)',
-					'arguments' : [serviceId],
-					'type' : 'exec'});
-			});
-
-			$.each(self.bundles[bundleId].ServicesInUse, function(index, serviceId){
-				servicesQuery.push({
-					'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
-					'operation' : 'getService(long)',
-					'arguments' : [serviceId],
-					'type' : 'exec'});
-			});
-			
-			util.doBulkQuery(servicesQuery, function(response){
-				$.each(response, function(index, service){
-					if(service.value != null){
-						self.services[service.value.Identifier] = service.value;
-					}
-				});
-				callback();
-			});
+			callback();
 		});
 	};
 	

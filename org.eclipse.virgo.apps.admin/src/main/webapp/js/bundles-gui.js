@@ -14,15 +14,17 @@ var LayoutManager = function(width, height, dataSource){
 
 	var self = this;
 
-	self.relationships = 'wires';
+	self.relationshipType = 'wires';
+	
+	self.relationships = {};
 
 	self.dataSource = dataSource;
 
 	self.bundles = {};
-
-	self.bundleSpacing = 10; //Pixels to leave between bundles when rendering
 	
 	self.focused = -1;
+
+	self.bundleSpacing = 10; //Pixels to leave between bundles when rendering
 	
 	util.loadScript('raphael', function(){
 		self.paper = Raphael('bundle-canvas', width, height);	
@@ -33,21 +35,24 @@ var LayoutManager = function(width, height, dataSource){
 	};
 	
 	self.displayType = function(type){
-		console.log(type);
 		self.hideAll();
 		if(self.focused != -1){
 			self.focused.show();
 		}
 		if(type == 'wires') {
-			$('#view-bundles-button').addClass('button-selected');
+			$('#view-wires-button').addClass('button-selected');
 			$('#view-services-button').removeClass('button-selected');
-			self.relationships = type;
-			self.renderWires(self.focused);
+			self.relationshipType = type;
+			if(self.focused != -1){
+				self.renderWires(self.focused);
+			}
 		} else if(type == 'services'){
 			$('#view-services-button').addClass('button-selected');
-			$('#view-bundles-button').removeClass('button-selected');
-			self.relationships = type;
-			self.renderServices(self.focused);
+			$('#view-wires-button').removeClass('button-selected');
+			self.relationshipType = type;
+			if(self.focused != -1){
+				self.renderServices(self.focused);
+			}
 		}
 	};
 	
@@ -58,23 +63,25 @@ var LayoutManager = function(width, height, dataSource){
 		if(self.bundles[bundleId]){
 			bundle = self.bundles[bundleId];
 		}else{
-			bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId]);
+			bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], self.displayBundle);
 			self.bundles[bundleId] = bundle;
 		}
-		self.focused = bundle;
 		self.dataSource.updateBundle(bundleId, function(){
+			self.focused = bundle;
 			bundle.show();
-			if(self.relationships == 'wires'){
+			if(self.relationshipType == 'wires'){
 				self.renderWires(bundle);
 			}else{
 				self.renderServices(bundle);
 			}
 		});
 		bundle.move(Math.round(self.paper.width/2), Math.round(self.paper.height/2));
+		if(self.focusListener){
+			self.focusListener(bundleId);
+		}
 	};
 	
 	self.renderWires = function(bundle){
-		console.log(bundle);
 		var bundleIds = new Array();
 		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
 			bundleIds.push(wire.ProviderBundleId);
@@ -91,11 +98,13 @@ var LayoutManager = function(width, height, dataSource){
 	self.renderServices = function(bundle){
 		var bundleIds = new Array();
 		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
-			//console.log(service);
+			bundleIds.push(service.BundleIdentifier);
 		});
 		var topWidth = self.renderBundleRow(bundleIds, -239);
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
-			//console.log(service);
+			$.each(service.UsingBundles, function(index, bundleId){
+				bundleIds.push(bundleId);
+			});
 		});
 		var bottomWidth = self.renderBundleRow(bundleIds, 239);
 		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
@@ -110,7 +119,7 @@ var LayoutManager = function(width, height, dataSource){
 			if(self.bundles[bundleId]){
 				bundle = self.bundles[bundleId];
 			}else{
-				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId]);
+				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], self.displayBundle);
 				self.bundles[bundleId] = bundle;
 			}
 			if(!bundle.isVisible){
@@ -118,6 +127,8 @@ var LayoutManager = function(width, height, dataSource){
 				bundle.move(xPos, yPos);
 				bundle.show();
 				xPos = xPos + Math.round(bundle.boxWidth/2) + self.bundleSpacing;
+			}else{
+				
 			}
 		});
 		return xPos;
@@ -242,10 +253,10 @@ var Bundle = function(paper, rawBundle, dblClickCallback){
 		"font" : "12px Arial"
 	}).hide();
 	
-	self.boxWidth = self.text.getBBox().width + 2*self.bundleMargin + 2;
-	self.boxHeight = self.text.getBBox().height + 2*self.bundleMargin + 2;
+	self.boxWidth = Math.round(self.text.getBBox().width) + (2*self.bundleMargin);// + 2;
+	self.boxHeight = Math.round(self.text.getBBox().height) + (2*self.bundleMargin);// + 2;
 	
-	self.box = self.paper.rect(self.x, self.y, self.boxWidth, self.boxHeight, 8).attr({
+	self.box = self.paper.rect(self.x, self.y, self.boxWidth, self.boxHeight, self.bundleMargin).attr({
 		"fill" : "#E8F6FF", 
 		"stroke" : "#002F5E"
 	}).hide();
@@ -276,12 +287,12 @@ var Bundle = function(paper, rawBundle, dblClickCallback){
 		self.x = x;
 		self.y = y;
 		self.box.attr({
-			'x' : x - (self.boxWidth/2), 
-			'y' : y - (self.boxHeight/2)
+			'x' : Math.round(x - self.boxWidth/2), 
+			'y' : Math.round(y - self.boxHeight/2)
 		});
 		self.text.attr({
-			'x' : x - (self.boxWidth/2) + self.bundleMargin, 
-			'y' : y
+			'x' : Math.round(x - self.boxWidth/2) + self.bundleMargin, 
+			'y' : Math.round(y)
 		});
 		
 	};
@@ -296,101 +307,101 @@ var Bundle = function(paper, rawBundle, dblClickCallback){
 
 };
 
-//var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip) {
-//
-//	var self = this;
-//	
-//	this.fromBundle = fromBundle;
-//	this.toBundle = toBundle;
-//	this.infoCallback = infoCallback;
-//	this.infoKey = infoKey;
-//	this.tooltip = tooltip;
-//	this.count = 1;
-//	this.key = 'from' + this.fromBundle.id + 'to' + this.toBundle.id;
-//	this.controlPointOffset = 100;
-//
-//	this.setCoordinates = function(){
-//		this.startPoint = {'x' : fromBundle.x, 'y' : fromBundle.y + fromBundle.boxHeight/2};
-//		this.endPoint = {'x' : toBundle.x, 'y' : toBundle.y - toBundle.boxHeight/2};
-//		this.startPointControl = {'x' : this.startPoint.x, 'y' : this.startPoint.y + this.controlPointOffset}; 
-//		this.endPointControl = {'x' : this.endPoint.x, 'y' : this.endPoint.y - this.controlPointOffset};
-//		this.midPoint = this.calculateMidpoint(this.startPoint.x, this.startPoint.y, this.endPoint.x, this.endPoint.y); 
-//	};
-//	
-//	this.calculateMidpoint = function(startX, startY, endX, endY){
-//		if(startX < endX){
-//			var midX = startX + (endX - startX)/2;
-//		} else {
-//			var midX = endX + (startX - endX)/2;
-//		}
-//		if(startY < endY){
-//			var midY = startY + (endY - startY)/2;
-//		} else {
-//			var midY = endY + (startY - endY)/2;
-//		}
-//		return {'x' : midX, 'y' : midY};
-//	};
-//	
-//	this.display = function() {
-//		if(this.visual){
-//			this.visual.remove();
-//		}
-//		if(this.infoPoint){
-//			this.infoPoint.remove();
-//		}
-//		if(this.infoPointText){
-//			this.infoPointText.remove();
-//		}
-//		this.setCoordinates();
-//		this.visual = paper.path('M' + this.startPoint.x + ',' + this.startPoint.y + 
-//									'C' + this.startPointControl.x + ',' + this.startPointControl.y + 
-//									',' + this.endPointControl.x + ',' + this.endPointControl.y + 
-//									',' + this.endPoint.x + ',' + this.endPoint.y).attr({
-//			'arrow-end' : 'block-wide-long',
-//			'stroke-width' : 3,
-//			'stroke' : '#002F5E'
-//		}).toBack();
-//		this.infoPoint = paper.circle(this.midPoint.x, this.midPoint.y, 10).attr({
-//			'fill' : '#BAD9EC', 
-//			'stroke' : 'none',
-//			'title' : this.tooltip
-//		});
-//		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, this.count).attr({
-//			'font' : '13px Arial', 
-//			'stroke' : '#002F5E',
-//			'title' : this.tooltip
-//		});
-//		
-//		this.infoPoint.click(function(){this.displayInfoBox();});
-//		this.infoPointText.click(function(){this.displayInfoBox();});
-//		
-//		this.infoPoint.hover(function(){this.glow = this.visual.glow();}, function(){this.glow.remove();}, this, this);
-//		this.infoPointText.hover(function(){this.glow = this.visual.glow();}, function(){this.glow.remove();}, this, this);
-//	};
-//	
-//	this.displayInfoBox = function() {
-//		infoBox.go(this.infoCallback, this.infoKey);
-//	};
-//	
-//	this.increaseCount = function(tooltip) {
-//		this.count = this.count + 1;
-//		this.tooltip = this.tooltip + ' ' + tooltip;
-//		if(this.infoPointText){
-//			this.infoPointText.attr({
-//				'text' : this.count
-//			});
-//		};
-//	};
-//	
-//	this.remove = function() {
-//		this.visual.remove();
-//		this.infoPoint.remove();
-//		this.infoPointText.remove();
-//		this.fromBundle.removeRelationship(this.key);
-//		this.toBundle.removeRelationship(this.key);
-//	};
-//
-//};
+var Relationship = function(fromBundle, toBundle, infoCallback, infoKey, tooltip) {
+
+	var self = this;
+	
+	this.fromBundle = fromBundle;
+	this.toBundle = toBundle;
+	this.infoCallback = infoCallback;
+	this.infoKey = infoKey;
+	this.tooltip = tooltip;
+	this.count = 1;
+	this.key = 'from' + this.fromBundle.id + 'to' + this.toBundle.id;
+	this.controlPointOffset = 100;
+
+	this.setCoordinates = function(){
+		this.startPoint = {'x' : fromBundle.x, 'y' : fromBundle.y + fromBundle.boxHeight/2};
+		this.endPoint = {'x' : toBundle.x, 'y' : toBundle.y - toBundle.boxHeight/2};
+		this.startPointControl = {'x' : this.startPoint.x, 'y' : this.startPoint.y + this.controlPointOffset}; 
+		this.endPointControl = {'x' : this.endPoint.x, 'y' : this.endPoint.y - this.controlPointOffset};
+		this.midPoint = this.calculateMidpoint(this.startPoint.x, this.startPoint.y, this.endPoint.x, this.endPoint.y); 
+	};
+	
+	this.calculateMidpoint = function(startX, startY, endX, endY){
+		if(startX < endX){
+			var midX = startX + (endX - startX)/2;
+		} else {
+			var midX = endX + (startX - endX)/2;
+		}
+		if(startY < endY){
+			var midY = startY + (endY - startY)/2;
+		} else {
+			var midY = endY + (startY - endY)/2;
+		}
+		return {'x' : midX, 'y' : midY};
+	};
+	
+	this.display = function() {
+		if(this.visual){
+			this.visual.remove();
+		}
+		if(this.infoPoint){
+			this.infoPoint.remove();
+		}
+		if(this.infoPointText){
+			this.infoPointText.remove();
+		}
+		this.setCoordinates();
+		this.visual = paper.path('M' + this.startPoint.x + ',' + this.startPoint.y + 
+									'C' + this.startPointControl.x + ',' + this.startPointControl.y + 
+									',' + this.endPointControl.x + ',' + this.endPointControl.y + 
+									',' + this.endPoint.x + ',' + this.endPoint.y).attr({
+			'arrow-end' : 'block-wide-long',
+			'stroke-width' : 3,
+			'stroke' : '#002F5E'
+		}).toBack();
+		this.infoPoint = paper.circle(this.midPoint.x, this.midPoint.y, 10).attr({
+			'fill' : '#BAD9EC', 
+			'stroke' : 'none',
+			'title' : this.tooltip
+		});
+		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, this.count).attr({
+			'font' : '13px Arial', 
+			'stroke' : '#002F5E',
+			'title' : this.tooltip
+		});
+		
+		this.infoPoint.click(function(){this.displayInfoBox();});
+		this.infoPointText.click(function(){this.displayInfoBox();});
+		
+		this.infoPoint.hover(function(){this.glow = this.visual.glow();}, function(){this.glow.remove();}, this, this);
+		this.infoPointText.hover(function(){this.glow = this.visual.glow();}, function(){this.glow.remove();}, this, this);
+	};
+	
+	this.displayInfoBox = function() {
+		infoBox.go(this.infoCallback, this.infoKey);
+	};
+	
+	this.increaseCount = function(tooltip) {
+		this.count = this.count + 1;
+		this.tooltip = this.tooltip + ' ' + tooltip;
+		if(this.infoPointText){
+			this.infoPointText.attr({
+				'text' : this.count
+			});
+		};
+	};
+	
+	this.remove = function() {
+		this.visual.remove();
+		this.infoPoint.remove();
+		this.infoPointText.remove();
+		this.fromBundle.removeRelationship(this.key);
+		this.toBundle.removeRelationship(this.key);
+	};
+
+};
 //
 //var SelfRelationship = function(bundle, infoCallback, infoKey, tooltip) {
 //
