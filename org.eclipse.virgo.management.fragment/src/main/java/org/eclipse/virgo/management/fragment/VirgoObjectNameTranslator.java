@@ -17,7 +17,7 @@ import javax.management.ObjectName;
 
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
-import org.eclipse.gemini.mgmt.ObjectNameTranslator;
+import org.eclipse.gemini.management.ObjectNameTranslator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 

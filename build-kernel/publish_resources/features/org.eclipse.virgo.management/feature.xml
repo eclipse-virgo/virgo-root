@@ -27,7 +27,7 @@
 		autostart="true"/>
 	
    <plugin
-		id="org.eclipse.gemini.mgmt"
+		id="org.eclipse.gemini.management"
 		download-size="0"
 		install-size="0"
 		version="@GEMINI.MANAGEMENT.VERSION@"
