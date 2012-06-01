@@ -155,12 +155,18 @@ a:active, a.active {
 
 #navigation a {
 	font-weight: normal;
-	padding: 5px 0 5px;
-	height: 13px;
 	text-decoration: none;
 }
 
+.navigation-text {
+	display: inline-block;
+	padding: 5px 0 5px;
+	vertical-align: top;
+	height: 13px;
+}
+
 .button-cap-left-white, .button-cap-right-white { 
+	display: inline-block;
     height: 23px;
     width: 12px;
 }
@@ -177,32 +183,27 @@ a:active, a.active {
 	width: 30px;
 }
 
-#navigation .selected-navigation a {
-	color: #0095CA !important;
-}
-
 #navigation li > * {
-	display: inline-block;
 	color: #FFFFFF;
 	background: #002F5E;
 	vertical-align: top;
 }
 
-#navigation li:hover > a {
+#navigation li:hover .navigation-text {
 	background: #FFFFFF;
 	color:#002F5E;
 }
 
-#navigation li:hover > .button-cap-left-white {
+#navigation li:hover .button-cap-left-white {
 	background: transparent url(../images/button-cap-left-white.png) no-repeat;
 }
 
-#navigation li:hover > .button-cap-right-white {
+#navigation li:hover .button-cap-right-white {
     background: transparent url(../images/button-cap-right-white.png) no-repeat;
 }
 
-#navigation .selected-navigation a {
-	color: #0095CA;
+#navigation .selected-navigation .navigation-text {
+	color: #0095CA !important;
 }
 
 /*
