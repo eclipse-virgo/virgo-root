@@ -84,11 +84,11 @@ var LayoutManager = function(width, height, dataSource){
 	self.renderWires = function(bundle){
 		var bundleIds = {};
 		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
-			bundleIds[wire.ProviderBundleId] = 'tooltip';
+			bundleIds[wire.ProviderBundleId] = new InfoBox().initWithWire(wire);
 		});
 		var topWidth = self.renderBundleRow(bundleIds, -239, bundle, false);
 		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
-			bundleIds[wire.RequirerBundleId] = 'tooltip';
+			bundleIds[wire.RequirerBundleId] = new InfoBox().initWithWire(wire);
 		});
 		var bottomWidth = self.renderBundleRow(bundleIds, 239, bundle, true);
 		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
@@ -98,12 +98,12 @@ var LayoutManager = function(width, height, dataSource){
 	self.renderServices = function(bundle){
 		var bundleIds = {};
 		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
-			bundleIds[service.BundleIdentifier] = 'tooltip';
+			bundleIds[service.BundleIdentifier] = new InfoBox().initWithService(service);
 		});
 		var topWidth = self.renderBundleRow(bundleIds, -239, bundle, false);
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
-				bundleIds[bundleId] = 'tooltip';
+				bundleIds[bundleId] = new InfoBox().initWithService(service);
 			});
 		});
 		var bottomWidth = self.renderBundleRow(bundleIds, 239, bundle, true);
@@ -115,43 +115,52 @@ var LayoutManager = function(width, height, dataSource){
 		var yPos = Math.round(self.paper.height/2) + offset;
 		var xPos = this.bundleSpacing;
 		var bundle;
-		$.each(bundleIds, function(bundleId, tooltip){
+		$.each(bundleIds, function(bundleId, relationshipInfoBox){
 			if(self.bundles[bundleId]){
 				bundle = self.bundles[bundleId];
 			}else{
-				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], tooltip, self.displayBundle);
+				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], self.displayBundle);
 				self.bundles[bundleId] = bundle;
 			}
+			var releationshipKey = self.getRelationshipKey(bundle, focused);
 			if(!bundle.isVisible){
 				var relationship;
 				if(isFrom){
-					relationship = new Relationship(self.paper, focused, bundle, self.getRelationshipKey(focused, bundle));//, relation.info, relation.infoKey, relation.tooltip);
+					relationship = new Relationship(self.paper, focused, bundle, relationshipInfoBox);
 				}else{
-					relationship = new Relationship(self.paper, bundle, focused, self.getRelationshipKey(bundle, focused));//, relation.info, relation.infoKey, relation.tooltip);
+					relationship = new Relationship(self.paper, bundle, focused, relationshipInfoBox);
 				}
-				//bundle.relationships[relationship.key] = relationship;
-				//focused.relationships[relationship.key] = relationship;
-				self.relationships[relationship.key] = relationship;
+				self.relationships[releationshipKey] = relationship;
 				xPos = xPos + bundle.boxWidth/2;
 				bundle.move(xPos, yPos);
 				bundle.show();
 				relationship.display();
 				xPos = xPos + bundle.boxWidth/2 + self.bundleSpacing;
-			}else{
-//				var relationshipKey;
-//				if(isFrom){
-//					relationshipKey = self.getRelationshipKey(focused, bundle);
-//				}else{
-//					relationshipKey = self.getRelationshipKey(bundle, focused);
-//				}
-//				console.log('already visible' + relationshipKey);
+			} else {
+				var existingRelationship = self.relationships[releationshipKey];
+				if(bundle.rawBundle.Identifier == focused.rawBundle.Identifier){
+					console.log('Need a self link');
+				} else {
+					if(isFrom){
+						existingRelationship.increaseBackCount(relationshipInfoBox);
+					} else {
+						existingRelationship.increaseBackCount(relationshipInfoBox);
+					}
+					console.log('isFrom' + isFrom + ', already visible' + bundle.summary);
+				}
 			}
 		});
 		return xPos;
 	};
 	
-	self.getRelationshipKey = function(from, to){
-		return 'from' + from.rawBundle.Identifier + 'to' + to.rawBundle.Identifier;
+	self.getRelationshipKey = function(bundle1, bundle2){
+		if(bundle1.rawBundle.Identifier == bundle2.rawBundle.Identifier){
+			return 'self' + bundle1.rawBundle.Identifier;
+		}
+		if(bundle1.rawBundle.Identifier < bundle2.rawBundle.Identifier){
+			return bundle1.rawBundle.Identifier + '-' + bundle2.rawBundle.Identifier;
+		}
+		return bundle2.rawBundle.Identifier + '-' + bundle1.rawBundle.Identifier;
 	};
 
 	self.hideAll = function(){
@@ -169,34 +178,45 @@ var LayoutManager = function(width, height, dataSource){
 /**
  * Bundle
  */
-var Bundle = function(paper, rawBundle, tooltip, dblClickCallback){
+var Bundle = function(paper, rawBundle, dblClickCallback){
 
 	var self = this;
 	
 	self.paper = paper;
 	self.rawBundle = rawBundle;
+	self.infoBox = new InfoBox().initWithBundle(rawBundle);
 	self.dblClickCallback = dblClickCallback;
-	self.isVisible = false; 
 	self.relationships = {};
+	self.isVisible = false;
 	
 	//Display attributes
 	self.bundleMargin = 8;
 	self.x = 5;
 	self.y = 5;
 	
-	self.summary = "[" + self.rawBundle.Identifier + "] " + self.rawBundle.SymbolicName + "\n" + self.rawBundle.Version;
+	self.summary = '[' + self.rawBundle.Identifier + '] ' + self.rawBundle.SymbolicName + '\n' + self.rawBundle.Version;
 	
 	self.text = self.paper.text(self.x, self.y, self.summary).attr({
-		"text-anchor" : "start", 
-		"font" : "12px Arial"
+		'text-anchor' : 'start', 
+		'font' : '12px Arial'
 	}).hide();
 	
-	self.boxWidth = Math.round(self.text.getBBox().width) + (2*self.bundleMargin);// + 2;
-	self.boxHeight = Math.round(self.text.getBBox().height) + (2*self.bundleMargin);// + 2;
+	self.boxWidth = Math.round(self.text.getBBox().width) + (3*self.bundleMargin);
+	self.boxHeight = Math.round(self.text.getBBox().height) + (2*self.bundleMargin);
 	
 	self.box = self.paper.rect(self.x, self.y, self.boxWidth, self.boxHeight, self.bundleMargin).attr({
-		"fill" : "#E8F6FF", 
-		"stroke" : "#002F5E"
+		'fill' : '#E8F6FF', 
+		'stroke' : '#002F5E'
+	}).hide();
+	
+	self.info = self.paper.text(self.x, self.y, 'i').attr({
+		'text-anchor' : 'start', 
+		'font-size' : '17px',
+		'font-family' : 'serif',
+		'font-weight' : 'bold',
+		'font-style' : 'italic',
+		'fill' : '#002F5E',
+		'cursor' : 'pointer'
 	}).hide();
 	
 	self.box.toBack();
@@ -208,17 +228,23 @@ var Bundle = function(paper, rawBundle, tooltip, dblClickCallback){
 	self.text.dblclick(function(){
 		self.dblClickCallback(self.rawBundle.Identifier);
 	});
+
+	self.info.click(function(){
+		self.infoBox.go();
+	});
 	
 	self.hide = function(){
 		self.text.hide();
 		self.box.hide();
-		self.isVisible = false; 
+		self.info.hide();
+		self.isVisible = false;
 	};
 	
 	self.show = function(){
 		self.text.show();
 		self.box.show();
-		self.isVisible = true; 
+		self.info.show();
+		self.isVisible = true;
 	};
 	
 	self.move = function(x, y) {
@@ -232,23 +258,27 @@ var Bundle = function(paper, rawBundle, tooltip, dblClickCallback){
 			'x' : Math.round(x - self.boxWidth/2) + self.bundleMargin, 
 			'y' : Math.round(y)
 		});
+		self.info.attr({
+			'x' : Math.round(x + self.boxWidth/2 - 1.5*self.bundleMargin), 
+			'y' : Math.round(y)
+		});
 		
 	};
 
 };
 
-var Relationship = function(paper, fromBundle, toBundle, key){ //}, infoCallback, infoKey, tooltip) {
-
+var Relationship = function(paper, fromBundle, toBundle, infoBox) {
+	
 	var self = this;
 	
 	self.paper = paper;
 	self.fromBundle = fromBundle;
 	self.toBundle = toBundle;
-	self.infoCallback = infoCallback;
-	self.infoKey = infoKey;
-	self.tooltip = tooltip;
+	self.infoBox = infoBox;
+	self.tooltip = 'From bundle ' + fromBundle.summary + '\n To bundle ' + toBundle.summary;
+	self.doubleEnded = false;
+
 	self.count = 1;
-	self.key = key;
 	self.controlPointOffset = 100;
 
 	self.setCoordinates = function(){
@@ -296,11 +326,13 @@ var Relationship = function(paper, fromBundle, toBundle, key){ //}, infoCallback
 		self.infoPoint = self.paper.circle(self.midPoint.x, self.midPoint.y, 10).attr({
 			'fill' : '#BAD9EC', 
 			'stroke' : 'none',
+			'cursor' : 'pointer',
 			'title' : self.tooltip
 		});
-		self.infoPointText = self.paper.text(self.midPoint.x, self.midPoint.y, self.count).attr({
-			'font' : '13px Arial', 
+		self.infoPointText = self.paper.text(self.midPoint.x, self.midPoint.y + 1, self.count).attr({
+			'font' : '13px serif', 
 			'stroke' : '#002F5E',
+			'cursor' : 'pointer',
 			'title' : self.tooltip
 		});
 		
@@ -312,28 +344,147 @@ var Relationship = function(paper, fromBundle, toBundle, key){ //}, infoCallback
 	};
 	
 	self.displayInfoBox = function() {
-		infoBox.go(self.infoCallback, self.infoKey);
+		infoBox.go();
 	};
 	
-	self.increaseCount = function(tooltip) {
+	self.increaseCount = function(relationshipInfoBox) {
 		self.count = self.count + 1;
-		self.tooltip = self.tooltip + ' ' + tooltip;
-		if(self.infoPointText){
-			self.infoPointText.attr({
-				'text' : self.count
-			});
-		};
+		self.infoPointText.attr({'text': self.count});
+		self.infoBox.addInfoBox(relationshipInfoBox);
+	};
+	
+	self.increaseBackCount = function(relationshipInfoBox) {
+		self.increaseCount(relationshipInfoBox);
+		if(!self.doubleEnded){
+			self.doubleEnded = true;
+			self.visual.attr({'arrow-start' : 'block-wide-long'});
+		}
 	};
 	
 	self.remove = function() {
 		self.visual.remove();
 		self.infoPoint.remove();
 		self.infoPointText.remove();
-		//self.fromBundle.removeRelationship(self.key);
-		//self.toBundle.removeRelationship(self.key);
 	};
 
 };
+
+var InfoBox = function(){
+	
+	var self = this;
+	
+	self.title = "Not Defined";
+	self.dialogBox = $('<div />');
+	
+	self.initWithBundle = function(rawBundle){
+		//console.log('rawBundle', rawBundle);
+		self.title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + '_' + rawBundle.Version;
+		var infoBox = $('<ul></ul>');
+		infoBox.append($('<li>State - ' + rawBundle.State + '</li>'));
+		infoBox.append($('<li>StartLevel - ' + rawBundle.StartLevel + '</li>'));
+		infoBox.append($('<li>Region - ' + rawBundle.Region + '</li>'));
+		infoBox.append($('<li>Location - ' + rawBundle.Location + '</li>'));
+		infoBox.append($('<li>LastModified - ' + rawBundle.LastModified + '</li>'));
+		infoBox.append($('<li>Is a fragment - ' + rawBundle.Fragment + '</li>'));
+		infoBox.append($('<li>PersistentlyStarted - ' + rawBundle.PersistentlyStarted + '</li>'));
+		infoBox.append($('<li>ActivationPolicyUsed - ' + rawBundle.ActivationPolicyUsed + '</li>'));
+		infoBox.append($('<li>Required - ' + rawBundle.Required + '</li>'));
+		if(rawBundle.ExportedPackages.length == 0){
+			infoBox.append($('<li>No exported packages</li>').addClass('indent1'));
+		} else {
+			infoBox.append($('<li>Exported packages</li>').addClass('indent1'));
+			$.each(rawBundle.ExportedPackages, function(index, item){
+				infoBox.append($('<li>' + item + '</li>').addClass('indent2'));
+			});
+		}
+		if(rawBundle.ImportedPackages.length == 0){
+			infoBox.append($('<li>No imported packages</li>').addClass('indent1'));
+		} else {
+			infoBox.append($('<li>Imported packages</li>').addClass('indent1'));
+			$.each(rawBundle.ImportedPackages, function(index, item){
+				infoBox.append($('<li>' + item + '</li>').addClass('indent2'));
+			});
+		}
+		//infoBox.append($('<li>' + rawBundle + '</li>'));
+		self.dialogBox.append(infoBox);
+		return self;
+	};
+	
+	self.initWithService = function(service){
+		//console.log('service', service);
+		self.title = 'Service(s) between between Bundle ' + service.Identifier + ' and Bundle ' ;
+		var infoBox = $('<ul></ul>');
+		infoBox.append($('<li>Service [' + service.Identifier + '] ' + service.objectClass[0] + (service.objectClass.length > 1 ? '...' : '') + '</li>').addClass('section-title'));
+		infoBox.append($('<li>Used By</li>'));
+		$.each(service.UsingBundles, function(index, item){
+			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+		});
+		infoBox.append($('<li>ObjectClass</li>'));
+		$.each(service.objectClass, function(index, item){
+			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+		});
+		self.dialogBox.append(infoBox);
+		return self;
+	};
+	
+	self.initWithWire = function(wire){
+		//console.log('wire', wire);
+		self.title = 'Wire between Bundle ' + wire.ProviderBundleId + ' and Bundle ' + wire.RequirerBundleId;
+		var infoBox = $('<ul></ul>');
+		infoBox.append($('<li>"' + wire.BundleRequirement.Namespace + '" from Bundle ' + wire.ProviderBundleId + ' to Bundle ' + wire.RequirerBundleId + '</li>').addClass('section-title'));
+		infoBox.append($('<li>Capability</li>'));
+		self.addWireProperties(infoBox, wire.BundleCapability.Attributes, '=', 'Attributes');
+		self.addWireProperties(infoBox, wire.BundleCapability.Directives, ':=', 'Directives');
+		infoBox.append($('<li>Requirement</li>'));
+		self.addWireProperties(infoBox, wire.BundleRequirement.Attributes, '=', 'Attributes');
+		self.addWireProperties(infoBox, wire.BundleRequirement.Directives, ':=', 'Directives');
+		self.dialogBox.append(infoBox);
+		return self;
+	};
+	
+	self.addWireProperties = function(list, attributes, delimiter, type){
+		var firstItem = $('<li></li>').addClass('indent1');
+		list.append(firstItem);
+		var itemsAdded = false;
+		$.each(attributes, function(key, value){
+			if(!itemsAdded){
+				itemsAdded = true;
+				firstItem.text(type);
+			}
+			list.append($('<li>' + value.Key + delimiter + value.Value + '</li>').addClass('indent2'));
+		});
+		if(!itemsAdded){
+			firstItem.text('No ' + type);
+		}
+	};
+	
+	self.addInfoBox = function(newInfoBox){
+		console.log('adding to ', self.dialogBox);
+		$.each(newInfoBox.dialogBox.children(), function(index, item){
+			self.dialogBox.append(item);
+			console.log('adding', item);
+		});
+	};
+	
+	self.go = function(){
+		var newDialogBox = self.dialogBox.clone();
+		$("li", newDialogBox).removeClass('li-odd');
+		$("li:odd", newDialogBox).addClass('li-odd');
+		newDialogBox.dialog({ 
+			modal : true,
+			dialogClass: 'info-box',
+			resizable: false,
+			width : 600,
+			title : self.title,
+			close : function(a,b){
+				$(this).parent().remove();
+				return false;
+			}
+		});
+	};
+	
+};
+
 //
 //var SelfRelationship = function(bundle, infoCallback, infoKey, tooltip) {
 //

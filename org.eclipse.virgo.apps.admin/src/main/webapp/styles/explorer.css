@@ -28,7 +28,6 @@ svg:not(:root) {
 #display {
 	display: inline-block;
 	width: 65%;
-/*	visibility: hidden;*/
 }
 
 #bundle-canvas {
@@ -39,6 +38,49 @@ svg:not(:root) {
 	overflow-x: auto;
 }
 
-circle {
-	cursor: pointer;
+.info-box {
+	background: #FFFFFF;
+	border: 3px solid #002F5E;
+	-moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.info-box .ui-dialog-titlebar {
+	border-bottom: 1px solid #002F5E;
+	-moz-border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -khtml-border-radius: 5px 5px 0px 0px;
+    border-radius: 5px 5px 0px 0px;
+	background: #E8F6FF; 
+	padding: 5px;	
+}
+
+.info-box .ui-dialog-titlebar-close {
+	float: right;
+}
+
+.info-box .ui-dialog-content {
+	padding: 5px;
+	overflow-x: auto;
+}
+
+.info-box .indent1 {
+	padding-left: 20px;
+}
+.info-box .indent2 {
+	padding-left: 40px;
+}
+
+.info-box .li-odd {
+	background: #E8F6FF;
+}
+
+.info-box li {
+	padding: 3px;
+}
+	
+.info-box li:hover {
+	background: #BAD9EC;
 }

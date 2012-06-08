@@ -25,37 +25,43 @@ $(document).ready(function() {
 
 var Util = function(){
 	
-	this.fxTime = 200;
+	var self = this;
+	
+	self.fxTime = 200;
 		
-	this.queryHash = undefined; 
+	self.queryHash = undefined; 
 
-	this.pageLocation = undefined;
+	self.pageLocation = undefined;
 	
-	this.starting = false;
+	self.starting = false;
 	
-	this.started = false;
+	self.started = false;
 	
-	this.start = function(){
-		if(!this.starting && !this.started){
-			this.starting = true;
-			this.spinner = $('<div />').dialog({
+	self.start = function(){
+		if(!self.starting && !self.started){
+			self.starting = true;
+			var spinnerElement = $('<div />');
+			self.spinner = spinnerElement.dialog({
 				modal: true,
 				dialogClass: 'spinner-img',
 				closeText: '',
 				draggable: false,
 				resizable: false,
 				closeOnEscape: false,
-				width: '48px'
+				width: '48px',
+				close : function(){
+					spinnerElement.remove();
+				}
 			});
 			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
 			var hash;
-			this.queryHash = {};
+			self.queryHash = {};
 		    for(var i = 0; i < hashes.length; i++) {
 		        hash = hashes[i].split('=');
-		        this.queryHash[hash[0]] = hash[1];
+		        self.queryHash[hash[0]] = hash[1];
 		    }
 			if(location.hash){
-				this.pageLocation = location.hash.replace("#", "");
+				self.pageLocation = location.hash.replace("#", "");
 			}
 		}
 	};
@@ -63,11 +69,11 @@ var Util = function(){
 	/**
 	 * 
 	 */
-	this.pageReady = function(){
-		if(this.starting && !this.started){
-			this.started = true;
-			this.spinner.dialog('close');
-			this.spinner = undefined;
+	self.pageReady = function(){
+		if(self.starting && !this.started){
+			self.started = true;
+			self.spinner.dialog('close');
+			self.spinner = undefined;
 			$('.spinner-img').remove();
 		}
 	};
@@ -76,7 +82,7 @@ var Util = function(){
 	 * 
 	 * @returns {String}
 	 */
-	this.getCurrentHost = function(){
+	self.getCurrentHost = function(){
 		return location.protocol + '//' + location.host + contextPath;
 	};
 	
@@ -85,7 +91,7 @@ var Util = function(){
 	 * @param objectName
 	 * @returns {ObjectName}
 	 */
-	this.readObjectName = function(objectName){
+	self.readObjectName = function(objectName){
 		marker = objectName.indexOf(':');
 		domain = objectName.substring(0, marker);
 		propertyParts = objectName.substring(marker + 1).split(',');
@@ -101,7 +107,7 @@ var Util = function(){
 	 * 
 	 * @param query string for jolokia
 	 */
-	this.doQuery = function(query, successCallback, errorCallback){
+	self.doQuery = function(query, successCallback, errorCallback){
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/' + query,
 			dataType: 'json',
@@ -121,10 +127,10 @@ var Util = function(){
 	 * @param query object of keys and values
 	 * @param callback
 	 */
-	this.doBulkQuery = function(query, successCallback, errorCallback){
+	self.doBulkQuery = function(query, successCallback, errorCallback){
 		$.ajax({
 			type: 'POST',
-			url: this.getCurrentHost() + '/jolokia',
+			url: self.getCurrentHost() + '/jolokia',
 			dataType: 'json',
 			data: JSON.stringify(query),
 			success: function (response) {
@@ -143,8 +149,8 @@ var Util = function(){
 	 * 
 	 * @param name - the name of the script file to load, .js is not required on the end
 	 */
-	this.loadScript = function(name, callback){
-		$.getScript(this.getCurrentHost() + '/resources/js/' + name + '.js', callback);
+	self.loadScript = function(name, callback){
+		$.getScript(self.getCurrentHost() + '/resources/js/' + name + '.js', callback);
 	};
 	
 	/**
@@ -153,7 +159,7 @@ var Util = function(){
 	 * @param el (Object) - The target elements
 	 * @param text (String) - The text of the tooltip
 	 */
-	this.tooltip = function(el, text) {
+	self.tooltip = function(el, text) {
 		if ($('tooltip') == null) {
 			var div = $("<div />");
 			document.childNodes[1].appendChild(div);
@@ -175,7 +181,7 @@ var Util = function(){
 	/**
 	 * Create and return a table element populated with the provided rows.
 	 */
-	this.makeTable = function(properties) {
+	self.makeTable = function(properties) {
 		
 		var decorate = function(table){
 			var tBody = $('tbody', table);
@@ -318,7 +324,7 @@ var Util = function(){
 	/**
 	 * Create a new div element of the given class.
 	 */
-	this.makeDiv = function(clazz) {
+	self.makeDiv = function(clazz) {
 		return $('<div />', {'class' : clazz});
 	};
 	
@@ -329,19 +335,21 @@ var Util = function(){
  */
 var ObjectName = function(domain, properties, objectName){
 	
-	this.domain = domain;
-	this.properties = properties;
-	this.toString = objectName;
+	var self = this;
 	
-	this.get = function(key){
-		return this.properties[key];
+	self.domain = domain;
+	self.properties = properties;
+	self.toString = objectName;
+	
+	self.get = function(key){
+		return self.properties[key];
 	};
 	
-	this.compare = function(other){
-		 if (this.toString < other.toString) {
+	self.compare = function(other){
+		 if (self.toString < other.toString) {
 			 return -1;
 		 }
-		 if (this.toString > other.toString) {
+		 if (self.toString > other.toString) {
 			 return 1;
 		 }
 		 return 0; 

@@ -8,10 +8,10 @@
  * Christopher Frost - 2011
  *
  * Colour scheme
- * Dark Blue          - #002F5E
- * Light Blue         - #0095CA
- * Table highlight    - #E8F6FF
- * Underline/lowlight - #BAD9EC
+ * Dark Blue			- #002F5E
+ * Light Blue			- #0095CA
+ * Table zebra			- #E8F6FF
+ * Underline/lowlight	- #BAD9EC
  *
  */
  
@@ -279,7 +279,7 @@ table {
 	border-spacing: 0;
 	margin: 0;
 	border-collapse: collapse;
-	color:#666;
+	color: #666;
 }
 
 thead {
@@ -294,7 +294,7 @@ th {
 	margin: 0;
 	padding: 0 6px 0 6px;
 	line-height: 19px;
-	color:#333;
+	color: #333;
 }
 
 td {
@@ -312,11 +312,11 @@ td {
 }
  
 .table-tr-odd {
-	background:#E8F6FF;
+	background: #E8F6FF;
 }
 
 .table-selectable .table-tr-hovered {
-	background:#BAD9EC;
+	background: #BAD9EC;
 	cursor: pointer;
 }
 
