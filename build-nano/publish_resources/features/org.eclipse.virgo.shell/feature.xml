@@ -19,7 +19,7 @@
    </license>
 
    <plugin
-         id="com.springsource.org.apache.mina.core"
+         id="org.apache.mina.core"
          download-size="0"
          install-size="0"
          version="@MINA.CORE.VERSION@"
@@ -27,7 +27,7 @@
          autostart="true"/>
 
    <plugin
-         id="com.springsource.org.apache.sshd.core"
+         id="org.apache.sshd.core"
          download-size="0"
          install-size="0"
          version="@SSHD.CORE.VERSION@"
@@ -70,7 +70,7 @@
          id="org.eclipse.equinox.console.ssh"
          download-size="0"
          install-size="0"
-         version="@EQUINOX.CONSOLE.VERSION@"
+         version="@EQUINOX.CONSOLE.SSH.VERSION@"
          unpack="false"
          autostart="true"/>
 

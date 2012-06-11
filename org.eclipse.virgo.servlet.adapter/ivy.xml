@@ -12,11 +12,4 @@
 		<artifact name="${ant.project.name}-sources" type="src" ext="jar" />
 	</publications>
 
-	<dependencies>
-        <dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime" />
-		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
-		
-		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
-	</dependencies>
-
 </ivy-module>
