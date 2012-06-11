@@ -47,13 +47,13 @@ public class ConfigurationAdminConfigurationInfo implements ConfigurationInfo {
             Map<String, String> properties = new HashMap<String, String>();
 
             @SuppressWarnings("unchecked")
-            Dictionary<String, String> dictionary = configuration.getProperties();
+            Dictionary<String, Object> dictionary = configuration.getProperties();
 
             if (dictionary != null) {
                 Enumeration<String> keys = dictionary.keys();
                 while (keys.hasMoreElements()) {
                     String key = keys.nextElement();
-                    String value = dictionary.get(key);
+                    String value = (String)dictionary.get(key);
                     properties.put(key, value);
                 }
             }
