@@ -66,6 +66,12 @@ svg:not(:root) {
 	overflow-x: auto;
 }
 
+.info-box .ui-dialog-content .section-title {
+	font-weight: bold;
+	text-align: center;
+	color: #002F5E;
+}
+
 .info-box .indent1 {
 	padding-left: 20px;
 }

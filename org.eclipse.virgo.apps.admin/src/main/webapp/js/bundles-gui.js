@@ -87,6 +87,7 @@ var LayoutManager = function(width, height, dataSource){
 			bundleIds[wire.ProviderBundleId] = new InfoBox().initWithWire(wire);
 		});
 		var topWidth = self.renderBundleRow(bundleIds, -239, bundle, false);
+		bundleIds = {};
 		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
 			bundleIds[wire.RequirerBundleId] = new InfoBox().initWithWire(wire);
 		});
@@ -101,6 +102,7 @@ var LayoutManager = function(width, height, dataSource){
 			bundleIds[service.BundleIdentifier] = new InfoBox().initWithService(service);
 		});
 		var topWidth = self.renderBundleRow(bundleIds, -239, bundle, false);
+		bundleIds = {};
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
 				bundleIds[bundleId] = new InfoBox().initWithService(service);
@@ -139,14 +141,22 @@ var LayoutManager = function(width, height, dataSource){
 			} else {
 				var existingRelationship = self.relationships[releationshipKey];
 				if(bundle.rawBundle.Identifier == focused.rawBundle.Identifier){
-					console.log('Need a self link');
-				} else {
-					if(isFrom){
-						existingRelationship.increaseBackCount(relationshipInfoBox);
-					} else {
-						existingRelationship.increaseBackCount(relationshipInfoBox);
+					if(existingRelationship){
+						existingRelationship.increaseCount(relationshipInfoBox);
+					}else{//Handle the first self relationship
+						var relationship = new Relationship(self.paper, bundle, bundle, relationshipInfoBox);
+						self.relationships[releationshipKey] = relationship;
+						relationship.display();
 					}
-					console.log('isFrom' + isFrom + ', already visible' + bundle.summary);
+				} else {
+					var existingFromBundle = existingRelationship.fromBundle.rawBundle.Identifier;
+					if(isFrom && focused.rawBundle.Identifier == existingFromBundle){// On the bottom row
+						existingRelationship.increaseCount(relationshipInfoBox);
+					} else if(!isFrom && bundle.rawBundle.Identifier == existingFromBundle){// On the top row
+						existingRelationship.increaseCount(relationshipInfoBox); 
+					} else {
+						existingRelationship.increaseBackCount(relationshipInfoBox); //On the top row
+					}
 				}
 			}
 		});
@@ -282,11 +292,20 @@ var Relationship = function(paper, fromBundle, toBundle, infoBox) {
 	self.controlPointOffset = 100;
 
 	self.setCoordinates = function(){
-		self.startPoint = {'x' : fromBundle.x, 'y' : fromBundle.y + fromBundle.boxHeight/2};
-		self.endPoint = {'x' : toBundle.x, 'y' : toBundle.y - toBundle.boxHeight/2};
-		self.startPointControl = {'x' : self.startPoint.x, 'y' : self.startPoint.y + self.controlPointOffset}; 
-		self.endPointControl = {'x' : self.endPoint.x, 'y' : self.endPoint.y - self.controlPointOffset};
-		self.midPoint = self.calculateMidpoint(this.startPoint.x, self.startPoint.y, self.endPoint.x, self.endPoint.y); 
+		if(self.fromBundle.rawBundle.Identifier == self.toBundle.rawBundle.Identifier){
+			var xOffSet = Math.round(fromBundle.x + toBundle.boxWidth/2);
+			self.startPoint = {'x' : xOffSet - 20, 'y' : Math.round(fromBundle.y - fromBundle.boxHeight/2)};
+			self.endPoint = {'x' : xOffSet - 20, 'y' : Math.round(toBundle.y + toBundle.boxHeight/2)};
+			self.startPointControl = {'x' : self.startPoint.x + self.controlPointOffset, 'y' : self.startPoint.y - self.controlPointOffset}; 
+			self.endPointControl = {'x' : self.endPoint.x + self.controlPointOffset, 'y' : self.endPoint.y + self.controlPointOffset};
+			self.midPoint = {'x' : xOffSet + 54, 'y' : fromBundle.y};
+		}else{
+			self.startPoint = {'x' : fromBundle.x, 'y' : Math.round(fromBundle.y + fromBundle.boxHeight/2)};
+			self.endPoint = {'x' : toBundle.x, 'y' : Math.round(toBundle.y - toBundle.boxHeight/2)};
+			self.startPointControl = {'x' : self.startPoint.x, 'y' : self.startPoint.y + self.controlPointOffset}; 
+			self.endPointControl = {'x' : self.endPoint.x, 'y' : self.endPoint.y - self.controlPointOffset};
+			self.midPoint = self.calculateMidpoint(this.startPoint.x, self.startPoint.y, self.endPoint.x, self.endPoint.y);
+		}
 	};
 	
 	self.calculateMidpoint = function(startX, startY, endX, endY){
@@ -377,7 +396,6 @@ var InfoBox = function(){
 	self.dialogBox = $('<div />');
 	
 	self.initWithBundle = function(rawBundle){
-		//console.log('rawBundle', rawBundle);
 		self.title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + '_' + rawBundle.Version;
 		var infoBox = $('<ul></ul>');
 		infoBox.append($('<li>State - ' + rawBundle.State + '</li>'));
@@ -405,17 +423,17 @@ var InfoBox = function(){
 				infoBox.append($('<li>' + item + '</li>').addClass('indent2'));
 			});
 		}
-		//infoBox.append($('<li>' + rawBundle + '</li>'));
 		self.dialogBox.append(infoBox);
 		return self;
 	};
 	
 	self.initWithService = function(service){
-		//console.log('service', service);
-		self.title = 'Service(s) between between Bundle ' + service.Identifier + ' and Bundle ' ;
+		self.title = 'Service(s)' ;
 		var infoBox = $('<ul></ul>');
 		infoBox.append($('<li>Service [' + service.Identifier + '] ' + service.objectClass[0] + (service.objectClass.length > 1 ? '...' : '') + '</li>').addClass('section-title'));
-		infoBox.append($('<li>Used By</li>'));
+		
+		infoBox.append($('<li>Published by Bundle ' + service.BundleIdentifier + '</li>'));
+		infoBox.append($('<li>Used by</li>'));
 		$.each(service.UsingBundles, function(index, item){
 			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
 		});
@@ -428,10 +446,9 @@ var InfoBox = function(){
 	};
 	
 	self.initWithWire = function(wire){
-		//console.log('wire', wire);
-		self.title = 'Wire between Bundle ' + wire.ProviderBundleId + ' and Bundle ' + wire.RequirerBundleId;
+		self.title = 'Wire(s) between Bundle ' + wire.ProviderBundleId + ' and Bundle ' + wire.RequirerBundleId;
 		var infoBox = $('<ul></ul>');
-		infoBox.append($('<li>"' + wire.BundleRequirement.Namespace + '" from Bundle ' + wire.ProviderBundleId + ' to Bundle ' + wire.RequirerBundleId + '</li>').addClass('section-title'));
+		infoBox.append($('<li>"' + wire.BundleRequirement.Namespace + '" provided by Bundle ' + wire.ProviderBundleId + ' to Bundle ' + wire.RequirerBundleId + '</li>').addClass('section-title'));
 		infoBox.append($('<li>Capability</li>'));
 		self.addWireProperties(infoBox, wire.BundleCapability.Attributes, '=', 'Attributes');
 		self.addWireProperties(infoBox, wire.BundleCapability.Directives, ':=', 'Directives');
@@ -459,10 +476,8 @@ var InfoBox = function(){
 	};
 	
 	self.addInfoBox = function(newInfoBox){
-		console.log('adding to ', self.dialogBox);
 		$.each(newInfoBox.dialogBox.children(), function(index, item){
 			self.dialogBox.append(item);
-			console.log('adding', item);
 		});
 	};
 	
@@ -484,83 +499,3 @@ var InfoBox = function(){
 	};
 	
 };
-
-//
-//var SelfRelationship = function(bundle, infoCallback, infoKey, tooltip) {
-//
-//	var self = this;
-//	
-//	this.bundle = bundle;
-//	this.infoCallback = infoCallback;
-//	this.infoKey = infoKey;
-//	this.tooltip = tooltip;
-//	this.count = 1;
-//	this.key = 'self' + this.bundle.id;
-//	this.offset = 10;
-//	this.offset2 = 100;
-//	
-//	this.setCoordinates = function(){
-//		this.startPoint = {'x' : this.bundle.x + this.bundle.boxWidth/2, 'y' : this.bundle.y - this.offset};
-//		this.endPoint = {'x' : this.bundle.x + this.bundle.boxWidth/2, 'y' : this.bundle.y + this.offset};
-//		
-//		this.startPointControl = {'x' : this.startPoint.x + this.offset2, 'y' : this.startPoint.y - this.offset2}; 
-//		this.endPointControl = {'x' : this.endPoint.x + this.offset2, 'y' : this.endPoint.y + this.offset2};
-//		
-//		this.midPoint = {'x' : this.bundle.x + this.bundle.boxWidth/2 + this.offset2*0.74, 'y' : this.bundle.y}; 
-//	};
-//	
-//	this.display = function() {
-//		if(this.visual){
-//			this.visual.remove();
-//		}
-//		if(this.infoPoint){
-//			this.infoPoint.remove();
-//		}
-//		if(this.infoPointText){
-//			this.infoPointText.remove();
-//		}
-//		this.setCoordinates();
-//		this.visual = paper.path('M' + this.startPoint.x + ',' + this.startPoint.y + 
-//									'C' + this.startPointControl.x + ',' + this.startPointControl.y + 
-//									',' + this.endPointControl.x + ',' + this.endPointControl.y + 
-//									',' + this.endPoint.x + ',' + this.endPoint.y).attr({
-//			'arrow-end' : 'block-wide-long',
-//			'stroke-width' : 3,
-//			'stroke' : '#002F5E'
-//		}).toBack();
-//		this.infoPoint = paper.circle(this.midPoint.x, this.midPoint.y, 10).attr({
-//			'fill' : '#BAD9EC', 
-//			'stroke' : 'none',
-//			'title' : this.tooltip
-//		});
-//		this.infoPointText = paper.text(this.midPoint.x, this.midPoint.y, this.count).attr({
-//			'font' : '13px Arial', 
-//			'stroke' : '#002F5E',
-//			'title' : this.tooltip
-//		});
-//		
-//		this.infoPoint.click(function(){this.displayInfoBox();});
-//		this.infoPointText.click(function(){this.displayInfoBox();});
-//		
-//		this.infoPoint.hover(function(){this.glow = this.visual.glow();}, function(){this.glow.remove();}, this, this);
-//		this.infoPointText.hover(function(){this.glow = this.visual.glow();}, function(){this.glow.remove();}, this, this);
-//		
-//	};
-//	
-//	this.increaseCount = function(tooltip) {
-//		this.count = this.count + 1;
-//		this.tooltip = this.tooltip + ' ' + tooltip;
-//		if(this.infoPointText){
-//			this.infoPointText.attr({
-//				'text' : this.count
-//			});
-//		};
-//	};
-//	
-//	this.remove = function() {
-//		this.visual.remove();
-//		this.infoPoint.remove();
-//		this.infoPointText.remove();
-//	};
-//	
-//};
