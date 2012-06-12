@@ -62,12 +62,5 @@
         install-size="0"
         version="@TRIBES.VERSION@"
         unpack="false"/>
-    
-    <plugin
-        id="org.eclipse.virgo.servlet.adapter"
-        download-size="0"
-        install-size="0"
-        version="@NANO.VERSION@"
-        unpack="false"/>
 
 </feature>

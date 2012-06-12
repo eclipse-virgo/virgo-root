@@ -18,9 +18,8 @@
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services.concurrent" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.hot" rev="latest.integration" conf="nano-runtime->runtime" />
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.servlet.adapter" rev="latest.integration" conf="nano-runtime->runtime" />
         
-		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
