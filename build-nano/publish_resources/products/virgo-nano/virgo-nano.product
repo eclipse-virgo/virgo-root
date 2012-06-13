@@ -21,11 +21,9 @@
 	  <plugin id="javax.mail"/>
 	  <plugin id="javax.persistence"/>
 	  <plugin id="javax.xml.rpc"/>
-	  <plugin id="javax.xml.soap"/>
       <plugin id="org.apache.catalina"/>
 	  <plugin id="org.apache.catalina.ha"/>
 	  <plugin id="org.apache.catalina.tribes"/>
-	  <plugin id="org.apache.commons.logging"/>
 	  <plugin id="org.apache.coyote"/>
 	  <plugin id="org.apache.el"/>
 	  <plugin id="org.apache.jasper"/>
@@ -37,6 +35,7 @@
 	  <plugin id="org.eclipse.jdt.core.compiler.batch"/>
 	  <plugin id="org.slf4j.api"/>
       <plugin id="org.slf4j.jul"/>
+      <plugin id="org.slf4j.jcl"/>
 	  <plugin id="javax.annotation"/>
 	  <plugin id="javax.el"/>
 	  <plugin id="javax.servlet"/>

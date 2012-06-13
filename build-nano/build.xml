@@ -298,8 +298,8 @@
         <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
         <property name="scripts.location" value="${target.dir}/scripts_zipped"/>
         
-        <antcall target="simrel-common-resources"/>
-		<antcall target="simrel-bundles-and-features"/>
+        <!--antcall target="simrel-common-resources"/>
+		<antcall target="simrel-bundles-and-features"/-->
         <antcall target="simrel-publish-p2-repo"/>
     </target>
     
@@ -335,7 +335,7 @@
     
     <target name="simrel-common-resources">
         <copy todir="${target.dir}/assembly/plugins/org.eclipse.virgo.common.resources_${bundle.version}" failonerror="false">
-            <fileset dir="${basedir}/publish_resources/org.eclipse.virgo.common.resources_template"/>
+            <fileset dir="${basedir}/publish_resources/org.eclipse.virgo.common.resources"/>
             <filterset>
 				<filter token="NANO.VERSION" value="${bundle.version}"/>
             </filterset>
