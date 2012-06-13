@@ -298,8 +298,8 @@
         <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
         <property name="scripts.location" value="${target.dir}/scripts_zipped"/>
         
-        <!--antcall target="simrel-common-resources"/>
-		<antcall target="simrel-bundles-and-features"/-->
+        <antcall target="simrel-common-resources"/>
+		<antcall target="simrel-bundles-and-features"/>
         <antcall target="simrel-publish-p2-repo"/>
     </target>
     
