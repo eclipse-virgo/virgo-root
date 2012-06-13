@@ -45,6 +45,8 @@ public class Util {
 
     private Function lastBulkQueryErrorCallBack = null;
 
+	private Function async;
+
 	public static int fxTime = 200;
 	
 	public Util(Context context, ScriptableObject SCOPE) {
@@ -67,7 +69,7 @@ public class Util {
 	}
 	
 	public void loadScript(Object scriptName, Object async){
-		
+		this.async = (Function) async;
 	}
 	
 	public Object makeTable(Scriptable properties) {
@@ -117,7 +119,11 @@ public class Util {
 	public boolean isPageReady(){
 		return pageReady;
 	}
-	
+
+    public Function getLoadScriptAsync() {
+        return this.async;
+    }
+    
 	public String[] getLastMakeTableHeaders() {
 	    return this.lastMakeTableHeaders;
 	}

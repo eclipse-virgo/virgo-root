@@ -76,12 +76,6 @@ public abstract class AbstractJSTests {
 		alertMsg = msg;
 	}
 	
-	protected final Object addObject(Object object, String name){
-		Object wrapped = Context.javaToJS(object, scope);
-		ScriptableObject.putProperty(scope, name, wrapped);
-		return wrapped;
-	}
-	
 	protected final void readFile(String fileName) throws IOException{
 		context.evaluateReader(scope, new FileReader(fileName), fileName, 0, null);
 	}
@@ -92,7 +86,8 @@ public abstract class AbstractJSTests {
 	
 	protected final void addCommonObjects(){
 		commonUtil = new Util(context, scope);
-		addObject(commonUtil, "util");
+		Object wrapped = Context.javaToJS(commonUtil, scope);
+		ScriptableObject.putProperty(scope, "util", wrapped);
 	}
 	
 	protected final void invokePageInit() throws ScriptException, NoSuchMethodException{

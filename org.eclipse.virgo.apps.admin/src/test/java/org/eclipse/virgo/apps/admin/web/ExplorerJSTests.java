@@ -10,11 +10,18 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import javax.script.ScriptException;
 
 import org.junit.Test;
+
+import sun.org.mozilla.javascript.internal.Context;
+import sun.org.mozilla.javascript.internal.Function;
+import sun.org.mozilla.javascript.internal.Scriptable;
 
 /**
  *
@@ -26,10 +33,45 @@ public class ExplorerJSTests extends AbstractJSTests {
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
 		readFile("src/main/webapp/js/explorer.js");
-
-		//invokePageInit();
+		createTestLayoutManager();
 		
-		//assertTrue("Page ready has not been called", this.commonUtil.isPageReady());
+		invokePageInit();
+		
+		assertNotNull(commonUtil.getLoadScriptAsync());
+		commonUtil.getLoadScriptAsync().call(context, scope, scope, new Object[]{});
+		
+		assertNotNull(commonUtil.getLastQueryCallBack());
+		commonUtil.getLastQueryCallBack().call(context, scope, scope, new Object[]{getTestValue()});
+		
+		assertNotNull(commonUtil.getLastBulkQueryCallBack());
+		commonUtil.getLastBulkQueryCallBack().call(context, scope, scope, new Object[]{getTestValue()});
+		
+		assertTrue("Page ready has not been called", commonUtil.isPageReady());
+	}
+	
+	@Test
+	public void testConstructors() throws ScriptException, IOException, NoSuchMethodException{
+		((Function) scope.get("SideBar", scope)).construct(context, scope, new Object[]{getTestLayoutManager(), null});
+		((Function) scope.get("GeminiDataSource", scope)).construct(context, scope, new Object[]{});
+	}
+
+	private Scriptable getTestValue() throws IOException{
+		readString( "var TestValue = function() {" +
+					"	this.value = [];" +
+					"};");
+		Function testData = (Function) scope.get("TestValue", scope);
+		return testData.construct(context, scope, Context.emptyArgs);
+	}
+
+	private void createTestLayoutManager() throws IOException{
+		readString( "var LayoutManager = function() {" +
+				"	this.setFocusListener = function(){};" +
+				"};");
+	}
+
+	private Scriptable getTestLayoutManager() throws IOException{
+		Function testData = (Function) scope.get("LayoutManager", scope);
+		return testData.construct(context, scope, Context.emptyArgs);
 	}
 	
 }
