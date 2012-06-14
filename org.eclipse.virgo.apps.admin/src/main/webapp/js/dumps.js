@@ -129,8 +129,7 @@ var DumpViewer = function(){
 		$.each($('#dump-items').children(), function(index, dump){
 			$(dump).removeClass('selected-item');
 		});
-		var dumpEntryListItem = $('#' + id);
-		dumpEntryListItem.addClass('selected-item');
+		$('#' + id).addClass('selected-item');
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + queryString, 
 			dataType: 'json',
