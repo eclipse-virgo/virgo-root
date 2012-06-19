@@ -15,6 +15,6 @@ Import-Template:
  org.osgi.service.cm.*;version="0",
  org.osgi.util.tracker.*;version="0",
  org.eclipse.equinox.region.*;version="${org.eclipse.equinox.region:[=.=.=, =.+1)}",
- org.slf4j.*;version="${org.slf4j:[=.=.=, +1)}"
+ org.slf4j.*;version="${org.slf4j.api:[=.=.=, +1)}"
 Excluded-Exports: 
  *.internal.*
