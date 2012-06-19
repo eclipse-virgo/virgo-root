@@ -12,9 +12,9 @@
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.core" rev="${org.eclipse.gemini.blueprint}" conf="repository-ext->runtime"/>
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.extender" rev="${org.eclipse.gemini.blueprint}" conf="repository-ext->runtime"/>
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.io" rev="${org.eclipse.gemini.blueprint}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="repository-ext->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="repository-ext->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="repository-ext->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>
 		
 		<!-- The exclude of Equinox (org="org.eclipse.osgi" module="org.eclipse.osgi") does not work. 
 		This is due to the transitive dependency from org.eclipse.virgo.osgi.equinox on org.eclipse.osgi
