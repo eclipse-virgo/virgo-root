@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.common" rev="latest.integration" conf="compile->compile"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.parser.manifest" rev="latest.integration" conf="compile->compile"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
