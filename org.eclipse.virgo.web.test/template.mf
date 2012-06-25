@@ -9,7 +9,7 @@ Import-Template:
  org.eclipse.virgo.osgi.extensions.*;version="${org.eclipse.virgo.osgi:[=.=.=, +1)}",
  javax.management.*;version="0",
  org.junit.*;version="${org.junit:[=.=.=, +1)}",
- javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
+ javax.servlet.*;version="${javax.servlet:[-1.6.=, +1)}",
  org.apache.commons.logging.*;version="${org.apache.commons.logging:[=.=.=, +1)}",
  org.apache.commons.httpclient.*;version="${org.apache.commons.httpclient:[=.=.=, +1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
