@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-Name: Virgo Admin Console
 Bundle-Version: ${version}
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.virgo.apps.admin.web
+Bundle-SymbolicName: org.eclipse.virgo.apps.admin
 Bundle-ClassPath: WEB-INF/classes
 Web-ContextPath: /admin
 Bundle-Activator: org.eclipse.virgo.apps.admin.web.Activator
