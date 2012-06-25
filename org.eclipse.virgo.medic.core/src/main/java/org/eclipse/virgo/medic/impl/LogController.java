@@ -49,132 +49,132 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 public class LogController implements ConfigurationChangeListener {
-
+    
     private static final String LOGGER_NAME_SYSERR = "System.err";
-
+    
     private static final String LOGGER_NAME_SYSOUT = "System.out";
-
+    
     private static final String LOGGER_NAME_SYSERR_DELEGATE = "delegating.System.err";
-
+    
     private static final String LOGGER_NAME_SYSOUT_DELEGATE = "delegating.System.out";
-
+    
     private static final String PROPERTY_MEDIC_CONFIG_PATH = "org.eclipse.virgo.medic.log.config.path";
-
+    
     private static final String DEFAULT_CONTEXT_SELECTOR = "ch.qos.logback.classic.selector.DefaultContextSelector";
-
+    
     private static final String PROPERTY_LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
-
+    
     private volatile StandardDumpGenerator dumpGenerator;
-
+    
     private volatile LogBackEventLoggerFactory eventLoggerFactory;
-
+    
     private volatile DumpContributorPublisher dumpContributorPublisher;
-
+    
     private volatile PrintStream sysOut = System.out;
-
+    
     private volatile PrintStream sysErr = System.err;
-
+    
     private volatile ExecutionStackAccessor stackAccessor;
-
+    
     private volatile ConsoleHandler javaConsoleHandler;
     
     private DelegatingPrintStream delegatingSysOut = new StandardDelegatingPrintStream(System.out);
-
+    
     private DelegatingPrintStream delegatingSysErr = new StandardDelegatingPrintStream(System.err);
-
+    
     private ServiceRegistration<DelegatingPrintStream> delegatingSysOutRegistration;
     private ServiceRegistration<DelegatingPrintStream> delegatingSysErrRegistration;
-
+    
     private ServiceRegistration<PrintStream> sysOutRegistration;
     private ServiceRegistration<PrintStream> sysErrRegistration;
-
+    
     private static final List<String> DEFAULT_LOGGING_PACKAGES = Arrays.asList(//
-            "org.apache.commons.logging",//
-            "org.apache.log4j",//
-            "org.slf4j",//
-            "org.slf4j.impl",//
-            "org.eclipse.virgo.medic.log",//
-            "org.eclipse.virgo.medic.log.logback",//
-            "org.eclipse.virgo.medic.log.impl",//
-            "org.eclipse.virgo.medic.log.impl.logback");
-
+                                                                               "org.apache.commons.logging",//
+                                                                               "org.apache.log4j",//
+                                                                               "org.slf4j",//
+                                                                               "org.slf4j.impl",//
+                                                                               "org.eclipse.virgo.medic.log",//
+                                                                               "org.eclipse.virgo.medic.log.logback",//
+                                                                               "org.eclipse.virgo.medic.log.impl",//
+                                                                               "org.eclipse.virgo.medic.log.impl.logback");
+    
     private BundleContext bundleContext;
     private ConfigurationProvider configurationProvider;
     private ServiceRegistrationTracker registrationTracker;
-
+    
     public LogController(BundleContext ctx, ConfigurationProvider cfgProvider, ServiceRegistrationTracker regTracker) throws ConfigurationPublicationFailedException {
         this.bundleContext = ctx;
         this.configurationProvider = cfgProvider;
         this.registrationTracker = regTracker;
-
+        
         StandardContextSelectorDelegate delegate = createContextSelectorDelegate(bundleContext);
         registrationTracker.track(bundleContext.registerService(BundleListener.class.getName(), delegate, null));
         DelegatingContextSelector.setDelegate(delegate);
-
+        
         StandardLoggingConfigurationPublisher loggingConfigurationPublisher = new StandardLoggingConfigurationPublisher(bundleContext);
         registrationTracker.track(bundleContext.registerService(LoggingConfigurationPublisher.class, loggingConfigurationPublisher, null));
-
+        
         publishDefaultConfigurationIfAvailable(bundleContext, loggingConfigurationPublisher);
-
+        
         System.setProperty(PROPERTY_LOGBACK_CONTEXT_SELECTOR, DelegatingContextSelector.class.getName());
-
+        
         this.stackAccessor = new SecurityManagerExecutionStackAccessor();
-
+        
         this.sysOut = System.out;
         this.sysErr = System.err;
     }
-
+    
     public DumpGenerator dumpStart() {
         this.dumpGenerator = new StandardDumpGenerator(new StandardDumpContributorResolver(bundleContext), configurationProvider, this.eventLoggerFactory.createEventLogger(bundleContext.getBundle()));
         registrationTracker.track(bundleContext.registerService(DumpGenerator.class, this.dumpGenerator, null));
-
+        
         this.dumpContributorPublisher = new DumpContributorPublisher(bundleContext);
         this.dumpContributorPublisher.publishDumpContributors();
         
         return this.dumpGenerator;
     }
-
+    
     public void dumpStop() {
         if (this.dumpGenerator != null) {
             this.dumpGenerator.close();
         }
-
+        
         if (this.dumpContributorPublisher != null) {
             this.dumpContributorPublisher.retractDumpContributors();
         }
     }
-
+    
     public void logStart() throws ConfigurationPublicationFailedException {
-        Dictionary<String, String> configuration = configurationProvider.getConfiguration();
-
+        Dictionary<String, Object> configuration = configurationProvider.getConfiguration();
+        
         SLF4JBridgeHandler.install();
-
+        
         updateLogConfiguration(configuration);
     }
-
+    
     public void logStop() {
         System.setProperty(PROPERTY_LOGBACK_CONTEXT_SELECTOR, DEFAULT_CONTEXT_SELECTOR);
-
+        
         DelegatingContextSelector.setDelegate(null);
-
+        
         if (this.sysOut != null) {
             System.setOut(this.sysOut);
         }
-
+        
         if (this.sysErr != null) {
             System.setErr(this.sysErr);
         }
-
+        
         SLF4JBridgeHandler.uninstall();
         enableJulConsoleLogger();
     }
-
+    
     private void enableJulConsoleLogger() {
         if (this.javaConsoleHandler != null) {
             getJavaRootLogger().addHandler(this.javaConsoleHandler);
         }
     }
-
+    
     private void disableJulConsoleHandler() {
         // remove console handler from root logger
         Logger rootLogger = getJavaRootLogger();
@@ -186,39 +186,39 @@ public class LogController implements ConfigurationChangeListener {
             }
         }
     }
-
+    
     public void eventLogStart() {
         this.eventLoggerFactory = createFactory(bundleContext);
         ServiceFactory<EventLogger> serviceFactory = new EventLoggerServiceFactory(this.eventLoggerFactory);
         registrationTracker.track(bundleContext.registerService(EventLoggerFactory.class, this.eventLoggerFactory, null));
         registrationTracker.track(bundleContext.registerService(EventLogger.class.getName(), serviceFactory, null));
     }
-
+    
     private PrintStream wrapPrintStream(PrintStream printStream, String loggerName, LoggingLevel loggingLevel, ExecutionStackAccessor stackAccessor, ConfigurationProvider configurationProvider, String configurationProperty) {
         LoggingPrintStreamWrapper wrapper = new LoggingPrintStreamWrapper(printStream, loggerName, loggingLevel, stackAccessor, configurationProvider, configurationProperty);
         return wrapper;
     }
-
+    
     private ServiceRegistration<PrintStream> publishPrintStream(PrintStream printStream, String name) {
     	Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
-
+        
         ServiceRegistration<PrintStream> registration = bundleContext.registerService(PrintStream.class, printStream, properties);
         registrationTracker.track(registration);
-
+        
         return registration;
     }
-
+    
     private ServiceRegistration<DelegatingPrintStream> publishDelegatingPrintStream(DelegatingPrintStream printStream, String name) {
     	Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
-
+        
         ServiceRegistration<DelegatingPrintStream> delegatingPrintStreamRegistration = bundleContext.registerService(DelegatingPrintStream.class, printStream, properties);
         registrationTracker.track(delegatingPrintStreamRegistration);
-
+        
         return delegatingPrintStreamRegistration;
     }
-
+    
     private void publishDefaultConfigurationIfAvailable(BundleContext context, StandardLoggingConfigurationPublisher publisher) throws ConfigurationPublicationFailedException {
         String logConfigPath = context.getProperty(PROPERTY_MEDIC_CONFIG_PATH);
         if (logConfigPath != null) {
@@ -228,14 +228,14 @@ public class LogController implements ConfigurationChangeListener {
             }
         }
     }
-
+    
     private static StandardContextSelectorDelegate createContextSelectorDelegate(BundleContext bundleContext) {
         ConfigurationLocator configurationLocator = createConfigurationLocator(bundleContext);
         CallingBundleResolver loggingCallerLocator = createLoggingCallerLocator();
         LoggerContextConfigurer loggerContextConfigurer = new JoranLoggerContextConfigurer();
         return new StandardContextSelectorDelegate(loggingCallerLocator, configurationLocator, bundleContext.getBundle(), loggerContextConfigurer);
     }
-
+    
     /**
      * Logging configuration is located by searching up to two sources, depending on the bundle doing the logging.
      * <p/>
@@ -246,42 +246,42 @@ public class LogController implements ConfigurationChangeListener {
     private static ConfigurationLocator createConfigurationLocator(BundleContext bundleContext) {
         return new CompositeConfigurationLocator(new ServiceRegistryConfigurationLocator(bundleContext), new BundleResourceConfigurationLocator());
     }
-
+    
     private static CallingBundleResolver createLoggingCallerLocator() {
         ClassSelector classSelector = createClassSelector();
         ExecutionStackAccessor executionStackAccessor = createExecutionStackAccessor();
-
+        
         return new StandardCallingBundleResolver(executionStackAccessor, classSelector);
     }
-
+    
     private static ClassSelector createClassSelector() {
         return new PackageNameFilteringClassSelector(DEFAULT_LOGGING_PACKAGES);
     }
-
+    
     private static ExecutionStackAccessor createExecutionStackAccessor() {
         return new SecurityManagerExecutionStackAccessor();
     }
-
+    
     private LogBackEventLoggerFactory createFactory(BundleContext context) {
         BundleSearchingPropertyResourceBundleResolver resourceBundleResolver = new BundleSearchingPropertyResourceBundleResolver();
         return new LogBackEventLoggerFactory(resourceBundleResolver, new StandardLocaleResolver(), context.getBundle());
     }
-
+    
     private Logger getJavaRootLogger() {
         return Logger.getLogger("");
     }
-
+    
     @Override
     public void configurationChanged(ConfigurationProvider provider) {
-        Dictionary<String, String> configuration = configurationProvider.getConfiguration();
+        Dictionary<String, Object> configuration = configurationProvider.getConfiguration();
         updateLogConfiguration(configuration);
     }
-
-    private synchronized void updateLogConfiguration(Dictionary<String, String> configuration) {
-        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
+    
+    private synchronized void updateLogConfiguration(Dictionary<String, Object> configuration) {
+        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
             delegatingSysOutRegistration = publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE);
             sysOutRegistration = publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT);
-
+            
             System.setOut(wrapPrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
         } else {
             if (delegatingSysOutRegistration != null) {
@@ -294,11 +294,11 @@ public class LogController implements ConfigurationChangeListener {
             }
             System.setOut((PrintStream)delegatingSysOut);
         }
-
-        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
+        
+        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
             delegatingSysErrRegistration = publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE);
             sysErrRegistration = publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR);
-
+            
             System.setErr(wrapPrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
         } else {
             if (delegatingSysErrRegistration != null) {
@@ -311,8 +311,8 @@ public class LogController implements ConfigurationChangeListener {
             }
             System.setErr((PrintStream)delegatingSysErr);
         }
-
-        if (Boolean.valueOf(configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {
+        
+        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {
             enableJulConsoleLogger();
         } else {
             disableJulConsoleHandler();

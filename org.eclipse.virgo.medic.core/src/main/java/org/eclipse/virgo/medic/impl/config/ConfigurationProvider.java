@@ -14,23 +14,23 @@ package org.eclipse.virgo.medic.impl.config;
 import java.util.Dictionary;
 
 public interface ConfigurationProvider {
-
+    
     public static final String KEY_DUMP_ROOT_DIRECTORY = "dump.root.directory";
-
+    
     public static final String KEY_LOG_WRAP_SYSOUT = "log.wrapSysOut";
-
+    
     public static final String KEY_LOG_WRAP_SYSERR = "log.wrapSysErr";
-
+    
     public static final String KEY_LOG_DUMP_BUFFERSIZE = "log.dump.bufferSize";
-
+    
     public static final String KEY_LOG_DUMP_LEVEL = "log.dump.level";
-
+    
     public static final String KEY_LOG_DUMP_PATTERN = "log.dump.pattern";
-
+    
     public static final String KEY_ENABLE_JUL_CONSOLE_HANDLER = "log.jul.consoleHandler";
-
-    Dictionary<String, String> getConfiguration();
-
+    
+    Dictionary<String, Object> getConfiguration();
+    
     /**
      * Adds listener that will be notified when the configuration changes
      * <p/>
@@ -39,7 +39,7 @@ public interface ConfigurationProvider {
      * @param listener Listener to be added
      */
     public void addChangeListener(ConfigurationChangeListener listener);
-
+    
     /**
      * Removes previously registered listener
      *

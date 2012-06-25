@@ -24,27 +24,27 @@ import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
 
 public final class ConfigurationAdminConfigurationProvider implements ConfigurationProvider, ConfigurationListener {
-
+    
     private static final String CONFIG_ADMIN_PID = "org.eclipse.virgo.medic";
-
-    private static final Dictionary<String, String> DEFAULT_CONFIG = createDefaultConfiguration();
-
+    
+    private static final Dictionary<String, Object> DEFAULT_CONFIG = createDefaultConfiguration();
+    
     private final BundleContext bundleContext;
     
-	private volatile Dictionary<String,String> configuration = DEFAULT_CONFIG;
-
+	private volatile Dictionary<String, Object> configuration = DEFAULT_CONFIG;
+    
     private HashSet<ConfigurationChangeListener> listeners;
-
+    
     public ConfigurationAdminConfigurationProvider(BundleContext context) {
         this.bundleContext = context;
         this.listeners = new HashSet<ConfigurationChangeListener>();
         initialisePropertiesFromConfigurationAdmin();
     }
-
-    public Dictionary<String, String> getConfiguration() {
+    
+    public Dictionary<String, Object> getConfiguration() {
         return this.configuration;
     }
-
+    
     
 	private void initialisePropertiesFromConfigurationAdmin() {
     	ServiceReference<ConfigurationAdmin> configAdminReference = this.bundleContext.getServiceReference(ConfigurationAdmin.class);
@@ -63,7 +63,7 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
 				Configuration configuration = configurationAdmin.getConfiguration(CONFIG_ADMIN_PID, null);
                 
                 @SuppressWarnings("unchecked")
-				Dictionary<String,String> properties = configuration.getProperties();
+				Dictionary<String, Object> properties = configuration.getProperties();
                 
                 if (properties == null) {
                 	properties = DEFAULT_CONFIG; 
@@ -77,32 +77,32 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         } else {
         	this.configuration = DEFAULT_CONFIG;
         }
-
+        
         notifyListeners();
     }
-
-    private static Dictionary<String, String> createDefaultConfiguration() {
-        Dictionary<String, String> configuration = new Hashtable<String, String>();
+    
+    private static Dictionary<String, Object> createDefaultConfiguration() {
+        Dictionary<String, Object> configuration = new Hashtable<String, Object>();
         configuration.put(KEY_DUMP_ROOT_DIRECTORY, ".");
         configuration.put(KEY_LOG_WRAP_SYSOUT, Boolean.toString(Boolean.TRUE));
         configuration.put(KEY_LOG_WRAP_SYSERR, Boolean.toString(Boolean.TRUE));
         return configuration;
     }    
-
+    
     public void addChangeListener(ConfigurationChangeListener listener) {
         listeners.add(listener);
     }
-
+    
     public boolean removeChangeListener(ConfigurationChangeListener listener) {
         return listeners.remove(listener);
     }
-
+    
     private void notifyListeners() {
         for (Object listener: listeners.toArray()) {
             ((ConfigurationChangeListener) listener).configurationChanged(this);
         }
     }
-
+    
     private final class MedicConfigurationListener implements ConfigurationListener {
     	
         @SuppressWarnings("unchecked")
@@ -112,7 +112,7 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
 			}			
 		}    	
     }
-
+    
 	@SuppressWarnings("unchecked")
     public void configurationEvent(ConfigurationEvent event) {
 		if (event.getType() == ConfigurationEvent.CM_UPDATED && CONFIG_ADMIN_PID.equals(event.getPid())) {

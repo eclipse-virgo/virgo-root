@@ -32,13 +32,13 @@ import org.eclipse.virgo.util.io.FileSystemUtils;;
  * This class is thread safe
  */
 public class FileSystemDumpInspector implements DumpInspector {
-
+    
 	private static final String OSGI_STATE_STRING = "OSGi-state";
 	
     private final Logger logger = LoggerFactory.getLogger(FileSystemDumpInspector.class);
-
+    
 	private final DumpGenerator generator;
-
+    
 	private final ConfigurationProvider configurationProvider;
     
     /**
@@ -52,7 +52,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 	
 	@Override
 	public String getConfiguredDumpDirectory() {
-		return configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
+		return (String)configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
 	}
     
 	@Override
@@ -91,7 +91,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 			return new String[0][];
 		}
 	}
-
+    
 	@Override
 	public String[] getDumpEntry(String dumpId, String entryName) {
 		if(dumpId == null || entryName == null){
@@ -132,7 +132,7 @@ public class FileSystemDumpInspector implements DumpInspector {
 	public void createDump() {
 		generator.generateDump("Generated via JMX");
 	}
-
+    
 	@Override
 	public void deleteDump(String dumpId) {
 		File dumpDir = getDumpDirectory();
@@ -143,9 +143,9 @@ public class FileSystemDumpInspector implements DumpInspector {
 			}
 		}
 	}
-
+    
 	private File getDumpDirectory(){
-		String dumpDirectory = configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
+		String dumpDirectory = (String)configurationProvider.getConfiguration().get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY);
 		File dumpDir = new File(dumpDirectory);
 		if(dumpDir.exists() && dumpDir.isDirectory()){
 			return dumpDir;

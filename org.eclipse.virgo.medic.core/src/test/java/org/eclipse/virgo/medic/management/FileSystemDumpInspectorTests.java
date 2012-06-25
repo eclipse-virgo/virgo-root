@@ -21,11 +21,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class FileSystemDumpInspectorTests {
-
+    
 	private FileSystemDumpInspector fileSystemDumpInspector;
 	
 	private DumpGenerator dumpGenerator;
-
+    
 	@Before
 	public void setup() {
 		this.dumpGenerator = createMock(DumpGenerator.class);
@@ -37,8 +37,8 @@ public class FileSystemDumpInspectorTests {
 			}
 			
 			@Override
-			public Dictionary<String, String> getConfiguration() {
-				Dictionary<String, String> props = new Hashtable<String, String>();
+			public Dictionary<String, Object> getConfiguration() {
+				Dictionary<String, Object> props = new Hashtable<String, Object>();
 				props.put(KEY_DUMP_ROOT_DIRECTORY, "src/test/resources/testDumps/serviceability/dump");
 				return props;
 			}
@@ -100,5 +100,5 @@ public class FileSystemDumpInspectorTests {
 		fileSystemDumpInspector.deleteDump("deleteMe");
 		assertFalse(deleteMe.exists());
 	}
-
+    
 }

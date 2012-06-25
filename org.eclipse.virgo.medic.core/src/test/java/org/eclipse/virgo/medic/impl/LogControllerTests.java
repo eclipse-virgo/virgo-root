@@ -39,157 +39,157 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 public class LogControllerTests {
-
+    
     private static final String LOGGER_NAME_SYSERR = "System.err";
     private static final String LOGGER_NAME_SYSOUT = "System.out";
-
+    
     private static final String LOGGER_NAME_SYSERR_DELEGATE = "delegating.System.err";
     private static final String LOGGER_NAME_SYSOUT_DELEGATE = "delegating.System.out";
-
+    
     private final StubBundleContext bundleContext = new StubBundleContext();
-
+    
     @Test
     public void loggingWithWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
-
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
-
+        
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(this.bundleContext);
         LogController controller = new LogController(this.bundleContext, configurationProvider, new ServiceRegistrationTracker());
-
+        
         controller.logStart();
-
+        
         checkPublishedStreamServices(DelegatingPrintStream.class, StandardDelegatingPrintStream.class, LOGGER_NAME_SYSOUT_DELEGATE, LOGGER_NAME_SYSERR_DELEGATE);
         checkPublishedStreamServices(PrintStream.class, PrintStream.class, LOGGER_NAME_SYSOUT, LOGGER_NAME_SYSERR);
-
+        
         assertTrue(System.out instanceof LoggingPrintStreamWrapper);
         assertTrue(System.err instanceof LoggingPrintStreamWrapper);
-
+        
         controller.logStop();
-
+        
         assertFalse(System.out instanceof LoggingPrintStreamWrapper);
         assertFalse(System.err instanceof LoggingPrintStreamWrapper);
-
+        
         verify(configurationAdmin, configuration);
     }
-
+    
     @Test
     public void loggingWithNonWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
-
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "false");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "false");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
-
+        
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(this.bundleContext);
         LogController controller = new LogController(this.bundleContext, configurationProvider, new ServiceRegistrationTracker());
-
+        
         controller.logStart();
-
+        
         assertTrue(System.out instanceof StandardDelegatingPrintStream);
         assertTrue(System.err instanceof StandardDelegatingPrintStream);
-
+        
         controller.logStop();
-
+        
         assertFalse(System.out instanceof LoggingPrintStreamWrapper);
         assertFalse(System.err instanceof LoggingPrintStreamWrapper);
-
+        
         verify(configurationAdmin, configuration);
     }
-
+    
     @Test
     public void changeFromWrappedToNonWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
-
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
-
+        
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(this.bundleContext);
         LogController controller = new LogController(this.bundleContext, configurationProvider, new ServiceRegistrationTracker());
-
+        
         controller.logStart();
-
+        
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "false");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "false");
         controller.configurationChanged(configurationProvider);
-
+        
         assertNull(this.bundleContext.getServiceReferences(DelegatingPrintStream.class.getName(), null));
-
+        
         assertTrue(System.out instanceof StandardDelegatingPrintStream);
         assertTrue(System.err instanceof StandardDelegatingPrintStream);
-
+        
         controller.logStop();
-
+        
         assertFalse(System.out instanceof LoggingPrintStreamWrapper);
         assertFalse(System.err instanceof LoggingPrintStreamWrapper);
     }
-
+    
     @Test
     public void loggingWithEnabledJULConsoleHandler() throws IOException, ConfigurationPublicationFailedException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
-
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER, "true");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
-
+        
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(this.bundleContext);
         LogController controller = new LogController(this.bundleContext, configurationProvider, new ServiceRegistrationTracker());
-
+        
         controller.logStart();
         assertTrue(checkForJULConsoleHandler());
-
+        
         controller.logStop();
         assertTrue(checkForJULConsoleHandler());
-
+        
         verify(configurationAdmin, configuration);
     }
-
+    
     @Test
     public void loggingWithDisabledJULConsoleHandler() throws IOException, ConfigurationPublicationFailedException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
-
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER, "false");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
-
+        
         ConfigurationAdminConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(this.bundleContext);
         LogController controller = new LogController(this.bundleContext, configurationProvider, new ServiceRegistrationTracker());
-
+        
         controller.logStart();
         assertFalse(checkForJULConsoleHandler());
-
+        
         controller.logStop();
         assertTrue(checkForJULConsoleHandler());
-
+        
         verify(configurationAdmin, configuration);
     }
-
+    
     private void checkPublishedStreamServices(Class<?> registeredClass, Class<?> serviceClass, String... streamNames) throws InvalidSyntaxException {
         ServiceReference<?> serviceReferences[] = this.bundleContext.getServiceReferences(registeredClass.getName(), null);
-
+        
         for (ServiceReference<?> reference : serviceReferences) {
             String streamName = (String) reference.getProperty("org.eclipse.virgo.medic.log.printStream");
-
+            
             boolean foundMatch = checkForMatchingNames(streamName, streamNames);
             if (!foundMatch) {
                 fail("Stream name [" + streamName + "] not one of the expected " + Arrays.toString(streamNames));
             }
-
+            
             assertEquals(serviceClass, this.bundleContext.getService(reference).getClass());
         }
     }
-
+    
     private boolean checkForMatchingNames(String streamName, String[] streamNames) {
         boolean foundMatch = false;
         for (String name : streamNames) {
@@ -200,18 +200,18 @@ public class LogControllerTests {
         }
         return foundMatch;
     }
-
-    private ServiceRegistration<?> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, String> properties, int times) throws IOException {
+    
+    private ServiceRegistration<?> createConfigurationMocks(ConfigurationAdmin configurationAdmin, Configuration configuration, Dictionary<String, Object> properties, int times) throws IOException {
         ServiceRegistration<?> serviceRegistration = this.bundleContext.registerService(ConfigurationAdmin.class.getName(), configurationAdmin, null);
-
+        
         expect(configurationAdmin.getConfiguration("org.eclipse.virgo.medic", null)).andReturn(configuration).times(times);
         expect(configuration.getProperties()).andReturn(properties).times(times);
-
+        
         replay(configurationAdmin, configuration);
-
+        
         return serviceRegistration;
     }
-
+    
     private boolean checkForJULConsoleHandler() {
         Logger rootLogger = Logger.getLogger("");
         Handler[] handlers = rootLogger.getHandlers();
@@ -220,8 +220,8 @@ public class LogControllerTests {
                 return true;
             }
         }
-
+        
         return false;
     }
-
+    
 }
