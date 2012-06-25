@@ -29,6 +29,8 @@
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.test" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
         <dependency org='org.eclipse.virgo.teststubs' name='org.eclipse.virgo.teststubs.osgi' rev='${org.eclipse.virgo.teststubs}' conf='test->runtime'/>	
         
+        <exclude org="org.eclipse.osgi"/>
+        
         <override org="org.slf4j" rev="${org.slf4j}"/>
     </dependencies>
 

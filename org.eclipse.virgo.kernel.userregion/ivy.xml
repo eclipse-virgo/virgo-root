@@ -38,6 +38,8 @@
 		<dependency org="org.springframework" name="org.springframework.beans" rev="2.5.6.SEC01" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.core" rev="2.5.6.SEC01" conf="test->runtime"/>
         
+        <exclude org="org.eclipse.osgi"/>
+        
         <override org="org.eclipse.virgo.repository" rev="${org.eclipse.virgo.repository}"/>
     </dependencies>
 </ivy-module>
