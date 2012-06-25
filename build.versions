@@ -1,5 +1,5 @@
 # Compile
-org.eclipse.virgo.kernel=3.5.0.D-20120615074116
+org.eclipse.virgo.kernel=3.5.0.D-20120625080232
 org.eclipse.virgo.repository=3.5.0.D-20120615071313
 org.eclipse.virgo.util=3.5.0.D-20120615065828
 org.eclipse.virgo.medic=3.5.0.D-20120615070622
