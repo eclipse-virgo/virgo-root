@@ -37,7 +37,7 @@
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.5.0.D-20120615065132/org.eclipse.virgo.teststubs.osgi-3.5.0.D-20120615065132.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.5.0.D-20120615065132/org.eclipse.virgo.teststubs.osgi-sources-3.5.0.D-20120615065132.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.5.0.D-20120626080519/org.eclipse.virgo.teststubs.osgi-3.5.0.D-20120626080519.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.5.0.D-20120626080519/org.eclipse.virgo.teststubs.osgi-sources-3.5.0.D-20120626080519.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
