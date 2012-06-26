@@ -151,5 +151,11 @@ public class StubRegion implements Region {
     @Override
     public void visitSubgraph(RegionDigraphVisitor visitor) {
     }
+    
+	@Override
+	public Bundle installBundleAtLocation(String arg0, InputStream arg1)
+			throws BundleException {
+		return null;
+	}
 
 }

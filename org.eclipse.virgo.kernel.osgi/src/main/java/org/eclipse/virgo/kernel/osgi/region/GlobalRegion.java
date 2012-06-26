@@ -199,5 +199,11 @@ final class GlobalRegion implements Region {
         GlobalRegion other = (GlobalRegion) obj;
         return this.regionName.equals(other.regionName);
     }
+    
+	@Override
+	public Bundle installBundleAtLocation(String arg0, InputStream arg1)
+			throws BundleException {
+		throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
+	}
 
 }
