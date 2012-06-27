@@ -259,7 +259,7 @@ public class WebBundleTransformerTests {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         Configuration config = createMock(Configuration.class);
         expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String) isNull())).andReturn(config);
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("WABHeaders", "strict");
         expect(config.getProperties()).andReturn(properties);
         EventLogger eventLogger = createMock(EventLogger.class);
@@ -294,7 +294,7 @@ public class WebBundleTransformerTests {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         Configuration config = createMock(Configuration.class);
         expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String) isNull())).andReturn(config);
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("WABHeaders", "defaulted");
         expect(config.getProperties()).andReturn(properties);
         EventLogger eventLogger = createMock(EventLogger.class);

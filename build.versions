@@ -15,12 +15,13 @@ org.slf4j=1.6.1
 org.slf4j.api=1.6.4.v20120130-2120
 org.slf4j.jcl=1.6.4.v20120130-2120
 org.slf4j.log4j=1.6.4.v20120130-2120
+org.slf4j.jul=1.6.4.v20120130-2120
 org.slf4j.spi=1.6.1
 
 # Test
 ch.qos.logback.classic=1.0.0.v20111214-2030
 ch.qos.logback.core=1.0.0.v20111214-2030
-ch.qos..slf4logbackj=1.0.0.v20120123-1500
+ch.qos.logback.slf4j=1.0.0.v20120123-1500
 com.dumbster=1.6.0
 org.eclipse.virgo.osgi=3.5.0.D-20120627091648
 org.eclipse.virgo.teststubs=3.5.0.D-20120627091229

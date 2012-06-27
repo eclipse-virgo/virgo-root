@@ -18,12 +18,12 @@
 	</publications>
 
 	<dependencies>
-		<dependency org="javax.activation" name="com.springsource.javax.activation" rev="${javax.activation}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.activation" rev="${javax.activation}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="test->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jsp.jstl}" conf="test->runtime"/>
 		<dependency org="javax.portlet" name="com.springsource.javax.portlet" rev="${javax.portlet}" conf="test->runtime"/>
-		<dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
 		<dependency org="org.hsqldb" name="com.springsource.org.hsqldb" rev="${org.hsqldb}" conf="test->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.log4j" rev="${org.slf4j.log4j}" conf="test->runtime"/>
@@ -41,7 +41,7 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>	
-		<dependency org="javax.jms" name="com.springsource.javax.jms" rev="${javax.jms}" conf="test->runtime"/>	
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="test->runtime"/>	
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
@@ -68,11 +68,12 @@
 		<!-- Prevent Xerces and Xalan from being on the classpath to workaround Java bug 6723276 during integration testing -->
 		<exclude org="org.apache.xerces"/>
 		<exclude org="org.apache.xalan"/>
+        <exclude org="org.eclipse.osgi"/>
 		
 		<override org="org.eclipse.virgo.osgi" rev="${org.eclipse.virgo.osgi}"/>
 		
 		<!-- Allow Equinox to be upgraded in steps-->
-		<exclude org="org.eclipse.osgi"/>
+		
 	</dependencies>
 
 </ivy-module>
