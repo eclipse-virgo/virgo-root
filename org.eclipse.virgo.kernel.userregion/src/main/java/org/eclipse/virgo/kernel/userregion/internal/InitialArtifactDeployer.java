@@ -69,12 +69,20 @@ final class InitialArtifactDeployer implements EventHandler {
     
     private final KernelStartedAwaiter startAwaiter;
 
-    InitialArtifactDeployer(KernelStartedAwaiter startAwaiter, ApplicationDeployer deployer, String systemArtifactsProperty, String userArtifactsProperty, DeployUriNormaliser uriNormaliser, EventAdmin eventAdmin, EventLogger eventLogger, Shutdown shutdown) {
+    InitialArtifactDeployer(KernelStartedAwaiter startAwaiter, ApplicationDeployer deployer, Object systemArtifactsProperty, Object userArtifactsProperty, DeployUriNormaliser uriNormaliser, EventAdmin eventAdmin, EventLogger eventLogger, Shutdown shutdown) {
         this.deployer = deployer;
         this.uriNormaliser = uriNormaliser;
         this.eventAdmin = eventAdmin;
-        this.systemArtifactsProperty = systemArtifactsProperty;
-        this.userArtifactsProperty = userArtifactsProperty;
+        if (systemArtifactsProperty != null) {
+        	this.systemArtifactsProperty = systemArtifactsProperty.toString();
+        } else {
+        	this.systemArtifactsProperty = null;
+        }
+        if (userArtifactsProperty != null) {
+        	this.userArtifactsProperty = userArtifactsProperty.toString();
+        } else {
+        	this.userArtifactsProperty = null;
+        }
         this.eventLogger = eventLogger;
         this.shutdown = shutdown;
         this.startAwaiter = startAwaiter;

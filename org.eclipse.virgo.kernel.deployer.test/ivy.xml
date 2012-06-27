@@ -25,13 +25,13 @@
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf="test->compile"/>
-		<dependency org="javax.jms" name="com.springsource.javax.jms" rev="${javax.jms}" conf="test->runtime"/>
-		<dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
-		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
 		<dependency org="org.hsqldb" name="com.springsource.org.hsqldb" rev="${org.hsqldb}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.dbcp" rev="${commons.dbcp}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.pool" rev="${commons.pool}" conf="test->runtime"/>
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
 		
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
@@ -65,6 +65,7 @@
 
 		<!-- Prevent Xerces from being on the classpath to work around Java bug 6723276 during integration testing -->
 		<exclude org="org.apache.xerces"/>
+        <exclude org="org.eclipse.osgi"/>
 
 		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 		<override org="org.eclipse.virgo.osgi" rev="${org.eclipse.virgo.osgi}"/>

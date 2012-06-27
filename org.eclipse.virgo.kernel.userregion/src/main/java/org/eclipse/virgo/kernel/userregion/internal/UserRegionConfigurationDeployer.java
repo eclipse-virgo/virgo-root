@@ -4,6 +4,7 @@ package org.eclipse.virgo.kernel.userregion.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
 
 import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
@@ -36,7 +37,11 @@ public class UserRegionConfigurationDeployer implements ConfigurationDeployer {
     public void publishConfiguration(String pid, Properties configurationProperties) throws IOException {
         synchronized (monitor) {
             Configuration configuration = this.configurationAdmin.getConfiguration(pid, null);
-            configuration.update(configurationProperties);
+            Dictionary<String, Object> properties = new Hashtable<String, Object>();
+            for (String prop : configurationProperties.stringPropertyNames()) {
+            	properties.put(prop, configurationProperties.get(prop));
+            }
+            configuration.update(properties);
         }
     }
 

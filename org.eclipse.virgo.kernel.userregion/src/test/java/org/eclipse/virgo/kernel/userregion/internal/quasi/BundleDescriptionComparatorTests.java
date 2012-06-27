@@ -33,6 +33,8 @@ import org.osgi.framework.Version;
 import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
 
 
 public class BundleDescriptionComparatorTests {
@@ -300,5 +302,15 @@ public class BundleDescriptionComparatorTests {
         public BundleWiring getWiring() {
             throw new UnsupportedOperationException();
         }
+
+		@Override
+		public List<Capability> getCapabilities(String arg0) {
+			return null;
+		}
+
+		@Override
+		public List<Requirement> getRequirements(String arg0) {
+			return null;
+		}
     }
 }

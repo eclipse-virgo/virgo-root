@@ -5,7 +5,6 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Properties;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.osgi.framework.BundleContext;
@@ -84,7 +83,7 @@ public class ConsoleConfigurationConvertor {
     	
         try {
             Configuration configuration = this.configAdmin.getConfiguration(pid, null);
-            Properties properties = new Properties();
+            Dictionary<String, Object> properties = new Hashtable<String, Object>();
             properties.put(HOST, host);
             properties.put(PORT, port);
             properties.put(ENABLED, enabled);

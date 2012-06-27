@@ -20,7 +20,7 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}" conf="compile->runtime"/>
 		
-		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
 		
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="compile->runtime"/>
@@ -57,12 +57,12 @@
 		<dependency name='org.eclipse.virgo.repository' rev='${org.eclipse.virgo.repository}' conf='compile->compile' org='org.eclipse.virgo.repository'/>
 		
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.userregion" rev="latest.integration" conf="compile->compile"/>
-		
+
+		<exclude org="org.eclipse.osgi"/>	
+        
 		<override org="org.springframework" rev="${org.springframework}"/>
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
-		
-		<!-- Allow Equinox to be upgraded point-wise before rippling -->
-		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>	
+    
 	</dependencies>
 	
 

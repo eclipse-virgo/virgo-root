@@ -153,16 +153,18 @@
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
-				<filter token="SLF4J.VERSION" value="${org.slf4j}"/>
+				<filter token="SLF4J.VERSION" value="${org.slf4j.api}"/>
 				<filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>	
 				<filter token="SPRING.VERSION" value="${org.springframework}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
 				<filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
 				<filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
 				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
-				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
-				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
+				<filter token="MINA.CORE.VERSION" value="${org.apache.mina.core}"/>
+				<filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
 				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console}"/>
+                <filter token="EQUINOX.CONSOLE.SSH.VERSION" value="${org.eclipse.equinox.console.ssh}"/>
+                
 			</filterset>
 		</copy>
 

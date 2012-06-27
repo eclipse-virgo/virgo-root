@@ -57,7 +57,7 @@ public final class ConfigInstallArtifactCommandFormatter extends AbstractInstall
         List<String> lines = new ArrayList<String>();
         List<String> propertyKeys = new ArrayList<String>();
 
-        Dictionary<String, String> properties = configuration.getProperties();
+        Dictionary<String, Object> properties = configuration.getProperties();
         if (properties != null) {
             Enumeration<String> keys = properties.keys();
             while (keys.hasMoreElements()) {

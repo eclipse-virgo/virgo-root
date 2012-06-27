@@ -243,7 +243,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
     @SuppressWarnings("unchecked")
     private void checkConfigAvailable(String pid, File propertiesFile) throws IOException {
         Configuration configuration = this.configAdmin.getConfiguration(pid, null);
-        Dictionary<Object, Object> dictionary = configuration.getProperties();
+        Dictionary<String, Object> dictionary = configuration.getProperties();
 
         Properties properties = new Properties();
         properties.load(new FileReader(propertiesFile));

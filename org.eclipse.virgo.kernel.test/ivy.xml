@@ -63,6 +63,7 @@
 
 		<!-- Prevent Xerces from being on the classpath to work around Java bug 6723276 during integration testing -->
 		<exclude org="org.apache.xerces"/>
+        <exclude org="org.eclipse.osgi"/>
 
 		<!-- Allow Equinox to be upgraded point-wise before rippling -->
 		<override org="org.aspectj" rev="${org.aspectj}" />
