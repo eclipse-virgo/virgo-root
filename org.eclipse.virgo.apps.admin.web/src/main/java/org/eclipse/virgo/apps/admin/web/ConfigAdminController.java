@@ -66,9 +66,9 @@ public final class ConfigAdminController {
             Map<String, String> tempProps;
             for(Configuration c : configurations){
                 tempProps = new HashMap<String, String>();
-                Enumeration<Object> keys = c.getProperties().keys();
+                Enumeration<String> keys = c.getProperties().keys();
                 while(keys.hasMoreElements()){
-                    Object nextElement = keys.nextElement();
+                    String nextElement = keys.nextElement();
                     tempProps.put(nextElement.toString(), c.getProperties().get(nextElement).toString());
                 }
                 configs.put(c.getPid(), tempProps);
