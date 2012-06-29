@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Eclipse Virgo Nano Product" uid="virgo-nano.product" version="1.0.0.SIMREL" useFeatures="true" includeLaunchers="false" type="mixed">
+
+   <configIni use="default">
+   </configIni>
+   
+   <vm>
+   </vm>
+   
+   <plugins>
+      <plugin id="org.eclipse.virgo.common.resources"/>
+	  <plugin id="org.eclipse.osgi"/>
+	  <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+	  <plugin id="ch.qos.logback.classic"/>
+	  <plugin id="ch.qos.logback.core"/>
+	  <plugin id="ch.qos.logback.slf4j"/>
+	  <plugin id="javax.activation"/>
+      <plugin id="javax.ejb"/>
+	  <plugin id="javax.mail"/>
+	  <plugin id="javax.persistence"/>
+	  <plugin id="javax.xml.rpc"/>
+      <plugin id="org.apache.catalina"/>
+	  <plugin id="org.apache.catalina.ha"/>
+	  <plugin id="org.apache.catalina.tribes"/>
+	  <plugin id="org.apache.coyote"/>
+	  <plugin id="org.apache.el"/>
+	  <plugin id="org.apache.jasper"/>
+	  <plugin id="org.apache.juli.extras"/>
+	  <plugin id="org.apache.mina.core"/>
+	  <plugin id="org.apache.sshd.core"/>
+	  <plugin id="org.apache.tomcat.api"/>
+	  <plugin id="org.apache.tomcat.util"/>
+	  <plugin id="org.eclipse.jdt.core.compiler.batch"/>
+	  <plugin id="org.slf4j.api"/>
+      <plugin id="org.slf4j.jul"/>
+      <plugin id="org.slf4j.jcl"/>
+	  <plugin id="javax.annotation"/>
+	  <plugin id="javax.el"/>
+	  <plugin id="javax.servlet"/>
+	  <plugin id="javax.servlet.jsp"/>
+	  <plugin id="org.apache.felix.gogo.command"/>
+	  <plugin id="org.apache.felix.gogo.runtime"/>
+	  <plugin id="org.apache.felix.gogo.shell"/>
+	  <plugin id="org.eclipse.core.contenttype"/>
+	  <plugin id="org.eclipse.core.jobs"/>
+	  <plugin id="org.eclipse.core.runtime"/>
+	  <plugin id="org.eclipse.ecf"/>
+	  <plugin id="org.eclipse.ecf.filetransfer"/>
+	  <plugin id="org.eclipse.ecf.identity"/>
+	  <plugin id="org.eclipse.ecf.provider.filetransfer"/>
+	  <plugin id="org.eclipse.ecf.ssl"/>
+	  <plugin id="org.eclipse.equinox.app"/>
+	  <plugin id="org.eclipse.equinox.cm"/>
+	  <plugin id="org.eclipse.equinox.common"/>
+	  <plugin id="org.eclipse.equinox.console"/>
+	  <plugin id="org.eclipse.equinox.console.ssh"/>
+	  <plugin id="org.eclipse.equinox.ds"/>
+	  <plugin id="org.eclipse.equinox.event"/>
+	  <plugin id="org.eclipse.equinox.frameworkadmin"/>
+	  <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+	  <plugin id="org.eclipse.equinox.p2.artifact.repository"/>
+	  <plugin id="org.eclipse.equinox.p2.console"/>
+	  <plugin id="org.eclipse.equinox.p2.core"/>
+	  <plugin id="org.eclipse.equinox.p2.director"/>
+	  <plugin id="org.eclipse.equinox.p2.engine"/>
+	  <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+	  <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
+	  <plugin id="org.eclipse.equinox.p2.metadata"/>
+	  <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+	  <plugin id="org.eclipse.equinox.p2.publisher"/>
+	  <plugin id="org.eclipse.equinox.p2.publisher.eclipse"/>
+	  <plugin id="org.eclipse.equinox.p2.repository"/>
+	  <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+	  <plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
+	  <plugin id="org.eclipse.equinox.p2.transport.ecf"/>
+	  <plugin id="org.eclipse.equinox.preferences"/>
+	  <plugin id="org.eclipse.equinox.registry"/>
+	  <plugin id="org.eclipse.equinox.security"/>
+	  <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+	  <plugin id="org.eclipse.equinox.util"/>
+	  <plugin id="org.eclipse.osgi.services"/>
+	  <plugin id="org.sat4j.core"/>
+	  <plugin id="org.sat4j.pb"/>
+	  <plugin id="org.eclipse.equinox.region"/>
+	  <plugin id="org.eclipse.virgo.kernel.core"/>
+      <plugin id="org.eclipse.virgo.deployer.api"/>
+      <plugin id="org.eclipse.virgo.deployer.hot"/>
+      <plugin id="org.eclipse.virgo.medic"/>
+	  <plugin id="org.eclipse.virgo.medic.core"/>
+      <plugin id="org.eclipse.virgo.medic.logbackcorefragment"/>
+      <plugin id="org.eclipse.virgo.medic.logbackclassicfragment"/>
+      <plugin id="org.eclipse.virgo.nano.deployer"/>
+      <plugin id="org.eclipse.virgo.nano.war.deployer"/>
+      <plugin id="org.eclipse.gemini.web.tomcat"/>
+      <plugin id="org.eclipse.gemini.web.extender"/>
+      <plugin id="org.eclipse.gemini.web.core"/>
+      <plugin id="org.eclipse.virgo.util.io"/>
+      <plugin id="org.eclipse.virgo.util.osgi"/>
+      <plugin id="org.eclipse.virgo.util.common"/>
+      <plugin id="org.eclipse.virgo.util.jmx"/>
+      <plugin id="org.eclipse.virgo.util.math"/>
+      <plugin id="org.eclipse.virgo.util.osgi.manifest"/>
+      <plugin id="org.eclipse.virgo.util.parser.manifest"/>
+      <plugin id="org.eclipse.virgo.nano.services.ds"/>
+      <plugin id="org.eclipse.virgo.nano.services.concurrent"/>
+   </plugins>
+
+   <features>
+   </features>
+   
+   <configurations>
+		<plugin id="org.eclipse.gemini.web.core" autoStart="true" />
+		<plugin id="org.eclipse.gemini.web.extender" autoStart="true" />
+		<plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" />
+		<plugin id="org.eclipse.virgo.kernel.core" autoStart="true" />
+		<plugin id="org.eclipse.virgo.medic" autoStart="true" startLevel="3"/>
+		<plugin id="org.eclipse.virgo.medic.core" autoStart="true" startLevel="3"/>
+		<plugin id="org.eclipse.virgo.util.osgi" autoStart="true"/>
+		<plugin id="org.eclipse.virgo.services.ds" autoStart="true"/>
+		<plugin id="org.eclipse.virgo.services.concurrent" autoStart="true"/>
+		<plugin id="org.eclipse.virgo.nano.war.deployer" autoStart="true"/>
+		<plugin id="org.eclipse.virgo.nano.deployer" autoStart="true" startLevel="5"/>
+		<plugin id="org.eclipse.core.contenttype" autoStart="true"/>
+		<plugin id="org.eclipse.core.jobs" autoStart="true"/>
+		<plugin id="org.eclipse.core.runtime" autoStart="true"/>
+		<plugin id="org.eclipse.ecf" autoStart="true"/>
+		<plugin id="org.eclipse.ecf.filetransfer" autoStart="true"/>
+		<plugin id="org.eclipse.ecf.identity" autoStart="true"/>
+		<plugin id="org.eclipse.ecf.provider.filetransfer" autoStart="true"/>
+		<plugin id="org.eclipse.ecf.ssl" autoStart="true"/>
+		<plugin id="org.eclipse.equinox.app" autoStart="true"/>
+		<plugin id="org.eclipse.equinox.common" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.frameworkadmin" autoStart="true"/>
+		<plugin id="org.eclipse.equinox.frameworkadmin.equinox" autoStart="true"/>
+		<plugin id="org.eclipse.equinox.p2.artifact.repository" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.core" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.director" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.engine" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.garbagecollector" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.jarprocessor" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.metadata" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.metadata.repository" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.publisher" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.publisher.eclipse" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.repository" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.touchpoint.eclipse" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.touchpoint.natives" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.transport.ecf" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.preferences" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.registry" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.security" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.simpleconfigurator.manipulator" autoStart="true"/>
+ 		<plugin id="org.eclipse.core.net" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.p2.console" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.cm" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.ds" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.event" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.common" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.util" autoStart="true"/>
+ 		<plugin id="org.eclipse.osgi.services" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.console" autoStart="true"/>
+ 		<plugin id="org.eclipse.equinox.console.ssh" autoStart="true"/>
+ 		<plugin id="org.apache.mina.core" autoStart="true"/>
+ 		<plugin id="org.apache.sshd.core" autoStart="true"/>
+ 		<plugin id="org.apache.felix.gogo.command" autoStart="true"/>
+ 		<plugin id="org.apache.felix.gogo.runtime" autoStart="true"/>
+ 		<plugin id="org.apache.felix.gogo.shell" autoStart="true"/>
+
+		<property name="osgi.compatibility.bootdelegation" value="false"/>
+		<property name="equinox.use.ds" value="true"/>
+		<property name="osgi.console.enable.builtin" value="false"/>
+		<property name="gosh.args" value="--nointeractive"/>
+		<property name="osgi.console.ssh.useDefaultSecureStorage" value="false"/>
+		<property name="osgi.console.useConfigAdmin" value="true"/>
+		<property name="osgi.parentClassloader" value="fwk"/>
+		<property name="equinox.refresh.duplicate.bsn" value="false"/>
+		<property name="eclipse.bundle.setTCCL" value="false"/>
+		<property name="org.eclipse.virgo.suppress.heap.dumps" value="false"/>
+		<property name="osgi.bundlefile.limit" value="500"/>
+		<property name="osgi.java.profile.bootdelegation" value="override"/>
+		<property name="osgi.compatibility.eagerStart.LazyActivation" value="false"/>
+		<property name="org.eclipse.virgo.medic.log.config.path" value="configuration/serviceability.xml"/>
+		<property name="osgi.context.bootdelegation" value="false"/>
+		<property name="eclipse.enableStateSaver" value="false"/>
+		<property name="osgi.hook.configurators.include" value="org.eclipse.virgo.osgi.extensions.equinox.hooks.ExtensionsHookConfigurator"/>
+		<property name="org.eclipse.virgo.kernel.startup.wait.limit" value="180"/>
+	</configurations>
+
+</product>

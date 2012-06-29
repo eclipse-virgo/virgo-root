@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.D-20120615065828/org.eclipse.virgo.util.io-3.5.0.D-20120615065828.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.D-20120615065828/org.eclipse.virgo.util.io-sources-3.5.0.D-20120615065828.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.D-20120619054214/org.eclipse.virgo.util.io-3.5.0.D-20120619054214.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.D-20120628123356/org.eclipse.virgo.util.io-sources-3.5.0.D-20120628123356.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

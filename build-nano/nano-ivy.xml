@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="http://ivyrep.jayasoft.org/ivy-doc.xsl"?>
 <ivy-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd" version="1.3">
-
+    
 	<info organisation="org.eclipse.virgo" module="${ant.project.name}" />
-
+    
 	<configurations>
 		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
 		<conf name="nano-runtime" visibility="public" description="Dependencies to be published for Nano"/>
 	</configurations>
-
+    
 	<dependencies>
 		<!-- nano runtime -->	
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="nano-runtime->runtime" />
@@ -18,39 +18,31 @@
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services.concurrent" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.hot" rev="latest.integration" conf="nano-runtime->runtime" />
-        <dependency org="org.apache.felix" name="org.apache.felix.gogo.command" rev="${org.apache.felix.gogo.command}" conf="nano-runtime->runtime" />
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="nano-runtime->runtime" />
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.shell" rev="${org.apache.felix.gogo.shell}" conf="nano-runtime->runtime" />
-		<dependency org="org.apache.mina" name="com.springsource.org.apache.mina.core" rev="${com.springsource.org.apache.mina.core}" conf="nano-runtime->runtime"/>
-		<dependency org="org.apache.mina" name="com.springsource.org.apache.sshd.core" rev="${com.springsource.org.apache.sshd.core}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console" rev="${org.eclipse.equinox.console}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.console.ssh" rev="${org.eclipse.equinox.console}" conf="nano-runtime->runtime"/>
-		<dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="nano-runtime->runtime"/>
-		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="nano-runtime->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.region" rev="${org.eclipse.equinox.region}" conf="nano-runtime->runtime"/>
         
+		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
-		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="nano-runtime->runtime"/>
-		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="nano-runtime->runtime"/>
-		
-        <dependency org="org.apache.commons" name="com.springsource.org.apache.commons.logging" rev="${com.springsource.org.apache.commons.logging}" />
+        
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.common" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.jmx" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.math" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi.manifest" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.parser.manifest" rev="${org.eclipse.virgo.util}" conf="nano-runtime->runtime"/>
         
 		<exclude org="org.aspectj" module="com.springsource.org.aspectj.runtime"/>
 		<exclude org="org.jboss.logging"/>
 		<exclude org="org.jboss.util"/>
 		<exclude org="org.jboss.vfs"/>
-
+        
 		<override org="org.aspectj" rev="${org.aspectj}" />
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		<override org="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}"/>
 		<override org="org.springframework" rev="${org.springframework}"/>
 	</dependencies>
-
+    
 </ivy-module>
 

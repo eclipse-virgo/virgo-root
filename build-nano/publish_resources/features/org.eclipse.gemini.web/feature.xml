@@ -41,25 +41,26 @@
          version="@GEMINI.WEB@"
          unpack="false"
          autostart="true"/>
-   <plugin
-         id="com.springsource.org.apache.jasper"
-         download-size="0"
-         install-size="0"
-         version="@TOMCAT.VERSION@"
-         unpack="false"/>
     
-   <plugin
-        id="com.springsource.org.apache.catalina.ha"
+    <plugin
+        id="org.apache.jasper"
         download-size="0"
         install-size="0"
-        version="@TOMCAT.VERSION@"
+        version="@JASPER.VERSION@"
         unpack="false"/>
     
-   <plugin
-        id="com.springsource.org.apache.catalina.tribes"
+    <plugin
+        id="org.apache.catalina.ha"
         download-size="0"
         install-size="0"
-        version="@TOMCAT.VERSION@"
+        version="@HA.VERSION@"
+        unpack="false"/>
+    
+    <plugin
+        id="org.apache.catalina.tribes"
+        download-size="0"
+        install-size="0"
+        version="@TRIBES.VERSION@"
         unpack="false"/>
 
 </feature>

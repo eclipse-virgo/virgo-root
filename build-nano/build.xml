@@ -35,8 +35,7 @@
         <antcall target="install-packages"/>
         <antcall target="assemble-zips"/>
         <antcall target="clean-up"/>
-     </target>
-     
+     </target>     
      
      <target name="clean-up">
         <delete dir="${target.dir}/assembly" quiet="true"/>
@@ -76,13 +75,13 @@
      
      <target name="prepare-bundles-and-features">
         <!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
-		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="true"/>
+		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
 
 		<ivy:resolve resolveId="copy.path" file="${basedir}/p2runtime-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
         
-        <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="true"/>
+        <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
         
         <!-- Prepare the features for publishing -->
@@ -90,17 +89,22 @@
 			<fileset dir="${basedir}/publish_resources/features" excludes="keystore"/>
             <filterset>
 				<filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
-                <filter token="TOMCAT.VERSION" value="${org.apache.catalina}"/>
+                <filter token="HA.VERSION" value="${org.apache.catalina.ha}"/>
+                <filter token="JASPER.VERSION" value="${org.apache.jasper}"/>
+                <filter token="TRIBES.VERSION" value="${org.apache.catalina.tribes}"/>
 				<filter token="NANO.VERSION" value="${bundle.version}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
-                <filter token="LOGBACK.VERSION" value="${ch.qos.logback}"/>
+                <filter token="LOGBACK.CLASSIC.VERSION" value="${ch.qos.logback.classic}"/>
+                <filter token="LOGBACK.CORE.VERSION" value="${ch.qos.logback.core}"/>
+                <filter token="LOGBACK.SLF4J.VERSION" value="${ch.qos.logback.slf4j}"/>
 				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
                 <filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
                 <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
-				<filter token="MINA.CORE.VERSION" value="${com.springsource.org.apache.mina.core}"/>
-				<filter token="SSHD.CORE.VERSION" value="${com.springsource.org.apache.sshd.core}"/>
+				<filter token="MINA.CORE.VERSION" value="${org.apache.mina.core}"/>
+				<filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
 				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console}"/>
+                <filter token="EQUINOX.CONSOLE.SSH.VERSION" value="${org.eclipse.equinox.console.ssh}"/>
 				<filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>
 				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
                 <filter token="CONTENTTYPE.VERSION" value="${org.eclipse.core.contenttype}"/>
@@ -135,7 +139,6 @@
                 <filter token="EQUINOX.SECURITY.VERSION" value="${org.eclipse.equinox.security}"/>
                 <filter token="EQUINOX.SC.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
                 <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
-                <filter token="COMMONS.LOGGING" value="${com.springsource.org.apache.commons.logging}"/>
 			</filterset>
 		</copy>
      </target>
@@ -287,6 +290,88 @@
             <param name="package.output.file" value="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip"/>
         </antcall>
      </target>
+    
+    <target name="simrel-package" depends="ivy.init">		
+		<delete dir="${package.output.dir}" quiet="true"/>
+		<mkdir dir="${package.output.dir}"/>
+        <property name="common.resources.location" value="${target.dir}/common_resources_zipped"/>
+        <property name="specific.resources.location" value="${target.dir}/specific_resources_zipped"/>
+        <property name="scripts.location" value="${target.dir}/scripts_zipped"/>
+        
+        <antcall target="simrel-common-resources"/>
+		<antcall target="simrel-bundles-and-features"/>
+        <antcall target="simrel-publish-p2-repo"/>
+    </target>
+    
+    <target name="simrel-publish-p2-repo">
+        <antcall target="fetch-unzipped-virgo-build-tools"/>
+        
+        <property name="p2.products.location" value="${basedir}/publish_resources/products"/>
+        
+        <antcall target="p2.publish-bundles-features">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${target.dir}/assembly"/>
+        </antcall>
+        <echo message="Published bundles and features to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/virgo-nano/virgo-nano.product"/>
+        </antcall>
+        <echo message="Published virgo-nano product to ${p2.repository.dir}."/>
+    </target>
+    
+    <target name="simrel-bundles-and-features">
+        <!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
+		<ivy:resolve resolveId="copy.path" file="${basedir}/nano-ivy.xml" transitive="false"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
+        
+		<ivy:resolve resolveId="copy.path" file="${basedir}/orbit-ivy.xml" transitive="false"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="orbit-runtime" type="jar"/>
+        
+        <ivy:resolve resolveId="copy.path" file="${basedir}/gemini-web-ivy.xml" transitive="false"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
+    </target>
+    
+    <target name="simrel-common-resources">
+        <copy todir="${target.dir}/assembly/plugins/org.eclipse.virgo.common.resources_${bundle.version}" failonerror="false">
+            <fileset dir="${basedir}/publish_resources/org.eclipse.virgo.common.resources"/>
+            <filterset>
+				<filter token="NANO.VERSION" value="${bundle.version}"/>
+            </filterset>
+        </copy>
+        
+        <property name="common.resources" value="${target.dir}/assembly/plugins/org.eclipse.virgo.common.resources_${bundle.version}/root_content"/>
+        
+        <copy todir="${common.resources}/bin" failonerror="false">
+            <fileset dir="${basedir}/bin"/>
+        </copy>
+        
+		<ivy:resolve resolveId="copy.path" file="${basedir}/lib-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
+		
+		<mkdir dir="${common.resources}/configuration"/>
+		<mkdir dir="${common.resources}/pickup"/>
+		
+		<copy todir="${common.resources}" failonerror="false">
+			<fileset dir="${basedir}/resources"/>
+		</copy>
+        
+        <copy todir="${common.resources}/configuration" failonerror="false">
+			<fileset dir="${basedir}/configuration" excludes="keystore,serviceability.xml"/>
+		</copy>
+		
+		<copy file="${basedir}/configuration/keystore" todir="${common.resources}/configuration" failonerror="false"/>
+        
+        <mkdir dir="${common.resources}/lib"/>
+        <echo file="${common.resources}/lib/.version"
+        message="virgo.nano.version=${bundle.version}&#xa;"/>
+        <copy todir="${common.resources}/configuration" failonerror="false">
+            <fileset dir="${basedir}/configuration">
+                <include name="serviceability.xml"/>
+            </fileset>
+        </copy>
+    </target>
      
      <target name="publish-multiple-nano-packages-download" description="Uploads all Nano zipped packages to download.eclipse.org">
         <antcall target="publish-package-download">
