@@ -55,7 +55,7 @@
 }
 
 #dump-item-content {
-    margin: 26px 0 0 312px;
+    margin: 13px 0 0 312px;
     max-width: 69%;
     min-height: 550px;
     display: inline-block;
@@ -70,5 +70,12 @@
 
 .dump-file-line:hover {
 	background-color: #BAD9EC;
+}
+
+#bundle-canvas {
+	border: 1px solid #BAD9EC;
+	margin-left: auto;
+	margin-right: auto;
+	overflow-x: auto;
 }
  

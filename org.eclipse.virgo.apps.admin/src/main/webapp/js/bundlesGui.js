@@ -10,7 +10,7 @@
 *   
 *******************************************************************************/
 
-var LayoutManager = function(width, height, dataSource){
+var LayoutManager = function(paper, dataSource){
 
 	var self = this;
 
@@ -25,10 +25,8 @@ var LayoutManager = function(width, height, dataSource){
 	self.focused = -1;
 
 	self.bundleSpacing = 10; //Pixels to leave between bundles when rendering
-	
-	util.loadScript('raphael', function(){
-		self.paper = Raphael('bundle-canvas', width, height);	
-	});
+
+	self.paper = paper;	
 	
 	self.setFocusListener = function(listener) {
 		self.focusListener = listener;
@@ -182,7 +180,6 @@ var LayoutManager = function(width, height, dataSource){
 		});
 		self.relationships = {};
 	};
-	
 };
 
 /**
