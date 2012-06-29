@@ -11,4 +11,5 @@
         <artifact type="bundle" name="org.eclipse.virgo.web.core" version="[3.0, 4.0)"/>
         <artifact type="bundle" name="org.eclipse.virgo.web.dm" version="[3.0, 4.0)"/>
         <artifact type="bundle" name="org.eclipse.virgo.web.tomcat.support" version="[3.0, 4.0)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.web.servlet.adapter" version="[3.0, 4.0)"/>
 </plan>
