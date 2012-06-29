@@ -112,4 +112,14 @@ public class StubImportPackageSpecification extends StubParameterised implements
         throw new UnsupportedOperationException();
     }
 
+	@Override
+	public Object getUserObject() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setUserObject(Object arg0) {
+		throw new UnsupportedOperationException();
+	}
+
 }

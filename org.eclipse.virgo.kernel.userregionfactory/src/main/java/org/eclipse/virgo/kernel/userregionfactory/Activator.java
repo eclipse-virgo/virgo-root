@@ -135,14 +135,14 @@ public final class Activator {
             Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
 
             @SuppressWarnings("unchecked")
-            Dictionary<String, String> properties = config.getProperties();
+            Dictionary<String, Object> properties = config.getProperties();
 
             if (properties != null) {
-                this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY);
-                this.regionPackageImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY);
-                this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY);
-                this.regionBundleImports = properties.get(USER_REGION_BUNDLE_IMPORTS_PROPERTY);
-                this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY);
+                this.regionBundles = properties.get(USER_REGION_BASE_BUNDLES_PROPERTY).toString();
+                this.regionPackageImports = properties.get(USER_REGION_PACKAGE_IMPORTS_PROPERTY).toString();
+                this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY).toString();
+                this.regionBundleImports = properties.get(USER_REGION_BUNDLE_IMPORTS_PROPERTY).toString();
+                this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY).toString();
             } else {
                 eventLogger.log(UserRegionFactoryLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
                 shutdown.immediateShutdown();

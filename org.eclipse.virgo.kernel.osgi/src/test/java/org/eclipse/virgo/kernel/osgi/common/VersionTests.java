@@ -38,12 +38,12 @@ public class VersionTests {
         try {
             @SuppressWarnings("unused") Version v2 = new Version(".");
             Assert.assertTrue(false);
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
         }
         try {
             @SuppressWarnings("unused") Version v3 = new Version("0-0");
             Assert.assertTrue(false);
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
         }
 
         try {

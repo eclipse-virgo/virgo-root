@@ -39,7 +39,6 @@
 		download-size="0"
 		install-size="0"
 		version="4.2.0.v201108120515"
-		unpack="false"
-		autostart="false"/>
+		unpack="false"/>
 
 </feature>

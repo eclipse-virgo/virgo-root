@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd" version="2.0">
 
-	<info organisation="org.eclipse.virgo.kernel" module="${ant.project.name}"/>
+	<info organisation="${project.organisation}" module="${ant.project.name}"/>
 
 	<configurations>
 		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
@@ -25,23 +25,23 @@
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.model" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf="test->compile"/>
-		<dependency org="javax.jms" name="com.springsource.javax.jms" rev="${javax.jms}" conf="test->runtime"/>
-		<dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
-		<dependency org="org.aspectj" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="compile->runtime"/>
 		<dependency org="org.hsqldb" name="com.springsource.org.hsqldb" rev="${org.hsqldb}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.dbcp" rev="${commons.dbcp}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.pool" rev="${commons.pool}" conf="test->runtime"/>
-		<dependency org="org.apache.felix" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.felix.gogo.runtime" rev="${org.apache.felix.gogo.runtime}" conf="test->runtime"/>
 		
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
-		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.classic" rev="${ch.qos.logback}" conf="test->runtime"/>
-		<dependency org="ch.qos.logback" name="com.springsource.ch.qos.logback.core" rev="${ch.qos.logback}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.classic" rev="${ch.qos.logback.classic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.core" rev="${ch.qos.logback.core}" conf="test->runtime"/>
 		
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
-		<dependency org="org.eclipse.osgi" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='test->runtime' />
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework}" conf="test->runtime"/>
@@ -51,11 +51,11 @@
 		<dependency org="org.springframework" name="org.springframework.aspects" rev="${org.springframework}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.jdbc" rev="${org.springframework}" conf="test->runtime"/>
 		<dependency org="javax.portlet" name="com.springsource.javax.portlet" rev="${javax.portlet}" conf="test->runtime"/>
-		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
-		<dependency org="javax.el" name="javax.el" rev="${javax.el}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.el" rev="${javax.el}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="test->runtime"/>
-		<dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
 
 		<dependency name='org.eclipse.virgo.repository' rev='${org.eclipse.virgo.repository}' conf='compile->compile' org='org.eclipse.virgo.repository'/>
 
@@ -65,8 +65,9 @@
 
 		<!-- Prevent Xerces from being on the classpath to work around Java bug 6723276 during integration testing -->
 		<exclude org="org.apache.xerces"/>
+        <exclude org="org.eclipse.osgi"/>
 
-		<override org="org.eclipse.osgi" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
+		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 		<override org="org.eclipse.virgo.osgi" rev="${org.eclipse.virgo.osgi}"/>
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		

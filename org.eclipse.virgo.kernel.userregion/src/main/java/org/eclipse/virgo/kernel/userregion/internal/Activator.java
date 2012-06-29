@@ -162,7 +162,7 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private void publishConfigurationFromKernelRegion(Dictionary<?, ?> configurationProperties, Configuration config) throws IOException {
+    private void publishConfigurationFromKernelRegion(Dictionary<String, Object> configurationProperties, Configuration config) throws IOException {
         config.update(configurationProperties);
     }
 
@@ -324,7 +324,7 @@ public class Activator implements BundleActivator {
                 DeployUriNormaliser uriNormaliser = getPotentiallyDelayedService(context, DeployUriNormaliser.class);
                 ApplicationDeployer deployer = getPotentiallyDelayedService(context, ApplicationDeployer.class);
 
-                Dictionary<String, String> artifactConfiguration = getRegionArtifactConfiguration();
+                Dictionary<String, Object> artifactConfiguration = getRegionArtifactConfiguration();
 
                 InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer,
                     artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS),
@@ -344,11 +344,11 @@ public class Activator implements BundleActivator {
         }
 
         @SuppressWarnings("unchecked")
-        private Dictionary<String, String> getRegionArtifactConfiguration() {
+        private Dictionary<String, Object> getRegionArtifactConfiguration() {
             ConfigurationAdmin configAdmin = OsgiFrameworkUtils.getService(this.context, ConfigurationAdmin.class).getService();
             try {
                 Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
-                Dictionary<String, String> properties = (Dictionary<String, String>) config.getProperties();
+                Dictionary<String, Object> properties = (Dictionary<String, Object>) config.getProperties();
                 return properties;
             } catch (IOException ioe) {
                 throw new RuntimeException("Failed to read region artifact configuration", ioe);

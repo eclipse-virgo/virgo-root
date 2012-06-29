@@ -74,4 +74,13 @@ public class StubBaseDescription implements BaseDescription {
         throw new UnsupportedOperationException();
     }
 
+	@Override
+	public Object getUserObject() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setUserObject(Object arg0) {
+	}
+
 }

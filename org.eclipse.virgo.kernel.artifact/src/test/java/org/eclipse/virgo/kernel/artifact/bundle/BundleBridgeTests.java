@@ -136,7 +136,7 @@ public class BundleBridgeTests {
 
     @Test
     public void testBuildDictionary() throws ArtifactGenerationException, IOException {
-        File testFile = new File("../ivy-cache/repository/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-3.0.0.v201103241009.jar");
+        File testFile = new File("../ivy-cache/repository/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar");
 
         ArtifactDescriptor inputArtefact = BUNDLE_BRIDGE.generateArtifactDescriptor(testFile);
 

@@ -179,7 +179,7 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
 
         Assert.assertTrue(isInDeploymentIdentities(deploymentIdentity));
         Configuration configuration = this.configAdmin.getConfiguration("empty", null);
-        Dictionary<Object, Object> dictionary = configuration.getProperties();
+        Dictionary<String, Object> dictionary = configuration.getProperties();
         Assert.assertEquals(1, dictionary.size());
         Assert.assertEquals("empty", dictionary.get("service.pid"));
 
@@ -213,7 +213,7 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         }
 
         Configuration configuration = this.configAdmin.getConfiguration("t", null);
-        Dictionary<Object, Object> dictionary = configuration.getProperties();
+        Dictionary<String, Object> dictionary = configuration.getProperties();
         Assert.assertEquals("t", dictionary.get("service.pid"));
         Assert.assertEquals("b", dictionary.get("a"));
     }

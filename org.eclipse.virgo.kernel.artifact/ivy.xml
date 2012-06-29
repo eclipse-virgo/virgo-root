@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <ivy-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd" version="2.0">
 
-    <info module='${ant.project.name}' organisation='org.eclipse.virgo.kernel'/>
+    <info module='${ant.project.name}' organisation='${project.organisation}'/>
 
     <configurations>
         <include file='${virgo.build.dir}/common/default-ivy-configurations.xml'/>
@@ -22,11 +22,11 @@
     	<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
     	<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
 
-		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.dbcp" rev="${commons.dbcp}" conf="test->runtime" />
 		<dependency org="org.aopalliance" name="com.springsource.org.aopalliance" rev="${org.aopalliance}" conf="test->runtime" />
 		
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
 
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
     </dependencies>
