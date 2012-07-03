@@ -17,11 +17,6 @@
 			<attribute name="com.springsource.server.ide.jdt.core.test.classpathentry" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="APPS_IVY_CACHE/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-3.0.0.v201103241009.jar" sourcepath="/APPS_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-sources-2.5.0.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="APPS_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/APPS_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
@@ -32,6 +27,7 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="APPS_IVY_CACHE/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar" sourcepath="/APPS_IVY_CACHE/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-sources-3.0.0.v201103241009.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

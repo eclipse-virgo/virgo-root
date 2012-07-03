@@ -18,14 +18,14 @@
 
     <dependencies>
         <!-- === PROVIDED-RUNTIME =========================================== -->
-        <dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->runtime"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.api" rev="${org.slf4j.api}" conf="provided->runtime"/>
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.management" rev="${org.eclipse.gemini.management}" conf="provided->runtime"/>
-        <dependency org="org.slf4j" name="com.springsource.slf4j.api" rev="${org.slf4j}" conf="provided->runtime"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="provided->runtime"/>
 
         <dependency org="org.apache.commons" name="com.springsource.org.apache.commons.fileupload" rev="1.2.1" conf="provided->runtime"/>
-        <dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
         <dependency org="org.jolokia" name="org.jolokia.osgi" rev="${org.jolokia.osgi}" conf="provided->runtime"/>
         <!-- === TEST ====================================================== -->
         <dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>

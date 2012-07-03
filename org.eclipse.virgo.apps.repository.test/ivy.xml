@@ -30,10 +30,10 @@
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.tomcat" rev="${org.eclipse.virgo.web}" conf="download->runtime"/>
 		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.framework" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.apps" name="org.eclipse.virgo.apps.repository.core" rev="latest.integration"/>
-        <dependency org="org.slf4j" name="com.springsource.slf4j.org.apache.commons.logging" rev="${org.slf4j}" conf="test->runtime"/>
-        <dependency org="org.slf4j" name="com.springsource.slf4j.bridge" rev="${org.slf4j}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
         <dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>
-        <dependency org="javax.jms" name="com.springsource.javax.jms" rev="${javax.jms}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="test->runtime"/>
 
 		<!-- Prevent Xerces and Xalan from being on the classpath to work around Java bug 6723276 during integration testing -->
 		<exclude org="org.apache.xerces"/>
