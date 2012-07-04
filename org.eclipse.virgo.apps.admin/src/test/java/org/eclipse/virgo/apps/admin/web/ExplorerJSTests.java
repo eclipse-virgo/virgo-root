@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.virgo.apps.admin.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -34,9 +35,15 @@ public class ExplorerJSTests extends AbstractJSTests {
 		addCommonObjects();
 		readFile("src/main/webapp/js/explorer.js");
 		createTestLayoutManager();
+		createRaphael();
 		
 		invokePageInit();
 		
+		assertEquals("bundlesGui", commonUtil.getLastScriptLoaded());
+		assertNotNull(commonUtil.getLoadScriptAsync());
+		commonUtil.getLoadScriptAsync().call(context, scope, scope, new Object[]{});
+
+		assertEquals("raphael", commonUtil.getLastScriptLoaded());
 		assertNotNull(commonUtil.getLoadScriptAsync());
 		commonUtil.getLoadScriptAsync().call(context, scope, scope, new Object[]{});
 		
@@ -66,6 +73,11 @@ public class ExplorerJSTests extends AbstractJSTests {
 	private void createTestLayoutManager() throws IOException{
 		readString( "var LayoutManager = function() {" +
 				"	this.setFocusListener = function(){};" +
+				"};");
+	}
+
+	private void createRaphael() throws IOException{
+		readString( "var Raphael = function(element, width, height) {" +
 				"};");
 	}
 

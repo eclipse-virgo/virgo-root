@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.script.ScriptException;
 
 import org.eclipse.virgo.apps.admin.web.stubs.objects.Dollar;
+import org.eclipse.virgo.apps.admin.web.stubs.types.Element;
 import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Context;
@@ -102,12 +103,12 @@ public class DumpsJSTests extends AbstractJSTests {
         Function displayDumpEntriesFunction = (Function) dumpViewer.get("displayDumpEntries", scope);
         displayDumpEntriesFunction.call(context, scope, dumpViewer, new Object[] {event});
 
-        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDumpEntries", scope);
+        Function displaySelectedDumpEntriesFunction = (Function) dumpViewer.get("displaySelectedDump", scope);
         displaySelectedDumpEntriesFunction.call(context, scope, dumpViewer, new Object[] {});
     }
     
     @Test
-    public void testDisplayDumpEntriesResponse() throws ScriptException, IOException, NoSuchMethodException {
+    public void testDisplaySelectedDumpResponse() throws ScriptException, IOException, NoSuchMethodException {
         
         Function dumpViewerConstructor = (Function) scope.get("DumpViewer", scope);        
         Scriptable dumpViewer = dumpViewerConstructor.construct(context, scope, new Object[]{});
@@ -122,7 +123,7 @@ public class DumpsJSTests extends AbstractJSTests {
         Object[] args = new Object[] {};
         Scriptable dumpListItem = dumpListItemConstructor.construct(Context.getCurrentContext(), scope, args);
 
-        Function displaySelectedDumpEntriesResponseFunction = (Function) dumpViewer.get("displayDumpEntriesResponse", scope);
+        Function displaySelectedDumpEntriesResponseFunction = (Function) dumpViewer.get("displaySelectedDumpResponse", scope);
         displaySelectedDumpEntriesResponseFunction.call(context, scope, dumpViewer, new Object[] {Context.javaToJS(json, scope), dumpListItem});
         
         readString( "var DumpEntryList = function() {" +
@@ -133,23 +134,12 @@ public class DumpsJSTests extends AbstractJSTests {
         Scriptable listElement = dumpEntryList.construct(context, scope, Context.emptyArgs);
         Dollar.setDollarLookupResultForIds(listElement, 2);
         
+        Element.resetClicked();
         Function eachOperation = Dollar.getEachOperation();
-        eachOperation.call(context, scope, eachOperation, new Object[]{Context.javaToJS(1, scope), new Object[]{"summary.txt","b"}});
-        
-        String ajaxUrl = Dollar.getAjaxUrl();
-        assertEquals("hostPrefix/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=b", ajaxUrl);
-        Function ajaxSuccess = Dollar.getAjaxSuccess();
-        
-        readString( "var Response = function() {" +
-            "   this.value = ['x'];" +
-            "};");
-        Function responseConstructor = (Function) scope.get("Response", scope);
-        Scriptable response = responseConstructor.construct(context, scope, Context.emptyArgs);
-        
-        ajaxSuccess.call(context, scope, scope, new Object[] { response });
-        
-        eachOperation = Dollar.getEachOperation();
-        eachOperation.call(context, scope, eachOperation, new Object[]{Context.javaToJS(1, scope), new Object[]{"dumpEntry"}});
+        eachOperation.call(context, scope, eachOperation, new Object[]{Context.javaToJS(1, scope), new Object[]{"bar.txt","foo"}});
+        assertEquals(1, Element.isClicked());
+        eachOperation.call(context, scope, eachOperation, new Object[]{Context.javaToJS(1, scope), new Object[]{"summary.txt","foo"}});
+        assertEquals(3, Element.isClicked());
     }
     
     @Test

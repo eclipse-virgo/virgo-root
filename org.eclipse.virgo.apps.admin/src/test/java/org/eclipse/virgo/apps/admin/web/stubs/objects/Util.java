@@ -47,6 +47,8 @@ public class Util {
 
 	private Function async;
 
+	private String lastScriptLoaded;
+
 	public static int fxTime = 200;
 	
 	public Util(Context context, ScriptableObject SCOPE) {
@@ -69,6 +71,7 @@ public class Util {
 	}
 	
 	public void loadScript(Object scriptName, Object async){
+		this.lastScriptLoaded = (String) scriptName;
 		this.async = (Function) async;
 	}
 	
@@ -158,6 +161,10 @@ public class Util {
 
     public Function getLastBulkQueryErrorCallBack() {
         return lastBulkQueryErrorCallBack;
+    }
+
+    public String getLastScriptLoaded() {
+        return lastScriptLoaded;
     }
 	
 }

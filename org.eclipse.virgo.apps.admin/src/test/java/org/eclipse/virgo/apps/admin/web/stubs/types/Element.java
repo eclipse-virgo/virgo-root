@@ -45,6 +45,8 @@ public class Element extends ParentStub {
     private Map<String, String> CSS = new HashMap<String, String>();
 
 	private boolean isSubmitted;
+	
+	private static int CLICK_COUNT = 0;
 
     private Element contentDocument;
     
@@ -108,6 +110,7 @@ public class Element extends ParentStub {
     }
 
     public void jsFunction_click() {
+    	CLICK_COUNT++;
     }
 
     public void jsFunction_submit() {
@@ -159,6 +162,14 @@ public class Element extends ParentStub {
 	
 	public boolean isSubmitted() {
 		return this.isSubmitted;
+	}
+	
+	public static int isClicked() {
+		return CLICK_COUNT;
+	}
+	
+	public static void resetClicked() {
+		CLICK_COUNT = 0;
 	}
 	
 	public void setContentDocument(Element contentDocument){
