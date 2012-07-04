@@ -15,18 +15,14 @@
 function pageinit(){
 	util.loadScript('bundlesGui', function(){});
 	util.loadScript('raphael', function(){});
-	new DumpViewer().displayDumps();
+	dumpViewer = new DumpViewer().displayDumps();
 	$.ajax({
 		url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
 		dataType: 'json',
 		success: function (response) {
-			setDumpDirectory(response.value);
+			$('#dumpLocation').text("Location: " + response.value);
 		}
 	});
-}
-
-function setDumpDirectory(json) {
-	$('#dumpLocation').text("Location: " + json);
 }
 
 var DumpViewer = function(){
@@ -55,6 +51,7 @@ var DumpViewer = function(){
 				self.displaySelectedDump();
 			}
 		});
+		return self;
 	};
 	
 	self.displayDumpsResponse = function(json){
@@ -159,8 +156,8 @@ var DumpViewer = function(){
 	self.displayOSGiStateDump = function(dumpId){
 		$('#dump-item-content').empty();
 		$('#dump-item-content').append($('<div />', {id: 'bundle-canvas'}));
-		var width = 900;
-		var height = 551;
+		var width = 1000;
+		var height = 562;
 		$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
 		
 		var dataSource = new QuasiDataSource();
