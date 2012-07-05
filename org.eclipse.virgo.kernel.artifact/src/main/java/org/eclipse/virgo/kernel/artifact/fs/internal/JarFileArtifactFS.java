@@ -14,11 +14,18 @@
 package org.eclipse.virgo.kernel.artifact.fs.internal;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
+import org.eclipse.virgo.util.common.StringUtils;
 
 /**
  * {@link JarFileArtifactFS} is an {@link ArtifactFS} implementation for JAR files.
+ * 
+ * <strong>Concurrent Semantics</strong><br />
+ * 
+ * Thread safe
  */
 final class JarFileArtifactFS extends FileArtifactFS implements ArtifactFS {
 
@@ -29,6 +36,23 @@ final class JarFileArtifactFS extends FileArtifactFS implements ArtifactFS {
      */
     JarFileArtifactFS(File file) {
         super(file);
+    }
+
+    /**
+     * {@InheritDoc}
+     */
+    @Override
+    public ArtifactFSEntry getEntry(String name) {
+        if (!StringUtils.hasText(name)) {
+            return super.getEntry(name);
+        } else {
+            try {
+                return new JarFileArtifactFSEntry(getFile(), name);
+            } catch (IOException e) {
+                // Preserve compatibility with existing interface
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
