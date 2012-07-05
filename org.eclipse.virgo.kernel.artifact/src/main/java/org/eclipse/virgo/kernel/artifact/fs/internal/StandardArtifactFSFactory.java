@@ -12,12 +12,17 @@
 package org.eclipse.virgo.kernel.artifact.fs.internal;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
 
 
 public final class StandardArtifactFSFactory implements ArtifactFSFactory {
+    
+    private static final List<String> JAR_EXTENSIONS = Arrays.asList("jar", "war");
 
     /**
      * {@inheritDoc}
@@ -26,7 +31,18 @@ public final class StandardArtifactFSFactory implements ArtifactFSFactory {
         if (file.isDirectory()) {
             return new DirectoryArtifactFS(file);
         }
-        return new FileArtifactFS(file);
+        return looksLikeAJar(file.getName()) ? new JarFileArtifactFS(file) : new FileArtifactFS(file);
     }
+    
+    private boolean looksLikeAJar(String name) {
+        String fileName = name.toLowerCase(Locale.ENGLISH);
+
+        int dotLocation = fileName.lastIndexOf('.');
+        if (dotLocation == -1) {
+            return false;
+        }
+        return JAR_EXTENSIONS.contains(fileName.substring(dotLocation + 1));
+    }
+
 
 }

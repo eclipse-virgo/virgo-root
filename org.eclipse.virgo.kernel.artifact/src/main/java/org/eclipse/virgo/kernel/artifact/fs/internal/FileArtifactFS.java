@@ -49,7 +49,7 @@ public class FileArtifactFS implements ArtifactFS {
         return new FileArtifactFSEntry(this.file.getParentFile(), this.file);
     }
 
-    public File getFile() {
+    public final File getFile() {
         return this.file;
     }
 
