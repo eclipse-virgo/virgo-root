@@ -9,12 +9,12 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.artifact.fs;
+package org.eclipse.virgo.kernel.artifact.fs.internal;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.artifact.fs.internal.DirectoryArtifactFS;
-import org.eclipse.virgo.kernel.artifact.fs.internal.FileArtifactFS;
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
 
 
 public final class StandardArtifactFSFactory implements ArtifactFSFactory {

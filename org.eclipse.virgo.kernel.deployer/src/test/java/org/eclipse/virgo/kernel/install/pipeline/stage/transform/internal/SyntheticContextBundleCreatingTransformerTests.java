@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
 
-import org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory;
+import org.eclipse.virgo.kernel.artifact.fs.internal.StandardArtifactFSFactory;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;

@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory;
+import org.eclipse.virgo.kernel.artifact.fs.internal.StandardArtifactFSFactory;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.deployer.core.DeploymentException;

@@ -24,7 +24,7 @@
 		<beans:constructor-arg value="#{workArea.workDirectory}" />
 		<beans:constructor-arg>
 			<beans:bean
-				class="org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory" />
+				class="org.eclipse.virgo.kernel.artifact.fs.internal.StandardArtifactFSFactory" />
 		</beans:constructor-arg>
 		<beans:constructor-arg ref="eventLogger" />
 	</beans:bean>
