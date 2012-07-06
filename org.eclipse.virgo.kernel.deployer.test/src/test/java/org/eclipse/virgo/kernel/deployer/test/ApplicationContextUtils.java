@@ -55,7 +55,7 @@ final class ApplicationContextUtils {
         }
         
         if (applicationContext == null) {
-            fail("ApplicationContext for bundle with symbolic name '" + symbolicName + "' was not published within " + (timeout * 1000) + " seconds.");
+            fail("ApplicationContext for bundle with symbolic name '" + symbolicName + "' was not published within " + timeout + " seconds.");
         }
     }
 }
