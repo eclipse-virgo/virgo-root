@@ -27,14 +27,14 @@ import org.eclipse.virgo.util.common.StringUtils;
  * 
  * Thread safe
  */
-final class JarFileArtifactFS extends FileArtifactFS implements ArtifactFS {
+public final class JarFileArtifactFS extends FileArtifactFS implements ArtifactFS {
 
     /**
      * Constructs a new {@link JarFileArtifactFS} for the given file which is assumed to be in JAR format.
      * 
      * @param file a JAR file
      */
-    JarFileArtifactFS(File file) {
+    public JarFileArtifactFS(File file) {
         super(file);
     }
 

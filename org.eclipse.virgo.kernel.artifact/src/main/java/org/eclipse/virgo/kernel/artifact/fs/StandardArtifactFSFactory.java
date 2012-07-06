@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import org.eclipse.virgo.kernel.artifact.fs.internal.DirectoryArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.internal.FileArtifactFS;
+import org.eclipse.virgo.kernel.artifact.fs.internal.JarFileArtifactFS;
 
 
 public final class StandardArtifactFSFactory implements ArtifactFSFactory {
