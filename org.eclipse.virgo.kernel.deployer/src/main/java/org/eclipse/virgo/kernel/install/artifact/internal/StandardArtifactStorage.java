@@ -29,7 +29,7 @@ import org.eclipse.virgo.util.io.PathReference;
 
 final class StandardArtifactStorage implements ArtifactStorage {
     
-    private static final List<String> JAR_EXTENSIONS = Arrays.asList("jar", "war", "par", "zip");
+    private static final List<String> UNPACK_EXTENSIONS = Arrays.asList("par", "zip");
 
     private final PathReference sourcePathReference;
 
@@ -82,7 +82,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
         synchronized (this.monitor) {
             stashContent();
             if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
-                && looksLikeAJar(normalizedSourcePathReference.getName())) {
+                && needsUnpacking(normalizedSourcePathReference.getName())) {
                 try {
                     JarUtils.unpackTo(normalizedSourcePathReference, this.baseStagingPathReference);
                 } catch (IOException e) {
@@ -98,14 +98,14 @@ final class StandardArtifactStorage implements ArtifactStorage {
         }
     }
 
-    private boolean looksLikeAJar(String name) {
+    private boolean needsUnpacking(String name) {
         String fileName = name.toLowerCase(Locale.ENGLISH);
 
         int dotLocation = fileName.lastIndexOf('.');
         if (dotLocation == -1) {
             return false;
         }
-        return JAR_EXTENSIONS.contains(fileName.substring(dotLocation + 1));
+        return UNPACK_EXTENSIONS.contains(fileName.substring(dotLocation + 1));
     }
 
     private void stashContent() {
