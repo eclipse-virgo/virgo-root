@@ -84,7 +84,7 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
      * {@inheritDoc}
      */
     public boolean delete() {
-        throw new IllegalArgumentException("This ArtifactFSEntry is a member of a JAR file. Deleting it is unsupported");
+        throw new UnsupportedOperationException("This ArtifactFSEntry is a member of a JAR file. Deleting it is unsupported");
     }
 
     /**
@@ -98,6 +98,14 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
      * {@inheritDoc}
      */
     public InputStream getInputStream() {
+        if (!exists()) {
+            throw new UnsupportedOperationException("Cannot open an input stream for a non-existent entry");
+        }
+
+        if (isDirectory()) {
+            throw new UnsupportedOperationException("Cannot open an input stream for a directory");
+        }
+        
         try {
             return this.jarFile.getInputStream(this.zipEntry);
         } catch (IOException e) {
@@ -110,7 +118,7 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
      * {@inheritDoc}
      */
     public OutputStream getOutputStream() {
-        throw new IllegalArgumentException("This ArtifactFSEntry is a member of a JAR file. Writing it is unsupported");
+        throw new UnsupportedOperationException("This ArtifactFSEntry is a member of a JAR file. Writing it is unsupported");
     }
 
     /**
