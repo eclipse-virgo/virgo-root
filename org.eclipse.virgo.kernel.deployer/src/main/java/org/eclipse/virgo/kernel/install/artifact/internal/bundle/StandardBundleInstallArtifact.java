@@ -66,7 +66,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String MANIFEST_ENTRY_NAME = "/META-INF/MANIFEST.MF";
+    private static final String MANIFEST_ENTRY_NAME = "META-INF/MANIFEST.MF";
 
     private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
