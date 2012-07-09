@@ -3,14 +3,12 @@
 
 	<path id="unit.test.bundles">
 		<pathelement location="../org.eclipse.virgo.apps.splash"/>
-		<pathelement location="../org.eclipse.virgo.apps.admin"/>
 		<pathelement location="../org.eclipse.virgo.apps.repository.core"/>
 		<pathelement location="../org.eclipse.virgo.apps.repository.web"/>
 	</path>
 	
 	<path id="bundles">
 		<path refid="unit.test.bundles" />
-		<pathelement location="../org.eclipse.virgo.apps.admin"/>
 		<pathelement location="../org.eclipse.virgo.apps.repository.test"/>
 		<pathelement location="../org.eclipse.virgo.apps.repository"/>
 	</path>
