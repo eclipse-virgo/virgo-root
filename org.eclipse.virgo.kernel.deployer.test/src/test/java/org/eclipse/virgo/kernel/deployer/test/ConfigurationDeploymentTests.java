@@ -167,7 +167,6 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         ConfigurationTestUtils.pollUntilNotInDeploymentIdentities(appDeployer, type, name, version);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDeployEmptyConfig() throws Exception {
         File file = new File("src/test/resources/configuration.deployment/empty.properties");
@@ -197,7 +196,6 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
         return ConfigurationTestUtils.isInConfigurationAdmin(configAdmin, "t");
     }
 
-    @SuppressWarnings("unchecked")
     private void checkConfigAvailable() throws IOException, InvalidSyntaxException, InterruptedException {
         // Allow asynchronous delivery of configuration events to complete
         Thread.sleep(100);

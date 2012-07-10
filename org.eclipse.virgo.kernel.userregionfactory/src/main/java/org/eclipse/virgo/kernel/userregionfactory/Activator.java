@@ -134,7 +134,6 @@ public final class Activator {
         try {
             Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
 
-            @SuppressWarnings("unchecked")
             Dictionary<String, Object> properties = config.getProperties();
 
             if (properties != null) {

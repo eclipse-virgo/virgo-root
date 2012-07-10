@@ -131,7 +131,6 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
         }
     }
     
-    @SuppressWarnings("unchecked")
     private void checkConfigAvailable(String pid, File propertiesFile) throws IOException {
         Configuration configuration = this.configAdmin.getConfiguration(pid, null);
         Dictionary<String, Object> dictionary = configuration.getProperties();
