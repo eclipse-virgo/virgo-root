@@ -16,8 +16,10 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="repository-ext->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="repository-ext->runtime"/>
 		
+		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.management" rev="${org.eclipse.gemini.management}" conf="repository-ext->runtime"/>
+		<dependency org="org.osgi" name="org.osgi.enterprise" rev="${org.osgi.enterprise}" conf="repository-ext->runtime"/>
+		<dependency org="org.eclipse.virgo.management" name="org.eclipse.virgo.management.fragment" rev="latest.integration" conf="repository-ext->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.fileupload" rev="${org.apache.commons.fileupload}" conf="repository-ext->runtime"/>
-		<!-- <dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="repository-ext->runtime"/> -->
 		<dependency org="org.jolokia" name="org.jolokia.osgi" rev="${org.jolokia.osgi}" conf="repository-ext->runtime"/>
 		
 		<!-- The exclude of Equinox (org="org.eclipse.osgi" module="org.eclipse.osgi") does not work. 

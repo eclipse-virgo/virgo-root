@@ -13,7 +13,6 @@ package org.eclipse.virgo.management.console;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -48,12 +47,14 @@ public class UploadServlet extends HttpServlet {
 	private static final Logger log = LoggerFactory.getLogger(UploadServlet.class);
 
 	private String serverHome = null;
+	
+	private BundleContext bundleContext = null;
 
 	public UploadServlet() {
 	}
 	
-	public UploadServlet(String serverHome) {
-		this.serverHome = serverHome;
+	public UploadServlet(BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
 	}
 
 	/**
@@ -61,16 +62,10 @@ public class UploadServlet extends HttpServlet {
 	 */
     public void init(ServletConfig config) throws ServletException {
     	super.init(config);
-    	System.out.println("this.getServletContext().getClass() " + this.getServletContext().getClass());
-    	Method[] declaredMethods = this.getServletContext().getClass().getDeclaredMethods();
-    	for (int i = 0; i < declaredMethods.length; i++) {
-    		System.out.println(declaredMethods[i].getName());
-		}
-    	System.out.println("done");
-    	if(serverHome == null){
-    		BundleContext bc = (BundleContext) this.getServletContext().getAttribute("osgi-bundlecontext");
-			this.serverHome = bc.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME);
+    	if(bundleContext == null){
+    		this.bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
     	}
+		this.serverHome = this.bundleContext.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME);
     }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -128,6 +128,7 @@ var Util = function(){
 	 * @param callback
 	 */
 	self.doBulkQuery = function(query, successCallback, errorCallback){
+		console.log(JSON.stringify(query));
 		$.ajax({
 			type: 'POST',
 			url: self.getCurrentHost() + '/jolokia',

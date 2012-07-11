@@ -35,8 +35,6 @@ import org.jolokia.osgi.servlet.JolokiaServlet;
 public class Activator implements BundleActivator {
 
 	private static final Logger log = LoggerFactory.getLogger(Activator.class);
-
-	private static final String ORG_ECLIPSE_VIRGO_KERNEL_HOME = "org.eclipse.virgo.kernel.home";
 	
 	protected static final String APPLICATION_NAME = "Virgo Admin Console";
 	
@@ -60,13 +58,13 @@ public class Activator implements BundleActivator {
 	
 	private final Object lock = new Object();
 
-	private BundleContext context;
+	private BundleContext bundleContext;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		this.context = context;
+		this.bundleContext = context;
 		
-		Activator.contextPath = this.context.getBundle().getHeaders().get("Web-ContextPath");
+		Activator.contextPath = this.bundleContext.getBundle().getHeaders().get("Web-ContextPath");
 		this.httpServiceTracker = new ServiceTracker<HttpService, HttpService>(context, HttpService.class, new HttpServiceTrackerCustomizer(context));
 		
 		Filter createFilter = context.createFilter("(&(" + Constants.OBJECTCLASS + "=" + URLStreamHandlerService.class.getSimpleName() + ")(url.handler.protocol=webbundle))");
@@ -86,17 +84,16 @@ public class Activator implements BundleActivator {
 		synchronized (this.lock) {
 			if(this.registeredHttpService != null){
 				try {
-					AdminHttpContext adminHttpContext = new AdminHttpContext(this.context.getBundle());
+					AdminHttpContext adminHttpContext = new AdminHttpContext(this.bundleContext.getBundle());
 					Dictionary<String, String> contentServletInitParams = new Hashtable<String, String>();
 					contentServletInitParams.put(ContentServlet.CONTENT_SERVLET_PREFIX, "/WEB-INF/layouts");
 					contentServletInitParams.put(ContentServlet.CONTENT_SERVLET_SUFFIX, ".html");
 					ContentServlet contentServlet = new ContentServlet();
-					this.registeredHttpService.registerServlet(Activator.contextPath, new IndexServlet(contentServlet), null, adminHttpContext);
-					this.registeredHttpService.registerServlet(Activator.contextPath + CONTENT_CONTEXT_PATH, contentServlet, contentServletInitParams, adminHttpContext);
-					this.registeredHttpService.registerServlet(Activator.contextPath + RESOURCES_CONTEXT_PATH, new ResourceServlet(), null, adminHttpContext);
-					String serverHome = this.context.getProperty(ORG_ECLIPSE_VIRGO_KERNEL_HOME);
-					this.registeredHttpService.registerServlet(Activator.contextPath + UPLOAD_CONTEXT_PATH, new UploadServlet(serverHome), null, adminHttpContext);
-					this.registeredHttpService.registerServlet(Activator.contextPath + JOLOKIA_CONTEXT_PATH, new JolokiaServlet(this.context), null, adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath, 							new IndexServlet(contentServlet), 		null,	adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath + CONTENT_CONTEXT_PATH, 	contentServlet, contentServletInitParams,		adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath + RESOURCES_CONTEXT_PATH, 	new ResourceServlet(), 					null,	adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath + UPLOAD_CONTEXT_PATH, 	new UploadServlet(this.bundleContext),	null,	adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath + JOLOKIA_CONTEXT_PATH, 	new JolokiaServlet(this.bundleContext),	null, 	adminHttpContext);
 					this.isRegisteredWithHttpService = true;
 					log.info("Admin console registered to HttpService: " + Activator.contextPath);
 				} catch (Exception e) {
