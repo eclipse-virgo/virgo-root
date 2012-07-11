@@ -11,6 +11,7 @@
 		<pathelement location="../org.eclipse.virgo.kernel.agent.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.kerneldmfragment"/>
 		<pathelement location="../org.eclipse.virgo.management.fragment"/>
+		<pathelement location="../org.eclipse.virgo.management.console"/>
 		<pathelement location="../org.eclipse.virgo.kernel.dmfragment"/>
 		<pathelement location="../org.eclipse.virgo.kernel.deployer.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.model"/>
@@ -77,6 +78,9 @@
 				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
 				<filter token="SPRING.VERSION" value="${org.springframework}"/>
+				<filter token="JAVAX.SERVLET.VERSION" value="${javax.servlet}"/>
+				<filter token="EQUINOX.HTTP.VERSION" value="${org.eclipse.equinox.http}"/>
+				<filter token="OSGI.ENTERPRISE.VERSION" value="${org.osgi.enterprise}"/>
 				<filter token="GEMINI.MANAGEMENT.VERSION" value="${org.eclipse.gemini.management}"/>
 			</filterset>
 		</copy>
@@ -89,6 +93,11 @@
 
 		<ivy:resolve resolveId="copy.path" file="${basedir}/repository-ext-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/repository/ext/[artifact]_[revision].[ext]" conf="repository-ext" type="jar"/>
+		
+		<ivy:resolve resolveId="copy.path" file="${basedir}/pickup-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/pickup/[artifact]_[revision].[ext]" type="jar, war, wab" conf="pickup"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/pickup/[artifact]_[revision].[ext]" type="plan" conf="pickup-plan"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/repository/ext/[artifact]_[revision].[ext]" type="jar, war, wab" conf="pickup-plan"/>
 
 		<mkdir dir="${kernel.resources}/configuration"/>
 
@@ -249,7 +258,7 @@
 		<delete dir="${target.dir}/assembly" quiet="true"/>
 		<delete dir="${tools.dir}" quiet="true"/>
 	</target>
-
+	
 	<target name="smoke-test" description="Runs a smoke test on the kernel packaged build">
 		<path id="smoke.test.bundles">
 			<pathelement location="${basedir}/../org.eclipse.virgo.kernel.smoketest" />

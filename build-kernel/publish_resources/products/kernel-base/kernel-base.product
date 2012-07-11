@@ -26,6 +26,9 @@
  
 		<property name="org.osgi.framework.bsnversion" value="multiple"/>
 		<property name="osgi.clean" value="true"/>
+		<property name="org.osgi.service.http.port" value="8080"/>
+		<property name="org.jolokia.listenForHttpService" value="false"/>
+		<property name="org.jolokia.useRestrictorService" value="true"/>
 	</configurations>
 
 </product>
