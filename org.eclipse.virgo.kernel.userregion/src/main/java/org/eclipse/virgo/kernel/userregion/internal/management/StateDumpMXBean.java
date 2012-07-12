@@ -18,14 +18,18 @@ import javax.management.MXBean;
  *
  */
 @MXBean
-public interface StateDumpMBean {
+public interface StateDumpMXBean {
 
 	/**
-	 * Get the summary explanation of why the resolution failure occurred.
+	 * Get a list of the unresolved BundleIds
 	 * 
 	 * @param dumpFile
 	 * @return
 	 */
-	public String[] getSummary(String dumpFile);
+	public long[] getUnresolvedBundleIds(String dumpFile);
+
+	public BundleMXBean[] listBundles(String dumpFile);
+	
+	public BundleMXBean getBundle(String dumpFile, long bundleId);
 	
 }

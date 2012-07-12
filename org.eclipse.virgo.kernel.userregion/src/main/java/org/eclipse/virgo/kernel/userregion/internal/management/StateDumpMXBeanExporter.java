@@ -10,8 +10,12 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StateDumpMBeanExporter {
-    private final Logger logger = LoggerFactory.getLogger(StateDumpMBeanExporter.class);
+/**
+ * 
+ *
+ */
+public class StateDumpMXBeanExporter {
+    private final Logger logger = LoggerFactory.getLogger(StateDumpMXBeanExporter.class);
 
     private static final String DOMAIN = "org.eclipse.virgo.kernel";
     
@@ -23,10 +27,10 @@ public class StateDumpMBeanExporter {
      * 
      * @param serverHome
      */
-	public StateDumpMBeanExporter(QuasiFrameworkFactory quasiFrameworkFactory) {
+	public StateDumpMXBeanExporter(QuasiFrameworkFactory quasiFrameworkFactory) {
 		try {
 			ObjectName dumpMBeanName = new ObjectName(String.format("%s:type=Medic,name=StateDumpInspector", DOMAIN));
-			registeredMBean = this.server.registerMBean(new QuasiStateDumpMBean(quasiFrameworkFactory), dumpMBeanName);
+			registeredMBean = this.server.registerMBean(new QuasiStateDumpMXBean(quasiFrameworkFactory), dumpMBeanName);
 		} catch (Exception e) {
 			logger.error("Unable to register the DumpInspectorMBean", e);
 		} 

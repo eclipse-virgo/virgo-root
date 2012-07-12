@@ -8,20 +8,11 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
+package org.eclipse.virgo.kernel.userregion.internal.management;
 
-/**
- * Scripts to be loaded in to the head of the overview view
- */
-function pageinit() {
-	
-	var renderOverviewTable = function(rows) {
-		$('#server-overview').replaceWith(util.makeTable({
-			headers: ['Name', 'Value'],
-			rows: rows
-		}));
-		util.pageReady();
-	};
-	
-	new Server().getServerOverview(renderOverviewTable);
-	
-};
+import javax.management.MXBean;
+
+@MXBean
+public interface BundleMXBean {
+
+}

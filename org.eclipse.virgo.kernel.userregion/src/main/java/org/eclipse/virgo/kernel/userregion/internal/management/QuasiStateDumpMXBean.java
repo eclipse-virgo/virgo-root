@@ -25,17 +25,16 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
  *   
  * MBean that allows for the exploration of state dumps using the QuasiFramework
  */
-public class QuasiStateDumpMBean implements StateDumpMBean {
+public class QuasiStateDumpMXBean implements StateDumpMXBean {
 	
 	private static final String INDENT = "    ";
 	
 	private final QuasiFrameworkFactory quasiFrameworkFactory;
 
-	public QuasiStateDumpMBean(QuasiFrameworkFactory quasiFrameworkFactory) {
+	public QuasiStateDumpMXBean(QuasiFrameworkFactory quasiFrameworkFactory) {
 		this.quasiFrameworkFactory = quasiFrameworkFactory;
 	}
 
-	@Override
 	public String[] getSummary(String dumpPath){
 		File dumpDir = new File(dumpPath);
 		if(dumpDir.exists() && dumpDir.isDirectory()){
@@ -71,6 +70,27 @@ public class QuasiStateDumpMBean implements StateDumpMBean {
 			return lines.toArray(new String[lines.size()]);
 		}
 		return new String[0];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public long[] getUnresolvedBundleIds(String dumpFile) {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public BundleMXBean[] listBundles(String dumpFile) {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public BundleMXBean getBundle(String dumpFile, long bundleId) {
+		return null;
 	}
 	
 }

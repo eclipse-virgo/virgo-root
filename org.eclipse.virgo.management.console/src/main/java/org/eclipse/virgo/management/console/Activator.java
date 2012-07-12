@@ -93,7 +93,7 @@ public class Activator implements BundleActivator {
 					this.registeredHttpService.registerServlet(Activator.contextPath + CONTENT_CONTEXT_PATH, 	contentServlet, contentServletInitParams,		adminHttpContext);
 					this.registeredHttpService.registerServlet(Activator.contextPath + RESOURCES_CONTEXT_PATH, 	new ResourceServlet(), 					null,	adminHttpContext);
 					this.registeredHttpService.registerServlet(Activator.contextPath + UPLOAD_CONTEXT_PATH, 	new UploadServlet(this.bundleContext),	null,	adminHttpContext);
-					this.registeredHttpService.registerServlet(Activator.contextPath + JOLOKIA_CONTEXT_PATH, 	new JolokiaServlet(this.bundleContext),	null, 	adminHttpContext);
+					this.registeredHttpService.registerServlet(Activator.contextPath + JOLOKIA_CONTEXT_PATH, 	new JolokiaServlet(this.bundleContext),	null, 	null);
 					this.isRegisteredWithHttpService = true;
 					log.info("Admin console registered to HttpService: " + Activator.contextPath);
 				} catch (Exception e) {

@@ -58,7 +58,7 @@ public class UploadServlet extends HttpServlet {
 	}
 
 	/**
-	 * Do not use this method with the HTTPService.
+	 * Do not use this method with the HTTPService unless the BundleContext has already been set.
 	 */
     public void init(ServletConfig config) throws ServletException {
     	super.init(config);
