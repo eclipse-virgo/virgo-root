@@ -45,11 +45,8 @@ public class JarFileArtifactFSTests {
         ArtifactFSEntry entry = fileArtifactFS.getEntry("");
         assertTrue(entry instanceof FileArtifactFSEntry);
         assertFalse(entry instanceof JarFileArtifactFSEntry);
-        try {
-            fileArtifactFS.getEntry("blah");
-            fail("Attempt to get bad entry unexpectedly succeeded");
-        } catch (RuntimeException _) {
-        }
+        ArtifactFSEntry badEntry = fileArtifactFS.getEntry("blah");
+        assertFalse(badEntry.exists());
     }
 
     /**
@@ -106,11 +103,11 @@ public class JarFileArtifactFSTests {
         assertEquals("test/", entry.getPath());
         assertTrue(entry.exists());
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void getDirectoryInputStream() throws IOException {
-       ArtifactFSEntry entry = this.artifactFS.getEntry("test/");
-       entry.getInputStream();
+        ArtifactFSEntry entry = this.artifactFS.getEntry("test/");
+        entry.getInputStream();
     }
 
     @Test
@@ -134,13 +131,13 @@ public class JarFileArtifactFSTests {
         ArtifactFSEntry[] children = entry.getChildren();
         assertEquals(0, children.length);
     }
-    
+
     @Test
     public void getPathOfNonExistentFile() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch");
         assertEquals("x/nosuch", entry.getPath());
     }
-    
+
     @Test
     public void getNameOfNonExistentFile() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch");
@@ -158,7 +155,7 @@ public class JarFileArtifactFSTests {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch");
         entry.getInputStream();
     }
-    
+
     @Test
     public void getExistenceOfNonExistentFile() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch");
@@ -171,13 +168,13 @@ public class JarFileArtifactFSTests {
         ArtifactFSEntry[] children = entry.getChildren();
         assertEquals(0, children.length);
     }
-    
+
     @Test
     public void getPathOfNonExistentDirectory() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch/");
         assertEquals("x/nosuch/", entry.getPath());
     }
-    
+
     @Test
     public void getNameOfNonExistentDirectory() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch/");
@@ -189,13 +186,13 @@ public class JarFileArtifactFSTests {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch/");
         assertFalse(entry.isDirectory());
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void getInputStreamOfNonExistentDirectory() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch/");
         entry.getInputStream();
     }
-    
+
     @Test
     public void getExistenceOfNonExistentDirectory() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch/");

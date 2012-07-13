@@ -46,12 +46,7 @@ public final class JarFileArtifactFS extends FileArtifactFS implements ArtifactF
         if (!StringUtils.hasText(name)) {
             return super.getEntry(name);
         } else {
-            try {
-                return new JarFileArtifactFSEntry(getFile(), name);
-            } catch (IOException e) {
-                // Preserve compatibility with existing interface
-                throw new RuntimeException(e);
-            }
+            return new JarFileArtifactFSEntry(getFile(), name);
         }
     }
 
