@@ -312,7 +312,7 @@ public class WARDeployer implements SimpleDeployer {
         if (bundle != null) {
             try {
                 // extract the war file to the webapps directory
-                JarUtils.unpackTo(new PathReference(updatedFile), new PathReference(warDir));
+                JarUtils.unpackToDestructive(new PathReference(updatedFile), new PathReference(warDir));
                 // make the manifest transformation in the unpacked location
                 transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
