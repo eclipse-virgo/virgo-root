@@ -321,13 +321,21 @@ public class BundleDeployer implements SimpleDeployer {
     
     @Override
     public boolean isDeployFileValid(File file) {
-		try {
-			@SuppressWarnings("unused")
-			JarFile jarFile = new JarFile(file);
-		} catch (IOException e) {
-			this.logger.error("The deployed file '"+ file.getAbsolutePath() +"' is an invalid zip file.");
-			return false;
-		}
+    	JarFile jarFile = null;
+    	try {
+            jarFile = new JarFile(file);
+        } catch (IOException e) {
+            this.logger.error("The deployed file '" + file.getAbsolutePath() + "' is an invalid zip file.");
+            return false;
+        } finally {
+        	try {
+        		if (jarFile != null) {
+        			jarFile.close();
+        		}
+        	} catch (IOException e) {
+        		// do nothing
+        	}
+        }
 		return true;
 	}
 
