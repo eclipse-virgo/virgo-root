@@ -40,4 +40,21 @@ public final class JarUtils {
     public static void unpackTo(PathReference jarFile, PathReference dest) throws IOException {
         ZipUtils.unzipTo(jarFile, dest);
     }
+    
+    /**
+     * Unpacks the JAR file at {@link PathReference jarFile} to the directory <code>dest</code>.<p/>
+     * 
+     * If the supplied <code>dest</code> {@link PathReference} does not exist, it is created as a directory and the
+     * JAR file is unpacked <strong>directly</strong> into the newly created directory.<p/>
+     * 
+     * If the supplied <code>dest</code> <code>PathReference</code> already exists and is a directory then its content
+     * is deleted and the JAR file is unpacked in the cleaned directory. 
+     * 
+     * @param jarFile the JAR file to unpack
+     * @param dest the destination directory
+     * @throws IOException if an error occurs during unpack.
+     */
+    public static void unpackToDestructive(PathReference jarFile, PathReference dest) throws IOException {
+        ZipUtils.unzipToDestructive(jarFile, dest);
+    }
 }

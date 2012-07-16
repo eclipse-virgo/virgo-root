@@ -160,6 +160,55 @@ public class ZipUtilsTests {
         assertExistsAndContains(unzipBarPlace, "Bar");
     }
     
+    @Test
+    public void unzipToDestructive() throws Exception {
+    	PathReference archiveToUnzip = new PathReference("src/test/resources/jars/test.jar");
+    	PathReference unzipDestination = new PathReference("target/unzipDestructive");
+    	PathReference archivedFile = new PathReference("target/unzipDestructive/test.txt");
+    	PathReference archivedFileInMetaInf = new PathReference("target/unzipDestructive/META-INF/test.txt");
+    	
+    	ZipUtils.unzipTo(archiveToUnzip, unzipDestination);
+    	
+    	Assert.assertTrue(archivedFile.exists());
+    	Assert.assertTrue(archivedFileInMetaInf.exists());
+    	
+    	archiveToUnzip = new PathReference("src/test/resources/jars/test_updated.jar");
+    	PathReference updatedArchivedFile = new PathReference("target/unzipDestructive/test_updated.txt");
+    	PathReference updatedArchivedFileInMetaInf = new PathReference("target/unzipDestructive/META-INF/test_updated.txt");
+    	
+    	ZipUtils.unzipToDestructive(archiveToUnzip, unzipDestination);
+    	
+    	Assert.assertTrue(updatedArchivedFile.exists());
+    	Assert.assertTrue(updatedArchivedFileInMetaInf.exists());
+    	Assert.assertFalse(archivedFile.exists());
+    	Assert.assertFalse(archivedFileInMetaInf.exists());
+    }
+    
+    @Test
+    public void unzipToDestructiveLongFilePaths() throws Exception {
+    	PathReference archiveToUnzip = new PathReference("src/test/resources/jars/test.jar");
+    	PathReference unzipDestination = new PathReference("target/unzipDestructiveLongFilePaths");
+    	PathReference longFileNameDestination = longPathReference(unzipDestination, LONG_FILE_PATH_DEPTH);
+    	ZipUtils.unzipTo(archiveToUnzip, longFileNameDestination);
+    	
+    	PathReference archivedFile = longFileNameDestination.newChild("test.txt");
+    	PathReference archivedFileInMetaInf = longFileNameDestination.newChild("META-INF").newChild("test.txt");
+    	
+    	Assert.assertTrue(archivedFile.exists());
+    	Assert.assertTrue(archivedFileInMetaInf.exists());
+    	
+    	archiveToUnzip = new PathReference("src/test/resources/jars/test_updated.jar");
+    	PathReference updatedArchivedFile = longFileNameDestination.newChild("test_updated.txt");
+    	PathReference updatedArchivedFileInMetaInf = longFileNameDestination.newChild("META-INF").newChild("test_updated.txt");
+    	
+    	ZipUtils.unzipToDestructive(archiveToUnzip, longFileNameDestination);
+    	
+    	Assert.assertTrue(updatedArchivedFile.exists());
+    	Assert.assertTrue(updatedArchivedFileInMetaInf.exists());
+    	Assert.assertFalse(archivedFile.exists());
+    	Assert.assertFalse(archivedFileInMetaInf.exists());
+    }
+    
     
     private static PathReference longPathReference(PathReference longRef, int depth) {
         for (int i=0; i<depth; ++i) {

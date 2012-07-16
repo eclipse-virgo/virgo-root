@@ -57,29 +57,28 @@ public class ZipUtils {
      * @return a <code>PathReference</code> to the directory containing the Zip file's contents.
      * @throws IOException if an error occurs during unzip.
      */
-    @SuppressWarnings("unchecked")
+    
     public static PathReference unzipTo(PathReference zipFile, PathReference dest) throws IOException {
-        Assert.isTrue(zipFile.exists(), "Supplied file '%s' must exist", zipFile);
-        PathReference finalDest = determineFinalUnzipDestination(zipFile, dest);
-        ZipFile zip = null;
-        try {
-            zip = new ZipFile(zipFile.toFile());
-            for (ZipEntry entry : new IterableEnumeration<ZipEntry>((Enumeration<ZipEntry>)zip.entries())) {
-                PathReference entryPath = finalDest.newChild(entry.getName());
-                if (entry.isDirectory()) {
-                    entryPath.createDirectory();
-                } else {
-                    PathReference filePath = entryPath.createFile();
-                    InputStream inputStream = zip.getInputStream(entry);
-                    FileCopyUtils.copy(inputStream, new FileOutputStream(filePath.toFile()));
-                }
-            }
-        } finally {
-            if (zip != null) {
-                zip.close();
-            }
-        }
-        return finalDest;
+        return unzipToFolder(zipFile, dest, false);
+    }
+    
+    /**
+     * Unzips the Zip file at {@link PathReference jarFile} to the directory <code>dest</code>.<p/>
+     * 
+     * If the supplied <code>dest</code> {@link PathReference} does not exist, it is created as a directory and the
+     * Zip is unzipped <strong>directly</strong> into the newly created directory.<p/>
+     * 
+     * If the supplied <code>dest</code> <code>PathReference</code> already exists and is a directory then its content
+     * is deleted and the JAR file is unpacked in the cleaned directory.
+     * 
+     * @param zipFile the Zip file to unzip
+     * @param dest the destination directory
+     * @return a <code>PathReference</code> to the directory containing the Zip file's contents.
+     * @throws IOException if an error occurs during unzip.
+     */
+    
+    public static PathReference unzipToDestructive(PathReference zipFile, PathReference dest) throws IOException {
+        return unzipToFolder(zipFile, dest, true);
     }
     
     /**
@@ -154,6 +153,31 @@ public class ZipUtils {
         return finalDest;
     }
     
+    @SuppressWarnings("unchecked")
+    private static PathReference unzipToFolder(PathReference zipFile, PathReference dest, boolean isDestructive) throws IOException {
+        Assert.isTrue(zipFile.exists(), "Supplied file '%s' must exist", zipFile);
+        PathReference finalDest = determineFinalUnzipDestination(zipFile, dest, isDestructive);
+        ZipFile zip = null;
+        try {
+            zip = new ZipFile(zipFile.toFile());
+            for (ZipEntry entry : new IterableEnumeration<ZipEntry>((Enumeration<ZipEntry>)zip.entries())) {
+                PathReference entryPath = finalDest.newChild(entry.getName());
+                if (entry.isDirectory()) {
+                    entryPath.createDirectory();
+                } else {
+                    PathReference filePath = entryPath.createFile();
+                    InputStream inputStream = zip.getInputStream(entry);
+                    FileCopyUtils.copy(inputStream, new FileOutputStream(filePath.toFile()));
+                }
+            }
+        } finally {
+            if (zip != null) {
+                zip.close();
+            }
+        }
+        return finalDest;
+    }
+    
     private static void doZip(ZipOutputStream zos, File file, File root, String entryPrefix) throws IOException {
         
         byte[] data = new byte[BUFFER_SIZE];
@@ -207,14 +231,22 @@ public class ZipUtils {
         return entryName;
     }
     
-    private static PathReference determineFinalUnzipDestination(PathReference zipFile, PathReference dest) {
+    private static PathReference determineFinalUnzipDestination(PathReference zipFile, PathReference dest, boolean isDestructive) {
         PathReference finalDest = dest;
         if (!dest.exists()) {
             dest.createDirectory();
         } else {
             if (dest.isDirectory()) {
-                String destDir = StringUtils.stripFilenameExtension(StringUtils.getFilename(zipFile.getName()));
-                finalDest = dest.newChild(destDir).createDirectory();
+            	if (isDestructive == true) {
+            		boolean isDeleted = dest.delete(true);
+            		if (!isDeleted) {
+            			throw new FatalIOException("Content of destination path '" + dest + "' cannot be removed");
+            		}
+            		dest.createDirectory();
+            	} else {
+            		String destDir = StringUtils.stripFilenameExtension(StringUtils.getFilename(zipFile.getName()));
+            		finalDest = dest.newChild(destDir).createDirectory();
+            	}
             } else {
                 throw new FatalIOException("Destination path '" + dest + "' already exists and is not a directory");
             }
@@ -233,4 +265,5 @@ public class ZipUtils {
             return dest;
         }
     }
+  
 }
