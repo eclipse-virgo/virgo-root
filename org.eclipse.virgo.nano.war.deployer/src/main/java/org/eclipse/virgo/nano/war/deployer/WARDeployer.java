@@ -432,10 +432,13 @@ public class WARDeployer implements SimpleDeployer {
         try {
             mfIS = new FileInputStream(srcFile + File.separator + JarFile.MANIFEST_NAME);
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
-            if (WebBundleUtils.isWebApplicationBundle(manifest)) {
-                // we already have a web bundle - skip transformation
-                this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
-                return;
+            String isTransformingNonwabsOnly = this.kernelConfig.getProperty("deployer.transform.nonwabs.only");
+            if (isTransformingNonwabsOnly == null || "true".equals(isTransformingNonwabsOnly)) {
+            	if (WebBundleUtils.isWebApplicationBundle(manifest)) {
+            		// we already have a web bundle - skip transformation
+            		this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
+            		return;
+            	}
             }
             Map<String, String> map = new HashMap<String, String>();
             prepareInstallationOptions(warName, manifest, map);
