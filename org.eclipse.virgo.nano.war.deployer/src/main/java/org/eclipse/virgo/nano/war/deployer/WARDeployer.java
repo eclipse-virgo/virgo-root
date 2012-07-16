@@ -96,6 +96,10 @@ public class WARDeployer implements SimpleDeployer {
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
     
     private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
+    
+    private static final String DEFAULT_CONTEXT_PATH = "/";
+    
+    private static final String ROOT_WAR_NAME = "ROOT";
 
     private EventLogger eventLogger;
 
@@ -462,7 +466,12 @@ public class WARDeployer implements SimpleDeployer {
     private void prepareInstallationOptions(String warName, BundleManifest manifest, Map<String, String> map) {
         String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
         if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
-            map.put(HEADER_WEB_CONTEXT_PATH, warName);
+        	map.put(HEADER_WEB_CONTEXT_PATH, warName);
+        	if (warName.equals(ROOT_WAR_NAME)) {
+        		map.put(HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
+        	} else {
+        		map.put(HEADER_WEB_CONTEXT_PATH, warName);
+        	}
         }
         String bundleSymbolicNameHeader = manifest.getHeader(HEADER_BUNDLE_SYMBOLIC_NAME);
         if (bundleSymbolicNameHeader == null || bundleSymbolicNameHeader.trim().length() == 0) {
