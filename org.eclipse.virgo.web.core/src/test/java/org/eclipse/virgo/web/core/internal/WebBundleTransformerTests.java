@@ -323,6 +323,29 @@ public class WebBundleTransformerTests {
 
         assertEquals("true", bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
+    
+    @Test
+    public void rootWarTransformation() throws IOException, DeploymentException {
+    	BundleManifest bundleManifest = new StandardBundleManifest(null);
+
+        File sourceFile = new File("/ROOT.war");
+        URI sourceUri = sourceFile.toURI();
+
+        BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
+
+        manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
+
+        replay(manifestTransformer);
+
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
+
+        verify(manifestTransformer);
+        
+        assertEquals("/", bundleManifest.getHeader("Web-ContextPath"));
+    }
+    
+    
 
     public void assertManifestTransformations(BundleManifest bundleManifest, String expectedModuleType) {
         assertEquals(expectedModuleType, bundleManifest.getHeader("Module-Type"));

@@ -53,6 +53,10 @@ final class WebBundleTransformer implements Transformer {
     private static final String PROPERTY_VALUE_WAB_HEADERS_STRICT = "strict";
 
     private static final String PROPERTY_VALUE_WAB_HEADERS_DEFAULTED = "defaulted";
+    
+    private static final String DEFAULT_CONTEXT_PATH = "/";
+    
+    private static final String ROOT_WAR_NAME = "ROOT";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -149,7 +153,11 @@ final class WebBundleTransformer implements Transformer {
     private void setDefaultWebContextPath(BundleInstallArtifact bundleInstallArtifact) throws DeploymentException {
         String webContextPath = getBaseName(bundleInstallArtifact.getArtifactFS().getFile().getPath());
         try {
-            bundleInstallArtifact.getBundleManifest().setHeader(MANIFEST_HEADER_WEB_CONTEXT_PATH, webContextPath);
+        	if (webContextPath.equals(ROOT_WAR_NAME)) {
+        		bundleInstallArtifact.getBundleManifest().setHeader(MANIFEST_HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
+        	} else {
+        		bundleInstallArtifact.getBundleManifest().setHeader(MANIFEST_HEADER_WEB_CONTEXT_PATH, webContextPath);
+        	}
         } catch (IOException ioe) {
             throw new DeploymentException("Could not retrieve manifest for bundle install artifact " + bundleInstallArtifact, ioe);
         }
