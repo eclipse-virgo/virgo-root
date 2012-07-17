@@ -100,7 +100,6 @@ public class ZipUtilsTests {
     }
     
     @Test
-    @Ignore("DMS-2397")
     public void unzipToLongFilePath() throws Exception {
         PathReference toZip = new PathReference("src/test/resources/to-zip");
         PathReference destination = new PathReference("target/zipped-to-here.zip");
@@ -129,7 +128,6 @@ public class ZipUtilsTests {
     }
     
     @Test
-    @Ignore("DMS-2397")
     public void zipAndUnzipLongFilePath() throws Exception {
         PathReference filesToZip = new PathReference("src/test/resources/to-zip");
 
