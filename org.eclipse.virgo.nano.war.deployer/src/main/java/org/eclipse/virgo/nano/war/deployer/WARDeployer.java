@@ -100,6 +100,16 @@ public class WARDeployer implements SimpleDeployer {
     private static final String DEFAULT_CONTEXT_PATH = "/";
     
     private static final String ROOT_WAR_NAME = "ROOT";
+    
+    private static final String PROPERTY_WAB_HEADERS = "WABHeaders";
+
+    private static final String PROPERTY_VALUE_WAB_HEADERS_STRICT = "strict";
+
+    private static final String PROPERTY_VALUE_WAB_HEADERS_DEFAULTED = "defaulted";
+    
+    private static final String HEADER_DEFAULT_WAB_HEADERS = "org-eclipse-gemini-web-DefaultWABHeaders";
+    
+    private static final String WEB_BUNDLE_MODULE_TYPE = "web-bundle";
 
     private EventLogger eventLogger;
 
@@ -120,7 +130,7 @@ public class WARDeployer implements SimpleDeployer {
     private File webAppsDir;
 
     private KernelConfig kernelConfig;
-
+    
     public WARDeployer() {
         warDeployerInternalInit(null);
     }
@@ -444,17 +454,19 @@ public class WARDeployer implements SimpleDeployer {
         try {
             mfIS = new FileInputStream(srcFile + File.separator + JarFile.MANIFEST_NAME);
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
-            String isTransformingNonwabsOnly = this.kernelConfig.getProperty("deployer.transform.nonwabs.only");
-            if (isTransformingNonwabsOnly == null || "true".equals(isTransformingNonwabsOnly)) {
-            	if (WebBundleUtils.isWebApplicationBundle(manifest)) {
-            		// we already have a web bundle - skip transformation
-            		this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
-            		return;
-            	}
+            if (manifest.getModuleType() == null || "web".equalsIgnoreCase(manifest.getModuleType())) {
+            	boolean strictWABHeaders = getStrictWABHeadersValue();
+            	if (!strictWABHeaders) {
+                    manifest.setHeader(HEADER_DEFAULT_WAB_HEADERS, "true");
+                }
+            	manifest.setModuleType(WEB_BUNDLE_MODULE_TYPE);
+            	InstallationOptions installationOptions = prepareInstallationOptions(strictWABHeaders, warName, manifest);
+            	boolean isWebBundle = WebBundleUtils.isWebApplicationBundle(manifest);
+                this.webBundleManifestTransformer.transform(manifest, srcFile.toURI().toURL(), installationOptions, isWebBundle);
+            } else {
+            	this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
+        		return;
             }
-            Map<String, String> map = new HashMap<String, String>();
-            prepareInstallationOptions(warName, manifest, map);
-            this.webBundleManifestTransformer.transform(manifest, srcFile.toURI().toURL(), new InstallationOptions(map), false);
             fos = new FileOutputStream(destFile);
             toManifest(manifest.toDictionary()).write(fos);
         } finally {
@@ -463,10 +475,10 @@ public class WARDeployer implements SimpleDeployer {
         }
     }
 
-    private void prepareInstallationOptions(String warName, BundleManifest manifest, Map<String, String> map) {
+    private InstallationOptions prepareInstallationOptions(boolean strictWABHeaders, String warName, BundleManifest manifest) {
+    	Map<String, String> map = new HashMap<String, String>();
         String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
         if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
-        	map.put(HEADER_WEB_CONTEXT_PATH, warName);
         	if (warName.equals(ROOT_WAR_NAME)) {
         		map.put(HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
         	} else {
@@ -477,6 +489,11 @@ public class WARDeployer implements SimpleDeployer {
         if (bundleSymbolicNameHeader == null || bundleSymbolicNameHeader.trim().length() == 0) {
             map.put(HEADER_BUNDLE_SYMBOLIC_NAME, warName);
         }
+        
+        InstallationOptions installationOptions = new InstallationOptions(map);
+        installationOptions.setDefaultWABHeaders(!strictWABHeaders);
+        
+        return installationOptions;
     }
 
     private final Manifest toManifest(Dictionary<String, String> headers) {
@@ -575,6 +592,24 @@ public class WARDeployer implements SimpleDeployer {
         this.bundleContext = bundleContext;
         this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
     }
+
+	private boolean getStrictWABHeadersValue() {
+		boolean strictWABHeaders = true;
+        String wabHeadersPropertyValue = null;
+        if (kernelConfig.getProperty(PROPERTY_WAB_HEADERS) != null) {
+           wabHeadersPropertyValue = kernelConfig.getProperty(PROPERTY_WAB_HEADERS).toString();
+        }
+        if (wabHeadersPropertyValue != null) {
+            if (PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {
+                strictWABHeaders = false;
+                logger.info("Property '%s' has value [defaulted]", new String[] { PROPERTY_WAB_HEADERS });
+            } else if (!PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
+            	logger.error("Property '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS, wabHeadersPropertyValue });
+            } 
+        }
+        
+        return strictWABHeaders;
+	}
 
     public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
         this.webBundleManifestTransformer = transformer;
