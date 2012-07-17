@@ -12,6 +12,7 @@
 package org.eclipse.virgo.kernel.shell.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -21,68 +22,74 @@ import org.eclipse.virgo.kernel.shell.internal.AnnotationBasedCommandResolver;
 import org.eclipse.virgo.kernel.shell.internal.CommandDescriptor;
 import org.junit.Test;
 
-
 /**
  */
 public class AnnotationBasedCommandResolverTests {
-    
+
     private final AnnotationBasedCommandResolver resolver = new AnnotationBasedCommandResolver();
-    
+
     @Test
     public void basicAnnotations() throws SecurityException, NoSuchMethodException {
         List<CommandDescriptor> commands = resolver.resolveCommands(null, new TestCommands());
         assertEquals(2, commands.size());
-        
-        assertCommandEquals("test", "one", TestCommands.class.getMethod("foo"), commands.get(0));
-        assertCommandEquals("test", "two", TestCommands.class.getMethod("bar"), commands.get(1));
+
+        assertCommandEquals(TestCommands.class.getMethod("foo"), "test", "one", commands);
+        assertCommandEquals(TestCommands.class.getMethod("bar"), "test", "two", commands);
     }
-    
+
     @Test
     public void inheritedAnnotations() throws SecurityException, NoSuchMethodException {
         List<CommandDescriptor> commands = resolver.resolveCommands(null, new SubTestCommands());
         assertEquals(4, commands.size());
-        
-        assertCommandEquals("test-sub", "three", SubTestCommands.class.getMethod("alpha"), commands.get(0));
-        assertCommandEquals("test-sub", "four", SubTestCommands.class.getMethod("bravo"), commands.get(1));
-        assertCommandEquals("test-sub", "one", SubTestCommands.class.getMethod("foo"), commands.get(2));
-        assertCommandEquals("test-sub", "two", SubTestCommands.class.getMethod("bar"), commands.get(3));
+
+        assertCommandEquals(SubTestCommands.class.getMethod("alpha"), "test-sub", "three", commands);
+        assertCommandEquals(SubTestCommands.class.getMethod("bravo"), "test-sub", "four", commands);
+        assertCommandEquals(SubTestCommands.class.getMethod("foo"), "test-sub", "one", commands);
+        assertCommandEquals(SubTestCommands.class.getMethod("bar"), "test-sub", "two", commands);
     }
-    
-    private void assertCommandEquals(String expectedCommandName, String expectedSubCommandName, Method expectedMethod, CommandDescriptor commandDescriptor) {
-        assertEquals(expectedCommandName, commandDescriptor.getCommandName());
-        assertEquals(expectedSubCommandName, commandDescriptor.getSubCommandName());
-        assertEquals(expectedMethod, commandDescriptor.getMethod());
+
+    private void assertCommandEquals(Method expectedMethod, String expectedCommandName, String expectedSubCommandName,
+        List<CommandDescriptor> commands) {
+        boolean found = false;
+        for (CommandDescriptor commandDescriptor : commands) {
+            if (expectedMethod.equals(commandDescriptor.getMethod())) {
+                found = true;
+                assertEquals(expectedCommandName, commandDescriptor.getCommandName());
+                assertEquals(expectedSubCommandName, commandDescriptor.getSubCommandName());
+            }
+        }
+        assertTrue("Method not found '" + expectedMethod + "'", found);
     }
-    
+
     @Command("test")
     private static class TestCommands {
-        
+
         @SuppressWarnings("unused")
         @Command("one")
         public void foo() {
-            
+
         }
-        
+
         @SuppressWarnings("unused")
         @Command("two")
         public void bar() {
-            
+
         }
     }
-    
+
     @Command("test-sub")
     private static final class SubTestCommands extends TestCommands {
-        
+
         @SuppressWarnings("unused")
         @Command("three")
         public void alpha() {
-            
+
         }
-        
+
         @SuppressWarnings("unused")
         @Command("four")
         public void bravo() {
-            
+
         }
     }
 }
