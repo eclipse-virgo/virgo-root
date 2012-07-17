@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -118,6 +119,8 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
         if (propertiesFile != null) {
         	checkConfigUnavailable(pid);
         }
+        
+        uninstallBundles(afterUndeployBundles, "simple.fragment.one");
     }
 
     private void assertBundlesNotInstalled(Bundle[] bundles, String... candidateBsns) {
@@ -131,6 +134,19 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
         }
     }
     
+    private void uninstallBundles(Bundle[] bundles, String... uninstallBsns) {
+        for (Bundle bundle : bundles) {
+            String symbolicName = bundle.getSymbolicName();
+            for (String uninstallBsn : uninstallBsns) {
+                if (uninstallBsn.equals(symbolicName)) {
+                    try {
+                        bundle.uninstall();
+                    } catch (BundleException _) {
+                    }
+                }
+            }
+        }
+    }
     private void checkConfigAvailable(String pid, File propertiesFile) throws IOException {
         Configuration configuration = this.configAdmin.getConfiguration(pid, null);
         Dictionary<String, Object> dictionary = configuration.getProperties();
