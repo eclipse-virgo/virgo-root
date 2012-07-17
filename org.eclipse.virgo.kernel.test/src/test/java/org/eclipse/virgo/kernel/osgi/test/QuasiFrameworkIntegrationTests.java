@@ -250,6 +250,10 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
         Bundle exporterBundle = exporterQuasiBundle.getBundle();
         Assert.assertNotNull(exporterBundle);
         Assert.assertEquals(EXPORTER_BSN, exporterBundle.getSymbolicName());
+        
+        // Tidy up since test methods may run in any order in Java 7 
+        importerBundle.uninstall();
+        exporterBundle.uninstall();
     }
     
     private QuasiBundle installExporterBundle() throws BundleException, URISyntaxException {
