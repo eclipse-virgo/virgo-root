@@ -244,8 +244,10 @@ public class WARDeployer implements SimpleDeployer {
 
     @Override
     public final boolean undeploy(Bundle bundle) {
-        final String warName = bundle.getSymbolicName();
-        final File warDir = new File(this.webAppsDir, warName);
+        String bundleLocation = removeTrailingFileSeparator(bundle.getLocation());
+        String warPath = extractWarPath(bundleLocation);
+        final File warDir = new File(warPath);
+        String warName = extractWarName(warPath);
         
         deleteStatusFile(warName, this.pickupDir);
 
@@ -277,6 +279,27 @@ public class WARDeployer implements SimpleDeployer {
 
         createStatusFile(warName, OP_UNDEPLOY, STATUS_OK, bundle.getBundleId(), bundle.getLastModified());
         return STATUS_OK;
+    }
+    
+    private String extractWarName(String warPath) {
+        return warPath.substring(warPath.lastIndexOf(File.separatorChar) + 1, warPath.length());
+    }
+
+    private String extractWarPath(String bundleLocation) {
+        String warPath;
+        if (bundleLocation.startsWith(INSTALL_BY_REFERENCE_PREFIX)) {
+            warPath = bundleLocation.substring(INSTALL_BY_REFERENCE_PREFIX.length());
+        } else {
+            warPath = bundleLocation;
+        }
+        return warPath;
+    }
+
+    private String removeTrailingFileSeparator(String bundleLocation) {
+        if (bundleLocation.endsWith(File.separator)) {
+            bundleLocation = bundleLocation.substring(0, bundleLocation.length() - 1);
+        }
+        return bundleLocation;
     }
 
     @Override
