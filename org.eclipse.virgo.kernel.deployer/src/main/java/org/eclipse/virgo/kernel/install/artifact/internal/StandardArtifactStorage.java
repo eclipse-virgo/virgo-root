@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
@@ -28,7 +27,7 @@ import org.eclipse.virgo.util.io.JarUtils;
 import org.eclipse.virgo.util.io.PathReference;
 
 final class StandardArtifactStorage implements ArtifactStorage {
-    
+
     private static final List<String> UNPACK_EXTENSIONS = Arrays.asList("par", "zip");
 
     private final PathReference sourcePathReference;
@@ -52,12 +51,12 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.eventLogger = eventLogger;
 
-        synchronize();
+        synchronize(this.sourcePathReference, false);
         this.artifactFS = artifactFSFactory.create(this.baseStagingPathReference.toFile());
     }
 
     public void synchronize() {
-        synchronize(this.sourcePathReference);
+        synchronize(this.sourcePathReference, true);
     }
 
     public ArtifactFS getArtifactFS() {
@@ -65,7 +64,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     public void synchronize(URI sourceUri) {
-        synchronize(new PathReference(sourceUri));
+        synchronize(new PathReference(sourceUri), true);
     }
 
     public void rollBack() {
@@ -78,9 +77,13 @@ final class StandardArtifactStorage implements ArtifactStorage {
         this.baseStagingPathReference.delete(true);
     }
 
-    private void synchronize(PathReference normalizedSourcePathReference) {
+    private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
         synchronized (this.monitor) {
-            stashContent();
+            if (stash) {
+                stashContent();
+            } else {
+                this.baseStagingPathReference.delete(true);
+            }
             if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
                 && needsUnpacking(normalizedSourcePathReference.getName())) {
                 try {
@@ -110,9 +113,9 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private void stashContent() {
         if (this.baseStagingPathReference.exists()) {
-        	this.pastStagingPathReference.delete(true);
+            this.pastStagingPathReference.delete(true);
             if (this.pastStagingPathReference.exists()) {
-            	throw new FatalIOException(String.format("Unable to delete %s while stashing content", this.pastStagingPathReference.toString()));
+                throw new FatalIOException(String.format("Unable to delete %s while stashing content", this.pastStagingPathReference.toString()));
             }
             this.baseStagingPathReference.moveTo(this.pastStagingPathReference);
         }
@@ -120,9 +123,9 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private void unstashContent() {
         if (this.pastStagingPathReference.exists()) {
-        	this.baseStagingPathReference.delete(true);
+            this.baseStagingPathReference.delete(true);
             if (this.baseStagingPathReference.exists()) {
-            	throw new FatalIOException(String.format("Unable to delete %s while unstashing content", this.baseStagingPathReference.toString()));
+                throw new FatalIOException(String.format("Unable to delete %s while unstashing content", this.baseStagingPathReference.toString()));
             }
             this.pastStagingPathReference.moveTo(this.baseStagingPathReference);
         }
