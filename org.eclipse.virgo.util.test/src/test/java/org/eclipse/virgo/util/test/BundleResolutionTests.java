@@ -16,7 +16,7 @@ import java.io.File;
 import org.junit.Test;
 
 public class BundleResolutionTests extends AbstractEquinoxLaunchingTests {
-
+    
     @Test
     public void bundleResolution() throws Exception {
         framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.common/target/classes").toURI().toString()).start();
@@ -27,7 +27,7 @@ public class BundleResolutionTests extends AbstractEquinoxLaunchingTests {
         framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.osgi/target/classes").toURI().toString()).start();
         framework.getBundleContext().installBundle(new File("../org.eclipse.virgo.util.osgi.manifest/target/classes").toURI().toString()).start();
     }
-
+    
     @Override
     protected String getSystemPackages() {
         return "org.slf4j;version=1.6.4," + "org.eclipse.virgo.util.common;version=2.0.0," + "org.eclipse.virgo.util.math;version=2.0.0";
