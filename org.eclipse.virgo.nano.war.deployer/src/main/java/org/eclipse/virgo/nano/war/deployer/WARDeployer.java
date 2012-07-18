@@ -185,9 +185,6 @@ public class WARDeployer implements SimpleDeployer {
         this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTING, installed.getSymbolicName(), installed.getVersion());
         try {
             installed.start();
-            if (!isWebAppEnabled(installed)) {
-                throw new Exception("Failed to enable application.");
-            }
         } catch (Exception e) {
             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
@@ -214,24 +211,6 @@ public class WARDeployer implements SimpleDeployer {
 
         createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
         return STATUS_OK;
-    }
-
-    private boolean isWebAppEnabled(final Bundle installed) throws InterruptedException {
-        int counter = 0;
-        int retries = Integer.valueOf(this.kernelConfig.getProperty("application.init.timeout"));
-        while (counter < retries) {
-            ServiceReference[] refs = installed.getRegisteredServices();
-            if (refs != null) {
-                for (ServiceReference ref : refs) {
-                    if (((String[])ref.getProperty("objectClass"))[0].equals(ServletContext.class.getCanonicalName())) {
-                        return true;
-                    }
-                }
-            }
-            counter++;
-            Thread.sleep(1000);
-        }
-        return false;
     }
 
     @Override
@@ -267,7 +246,7 @@ public class WARDeployer implements SimpleDeployer {
     public final boolean undeploy(Bundle bundle) {
         final String warName = bundle.getSymbolicName();
         final File warDir = new File(this.webAppsDir, warName);
-
+        
         deleteStatusFile(warName, this.pickupDir);
 
         if (bundle != null) {
@@ -331,9 +310,6 @@ public class WARDeployer implements SimpleDeployer {
                 transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(NanoWARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
-                if (!isWebAppEnabled(bundle)) {
-                    throw new Exception("Failed to enable application.");
-                }
                 if (this.packageAdmin != null) {
                     this.packageAdmin.refreshPackages(new Bundle[] { bundle });
                     this.logger.info("Update of file with path [" + path + "] is successful.");
