@@ -79,7 +79,7 @@ public final class BundleManifestUtils {
     private static Reader manifestReaderFromJar(File file) throws IOException, SecurityException {
         ArtifactFS fs = new JarFileArtifactFS(file);
         ArtifactFSEntry fsEntry = fs.getEntry(JarFile.MANIFEST_NAME);
-        if (fsEntry == null) {
+        if (fsEntry == null || !fsEntry.exists()) {
             return null; // not an error -- no manifest means this isn't a bundle
         }
         StringWriter writer = new StringWriter();
