@@ -31,12 +31,14 @@ public class JarFileArtifactFSRefreshTests {
 
     private PathReference testModule;
 
+    private PathReference pr;
+
     @Before
     public void setUp() throws Exception {
-        PathReference pr = new PathReference("./target/redeploy-refresh");
-        pr.delete(true);
-        pr.createDirectory();
-        this.testModule = pr.newChild("simple.module.jar");
+        this.pr = new PathReference("./target/redeploy-refresh");
+        this.pr.delete(true);
+        this.pr.createDirectory();
+        this.testModule = this.pr.newChild("simple.module.jar");
     }
 
     @Test
@@ -47,10 +49,11 @@ public class JarFileArtifactFSRefreshTests {
         ArtifactFS artifactFS = new JarFileArtifactFS(new PathReference("./target/redeploy-refresh/simple.module.jar").toFile());
 
         checkBsn(artifactFS, "simple.module");
-
-        this.testModule.delete();
-        new PathReference("src/test/resources/refresh/simple2.module.jar").copy(this.testModule);
         
+        PathReference old = this.pr.newChild("simple.module.jar-past");
+        this.testModule.moveTo(old);
+        new PathReference("src/test/resources/refresh/simple2.module.jar").copy(this.testModule);
+
         JarFileArtifactFS fs = new JarFileArtifactFS(new PathReference("./target/redeploy-refresh/simple.module.jar").toFile());
 
         checkBsn(fs, "simple2.module");
