@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
  */
 public class QuasiStateDumpMBeanTests {
 
-	private final QuasiStateDumpMBean quasiStateDumpMBean;
+	private final QuasiStateDump quasiStateDumpMBean;
 	
 	public QuasiStateDumpMBeanTests() {
-		quasiStateDumpMBean = new QuasiStateDumpMBean(new QuasiFrameworkFactory() {
+		quasiStateDumpMBean = new QuasiStateDump(new QuasiFrameworkFactory() {
 			
 			@Override
 			public QuasiFramework create(File stateDump) throws ZipException, IOException {

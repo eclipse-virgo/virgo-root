@@ -7,6 +7,7 @@ Excluded-Exports:
  *.internal.*
 Excluded-Imports: 
  org.eclipse.virgo.kernel.services.repository.internal.*,
+ org.eclipse.virgo.kernel.userregion.internal.*,
  org.eclipse.virgo.repository.internal
 Import-Template: 
  org.eclipse.equinox.region.*;version="${org.eclipse.equinox.region:[=.=.=, =.+1)}",

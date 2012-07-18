@@ -44,7 +44,7 @@ import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StandardPackageAdminUtil;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
-import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpMBeanExporter;
+import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpJMXExporter;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
@@ -90,7 +90,7 @@ public class Activator implements BundleActivator {
 
     private volatile EquinoxHookRegistrar hookRegistrar;
 
-    private StateDumpMBeanExporter stateDumpMBeanExorter;
+    private StateDumpJMXExporter stateDumpMBeanExorter;
     
     private ConsoleConfigurationConvertor consoleConfigurationConvertor = null;
 
@@ -139,7 +139,7 @@ public class Activator implements BundleActivator {
 
         context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
         initializeConsoleConfigurationConvertor(context);
-        this.stateDumpMBeanExorter = new StateDumpMBeanExporter(quasiFrameworkFactory);
+        this.stateDumpMBeanExorter = new StateDumpJMXExporter(quasiFrameworkFactory);
     }
 
     /**
@@ -244,7 +244,7 @@ public class Activator implements BundleActivator {
         	this.consoleConfigurationConvertor.stop();
         }
 
-        StateDumpMBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
+        StateDumpJMXExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
         if (localStateDumpMBeanExporter != null) {
             localStateDumpMBeanExporter.close();
             this.stateDumpMBeanExorter = null;
@@ -343,7 +343,6 @@ public class Activator implements BundleActivator {
             }
         }
 
-        @SuppressWarnings("unchecked")
         private Dictionary<String, Object> getRegionArtifactConfiguration() {
             ConfigurationAdmin configAdmin = OsgiFrameworkUtils.getService(this.context, ConfigurationAdmin.class).getService();
             try {
