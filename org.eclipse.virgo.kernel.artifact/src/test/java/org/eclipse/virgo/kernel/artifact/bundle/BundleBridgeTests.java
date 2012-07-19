@@ -90,18 +90,6 @@ public class BundleBridgeTests {
     }
 
     @Test
-    @Ignore("383874: BundleBridge was re-implemented via JarFileArtifactFS to use ZipInputStream and avoid incorrect caching. ZipInputStream does not treat non-zip files as erroneous")
-    public void testBadManifest02() {
-        File file = new File("./src/test/resources/wars/testbad02.war"); // Not a zip file, just contains text.
-        try {
-            BUNDLE_BRIDGE.generateArtifactDescriptor(file);
-            assertTrue("Should throw exception", false);
-        } catch (ArtifactGenerationException age) {
-            assertEquals("ArtifactType in exception is incorrect", age.getArtifactType(), BundleBridge.BRIDGE_TYPE);
-        }
-    }
-
-    @Test
     public void testGenerateArtefact() throws ArtifactGenerationException {
         File jarsDirectory = new File(
             "../ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
