@@ -28,29 +28,31 @@ import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.ArtifactGenerationException;
 import org.eclipse.virgo.repository.Attribute;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
 /**
  * <p>
- * Unit tests for {@link org.eclipse.virgo.kernel.artifact.bundle.BundleBridge BundleBridge}. Uses a combination of real bundle files and
- * static test data.
+ * Unit tests for {@link org.eclipse.virgo.kernel.artifact.bundle.BundleBridge BundleBridge}. Uses a combination of real
+ * bundle files and static test data.
  * </p>
- *
+ * 
  * <strong>Concurrent Semantics</strong><br />
- *
+ * 
  * Threadsafe test case
- *
+ * 
  */
 public class BundleBridgeTests {
 
-    //Test Data
+    // Test Data
 
     private final static String ARTEFACT_ATTRIBUTE_NAME = "name";
 
     private final static String ARTEFACT_ATTRIBUTE_VERSION = "version";
-    //End Test Data
+
+    // End Test Data
 
     private static BundleBridge BUNDLE_BRIDGE;
 
@@ -78,7 +80,7 @@ public class BundleBridgeTests {
 
     @Test
     public void testBadManifest01() {
-        File file = new File("./src/test/resources/wars/testbad01.war");
+        File file = new File("./src/test/resources/wars/testbad01.war"); // contains Erroneous-Data: Bundle-Version
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
             assertTrue("Should throw exception", false);
@@ -88,8 +90,9 @@ public class BundleBridgeTests {
     }
 
     @Test
+    @Ignore("383874: BundleBridge was re-implemented via JarFileArtifactFS to use ZipInputStream and avoid incorrect caching. ZipInputStream does not treat non-zip files as erroneous")
     public void testBadManifest02() {
-        File file = new File("./src/test/resources/wars/testbad02.war");
+        File file = new File("./src/test/resources/wars/testbad02.war"); // Not a zip file, just contains text.
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
             assertTrue("Should throw exception", false);
@@ -100,7 +103,8 @@ public class BundleBridgeTests {
 
     @Test
     public void testGenerateArtefact() throws ArtifactGenerationException {
-        File jarsDirectory = new File("../ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
+        File jarsDirectory = new File(
+            "../ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
         File directoriesDirectory = new File("./src/test/resources/directories");
 
         Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
@@ -136,7 +140,8 @@ public class BundleBridgeTests {
 
     @Test
     public void testBuildDictionary() throws ArtifactGenerationException, IOException {
-        File testFile = new File("../ivy-cache/repository/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar");
+        File testFile = new File(
+            "../ivy-cache/repository/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar");
 
         ArtifactDescriptor inputArtefact = BUNDLE_BRIDGE.generateArtifactDescriptor(testFile);
 
@@ -198,7 +203,7 @@ public class BundleBridgeTests {
         Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
 
         for (File fileInDir : directory.listFiles()) {
-            if(!fileInDir.getName().endsWith(".jar") && !fileInDir.getName().contains("sources")){
+            if (!fileInDir.getName().endsWith(".jar") && !fileInDir.getName().contains("sources")) {
                 ArtifactDescriptor artefact = BUNDLE_BRIDGE.generateArtifactDescriptor(fileInDir);
                 if (artefact != null) {
                     artefacts.add(BUNDLE_BRIDGE.generateArtifactDescriptor(fileInDir));

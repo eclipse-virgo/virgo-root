@@ -208,13 +208,14 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
         }
 
         public void close() {
-            try {
-                this.zipInputStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (this.zipInputStream != null) {
+                try {
+                    this.zipInputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-
     }
 
 }

@@ -77,6 +77,9 @@ public final class BundleManifestUtils {
     }
 
     private static Reader manifestReaderFromJar(File file) throws IOException, SecurityException {
+        if (!file.exists()) {
+            throw new IOException("File '" + file + "' not found");
+        }
         ArtifactFS fs = new JarFileArtifactFS(file);
         ArtifactFSEntry fsEntry = fs.getEntry(JarFile.MANIFEST_NAME);
         if (fsEntry == null || !fsEntry.exists()) {
