@@ -23,12 +23,12 @@ import static org.junit.Assert.*;
  * 
  *
  */
-public class QuasiStateDumpMBeanTests {
+public class JMXQuasiStateDumpTests {
 
-	private final QuasiStateDump quasiStateDumpMBean;
+	private final JMXQuasiStateDump quasiStateDumpMBean;
 	
-	public QuasiStateDumpMBeanTests() {
-		quasiStateDumpMBean = new QuasiStateDump(new QuasiFrameworkFactory() {
+	public JMXQuasiStateDumpTests() {
+		quasiStateDumpMBean = new JMXQuasiStateDump(new QuasiFrameworkFactory() {
 			
 			@Override
 			public QuasiFramework create(File stateDump) throws ZipException, IOException {
@@ -43,14 +43,18 @@ public class QuasiStateDumpMBeanTests {
 	}
 	
 	@Test
-	public void testGetSummary(){
-		String[] summary = this.quasiStateDumpMBean.getSummary("src/test/resources/testDump");
-		for (String string : summary) {
-			System.out.println(string);
-		}
-		assertEquals(2, summary.length);
-		assertEquals("Bundle: foo_0.0.0", summary[0]);
-		assertEquals("    Description", summary[1]);
+	public void testGetUnresolvedBundleIds(){
+
+	}
+	
+	@Test
+	public void testListBundles(){
+
+	}
+	
+	@Test
+	public void testGetBundle(){
+
 	}
 	
 }

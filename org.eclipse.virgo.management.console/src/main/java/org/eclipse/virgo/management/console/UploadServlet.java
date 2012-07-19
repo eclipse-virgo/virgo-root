@@ -25,7 +25,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.eclipse.virgo.util.io.PathReference;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,12 +68,10 @@ public class UploadServlet extends HttpServlet {
     }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	    
-	    createStagingDirectory();
-
-		FileItemFactory factory = new DiskFileItemFactory();
-		ServletFileUpload upload = new ServletFileUpload(factory);
 		try {
+		    createStagingDirectory();
+			FileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
 		    response.setContentType("text/html");
 		    PrintWriter writer = response.getWriter();
             writer.append("<ol id=\"uploadLocations\">");
@@ -95,15 +92,16 @@ public class UploadServlet extends HttpServlet {
 			writer.close();
 		} catch (Exception e) {
 		    log.error(e.toString());
-			e.printStackTrace();
 			response.sendError(HTTP_RESPONSE_INTERNAL_SERVER_ERROR);
 		}
 	}
 
-    private void createStagingDirectory() {
-        PathReference pathReference = new PathReference(new File(String.format("%s%s", this.serverHome, STAGING_DIR)));
+    private void createStagingDirectory() throws IOException {
+        File pathReference = new File(String.format("%s%s", this.serverHome, STAGING_DIR));
         if (!pathReference.exists()) {
-            pathReference.createDirectory();
+        	if (!pathReference.mkdirs()) {
+        		throw new IOException("Unable to create directory " + pathReference.getPath());
+        	}
         }
     }
 

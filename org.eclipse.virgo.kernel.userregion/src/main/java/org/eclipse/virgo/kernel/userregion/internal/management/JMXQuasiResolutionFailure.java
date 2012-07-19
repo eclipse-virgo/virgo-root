@@ -10,20 +10,26 @@
  *******************************************************************************/
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
-import javax.management.MXBean;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 
 /**
  * 
- * Implementations should be thread safe
  *
  */
-@MXBean
-public interface StateDumpMXBean {
+public class JMXQuasiResolutionFailure {
 
-	public JMXQuasiResolutionFailure[] getUnresolvedBundleIds(String dumpFile);
+	private final QuasiResolutionFailure quasiResolutionFailure;
 
-	public JMXQuasiMinimalBundle[] listBundles(String dumpFile);
+	public JMXQuasiResolutionFailure(QuasiResolutionFailure quasiResolutionFailure) {
+		this.quasiResolutionFailure = quasiResolutionFailure;
+	}
 	
-	public JMXQuasiBundle getBundle(String dumpFile, long bundleId);
+	public long getIdentifier(){
+		return this.quasiResolutionFailure.getUnresolvedQuasiBundle().getBundleId();
+	}
 	
+	public String getDescription(){
+		return this.quasiResolutionFailure.getDescription();
+	}
+
 }

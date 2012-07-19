@@ -10,9 +10,29 @@
  *******************************************************************************/
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
-import javax.management.MXBean;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 
-@MXBean
-public interface BundleMXBean {
+/**
+ * 
+ *
+ */
+public class JMXQuasiMinimalBundle {
 
+	private final QuasiBundle quasiBundle;
+
+	public JMXQuasiMinimalBundle(QuasiBundle quasiBundle) {
+		this.quasiBundle = quasiBundle;
+	}
+
+	public final long getIdentifier(){
+		return this.quasiBundle.getBundleId();
+	}
+	
+	public final String getSymbolicName(){
+		return this.quasiBundle.getSymbolicName();
+	}
+	
+	public final String getVersion() {
+		return this.quasiBundle.getVersion().toString();
+	}
 }

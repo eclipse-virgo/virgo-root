@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2008, 2012 VMware Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   VMware Inc. - initial contribution
+ *******************************************************************************/
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
 import java.lang.management.ManagementFactory;
@@ -14,8 +24,8 @@ import org.slf4j.LoggerFactory;
  * 
  *
  */
-public class StateDumpJMXExporter {
-    private final Logger logger = LoggerFactory.getLogger(StateDumpJMXExporter.class);
+public class StateDumpMXBeanExporter {
+    private final Logger logger = LoggerFactory.getLogger(StateDumpMXBeanExporter.class);
 
     private static final String DOMAIN = "org.eclipse.virgo.kernel";
     
@@ -27,10 +37,10 @@ public class StateDumpJMXExporter {
      * 
      * @param serverHome
      */
-	public StateDumpJMXExporter(QuasiFrameworkFactory quasiFrameworkFactory) {
+	public StateDumpMXBeanExporter(QuasiFrameworkFactory quasiFrameworkFactory) {
 		try {
 			ObjectName dumpMBeanName = new ObjectName(String.format("%s:type=Medic,name=StateDumpInspector", DOMAIN));
-			registeredMBean = this.server.registerMBean(new QuasiStateDump(quasiFrameworkFactory), dumpMBeanName);
+			registeredMBean = this.server.registerMBean(new JMXQuasiStateDump(quasiFrameworkFactory), dumpMBeanName);
 		} catch (Exception e) {
 			logger.error("Unable to register the DumpInspectorMBean", e);
 		} 

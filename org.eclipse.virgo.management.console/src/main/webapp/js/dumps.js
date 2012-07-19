@@ -21,6 +21,7 @@ function pageinit(){
 		dataType: 'json',
 		success: function (response) {
 			$('#dumpLocation').text("Location: " + response.value);
+			dumpViewer.setDumpLocation(response.value);
 		}
 	});
 }
@@ -30,6 +31,10 @@ var DumpViewer = function(){
 	var self = this;
 
 	self.selectedDump = null;
+	
+	self.setDumpLocation = function(dumpLocation){
+		self.dumpLocation = dumpLocation;
+	};
 	
 	self.displayDumps = function(){
 		$('#dumps').empty();
@@ -160,7 +165,7 @@ var DumpViewer = function(){
 		var height = 562;
 		$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
 		
-		var dataSource = new QuasiDataSource();
+		var dataSource = new QuasiDataSource(self.dumpLocation + '/' + dumpId);
 		dataSource.updateData(function(){
 			new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(5);
 		});
@@ -203,10 +208,14 @@ var DumpViewer = function(){
  * UpdateBundle
  * 
  */
-var QuasiDataSource = function(){
+var QuasiDataSource = function(dumpFolder){
 
 	var self = this;
 
+	self.dumpFolder = dumpFolder;
+	
+	alert(self.dumpFolder);
+	
 	self.bundles = {};
 	
 	self.services = {};
