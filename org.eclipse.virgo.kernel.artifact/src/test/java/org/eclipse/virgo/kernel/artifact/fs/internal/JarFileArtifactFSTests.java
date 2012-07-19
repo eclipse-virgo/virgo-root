@@ -14,7 +14,6 @@ package org.eclipse.virgo.kernel.artifact.fs.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -209,4 +208,18 @@ public class JarFileArtifactFSTests {
         File file = this.artifactFS.getFile();
         assertEquals("simple.jar", file.getName());
     }
+
+    @Test
+    public void testDirectory() {
+        ArtifactFS artifactFS = new JarFileArtifactFS(new File("src/test/resources/artifacts/bundle.jar"));
+        ArtifactFSEntry dir = artifactFS.getEntry("META-INF/spring/");
+        assertTrue(dir.exists());
+        ArtifactFSEntry[] files = dir.getChildren();
+        assertEquals(1, files.length);
+        ArtifactFSEntry entry = files[0];
+        InputStream inputStream = entry.getInputStream();
+        String contents = new Scanner(inputStream).useDelimiter("\\A").next();
+        assertTrue(contents.startsWith("<beans xmlns=\"http://www.springframework.org/schema/beans\""));
+    }
+
 }
