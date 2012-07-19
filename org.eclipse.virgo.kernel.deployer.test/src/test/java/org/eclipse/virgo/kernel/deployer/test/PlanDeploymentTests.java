@@ -142,6 +142,8 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         if (propertiesFile != null) {
             checkConfigUnavailable(pid);
         }
+        
+        uninstallBundles(afterUndeployBundles, "simple.fragment.one");
     }
 
     private void testPlanDeploymentStartingEvents(File plan, String... candidateBsns) throws Exception {
@@ -179,8 +181,24 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         this.deployer.undeploy(deploymentIdentity);
         Bundle[] afterUndeployBundles = this.context.getBundles();
         assertBundlesNotInstalled(afterUndeployBundles, candidateBsns);
+        
+        uninstallBundles(afterUndeployBundles, "simple.fragment.one");
     }
-
+    
+    private void uninstallBundles(Bundle[] bundles, String... uninstallBsns) {
+        for (Bundle bundle : bundles) {
+            String symbolicName = bundle.getSymbolicName();
+            for (String uninstallBsn : uninstallBsns) {
+                if (uninstallBsn.equals(symbolicName)) {
+                    try {
+                        bundle.uninstall();
+                    } catch (BundleException _) {
+                    }
+                }
+            }
+        }
+    }
+    
     private class StartBundleRunnable implements Runnable {
 
         BundleContext context = null;

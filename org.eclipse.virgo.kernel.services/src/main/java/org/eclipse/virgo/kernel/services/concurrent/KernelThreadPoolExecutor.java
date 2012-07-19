@@ -21,9 +21,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
 
-
 /**
  * Extension of {@link ThreadPoolExecutor} that handles kernel thread decoration.
+ * <p/>
+ * The implementation of ThreadPoolExecutor changed in Java 7 so that getCompletedTaskCount includes tasks that failed
+ * with an exception, unlike Java 6 which excludes such tasks from the count. {@link KernelThreadPoolExecutor} class
+ * inherits this Java version specific behaviour.
  * 
  * <strong>Concurrent Semantics</strong><br/>
  * 
@@ -45,13 +48,13 @@ public final class KernelThreadPoolExecutor extends ThreadPoolExecutor implement
      * @param unit the {@link TimeUnit} for the keep alive time.
      * @param workQueue the work queue.
      * @param poolName the name of the thread pool.
-     * @param tracingService 
+     * @param tracingService
      */
-    public KernelThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-        BlockingQueue<Runnable> workQueue, String poolName, TracingService tracingService) {
+    public KernelThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue,
+        String poolName, TracingService tracingService) {
         this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, poolName, tracingService, null);
     }
-    
+
     /**
      * Creates a new <code>ServerThreadPoolExecutor</code>.
      * 
@@ -64,8 +67,8 @@ public final class KernelThreadPoolExecutor extends ThreadPoolExecutor implement
      * @param tracingService the kernel tracing service.
      * @param handler the rejected execution handler. May be <code>null</code>.
      */
-    public KernelThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-        BlockingQueue<Runnable> workQueue, String poolName, TracingService tracingService, RejectedExecutionHandler handler) {
+    public KernelThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue,
+        String poolName, TracingService tracingService, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, createThreadFactory(poolName), determineHandler(handler));
         this.poolName = poolName;
         this.delegate = new ExecutorServiceDelegate(tracingService);

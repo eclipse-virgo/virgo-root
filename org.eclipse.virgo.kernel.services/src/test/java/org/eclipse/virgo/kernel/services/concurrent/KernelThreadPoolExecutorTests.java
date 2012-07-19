@@ -23,8 +23,10 @@ import org.eclipse.virgo.kernel.services.concurrent.KernelThreadPoolExecutor;
 import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
 import org.junit.Test;
 
-
 /**
+ * Note that this class used to test the value of getCompletedTaskCount after an execution which failed with an
+ * exception, but the implementation of ThreadPoolExecutor changed in Java 7 so that getCompletedTaskCount included
+ * tasks that failed with an exception. So the test was removed.
  */
 public class KernelThreadPoolExecutorTests extends AbstractExecutorTests {
 
@@ -46,27 +48,6 @@ public class KernelThreadPoolExecutorTests extends AbstractExecutorTests {
     @Override
     protected KernelThreadPoolExecutor getNamed(String name) {
         return new KernelThreadPoolExecutor(1, 1, 5, TimeUnit.SECONDS, this.queue, name, this.tracingService);
-    }
-
-    @Test
-    public void statisticsOnFail() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        KernelThreadPoolExecutor executor = getExecutor();
-        executor.execute(new Runnable() {
-
-            public void run() {
-                try {
-                    throw new RuntimeException("foo");
-                } finally {
-                    latch.countDown();
-                }
-            }
-
-        });
-        latch.await();
-        Thread.sleep(100);
-        assertEquals(0, executor.getCompletedTaskCount());
     }
 
     @Test
