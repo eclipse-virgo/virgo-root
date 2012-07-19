@@ -484,11 +484,7 @@ public class WARDeployer implements SimpleDeployer {
         		map.put(HEADER_WEB_CONTEXT_PATH, warName);
         	}
         }
-        String bundleSymbolicNameHeader = manifest.getHeader(HEADER_BUNDLE_SYMBOLIC_NAME);
-        if (bundleSymbolicNameHeader == null || bundleSymbolicNameHeader.trim().length() == 0) {
-            map.put(HEADER_BUNDLE_SYMBOLIC_NAME, warName);
-        }
-        
+                
         InstallationOptions installationOptions = new InstallationOptions(map);
         installationOptions.setDefaultWABHeaders(!strictWABHeaders);
         
