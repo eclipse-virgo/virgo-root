@@ -263,17 +263,4 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
         this.appDeployer.deploy(dirURI);
     }
 
-    @Test(expected = DeploymentException.class)
-    public void testWar() throws Exception {
-        URI warURI = new File("src/test/resources/waralientokernel.war").toURI();
-
-        this.appDeployer.deploy(warURI);
-    }
-
-    @Test(expected = DeploymentException.class)
-    public void testInvalidDigest() throws Exception {
-        URI warURI = new File("src/test/resources/invalidDigest.jar").toURI();
-
-        this.appDeployer.deploy(warURI);
-    }
 }
