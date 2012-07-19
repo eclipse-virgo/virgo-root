@@ -28,7 +28,6 @@ import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.ArtifactGenerationException;
 import org.eclipse.virgo.repository.Attribute;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
