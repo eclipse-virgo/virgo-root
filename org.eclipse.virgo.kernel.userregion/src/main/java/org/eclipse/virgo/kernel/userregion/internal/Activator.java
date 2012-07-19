@@ -44,7 +44,7 @@ import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StandardPackageAdminUtil;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
-import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpJMXExporter;
+import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpMXBeanExporter;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
@@ -90,7 +90,7 @@ public class Activator implements BundleActivator {
 
     private volatile EquinoxHookRegistrar hookRegistrar;
 
-    private StateDumpJMXExporter stateDumpMBeanExorter;
+    private StateDumpMXBeanExporter stateDumpMBeanExorter;
     
     private ConsoleConfigurationConvertor consoleConfigurationConvertor = null;
 
@@ -139,7 +139,7 @@ public class Activator implements BundleActivator {
 
         context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
         initializeConsoleConfigurationConvertor(context);
-        this.stateDumpMBeanExorter = new StateDumpJMXExporter(quasiFrameworkFactory);
+        this.stateDumpMBeanExorter = new StateDumpMXBeanExporter(quasiFrameworkFactory);
     }
 
     /**
@@ -244,7 +244,7 @@ public class Activator implements BundleActivator {
         	this.consoleConfigurationConvertor.stop();
         }
 
-        StateDumpJMXExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
+        StateDumpMXBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
         if (localStateDumpMBeanExporter != null) {
             localStateDumpMBeanExporter.close();
             this.stateDumpMBeanExorter = null;

@@ -103,8 +103,7 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
         ImportPackageSpecification[] dependentImportPackages = dependentBundle.getImportPackages();
         for (ImportPackageSpecification dependentImportPackage : dependentImportPackages) {
             if (matches(dependentImportPackage, this.exportPackageDescription)) {
-                consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null,
-                    stateHelper)));
+                consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null, this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId()), stateHelper)));
                 break;
             }
         }

@@ -44,28 +44,28 @@ public class StandardQuasiBundleTests {
     @Test
     public void testSymbolicName() {
         bundleDescription.setBundleSymbolicName(BSN);
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         Assert.assertEquals(BSN, qb.getSymbolicName());
     }
     
     @Test
     public void testVersion() {
         bundleDescription.setVersion(BV);
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         Assert.assertEquals(BV, qb.getVersion());
     }
     
     @Test
     public void testIsResolved() {
         bundleDescription.setResolved(true);
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         Assert.assertEquals(true, qb.isResolved());
     }
     
     @Test
     public void testBundleId() {
         bundleDescription.setBundleId(BID);
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         Assert.assertEquals(BID, qb.getBundleId());
     }
     
@@ -73,7 +73,7 @@ public class StandardQuasiBundleTests {
     public void testFragments() {
         bundleDescription.addFragment(new StubBundleDescription("f1"));
         bundleDescription.addFragment(new StubBundleDescription("f2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiBundle> fragments = qb.getFragments();
         Assert.assertEquals(2, fragments.size());
         Assert.assertEquals("f1", fragments.get(0).getSymbolicName());
@@ -82,7 +82,7 @@ public class StandardQuasiBundleTests {
     
     @Test
     public void testNoFragments() {
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiBundle> fragments = qb.getFragments();
         Assert.assertEquals(0, fragments.size());
     }
@@ -91,7 +91,7 @@ public class StandardQuasiBundleTests {
     public void testHosts() {
         bundleDescription.addHost(new StubBundleDescription("h1"));
         bundleDescription.addHost(new StubBundleDescription("h2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiBundle> hosts = qb.getHosts();
         Assert.assertEquals(2, hosts.size());
         Assert.assertEquals("h1", hosts.get(0).getSymbolicName());
@@ -100,7 +100,7 @@ public class StandardQuasiBundleTests {
     
     @Test
     public void testNoHosts() {
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiBundle> hosts = qb.getHosts();
         Assert.assertNull(hosts);
     }
@@ -109,7 +109,7 @@ public class StandardQuasiBundleTests {
     public void testExportPackages() {
         bundleDescription.addExportPackage(new StubExportPackageDescription("e1"));
         bundleDescription.addExportPackage(new StubExportPackageDescription("e2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiExportPackage> exportPackages = qb.getExportPackages();
         Assert.assertEquals(2, exportPackages.size());
         Assert.assertEquals("e1", exportPackages.get(0).getPackageName());
@@ -120,7 +120,7 @@ public class StandardQuasiBundleTests {
     public void testImportPackages() {
         bundleDescription.addImportPackage(new StubImportPackageSpecification("i1"));
         bundleDescription.addImportPackage(new StubImportPackageSpecification("i2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiImportPackage> importPackages = qb.getImportPackages();
         Assert.assertEquals(2, importPackages.size());
         Assert.assertEquals("i1", importPackages.get(0).getPackageName());
@@ -131,7 +131,7 @@ public class StandardQuasiBundleTests {
     public void testRequiredBundles() {
         bundleDescription.addRequiredBundle(new StubBundleSpecification("b1"));
         bundleDescription.addRequiredBundle(new StubBundleSpecification("b2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiRequiredBundle> requiredBundles = qb.getRequiredBundles();
         Assert.assertEquals(2, requiredBundles.size());
         Assert.assertEquals("b1", requiredBundles.get(0).getRequiredBundleName());
@@ -142,7 +142,7 @@ public class StandardQuasiBundleTests {
     public void testDependents() {
         bundleDescription.addDependent(new StubBundleDescription("b1"));
         bundleDescription.addDependent(new StubBundleDescription("b2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
         List<QuasiBundle> requiredBundles = qb.getDependents();
         Assert.assertEquals(2, requiredBundles.size());
         Assert.assertEquals("b1", requiredBundles.get(0).getSymbolicName());

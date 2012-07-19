@@ -55,7 +55,7 @@ public class StandardQuasiImportPackageTests {
         this.bundleDescription = new StubBundleDescription();
         this.bundleDescription.setBundleSymbolicName(BSN);
         this.stateHelper = new StubStateHelper();
-        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stateHelper);
+        this.qb = new StandardQuasiBundle(this.bundleDescription, null, null, this.stateHelper);
         this.importPackage = new StubImportPackageSpecification(PN);
         this.exportPackage = new StubExportPackageDescription(PN);
     }
