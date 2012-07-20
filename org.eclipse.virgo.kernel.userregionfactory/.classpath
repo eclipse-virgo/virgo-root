@@ -20,7 +20,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/3.6.0.D-20120717181632/org.eclipse.virgo.util.parser.manifest-3.6.0.D-20120717181632.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.parser.manifest/2.2.0.D-20101207150035/org.eclipse.virgo.util.parser.manifest-sources-2.2.0.D-20101207150035.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.teststubs/org.eclipse.virgo.teststubs.osgi/3.6.0.D-20120711092322/org.eclipse.virgo.teststubs.osgi-3.6.0.D-20120711092322.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.equinox.region/1.1.0.v20120319-1602/org.eclipse.equinox.region-1.1.0.v20120319-1602.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.6.0.D-20120717202758/org.eclipse.virgo.kernel.core-3.6.0.D-20120717202758.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.6.0.D-20120720074939/org.eclipse.virgo.kernel.core-3.6.0.D-20120720074939.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.3.0.v20120307-2102/org.eclipse.osgi.services-3.3.0.v20120307-2102.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110513/org.eclipse.osgi.services-sources-3.3.0.v20110513.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
