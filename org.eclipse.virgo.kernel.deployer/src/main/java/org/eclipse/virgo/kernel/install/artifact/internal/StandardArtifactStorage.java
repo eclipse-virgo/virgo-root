@@ -28,7 +28,11 @@ import org.eclipse.virgo.util.io.PathReference;
 
 final class StandardArtifactStorage implements ArtifactStorage {
 
-    private static final List<String> UNPACK_EXTENSIONS = Arrays.asList("par", "zip");
+    private static final String DEPLOYER_UNPACK_BUNDLES_TRUE = "true";
+
+    private static final List<String> ALWAYS_UNPACKED_EXTENSIONS = Arrays.asList("par", "zip");
+
+    private static final List<String> CONFIGURABLY_UNPACKED_EXTENSIONS = Arrays.asList("jar", "war");
 
     private final PathReference sourcePathReference;
 
@@ -40,16 +44,20 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private final EventLogger eventLogger;
 
+    private final boolean unpackBundles;
+
     private final Object monitor = new Object();
 
     public StandardArtifactStorage(PathReference sourcePathReference, PathReference baseStagingPathReference, ArtifactFSFactory artifactFSFactory,
-        EventLogger eventLogger) {
+        EventLogger eventLogger, String unpackBundlesOption) {
         this.sourcePathReference = sourcePathReference;
 
         this.baseStagingPathReference = baseStagingPathReference;
         this.pastStagingPathReference = new PathReference(String.format("%s-past", this.baseStagingPathReference.getAbsolutePath()));
 
         this.eventLogger = eventLogger;
+
+        this.unpackBundles = (unpackBundlesOption == null) || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
 
         synchronize(this.sourcePathReference, false);
         this.artifactFS = artifactFSFactory.create(this.baseStagingPathReference.toFile());
@@ -108,7 +116,9 @@ final class StandardArtifactStorage implements ArtifactStorage {
         if (dotLocation == -1) {
             return false;
         }
-        return UNPACK_EXTENSIONS.contains(fileName.substring(dotLocation + 1));
+        String fileExtension = fileName.substring(dotLocation + 1);
+        // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not specified or is "true"
+        return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || (this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension));
     }
 
     private void stashContent() {

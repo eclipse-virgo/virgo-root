@@ -65,7 +65,7 @@ public final class SyntheticContextBundleCreatingTransformerTests {
     private final InstallEnvironment installEnvironment = createMock(InstallEnvironment.class);
 
     private final ArtifactStorageFactory artifactStorageFactory = new StandardArtifactStorageFactory(new PathReference("target/work"),
-        new StandardArtifactFSFactory(), new MockEventLogger());
+        new StandardArtifactFSFactory(), new MockEventLogger(), "true");
 
     private final Transformer transformer = new SyntheticContextBundleCreatingTransformer(this.installArtifactGraphFactory,
         this.artifactStorageFactory);

@@ -27,6 +27,7 @@
 				class="org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory" />
 		</beans:constructor-arg>
 		<beans:constructor-arg ref="eventLogger" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.unpackBundles')}" />
 	</beans:bean>
 
 	<beans:bean id="syntheticContextCreatingTransformer"

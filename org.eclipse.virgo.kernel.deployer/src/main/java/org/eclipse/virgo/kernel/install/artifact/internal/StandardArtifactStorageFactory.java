@@ -40,25 +40,28 @@ public final class StandardArtifactStorageFactory implements ArtifactStorageFact
     private final ArtifactFSFactory artifactFSFactory;
 
     private final EventLogger eventLogger;
+    
+    private final String unpackBundles;
 
-    public StandardArtifactStorageFactory(PathReference workDirectory, ArtifactFSFactory artifactFSFactory, EventLogger eventLogger) {
+    public StandardArtifactStorageFactory(PathReference workDirectory, ArtifactFSFactory artifactFSFactory, EventLogger eventLogger, String unpackBundles) {
         this.workDirectory = workDirectory;
         this.artifactFSFactory = artifactFSFactory;
         this.eventLogger = eventLogger;
+        this.unpackBundles = unpackBundles;
     }
 
     public ArtifactStorage create(File file, ArtifactIdentity artifactIdentity) {
         PathReference sourcePathReference = new PathReference(file);
         PathReference stagingPathReference = createStagingPathReference(artifactIdentity, file.getName());
 
-        return new StandardArtifactStorage(sourcePathReference, stagingPathReference, this.artifactFSFactory, this.eventLogger);
+        return new StandardArtifactStorage(sourcePathReference, stagingPathReference, this.artifactFSFactory, this.eventLogger, this.unpackBundles);
     }
 
     public ArtifactStorage createDirectoryStorage(ArtifactIdentity artifactIdentity, String directoryName) {
         PathReference stagingPathReference = createStagingPathReference(artifactIdentity, directoryName);
         stagingPathReference.createDirectory();
 
-        return new StandardArtifactStorage(null, stagingPathReference, this.artifactFSFactory, this.eventLogger);
+        return new StandardArtifactStorage(null, stagingPathReference, this.artifactFSFactory, this.eventLogger, this.unpackBundles);
     }
 
     private PathReference createStagingPathReference(ArtifactIdentity artifactIdentity, String name) {
