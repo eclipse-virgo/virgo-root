@@ -43,7 +43,7 @@ public class StandardKernelConfig implements KernelConfig {
     public String getProperty(String name) {
         Object value = this.context.getProperties().get(name);
         LOGGER.debug("KernelConfig.getProperty() is called with name [" + name + "] value is [" + value + "]");
-        if (value instanceof String) {
+        if (value instanceof String || value == null) {
             return (String) value;
         } else if (value instanceof String[] && ((String[]) value).length > 0) {
             return ((String[]) value)[0];
