@@ -83,7 +83,7 @@ public final class SyntheticContextBundleCreatingTransformerTests {
         GraphNode<InstallArtifact> planInstallGraph = createMockPlan(true, new Version(1, 0, 0), "plan-name", "bundle1", "bundle2", "bundle3");
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
-        File syntheticBundleDir = new File("target/work/staging/plan-name-1/bundle/plan-name-1-synthetic.context/1.0.0/plan-name-1-synthetic.context.jar").getAbsoluteFile();
+        File syntheticBundleDir = new File("target/work/staging/plan-name-1/bundle/plan-name-1-synthetic.context/1.0.0/plan-name-1-synthetic.context.jar-0").getAbsoluteFile();
         expect(
             this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "plan-name-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("plan-name", new Version(1, 0, 0)))), isA(ArtifactStorage.class),
@@ -109,7 +109,7 @@ public final class SyntheticContextBundleCreatingTransformerTests {
 
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
-        File syntheticBundleDir = new File("target/work/staging/plan-name-1/bundle/plan-name-1-synthetic.context/1.0.0/plan-name-1-synthetic.context.jar").getAbsoluteFile();
+        File syntheticBundleDir = new File("target/work/staging/plan-name-1/bundle/plan-name-1-synthetic.context/1.0.0/plan-name-1-synthetic.context.jar-0").getAbsoluteFile();
         expect(
             this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "plan-name-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("plan-name", new Version(1, 0, 0)))), isA(ArtifactStorage.class),
@@ -136,7 +136,7 @@ public final class SyntheticContextBundleCreatingTransformerTests {
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
         File syntheticBundleDir = new File(
-            "target/work/staging/nested-plan-1/bundle/nested-plan-1-synthetic.context/1.0.0/nested-plan-1-synthetic.context.jar").getAbsoluteFile();
+            "target/work/staging/nested-plan-1/bundle/nested-plan-1-synthetic.context/1.0.0/nested-plan-1-synthetic.context.jar-0").getAbsoluteFile();
         expect(
             this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "nested-plan-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("nested-plan", new Version(1, 0, 0)))), isA(ArtifactStorage.class),

@@ -37,10 +37,10 @@ final class StandardArtifactStorage implements ArtifactStorage {
     private final PathReference sourcePathReference;
 
     private final PathReference baseStagingPathReference;
+    
+    private volatile long instance = 0;
 
-    private final PathReference pastStagingPathReference;
-
-    private volatile ArtifactFS artifactFS;
+    private final ArtifactFSFactory artifactFSFactory;
 
     private final EventLogger eventLogger;
 
@@ -53,14 +53,26 @@ final class StandardArtifactStorage implements ArtifactStorage {
         this.sourcePathReference = sourcePathReference;
 
         this.baseStagingPathReference = baseStagingPathReference;
-        this.pastStagingPathReference = new PathReference(String.format("%s-past", this.baseStagingPathReference.getAbsolutePath()));
+        
+        this.artifactFSFactory = artifactFSFactory;
 
         this.eventLogger = eventLogger;
 
         this.unpackBundles = (unpackBundlesOption == null) || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
 
         synchronize(this.sourcePathReference, false);
-        this.artifactFS = artifactFSFactory.create(this.baseStagingPathReference.toFile());
+    }
+    
+    private static PathReference getInstancePathReference(PathReference baseStagingPathReference, long instance) {
+        return new PathReference(String.format("%s-%d", baseStagingPathReference.getAbsolutePath(), instance));
+    }
+    
+    private PathReference getCurrentPathReference() {
+        return getInstancePathReference(this.baseStagingPathReference, this.instance);
+    }
+    
+    private PathReference getPreviousPathReference() {
+        return getInstancePathReference(this.baseStagingPathReference, this.instance - 1);
     }
 
     public void synchronize() {
@@ -68,7 +80,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     public ArtifactFS getArtifactFS() {
-        return this.artifactFS;
+        return this.artifactFSFactory.create(getCurrentPathReference().toFile());
     }
 
     public void synchronize(URI sourceUri) {
@@ -82,7 +94,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     public void delete() {
-        this.baseStagingPathReference.delete(true);
+        getCurrentPathReference().delete(true);
     }
 
     private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
@@ -90,21 +102,21 @@ final class StandardArtifactStorage implements ArtifactStorage {
             if (stash) {
                 stashContent();
             } else {
-                this.baseStagingPathReference.delete(true);
+                getCurrentPathReference().delete(true);
             }
             if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
                 && needsUnpacking(normalizedSourcePathReference.getName())) {
                 try {
-                    JarUtils.unpackTo(normalizedSourcePathReference, this.baseStagingPathReference);
+                    JarUtils.unpackTo(normalizedSourcePathReference, getCurrentPathReference());
                 } catch (IOException e) {
                     this.eventLogger.log(DeployerLogEvents.JAR_UNPACK_ERROR, e, normalizedSourcePathReference);
                     throw new RuntimeException(String.format("Exception unpacking '%s'", normalizedSourcePathReference), e);
                 }
             } else if (normalizedSourcePathReference != null) {
-                this.baseStagingPathReference.getParent().createDirectory();
-                normalizedSourcePathReference.copy(this.baseStagingPathReference, true);
+                getCurrentPathReference().getParent().createDirectory();
+                normalizedSourcePathReference.copy(getCurrentPathReference(), true);
             } else {
-                this.baseStagingPathReference.createDirectory();
+                getCurrentPathReference().createDirectory();
             }
         }
     }
@@ -122,22 +134,19 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     private void stashContent() {
-        if (this.baseStagingPathReference.exists()) {
-            this.pastStagingPathReference.delete(true);
-            if (this.pastStagingPathReference.exists()) {
-                throw new FatalIOException(String.format("Unable to delete %s while stashing content", this.pastStagingPathReference.toString()));
+        if (getCurrentPathReference().exists()) {
+            PathReference previous = getPreviousPathReference();
+            if (previous.exists()) {
+                previous.delete(true);
             }
-            this.baseStagingPathReference.moveTo(this.pastStagingPathReference);
+            this.instance++;
         }
     }
 
     private void unstashContent() {
-        if (this.pastStagingPathReference.exists()) {
-            this.baseStagingPathReference.delete(true);
-            if (this.baseStagingPathReference.exists()) {
-                throw new FatalIOException(String.format("Unable to delete %s while unstashing content", this.baseStagingPathReference.toString()));
-            }
-            this.pastStagingPathReference.moveTo(this.baseStagingPathReference);
+        if (getPreviousPathReference().exists()) {
+            getCurrentPathReference().delete(true);
+            this.instance--;
         }
     }
 

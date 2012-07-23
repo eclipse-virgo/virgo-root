@@ -122,7 +122,7 @@ public class StandardBundleInstallArtifactTests {
         DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
         artifact.setGraph(dag.createRootNode(artifact));
 
-        expect(this.bundleDriver.update(isA(BundleManifest.class))).andReturn(true);
+        expect(this.bundleDriver.update(isA(BundleManifest.class), isA(File.class))).andReturn(true);
         this.bundleDriver.refreshBundle();
         replay(this.bundleDriver);
 
