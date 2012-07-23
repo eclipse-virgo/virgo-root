@@ -336,7 +336,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
     private boolean completeUpdateAndRefresh(boolean startRequired) {
         try {
-            boolean refreshed = this.bundleDriver.update(bundleManifest);
+            boolean refreshed = this.bundleDriver.update(bundleManifest, this.artifactStorage.getArtifactFS().getFile());
             if (refreshed) {
                 if (startRequired) {
                     BlockingAbortableSignal blockingSignal = new BlockingAbortableSignal(true);

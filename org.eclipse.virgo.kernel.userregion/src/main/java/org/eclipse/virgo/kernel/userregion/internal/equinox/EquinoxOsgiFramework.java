@@ -11,6 +11,11 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,10 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 @SuppressWarnings("deprecation")
 public class EquinoxOsgiFramework extends AbstractOsgiFramework {
+    
+    private static final String FILE_SCHEME = "file:";
+    
+    private static final String REFERENCE_SCHEME = "reference:";
 
     private final OsgiServiceHolder<PlatformAdmin> platformAdmin;
 
@@ -126,12 +135,30 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
     /** 
      * {@inheritDoc}
      */
-    public void update(Bundle bundle, ManifestTransformer manifestTransformer) throws BundleException {
+    public void update(Bundle bundle, ManifestTransformer manifestTransformer, File location) throws BundleException {
         this.bundleTransformationHandler.pushManifestTransformer(manifestTransformer);
         try {
-            bundle.update();
+            bundle.update(openBundleStream(location));
         } finally {
             this.bundleTransformationHandler.popManifestTransformer();
         }
+    }
+    
+    private InputStream openBundleStream(File location) throws BundleException {
+        String absoluteBundleUriString = getAbsoluteUriString(location);
+
+        try {
+            // Use the reference: scheme to obtain an InputStream for either a file or a directory.
+            return new URL(REFERENCE_SCHEME + absoluteBundleUriString).openStream();
+
+        } catch (MalformedURLException e) {
+            throw new BundleException("Invalid bundle URI '" + absoluteBundleUriString + "'", e);
+        } catch (IOException e) {
+            throw new BundleException("Invalid bundle at URI '" + absoluteBundleUriString + "'", e);
+        }
+    }
+
+    private String getAbsoluteUriString(File location) throws BundleException {
+        return FILE_SCHEME + location.getAbsolutePath();
     }
 }
