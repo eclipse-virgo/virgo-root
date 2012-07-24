@@ -35,51 +35,36 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private final PathReference sourcePathReference;
 
-    private final PathReference baseStagingPathReference;
-
-    private volatile long instance = 0;
-
     private final ArtifactFSFactory artifactFSFactory;
 
     private final EventLogger eventLogger;
 
     private final boolean unpackBundles;
-
-    private final Object monitor = new Object();
+    
+    private final ArtifactHistory artifactHistory;
 
     public StandardArtifactStorage(PathReference sourcePathReference, PathReference baseStagingPathReference, ArtifactFSFactory artifactFSFactory,
         EventLogger eventLogger, String unpackBundlesOption) {
         this.sourcePathReference = sourcePathReference;
-
-        this.baseStagingPathReference = baseStagingPathReference;
 
         this.artifactFSFactory = artifactFSFactory;
 
         this.eventLogger = eventLogger;
 
         this.unpackBundles = (unpackBundlesOption == null) || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
+        
+        artifactHistory = new ArtifactHistory(baseStagingPathReference);
 
         synchronize(this.sourcePathReference, false);
     }
 
-    private static PathReference getInstancePathReference(PathReference baseStagingPathReference, long instance) {
-        return new PathReference(String.format("%s-%d", baseStagingPathReference.getAbsolutePath(), instance));
-    }
-
-    private PathReference getCurrentPathReference() {
-        return getInstancePathReference(this.baseStagingPathReference, this.instance);
-    }
-
-    private PathReference getPreviousPathReference() {
-        return getInstancePathReference(this.baseStagingPathReference, this.instance - 1);
-    }
 
     public void synchronize() {
         synchronize(this.sourcePathReference, true);
     }
 
     public ArtifactFS getArtifactFS() {
-        return this.artifactFSFactory.create(getCurrentPathReference().toFile());
+        return this.artifactFSFactory.create(this.artifactHistory.getCurrentPathReference().toFile());
     }
 
     public void synchronize(URI sourceUri) {
@@ -87,23 +72,21 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     public void rollBack() {
-        synchronized (this.monitor) {
-            unstashContent();
-        }
+        this.artifactHistory.unstash();
     }
 
     public void delete() {
-        getCurrentPathReference().delete(true);
+        this.artifactHistory.deleteCurrent();
     }
 
     private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
         PathReference currentPathReference;
         if (stash) {
-            stash();
-            currentPathReference = getCurrent();
+            this.artifactHistory.stash();
+            currentPathReference = this.artifactHistory.getCurrentPathReference();
         } else {
-            deleteCurrent();
-            currentPathReference = getCurrent();
+            this.artifactHistory.deleteCurrent();
+            currentPathReference = this.artifactHistory.getCurrentPathReference();
         }
 
         if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
@@ -122,24 +105,6 @@ final class StandardArtifactStorage implements ArtifactStorage {
         }
     }
 
-    public void deleteCurrent() {
-        synchronized (this.monitor) {
-            getCurrentPathReference().delete(true);
-        }
-    }
-
-    public PathReference getCurrent() {
-        synchronized (this.monitor) {
-            return getCurrentPathReference();
-        }
-    }
-
-    public void stash() {
-        synchronized (this.monitor) {
-            stashContent();
-        }
-    }
-
     private boolean needsUnpacking(String name) {
         String fileName = name.toLowerCase(Locale.ENGLISH);
 
@@ -151,23 +116,6 @@ final class StandardArtifactStorage implements ArtifactStorage {
         // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not
         // specified or is "true"
         return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || (this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension));
-    }
-
-    private void stashContent() {
-        if (getCurrentPathReference().exists()) {
-            PathReference previous = getPreviousPathReference();
-            if (previous.exists()) {
-                previous.delete(true);
-            }
-            this.instance++;
-        }
-    }
-
-    private void unstashContent() {
-        if (getPreviousPathReference().exists()) {
-            getCurrentPathReference().delete(true);
-            this.instance--;
-        }
     }
 
 }
