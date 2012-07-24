@@ -22,7 +22,6 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
 import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.util.io.FatalIOException;
 import org.eclipse.virgo.util.io.JarUtils;
 import org.eclipse.virgo.util.io.PathReference;
 
@@ -37,7 +36,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
     private final PathReference sourcePathReference;
 
     private final PathReference baseStagingPathReference;
-    
+
     private volatile long instance = 0;
 
     private final ArtifactFSFactory artifactFSFactory;
@@ -53,7 +52,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
         this.sourcePathReference = sourcePathReference;
 
         this.baseStagingPathReference = baseStagingPathReference;
-        
+
         this.artifactFSFactory = artifactFSFactory;
 
         this.eventLogger = eventLogger;
@@ -62,15 +61,15 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         synchronize(this.sourcePathReference, false);
     }
-    
+
     private static PathReference getInstancePathReference(PathReference baseStagingPathReference, long instance) {
         return new PathReference(String.format("%s-%d", baseStagingPathReference.getAbsolutePath(), instance));
     }
-    
+
     private PathReference getCurrentPathReference() {
         return getInstancePathReference(this.baseStagingPathReference, this.instance);
     }
-    
+
     private PathReference getPreviousPathReference() {
         return getInstancePathReference(this.baseStagingPathReference, this.instance - 1);
     }
@@ -98,26 +97,46 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
+        PathReference currentPathReference;
+        if (stash) {
+            stash();
+            currentPathReference = getCurrent();
+        } else {
+            deleteCurrent();
+            currentPathReference = getCurrent();
+        }
+
+        if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
+            && needsUnpacking(normalizedSourcePathReference.getName())) {
+            try {
+                JarUtils.unpackTo(normalizedSourcePathReference, currentPathReference);
+            } catch (IOException e) {
+                this.eventLogger.log(DeployerLogEvents.JAR_UNPACK_ERROR, e, normalizedSourcePathReference);
+                throw new RuntimeException(String.format("Exception unpacking '%s'", normalizedSourcePathReference), e);
+            }
+        } else if (normalizedSourcePathReference != null) {
+            currentPathReference.getParent().createDirectory();
+            normalizedSourcePathReference.copy(currentPathReference, true);
+        } else {
+            currentPathReference.createDirectory();
+        }
+    }
+
+    public void deleteCurrent() {
         synchronized (this.monitor) {
-            if (stash) {
-                stashContent();
-            } else {
-                getCurrentPathReference().delete(true);
-            }
-            if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
-                && needsUnpacking(normalizedSourcePathReference.getName())) {
-                try {
-                    JarUtils.unpackTo(normalizedSourcePathReference, getCurrentPathReference());
-                } catch (IOException e) {
-                    this.eventLogger.log(DeployerLogEvents.JAR_UNPACK_ERROR, e, normalizedSourcePathReference);
-                    throw new RuntimeException(String.format("Exception unpacking '%s'", normalizedSourcePathReference), e);
-                }
-            } else if (normalizedSourcePathReference != null) {
-                getCurrentPathReference().getParent().createDirectory();
-                normalizedSourcePathReference.copy(getCurrentPathReference(), true);
-            } else {
-                getCurrentPathReference().createDirectory();
-            }
+            getCurrentPathReference().delete(true);
+        }
+    }
+
+    public PathReference getCurrent() {
+        synchronized (this.monitor) {
+            return getCurrentPathReference();
+        }
+    }
+
+    public void stash() {
+        synchronized (this.monitor) {
+            stashContent();
         }
     }
 
@@ -129,7 +148,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
             return false;
         }
         String fileExtension = fileName.substring(dotLocation + 1);
-        // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not specified or is "true"
+        // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not
+        // specified or is "true"
         return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || (this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension));
     }
 
