@@ -41,7 +41,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private final boolean unpackBundles;
     
-    private final ArtifactHistory artifactHistory;
+    private final PathHistory artifactHistory;
 
     public StandardArtifactStorage(PathReference sourcePathReference, PathReference baseStagingPathReference, ArtifactFSFactory artifactFSFactory,
         EventLogger eventLogger, String unpackBundlesOption) {
@@ -53,7 +53,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.unpackBundles = (unpackBundlesOption == null) || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
         
-        artifactHistory = new ArtifactHistory(baseStagingPathReference);
+        artifactHistory = new PathHistory(baseStagingPathReference);
 
         synchronize(this.sourcePathReference, false);
     }
@@ -64,7 +64,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     public ArtifactFS getArtifactFS() {
-        return this.artifactFSFactory.create(this.artifactHistory.getCurrentPathReference().toFile());
+        return this.artifactFSFactory.create(this.artifactHistory.getCurrentPath().toFile());
     }
 
     public void synchronize(URI sourceUri) {
@@ -76,17 +76,18 @@ final class StandardArtifactStorage implements ArtifactStorage {
     }
 
     public void delete() {
-        this.artifactHistory.deleteCurrent();
+        PathReference currentPathReference = this.artifactHistory.getCurrentPath();
+        currentPathReference.delete(true);
     }
 
     private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
         PathReference currentPathReference;
         if (stash) {
             this.artifactHistory.stash();
-            currentPathReference = this.artifactHistory.getCurrentPathReference();
+            currentPathReference = this.artifactHistory.getCurrentPath();
         } else {
-            this.artifactHistory.deleteCurrent();
-            currentPathReference = this.artifactHistory.getCurrentPathReference();
+            currentPathReference = this.artifactHistory.getCurrentPath();
+            currentPathReference.delete(true);
         }
 
         if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
