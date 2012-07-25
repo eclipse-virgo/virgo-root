@@ -3,15 +3,11 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import org.eclipse.virgo.util.io.PathReference;
 
-final class GenerationalPathGenerator implements PathGenerator {
+final class GenerationalPathGenerator extends AbstractPathGenerator implements PathGenerator {
 
     private final PathReference baseDirectory;
 
     private long generation = 0;
-
-    private boolean hasPrevious = false; // if true, then generation != 0
-
-    private final Object monitor = new Object();
 
     private final String baseName;
 
@@ -30,7 +26,7 @@ final class GenerationalPathGenerator implements PathGenerator {
         currentPathReference.delete(true);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public PathReference getCurrentPath() {
@@ -39,38 +35,32 @@ final class GenerationalPathGenerator implements PathGenerator {
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     public void next() {
         synchronized (this.monitor) {
             if (this.generation != 0) {
                 getPreviousPath().delete(true);
             }
             this.generation++;
-            this.hasPrevious = true;
-
-            PathReference currentPathReference = getCurrentPath();
-            currentPathReference.getParent().createDirectory();
-            currentPathReference.delete(true);
+            super.next();
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     public void previous() {
         synchronized (this.monitor) {
-            if (!this.hasPrevious) {
-                throw new IllegalStateException("No stash available");
-            }
-            getCurrentPath().delete(true);
+            super.previous();
             this.generation--;
-            this.hasPrevious = false;
         }
     }
 
-    private PathReference getPreviousPath() {
+    protected PathReference getPreviousPath() {
         return getGenerationPath(this.generation - 1);
     }
 
