@@ -53,7 +53,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.unpackBundles = unpackBundlesOption == null || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
 
-        this.pathGenerator = new PathGenerator(baseStagingPathReference);
+        this.pathGenerator = new GenerationalPathGenerator(baseStagingPathReference);
 
         synchronize(this.sourcePathReference);
     }

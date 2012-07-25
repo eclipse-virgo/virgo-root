@@ -21,7 +21,7 @@ import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PathGeneratorTests {
+public class GenerationalPathGeneratorTests {
     
     private static final String TEST_PATH = "target/pathGeneratorTests/";
     
@@ -31,7 +31,7 @@ public class PathGeneratorTests {
 
     @Before
     public void setUp() throws Exception {
-        this.artifactHistory = new PathGenerator(new PathReference(TEST_PATH + TEST_FILENAME));
+        this.artifactHistory = new GenerationalPathGenerator(new PathReference(TEST_PATH + TEST_FILENAME));
     }
 
     @Test
@@ -129,16 +129,16 @@ public class PathGeneratorTests {
     
     @Test(expected=IllegalArgumentException.class)
     public void testNullConstructorPath() {
-        new PathGenerator(null);
+        new GenerationalPathGenerator(null);
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void testEmptyConstructorPath() {
-        new PathGenerator(new PathReference(""));
+        new GenerationalPathGenerator(new PathReference(""));
     }
     
     public void testDirectorylessConstructorPath() {
-        PathGenerator ph = new PathGenerator(new PathReference("a"));
+        PathGenerator ph = new GenerationalPathGenerator(new PathReference("a"));
         assertEquals("a", ph.getCurrentPath().getName());
     }
 
