@@ -24,9 +24,13 @@ final class PathGenerator {
         }
         this.baseDirectory = basePathReference.getParent();
         this.baseName = basePathReference.getName();
+
+        PathReference currentPathReference = getGenerationPath(this.generation, this.baseDirectory, this.baseName);
+        currentPathReference.getParent().createDirectory();
+        currentPathReference.delete(true);
     }
 
-    PathReference getCurrentPath() {
+    public PathReference getCurrentPath() {
         synchronized (this.monitor) {
             return getGenerationPath(this.generation);
         }
@@ -35,20 +39,24 @@ final class PathGenerator {
     /**
      * Note that the history is only one level deep.
      */
-    void next() {
+    public void next() {
         synchronized (this.monitor) {
             if (this.generation != 0) {
                 getPreviousPath().delete(true);
             }
             this.generation++;
             this.hasPrevious = true;
+
+            PathReference currentPathReference = getCurrentPath();
+            currentPathReference.getParent().createDirectory();
+            currentPathReference.delete(true);
         }
     }
 
     /**
      * This may only be called if the current generation has not been used.
      */
-    void previous() {
+    public void previous() {
         synchronized (this.monitor) {
             if (!this.hasPrevious) {
                 throw new IllegalStateException("No stash available");
@@ -63,8 +71,12 @@ final class PathGenerator {
         return getGenerationPath(this.generation - 1);
     }
 
-    private PathReference getGenerationPath(long instance) {
-        return this.baseDirectory.newChild(Long.toString(instance)).newChild(this.baseName);
+    private PathReference getGenerationPath(long generation) {
+        return getGenerationPath(generation, this.baseDirectory, this.baseName);
+    }
+
+    private static PathReference getGenerationPath(long generation, PathReference baseDirectory, String baseName) {
+        return baseDirectory.newChild(Long.toString(generation)).newChild(baseName);
     }
 
 }

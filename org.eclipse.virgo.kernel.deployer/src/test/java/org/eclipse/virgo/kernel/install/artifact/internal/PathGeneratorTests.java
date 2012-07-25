@@ -147,6 +147,10 @@ public class PathGeneratorTests {
         File file = c.toFile();
         assertTrue(file.toURI().toString().indexOf(TEST_PATH) != -1);
         assertEquals(TEST_FILENAME, c.getName());
+        assertFalse(c.exists());
+        PathReference parent = c.getParent();
+        assertTrue(parent.isDirectory());
+        assertTrue(parent.exists());
     }
 
 }

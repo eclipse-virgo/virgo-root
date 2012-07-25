@@ -55,12 +55,13 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.pathGenerator = new PathGenerator(baseStagingPathReference);
 
-        synchronize(this.sourcePathReference, false);
+        synchronize(this.sourcePathReference);
     }
 
     @Override
     public void synchronize() {
-        synchronize(this.sourcePathReference, true);
+        this.pathGenerator.next();
+        synchronize(this.sourcePathReference);
     }
 
     @Override
@@ -70,7 +71,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     @Override
     public void synchronize(URI sourceUri) {
-        synchronize(new PathReference(sourceUri), true);
+        this.pathGenerator.next();
+        synchronize(new PathReference(sourceUri));
     }
 
     @Override
@@ -84,14 +86,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
         currentPathReference.delete(true);
     }
 
-    private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
-        PathReference currentPathReference;
-        if (stash) {
-            this.pathGenerator.next();
-        } 
-        currentPathReference = this.pathGenerator.getCurrentPath();
-        currentPathReference.getParent().createDirectory();
-        currentPathReference.delete(true);        
+    private void synchronize(PathReference normalizedSourcePathReference) {
+        PathReference currentPathReference = this.pathGenerator.getCurrentPath();
 
         if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
             && needsUnpacking(normalizedSourcePathReference.getName())) {
