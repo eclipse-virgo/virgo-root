@@ -40,8 +40,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
     private final EventLogger eventLogger;
 
     private final boolean unpackBundles;
-    
-    private final PathHistory artifactHistory;
+
+    private final PathGenerator pathGenerator;
 
     public StandardArtifactStorage(PathReference sourcePathReference, PathReference baseStagingPathReference, ArtifactFSFactory artifactFSFactory,
         EventLogger eventLogger, String unpackBundlesOption) {
@@ -51,44 +51,47 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.eventLogger = eventLogger;
 
-        this.unpackBundles = (unpackBundlesOption == null) || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
-        
-        artifactHistory = new PathHistory(baseStagingPathReference);
+        this.unpackBundles = unpackBundlesOption == null || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
+
+        this.pathGenerator = new PathGenerator(baseStagingPathReference);
 
         synchronize(this.sourcePathReference, false);
     }
 
-
+    @Override
     public void synchronize() {
         synchronize(this.sourcePathReference, true);
     }
 
+    @Override
     public ArtifactFS getArtifactFS() {
-        return this.artifactFSFactory.create(this.artifactHistory.getCurrentPath().toFile());
+        return this.artifactFSFactory.create(this.pathGenerator.getCurrentPath().toFile());
     }
 
+    @Override
     public void synchronize(URI sourceUri) {
         synchronize(new PathReference(sourceUri), true);
     }
 
+    @Override
     public void rollBack() {
-        this.artifactHistory.unstash();
+        this.pathGenerator.previous();
     }
 
+    @Override
     public void delete() {
-        PathReference currentPathReference = this.artifactHistory.getCurrentPath();
+        PathReference currentPathReference = this.pathGenerator.getCurrentPath();
         currentPathReference.delete(true);
     }
 
     private void synchronize(PathReference normalizedSourcePathReference, boolean stash) {
         PathReference currentPathReference;
         if (stash) {
-            this.artifactHistory.stash();
-            currentPathReference = this.artifactHistory.getCurrentPath();
-        } else {
-            currentPathReference = this.artifactHistory.getCurrentPath();
-            currentPathReference.delete(true);
-        }
+            this.pathGenerator.next();
+        } 
+        currentPathReference = this.pathGenerator.getCurrentPath();
+        currentPathReference.getParent().createDirectory();
+        currentPathReference.delete(true);        
 
         if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
             && needsUnpacking(normalizedSourcePathReference.getName())) {
@@ -99,7 +102,6 @@ final class StandardArtifactStorage implements ArtifactStorage {
                 throw new RuntimeException(String.format("Exception unpacking '%s'", normalizedSourcePathReference), e);
             }
         } else if (normalizedSourcePathReference != null) {
-            currentPathReference.getParent().createDirectory();
             normalizedSourcePathReference.copy(currentPathReference, true);
         } else {
             currentPathReference.createDirectory();
@@ -116,7 +118,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
         String fileExtension = fileName.substring(dotLocation + 1);
         // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not
         // specified or is "true"
-        return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || (this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension));
+        return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension);
     }
 
 }

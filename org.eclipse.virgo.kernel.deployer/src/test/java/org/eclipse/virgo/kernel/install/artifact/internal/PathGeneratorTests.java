@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -20,17 +21,17 @@ import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PathHistoryTests {
+public class PathGeneratorTests {
     
-    private static final String TEST_PATH = "target/artifactHistoryTests/";
+    private static final String TEST_PATH = "target/pathGeneratorTests/";
     
     private static final String TEST_FILENAME = "some.jar";
     
-    private PathHistory artifactHistory;
+    private PathGenerator artifactHistory;
 
     @Before
     public void setUp() throws Exception {
-        this.artifactHistory = new PathHistory(new PathReference(TEST_PATH + TEST_FILENAME));
+        this.artifactHistory = new PathGenerator(new PathReference(TEST_PATH + TEST_FILENAME));
     }
 
     @Test
@@ -42,7 +43,7 @@ public class PathHistoryTests {
     @Test
     public void testStash() {
         PathReference original = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         PathReference c = this.artifactHistory.getCurrentPath();
         checkPath(c);
         assertFalse(original.equals(c));
@@ -51,8 +52,8 @@ public class PathHistoryTests {
     @Test
     public void testUnstash() {
         PathReference original = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.stash();
-        this.artifactHistory.unstash();
+        this.artifactHistory.next();
+        this.artifactHistory.previous();
         PathReference c = this.artifactHistory.getCurrentPath();
         checkPath(c);
         assertTrue(original.equals(c));
@@ -62,9 +63,9 @@ public class PathHistoryTests {
     @Test
     public void testRepeatedStash() {
         PathReference original = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         PathReference next = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         PathReference last = this.artifactHistory.getCurrentPath();
         checkPath(last);
         assertFalse(original.equals(next));
@@ -73,21 +74,21 @@ public class PathHistoryTests {
     
     @Test
     public void testFileDeletionOnUnstash() {
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         PathReference c = this.artifactHistory.getCurrentPath();
         c.createFile();
         assertTrue(c.exists());
-        this.artifactHistory.unstash();
+        this.artifactHistory.previous();
         assertFalse(c.exists());
     }
 
     @Test
     public void testDirectoryDeletionOnUnstash() {
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         PathReference c = this.artifactHistory.getCurrentPath();
         c.createDirectory();
         assertTrue(c.exists());
-        this.artifactHistory.unstash();
+        this.artifactHistory.previous();
         assertFalse(c.exists());
     }
 
@@ -96,9 +97,9 @@ public class PathHistoryTests {
         PathReference c = this.artifactHistory.getCurrentPath();
         c.createFile();
         assertTrue(c.exists());
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         assertTrue(c.exists());
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         assertFalse(c.exists());
     }
     
@@ -107,29 +108,45 @@ public class PathHistoryTests {
         PathReference c = this.artifactHistory.getCurrentPath();
         c.createDirectory();
         assertTrue(c.exists());
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         assertTrue(c.exists());
-        this.artifactHistory.stash();
+        this.artifactHistory.next();
         assertFalse(c.exists());
     }
     
     @Test(expected=IllegalStateException.class)
     public void testBadUnstash() {
-        this.artifactHistory.unstash();
+        this.artifactHistory.previous();
     }
 
     @Test(expected=IllegalStateException.class)
     public void testDoubleUnstash() {
-        this.artifactHistory.stash();
-        this.artifactHistory.stash();
-        this.artifactHistory.unstash();
-        this.artifactHistory.unstash();
+        this.artifactHistory.next();
+        this.artifactHistory.next();
+        this.artifactHistory.previous();
+        this.artifactHistory.previous();
     }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testNullConstructorPath() {
+        new PathGenerator(null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testEmptyConstructorPath() {
+        new PathGenerator(new PathReference(""));
+    }
+    
+    public void testDirectorylessConstructorPath() {
+        PathGenerator ph = new PathGenerator(new PathReference("a"));
+        assertEquals("a", ph.getCurrentPath().getName());
+    }
+
 
     private void checkPath(PathReference c) {
         File file = c.toFile();
         assertTrue(file.toURI().toString().indexOf(TEST_PATH) != -1);
-        //TODO: assertEquals(TEST_FILENAME, c.getName());
+        assertEquals(TEST_FILENAME, c.getName());
     }
 
 }
