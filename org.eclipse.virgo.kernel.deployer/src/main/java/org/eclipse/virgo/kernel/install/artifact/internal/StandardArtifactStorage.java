@@ -29,6 +29,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private static final String DEPLOYER_UNPACK_BUNDLES_TRUE = "true";
 
+    private static final List<String> CONSTANT_PATH_EXTENSIONS = Arrays.asList("par", "zip");
+
     private static final List<String> ALWAYS_UNPACKED_EXTENSIONS = Arrays.asList("par", "zip");
 
     private static final List<String> CONFIGURABLY_UNPACKED_EXTENSIONS = Arrays.asList("jar", "war");
@@ -53,7 +55,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.unpackBundles = unpackBundlesOption == null || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
 
-        this.pathGenerator = new GenerationalPathGenerator(baseStagingPathReference);
+        this.pathGenerator = CONSTANT_PATH_EXTENSIONS.contains(getFileExtension(sourcePathReference)) ? new ConstantPathGenerator(
+            baseStagingPathReference) : new GenerationalPathGenerator(baseStagingPathReference);
 
         synchronize(this.sourcePathReference);
     }
@@ -89,8 +92,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
     private void synchronize(PathReference normalizedSourcePathReference) {
         PathReference currentPathReference = this.pathGenerator.getCurrentPath();
 
-        if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory()
-            && needsUnpacking(normalizedSourcePathReference.getName())) {
+        if (normalizedSourcePathReference != null && !normalizedSourcePathReference.isDirectory() && needsUnpacking(normalizedSourcePathReference)) {
             try {
                 JarUtils.unpackTo(normalizedSourcePathReference, currentPathReference);
             } catch (IOException e) {
@@ -104,17 +106,28 @@ final class StandardArtifactStorage implements ArtifactStorage {
         }
     }
 
-    private boolean needsUnpacking(String name) {
+    private boolean needsUnpacking(PathReference pathReference) {
+        String fileExtension = getFileExtension(pathReference);
+        if (fileExtension == null) {
+            return false;
+        }
+        // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not
+        // specified or is "true"
+        return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension);
+    }
+
+    private static String getFileExtension(PathReference pathReference) {
+        if (pathReference == null) {
+            return null;
+        }
+        String name = pathReference.getName();
         String fileName = name.toLowerCase(Locale.ENGLISH);
 
         int dotLocation = fileName.lastIndexOf('.');
         if (dotLocation == -1) {
-            return false;
+            return null;
         }
-        String fileExtension = fileName.substring(dotLocation + 1);
-        // Always unpack .par/.zip. Unpack .jar/.war if and only if kernel property deployer.unpackBundles is either not
-        // specified or is "true"
-        return ALWAYS_UNPACKED_EXTENSIONS.contains(fileExtension) || this.unpackBundles && CONFIGURABLY_UNPACKED_EXTENSIONS.contains(fileExtension);
+        return fileName.substring(dotLocation + 1);
     }
 
 }

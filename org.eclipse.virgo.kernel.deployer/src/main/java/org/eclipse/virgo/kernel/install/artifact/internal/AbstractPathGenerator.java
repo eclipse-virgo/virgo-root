@@ -9,6 +9,15 @@ public abstract class AbstractPathGenerator {
 
     protected final Object monitor = new Object();
 
+    public AbstractPathGenerator(PathReference basePathReference) {
+        if (basePathReference == null) {
+            throw new IllegalArgumentException("Null path");
+        }
+        if ("".equals(basePathReference.getName())) {
+            throw new IllegalArgumentException("Empty filename");
+        }
+    }
+
     public abstract PathReference getCurrentPath();
 
     public void next() {

@@ -12,12 +12,7 @@ final class GenerationalPathGenerator extends AbstractPathGenerator implements P
     private final String baseName;
 
     GenerationalPathGenerator(PathReference basePathReference) {
-        if (basePathReference == null) {
-            throw new IllegalArgumentException("Null path");
-        }
-        if ("".equals(basePathReference.getName())) {
-            throw new IllegalArgumentException("Empty filename");
-        }
+        super(basePathReference);
         this.baseDirectory = basePathReference.getParent();
         this.baseName = basePathReference.getName();
 
