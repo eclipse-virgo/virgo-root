@@ -3,13 +3,13 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import org.eclipse.virgo.util.io.PathReference;
 
-public abstract class AbstractPathGenerator {
+public abstract class AbstractArtifactStore implements ArtifactStore {
 
-    private boolean hasPrevious = false;
+    private boolean saved = false;
 
     protected final Object monitor = new Object();
 
-    public AbstractPathGenerator(PathReference basePathReference) {
+    public AbstractArtifactStore(PathReference basePathReference) {
         if (basePathReference == null) {
             throw new IllegalArgumentException("Null path");
         }
@@ -20,25 +20,25 @@ public abstract class AbstractPathGenerator {
 
     public abstract PathReference getCurrentPath();
 
-    public void next() {
+    public void save() {
         synchronized (this.monitor) {
-            this.hasPrevious = true;
+            this.saved = true;
             PathReference currentPathReference = getCurrentPath();
             currentPathReference.getParent().createDirectory();
             currentPathReference.delete(true);
         }
     }
 
-    public void previous() {
+    public void restore() {
         synchronized (this.monitor) {
-            if (!this.hasPrevious) {
-                throw new IllegalStateException("No previous path available");
+            if (!this.saved) {
+                throw new IllegalStateException("No saved artifact available");
             }
             getCurrentPath().delete(true);
-            this.hasPrevious = false;
+            this.saved = false;
         }
     }
 
-    protected abstract PathReference getPreviousPath();
+    protected abstract PathReference getSavedPath();
 
 }

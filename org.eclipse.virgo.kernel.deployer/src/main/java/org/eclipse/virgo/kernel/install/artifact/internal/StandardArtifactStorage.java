@@ -43,7 +43,7 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     private final boolean unpackBundles;
 
-    private final PathGenerator pathGenerator;
+    private final ArtifactStore pathGenerator;
 
     public StandardArtifactStorage(PathReference sourcePathReference, PathReference baseStagingPathReference, ArtifactFSFactory artifactFSFactory,
         EventLogger eventLogger, String unpackBundlesOption) {
@@ -55,15 +55,15 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
         this.unpackBundles = unpackBundlesOption == null || DEPLOYER_UNPACK_BUNDLES_TRUE.equalsIgnoreCase(unpackBundlesOption);
 
-        this.pathGenerator = CONSTANT_PATH_EXTENSIONS.contains(getFileExtension(sourcePathReference)) ? new ConstantPathGenerator(
-            baseStagingPathReference) : new GenerationalPathGenerator(baseStagingPathReference);
+        this.pathGenerator = CONSTANT_PATH_EXTENSIONS.contains(getFileExtension(sourcePathReference)) ? new FileMovingArtifactStore(
+            baseStagingPathReference) : new GenerationalArtifactStore(baseStagingPathReference);
 
         synchronize(this.sourcePathReference);
     }
 
     @Override
     public void synchronize() {
-        this.pathGenerator.next();
+        this.pathGenerator.save();
         synchronize(this.sourcePathReference);
     }
 
@@ -74,13 +74,13 @@ final class StandardArtifactStorage implements ArtifactStorage {
 
     @Override
     public void synchronize(URI sourceUri) {
-        this.pathGenerator.next();
+        this.pathGenerator.save();
         synchronize(new PathReference(sourceUri));
     }
 
     @Override
     public void rollBack() {
-        this.pathGenerator.previous();
+        this.pathGenerator.restore();
     }
 
     @Override
