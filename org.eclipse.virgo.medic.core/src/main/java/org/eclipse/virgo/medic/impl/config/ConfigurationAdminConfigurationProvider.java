@@ -26,13 +26,13 @@ import org.osgi.service.cm.ConfigurationListener;
 public final class ConfigurationAdminConfigurationProvider implements ConfigurationProvider, ConfigurationListener {
     
     private static final String CONFIG_ADMIN_PID = "org.eclipse.virgo.medic";
-    
+
     private static final Dictionary<String, Object> DEFAULT_CONFIG = createDefaultConfiguration();
-    
+
     private final BundleContext bundleContext;
     
 	private volatile Dictionary<String, Object> configuration = DEFAULT_CONFIG;
-    
+
     private HashSet<ConfigurationChangeListener> listeners;
     
     public ConfigurationAdminConfigurationProvider(BundleContext context) {
@@ -40,7 +40,7 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         this.listeners = new HashSet<ConfigurationChangeListener>();
         initialisePropertiesFromConfigurationAdmin();
     }
-    
+
     public Dictionary<String, Object> getConfiguration() {
         return this.configuration;
     }
@@ -80,7 +80,7 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
         
         notifyListeners();
     }
-    
+
     private static Dictionary<String, Object> createDefaultConfiguration() {
         Dictionary<String, Object> configuration = new Hashtable<String, Object>();
         configuration.put(KEY_DUMP_ROOT_DIRECTORY, ".");

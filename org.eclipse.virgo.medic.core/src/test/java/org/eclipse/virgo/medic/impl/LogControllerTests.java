@@ -107,7 +107,7 @@ public class LogControllerTests {
     public void changeFromWrappedToNonWrappedStreams() throws IOException, ConfigurationPublicationFailedException, InvalidSyntaxException {
         ConfigurationAdmin configurationAdmin = createMock(ConfigurationAdmin.class);
         Configuration configuration = createMock(Configuration.class);
-        
+
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSERR, "true");
         properties.put(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT, "true");

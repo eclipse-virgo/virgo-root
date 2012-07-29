@@ -146,7 +146,7 @@ public class LogController implements ConfigurationChangeListener {
     
     public void logStart() throws ConfigurationPublicationFailedException {
         Dictionary<String, Object> configuration = configurationProvider.getConfiguration();
-        
+
         SLF4JBridgeHandler.install();
         
         updateLogConfiguration(configuration);
@@ -276,7 +276,7 @@ public class LogController implements ConfigurationChangeListener {
         Dictionary<String, Object> configuration = configurationProvider.getConfiguration();
         updateLogConfiguration(configuration);
     }
-    
+
     private synchronized void updateLogConfiguration(Dictionary<String, Object> configuration) {
         if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
             delegatingSysOutRegistration = publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE);
@@ -294,7 +294,7 @@ public class LogController implements ConfigurationChangeListener {
             }
             System.setOut((PrintStream)delegatingSysOut);
         }
-        
+
         if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
             delegatingSysErrRegistration = publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE);
             sysErrRegistration = publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR);
@@ -311,7 +311,7 @@ public class LogController implements ConfigurationChangeListener {
             }
             System.setErr((PrintStream)delegatingSysErr);
         }
-        
+
         if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {
             enableJulConsoleLogger();
         } else {
