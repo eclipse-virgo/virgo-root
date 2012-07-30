@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
+import java.io.File;
+
 import org.osgi.framework.Bundle;
 
 
@@ -59,14 +61,15 @@ public interface BundleDriver {
     void start(AbortableSignal signal) throws DeploymentException;
     
     /**
-     * Updates the bundle associated with this {@link BundleDriver} using the given {@link BundleManifest} which
+     * Updates the bundle associated with this {@link BundleDriver} to the given file or directory using the given {@link BundleManifest} which
      * could, for example, result from transforming the updated artifact.
      * 
      * @param manifest the <code>BundleManifest</code>
+     * @param location the <code>File</code>
      * @return <code>true</code> if and only if the bundle was successfully updated
      * @throws DeploymentException if the update failed
      */
-    boolean update(BundleManifest manifest) throws DeploymentException;
+    boolean update(BundleManifest manifest, File location) throws DeploymentException;
 
     /**
      * Performs a refresh packages operation specifying the bundle associated with this {@link BundleDriver} and

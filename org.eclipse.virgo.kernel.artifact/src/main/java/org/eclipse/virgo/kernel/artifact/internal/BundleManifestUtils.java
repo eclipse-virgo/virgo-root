@@ -18,40 +18,42 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
+import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
+import org.eclipse.virgo.kernel.artifact.fs.internal.JarFileArtifactFS;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 
-
 /**
- * Utility methods for working with {@link BundleManifest BundleManifests}. 
-
+ * Utility methods for working with {@link BundleManifest BundleManifests}.
+ * 
  * <p />
- *
+ * 
  * <strong>Concurrent Semantics</strong><br />
- *
+ * 
  * Thread-safe.
- *
+ * 
  */
 public final class BundleManifestUtils {
-    
+
     /**
-     * Reads the <code>BundleManifest</code> from the supplied <code>file</code>. The <code>File</code> can either
-     * be a file, i.e. a jar archive, or a directory. If the file is an archive its manifest will only be read
-     * if its name ends with one of the supplied <code>archiveSuffixes</code>
-     *   
+     * Reads the <code>BundleManifest</code> from the supplied <code>file</code>. The <code>File</code> can either be a
+     * file, i.e. a jar archive, or a directory. If the file is an archive its manifest will only be read if its name
+     * ends with one of the supplied <code>archiveSuffixes</code>
+     * 
      * @param file The file from which the manifest is to be read.
      * @param archiveSuffixes The suffixes with which an archive's file name must end
      * @return The <code>BundleManifest</code> from the file or <code>null</code> if one was not found.
      * @throws IOException Thrown if a manifest is detected but the reading of it fails.
-     * @throws SecurityException Thrown if a manifest is detected but the reading of it fails because of signature checks (invalid signature file digest...)
+     * @throws SecurityException Thrown if a manifest is detected but the reading of it fails because of signature
+     *         checks (invalid signature file digest...)
      */
     public static BundleManifest readBundleManifest(File file, String... archiveSuffixes) throws IOException, SecurityException {
         String fileName = file.getName();
-        
+
         Reader reader = null;
 
         if (file.isDirectory()) {
@@ -66,7 +68,7 @@ public final class BundleManifestUtils {
                 }
             }
         }
-        
+
         if (reader != null) {
             return BundleManifestFactory.createBundleManifest(reader);
         } else {
@@ -75,30 +77,17 @@ public final class BundleManifestUtils {
     }
 
     private static Reader manifestReaderFromJar(File file) throws IOException, SecurityException {
-        JarFile jar = null;
-        try {
-            jar = new JarFile(file);
-            JarEntry entry = jar.getJarEntry(JarFile.MANIFEST_NAME);
-
-            if (entry == null) {
-                return null; // not an error -- no manifest means this isn't a bundle
-            }
-            StringWriter writer = new StringWriter();
-            FileCopyUtils.copy(new InputStreamReader(jar.getInputStream(entry)), writer);
-            return new StringReader(writer.toString());
-        } catch (SecurityException se) {
-            throw new SecurityException(String.format("Failed to read manifest from file '%s'.", file.getName()), se);
-        } catch (Exception e) {
-            throw new IOException(String.format("Failed to read manifest from file '%s'.", file.getName()), e);
-        } finally {
-            if (jar != null) {
-                try {
-                    jar.close();
-                } catch (IOException ioe) {
-                    throw new IOException(String.format("Failed to close file '%s'.", file.getName()), ioe);
-                }
-            }
+        if (!file.exists()) {
+            throw new IOException("File '" + file + "' not found");
         }
+        ArtifactFS fs = new JarFileArtifactFS(file);
+        ArtifactFSEntry fsEntry = fs.getEntry(JarFile.MANIFEST_NAME);
+        if (fsEntry == null || !fsEntry.exists()) {
+            return null; // not an error -- no manifest means this isn't a bundle
+        }
+        StringWriter writer = new StringWriter();
+        FileCopyUtils.copy(new InputStreamReader(fsEntry.getInputStream()), writer);
+        return new StringReader(writer.toString());
     }
 
     private static Reader manifestReaderFromFile(File file) throws IOException {

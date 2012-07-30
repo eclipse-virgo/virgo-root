@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.osgi.framework;
 
+import java.io.File;
 import java.util.jar.Manifest;
 
 import org.osgi.framework.Bundle;
@@ -20,7 +21,8 @@ import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * <code>OsgiFramework</code> defines a basic abstraction for interacting with various OSGi implementations in a
- * server-independent manner. <p/>
+ * server-independent manner.
+ * <p/>
  * 
  * Implementations <strong>must</strong> make themselves available in the OSGi service registry under the
  * <code>OsgiFramework</code> class names.
@@ -39,7 +41,7 @@ public interface OsgiFramework {
      * 
      * @return the system <code>BundleContext</code>.
      */
-    BundleContext getBundleContext();    
+    BundleContext getBundleContext();
 
     /**
      * Gets the {@link ClassLoader} for the supplied {@link Bundle}.
@@ -72,8 +74,8 @@ public interface OsgiFramework {
      * imports have been wired.
      * 
      * @param bundle The bundle for which the direct dependencies are required
-     * @param includeFragments <code>true</code> if fragments of bundles to which package imports have been wired
-     *        should be included in the returned array
+     * @param includeFragments <code>true</code> if fragments of bundles to which package imports have been wired should
+     *        be included in the returned array
      * @return the supplied bundle's direct dependencies
      */
     Bundle[] getDirectDependencies(Bundle bundle, boolean includeFragments);
@@ -86,16 +88,16 @@ public interface OsgiFramework {
      * @see PackageAdmin#refreshPackages(Bundle[])
      */
     void refresh(Bundle bundle) throws BundleException;
-    
+
     /**
-     * Updates the supplied <code>Bundle</code> using the supplied <code>ManifestTransformer</code>
-     * to transformer the <code>Bundle</code>'s manifest as it is updated.
+     * Updates the supplied <code>Bundle</code> from the supplied file or directory using the supplied
+     * <code>ManifestTransformer</code> to transformer the <code>Bundle</code>'s manifest as it is updated.
      * 
      * @param bundle the bundle to update
      * @param manifestTransformer the manifest transformer to apply to the bundle's manifest
+     * @param location the file or directory containing the updated bundle contents
      * 
      * @throws BundleException if the bundle fails to update
      */
-    void update(Bundle bundle, ManifestTransformer manifestTransformer) throws BundleException;
-   
+    void update(Bundle bundle, ManifestTransformer manifestTransformer, File location) throws BundleException;
 }

@@ -66,7 +66,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String MANIFEST_ENTRY_NAME = "/META-INF/MANIFEST.MF";
+    private static final String MANIFEST_ENTRY_NAME = "META-INF/MANIFEST.MF";
 
     private static final String EQUINOX_SYSTEM_BUNDLE_NAME = "org.eclipse.osgi";
 
@@ -336,7 +336,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
     private boolean completeUpdateAndRefresh(boolean startRequired) {
         try {
-            boolean refreshed = this.bundleDriver.update(bundleManifest);
+            boolean refreshed = this.bundleDriver.update(bundleManifest, this.artifactStorage.getArtifactFS().getFile());
             if (refreshed) {
                 if (startRequired) {
                     BlockingAbortableSignal blockingSignal = new BlockingAbortableSignal(true);

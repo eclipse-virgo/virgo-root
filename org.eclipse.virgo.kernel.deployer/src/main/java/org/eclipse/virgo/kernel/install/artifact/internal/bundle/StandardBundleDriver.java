@@ -12,6 +12,8 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
+import java.io.File;
+
 import org.eclipse.virgo.kernel.core.AbortableSignal;
 import org.eclipse.virgo.kernel.core.BundleStarter;
 import org.eclipse.virgo.kernel.core.BundleUtils;
@@ -239,19 +241,19 @@ final class StandardBundleDriver implements BundleDriver {
     /**
      * {@inheritDoc}
      */
-    public boolean update(BundleManifest bundleManifest) throws DeploymentException {
-        updateBundle(bundleManifest);
+    public boolean update(BundleManifest bundleManifest, File location) throws DeploymentException {
+        updateBundle(bundleManifest, location);
         refreshBundle();
         return true;
     }
 
-    private void updateBundle(BundleManifest bundleManifest) throws DeploymentException {
+    private void updateBundle(BundleManifest bundleManifest, File location) throws DeploymentException {
         if (!isFragment(bundleManifest)) {
             Bundle bundle = obtainLocalBundle();
             Assert.isTrue(bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED,
                 "A bundle cannot be updated unless is in INSTALLED or RESOLVED state");
             try {
-                this.osgi.update(bundle, new BundleDriverManifestTransformer(bundleManifest));
+                this.osgi.update(bundle, new BundleDriverManifestTransformer(bundleManifest), location);
             } catch (BundleException e) {
                 throw new DeploymentException("Failed to update bundle '" + bundle + "'.", e);
             }

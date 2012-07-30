@@ -27,7 +27,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/3.6.0.D-20120717181632/org.eclipse.virgo.util.common-3.6.0.D-20120717181632.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/3.5.0.D-20120615065828/org.eclipse.virgo.util.common-sources-3.5.0.D-20120615065828.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.artifact"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.6.0.D-20120717202758/org.eclipse.virgo.kernel.core-3.6.0.D-20120717202758.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.6.0.D-20120717202758/org.eclipse.virgo.deployer.api-3.6.0.D-20120717202758.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.6.0.D-20120727121316/org.eclipse.virgo.kernel.core-3.6.0.D-20120727121316.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.deployer.api/3.6.0.D-20120727121316/org.eclipse.virgo.deployer.api-3.6.0.D-20120727121316.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -85,7 +85,7 @@ public class StandardInstallArtifactGraphInclosureTests {
     private RepositoryAwareArtifactDescriptor artifactDescriptor;
 
     private final ArtifactStorageFactory artifactStorageFactory = new StandardArtifactStorageFactory(
-        new PathReference("target/work/deployer.staging"), new StandardArtifactFSFactory(), new MockEventLogger());
+        new PathReference("target/work/deployer.staging"), new StandardArtifactFSFactory(), new MockEventLogger(), "true");
 
     private Set<ArtifactBridge> testArtifactBridges = new HashSet<ArtifactBridge>();
 
