@@ -62,7 +62,9 @@
         
 		<override org="org.springframework" rev="${org.springframework}"/>
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
-    
+		
+		<!-- Allow Equinox to be upgraded point-wise before rippling -->
+		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>	
 	</dependencies>
 	
 
