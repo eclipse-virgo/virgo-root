@@ -13,16 +13,16 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Version;
-
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
-import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiBundle;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
 
 /**
  */
@@ -36,9 +36,12 @@ public class StandardQuasiBundleTests {
 
     private StubBundleDescription bundleDescription;
 
+	private Region stubRegion;
+
     @Before
-    public void setUp() {
-        bundleDescription = new StubBundleDescription();
+    public void setUp() throws BundleException {
+        this.stubRegion = new StubRegionDigraph().createRegion("testRegion");
+        this.bundleDescription = new StubBundleDescription();
     }
 
     @Test
@@ -73,7 +76,7 @@ public class StandardQuasiBundleTests {
     public void testFragments() {
         bundleDescription.addFragment(new StubBundleDescription("f1"));
         bundleDescription.addFragment(new StubBundleDescription("f2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, this.stubRegion, null);
         List<QuasiBundle> fragments = qb.getFragments();
         Assert.assertEquals(2, fragments.size());
         Assert.assertEquals("f1", fragments.get(0).getSymbolicName());
@@ -91,7 +94,7 @@ public class StandardQuasiBundleTests {
     public void testHosts() {
         bundleDescription.addHost(new StubBundleDescription("h1"));
         bundleDescription.addHost(new StubBundleDescription("h2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, this.stubRegion, null);
         List<QuasiBundle> hosts = qb.getHosts();
         Assert.assertEquals(2, hosts.size());
         Assert.assertEquals("h1", hosts.get(0).getSymbolicName());
@@ -142,7 +145,7 @@ public class StandardQuasiBundleTests {
     public void testDependents() {
         bundleDescription.addDependent(new StubBundleDescription("b1"));
         bundleDescription.addDependent(new StubBundleDescription("b2"));
-        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, null, null);
+        QuasiBundle qb = new StandardQuasiBundle(bundleDescription, null, this.stubRegion, null);
         List<QuasiBundle> requiredBundles = qb.getDependents();
         Assert.assertEquals(2, requiredBundles.size());
         Assert.assertEquals("b1", requiredBundles.get(0).getSymbolicName());

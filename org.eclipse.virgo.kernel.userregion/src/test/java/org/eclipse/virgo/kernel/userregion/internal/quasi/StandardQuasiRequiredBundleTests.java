@@ -14,7 +14,9 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.BundleException;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiBundle;
@@ -42,14 +44,17 @@ public class StandardQuasiRequiredBundleTests {
     private StubStateHelper stateHelper;
 
     private StubBundleSpecification bundleSpecification;
+    
+    private Region stubRegion;
 
     @Before
-    public void setUp() {
+    public void setUp() throws BundleException {
         this.bundleDescription = new StubBundleDescription();
         this.bundleDescription.setBundleSymbolicName(BSN);
         this.bundleSpecification = new StubBundleSpecification(REQUIRED_BSN);
         this.stateHelper = new StubStateHelper();
-        this.qb = new StandardQuasiBundle(this.bundleDescription, null, null, this.stateHelper);
+        this.stubRegion = new StubRegionDigraph().createRegion("testRegion");
+        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion, this.stateHelper);
     }
 
     @Test

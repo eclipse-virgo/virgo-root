@@ -165,9 +165,12 @@ var DumpViewer = function(){
 		var height = 562;
 		$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
 		
-		var dataSource = new QuasiDataSource(self.dumpLocation + '/' + dumpId);
+		var dataSource = new QuasiDataSource(self.dumpLocation + '!/' + dumpId);
 		dataSource.updateData(function(){
-			new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(5);
+			dataSource.getUnresolvedBundleIds(function(bundles){
+				console.log(bundles);
+				new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundles[0]);
+			});
 		});
 	};
 	
@@ -212,78 +215,39 @@ var QuasiDataSource = function(dumpFolder){
 
 	var self = this;
 
-	self.dumpFolder = dumpFolder;
-	
-	alert(self.dumpFolder);
+	self.dumpFolder = dumpFolder.replace('/', '!/');
 	
 	self.bundles = {};
 	
 	self.services = {};
 	
+	self.getUnresolvedBundleIds = function(callback){
+		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getUnresolvedBundleIds/' + self.dumpFolder, function(response){
+			callback(response.value);
+		});
+	};
+	
 	self.updateData = function(callback){
-		util.doQuery('search/org.eclipse.equinox.region.domain:type=Region,*', function(response){
-			
-			var bundlesRequest = new Array();
-			$.each(response.value, function(index, region){
-				bundlesRequest.push({	
-					"mbean" : "osgi.core:type=bundleState,version=1.5,region=" + util.readObjectName(region).get('name'),
-					"operation" : "listBundles()",
-					"arguments" : [],
-					"type" : "exec"
-				});
-			});
-
-			self.bundles = {};
-			
-			util.doBulkQuery(bundlesRequest, function(response){
-				$.each(response, function(index, regionBundles){
-					var region = util.readObjectName(regionBundles.request.mbean).get('region');
-					$.each(regionBundles.value, function(bundleId, bundle){
-						if(self.bundles[bundleId]){
-							self.bundles[bundleId].Region.push(region);
-						}else{
-							self.bundles[bundleId] = bundle;
-							self.bundles[bundleId].Region = [region];
-						}
-					});
-				});
-				callback();
-			}, function(){alert('Error loading page, please refresh.');});
-			
+		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/listBundles/' + self.dumpFolder, function(response){
+			console.log(response.value);
+			callback();
 		});
 	};
 	
 
 	self.updateBundle = function(bundleId, callback){
-		var region = self.bundles[bundleId].Region[0];
+		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getBundle/' + self.dumpFolder + '/' + bundleId, function(response){
+			console.log(response.value);
 
-		var bundleQuery = new Array({
-			'mbean' : 'osgi.core:version=1.0,type=wiringState,region=' + region,
-			'operation' : "getCurrentWiring(long,java.lang.String)",
-			'arguments' : [bundleId, 'osgi.wiring.all'],
-			'type' : 'exec'
-		},{
-			'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
-			'operation' : 'getRegisteredServices(long)',
-			'arguments' : [bundleId],
-			'type' : 'exec'
-		},{
-			'mbean' : 'osgi.core:version=1.5,type=serviceState,region=' + region,
-			'operation' : 'getServicesInUse(long)',
-			'arguments' : [bundleId],
-			'type' : 'exec'
-		});
-		
-		util.doBulkQuery(bundleQuery, function(response){
-			self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
-			self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
-			self.bundles[bundleId].Capabilities = response[0].value.Capabilities;
-			self.bundles[bundleId].Requirements = response[0].value.Requirements;
-			self.bundles[bundleId].RegisteredServices = response[1].value;
-			self.bundles[bundleId].ServicesInUse = response[2].value;
 			
-			callback();
 		});
+		self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
+		self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
+		self.bundles[bundleId].Capabilities = response[0].value.Capabilities;
+		self.bundles[bundleId].Requirements = response[0].value.Requirements;
+		self.bundles[bundleId].RegisteredServices = response[1].value;
+		self.bundles[bundleId].ServicesInUse = response[2].value;
+		callback();
 	};
 
 };

@@ -195,7 +195,8 @@ final class StandardQuasiBundle implements QuasiBundle {
     private List<QuasiBundle> wrapBundleDescriptions(BundleDescription[] bundleDescriptions) {
         List<QuasiBundle> quasiBundles = new ArrayList<QuasiBundle>();
         for (BundleDescription bundleDescription : bundleDescriptions) {
-            quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, this.region.getRegionDigraph().getRegion(bundleDescription.getBundleId()), this.stateHelper));
+			Region bundleRegion = this.region.getRegionDigraph().getRegion(bundleDescription.getBundleId());
+			quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, bundleRegion, this.stateHelper));
         }
         return Collections.unmodifiableList(quasiBundles);
     }
@@ -288,7 +289,6 @@ final class StandardQuasiBundle implements QuasiBundle {
         return true;
     }
 
-    //TODO DELETE ME
     public StateHelper getStateHelper() {
         return this.stateHelper;
     }

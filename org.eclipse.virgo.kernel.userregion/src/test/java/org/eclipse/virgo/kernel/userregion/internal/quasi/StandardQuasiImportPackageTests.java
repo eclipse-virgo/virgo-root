@@ -11,15 +11,14 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.quasi;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiBundle;
-import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiImportPackage;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+import org.osgi.framework.BundleException;
 
 /**
  */
@@ -50,12 +49,15 @@ public class StandardQuasiImportPackageTests {
 
     private StubExportPackageDescription exportPackage;
 
+	private Region stubRegion;
+
     @Before
-    public void setUp() {
+    public void setUp() throws BundleException {
         this.bundleDescription = new StubBundleDescription();
         this.bundleDescription.setBundleSymbolicName(BSN);
+        this.stubRegion = new StubRegionDigraph().createRegion("testRegion");
         this.stateHelper = new StubStateHelper();
-        this.qb = new StandardQuasiBundle(this.bundleDescription, null, null, this.stateHelper);
+        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion, this.stateHelper);
         this.importPackage = new StubImportPackageSpecification(PN);
         this.exportPackage = new StubExportPackageDescription(PN);
     }
