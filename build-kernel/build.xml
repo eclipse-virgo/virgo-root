@@ -2,6 +2,7 @@
 <project name="build-kernel" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<path id="unit.test.bundles">
+		<pathelement location="../org.eclipse.virgo.kernel.equinox.extensions"/>
 		<pathelement location="../org.eclipse.virgo.kernel.artifact"/>
 		<pathelement location="../org.eclipse.virgo.kernel.services"/>
 		<pathelement location="../org.eclipse.virgo.kernel.osgi"/>
@@ -12,6 +13,7 @@
 		<pathelement location="../org.eclipse.virgo.kernel.kerneldmfragment"/>
 		<pathelement location="../org.eclipse.virgo.management.fragment"/>
 		<pathelement location="../org.eclipse.virgo.management.console"/>
+		<pathelement location="../org.eclipse.virgo.management.shell"/>
 		<pathelement location="../org.eclipse.virgo.kernel.dmfragment"/>
 		<pathelement location="../org.eclipse.virgo.kernel.deployer.dm"/>
 		<pathelement location="../org.eclipse.virgo.kernel.model"/>
