@@ -1,0 +1,3 @@
+Manifest-Version: 1
+Bundle-Manifest-Version: 2
+Bundle-SymbolicName: hooks.classloading

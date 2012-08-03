@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
-		<dependency org="org.eclipse.virgo.teststubs" name="org.eclipse.virgo.teststubs.osgi" rev="${org.eclipse.virgo.teststubs}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.stubs" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
 
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.event" rev="${org.eclipse.equinox.event}" conf="compile->runtime"/>
@@ -34,9 +34,9 @@
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.extender" rev="${org.eclipse.gemini.blueprint}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.io" rev="${org.eclipse.gemini.blueprint}" conf="compile->runtime"/>
 
-		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="aspects->compile"/>
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="${org.eclipse.virgo.nano}" conf="aspects->compile"/>
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.hot" rev="${org.eclipse.virgo.nano}" conf="aspects->compile"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="aspects->compile"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="${org.eclipse.virgo.nano}" conf="aspects->compile"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.hot" rev="${org.eclipse.virgo.nano}" conf="aspects->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="aspects->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.services" rev="latest.integration" conf="aspects->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.artifact" rev="latest.integration" conf="compile->compile"/>
