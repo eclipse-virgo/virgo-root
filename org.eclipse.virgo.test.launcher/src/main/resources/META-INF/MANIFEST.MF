@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Vendor: SpringSource Inc.
+Main-Class: org.eclipse.virgo.osgi.launcher.Launcher
+Tool: Bundlor 1.0.0.RELEASE
+Bundle-Name: Equinox Specific OSGi Extensions
+Import-Package: org.osgi.framework;version=0,
+ org.osgi.framework.launch;version=0
+Bundle-SymbolicName: org.eclipse.virgo.osgi.launcher
+Export-Package: org.eclipse.virgo.osgi.launcher;version=0;uses:="org.eclipse.virgo.osgi.launcher.parser,org.osgi.framework,org.osgi.framework.launch",
+ org.eclipse.virgo.osgi.launcher.parser;version=0
+Bundle-Version: 3.0.0
+Bundle-ManifestVersion: 2

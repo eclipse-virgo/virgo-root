@@ -2,6 +2,8 @@
 <project name="build-test-framework-test">
 
 	<path id="unit.test.bundles">
+		<pathelement location="../org.eclipse.virgo.test.stubs"/>
+		<pathelement location="../org.eclipse.virgo.test.launcher"/>
 		<pathelement location="../org.eclipse.virgo.test.framework"/>
 	</path>
 
