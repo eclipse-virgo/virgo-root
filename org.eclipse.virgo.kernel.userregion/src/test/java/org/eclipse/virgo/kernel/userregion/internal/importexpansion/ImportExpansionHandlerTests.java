@@ -73,8 +73,8 @@ public class ImportExpansionHandlerTests {
         BundleBridge bundleBridge = new BundleBridge(new StubHashGenerator());
         LibraryBridge libraryBridge = new LibraryBridge(new StubHashGenerator());
 
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("../ivy-cache/repository/org.springframework/org.springframework.core/2.5.6.SEC01/org.springframework.core-2.5.6.SEC01.jar")));
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("../ivy-cache/repository/org.springframework/org.springframework.beans/2.5.6.SEC01/org.springframework.beans-2.5.6.SEC01.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/ivy/ivy-cache/repository/org.springframework/org.springframework.core/2.5.6.SEC01/org.springframework.core-2.5.6.SEC01.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/ivy/ivy-cache/repository/org.springframework/org.springframework.beans/2.5.6.SEC01/org.springframework.beans-2.5.6.SEC01.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
