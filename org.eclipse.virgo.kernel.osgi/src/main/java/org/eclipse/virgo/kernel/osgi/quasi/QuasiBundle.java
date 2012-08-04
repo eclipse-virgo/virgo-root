@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.osgi.quasi;
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
@@ -75,6 +76,13 @@ public interface QuasiBundle {
      */
     long getBundleId();
 
+    /**
+     * Return the Region containing this bundle
+     * 
+     * @return The region this bundle belongs to
+     */
+    Region getRegion();
+    
     /**
      * Returns all fragments known to this QuasiBundle (regardless resolution status).
      * 

@@ -14,7 +14,6 @@
 package org.eclipse.virgo.kernel.artifact.fs.internal;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;

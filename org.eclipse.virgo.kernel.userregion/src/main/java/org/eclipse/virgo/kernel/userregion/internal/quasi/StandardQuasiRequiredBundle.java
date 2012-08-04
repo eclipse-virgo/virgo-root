@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.service.resolver.StateHelper;
 
@@ -79,7 +80,8 @@ final class StandardQuasiRequiredBundle implements QuasiRequiredBundle {
      */
     public QuasiBundle getProvider() {
         if (isResolved()) {
-            return new StandardQuasiBundle(this.bundleSpecification.getSupplier().getSupplier(), null, getStateHelper());
+            BundleDescription supplier = this.bundleSpecification.getSupplier().getSupplier();
+			return new StandardQuasiBundle(supplier, null, this.requiringBundle.getRegion().getRegionDigraph().getRegion(supplier.getBundleId()), getStateHelper());
         } else {
             return null;
         }

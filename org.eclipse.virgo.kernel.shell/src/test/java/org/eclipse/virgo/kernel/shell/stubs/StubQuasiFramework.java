@@ -14,10 +14,12 @@ package org.eclipse.virgo.kernel.shell.stubs;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
@@ -84,5 +86,11 @@ public class StubQuasiFramework implements QuasiFramework {
     @Override
     public void destroy() {
     }
+
+	@Override
+	public Set<Region> getRegions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

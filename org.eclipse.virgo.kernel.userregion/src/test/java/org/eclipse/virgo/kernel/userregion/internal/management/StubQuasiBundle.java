@@ -8,13 +8,13 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
@@ -114,5 +114,10 @@ public class StubQuasiBundle implements QuasiBundle {
     public Provisioning getProvisioning() {
         return this.provisioning;
     }
+
+	@Override
+	public Region getRegion() {
+		return null;
+	}
 
 }

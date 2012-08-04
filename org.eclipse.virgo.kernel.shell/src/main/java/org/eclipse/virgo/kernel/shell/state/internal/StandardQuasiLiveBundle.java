@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
@@ -200,5 +201,11 @@ final class StandardQuasiLiveBundle implements QuasiLiveBundle {
     public Provisioning getProvisioning() {
         return this.quasiBundle.getProvisioning();
     }
+
+	@Override
+	public Region getRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -18,6 +18,7 @@ import java.util.List;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
@@ -114,5 +115,11 @@ public class StubQuasiLiveBundle implements QuasiLiveBundle {
     public Provisioning getProvisioning() {
         return this.provisioning;
     }
+
+	@Override
+	public Region getRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

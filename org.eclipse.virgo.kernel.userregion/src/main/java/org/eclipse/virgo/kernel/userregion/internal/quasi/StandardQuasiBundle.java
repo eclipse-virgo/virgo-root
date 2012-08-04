@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.osgi.baseadaptor.BaseData;
 import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
@@ -58,6 +59,8 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     private final StateHelper stateHelper;
 
+	private final Region region;
+
     private volatile Provisioning provisioning = Provisioning.AUTO;
 
     /**
@@ -67,9 +70,10 @@ final class StandardQuasiBundle implements QuasiBundle {
      * @param bundleManifest
      * @param stateHelper a {@link StateHelper} for analysing wiring
      */
-    public StandardQuasiBundle(BundleDescription bundleDescription, BundleManifest bundleManifest, StateHelper stateHelper) {
+    public StandardQuasiBundle(BundleDescription bundleDescription, BundleManifest bundleManifest, Region region, StateHelper stateHelper) {
         this.bundleDescription = bundleDescription;
         this.bundleManifest = bundleManifest;
+		this.region = region;
         this.bsn = bundleDescription.getSymbolicName();
         this.bv = bundleDescription.getVersion();
         this.stateHelper = stateHelper;
@@ -125,17 +129,16 @@ final class StandardQuasiBundle implements QuasiBundle {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public String toString() {
-        return "QuasiBundle(" + getSymbolicName() + ", " + getVersion() + ")";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public long getBundleId() {
         return this.bundleDescription.getBundleId();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+	public Region getRegion() {
+		return this.region;
+	}
 
     /**
      * {@inheritDoc}
@@ -192,7 +195,8 @@ final class StandardQuasiBundle implements QuasiBundle {
     private List<QuasiBundle> wrapBundleDescriptions(BundleDescription[] bundleDescriptions) {
         List<QuasiBundle> quasiBundles = new ArrayList<QuasiBundle>();
         for (BundleDescription bundleDescription : bundleDescriptions) {
-            quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, this.stateHelper));
+			Region bundleRegion = this.region.getRegionDigraph().getRegion(bundleDescription.getBundleId());
+			quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, bundleRegion, this.stateHelper));
         }
         return Collections.unmodifiableList(quasiBundles);
     }
@@ -238,6 +242,14 @@ final class StandardQuasiBundle implements QuasiBundle {
             quasiImportPackages.add(new StandardQuasiImportPackage(importPackageSpecification, this));
         }
         return Collections.unmodifiableList(quasiImportPackages);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "QuasiBundle(" + getSymbolicName() + ", " + getVersion() + ")";
     }
 
     /**

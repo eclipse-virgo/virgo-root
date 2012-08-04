@@ -16,6 +16,7 @@ import static org.osgi.framework.Constants.RESOLUTION_MANDATORY;
 import static org.osgi.framework.Constants.RESOLUTION_OPTIONAL;
 
 import org.eclipse.osgi.service.resolver.BaseDescription;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.StateHelper;
@@ -101,7 +102,8 @@ public class StandardQuasiImportPackage extends StandardQuasiParameterised imple
     }
 
     private QuasiExportPackage constructProvider(ExportPackageDescription providerDescription) {
-        StandardQuasiBundle quasiExporter = new StandardQuasiBundle(providerDescription.getExporter(), null, getStateHelper());
+        BundleDescription exporter = providerDescription.getExporter();
+		StandardQuasiBundle quasiExporter = new StandardQuasiBundle(exporter, null, this.importingBundle.getRegion().getRegionDigraph().getRegion(exporter.getBundleId()), getStateHelper());
         return new StandardQuasiExportPackage(providerDescription, quasiExporter);
     }
 

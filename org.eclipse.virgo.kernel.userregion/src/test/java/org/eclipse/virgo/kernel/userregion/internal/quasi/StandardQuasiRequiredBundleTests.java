@@ -14,7 +14,9 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.BundleException;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiBundle;
@@ -27,8 +29,7 @@ public class StandardQuasiRequiredBundleTests {
     
     private static final String STRING_VERSION_RANGE = "[2,4)";
 
-    private static final org.eclipse.osgi.service.resolver.VersionRange RESOLVER_VERSION_RANGE = new org.eclipse.osgi.service.resolver.VersionRange(
-        STRING_VERSION_RANGE);
+    private static final org.eclipse.osgi.service.resolver.VersionRange RESOLVER_VERSION_RANGE = new org.eclipse.osgi.service.resolver.VersionRange(STRING_VERSION_RANGE);
     
     private static final VersionRange VERSION_RANGE = new VersionRange(STRING_VERSION_RANGE);
 
@@ -43,14 +44,17 @@ public class StandardQuasiRequiredBundleTests {
     private StubStateHelper stateHelper;
 
     private StubBundleSpecification bundleSpecification;
+    
+    private Region stubRegion;
 
     @Before
-    public void setUp() {
+    public void setUp() throws BundleException {
         this.bundleDescription = new StubBundleDescription();
         this.bundleDescription.setBundleSymbolicName(BSN);
         this.bundleSpecification = new StubBundleSpecification(REQUIRED_BSN);
         this.stateHelper = new StubStateHelper();
-        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stateHelper);
+        this.stubRegion = new StubRegionDigraph().createRegion("testRegion");
+        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion, this.stateHelper);
     }
 
     @Test
@@ -89,7 +93,7 @@ public class StandardQuasiRequiredBundleTests {
     public void testResolvedProvider() {
         StubBundleDescription requiredBundleDescription = new StubBundleDescription();
         requiredBundleDescription.setBundleSymbolicName(REQUIRED_BSN);
-        QuasiBundle rqb = new StandardQuasiBundle(requiredBundleDescription, null, this.stateHelper);
+        QuasiBundle rqb = new StandardQuasiBundle(requiredBundleDescription, null, null, this.stateHelper);
         QuasiRequiredBundle qrb = new StandardQuasiRequiredBundle(this.bundleSpecification, this.qb);
         this.bundleSpecification.setResolved(true);
         StubBaseDescription supplier = new StubBaseDescription();
