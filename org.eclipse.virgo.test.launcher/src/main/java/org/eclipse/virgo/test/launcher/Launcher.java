@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
-import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
-import org.eclipse.virgo.osgi.launcher.parser.LaunchCommand;
+import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
+import org.eclipse.virgo.util.parser.launcher.BundleEntry;
+import org.eclipse.virgo.util.parser.launcher.LaunchCommand;
 import org.osgi.framework.BundleException;
 
 

@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
-import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
+import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
+import org.eclipse.virgo.util.parser.launcher.BundleEntry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
