@@ -45,6 +45,8 @@ public final class ArgumentParser {
     private static final String BUNDLE_PATH_DELIMITER = "@";
 
     private static final String START_FLAG = "start";
+    
+    private static final String IVY_CACHE_RELATIVE = "/ivy/ivy-cache";
 
     public LaunchCommand parse(String[] args) {
         LaunchCommand command = new LaunchCommand();
@@ -98,6 +100,7 @@ public final class ArgumentParser {
         String[] components = parseCommandComponents(decl, BUNDLE_PATH_DELIMITER, MAXIMUM_BUNDLE_DECLARATION_COMPONENTS);
 
         String path = components[0];
+        path = processIvyCachePlaceholder(path);
         URI uri = pathToURI(path);
 
         boolean autoStart = false;
@@ -110,6 +113,10 @@ public final class ArgumentParser {
             }
         }
         return new BundleEntry(uri, autoStart);
+    }
+    
+    private String processIvyCachePlaceholder(String path) {
+        return path.replace("${ivy.cache}", System.getProperty("user.home") + IVY_CACHE_RELATIVE);
     }
 
     private void parseConfigProperties(String configPath, LaunchCommand command) {

@@ -63,6 +63,20 @@ public class ArgumentParserTests {
         assertEquals(new File("src/test/resources/test-bundle").toURI(), bd.getURI());
     }
     
+    @Test
+    public void testIvyCachePlaceholderSubstitution() {
+        String commandLine = "-B${ivy.cache}/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar";
+        LaunchCommand command = parse(commandLine);
+        
+        BundleEntry[] bundleDeclarations = command.getBundleEntries();
+        assertNotNull(bundleDeclarations);
+        assertEquals(1, bundleDeclarations.length);
+        
+        BundleEntry bd = bundleDeclarations[0];
+        assertFalse(bd.isAutoStart());
+        assertEquals(new File(System.getProperty("user.home") + "/ivy/ivy-cache" +"/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar").toURI(), bd.getURI());
+    }
+    
     @Test(expected=ParseException.class)
     public void testParseRelativeFileBundleEntryNotExists() {
         String commandLine = "-B/src/test/resources/test-bundleoeuoeu@start";
