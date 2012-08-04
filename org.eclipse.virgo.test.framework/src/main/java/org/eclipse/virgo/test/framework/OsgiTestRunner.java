@@ -12,7 +12,7 @@
 package org.eclipse.virgo.test.framework;
 
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
+//import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
 import org.eclipse.virgo.osgi.launcher.FrameworkBuilder;
 import org.eclipse.virgo.osgi.launcher.FrameworkBuilder.FrameworkCustomizer;
 import org.eclipse.virgo.test.framework.plugin.PluginManager;
@@ -111,7 +111,7 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                 }
             }
             unregisterVirgoMBeans(notifier);
-            BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
+            //BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
         }
     }
 

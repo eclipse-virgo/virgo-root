@@ -7,4 +7,8 @@ org.eclipse.virgo.util=3.6.0.D-20120717181632
 # Test
 org.junit=4.7.0
 
+# Osgi Launcher Test
+org.apache.commons=1.4.1
+org.apache.oro=2.0.8
+
 
