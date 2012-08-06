@@ -9,10 +9,10 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework;
+package org.eclipse.virgo.test.stubs.framework;
 
-import static org.eclipse.virgo.teststubs.osgi.internal.Assert.assertNotNull;
-import static org.eclipse.virgo.teststubs.osgi.internal.Duplicator.shallowCopy;
+import static org.eclipse.virgo.test.stubs.internal.Assert.assertNotNull;
+import static org.eclipse.virgo.test.stubs.internal.Duplicator.shallowCopy;
 
 import java.io.File;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.Version;
 
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 /**
  * A stub testing implementation of {@link BundleContext} as defined in section 6.1.6 of the OSGi Service Platform Core

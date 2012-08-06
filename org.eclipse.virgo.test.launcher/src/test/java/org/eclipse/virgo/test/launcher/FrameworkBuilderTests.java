@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.virgo.osgi.launcher.FrameworkBuilder;
+import org.eclipse.virgo.test.launcher.FrameworkBuilder;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

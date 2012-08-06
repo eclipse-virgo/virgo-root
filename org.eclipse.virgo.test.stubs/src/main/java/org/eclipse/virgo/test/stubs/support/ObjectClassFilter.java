@@ -9,9 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.support;
+package org.eclipse.virgo.test.stubs.support;
 
-import static org.eclipse.virgo.teststubs.osgi.internal.Assert.assertNotNull;
+import static org.eclipse.virgo.test.stubs.internal.Assert.assertNotNull;
 
 import java.util.Dictionary;
 import java.util.Map;

@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.cm.aspects;
+package org.eclipse.virgo.test.stubs.service.cm.aspects;
 
 import org.osgi.service.cm.Configuration;
 
-import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration;
+import org.eclipse.virgo.test.stubs.service.cm.StubConfiguration;
 
 /**
  * Ensures that a configuration has not been deleted before method execution
@@ -35,11 +35,11 @@ public final aspect DeletedConfiguration {
      */
     before(StubConfiguration configuration) : 
                 this(configuration) &&
-                within(org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration) &&
+                within(org.eclipse.virgo.test.stubs.service.cm.StubConfiguration) &&
                 execution(* org.osgi.service.cm.Configuration.*(..)) &&
-                !execution(* org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration.equals(Object)) &&
-                !execution(int org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration.hashCode()) &&
-                !execution(java.lang.String org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration.toString()) {
+                !execution(* org.eclipse.virgo.test.stubs.service.cm.StubConfiguration.equals(Object)) &&
+                !execution(int org.eclipse.virgo.test.stubs.service.cm.StubConfiguration.hashCode()) &&
+                !execution(java.lang.String org.eclipse.virgo.test.stubs.service.cm.StubConfiguration.toString()) {
         if (configuration.getDeleted()) {
             throw new IllegalStateException("This configuration has been deleted");
         }

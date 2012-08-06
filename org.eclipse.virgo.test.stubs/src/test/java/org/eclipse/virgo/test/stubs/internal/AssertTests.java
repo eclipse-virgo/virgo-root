@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.internal;
+package org.eclipse.virgo.test.stubs.internal;
 
 import org.junit.Test;
 
-import org.eclipse.virgo.teststubs.osgi.internal.Assert;
+import org.eclipse.virgo.test.stubs.internal.Assert;
 
 public class AssertTests {
 

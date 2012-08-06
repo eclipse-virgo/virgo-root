@@ -9,13 +9,13 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework;
+package org.eclipse.virgo.test.stubs.framework;
 
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertBundleListenerCount;
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertCleanState;
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertFrameworkListenerCount;
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertServiceListenerCount;
-import static org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert.assertServiceRegistrationCount;
+import static org.eclipse.virgo.test.stubs.framework.OSGiAssert.assertBundleListenerCount;
+import static org.eclipse.virgo.test.stubs.framework.OSGiAssert.assertCleanState;
+import static org.eclipse.virgo.test.stubs.framework.OSGiAssert.assertFrameworkListenerCount;
+import static org.eclipse.virgo.test.stubs.framework.OSGiAssert.assertServiceListenerCount;
+import static org.eclipse.virgo.test.stubs.framework.OSGiAssert.assertServiceRegistrationCount;
 
 import org.junit.Test;
 import org.osgi.framework.BundleEvent;
@@ -25,8 +25,8 @@ import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 public class OSGiAssertTests {
 

@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher.parser;
+package org.eclipse.virgo.test.launcher.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,10 +22,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
 
-import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
-import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
-import org.eclipse.virgo.osgi.launcher.parser.LaunchCommand;
-import org.eclipse.virgo.osgi.launcher.parser.ParseException;
+import org.eclipse.virgo.test.launcher.parser.ArgumentParser;
+import org.eclipse.virgo.test.launcher.parser.BundleEntry;
+import org.eclipse.virgo.test.launcher.parser.LaunchCommand;
+import org.eclipse.virgo.test.launcher.parser.ParseException;
 import org.junit.Test;
 
 /**

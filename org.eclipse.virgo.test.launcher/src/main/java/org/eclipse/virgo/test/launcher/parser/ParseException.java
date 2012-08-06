@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher.parser;
+package org.eclipse.virgo.test.launcher.parser;
 
 
 public class ParseException extends RuntimeException {

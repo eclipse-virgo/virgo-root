@@ -9,7 +9,7 @@
  *   SAP AG - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.component;
+package org.eclipse.virgo.test.stubs.service.component;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

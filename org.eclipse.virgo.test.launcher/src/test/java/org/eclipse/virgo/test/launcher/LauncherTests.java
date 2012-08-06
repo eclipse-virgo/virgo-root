@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.virgo.osgi.launcher.Launcher;
+import org.eclipse.virgo.test.launcher.Launcher;
 import org.junit.Before;
 import org.junit.Test;
 

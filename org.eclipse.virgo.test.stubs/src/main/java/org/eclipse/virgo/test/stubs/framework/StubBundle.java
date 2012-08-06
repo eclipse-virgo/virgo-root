@@ -9,10 +9,10 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework;
+package org.eclipse.virgo.test.stubs.framework;
 
-import static org.eclipse.virgo.teststubs.osgi.internal.Assert.assertNotNull;
-import static org.eclipse.virgo.teststubs.osgi.internal.Duplicator.shallowCopy;
+import static org.eclipse.virgo.test.stubs.internal.Assert.assertNotNull;
+import static org.eclipse.virgo.test.stubs.internal.Duplicator.shallowCopy;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public final class StubBundle implements Bundle {
 
     private static final Long DEFAULT_BUNDLE_ID = Long.valueOf(1);
 
-    private static final String DEFAULT_SYMBOLIC_NAME = "org.eclipse.virgo.teststubs.osgi.testbundle";
+    private static final String DEFAULT_SYMBOLIC_NAME = "org.eclipse.virgo.test.stubs.testbundle";
 
     private static final Version DEFAULT_VERSION = Version.emptyVersion;
 
@@ -124,7 +124,7 @@ public final class StubBundle implements Bundle {
     /**
      * Creates a new {@link StubServiceRegistration} and sets its initial state. This constructor sets
      * <code>bundleId</code> to <code>1</code>, <code>symbolicName</code> to
-     * <code>org.eclipse.virgo.teststubs.osgi.testbundle</code>, <code>version</code> to <code>0.0.0</code>, and
+     * <code>org.eclipse.virgo.test.stubs.testbundle</code>, <code>version</code> to <code>0.0.0</code>, and
      * <code>location</code> to <code>/</code>.
      */
     public StubBundle() {

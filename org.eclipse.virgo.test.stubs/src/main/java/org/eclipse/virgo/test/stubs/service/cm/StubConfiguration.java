@@ -9,10 +9,10 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.cm;
+package org.eclipse.virgo.test.stubs.service.cm;
 
-import static org.eclipse.virgo.teststubs.osgi.internal.Assert.assertNotNull;
-import static org.eclipse.virgo.teststubs.osgi.internal.Duplicator.shallowCopy;
+import static org.eclipse.virgo.test.stubs.internal.Assert.assertNotNull;
+import static org.eclipse.virgo.test.stubs.internal.Duplicator.shallowCopy;
 
 import java.io.IOException;
 import java.util.Dictionary;

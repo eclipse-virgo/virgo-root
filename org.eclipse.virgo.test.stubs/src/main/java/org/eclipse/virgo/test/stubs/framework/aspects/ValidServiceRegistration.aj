@@ -9,9 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
+import org.eclipse.virgo.test.stubs.framework.StubServiceRegistration;
 
 /**
  * Ensures that a bundle has not been unregistered before method execution
@@ -25,8 +25,8 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
 public final aspect ValidServiceRegistration {
 
     private pointcut ensureNotUninstalledMethod(StubServiceRegistration registration) : this(registration) && (
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration.getReference()) || 
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration.unregister())
+        execution(* org.eclipse.virgo.test.stubs.framework.StubServiceRegistration.getReference()) || 
+        execution(* org.eclipse.virgo.test.stubs.framework.StubServiceRegistration.unregister())
     );
 
     /**

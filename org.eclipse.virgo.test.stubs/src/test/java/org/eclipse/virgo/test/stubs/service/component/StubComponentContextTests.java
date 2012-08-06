@@ -9,7 +9,7 @@
  *   SAP AG - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.component;
+package org.eclipse.virgo.test.stubs.service.component;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 public class StubComponentContextTests {
 

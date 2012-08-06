@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.event;
+package org.eclipse.virgo.test.stubs.service.event;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

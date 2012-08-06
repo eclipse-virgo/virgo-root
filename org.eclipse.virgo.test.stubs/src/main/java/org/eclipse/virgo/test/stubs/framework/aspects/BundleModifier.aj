@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
 import java.util.Date;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 /**
  * Updates the <code>lastModified</code> time on a bundle when it's modified.
@@ -27,9 +27,9 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 public final aspect BundleModifier {
 
     private pointcut modifyingMethod(StubBundle bundle) : this(bundle) && (
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.uninstall()) || 
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.reset()) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.update(..))
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.uninstall()) || 
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.reset()) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.update(..))
         );
 
     /**

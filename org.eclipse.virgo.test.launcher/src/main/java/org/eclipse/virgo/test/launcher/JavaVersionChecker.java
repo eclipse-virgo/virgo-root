@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 /**
  * JavaVersionChecker is specifically designed to check for the version of Java being used for dm Server 2.0.

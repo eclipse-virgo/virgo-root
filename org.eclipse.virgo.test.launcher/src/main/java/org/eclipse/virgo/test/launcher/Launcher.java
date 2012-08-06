@@ -9,16 +9,16 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
-import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
-import org.eclipse.virgo.osgi.launcher.parser.LaunchCommand;
+import org.eclipse.virgo.test.launcher.parser.ArgumentParser;
+import org.eclipse.virgo.test.launcher.parser.BundleEntry;
+import org.eclipse.virgo.test.launcher.parser.LaunchCommand;
 import org.osgi.framework.BundleException;
 
 

@@ -9,9 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.cm;
+package org.eclipse.virgo.test.stubs.service.cm;
 
-import static org.eclipse.virgo.teststubs.osgi.internal.Assert.assertNotNull;
+import static org.eclipse.virgo.test.stubs.internal.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,8 +24,8 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-import org.eclipse.virgo.teststubs.osgi.support.PropertiesFilter;
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.test.stubs.support.PropertiesFilter;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 /**
  * A stub testing implementation of {@link ConfigurationAdmin} as defined in section 104.15.3 of the OSGi Service Platform

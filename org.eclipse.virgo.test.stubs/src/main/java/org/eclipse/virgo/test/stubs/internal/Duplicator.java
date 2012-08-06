@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.internal;
+package org.eclipse.virgo.test.stubs.internal;
 
 import java.util.ArrayList;
 import java.util.Dictionary;

@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.junit.runners.model.InitializationError;
 import org.osgi.framework.BundleContext;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 import javax.management.MalformedObjectNameException;
 

@@ -16,7 +16,7 @@
         conf="runtime" type="jar" inline="true" log="download-only"/>
         
 		<echo message="Starting Up OSGi Launcher" />
-		<java classname="org.eclipse.virgo.osgi.launcher.Launcher" fork="true" spawn="true">
+		<java classname="org.eclipse.virgo.test.launcher.Launcher" fork="true" spawn="true">
 			<arg value="-Fosgi.console=${console.port}"/>
             <arg value="-Fosgi.console.enable.builtin=true"/>
 

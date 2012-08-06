@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.virgo.test.framework.BundleEntry;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.model.InitializationError;
