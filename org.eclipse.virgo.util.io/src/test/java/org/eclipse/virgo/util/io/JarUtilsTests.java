@@ -44,6 +44,7 @@ public class JarUtilsTests {
         assertTrue(file.exists());
         BufferedReader reader = new BufferedReader(new FileReader(file.toFile()));
         String line = reader.readLine();
+        reader.close();
         assertEquals("Hello There!", line);
     }
 }
