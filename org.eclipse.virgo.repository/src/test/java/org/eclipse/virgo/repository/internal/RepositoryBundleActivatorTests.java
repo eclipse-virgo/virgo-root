@@ -18,9 +18,9 @@ import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.repository.RepositoryFactory;
 import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
-import org.eclipse.virgo.teststubs.osgi.framework.OSGiAssert;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
+import org.eclipse.virgo.test.stubs.framework.OSGiAssert;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 
 public class RepositoryBundleActivatorTests {
     
