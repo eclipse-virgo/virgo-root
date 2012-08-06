@@ -24,10 +24,10 @@ import org.junit.Test;
 
 import org.eclipse.virgo.medic.log.LoggingConfiguration;
 import org.eclipse.virgo.medic.log.impl.config.ServiceRegistryConfigurationLocator;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.FalseFilter;
-import org.eclipse.virgo.teststubs.osgi.support.PropertiesFilter;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.FalseFilter;
+import org.eclipse.virgo.test.stubs.support.PropertiesFilter;
 
 public class ServiceRegistryConfigurationLocatorTests {
 

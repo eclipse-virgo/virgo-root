@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.eclipse.virgo.medic.log.ConfigurationPublicationFailedException;
 import org.eclipse.virgo.medic.log.LoggingConfigurationPublisher;
 import org.eclipse.virgo.medic.log.impl.config.StandardLoggingConfigurationPublisher;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 public class StandardLoggingConfigurationPublisherTests {
 

@@ -34,7 +34,7 @@ import org.eclipse.virgo.medic.eventlog.impl.LocaleResolver;
 import org.eclipse.virgo.medic.eventlog.impl.MessageResolver;
 import org.eclipse.virgo.medic.eventlog.impl.PropertyResourceBundleResolver;
 import org.eclipse.virgo.medic.eventlog.impl.StandardMessageResolver;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 public class StandardMessageResolverTests {
 

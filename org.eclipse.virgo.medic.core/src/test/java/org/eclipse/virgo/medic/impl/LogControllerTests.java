@@ -17,7 +17,7 @@ import org.eclipse.virgo.medic.log.ConfigurationPublicationFailedException;
 import org.eclipse.virgo.medic.log.DelegatingPrintStream;
 import org.eclipse.virgo.medic.log.impl.LoggingPrintStreamWrapper;
 import org.eclipse.virgo.medic.log.impl.StandardDelegatingPrintStream;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;

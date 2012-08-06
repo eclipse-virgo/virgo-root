@@ -22,7 +22,7 @@ import org.osgi.framework.ServiceRegistration;
 
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.impl.DumpContributorTracker;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 public class DumpContributorTrackerTests {
 
