@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal;
+package org.eclipse.virgo.nano.core.internal;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
@@ -33,14 +33,14 @@ import org.osgi.service.event.EventAdmin;
 
 
 import org.eclipse.virgo.kernel.config.internal.KernelConfiguration;
-import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.core.internal.BundleStartTracker;
-import org.eclipse.virgo.kernel.core.internal.StartupTracker;
+import org.eclipse.virgo.nano.core.Shutdown;
+import org.eclipse.virgo.nano.core.internal.BundleStartTracker;
+import org.eclipse.virgo.nano.core.internal.StartupTracker;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.service.event.StubEventAdmin;
-import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
+import org.eclipse.virgo.test.stubs..framework.StubBundle;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs..service.event.StubEventAdmin;
+import org.eclipse.virgo.test.stubs..support.ObjectClassFilter;
 
 public class StartupTrackerTests {
 

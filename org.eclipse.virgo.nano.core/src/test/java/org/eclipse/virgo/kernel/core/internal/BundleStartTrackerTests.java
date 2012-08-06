@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal;
+package org.eclipse.virgo.nano.core.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,10 +26,10 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.service.event.Event;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.core.internal.BundleStartTracker;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.internal.BundleStartTracker;
+import org.eclipse.virgo.test.stubs..framework.StubBundle;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
 
 
 /**

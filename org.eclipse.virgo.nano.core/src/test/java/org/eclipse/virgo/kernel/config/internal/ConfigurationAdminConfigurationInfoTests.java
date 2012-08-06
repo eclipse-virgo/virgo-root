@@ -23,7 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.virgo.kernel.StubConfigurationAdmin;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Test;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;

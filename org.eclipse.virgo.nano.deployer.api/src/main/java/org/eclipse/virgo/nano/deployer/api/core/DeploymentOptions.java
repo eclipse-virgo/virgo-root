@@ -1,4 +1,4 @@
-package org.eclipse.virgo.kernel.deployer.core;
+package org.eclipse.virgo.nano.deployer.core;
 
 import java.net.URI;
 
@@ -67,12 +67,12 @@ public class DeploymentOptions {
      * synchronously.
      * <p/>
      * Deploying synchronously means that control does not return to the caller of the
-     * {@link org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer#deploy(URI, DeploymentOptions) deploy}
+     * {@link org.eclipse.virgo.nano.deployer.core.ApplicationDeployer#deploy(URI, DeploymentOptions) deploy}
      * method until any application contexts for the application have been built and published in the service
      * registry or deployment fails or times out.
      * <p/>
      * Deploying asynchronously means that control returns to the caller of the
-     * {@link org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer#deploy(URI, DeploymentOptions) deploy}
+     * {@link org.eclipse.virgo.nano.deployer.core.ApplicationDeployer#deploy(URI, DeploymentOptions) deploy}
      * method once the application has been started, but not necessarily before any application contexts have been
      * built and published.
      * 

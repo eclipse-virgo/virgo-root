@@ -11,7 +11,7 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shutdown;
+package org.eclipse.virgo.nano.shutdown;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.Properties;
  */
 final class KernelAuthenticationConfiguration {
 
-    public static final String FILE_LOCATION_PROPERTY = "org.eclipse.virgo.kernel.authentication.file";
+    public static final String FILE_LOCATION_PROPERTY = "org.eclipse.virgo.nano.authentication.file";
 
     public static final String DEFAULT_USERNAME = "admin";
 

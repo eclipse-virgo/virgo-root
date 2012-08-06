@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;

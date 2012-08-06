@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
 
 
 

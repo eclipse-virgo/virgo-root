@@ -6,12 +6,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.virgo.kernel.core.KernelConfig;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.core.KernelConfig;
+import org.eclipse.virgo.nano.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.core.DeploymentOptions;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;

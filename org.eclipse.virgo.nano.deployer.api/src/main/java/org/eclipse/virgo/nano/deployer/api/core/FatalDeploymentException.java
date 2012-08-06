@@ -10,9 +10,9 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.core;
+package org.eclipse.virgo.nano.deployer.core;
 
-import org.eclipse.virgo.kernel.serviceability.FatalServerException;
+import org.eclipse.virgo.nano.serviceability.FatalServerException;
 
 /**
  * Signals a fatal exception in the deployer subsystem.<p/>

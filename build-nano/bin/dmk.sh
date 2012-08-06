@@ -144,7 +144,7 @@ then
 	fi
 
     ACCESS_PROPERTIES=$CONFIG_DIR/org.eclipse.virgo.kernel.jmxremote.access.properties
-    AUTH_LOGIN=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config
+    AUTH_LOGIN=$CONFIG_DIR/org.eclipse.virgo.nano.authentication.config
     AUTH_FILE=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties
     CONFIG_AREA=$KERNEL_HOME/work
     JAVA_PROFILE=$KERNEL_HOME/configuration/java6-server.profile
@@ -189,7 +189,7 @@ then
 			-XX:ErrorFile=$KERNEL_HOME/serviceability/error.log \
 			-XX:HeapDumpPath=$KERNEL_HOME/serviceability/heap_dump.hprof \
 			-Djava.security.auth.login.config=$AUTH_LOGIN \
-			-Dorg.eclipse.virgo.kernel.authentication.file=$AUTH_FILE \
+			-Dorg.eclipse.virgo.nano.authentication.file=$AUTH_FILE \
 			-Djava.io.tmpdir=$TMP_DIR \
 			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 			-Dorg.eclipse.virgo.kernel.config=$CONFIG_DIR \
@@ -269,8 +269,8 @@ then
 	exec $JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
 		-classpath $CLASSPATH \
 		-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
-		-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
-		org.eclipse.virgo.kernel.shutdown.ShutdownClient $OTHER_ARGS
+		-Dorg.eclipse.virgo.nano.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
+		org.eclipse.virgo.nano.shutdown.ShutdownClient $OTHER_ARGS
 	
 else
 	echo "Unknown command: ${COMMAND}"

@@ -3,7 +3,7 @@
 	<!-- Exclusions -->
 	<Match>
 		<Bug pattern="DM_EXIT"/>
-		<Class name="org.eclipse.virgo.kernel.core.internal.ShutdownManager"/>
+		<Class name="org.eclipse.virgo.nano.core.internal.ShutdownManager"/>
 		<Method name="immediateShutdown"/>
 	</Match>
 </FindBugsFilter>

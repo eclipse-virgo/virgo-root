@@ -10,9 +10,9 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.core;
+package org.eclipse.virgo.nano.deployer.core;
 
-import org.eclipse.virgo.kernel.serviceability.LogEventDelegate;
+import org.eclipse.virgo.nano.serviceability.LogEventDelegate;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 

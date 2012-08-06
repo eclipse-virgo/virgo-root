@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shutdown;
+package org.eclipse.virgo.nano.shutdown;
 
 import javax.management.MXBean;
 

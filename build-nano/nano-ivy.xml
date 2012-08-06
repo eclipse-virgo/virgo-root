@@ -11,13 +11,13 @@
     
 	<dependencies>
 		<!-- nano runtime -->	
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="latest.integration" conf="nano-runtime->runtime" />
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.war.deployer" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services.ds" rev="latest.integration" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services.concurrent" rev="latest.integration" conf="nano-runtime->runtime" />
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="latest.integration" conf="nano-runtime->runtime" />
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.hot" rev="latest.integration" conf="nano-runtime->runtime" />
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="latest.integration" conf="nano-runtime->runtime" />
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.hot" rev="latest.integration" conf="nano-runtime->runtime" />
         
 		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>

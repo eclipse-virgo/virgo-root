@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal;
+package org.eclipse.virgo.nano.core.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Dictionary;
 import java.util.Properties;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs..framework.StubBundle;
 import org.junit.Test;
 import org.osgi.framework.Version;
 

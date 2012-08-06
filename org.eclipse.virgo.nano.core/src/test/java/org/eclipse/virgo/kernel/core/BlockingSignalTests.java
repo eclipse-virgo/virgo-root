@@ -9,7 +9,7 @@
  *   Olivier Girardot - initial contribution
  */
 
-package org.eclipse.virgo.kernel.core;
+package org.eclipse.virgo.nano.core;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.eclipse.virgo.kernel.authentication">
+<project name="org.eclipse.virgo.nano.authentication">
 
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>

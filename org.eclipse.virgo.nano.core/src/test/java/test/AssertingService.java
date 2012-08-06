@@ -11,7 +11,7 @@
 
 package test;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 
 
 /**

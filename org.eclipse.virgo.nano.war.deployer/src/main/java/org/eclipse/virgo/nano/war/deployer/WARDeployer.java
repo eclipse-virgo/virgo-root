@@ -25,8 +25,8 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
-import org.eclipse.virgo.kernel.core.KernelConfig;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.core.KernelConfig;
+import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;

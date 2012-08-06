@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.serviceability.enforcement;
+package org.eclipse.virgo.nano.serviceability.enforcement;
 
 import java.util.Map;
 
@@ -18,8 +18,8 @@ import org.junit.Test;
 
 import test.AssertingService;
 
-import org.eclipse.virgo.kernel.serviceability.Assert;
-import org.eclipse.virgo.kernel.serviceability.dump.DumpCoordinator;
+import org.eclipse.virgo.nano.serviceability.Assert;
+import org.eclipse.virgo.nano.serviceability.dump.DumpCoordinator;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 
 public class NonNullAssertionEnforcerTests {

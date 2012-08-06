@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal;
+package org.eclipse.virgo.nano.core.internal;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -27,11 +27,11 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
 
-import org.eclipse.virgo.kernel.core.internal.ShutdownManager;
+import org.eclipse.virgo.nano.core.internal.ShutdownManager;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs..framework.StubBundle;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
 
 public class ShutdownManagerTests {
 	

@@ -1,4 +1,4 @@
-package org.eclipse.virgo.kernel.core.internal;
+package org.eclipse.virgo.nano.core.internal;
 
 import static org.junit.Assert.assertNotNull;
 

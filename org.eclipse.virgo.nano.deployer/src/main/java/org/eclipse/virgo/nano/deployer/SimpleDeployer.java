@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
 import org.osgi.framework.Bundle;
 
 

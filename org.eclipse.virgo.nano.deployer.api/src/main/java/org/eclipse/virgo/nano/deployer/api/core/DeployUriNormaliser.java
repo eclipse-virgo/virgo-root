@@ -10,7 +10,7 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.core;
+package org.eclipse.virgo.nano.deployer.core;
 
 import java.net.URI;
 

@@ -1,8 +1,8 @@
 package org.eclipse.virgo.nano.deployer.hot;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.kernel.deployer.hot.HotDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.hot.HotDeployer;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 public class HotDeployerEnabler {

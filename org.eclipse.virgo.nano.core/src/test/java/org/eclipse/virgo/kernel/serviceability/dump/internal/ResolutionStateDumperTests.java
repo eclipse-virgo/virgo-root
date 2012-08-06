@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.serviceability.dump.internal;
+package org.eclipse.virgo.nano.serviceability.dump.internal;
 
 import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertArrayEquals;

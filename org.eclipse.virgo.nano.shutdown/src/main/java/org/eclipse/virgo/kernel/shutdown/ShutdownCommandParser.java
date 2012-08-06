@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shutdown;
+package org.eclipse.virgo.nano.shutdown;
 
 /**
  * A <code>ShutdownCommandParser</code> is used to parse a series of arguments

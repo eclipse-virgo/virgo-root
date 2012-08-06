@@ -11,7 +11,7 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shutdown;
+package org.eclipse.virgo.nano.shutdown;
 
 import java.util.Properties;
 

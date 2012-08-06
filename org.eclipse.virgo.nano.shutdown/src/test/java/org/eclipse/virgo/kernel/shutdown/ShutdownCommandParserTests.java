@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shutdown;
+package org.eclipse.virgo.nano.shutdown;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.virgo.kernel.shutdown.ShutdownCommand;
-import org.eclipse.virgo.kernel.shutdown.ShutdownCommandParser;
+import org.eclipse.virgo.nano.shutdown.ShutdownCommand;
+import org.eclipse.virgo.nano.shutdown.ShutdownCommandParser;
 import org.junit.Test;
 
 public class ShutdownCommandParserTests {

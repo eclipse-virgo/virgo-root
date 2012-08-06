@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shutdown;
+package org.eclipse.virgo.nano.shutdown;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,8 +35,8 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 import javax.management.remote.rmi.RMIConnectorServer;
 
-import org.eclipse.virgo.kernel.shutdown.ShutdownClient;
-import org.eclipse.virgo.kernel.shutdown.ShutdownCommand;
+import org.eclipse.virgo.nano.shutdown.ShutdownClient;
+import org.eclipse.virgo.nano.shutdown.ShutdownCommand;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

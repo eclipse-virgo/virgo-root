@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.kernel.deployer.hot;
+package org.eclipse.virgo.nano.deployer.hot;
 
 import java.io.File;
 

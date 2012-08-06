@@ -26,7 +26,7 @@ import org.eclipse.virgo.kernel.config.internal.PropertiesSource;
 import org.eclipse.virgo.kernel.config.internal.commandline.CommandLinePropertiesSource;
 import org.eclipse.virgo.medic.test.eventlog.LoggedEvent;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
 
 public class CommandLinePropertiesSourceTests {
 	

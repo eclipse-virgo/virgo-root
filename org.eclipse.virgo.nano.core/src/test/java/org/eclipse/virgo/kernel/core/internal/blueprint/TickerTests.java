@@ -9,14 +9,14 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal.blueprint;
+package org.eclipse.virgo.nano.core.internal.blueprint;
 
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.eclipse.virgo.kernel.core.internal.blueprint.StandardTicker;
-import org.eclipse.virgo.kernel.core.internal.blueprint.Ticker;
+import org.eclipse.virgo.nano.core.internal.blueprint.StandardTicker;
+import org.eclipse.virgo.nano.core.internal.blueprint.Ticker;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -84,9 +84,9 @@
 	  <plugin id="org.sat4j.core"/>
 	  <plugin id="org.sat4j.pb"/>
 	  <plugin id="org.eclipse.equinox.region"/>
-	  <plugin id="org.eclipse.virgo.kernel.core"/>
-      <plugin id="org.eclipse.virgo.deployer.api"/>
-      <plugin id="org.eclipse.virgo.deployer.hot"/>
+	  <plugin id="org.eclipse.virgo.nano.core"/>
+      <plugin id="org.eclipse.virgo.nano.deployer.api"/>
+      <plugin id="org.eclipse.virgo.nano.deployer.hot"/>
       <plugin id="org.eclipse.virgo.medic"/>
 	  <plugin id="org.eclipse.virgo.medic.core"/>
       <plugin id="org.eclipse.virgo.medic.logbackcorefragment"/>
@@ -114,7 +114,7 @@
 		<plugin id="org.eclipse.gemini.web.core" autoStart="true" />
 		<plugin id="org.eclipse.gemini.web.extender" autoStart="true" />
 		<plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" />
-		<plugin id="org.eclipse.virgo.kernel.core" autoStart="true" />
+		<plugin id="org.eclipse.virgo.nano.core" autoStart="true" />
 		<plugin id="org.eclipse.virgo.medic" autoStart="true" startLevel="3"/>
 		<plugin id="org.eclipse.virgo.medic.core" autoStart="true" startLevel="3"/>
 		<plugin id="org.eclipse.virgo.util.osgi" autoStart="true"/>

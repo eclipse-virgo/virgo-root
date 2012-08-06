@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal.blueprint;
+package org.eclipse.virgo.nano.core.internal.blueprint;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,10 +25,10 @@ import org.osgi.framework.Version;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 
-import org.eclipse.virgo.kernel.core.internal.blueprint.ApplicationContextDependencyMonitor;
+import org.eclipse.virgo.nano.core.internal.blueprint.ApplicationContextDependencyMonitor;
 import org.eclipse.virgo.medic.test.eventlog.LoggedEvent;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs..framework.StubBundle;
 
 /**
  */

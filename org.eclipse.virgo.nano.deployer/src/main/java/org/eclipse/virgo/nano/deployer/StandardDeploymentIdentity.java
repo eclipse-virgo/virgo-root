@@ -12,7 +12,7 @@ package org.eclipse.virgo.nano.deployer;
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
 import org.osgi.framework.Version;
 
 /**

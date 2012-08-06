@@ -9,14 +9,14 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.serviceability.dump;
+package org.eclipse.virgo.nano.serviceability.dump;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.eclipse.virgo.kernel.serviceability.dump.FFDCExceptionState;
+import org.eclipse.virgo.nano.serviceability.dump.FFDCExceptionState;
 import org.junit.Test;
 
 

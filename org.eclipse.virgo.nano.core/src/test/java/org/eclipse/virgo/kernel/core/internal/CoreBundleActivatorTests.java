@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.core.internal;
+package org.eclipse.virgo.nano.core.internal;
 
 import static org.easymock.EasyMock.createNiceMock;
 
@@ -24,15 +24,15 @@ import org.osgi.service.event.EventAdmin;
 
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.virgo.kernel.StubConfigurationAdmin;
-import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.core.internal.CoreBundleActivator;
-import org.eclipse.virgo.kernel.core.internal.StartupTracker;
+import org.eclipse.virgo.nano.core.Shutdown;
+import org.eclipse.virgo.nano.core.internal.CoreBundleActivator;
+import org.eclipse.virgo.nano.core.internal.StartupTracker;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.service.component.StubComponentContext;
-import org.eclipse.virgo.teststubs.osgi.service.event.StubEventAdmin;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs..service.component.StubComponentContext;
+import org.eclipse.virgo.test.stubs..service.event.StubEventAdmin;
 
 /**
  * Test the logic of {@link CoreBundleActivator}

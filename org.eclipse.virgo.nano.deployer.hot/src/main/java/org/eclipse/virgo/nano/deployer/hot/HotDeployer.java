@@ -9,13 +9,13 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.hot;
+package org.eclipse.virgo.nano.deployer.hot;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.io.FileSystemChecker;
 import org.eclipse.virgo.util.io.PathReference;

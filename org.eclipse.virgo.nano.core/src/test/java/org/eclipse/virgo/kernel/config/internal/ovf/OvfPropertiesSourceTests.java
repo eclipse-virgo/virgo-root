@@ -25,7 +25,7 @@ import org.eclipse.virgo.kernel.config.internal.ovf.OvfPropertiesSource;
 import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.test.eventlog.LoggedEvent;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs..framework.StubBundleContext;
 
 
 /**

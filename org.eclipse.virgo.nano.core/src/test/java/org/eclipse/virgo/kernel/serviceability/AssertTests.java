@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.serviceability;
+package org.eclipse.virgo.nano.serviceability;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.serviceability.Assert;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Test;
 
 
