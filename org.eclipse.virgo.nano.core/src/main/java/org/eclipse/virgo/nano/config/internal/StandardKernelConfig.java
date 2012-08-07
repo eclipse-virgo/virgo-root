@@ -26,8 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 
 public class StandardKernelConfig implements KernelConfig {
+	
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    ComponentContext context;
+    
+    private ComponentContext context;
 
     protected void activate(ComponentContext context) {
         this.context = context;
@@ -42,7 +44,7 @@ public class StandardKernelConfig implements KernelConfig {
     @Override
     public String getProperty(String name) {
         Object value = this.context.getProperties().get(name);
-        LOGGER.debug("KernelConfig.getProperty() is called with name [" + name + "] value is [" + value + "]");
+        LOGGER.debug(KernelConfig.class.getSimpleName() + ".getProperty() is called with name [" + name + "] value is [" + value + "]");
         if (value instanceof String || value == null) {
             return (String) value;
         } else if (value instanceof String[] && ((String[]) value).length > 0) {

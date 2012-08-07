@@ -67,7 +67,7 @@ public class BundleDeployer implements SimpleDeployer {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
         this.packageAdmin = packageAdmin;
-        String kernelHome = System.getProperty("org.eclipse.virgo.nano.home");
+        String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
         File kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);

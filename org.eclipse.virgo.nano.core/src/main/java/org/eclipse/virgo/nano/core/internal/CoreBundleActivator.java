@@ -69,6 +69,7 @@ public class CoreBundleActivator {
 
     private static final String EVENT_TOPIC_BLUEPRINT_CONTAINER = "org/osgi/service/blueprint/container/*";
 
+    //TODO this isn't the name of the kernel region
     private static final String EVENT_TOPIC_REGION = "org/eclipse/virgo/kernel/region/*";
     
     private static final String MBEAN_VALUE_SHUTDOWN = "Shutdown";

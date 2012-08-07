@@ -576,7 +576,7 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private void warDeployerInternalInit(BundleContext bundleContext) {
-        String kernelHome = System.getProperty("org.eclipse.virgo.nano.home");
+        String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
         File kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);

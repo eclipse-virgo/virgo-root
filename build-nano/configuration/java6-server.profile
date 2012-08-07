@@ -147,8 +147,6 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.spi;version="2.1.1",\
  javax.xml.ws.wsaddressing;version="2.1.1",\
  javax.xml.xpath,\
- org.eclipse.virgo.test.launcher;version="3.6.0",\
- org.eclipse.virgo.test.launcher.parser;version="3.6.0",\
  org.ietf.jgss,\
  org.omg.CORBA,\
  org.omg.CORBA_2_3,\
