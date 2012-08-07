@@ -32,7 +32,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-3.0.5.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.BUILD-20120806143138/org.eclipse.virgo.medic-3.6.0.BUILD-20120806143138.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120807142340/org.eclipse.virgo.medic-3.6.0.D-20120807142340.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
@@ -42,6 +42,6 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.dmfragment"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.6.0.D-20120727121316/org.eclipse.virgo.kernel.core-3.6.0.D-20120727121316.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.kernel.core/3.6.0.D-20120807143000/org.eclipse.virgo.kernel.core-3.6.0.D-20120807143000.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
