@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal.ovf;
+package org.eclipse.virgo.nano.config.internal.ovf;
 
 import java.io.File;
 import java.io.FileReader;
@@ -23,15 +23,15 @@ import java.util.Set;
 import org.osgi.framework.BundleContext;
 
 
-import org.eclipse.virgo.kernel.config.internal.PropertiesSource;
-import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.config.internal.PropertiesSource;
+import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.util.io.IOUtils;
 
 /**
  * Implementation of {@link PropertiesSource} that reads properties from an OVF document.
  * <p />
- * The path to the OVF document is specified using the <code>org.eclipse.virgo.kernel.config.ovf</code> framework
+ * The path to the OVF document is specified using the <code>org.eclipse.virgo.nano.config.ovf</code> framework
  * property.
  * <p/>
  * In order for a property in the OVF document to be exported to OVF its key should have the following format: <br/>
@@ -51,7 +51,7 @@ import org.eclipse.virgo.util.io.IOUtils;
  */
 public final class OvfPropertiesSource implements PropertiesSource {
 
-    static final String FRAMEWORK_PROPERTY_OVF = "org.eclipse.virgo.kernel.config.ovf";
+    static final String FRAMEWORK_PROPERTY_OVF = "org.eclipse.virgo.nano.config.ovf";
 
     private static final String PROPERTY_PREFIX = "cm:";
 

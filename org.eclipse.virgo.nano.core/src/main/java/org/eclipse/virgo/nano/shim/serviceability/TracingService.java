@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shim.serviceability;
+package org.eclipse.virgo.nano.shim.serviceability;
 
 /**
  * <p>

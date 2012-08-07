@@ -23,9 +23,9 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.eclipse.virgo.nano.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.nano.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.nano.deployer.hot.HotDeploymentFileSystemListener;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.util.io.FileSystemEvent;

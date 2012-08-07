@@ -9,16 +9,16 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shim.scope.internal;
+package org.eclipse.virgo.nano.shim.scope.internal;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
-import org.eclipse.virgo.kernel.shim.scope.Scope;
-import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
+import org.eclipse.virgo.nano.shim.scope.Scope;
+import org.eclipse.virgo.nano.shim.scope.ScopeFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 

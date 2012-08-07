@@ -8,11 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import org.eclipse.virgo.nano.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.nano.deployer.core.DeploymentException;
-import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.nano.deployer.core.DeploymentOptions;
-import org.eclipse.virgo.nano.deployer.core.FatalDeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.LogEvent;

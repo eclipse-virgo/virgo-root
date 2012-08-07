@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.diagnostics;
+package org.eclipse.virgo.nano.diagnostics;
 
 import org.eclipse.virgo.nano.serviceability.LogEventDelegate;
 import org.eclipse.virgo.medic.eventlog.Level;

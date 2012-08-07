@@ -13,8 +13,8 @@ package org.eclipse.virgo.nano.deployer.hot;
 
 import java.io.File;
 
-import org.eclipse.virgo.nano.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.nano.deployer.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
 import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.io.FileSystemChecker;

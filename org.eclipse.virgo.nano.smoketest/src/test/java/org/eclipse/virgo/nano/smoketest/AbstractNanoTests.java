@@ -88,7 +88,7 @@ public class AbstractNanoTests {
     }
 
     protected String getNanoStartUpStatus() throws Exception {
-        String nanoStartupStatus = (String) getMBeanServerConnection().getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"),
+        String nanoStartupStatus = (String) getMBeanServerConnection().getAttribute(new ObjectName("org.eclipse.virgo.nano:type=KernelStatus"),
             "Status");
         return nanoStartupStatus;
     }

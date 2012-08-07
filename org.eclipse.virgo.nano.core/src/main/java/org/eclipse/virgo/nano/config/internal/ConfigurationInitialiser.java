@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal;
+package org.eclipse.virgo.nano.config.internal;
 
 import java.io.IOException;
 
@@ -18,10 +18,10 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationListener;
 
-import org.eclipse.virgo.kernel.config.internal.commandline.CommandLinePropertiesSource;
-import org.eclipse.virgo.kernel.config.internal.ovf.OvfPropertiesSource;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.config.internal.commandline.CommandLinePropertiesSource;
+import org.eclipse.virgo.nano.config.internal.ovf.OvfPropertiesSource;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 /**

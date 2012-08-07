@@ -29,7 +29,7 @@ import javax.security.auth.spi.LoginModule;
 
 /**
  * An implementation of {@link LoginModule} that reads a properties file for authentication information. The location of
- * the properties file is read from the system property <code>org.eclipse.virgo.nano.authentication.file</code>. If
+ * the properties file is read from the system property <code>org.eclipse.virgo.kernel.authentication.file</code>. If
  * this property is not set, then instantiation of this {@link LoginModule} will fail.
  * <p />
  * 
@@ -40,7 +40,7 @@ import javax.security.auth.spi.LoginModule;
  */
 public final class KernelLoginModule implements LoginModule {
 
-    public static final String FILE_LOCATION = "org.eclipse.virgo.nano.authentication.file";
+    public static final String FILE_LOCATION = "org.eclipse.virgo.kernel.authentication.file";
 
     private final CredentialStore credentialStore;
 

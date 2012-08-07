@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal;
+package org.eclipse.virgo.nano.config.internal;
 
 import java.io.File;
 import java.util.ArrayList;

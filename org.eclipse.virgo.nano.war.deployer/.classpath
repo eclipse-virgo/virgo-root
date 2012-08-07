@@ -32,7 +32,6 @@
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.6.0.D-20120717181632/org.eclipse.virgo.util.osgi.manifest-3.6.0.D-20120717181632.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.nano.deployer"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.3.0.v20120307-2102/org.eclipse.osgi.services-3.3.0.v20120307-2102.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110513/org.eclipse.osgi.services-sources-3.3.0.v20110513.jar"/>
-	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.nano.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.nano.deployer.api"/>
 	<classpathentry kind="output" path="target/classes"/>

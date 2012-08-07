@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
 
-import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
@@ -31,7 +31,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("deprecation")
 public class BundleDeployer implements SimpleDeployer {
 
     private static final String JAR = "jar";
@@ -68,7 +67,7 @@ public class BundleDeployer implements SimpleDeployer {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
         this.packageAdmin = packageAdmin;
-        String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
+        String kernelHome = System.getProperty("org.eclipse.virgo.nano.home");
         File kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);

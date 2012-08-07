@@ -16,7 +16,6 @@ import org.eclipse.virgo.nano.serviceability.NonNull;
 
 /**
  */
-@SuppressWarnings("unused")
 public class AssertingService {
     
     public AssertingService() {

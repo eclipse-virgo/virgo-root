@@ -1,4 +1,4 @@
-package org.eclipse.virgo.kernel.config.internal;
+package org.eclipse.virgo.nano.config.internal;
 
 import java.util.Dictionary;
 
@@ -25,7 +25,7 @@ public class StandardConfigurationExporter implements ConfigurationExporter {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.virgo.kernel.config.internal.ConfigurationExporter#getUserregionConfiguration()
+	 * @see org.eclipse.virgo.nano.config.internal.ConfigurationExporter#getUserregionConfiguration()
 	 */
 	@Override
 	public Dictionary getUserRegionConfigurationProperties() {
@@ -33,7 +33,7 @@ public class StandardConfigurationExporter implements ConfigurationExporter {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.virgo.kernel.config.internal.ConfigurationExporter#getKernelregionConfiguration()
+	 * @see org.eclipse.virgo.nano.config.internal.ConfigurationExporter#getKernelregionConfiguration()
 	 */
 	@Override
 	public Dictionary getKernelRegionConfigurationProperties() {

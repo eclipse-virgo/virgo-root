@@ -9,9 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shim.serviceability.internal;
+package org.eclipse.virgo.nano.shim.serviceability.internal;
 
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.slf4j.MDC;
 
 

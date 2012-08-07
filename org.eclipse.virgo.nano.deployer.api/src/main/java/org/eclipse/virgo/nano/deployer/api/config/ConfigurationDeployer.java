@@ -1,4 +1,4 @@
-package org.eclipse.virgo.nano.deployer.config;
+package org.eclipse.virgo.nano.deployer.api.config;
 
 import java.io.IOException;
 import java.util.Properties;

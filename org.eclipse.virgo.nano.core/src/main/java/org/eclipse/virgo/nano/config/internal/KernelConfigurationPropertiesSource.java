@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal;
+package org.eclipse.virgo.nano.config.internal;
 
 import java.util.Collections;
 import java.util.Map;
@@ -34,9 +34,9 @@ final class KernelConfigurationPropertiesSource implements PropertiesSource {
 
     static final String PROPERTY_DOMAIN = "domain";
 
-    static final String KERNEL_CONFIGURATION_PID = "org.eclipse.virgo.kernel";
+    static final String KERNEL_CONFIGURATION_PID = "org.eclipse.virgo.nano";
 
-    static final String PROPERTY_KERNEL_STARTUP_WAIT_LIMIT = "org.eclipse.virgo.kernel.startup.wait.limit";
+    static final String PROPERTY_KERNEL_STARTUP_WAIT_LIMIT = "org.eclipse.virgo.nano.startup.wait.limit";
 
     private final KernelConfiguration kernelConfiguration;
 

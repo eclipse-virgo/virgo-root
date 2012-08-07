@@ -21,10 +21,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
-import org.eclipse.virgo.nano.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.nano.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.nano.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.nano.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.support.HotDeployerEnabler;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;

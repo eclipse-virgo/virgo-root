@@ -27,8 +27,8 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
 
 /**
  * {@link ApplicationContextDependencyMonitor} is a class that tracks the satisfaction of service dependencies needed

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.5.0.D-20120619054214/org.eclipse.virgo.util.io-3.5.0.D-20120619054214.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.D-20120717181632/org.eclipse.virgo.util.io-sources-3.6.0.D-20120717181632.jar"/>
+	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.D-20120717181632/org.eclipse.virgo.util.io-3.6.0.D-20120717181632.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.D-20120717181632/org.eclipse.virgo.util.io-sources-3.6.0.D-20120717181632.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

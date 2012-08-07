@@ -10,7 +10,7 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.deployer.core;
+package org.eclipse.virgo.nano.deployer.api.core;
 
 import org.eclipse.virgo.util.io.PathReference;
 

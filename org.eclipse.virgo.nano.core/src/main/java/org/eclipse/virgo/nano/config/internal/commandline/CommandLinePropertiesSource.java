@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal.commandline;
+package org.eclipse.virgo.nano.config.internal.commandline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +20,9 @@ import java.util.Properties;
 import org.osgi.framework.BundleContext;
 
 
-import org.eclipse.virgo.kernel.config.internal.PropertiesSource;
-import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.config.internal.PropertiesSource;
+import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
 
 public final class CommandLinePropertiesSource implements PropertiesSource {
 	
@@ -34,7 +34,7 @@ public final class CommandLinePropertiesSource implements PropertiesSource {
 	
 	private static final String COMMAND_PLAN = "plan";
 	
-	private static final String PID_KERNEL_REGION = "org.eclipse.virgo.kernel.userregion";
+	private static final String PID_KERNEL_REGION = "org.eclipse.virgo.nano.userregion";
 	
 	private static final String TEMPLATE_VERSIONED_PLAN_REPOSITORY_URI = "repository:plan/%s/%s";
 	

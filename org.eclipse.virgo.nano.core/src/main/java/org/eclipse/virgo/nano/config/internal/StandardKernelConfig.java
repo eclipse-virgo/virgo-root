@@ -9,7 +9,7 @@
  *   SAP AG - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal;
+package org.eclipse.virgo.nano.config.internal;
 
 import org.eclipse.virgo.nano.core.KernelConfig;
 import org.osgi.service.component.ComponentContext;

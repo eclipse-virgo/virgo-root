@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shim.scope;
+package org.eclipse.virgo.nano.shim.scope;
 
 /**
  * {@link Scope} defines a collection of bundles, packages, and services. There is a global scope as well as more local scopes such as those used to contain

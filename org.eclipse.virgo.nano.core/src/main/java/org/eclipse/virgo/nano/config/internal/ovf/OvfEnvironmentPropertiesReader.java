@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.config.internal.ovf;
+package org.eclipse.virgo.nano.config.internal.ovf;
 
 import java.io.IOException;
 import java.io.Reader;

@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 
 import org.eclipse.virgo.nano.core.Shutdown;
-import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
+import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**

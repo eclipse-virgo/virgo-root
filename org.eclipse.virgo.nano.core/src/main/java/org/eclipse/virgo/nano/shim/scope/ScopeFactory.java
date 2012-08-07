@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shim.scope;
+package org.eclipse.virgo.nano.shim.scope;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;

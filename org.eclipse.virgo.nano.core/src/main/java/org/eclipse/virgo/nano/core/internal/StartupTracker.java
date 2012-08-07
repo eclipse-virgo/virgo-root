@@ -20,13 +20,13 @@ import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.config.internal.KernelConfiguration;
+import org.eclipse.virgo.nano.config.internal.KernelConfiguration;
 import org.eclipse.virgo.nano.core.BlockingAbortableSignal;
 import org.eclipse.virgo.nano.core.BundleUtils;
 import org.eclipse.virgo.nano.core.FailureSignalledException;
 import org.eclipse.virgo.nano.core.FatalKernelException;
 import org.eclipse.virgo.nano.core.Shutdown;
-import org.eclipse.virgo.kernel.diagnostics.KernelLogEvents;
+import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Bundle;
@@ -65,7 +65,7 @@ final class StartupTracker {
     
     private static final String KERNEL_EVENT_START_FAILED = KERNEL_EVENT_TOPIC + "START_FAILED";
     
-    private static final String KERNEL_BSN_PREFIX = "org.eclipse.virgo.kernel";
+    private static final String KERNEL_BSN_PREFIX = "org.eclipse.virgo.nano";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupTracker.class);
 

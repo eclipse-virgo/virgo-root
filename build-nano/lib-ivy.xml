@@ -13,8 +13,6 @@
 		<!-- lib -->
 		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.shutdown" rev="latest.integration" conf="lib->runtime"/>
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.authentication" rev="latest.integration" conf="lib->runtime"/>
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.launcher" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.extensions.equinox" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.launcher" rev="${org.eclipse.equinox.launcher}" conf="lib->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.transaction" rev="${javax.transaction}" conf="lib->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.annotation" rev="${javax.annotation}" />

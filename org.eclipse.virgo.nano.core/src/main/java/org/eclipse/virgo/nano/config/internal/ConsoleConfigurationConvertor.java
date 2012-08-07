@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.kernel.config.internal;
+package org.eclipse.virgo.nano.config.internal;
 
 import java.io.IOException;
 import java.net.BindException;
