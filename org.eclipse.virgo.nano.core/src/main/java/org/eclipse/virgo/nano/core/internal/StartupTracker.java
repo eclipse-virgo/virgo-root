@@ -67,7 +67,9 @@ final class StartupTracker {
     
     private static final String KERNEL_BSN_PREFIX = "org.eclipse.virgo.kernel";
     
-    private static final String NANO_BSN_PREFIX = "org.eclipse.virgo.nano";
+    private static final String NANO_CORE_BSN_PREFIX = "org.eclipse.virgo.nano.core";
+    
+    private static final String NANO_AUTH_BSN_PREFIX = "org.eclipse.virgo.nano.authentication";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupTracker.class);
 
@@ -219,7 +221,9 @@ final class StartupTracker {
         
         private boolean isKernelBundle(Bundle bundle) {
         	String symbolicName = bundle.getSymbolicName();
-			return symbolicName != null && (symbolicName.startsWith(KERNEL_BSN_PREFIX) || symbolicName.startsWith(NANO_BSN_PREFIX));
+			return symbolicName != null && (symbolicName.startsWith(KERNEL_BSN_PREFIX) || 
+											symbolicName.startsWith(NANO_AUTH_BSN_PREFIX) || 
+											symbolicName.startsWith(NANO_CORE_BSN_PREFIX));
         }
 
         private void kernelStarting() {
