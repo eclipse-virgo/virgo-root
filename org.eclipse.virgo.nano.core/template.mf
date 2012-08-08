@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Nano Core
 Bundle-SymbolicName: org.eclipse.virgo.nano.core
 Bundle-Version: ${version}
-Service-Component: OSGI-INF/nano_config.xml,OSGI-INF/nanocore.xml
+Service-Component: OSGI-INF/org.eclipse.virgo.nano.config.xml,OSGI-INF/org.eclipse.virgo.nano.core.xml
 Import-Template: 
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",

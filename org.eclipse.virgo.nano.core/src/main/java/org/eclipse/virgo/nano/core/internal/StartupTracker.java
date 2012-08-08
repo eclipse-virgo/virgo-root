@@ -65,7 +65,9 @@ final class StartupTracker {
     
     private static final String KERNEL_EVENT_START_FAILED = KERNEL_EVENT_TOPIC + "START_FAILED";
     
-    private static final String KERNEL_BSN_PREFIX = "org.eclipse.virgo.nano";
+    private static final String KERNEL_BSN_PREFIX = "org.eclipse.virgo.kernel";
+    
+    private static final String NANO_BSN_PREFIX = "org.eclipse.virgo.nano";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupTracker.class);
 
@@ -217,7 +219,7 @@ final class StartupTracker {
         
         private boolean isKernelBundle(Bundle bundle) {
         	String symbolicName = bundle.getSymbolicName();
-			return symbolicName != null && symbolicName.startsWith(KERNEL_BSN_PREFIX);
+			return symbolicName != null && (symbolicName.startsWith(KERNEL_BSN_PREFIX) || symbolicName.startsWith(NANO_BSN_PREFIX));
         }
 
         private void kernelStarting() {

@@ -58,7 +58,7 @@ public class ShutdownCommandParserTests {
 		ShutdownCommand command = ShutdownCommandParser.parse();
 		assertNotNull(command);
 		
-		assertEquals("org.eclipse.virgo.nano", command.getDomain());
+		assertEquals("org.eclipse.virgo.kernel", command.getDomain());
 		assertNull(command.getPassword());
 		assertEquals(9875, command.getPort());
 		assertNull(command.getUsername());

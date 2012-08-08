@@ -112,7 +112,7 @@ public class ShutdownClientTests {
 		
 		UnitTestShutdown shutdown = new UnitTestShutdown();
 		
-		ObjectInstance shutdownMBean = registerShutdownMBean(shutdown, "org.eclipse.virgo.nano");
+		ObjectInstance shutdownMBean = registerShutdownMBean(shutdown, "org.eclipse.virgo.kernel");
 		
 		try {			
 			client.doShutdown(command);
@@ -139,7 +139,7 @@ public class ShutdownClientTests {
 		
 		UnitTestShutdown shutdown = new UnitTestShutdown();
 		
-		ObjectInstance shutdownMBean = registerShutdownMBean(shutdown, "org.eclipse.virgo.nano");
+		ObjectInstance shutdownMBean = registerShutdownMBean(shutdown, "org.eclipse.virgo.kernel");
 		
 		try {			
 			client.doShutdown(command);

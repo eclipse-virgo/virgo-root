@@ -22,7 +22,7 @@ package org.eclipse.virgo.nano.shutdown;
  */
 final class ShutdownCommand {
 	
-    private static final String DEFAULT_DOMAIN = "org.eclipse.virgo.nano";
+    private static final String DEFAULT_DOMAIN = "org.eclipse.virgo.kernel";
 
     private static final int DEFAULT_PORT = 9875;
     
