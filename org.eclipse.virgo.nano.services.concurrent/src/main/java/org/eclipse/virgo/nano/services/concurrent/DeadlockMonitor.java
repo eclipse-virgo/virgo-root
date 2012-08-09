@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.services.concurrent.monitor;
+package org.eclipse.virgo.nano.services.concurrent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,8 +18,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.nano.services.concurrent.diagnostics.ConcurrentLogEvents;
-import org.eclipse.virgo.nano.services.concurrent.monitor.DeadlockAnalyser.Deadlock;
+import org.eclipse.virgo.nano.services.concurrent.DeadlockAnalyser.Deadlock;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.math.Sets;

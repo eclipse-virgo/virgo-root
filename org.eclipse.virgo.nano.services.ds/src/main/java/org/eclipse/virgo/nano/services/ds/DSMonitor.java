@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.nano.ds.monitor;
+package org.eclipse.virgo.nano.services.ds;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -9,14 +9,14 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.services.concurrent.monitor;
+package org.eclipse.virgo.nano.services.concurrent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.virgo.nano.services.concurrent.monitor.DeadlockAnalyser;
-import org.eclipse.virgo.nano.services.concurrent.monitor.DeadlockAnalyser.Deadlock;
+import org.eclipse.virgo.nano.services.concurrent.DeadlockAnalyser;
+import org.eclipse.virgo.nano.services.concurrent.DeadlockAnalyser.Deadlock;
 import org.junit.Test;
 
 

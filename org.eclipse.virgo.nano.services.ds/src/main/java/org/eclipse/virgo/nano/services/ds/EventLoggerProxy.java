@@ -1,4 +1,4 @@
-package org.eclipse.virgo.nano.ds.monitor;
+package org.eclipse.virgo.nano.services.ds;
 
 import org.apache.felix.scr.Component;
 import org.eclipse.virgo.medic.eventlog.EventLogger;

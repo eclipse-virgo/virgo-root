@@ -1,4 +1,4 @@
-package org.eclipse.virgo.nano.ds.monitor;
+package org.eclipse.virgo.nano.services.ds;
 
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;

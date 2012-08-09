@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.services.concurrent.monitor;
+package org.eclipse.virgo.nano.services.concurrent;
 
 /**
  */
