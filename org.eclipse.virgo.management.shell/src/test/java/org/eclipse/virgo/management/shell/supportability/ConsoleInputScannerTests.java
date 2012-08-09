@@ -9,20 +9,20 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.supportability;
+package org.eclipse.virgo.management.shell.supportability;
 
 import org.eclipse.osgi.framework.console.CommandProvider;
-import org.eclipse.virgo.osgi.console.common.ConsoleInputStream;
-import org.eclipse.virgo.osgi.console.common.ConsoleOutputStream;
-import org.eclipse.virgo.osgi.console.common.KEYS;
-import org.eclipse.virgo.osgi.console.telnet.ANSITerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.SCOTerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.TerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.VT100TerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.VT220TerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.VT320TerminalTypeMappings;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
+import org.eclipse.virgo.management.shell.common.ConsoleInputStream;
+import org.eclipse.virgo.management.shell.common.ConsoleOutputStream;
+import org.eclipse.virgo.management.shell.common.KEYS;
+import org.eclipse.virgo.management.shell.telnet.ANSITerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.SCOTerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.VT100TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.VT220TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.VT320TerminalTypeMappings;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 import org.junit.Assert;
 import org.junit.Test;
 

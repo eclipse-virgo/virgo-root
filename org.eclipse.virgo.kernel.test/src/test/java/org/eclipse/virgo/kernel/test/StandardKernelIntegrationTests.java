@@ -13,7 +13,7 @@ package org.eclipse.virgo.kernel.test;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 

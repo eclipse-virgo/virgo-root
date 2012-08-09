@@ -40,9 +40,9 @@ import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFail
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.osgi.extensions.equinox.EquinoxLauncherConfiguration;
-import org.eclipse.virgo.osgi.extensions.equinox.ExtendedEquinoxLauncher;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.kernel.equinox.extensions.EquinoxLauncherConfiguration;
+import org.eclipse.virgo.kernel.equinox.extensions.ExtendedEquinoxLauncher;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
 import org.eclipse.virgo.repository.ArtifactBridge;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryFactory;

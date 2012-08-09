@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.virgo.osgi.console</name>
+	<name>org.eclipse.virgo.management.shell</name>
 	<comment></comment>
 	<projects>
 	</projects>

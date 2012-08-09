@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.BundleStarter;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;

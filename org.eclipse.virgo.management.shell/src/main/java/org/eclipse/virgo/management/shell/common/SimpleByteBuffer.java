@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 /**
  * This is a helper class, which buffers one line of input. It provides for simple line editing - insertion, deletion,

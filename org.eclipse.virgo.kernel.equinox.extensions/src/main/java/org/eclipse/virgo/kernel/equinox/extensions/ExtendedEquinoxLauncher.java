@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.extensions.equinox;
+package org.eclipse.virgo.kernel.equinox.extensions;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import org.eclipse.osgi.baseadaptor.HookRegistry;
 import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.launch.Equinox;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.ExtensionsHookConfigurator;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.ExtensionsHookConfigurator;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 

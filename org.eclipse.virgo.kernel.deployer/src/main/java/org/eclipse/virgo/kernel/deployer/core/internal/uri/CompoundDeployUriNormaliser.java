@@ -13,9 +13,9 @@ package org.eclipse.virgo.kernel.deployer.core.internal.uri;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.deployer.api.core.DeployUriNormaliser;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 
 
 

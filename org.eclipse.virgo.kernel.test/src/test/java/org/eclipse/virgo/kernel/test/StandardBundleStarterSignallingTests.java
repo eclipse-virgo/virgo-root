@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.BundleStarter;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;

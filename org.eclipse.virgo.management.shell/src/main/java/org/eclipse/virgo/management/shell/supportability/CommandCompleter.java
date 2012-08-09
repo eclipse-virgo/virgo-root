@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.supportability;
+package org.eclipse.virgo.management.shell.supportability;
 
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleContext;

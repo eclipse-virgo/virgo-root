@@ -21,7 +21,7 @@ import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
 import org.eclipse.virgo.kernel.model.internal.SpringContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;

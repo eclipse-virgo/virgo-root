@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.extensions.equinox.hooks;
+package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -24,10 +24,10 @@ import org.eclipse.osgi.baseadaptor.loader.BaseClassLoader;
 import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
 import org.eclipse.osgi.launch.Equinox;
-import org.eclipse.virgo.osgi.extensions.equinox.EquinoxLauncherConfiguration;
-import org.eclipse.virgo.osgi.extensions.equinox.ExtendedEquinoxLauncher;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.ClassLoaderCreator;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.kernel.equinox.extensions.EquinoxLauncherConfiguration;
+import org.eclipse.virgo.kernel.equinox.extensions.ExtendedEquinoxLauncher;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.ClassLoaderCreator;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

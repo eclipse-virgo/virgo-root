@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.supportability;
+package org.eclipse.virgo.management.shell.supportability;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,8 +17,8 @@ import java.util.Set;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.junit.Test;
 import org.junit.Assert;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 
 public class CommandCompleterTests {
 

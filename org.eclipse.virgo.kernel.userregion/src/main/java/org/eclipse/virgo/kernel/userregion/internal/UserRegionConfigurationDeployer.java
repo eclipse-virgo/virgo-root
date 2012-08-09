@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
+import org.eclipse.virgo.nano.deployer.api.config.ConfigurationDeployer;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;

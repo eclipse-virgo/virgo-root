@@ -9,13 +9,13 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet;
+package org.eclipse.virgo.management.shell.telnet;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.virgo.osgi.console.common.KEYS;
+import org.eclipse.virgo.management.shell.common.KEYS;
 
 public abstract class TerminalTypeMappings {
 

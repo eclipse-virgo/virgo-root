@@ -13,8 +13,8 @@ package org.eclipse.virgo.kernel.deployer.test;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.Test;
 
 

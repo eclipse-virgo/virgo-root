@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.deployer.model;
 
-import org.eclipse.virgo.kernel.core.KernelException;
+import org.eclipse.virgo.nano.core.KernelException;
 
 /**
  */

@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<service id="applicationDeployer" ref="pipelinedApplicationDeployer"
-		interface="org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer" />
+		interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer" />
 
 	<beans:bean id="recoveryLog"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.recovery.DeployerRecoveryLog">
@@ -136,7 +136,7 @@
 		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener" />
 
 	<service ref="uriNormaliser"
-		interface="org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser" />
+		interface="org.eclipse.virgo.nano.deployer.api.core.DeployUriNormaliser" />
 
 	<beans:bean id="uriNormaliser"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.uri.CompoundDeployUriNormaliser">
@@ -193,7 +193,7 @@
 		<beans:constructor-arg ref="eventLogger" />
 	</beans:bean>
 
-	<reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	<reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 	
 	<beans:bean id="deployerConfig"
 		class="org.eclipse.virgo.kernel.deployer.core.internal.StandardDeployerConfiguration">
@@ -202,7 +202,7 @@
 	</beans:bean>
 
 	<service ref="deployerConfig"
-		interface="org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration" />
+		interface="org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration" />
 
 	<beans:bean id="applicationDeploymentEventNotifier"
 		class="org.eclipse.virgo.kernel.deployer.core.event.ApplicationDeploymentEventNotifier">
@@ -218,7 +218,7 @@
 
 	<!--  scoping -->
 	<reference id="scopeFactory"
-		interface="org.eclipse.virgo.kernel.shim.scope.ScopeFactory" />
+		interface="org.eclipse.virgo.nano.shim.scope.ScopeFactory" />
 
 	<beans:bean id="scopeServiceRepository"
 		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardScopeServiceRepository" />

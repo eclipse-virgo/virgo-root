@@ -18,17 +18,17 @@ import static org.easymock.EasyMock.reset;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.equinox.region.RegionDigraph;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 import org.junit.Before;
 import org.junit.Test;
 

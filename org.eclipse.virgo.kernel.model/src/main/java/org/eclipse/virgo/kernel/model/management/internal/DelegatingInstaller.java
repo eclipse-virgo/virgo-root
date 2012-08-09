@@ -15,9 +15,9 @@ import java.net.URI;
 
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.management.InstallException;
 import org.eclipse.virgo.kernel.model.management.Installer;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;

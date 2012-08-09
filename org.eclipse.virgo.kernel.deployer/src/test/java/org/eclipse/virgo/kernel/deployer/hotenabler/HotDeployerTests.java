@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.hotenabler;
+package org.eclipse.virgo.nano.deployer.hotenabler;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -22,10 +22,10 @@ import static org.junit.Assert.assertTrue;
 import java.net.URI;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;

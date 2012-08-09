@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 import java.io.IOException;
 import java.io.InputStream;

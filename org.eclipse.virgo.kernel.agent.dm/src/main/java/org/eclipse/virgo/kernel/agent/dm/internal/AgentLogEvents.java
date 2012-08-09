@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.agent.dm.internal;
 
-import org.eclipse.virgo.kernel.serviceability.LogEventDelegate;
+import org.eclipse.virgo.nano.serviceability.LogEventDelegate;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 

@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet;
+package org.eclipse.virgo.management.shell.telnet;
 
 import org.junit.Assert;
 import org.junit.Test;

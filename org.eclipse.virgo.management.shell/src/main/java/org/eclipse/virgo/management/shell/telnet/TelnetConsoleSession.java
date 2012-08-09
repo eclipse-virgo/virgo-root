@@ -10,15 +10,15 @@
  *    Hristo Iliev, SAP AG
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet;
+package org.eclipse.virgo.management.shell.telnet;
 
-import org.eclipse.virgo.osgi.console.telnet.Callback;
-import org.eclipse.virgo.osgi.console.telnet.NegotiationFinishedCallback;
-import org.eclipse.virgo.osgi.console.telnet.TelnetInputHandler;
-import org.eclipse.virgo.osgi.console.telnet.TelnetOutputStream;
+import org.eclipse.virgo.management.shell.telnet.Callback;
+import org.eclipse.virgo.management.shell.telnet.NegotiationFinishedCallback;
+import org.eclipse.virgo.management.shell.telnet.TelnetInputHandler;
+import org.eclipse.virgo.management.shell.telnet.TelnetOutputStream;
 import org.eclipse.osgi.framework.console.ConsoleSession;
-import org.eclipse.virgo.osgi.console.common.ConsoleInputStream;
-import org.eclipse.virgo.osgi.console.supportability.ConsoleInputHandler;
+import org.eclipse.virgo.management.shell.common.ConsoleInputStream;
+import org.eclipse.virgo.management.shell.supportability.ConsoleInputHandler;
 import org.osgi.framework.BundleContext;
 
 import java.io.IOException;

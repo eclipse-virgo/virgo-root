@@ -13,8 +13,8 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.core.internal.event.DeploymentListener;
 import org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;

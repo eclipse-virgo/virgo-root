@@ -16,9 +16,9 @@ import java.io.File;
 import org.osgi.framework.Bundle;
 
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.core.Signal;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.Signal;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactState;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 

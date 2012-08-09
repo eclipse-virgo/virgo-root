@@ -26,7 +26,7 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.ManifestUpgrader;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;

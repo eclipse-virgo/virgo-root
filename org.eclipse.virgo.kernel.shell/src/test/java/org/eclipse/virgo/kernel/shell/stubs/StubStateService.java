@@ -20,7 +20,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
 import org.eclipse.virgo.kernel.shell.state.StateService;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 public class StubStateService implements StateService {
 

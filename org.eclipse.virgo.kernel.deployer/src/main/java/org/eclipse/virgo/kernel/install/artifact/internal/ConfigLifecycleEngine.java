@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
+import org.eclipse.virgo.nano.deployer.api.config.ConfigurationDeployer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.util.io.IOUtils;
 

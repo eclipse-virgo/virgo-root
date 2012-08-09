@@ -15,7 +15,7 @@ package org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
@@ -24,7 +24,7 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependencies
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
 import org.osgi.framework.Bundle;

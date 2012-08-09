@@ -14,7 +14,7 @@
 		interface="org.osgi.service.event.EventAdmin"
 		policy="static"/>
 	<reference name="Shutdown"
-		interface="org.eclipse.virgo.kernel.core.Shutdown"
+		interface="org.eclipse.virgo.nano.core.Shutdown"
 		policy="static"/>
 	<reference name="RegionDigraph"
 		interface="org.eclipse.equinox.region.RegionDigraph"

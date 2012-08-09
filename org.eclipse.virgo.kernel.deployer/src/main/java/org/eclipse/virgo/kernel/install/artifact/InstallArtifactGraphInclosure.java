@@ -15,8 +15,8 @@ package org.eclipse.virgo.kernel.install.artifact;
 import java.io.File;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.util.common.GraphNode;
 
 /**

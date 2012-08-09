@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.extensions.equinox.hooks;
+package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
 import java.security.ProtectionDomain;
 import java.util.ArrayList;

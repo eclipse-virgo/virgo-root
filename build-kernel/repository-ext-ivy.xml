@@ -23,12 +23,11 @@
 		<dependency org="org.jolokia" name="org.jolokia.osgi" rev="${org.jolokia.osgi}" conf="repository-ext->runtime"/>
 		
 		<!-- The exclude of Equinox (org="org.eclipse.osgi" module="org.eclipse.osgi") does not work. 
-		This is due to the transitive dependency from org.eclipse.virgo.osgi.equinox on org.eclipse.osgi
+		This is due to the transitive dependency from org.eclipse.virgo.test.equinox on org.eclipse.osgi
 		See build.xml for a workaround. -->
 		<exclude org="org.eclipse.osgi"/>
 		<exclude org="org.eclipse.virgo.util" conf="repository-ext"/>
-		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.extensions.equinox"/>
-		<exclude org="org.eclipse.virgo.osgi" module="org.eclipse.virgo.osgi.launcher"/>
+		<exclude org="org.eclipse.virgo.test" module="org.eclipse.virgo.test.launcher"/>
 		<exclude org="org.aspectj" module="com.springsource.org.aspectj.runtime"/>
 		<exclude org="org.jboss.logging"/>
 		<exclude org="org.jboss.util"/>

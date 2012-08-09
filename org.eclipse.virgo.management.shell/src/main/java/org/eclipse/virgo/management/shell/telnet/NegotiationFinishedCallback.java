@@ -9,10 +9,10 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet;
+package org.eclipse.virgo.management.shell.telnet;
 
-import org.eclipse.virgo.osgi.console.telnet.Callback;
-import org.eclipse.virgo.osgi.console.telnet.TelnetConsoleSession;
+import org.eclipse.virgo.management.shell.telnet.Callback;
+import org.eclipse.virgo.management.shell.telnet.TelnetConsoleSession;
 
 public class NegotiationFinishedCallback implements Callback {
 

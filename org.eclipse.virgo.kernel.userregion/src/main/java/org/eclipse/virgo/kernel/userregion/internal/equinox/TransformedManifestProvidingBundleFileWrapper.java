@@ -31,7 +31,7 @@ import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileWrapper;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileWrapper;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 

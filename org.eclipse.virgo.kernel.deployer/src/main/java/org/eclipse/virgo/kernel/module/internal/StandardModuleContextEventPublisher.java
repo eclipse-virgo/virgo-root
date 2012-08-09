@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.module.internal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.core.FatalKernelException;
+import org.eclipse.virgo.nano.core.FatalKernelException;
 import org.eclipse.virgo.kernel.module.ModuleContextEvent;
 import org.eclipse.virgo.kernel.module.ModuleContextEventListener;
 import org.eclipse.virgo.kernel.module.ModuleContextEventPublisher;

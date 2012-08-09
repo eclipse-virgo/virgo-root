@@ -13,7 +13,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal.uri;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser;
+import org.eclipse.virgo.nano.deployer.api.core.DeployUriNormaliser;
 
 
 /**

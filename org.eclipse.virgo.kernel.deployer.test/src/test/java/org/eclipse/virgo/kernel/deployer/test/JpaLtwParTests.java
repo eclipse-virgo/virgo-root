@@ -19,7 +19,7 @@ import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.Ignore;
 import org.junit.Test;
 

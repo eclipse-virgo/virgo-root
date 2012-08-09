@@ -15,14 +15,14 @@ package org.eclipse.virgo.kernel.install.artifact.internal;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.deployer.api.config.ConfigurationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.ConfigInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 
 /**

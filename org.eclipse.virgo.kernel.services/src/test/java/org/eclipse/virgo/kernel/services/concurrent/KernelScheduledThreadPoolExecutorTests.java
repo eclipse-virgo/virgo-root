@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.services.concurrent;
 import java.util.concurrent.ExecutorService;
 
 import org.eclipse.virgo.kernel.services.concurrent.KernelScheduledThreadPoolExecutor;
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 
 
 /**

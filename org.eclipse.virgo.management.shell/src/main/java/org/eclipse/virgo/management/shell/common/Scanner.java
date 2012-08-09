@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +18,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.virgo.osgi.console.common.ConsoleInputStream;
-import org.eclipse.virgo.osgi.console.common.KEYS;
-import org.eclipse.virgo.osgi.console.telnet.ANSITerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.SCOTerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.TerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.VT100TerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.VT220TerminalTypeMappings;
-import org.eclipse.virgo.osgi.console.telnet.VT320TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.common.ConsoleInputStream;
+import org.eclipse.virgo.management.shell.common.KEYS;
+import org.eclipse.virgo.management.shell.telnet.ANSITerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.SCOTerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.VT100TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.VT220TerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.VT320TerminalTypeMappings;
 
 /**
  * A common superclass for content processor for the telnet protocol and for command line editing (processing delete,

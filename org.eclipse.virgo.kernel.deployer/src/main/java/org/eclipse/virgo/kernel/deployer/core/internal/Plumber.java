@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.internal.AbstractInstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
@@ -24,7 +24,7 @@ import org.eclipse.virgo.kernel.install.pipeline.stage.resolve.internal.ResolveS
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.TransformationStage;
 import org.eclipse.virgo.kernel.install.pipeline.stage.visit.Visitor;
 import org.eclipse.virgo.kernel.install.pipeline.stage.visit.internal.VisitationStage;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 

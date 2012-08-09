@@ -12,15 +12,15 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactGraphFactory;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
+import org.eclipse.virgo.nano.serviceability.NonNull;
+import org.eclipse.virgo.nano.shim.scope.ScopeFactory;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.BundleContext;
 

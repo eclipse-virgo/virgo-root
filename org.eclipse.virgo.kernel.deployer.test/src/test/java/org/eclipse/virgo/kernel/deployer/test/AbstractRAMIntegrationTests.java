@@ -18,7 +18,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.eclipse.equinox.region.Region;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.osgi.framework.Version;

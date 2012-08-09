@@ -23,10 +23,10 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.framework.StubServiceReference;
-import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubServiceReference;
+import org.eclipse.virgo.test.stubs.framework.StubServiceRegistration;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 /**

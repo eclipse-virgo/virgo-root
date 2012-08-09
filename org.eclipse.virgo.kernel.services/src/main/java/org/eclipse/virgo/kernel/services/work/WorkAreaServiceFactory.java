@@ -13,7 +13,7 @@ package org.eclipse.virgo.kernel.services.work;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;

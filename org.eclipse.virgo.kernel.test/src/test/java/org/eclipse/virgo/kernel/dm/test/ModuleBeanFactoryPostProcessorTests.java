@@ -20,7 +20,7 @@ import java.io.File;
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
 import org.eclipse.gemini.blueprint.service.importer.support.ImportContextClassLoaderEnum;
 import org.eclipse.gemini.blueprint.service.importer.support.OsgiServiceProxyFactoryBean;
-import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.nano.core.BundleStarter;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;

@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.BlockingSignal;
 import org.junit.Test;
 

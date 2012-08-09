@@ -16,7 +16,7 @@ import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.assertB
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.Test;
 
 public class PlanDeploymentWithNestedDAGTests extends AbstractDeployerIntegrationTest {

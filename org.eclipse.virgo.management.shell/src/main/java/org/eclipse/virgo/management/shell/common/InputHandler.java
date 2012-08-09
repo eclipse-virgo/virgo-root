@@ -9,14 +9,14 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.virgo.osgi.console.common.ConsoleInputStream;
-import org.eclipse.virgo.osgi.console.common.Scanner;
+import org.eclipse.virgo.management.shell.common.ConsoleInputStream;
+import org.eclipse.virgo.management.shell.common.Scanner;
 
 /**
  * This class represents a generic handler of content, read from some input stream. It reads from the stream, and passes

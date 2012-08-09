@@ -19,7 +19,6 @@ import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
-import org.osgi.framework.launch.Framework;
 
 /**
  * {@link QuasiFramework} is a snapshot of the OSGi framework state into which bundles can be installed and resolved

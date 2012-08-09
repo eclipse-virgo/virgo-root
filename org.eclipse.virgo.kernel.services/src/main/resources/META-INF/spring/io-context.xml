@@ -18,6 +18,6 @@
 	
 	<service interface="org.eclipse.virgo.kernel.services.work.WorkArea" ref="workAreaFactory"/>
 	
-	<reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	<reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 	
 </beans:beans>

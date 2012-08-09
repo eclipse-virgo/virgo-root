@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
 
-import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.nano.serviceability.Assert;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;

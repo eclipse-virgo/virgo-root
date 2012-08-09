@@ -9,15 +9,15 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.supportability;
+package org.eclipse.virgo.management.shell.supportability;
 
-import org.eclipse.virgo.osgi.console.supportability.CommandCompleter;
-import org.eclipse.virgo.osgi.console.supportability.Grep;
-import org.eclipse.virgo.osgi.console.supportability.HistoryHolder;
-import org.eclipse.virgo.osgi.console.common.ConsoleInputStream;
-import org.eclipse.virgo.osgi.console.common.KEYS;
-import org.eclipse.virgo.osgi.console.common.Scanner;
-import org.eclipse.virgo.osgi.console.common.SimpleByteBuffer;
+import org.eclipse.virgo.management.shell.supportability.CommandCompleter;
+import org.eclipse.virgo.management.shell.supportability.Grep;
+import org.eclipse.virgo.management.shell.supportability.HistoryHolder;
+import org.eclipse.virgo.management.shell.common.ConsoleInputStream;
+import org.eclipse.virgo.management.shell.common.KEYS;
+import org.eclipse.virgo.management.shell.common.Scanner;
+import org.eclipse.virgo.management.shell.common.SimpleByteBuffer;
 import org.osgi.framework.BundleContext;
 
 import java.io.IOException;

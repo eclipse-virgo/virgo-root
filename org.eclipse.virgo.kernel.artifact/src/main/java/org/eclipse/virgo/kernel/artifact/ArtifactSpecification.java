@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**

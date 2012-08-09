@@ -26,7 +26,7 @@ import org.eclipse.virgo.kernel.model.BundleArtifact;
 import org.eclipse.virgo.kernel.model.CompositeArtifact;
 import org.eclipse.virgo.kernel.model.internal.ArtifactRepositoryListener;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,7 +17,7 @@ import javax.management.ObjectName;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.Version;
 
 /**

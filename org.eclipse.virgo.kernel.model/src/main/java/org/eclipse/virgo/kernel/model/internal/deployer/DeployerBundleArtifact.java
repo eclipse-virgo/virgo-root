@@ -20,7 +20,7 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
 import org.eclipse.virgo.kernel.model.internal.SpringContextAccessor;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
