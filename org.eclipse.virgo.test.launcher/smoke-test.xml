@@ -11,10 +11,10 @@
 
 	<target name="startup">
         <ivy:cachepath resolveId="osgi.classpath" pathid="osgi.classpath" organisation="org.eclipse.virgo.mirrored"
-        module="org.eclipse.osgi" revision="${org.eclipse.osgi}" conf="runtime" type="jar" inline="true" log="download-only"/>
+        module="org.eclipse.osgi" revision="${org.eclipse.osgi}" conf="runtime" type="jar" inline="true"/>
         
-        <ivy:cachepath resolveId="osgi.classpath" pathid="osgi.classpath" organisation="org.eclipse.virgo.util"
-        module="org.eclipse.virgo.util.parser.launcher" revision="${org.eclipse.virgo.util}" conf="runtime" type="jar" inline="true" log="download-only"/>
+        <ivy:cachepath resolveId="parser.launcher.classpath" pathid="paser.launcher.classpath" organisation="org.eclipse.virgo.util"
+        module="org.eclipse.virgo.util.parser.launcher" revision="${org.eclipse.virgo.util}" conf="runtime" type="jar" inline="true"/>
 
 		<echo message="Starting Up OSGi Launcher" />
 		<java classname="org.eclipse.virgo.test.launcher.Launcher" fork="true" spawn="true">
@@ -26,6 +26,7 @@
 			<classpath>
 				<pathelement location="${jar.output.file}"/>
 				<path refid="osgi.classpath"/>
+				<path refid="paser.launcher.classpath"/>
 			</classpath>
 		</java>
 
