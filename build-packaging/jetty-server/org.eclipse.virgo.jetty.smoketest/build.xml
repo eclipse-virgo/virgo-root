@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.eclipse.virgo.jetty.smoketest">
+
+	<property name="ivy.cache.dir" value="${basedir}/../ivy-cache" />
+	<property name="integration.repo.dir" value="${basedir}/../integration-repo"/>
+
+	<property file="${basedir}/../build.properties"/>
+	<property file="${basedir}/../build.versions"/>
+	<import file="${basedir}/../virgo-build/standard/default.xml"/>
+	<import file="${basedir}/../build-jetty-server/test-package.xml"/>
+
+	<property name="apps.dir" value="${basedir}/apps"/>
+	
+	<target name="startup.pre">
+		<copy todir="${pickup.dir}">
+			<fileset dir="${apps.dir}"/>
+		</copy>
+	</target>
+
+	<target name="shutdown.post">
+		<echo message="Testing warm restart"/>
+		<sleep seconds="120"/> <!-- bug 364734: avoid previous instance overlapping with the new -->
+		<antcall target="startup"/>
+		<antcall target="test.do"/>
+		<antcall target="shutdown"/>
+		<delete quiet="true">
+			<fileset dir="${pickup.dir}">
+				<exclude name="*admin*"/>
+				<exclude name="*splash*"/>
+			</fileset>
+		</delete>
+	</target>
+
+</project>

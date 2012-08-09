@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build-packaging" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <path id="bundles">
+    </path>
+
+	<property file="${basedir}/../build.properties"/>
+	<property file="${basedir}/../build.versions"/>
+	
+    <import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
+    <import file="${basedir}/nano/build-nano.xml"/>
+    <import file="${basedir}/kernel/build-kernel.xml"/>
+    <import file="${basedir}/tomcat-server/build-tomcat-server.xml"/>
+    <import file="${basedir}/jetty-server/build-jetty-server.xml"/>
+    
+    <property name="nano.target.dir" value="${target.dir}/nano"/>
+    <property name="kernel.target.dir" value="${target.dir}/kernel"/>
+    <property name="tomcat-server.target.dir" value="${target.dir}/tomcat-server"/>
+    <property name="jetty-server.target.dir" value="${target.dir}/jetty-server"/>
+	
+	<target name="package" depends="ivy.init">		
+        <delete dir="${package.output.dir}" quiet="true"/>
+		<mkdir dir="${package.output.dir}"/>
+        <antcall target="package-nano"/>
+        <antcall target="package-kernel"/>
+        <antcall target="package-tomcat-server"/>
+        <antcall target="package-jetty-server"/>
+    </target> 
+    
+    <target name="smoke-test">
+        <antcall target="smoke-test-nano"/>
+        <antcall target="smoke-test-kernel"/>
+        <antcall target="smoke-test-tomcat-server"/>
+        <antcall target="smoke-test-jetty-server"/>
+    </target>
+</project>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.medic"
+      label="%featureName"
+      version="@MEDIC.VERSION@"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.virgo.medic"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.virgo.medic.core"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="org.eclipse.virgo.medic.logbackcorefragment"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="org.eclipse.virgo.medic.logbackclassicfragment"
+         download-size="0"
+         install-size="0"
+         version="@MEDIC.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="ch.qos.logback.classic"
+         download-size="0"
+         install-size="0"
+         version="@LOGBACK.CLASSIC.VERSION@"
+         unpack="false"/>
+   <plugin
+         id="ch.qos.logback.core"
+         download-size="0"
+         install-size="0"
+         version="@LOGBACK.CORE.VERSION@"
+         unpack="false"/>
+    <plugin
+        id="ch.qos.logback.slf4j"
+        download-size="0"
+        install-size="0"
+        version="@LOGBACK.SLF4J.VERSION@"
+    unpack="false"/>
+</feature>

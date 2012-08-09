@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Eclipse Virgo Nano Full Product Without Scripts" uid="nano-full-noscripts.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+   
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+	  <feature id="org.eclipse.virgo.p2.provisioning" version="0.0.0"/>
+	  <feature id="org.eclipse.gemini.web" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.nano.specific.resources" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.nano.deployer" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.nano.war.deployer" version="0.0.0"/>
+   </features>
+   
+	<configurations>
+	  <plugin id="org.eclipse.virgo.nano.deployer" autoStart="true" startLevel="5"/>
+   </configurations>	
+   
+</product>

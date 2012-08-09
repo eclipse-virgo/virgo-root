@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Eclipse Virgo Kernel Product" uid="kernel.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+	<configIni use="default">
+	</configIni>
+
+	<vm>
+	</vm>
+
+	<plugins>
+	</plugins>
+
+	<features>
+		<feature id="org.eclipse.virgo.kernel.specific.resources" version="0.0.0" />
+		<feature id="org.eclipse.virgo.scripts" version="0.0.0" />
+	</features>
+
+</product>

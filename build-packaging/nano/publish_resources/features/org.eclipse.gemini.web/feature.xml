@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.gemini.web"
+      label="%featureName"
+      version="@GEMINI.WEB@"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.gemini.web.tomcat"
+         download-size="0"
+         install-size="0"
+         version="@GEMINI.WEB@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.gemini.web.extender"
+         download-size="0"
+         install-size="0"
+         version="@GEMINI.WEB@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.gemini.web.core"
+         download-size="0"
+         install-size="0"
+         version="@GEMINI.WEB@"
+         unpack="false"
+         autostart="true"/>
+    
+    <plugin
+        id="org.apache.jasper"
+        download-size="0"
+        install-size="0"
+        version="@JASPER.VERSION@"
+        unpack="false"/>
+    
+    <plugin
+        id="org.apache.catalina.ha"
+        download-size="0"
+        install-size="0"
+        version="@HA.VERSION@"
+        unpack="false"/>
+    
+    <plugin
+        id="org.apache.catalina.tribes"
+        download-size="0"
+        install-size="0"
+        version="@TRIBES.VERSION@"
+        unpack="false"/>
+
+</feature>

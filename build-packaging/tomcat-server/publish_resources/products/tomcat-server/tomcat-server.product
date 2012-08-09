@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Eclipse Virgo Kernel Product" uid="tomcat-server.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+   
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.virgo.tomcat.resources" version="0.0.0"/>
+      <feature id="org.eclipse.virgo.scripts" version="0.0.0"/>
+   </features>
+   
+   <configurations>
+		<property name="org.eclipse.gemini.web.tomcat.config.path" value="configuration/tomcat-server.xml"/>
+	</configurations>
+
+</product>
