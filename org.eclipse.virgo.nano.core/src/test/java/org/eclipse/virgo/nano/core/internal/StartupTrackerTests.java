@@ -25,22 +25,18 @@ import java.util.Map;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.eclipse.virgo.medic.dump.DumpGenerator;
+import org.eclipse.virgo.nano.config.internal.KernelConfiguration;
+import org.eclipse.virgo.nano.core.Shutdown;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.service.event.StubEventAdmin;
+import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
-
-
-import org.eclipse.virgo.nano.config.internal.KernelConfiguration;
-import org.eclipse.virgo.nano.core.Shutdown;
-import org.eclipse.virgo.nano.core.internal.BundleStartTracker;
-import org.eclipse.virgo.nano.core.internal.StartupTracker;
-import org.eclipse.virgo.medic.dump.DumpGenerator;
-import org.eclipse.virgo.test.stubs.framework.StubBundle;
-import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
-import org.eclipse.virgo.test.stubs.service.event.StubEventAdmin;
-import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 
 public class StartupTrackerTests {
 
@@ -48,7 +44,7 @@ public class StartupTrackerTests {
 
     private final StubEventAdmin eventAdmin = new StubEventAdmin();
     
-    private final StubBundle bundle = new StubBundle("org.eclipse.virgo.nano.startuptest", new Version(1,0,0));
+    private final StubBundle bundle = new StubBundle("org.eclipse.virgo.kernel.startuptest", new Version(1,0,0));
     
     private final Shutdown shutdown = createMock(Shutdown.class);
     
