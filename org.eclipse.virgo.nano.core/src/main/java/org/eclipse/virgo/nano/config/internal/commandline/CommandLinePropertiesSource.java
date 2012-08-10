@@ -34,7 +34,7 @@ public final class CommandLinePropertiesSource implements PropertiesSource {
 	
 	private static final String COMMAND_PLAN = "plan";
 	
-	private static final String PID_KERNEL_REGION = "org.eclipse.virgo.nano.userregion";
+	private static final String PID_KERNEL_REGION = "org.eclipse.virgo.kernel.userregion";
 	
 	private static final String TEMPLATE_VERSIONED_PLAN_REPOSITORY_URI = "repository:plan/%s/%s";
 	

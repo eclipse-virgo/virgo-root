@@ -54,7 +54,7 @@ final class ConfigurationPublisher {
 
     private final static String KERNEL_REGION_CONFIGURATION_PID = KernelConfigurationPropertiesSource.KERNEL_CONFIGURATION_PID;
     
-    private final static String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.nano.userregion";
+    private final static String USER_REGION_CONFIGURATION_PID = "org.eclipse.virgo.kernel.userregion";
 
     ConfigurationPublisher(ConfigurationAdmin configAdmin, PropertiesSource... sources) {
         this.configAdmin = configAdmin;

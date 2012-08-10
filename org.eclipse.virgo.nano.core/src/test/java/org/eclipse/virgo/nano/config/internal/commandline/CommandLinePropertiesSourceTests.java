@@ -39,7 +39,7 @@ public class CommandLinePropertiesSourceTests {
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
-		Properties properties = configurationProperties.get("org.eclipse.virgo.nano.userregion");
+		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
 		assertEquals(null, properties);
 		
 		assertEquals(0, this.eventLogger.getLoggedEvents().size());
@@ -51,7 +51,7 @@ public class CommandLinePropertiesSourceTests {
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
-		Properties properties = configurationProperties.get("org.eclipse.virgo.nano.userregion");
+		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
 		assertNotNull(properties);
 		
 		assertEquals("repository:plan/foo/1", properties.get("commandLineArtifacts"));
@@ -65,7 +65,7 @@ public class CommandLinePropertiesSourceTests {
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
-		Properties properties = configurationProperties.get("org.eclipse.virgo.nano.userregion");
+		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
 		assertNotNull(properties);
 		
 		assertEquals("repository:plan/foo", properties.get("commandLineArtifacts"));
@@ -79,7 +79,7 @@ public class CommandLinePropertiesSourceTests {
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
-		Properties properties = configurationProperties.get("org.eclipse.virgo.nano.userregion");
+		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
 		assertNotNull(properties);
 		
 		assertEquals("repository:plan/foo,repository:plan/bar/1.2.3", properties.get("commandLineArtifacts"));
@@ -93,7 +93,7 @@ public class CommandLinePropertiesSourceTests {
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
-		Properties properties = configurationProperties.get("org.eclipse.virgo.nano.userregion");
+		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
 		assertEquals(null, properties);
 		
 		List<LoggedEvent> loggedEvents = this.eventLogger.getLoggedEvents();
@@ -108,7 +108,7 @@ public class CommandLinePropertiesSourceTests {
 		PropertiesSource propertiesSource = new CommandLinePropertiesSource(this.bundleContext, this.eventLogger);
 		Map<String, Properties> configurationProperties = propertiesSource.getConfigurationProperties();
 		
-		Properties properties = configurationProperties.get("org.eclipse.virgo.nano.userregion");
+		Properties properties = configurationProperties.get("org.eclipse.virgo.kernel.userregion");
 		assertEquals(null, properties);
 		
 		List<LoggedEvent> loggedEvents = this.eventLogger.getLoggedEvents();
