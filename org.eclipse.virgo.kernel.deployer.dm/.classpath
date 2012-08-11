@@ -32,16 +32,16 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-3.0.5.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.core/3.0.5.RELEASE/org.springframework.core-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120810123218/org.eclipse.virgo.medic-3.6.0.D-20120810123218.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120811170727/org.eclipse.virgo.medic-3.6.0.D-20120811170727.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.stubs/3.6.0.D-20120810122906/org.eclipse.virgo.test.stubs-3.6.0.D-20120810122906.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test.stubs/org.eclipse.virgo.test.stubs/3.6.0.D-20120711092322/org.eclipse.virgo.test.stubs-sources-3.6.0.D-20120711092322.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.stubs/3.6.0.D-20120811170314/org.eclipse.virgo.test.stubs-3.6.0.D-20120811170314.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.test.stubs/org.eclipse.virgo.test.stubs/3.6.0.D-20120711092322/org.eclipse.virgo.test.stubs-sources-3.6.0.D-20120711092322.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.dmfragment"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.BUILD-20120810212614/org.eclipse.virgo.nano.core-3.6.0.BUILD-20120810212614.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20120811171847/org.eclipse.virgo.nano.core-3.6.0.D-20120811171847.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
