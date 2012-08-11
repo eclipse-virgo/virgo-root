@@ -114,7 +114,8 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
     /**
      * {@inheritDoc}
      */
-    public InputStream getInputStream() {
+    @SuppressWarnings("resource")
+	public InputStream getInputStream() {
         JarFileScanner scanner = new JarFileScanner();
         ZipEntry entry = scanner.getNextEntry();
         while (entry != null && !this.entryName.equals(entry.getName())) {

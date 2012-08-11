@@ -23,7 +23,8 @@ Import-Template:
  org.xml.*;version="0",
  org.w3c.*;version="0"
 Excluded-Imports: 
- org.eclipse.virgo.kernel.equinox.*
+ org.eclipse.virgo.kernel.equinox.*,
+ org.eclipse.virgo.nano.deployer.hotenabler
 Excluded-Exports: 
  org.eclipse.virgo.nano.deployer.app.*,
  org.eclipse.virgo.nano.deployer.core.module.*,

@@ -52,7 +52,6 @@ public final class ConfigInstallArtifactCommandFormatter extends AbstractInstall
         return lines;
     }
 
-    @SuppressWarnings("unchecked")
     private List<String> formatProperties(Configuration configuration) {
         List<String> lines = new ArrayList<String>();
         List<String> propertyKeys = new ArrayList<String>();

@@ -117,7 +117,7 @@ public final class Activator {
         this.bundleContext = componentContext.getBundleContext();
         
         FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel)componentContext.getBundleContext().getBundle(0).adapt(FrameworkStartLevel.class);
-	frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
+        frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
         
         this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
         RegionDigraph regionDigraph = getPotentiallyDelayedService(bundleContext, RegionDigraph.class);

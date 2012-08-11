@@ -30,6 +30,7 @@ public class ConsoleOutputStreamTests {
         }
         out.flush();
         byte[] res = byteOut.toByteArray();
+        out.close();
 
         Assert.assertNotNull("Bytes not written; result null", res);
         Assert.assertFalse("Bytes not written; result empty", res.length == 0);

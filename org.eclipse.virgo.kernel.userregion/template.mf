@@ -13,6 +13,7 @@ Import-Template:
  org.eclipse.equinox.region.*;version="${org.eclipse.equinox.region:[=.=.=, =.+1)}",
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
+ org.eclipse.virgo.nano.*;version="${org.eclipse.virgo.nano:[=.=.=, =.+1)}",
  org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=.=, +1)}",

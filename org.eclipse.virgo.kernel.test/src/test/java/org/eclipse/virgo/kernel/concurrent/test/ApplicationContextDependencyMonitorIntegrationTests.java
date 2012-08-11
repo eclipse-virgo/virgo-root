@@ -41,7 +41,8 @@ import org.osgi.framework.ServiceReference;
  */
 public class ApplicationContextDependencyMonitorIntegrationTests extends AbstractKernelIntegrationTest {    
 
-    @Test public void testDependencyMonitoring() throws Exception {
+    @Test 
+    public void testDependencyMonitoring() throws Exception {
         QuasiFramework framework = OsgiFrameworkUtils.getService(this.context, QuasiFrameworkFactory.class).getService().create();
         File file = new File("src/test/resources/QuickConsumer.jar");
         Reader manifestReader = ManifestUtils.manifestReaderFromJar(file);

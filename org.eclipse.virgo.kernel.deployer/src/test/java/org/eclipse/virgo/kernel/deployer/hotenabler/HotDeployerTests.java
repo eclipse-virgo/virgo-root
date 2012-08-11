@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.deployer.hotenabler;
+package org.eclipse.virgo.kernel.deployer.hotenabler;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

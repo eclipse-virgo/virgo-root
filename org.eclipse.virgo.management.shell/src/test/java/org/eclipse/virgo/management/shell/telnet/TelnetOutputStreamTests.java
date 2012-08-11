@@ -25,11 +25,11 @@ public class TelnetOutputStreamTests {
         out.autoSend();
         out.flush();
         byte[] message = byteOut.toByteArray();
-
+        out.close();
+        
         Assert.assertNotNull("Auto message not sent", message);
         Assert.assertFalse("Auto message not sent", message.length == 0);
-        Assert.assertTrue("Error sending auto message. Expected length: " + TelnetOutputStream.autoMessage.length + ", actual length: "
-            + message.length, message.length == TelnetOutputStream.autoMessage.length);
+        Assert.assertTrue("Error sending auto message. Expected length: " + TelnetOutputStream.autoMessage.length + ", actual length: " + message.length, message.length == TelnetOutputStream.autoMessage.length);
 
         for (int i = 0; i < message.length; i++) {
             Assert.assertEquals("Wrong char in auto message. Position: " + i + ", expected: " + TelnetOutputStream.autoMessage[i] + ", read: "
