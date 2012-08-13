@@ -178,7 +178,7 @@ public class PlanResolver implements Transformer {
             try {
                 artifact = new File(uri);
             } catch (IllegalArgumentException e) {
-                throw new DeploymentException("Invalid artifact specification URI", e);
+                throw new DeploymentException("Invalid artifact specification URI '" + uri.toString() + "'", e);
             }
             identity = determineIdentity(uri, scopeName);
             sharedNode = findSharedNode(identity);
