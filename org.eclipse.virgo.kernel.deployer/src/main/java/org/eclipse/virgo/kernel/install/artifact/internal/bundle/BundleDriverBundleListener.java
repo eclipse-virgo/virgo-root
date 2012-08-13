@@ -20,10 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateMonitor;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.util.math.ConcurrentHashSet;
 
 /**

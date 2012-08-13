@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.services.work.StandardWorkArea;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.PathReference;
 

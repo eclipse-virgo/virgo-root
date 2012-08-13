@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

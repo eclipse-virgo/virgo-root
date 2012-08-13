@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="expander.svg">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3803">
+      <stop
+         style="stop-color:#84a3b7;stop-opacity:1;"
+         offset="0"
+         id="stop3805" />
+      <stop
+         style="stop-color:#84a3b7;stop-opacity:0;"
+         offset="1"
+         id="stop3807" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3777">
+      <stop
+         style="stop-color:#bad9ec;stop-opacity:1;"
+         offset="0"
+         id="stop3779" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.3137255;"
+         offset="1"
+         id="stop3781" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3777"
+       id="linearGradient3783"
+       x1="116.99104"
+       y1="872.4314"
+       x2="113.80788"
+       y2="858.94275"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.6228456,0,0,0.62284561,37.921287,328.80938)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3777"
+       id="linearGradient3961"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8068421,0,0,0.80684211,39.457656,168.36183)"
+       x1="100.06313"
+       y1="855.40216"
+       x2="116.74746"
+       y2="868.47101" />
+    <filter
+       inkscape:collect="always"
+       id="filter4122"
+       x="-0.84"
+       width="2.68"
+       y="-0.12"
+       height="1.24">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.35"
+         id="feGaussianBlur4124" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4126"
+       x="-0.12"
+       width="1.24"
+       y="-0.84"
+       height="2.68">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.35"
+         id="feGaussianBlur4128" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3777"
+       id="linearGradient4142"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.6228456,0,0,0.62284561,57.921287,328.80938)"
+       x1="116.99104"
+       y1="872.4314"
+       x2="116.0379"
+       y2="865.12604" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3777"
+       id="linearGradient4182"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.6228456,0,0,0.62284561,57.921282,328.80938)"
+       x1="116.99104"
+       y1="872.4314"
+       x2="113.80788"
+       y2="858.94275" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3803"
+       id="radialGradient3809"
+       cx="110"
+       cy="846.36218"
+       fx="110"
+       fy="846.36218"
+       r="5"
+       gradientTransform="matrix(1,0,0,1.8,0,-677.08975)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3803"
+       id="radialGradient3815"
+       cx="105.39104"
+       cy="-824.21521"
+       fx="105.39104"
+       fy="-824.21521"
+       r="5"
+       gradientTransform="matrix(1.871257,-3.0150294e-6,4.2919609e-6,1.6657364,-91.628028,526.09594)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3803"
+       id="radialGradient3817"
+       cx="-846.80408"
+       cy="-105.50341"
+       fx="-846.80408"
+       fy="-105.50341"
+       r="9"
+       gradientTransform="matrix(1.0347122,-0.00588005,0.00284237,0.50017309,29.69429,-57.709288)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3803"
+       id="radialGradient3820"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.871257,-3.0150294e-6,4.2919609e-6,1.6657364,-91.628028,526.09594)"
+       cx="105.39104"
+       cy="-824.21521"
+       fx="105.39104"
+       fy="-824.21521"
+       r="5" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3803"
+       id="radialGradient3823"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0347122,-0.00588005,0.00284237,0.50017309,29.69429,-57.709288)"
+       cx="-846.80408"
+       cy="-105.50341"
+       fx="-846.80408"
+       fy="-105.50341"
+       r="9" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="15.839192"
+     inkscape:cx="117.36682"
+     inkscape:cy="179.78733"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1223"
+     inkscape:window-height="881"
+     inkscape:window-x="383"
+     inkscape:window-y="156"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:0.30172412;fill:#ffffff;fill-opacity:0.00392157;stroke:none"
+       id="rect4184"
+       width="18"
+       height="18"
+       x="97"
+       y="857.36218"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="opacity:0.30172412;fill:none;stroke:#999999;stroke-width:1.08272517;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4174"
+       width="9.9172745"
+       height="9.9172745"
+       x="121.54135"
+       y="862.90356"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/minus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       y="862.90356"
+       x="101.54136"
+       height="9.9172745"
+       width="9.9172745"
+       id="rect3984"
+       style="opacity:0.30172414;fill:none;stroke:#999999;stroke-width:1.08272517000000001;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/minus.png"
+       y="861.86212"
+       x="120.49993"
+       height="10.000132"
+       width="10.000132"
+       id="rect4176"
+       style="fill:url(#linearGradient4182);fill-opacity:1;stroke:#85a3b9;stroke-width:0.99986832999999997;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <rect
+       style="fill:url(#linearGradient3783);fill-opacity:1;stroke:#85a3b9;stroke-width:0.99986832999999997;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3003"
+       width="10.000132"
+       height="10.000132"
+       x="100.49994"
+       y="861.86212"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-867.86218"
+       x="103"
+       height="1"
+       width="7"
+       id="rect4120"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;filter:url(#filter4126);opacity:0.45"
+       transform="scale(1,-1)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="857.36218"
+       x="117"
+       height="18"
+       width="18"
+       id="rect4186"
+       style="opacity:0.30172412;fill:#ffffff;fill-opacity:0.00392157;stroke:none"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/minus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       transform="matrix(0,-1,-1,0,0,0)"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;filter:url(#filter4122);opacity:0.45"
+       id="rect4118"
+       width="7"
+       height="1"
+       x="-870.86218"
+       y="-107" />
+    <rect
+       y="-106"
+       x="-870.36218"
+       height="1"
+       width="7"
+       id="rect3775"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none"
+       transform="matrix(0,-1,-1,0,0,0)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/plus.png"
+       transform="scale(1,-1)"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none"
+       id="rect3982"
+       width="7"
+       height="1"
+       x="102"
+       y="-867.36218" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/minus.png"
+       transform="matrix(1,0,0,-1,19.999995,0)"
+       style="opacity:0.45;fill:#1a1a1a;fill-opacity:1;stroke:none;filter:url(#filter4126)"
+       id="rect4170"
+       width="7"
+       height="1"
+       x="103"
+       y="-867.86218" />
+    <rect
+       y="-867.36218"
+       x="121.99999"
+       height="1"
+       width="7"
+       id="rect4180"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none"
+       transform="scale(1,-1)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/minus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-default.png"
+       y="837.36218"
+       x="97"
+       height="18"
+       width="18"
+       id="rect3013"
+       style="opacity:0.30172412;fill:#ffffff;fill-opacity:0.00392157;stroke:none" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-default.png"
+       transform="matrix(0,-1,-1,0,0,0)"
+       style="fill:url(#radialGradient3823);fill-opacity:1;stroke:none"
+       id="rect3015"
+       width="18"
+       height="1"
+       x="-855.36218"
+       y="-106" />
+    <rect
+       y="-847.36218"
+       x="105"
+       height="1"
+       width="10"
+       id="rect3017"
+       style="fill:url(#radialGradient3820);fill-opacity:1;stroke:none"
+       transform="scale(1,-1)"
+       inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/tree-icons/attribute-default.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

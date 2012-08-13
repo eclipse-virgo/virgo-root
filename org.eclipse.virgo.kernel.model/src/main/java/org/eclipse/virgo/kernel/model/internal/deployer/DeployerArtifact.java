@@ -18,15 +18,15 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.equinox.region.Region;
-import org.eclipse.virgo.kernel.core.BlockingAbortableSignal;
-import org.eclipse.virgo.kernel.core.FailureSignalledException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.core.BlockingAbortableSignal;
+import org.eclipse.virgo.nano.core.FailureSignalledException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 
 /**

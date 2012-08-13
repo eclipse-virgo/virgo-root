@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.dmfragment.internal;
 import javax.management.MBeanException;
 import javax.management.modelmbean.ModelMBean;
 
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
 
 

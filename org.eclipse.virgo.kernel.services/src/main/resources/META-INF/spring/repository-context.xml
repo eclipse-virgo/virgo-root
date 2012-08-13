@@ -62,6 +62,6 @@
 
 	<osgi:reference id="hashGenerator" interface="org.eclipse.virgo.repository.HashGenerator"/>
 	
-	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 
 </beans>

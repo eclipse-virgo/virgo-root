@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
 
-import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.nano.serviceability.Assert;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 

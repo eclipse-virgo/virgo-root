@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.nano.core.BundleStarter;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;

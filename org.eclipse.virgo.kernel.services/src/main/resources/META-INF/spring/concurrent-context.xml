@@ -13,9 +13,9 @@
 
 	<reference id="eventLogger" interface="org.eclipse.virgo.medic.eventlog.EventLogger"/>
 	
-	<reference id="tracingService" interface="org.eclipse.virgo.kernel.shim.serviceability.TracingService" />
+	<reference id="tracingService" interface="org.eclipse.virgo.nano.shim.serviceability.TracingService" />
 	
-	<reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	<reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 
 	<beans:bean id="exporter" class="org.eclipse.virgo.kernel.services.concurrent.management.JmxExecutorServiceExporter" destroy-method="destroy">
 		<beans:constructor-arg value="#{kernelConfig.getProperty('domain')}"/>

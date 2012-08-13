@@ -23,10 +23,10 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.deployer.ArtifactIdentity;
-import org.eclipse.virgo.kernel.deployer.Deployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.ArtifactIdentity;
+import org.eclipse.virgo.nano.deployer.Deployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.shell.internal.commands.InstallCommand;
 import org.junit.After;
 import org.junit.Before;

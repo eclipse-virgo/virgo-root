@@ -25,8 +25,8 @@ import java.util.Set;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.uri.RepositoryDeployUriNormaliser;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.test.eventlog.LoggedEvent;

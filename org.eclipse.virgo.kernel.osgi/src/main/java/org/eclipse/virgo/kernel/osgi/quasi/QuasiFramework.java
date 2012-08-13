@@ -12,7 +12,9 @@ package org.eclipse.virgo.kernel.osgi.quasi;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.osgi.framework.BundleException;
@@ -57,6 +59,7 @@ public interface QuasiFramework {
      */
     QuasiBundle getBundle(long bundleId);
     
+    //TODO DELETE THIS METHOD
     /**
      * Returns a {@link QuasiBundle} with the given bundle name and version.
      * 
@@ -65,6 +68,13 @@ public interface QuasiFramework {
      * @return <code>QuasiBundle</code> or <code>null</code> if the name/version is not found.
      */
     QuasiBundle getBundle(String name, Version version);
+
+    /**
+     * Return the set of {@link Region} present in this {@link QuasiFramework}.
+     * 
+     * @return the set of regions present in this framework
+     */
+    Set<Region> getRegions();
     
     /**
      * Attempts to resolve the {@link QuasiBundle QuasiBundles} that have been installed in this {@link QuasiFramework}.

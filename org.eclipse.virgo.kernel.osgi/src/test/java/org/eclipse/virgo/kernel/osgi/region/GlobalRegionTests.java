@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.osgi.region;
 import junit.framework.Assert;
 
 import org.eclipse.equinox.region.Region;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;

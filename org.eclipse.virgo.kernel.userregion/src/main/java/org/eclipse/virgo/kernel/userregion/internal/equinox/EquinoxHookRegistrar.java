@@ -13,10 +13,10 @@ package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
 
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableBundleFileWrapperFactoryHook;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableClassLoadingHook;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableDelegatingClassLoaderDelegateHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableBundleFileWrapperFactoryHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableDelegatingClassLoaderDelegateHook;
 
 /**
  * <code>EquinoxHookRegistrar</code> is responsible for registering

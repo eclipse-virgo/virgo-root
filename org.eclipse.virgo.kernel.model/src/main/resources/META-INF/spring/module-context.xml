@@ -61,7 +61,7 @@
 		<constructor-arg ref="runtimeArtifactModelObjectNameCreator"/>
 	</bean>
 	
-	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 
 	<context:annotation-config/>
 

@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.install.artifact;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 
 /**
  * An <code>InstallArtifactLifecycleListener</code> is notified of {@link InstallArtifact} lifecycle events.

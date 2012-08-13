@@ -33,7 +33,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;

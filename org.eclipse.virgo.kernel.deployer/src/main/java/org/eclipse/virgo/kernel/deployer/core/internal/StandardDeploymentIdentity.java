@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.deployer.core.internal;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.osgi.framework.Version;
 
 

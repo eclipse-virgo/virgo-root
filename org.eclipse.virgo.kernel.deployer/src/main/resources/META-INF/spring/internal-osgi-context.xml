@@ -23,13 +23,13 @@
 		interface="org.eclipse.virgo.repository.Repository" />
 
 	<osgi:reference id="scopeFactory"
-		interface="org.eclipse.virgo.kernel.shim.scope.ScopeFactory" />
+		interface="org.eclipse.virgo.nano.shim.scope.ScopeFactory" />
 
 	<osgi:reference id="shutdown"
-		interface="org.eclipse.virgo.kernel.core.Shutdown" />
+		interface="org.eclipse.virgo.nano.core.Shutdown" />
 
 	<osgi:reference id="tracingService"
-		interface="org.eclipse.virgo.kernel.shim.serviceability.TracingService" />
+		interface="org.eclipse.virgo.nano.shim.serviceability.TracingService" />
 
 	<osgi:reference id="workArea"
 		interface="org.eclipse.virgo.kernel.services.work.WorkArea" />
@@ -43,7 +43,7 @@
 	<osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin" />
 
 	<osgi:reference id="bundleStarter"
-		interface="org.eclipse.virgo.kernel.core.BundleStarter"
+		interface="org.eclipse.virgo.nano.core.BundleStarter"
 		context-class-loader="unmanaged" />
 
 	<osgi:reference id="importExpander"

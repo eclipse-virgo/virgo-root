@@ -24,11 +24,11 @@ import java.util.concurrent.TimeoutException;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
-import org.eclipse.virgo.kernel.core.ConfigurationExporter;
-import org.eclipse.virgo.kernel.core.Shutdown;
-import org.eclipse.virgo.kernel.deployer.config.ConfigurationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployUriNormaliser;
+import org.eclipse.virgo.nano.core.ConfigurationExporter;
+import org.eclipse.virgo.nano.core.Shutdown;
+import org.eclipse.virgo.nano.deployer.api.config.ConfigurationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeployUriNormaliser;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
@@ -37,20 +37,20 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.services.work.WorkArea;
-import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
+import org.eclipse.virgo.nano.shim.scope.ScopeFactory;
 import org.eclipse.virgo.kernel.userregion.internal.dump.StandardDumpExtractor;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxHookRegistrar;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StandardPackageAdminUtil;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestProvidingBundleFileWrapper;
 import org.eclipse.virgo.kernel.userregion.internal.importexpansion.ImportExpansionHandler;
-import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpMBeanExporter;
+import org.eclipse.virgo.kernel.userregion.internal.management.StateDumpMXBeanExporter;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.ResolutionFailureDetective;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardResolutionFailureDetective;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.MetaInfResourceClassLoaderDelegateHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.MetaInfResourceClassLoaderDelegateHook;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.osgi.framework.BundleActivator;
@@ -90,7 +90,7 @@ public class Activator implements BundleActivator {
 
     private volatile EquinoxHookRegistrar hookRegistrar;
 
-    private StateDumpMBeanExporter stateDumpMBeanExorter;
+    private StateDumpMXBeanExporter stateDumpMBeanExorter;
     
     private ConsoleConfigurationConvertor consoleConfigurationConvertor = null;
 
@@ -139,7 +139,7 @@ public class Activator implements BundleActivator {
 
         context.registerService(ConfigurationDeployer.class, new UserRegionConfigurationDeployer(context), null);
         initializeConsoleConfigurationConvertor(context);
-        this.stateDumpMBeanExorter = new StateDumpMBeanExporter(quasiFrameworkFactory);
+        this.stateDumpMBeanExorter = new StateDumpMXBeanExporter(quasiFrameworkFactory);
     }
 
     /**
@@ -244,7 +244,7 @@ public class Activator implements BundleActivator {
         	this.consoleConfigurationConvertor.stop();
         }
 
-        StateDumpMBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
+        StateDumpMXBeanExporter localStateDumpMBeanExporter = this.stateDumpMBeanExorter;
         if (localStateDumpMBeanExporter != null) {
             localStateDumpMBeanExporter.close();
             this.stateDumpMBeanExorter = null;
@@ -343,7 +343,6 @@ public class Activator implements BundleActivator {
             }
         }
 
-        @SuppressWarnings("unchecked")
         private Dictionary<String, Object> getRegionArtifactConfiguration() {
             ConfigurationAdmin configAdmin = OsgiFrameworkUtils.getService(this.context, ConfigurationAdmin.class).getService();
             try {

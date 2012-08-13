@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.artifact.internal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -86,7 +87,9 @@ public final class BundleManifestUtils {
             return null; // not an error -- no manifest means this isn't a bundle
         }
         StringWriter writer = new StringWriter();
-        FileCopyUtils.copy(new InputStreamReader(fsEntry.getInputStream()), writer);
+        InputStream inputStream = fsEntry.getInputStream();
+		FileCopyUtils.copy(new InputStreamReader(inputStream), writer);
+		inputStream.close();
         return new StringReader(writer.toString());
     }
 

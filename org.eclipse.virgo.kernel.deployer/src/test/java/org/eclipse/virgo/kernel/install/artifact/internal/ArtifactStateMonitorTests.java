@@ -16,11 +16,11 @@ import org.junit.Test;
 import org.osgi.framework.BundleContext;
 
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.StubInstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateMonitor;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 /**
  */

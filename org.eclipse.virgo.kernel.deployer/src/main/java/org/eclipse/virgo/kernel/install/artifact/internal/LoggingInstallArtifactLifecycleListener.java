@@ -12,7 +12,7 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 
-import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener;
 import org.eclipse.virgo.medic.eventlog.EventLogger;

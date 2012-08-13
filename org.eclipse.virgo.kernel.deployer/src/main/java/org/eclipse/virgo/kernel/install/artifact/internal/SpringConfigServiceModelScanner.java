@@ -22,9 +22,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.framework.Version;

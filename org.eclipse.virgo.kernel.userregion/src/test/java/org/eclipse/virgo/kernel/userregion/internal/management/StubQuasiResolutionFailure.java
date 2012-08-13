@@ -17,6 +17,10 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiParameterised;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 
+/**
+ * 
+ *
+ */
 public class StubQuasiResolutionFailure implements QuasiResolutionFailure, QuasiParameterised {
 
 	private final QuasiBundle quasiBundle;

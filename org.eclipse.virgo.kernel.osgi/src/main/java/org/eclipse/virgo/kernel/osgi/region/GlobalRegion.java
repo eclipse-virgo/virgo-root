@@ -20,7 +20,7 @@ import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionDigraph.FilteredRegion;
 import org.eclipse.equinox.region.RegionDigraphVisitor;
 import org.eclipse.equinox.region.RegionFilter;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;

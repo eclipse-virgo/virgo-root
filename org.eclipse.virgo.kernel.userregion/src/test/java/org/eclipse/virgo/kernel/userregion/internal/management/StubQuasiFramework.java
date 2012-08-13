@@ -13,7 +13,9 @@ package org.eclipse.virgo.kernel.userregion.internal.management;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
@@ -66,6 +68,11 @@ public class StubQuasiFramework implements QuasiFramework {
 
 	@Override
 	public void destroy() {
+	}
+
+	@Override
+	public Set<Region> getRegions() {
+		return null;
 	}
 
 }

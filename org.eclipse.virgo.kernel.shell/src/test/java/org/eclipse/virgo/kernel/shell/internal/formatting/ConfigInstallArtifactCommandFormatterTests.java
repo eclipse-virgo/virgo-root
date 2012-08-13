@@ -24,8 +24,8 @@ import org.junit.Test;
 
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.shell.internal.formatting.ConfigInstallArtifactCommandFormatter;
-import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfiguration;
-import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfigurationAdmin;
+import org.eclipse.virgo.test.stubs.service.cm.StubConfiguration;
+import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 
 public class ConfigInstallArtifactCommandFormatterTests {
 

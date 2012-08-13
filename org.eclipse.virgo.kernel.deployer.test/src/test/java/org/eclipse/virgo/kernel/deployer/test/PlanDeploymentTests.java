@@ -26,8 +26,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.deployer.test.util.ArtifactLifecycleEvent;
 import org.eclipse.virgo.kernel.deployer.test.util.ArtifactListener;
 import org.eclipse.virgo.kernel.deployer.test.util.TestLifecycleEvent;

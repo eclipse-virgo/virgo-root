@@ -27,7 +27,7 @@ import java.net.URI;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.internal.DirectoryArtifactFS;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -38,8 +38,8 @@ import org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStateM
 import org.eclipse.virgo.kernel.install.artifact.internal.StubInstallArtifactRefreshHandler;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.util.io.IOUtils;

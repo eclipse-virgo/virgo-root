@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
-import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.io.JarUtils;

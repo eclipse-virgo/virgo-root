@@ -21,10 +21,10 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.framework.StubFilter;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;

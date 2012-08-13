@@ -36,7 +36,7 @@ import org.eclipse.osgi.service.resolver.StateHelper;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.osgi.service.resolver.VersionConstraint;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
-import org.eclipse.virgo.kernel.core.FatalKernelException;
+import org.eclipse.virgo.nano.core.FatalKernelException;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
@@ -169,11 +169,10 @@ final class StandardQuasiFramework implements QuasiFramework {
         try {
             Dictionary<String, String> manifest = bundleManifest.toDictionary();
             String installLocation = "file".equals(location.getScheme()) ? new File(location).getAbsolutePath() : location.toString();
-            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(this.state, manifest, this.coregion.getName()
-                + REGION_LOCATION_DELIMITER + installLocation, nextBundleId());
+            BundleDescription bundleDescription = this.stateObjectFactory.createBundleDescription(this.state, manifest, this.coregion.getName() + REGION_LOCATION_DELIMITER + installLocation, nextBundleId());
             this.state.addBundle(bundleDescription);
             this.coregion.addBundle(bundleDescription.getBundleId());
-            return new StandardQuasiBundle(bundleDescription, bundleManifest, this.stateHelper);
+            return new StandardQuasiBundle(bundleDescription, bundleManifest, this.regionDigraph.getRegion(bundleDescription.getBundleId()), this.stateHelper);
         } catch (RuntimeException e) {
             throw new BundleException("Unable to read bundle at '" + location + "'", e);
         }
@@ -194,7 +193,7 @@ final class StandardQuasiFramework implements QuasiFramework {
         List<QuasiBundle> result = new ArrayList<QuasiBundle>();
         QuasiBundle quasiBundle;
         for (BundleDescription bundleDescription : bundleDescriptions) {
-            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.stateHelper);
+            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.regionDigraph.getRegion(bundleDescription.getBundleId()), this.stateHelper);
             result.add(quasiBundle);
         }
         return Collections.unmodifiableList(result);
@@ -207,7 +206,7 @@ final class StandardQuasiFramework implements QuasiFramework {
         QuasiBundle quasiBundle = null;
         BundleDescription bundleDescription = this.state.getBundle(bundleId);
         if (bundleDescription != null) {
-            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.stateHelper);
+            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.regionDigraph.getRegion(bundleId), this.stateHelper);
         }
         return quasiBundle;
     }
@@ -219,11 +218,18 @@ final class StandardQuasiFramework implements QuasiFramework {
         QuasiBundle quasiBundle = null;
         BundleDescription bundleDescription = this.state.getBundle(name, version);
         if (bundleDescription != null) {
-            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.stateHelper);
+            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.regionDigraph.getRegion(bundleDescription.getBundleId()), this.stateHelper);
         }
         return quasiBundle;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Set<Region> getRegions(){
+    	return this.regionDigraph.getRegions();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -251,8 +257,7 @@ final class StandardQuasiFramework implements QuasiFramework {
         BundleDescription bundleDescription = this.state.getBundle(bundleId);
         ResolverErrorsHolder reh = new ResolverErrorsHolder();
         String failureDescription = this.detective.generateFailureDescription(this.state, bundleDescription, reh);
-        return this.processResolverErrors(reh.getResolverErrors(), new StandardQuasiBundle(bundleDescription, null, this.stateHelper),
-            failureDescription);
+        return this.processResolverErrors(reh.getResolverErrors(), new StandardQuasiBundle(bundleDescription, null, this.regionDigraph.getRegion(bundleId), this.stateHelper), failureDescription);
     }
 
     private BundleDescription[] getDependencies(BundleDescription[] bundles, BundleDescription[] disabledProvisioningBundles) {

@@ -23,7 +23,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.deployer.core.internal.recovery.DeployerRecoveryLog;
 import org.eclipse.virgo.util.io.PathReference;
 

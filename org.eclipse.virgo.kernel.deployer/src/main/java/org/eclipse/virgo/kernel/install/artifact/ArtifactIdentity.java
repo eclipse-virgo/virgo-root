@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.install.artifact;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.Version;
 
 

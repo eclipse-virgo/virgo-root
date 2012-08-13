@@ -16,8 +16,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -24,7 +24,7 @@ import javax.management.ObjectName;
 import org.junit.Test;
 
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.util.io.PathReference;
 

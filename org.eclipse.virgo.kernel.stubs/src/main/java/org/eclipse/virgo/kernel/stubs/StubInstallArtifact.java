@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;

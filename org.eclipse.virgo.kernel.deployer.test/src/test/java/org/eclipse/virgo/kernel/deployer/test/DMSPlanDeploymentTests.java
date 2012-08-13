@@ -25,8 +25,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

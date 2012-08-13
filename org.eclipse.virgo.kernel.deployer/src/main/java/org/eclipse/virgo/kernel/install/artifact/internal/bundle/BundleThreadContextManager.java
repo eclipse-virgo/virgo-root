@@ -14,8 +14,8 @@ package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.serviceability.NonNull;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

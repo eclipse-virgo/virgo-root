@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.eclipse.virgo.kernel.shim.scope.Scope;
-import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
+import org.eclipse.virgo.nano.shim.scope.Scope;
+import org.eclipse.virgo.nano.shim.scope.ScopeFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

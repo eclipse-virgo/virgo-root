@@ -19,7 +19,7 @@ import javax.management.NotificationBroadcasterSupport;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 
-import org.eclipse.virgo.kernel.deployer.RecoveryMonitor;
+import org.eclipse.virgo.nano.deployer.RecoveryMonitor;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 

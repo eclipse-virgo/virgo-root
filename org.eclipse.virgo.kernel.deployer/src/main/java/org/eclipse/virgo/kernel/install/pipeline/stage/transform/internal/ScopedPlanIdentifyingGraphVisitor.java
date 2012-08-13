@@ -13,7 +13,7 @@
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
 
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.PlanInstallArtifact;
 import org.eclipse.virgo.util.common.GraphNode;

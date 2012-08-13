@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.model.management.internal;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
 import org.eclipse.virgo.kernel.model.management.ManageableBundleArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 
 
 /**

@@ -29,11 +29,11 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionFilter;
 import org.eclipse.equinox.region.RegionFilterBuilder;
-import org.eclipse.virgo.kernel.core.Shutdown;
+import org.eclipse.virgo.nano.core.Shutdown;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.osgi.launcher.parser.ArgumentParser;
-import org.eclipse.virgo.osgi.launcher.parser.BundleEntry;
+import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
+import org.eclipse.virgo.util.parser.launcher.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
@@ -117,7 +117,7 @@ public final class Activator {
         this.bundleContext = componentContext.getBundleContext();
         
         FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel)componentContext.getBundleContext().getBundle(0).adapt(FrameworkStartLevel.class);
-	frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
+        frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
         
         this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
         RegionDigraph regionDigraph = getPotentiallyDelayedService(bundleContext, RegionDigraph.class);

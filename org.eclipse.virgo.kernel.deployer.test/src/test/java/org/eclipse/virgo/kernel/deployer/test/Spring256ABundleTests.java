@@ -24,8 +24,8 @@ import static org.junit.Assert.assertNotNull;
 import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.test.framework.ConfigLocation;
 import org.eclipse.virgo.util.io.PathReference;
 

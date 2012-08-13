@@ -20,7 +20,7 @@ import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
 import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
 
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.ClassLoaderCreator;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.ClassLoaderCreator;
 
 /**
  * {@link ClassLoaderCreator} to replace the standard Equinox {@link DefaultClassLoader} with the
