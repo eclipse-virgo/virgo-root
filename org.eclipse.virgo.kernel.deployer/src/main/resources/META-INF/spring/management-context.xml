@@ -19,8 +19,7 @@
 	<!-- RecoveryMonitor -->
 	<bean class="org.eclipse.virgo.kernel.management.ManagementExporter">
 		<constructor-arg ref="recoveryMonitor" />
-		<constructor-arg
-			value="#{kernelConfig.getProperty('domain')}:category=Control,type=RecoveryMonitor" />
+		<constructor-arg value="#{kernelConfig.getProperty('domain')}:category=Control,type=RecoveryMonitor" />
 	</bean>
 	
 	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
