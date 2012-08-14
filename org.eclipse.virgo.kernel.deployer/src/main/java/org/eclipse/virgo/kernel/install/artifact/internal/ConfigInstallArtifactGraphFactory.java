@@ -66,6 +66,9 @@ final class ConfigInstallArtifactGraphFactory extends AbstractArtifactGraphFacto
     public GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
             ConfigurationDeployer configDeployer = obtainConfigurationDeployer();
+            if(configDeployer == null){
+            	throw new DeploymentException(String.format("Unable to locate a '%s' service to deploy '%s'", ConfigurationDeployer.class.getName(), artifactIdentity.getName()));
+            }
             ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
             ConfigInstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine, this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configDeployer);
             return constructAssociatedGraphNode(configInstallArtifact);
@@ -78,9 +81,6 @@ final class ConfigInstallArtifactGraphFactory extends AbstractArtifactGraphFacto
         synchronized (this.monitor) {
             if (this.configurationDeployer == null) {
                 ServiceReference<ConfigurationDeployer> serviceReference = this.bundleContext.getServiceReference(ConfigurationDeployer.class);
-                if(serviceReference == null){
-                	throw new DeploymentException(String.format("Unable to locate a %s service", ConfigurationDeployer.class.getName()));
-                }
                 this.configurationDeployer = this.bundleContext.getService(serviceReference);
             }
             return this.configurationDeployer;
