@@ -9,7 +9,7 @@ Import-Template:
  org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, +1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
- org.eclipse.virgo.osgi.extensions.*;version="${org.eclipse.virgo.osgi:[=.=.=, +1)}",
+ org.eclipse.virgo.kernel.equinox.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
  javax.servlet.*;version="${javax.servlet:[-1.6.=, +1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
  org.eclipse.osgi.*;version="0",

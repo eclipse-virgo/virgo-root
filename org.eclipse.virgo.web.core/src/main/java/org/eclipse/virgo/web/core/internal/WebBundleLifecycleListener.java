@@ -21,7 +21,7 @@ import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListenerSupport;
-import org.eclipse.virgo.osgi.extensions.equinox.hooks.PluggableDelegatingClassLoaderDelegateHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableDelegatingClassLoaderDelegateHook;
 import org.eclipse.gemini.web.core.WebApplication;
 import org.eclipse.gemini.web.core.WebApplicationStartFailedException;
 import org.eclipse.gemini.web.core.WebContainer;
