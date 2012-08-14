@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
 import org.osgi.framework.Bundle;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 /**
  * Ensures that a bundle context is in {@link Bundle#STARTING}, {@link Bundle#ACTIVE}, or {@link Bundle#STOPPING} before
@@ -36,7 +36,7 @@ public aspect ValidBundleContext {
      */
     before(StubBundleContext bundleContext) : 
             this(bundleContext) &&
-            within(org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext) &&
+            within(org.eclipse.virgo.test.stubs.framework.StubBundleContext) &&
             execution(* org.osgi.framework.BundleContext.*(..)) {
         int state = bundleContext.getContextBundle().getState();
         if (state != Bundle.STARTING && state != Bundle.ACTIVE && state != Bundle.STOPPING) {

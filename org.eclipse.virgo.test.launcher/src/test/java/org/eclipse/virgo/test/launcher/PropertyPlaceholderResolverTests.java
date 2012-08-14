@@ -9,13 +9,13 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import org.eclipse.virgo.osgi.launcher.PropertyPlaceholderResolver;
+import org.eclipse.virgo.test.launcher.PropertyPlaceholderResolver;
 import org.junit.Test;
 
 

@@ -9,9 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework;
+package org.eclipse.virgo.test.stubs.framework;
 
-import static org.eclipse.virgo.teststubs.osgi.AdditionalAsserts.assertContains;
+import static org.eclipse.virgo.test.stubs.AdditionalAsserts.assertContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +38,7 @@ public class StubBundleTests {
 
     private static final Long DEFAULT_BUNDLE_ID = Long.valueOf(1);
 
-    private static final String DEFAULT_SYMBOLIC_NAME = "org.eclipse.virgo.teststubs.osgi.testbundle";
+    private static final String DEFAULT_SYMBOLIC_NAME = "org.eclipse.virgo.test.stubs.testbundle";
 
     private static final Version DEFAULT_VERSION = Version.emptyVersion;
 

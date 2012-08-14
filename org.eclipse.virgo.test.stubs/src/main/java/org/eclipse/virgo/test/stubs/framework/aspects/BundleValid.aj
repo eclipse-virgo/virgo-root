@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
 import org.osgi.framework.Bundle;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 /**
  * Ensures that a bundle has not been uninstalled before method execution
@@ -27,18 +27,18 @@ import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
 public final aspect BundleValid {
 
     private pointcut ensureNotUninstalledMethod(StubBundle bundle) : this(bundle) && (
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.getEntry(String)) || 
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.getEntryPaths(String)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.getRegisteredServices()) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.getResource(String)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.getResources(String)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.getServicesInUse()) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.hasPermission(Object)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.loadClass(String)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.start(int)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.stop(int)) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.uninstall()) ||
-        execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.update(..))
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.getEntry(String)) || 
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.getEntryPaths(String)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.getRegisteredServices()) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.getResource(String)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.getResources(String)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.getServicesInUse()) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.hasPermission(Object)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.loadClass(String)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.start(int)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.stop(int)) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.uninstall()) ||
+        execution(* org.eclipse.virgo.test.stubs.framework.StubBundle.update(..))
     );
 
     /**

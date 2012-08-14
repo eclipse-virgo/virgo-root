@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 /**
  * Sends {@link BundleEvent}s to {@link BundleListener}s.
@@ -41,9 +41,9 @@ public final aspect BundleEvents {
      */
     after(StubBundleContext context, Bundle bundle) : 
             this(context) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext.installBundle(..)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundleContext.installBundle(..)) &&
             target(bundle) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.INSTALLED)) {
         sendEvent(context.getBundleListeners(), new BundleEvent(BundleEvent.INSTALLED, bundle));
     }
@@ -55,8 +55,8 @@ public final aspect BundleEvents {
      */
     after(StubBundle bundle) : 
             this(bundle) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.start(int)) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundle.start(int)) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.STARTING)) {
         StubBundleContext bundleContext = (StubBundleContext) bundle.getBundleContext();
         sendEvent(bundleContext.getBundleListeners(), new BundleEvent(BundleEvent.STARTING, bundle));
@@ -79,8 +79,8 @@ public final aspect BundleEvents {
      */
     after(StubBundle bundle) : 
             this(bundle) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.start(int)) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundle.start(int)) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.ACTIVE)) {
         StubBundleContext bundleContext = (StubBundleContext) bundle.getBundleContext();
         sendEvent(bundleContext.getBundleListeners(), new BundleEvent(BundleEvent.STARTED, bundle));
@@ -93,8 +93,8 @@ public final aspect BundleEvents {
      */
     after(StubBundle bundle) : 
             this(bundle) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.stop(int)) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundle.stop(int)) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.STOPPING)) {
         StubBundleContext bundleContext = (StubBundleContext) bundle.getBundleContext();
         sendEvent(bundleContext.getBundleListeners(), new BundleEvent(BundleEvent.STOPPING, bundle));
@@ -107,8 +107,8 @@ public final aspect BundleEvents {
      */
     after(StubBundle bundle) : 
             this(bundle) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.stop(int)) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundle.stop(int)) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.RESOLVED)) {
         StubBundleContext bundleContext = (StubBundleContext) bundle.getBundleContext();
         sendEvent(bundleContext.getBundleListeners(), new BundleEvent(BundleEvent.STOPPED, bundle));
@@ -121,8 +121,8 @@ public final aspect BundleEvents {
      */
     after(StubBundle bundle) : 
             this(bundle) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.update(..)) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundle.update(..)) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.INSTALLED)) {
         StubBundleContext bundleContext = (StubBundleContext) bundle.getBundleContext();
         sendEvent(bundleContext.getBundleListeners(), new BundleEvent(BundleEvent.UPDATED, bundle));
@@ -136,8 +136,8 @@ public final aspect BundleEvents {
      */
     after(StubBundle bundle) : 
             this(bundle) &&
-            withincode(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.uninstall()) &&
-            call(* org.eclipse.virgo.teststubs.osgi.framework.StubBundle.setState(int)) &&
+            withincode(* org.eclipse.virgo.test.stubs.framework.StubBundle.uninstall()) &&
+            call(* org.eclipse.virgo.test.stubs.framework.StubBundle.setState(int)) &&
             if(thisJoinPoint.getArgs()[0].equals(Bundle.UNINSTALLED)) {
         StubBundleContext bundleContext = (StubBundleContext) bundle.getBundleContext();
         sendEvent(bundleContext.getBundleListeners(), new BundleEvent(BundleEvent.UNINSTALLED, bundle));

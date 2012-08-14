@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.event;
+package org.eclipse.virgo.test.stubs.service.event;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +18,7 @@ import java.util.List;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-import org.eclipse.virgo.teststubs.osgi.service.event.internal.EventUtils;
+import org.eclipse.virgo.test.stubs.service.event.internal.EventUtils;
 
 /**
  * A stub implementation of {@link EventAdmin}.

@@ -9,9 +9,9 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.service.cm;
+package org.eclipse.virgo.test.stubs.service.cm;
 
-import static org.eclipse.virgo.teststubs.osgi.AdditionalAsserts.assertContains;
+import static org.eclipse.virgo.test.stubs.AdditionalAsserts.assertContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

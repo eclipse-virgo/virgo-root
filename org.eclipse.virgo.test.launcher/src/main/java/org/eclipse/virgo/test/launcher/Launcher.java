@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 import java.io.File;
 import java.io.IOException;

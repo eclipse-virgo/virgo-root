@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceRegistration;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubServiceRegistration;
 
 /**
  * Sends {@link ServiceEvent}s to {@link ServiceListener}s.
@@ -39,7 +39,7 @@ public final aspect ServiceEvents {
      */
     after(StubServiceRegistration registration) : 
             this(registration) &&
-            execution(* org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration.setProperties(*)) {
+            execution(* org.eclipse.virgo.test.stubs.framework.StubServiceRegistration.setProperties(*)) {
         sendEvent(registration.getBundleContext().getServiceListeners(), new ServiceEvent(ServiceEvent.MODIFIED, registration.getReference()));
     }
 
@@ -51,7 +51,7 @@ public final aspect ServiceEvents {
      */
     after(StubBundleContext context) returning (ServiceRegistration<?> registration) :
             this(context) &&
-            execution(* org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext.registerService(java.lang.String[], java.lang.Object, java.util.Dictionary)) {
+            execution(* org.eclipse.virgo.test.stubs.framework.StubBundleContext.registerService(java.lang.String[], java.lang.Object, java.util.Dictionary)) {
         sendEvent(context.getServiceListeners(), new ServiceEvent(ServiceEvent.REGISTERED, registration.getReference()));
     }
 
@@ -63,7 +63,7 @@ public final aspect ServiceEvents {
      */
     before(StubServiceRegistration registration) :
             this(registration) &&
-            execution(* org.eclipse.virgo.teststubs.osgi.framework.StubServiceRegistration.unregister()) {
+            execution(* org.eclipse.virgo.test.stubs.framework.StubServiceRegistration.unregister()) {
         sendEvent(registration.getBundleContext().getServiceListeners(), new ServiceEvent(ServiceEvent.UNREGISTERING, registration.getReference()));
     }
 

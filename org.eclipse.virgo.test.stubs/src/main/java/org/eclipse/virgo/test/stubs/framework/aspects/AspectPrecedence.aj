@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework.aspects;
+package org.eclipse.virgo.test.stubs.framework.aspects;
 
 /**
  * An aspect that defines the precendence of the aspects in this project
@@ -22,6 +22,6 @@ package org.eclipse.virgo.teststubs.osgi.framework.aspects;
  */
 public final aspect AspectPrecedence {
 
-    declare precedence: org.eclipse.virgo.teststubs.osgi.framework.aspects.Valid*,  *, org.eclipse.virgo.teststubs.osgi.framework.aspects.*Events;
+    declare precedence: org.eclipse.virgo.test.stubs.framework.aspects.Valid*,  *, org.eclipse.virgo.test.stubs.framework.aspects.*Events;
 
 }

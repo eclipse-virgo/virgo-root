@@ -2,7 +2,7 @@
 org.aspectj=1.6.12.RELEASE
 org.eclipse.osgi=3.8.0.v20120508-2119
 org.eclipse.osgi.services=3.3.0.v20120307-2102
-org.eclipse.virgo.util=3.6.0.D-20120717181632
+org.eclipse.virgo.util=3.6.0.D-20120813140754
 
 # Test
 org.junit=4.7.0
@@ -10,5 +10,4 @@ org.junit=4.7.0
 # Osgi Launcher Test
 org.apache.commons=1.4.1
 org.apache.oro=2.0.8
-
 

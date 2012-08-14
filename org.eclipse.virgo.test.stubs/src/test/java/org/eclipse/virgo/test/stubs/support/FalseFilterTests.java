@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.support;
+package org.eclipse.virgo.test.stubs.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,7 +20,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 
-import org.eclipse.virgo.teststubs.osgi.support.FalseFilter;
+import org.eclipse.virgo.test.stubs.support.FalseFilter;
 
 public class FalseFilterTests {
 

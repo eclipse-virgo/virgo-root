@@ -17,6 +17,6 @@ Import-Package:
  org.aspectj.runtime.internal;version="[1.6.3.RELEASE, 2.0.0)",
  org.aspectj.runtime.reflect;version="[1.6.3.RELEASE, 2.0.0)"
 Excluded-Exports: 
- org.eclipse.virgo.teststubs.osgi.framework.aspects,
- org.eclipse.virgo.teststubs.osgi.internal,
- org.eclipse.virgo.teststubs.osgi.service.cm.aspects
+ org.eclipse.virgo.test.stubs.framework.aspects,
+ org.eclipse.virgo.test.stubs.internal,
+ org.eclipse.virgo.test.stubs.service.cm.aspects

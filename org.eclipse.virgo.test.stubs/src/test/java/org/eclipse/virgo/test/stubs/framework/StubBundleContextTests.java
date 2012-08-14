@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework;
+package org.eclipse.virgo.test.stubs.framework;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,7 +41,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.Version;
 
-import org.eclipse.virgo.teststubs.osgi.support.AbstractFilter;
+import org.eclipse.virgo.test.stubs.support.AbstractFilter;
 
 public class StubBundleContextTests {
 

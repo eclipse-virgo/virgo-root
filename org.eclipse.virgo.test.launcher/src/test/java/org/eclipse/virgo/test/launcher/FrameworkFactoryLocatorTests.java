@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.launcher;
+package org.eclipse.virgo.test.launcher;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.virgo.osgi.launcher.FrameworkFactoryLocator;
+import org.eclipse.virgo.test.launcher.FrameworkFactoryLocator;
 import org.junit.Test;
 import org.osgi.framework.launch.FrameworkFactory;
 

@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.teststubs.osgi.framework;
+package org.eclipse.virgo.test.stubs.framework;
 
 import static org.junit.Assert.assertEquals;
 
