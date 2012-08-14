@@ -53,9 +53,8 @@ final class ConfigInstallArtifactGraphFactory extends AbstractArtifactGraphFacto
 
     private ConfigurationDeployer configurationDeployer;
 
-    ConfigInstallArtifactGraphFactory(BundleContext bundleContext, EventLogger eventLogger,
-    		@NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
-    		super(dag);
+    ConfigInstallArtifactGraphFactory(BundleContext bundleContext, EventLogger eventLogger, @NonNull DirectedAcyclicGraph<InstallArtifact> dag) {
+    	super(dag);
         this.bundleContext = bundleContext;
         this.lifecycleEngine = new ConfigLifecycleEngine(bundleContext);
         this.eventLogger = eventLogger;
@@ -64,20 +63,21 @@ final class ConfigInstallArtifactGraphFactory extends AbstractArtifactGraphFacto
     /**
      * {@inheritDoc}
      */
-    public GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage,
-        Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
+    public GraphNode<InstallArtifact> constructInstallArtifactGraph(ArtifactIdentity artifactIdentity, ArtifactStorage artifactStorage, Map<String, String> deploymentProperties, String repositoryName) throws DeploymentException {
         if (PROPERTIES_TYPE.equalsIgnoreCase(artifactIdentity.getType())) {
             ConfigurationDeployer configDeployer = obtainConfigurationDeployer();
+            if(configDeployer == null){
+            	throw new DeploymentException(String.format("Unable to locate a '%s' service to deploy '%s'", ConfigurationDeployer.class.getName(), artifactIdentity.getName()));
+            }
             ArtifactStateMonitor artifactStateMonitor = new StandardArtifactStateMonitor(this.bundleContext);
-            ConfigInstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine,
-                this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configDeployer);
+            ConfigInstallArtifact configInstallArtifact = new StandardConfigInstallArtifact(artifactIdentity, artifactStorage, this.lifecycleEngine, this.lifecycleEngine, this.lifecycleEngine, artifactStateMonitor, repositoryName, eventLogger, configDeployer);
             return constructAssociatedGraphNode(configInstallArtifact);
         } else {
             return null;
         }
     }
 
-    private ConfigurationDeployer obtainConfigurationDeployer() {
+    private ConfigurationDeployer obtainConfigurationDeployer() throws DeploymentException {
         synchronized (this.monitor) {
             if (this.configurationDeployer == null) {
                 ServiceReference<ConfigurationDeployer> serviceReference = this.bundleContext.getServiceReference(ConfigurationDeployer.class);
