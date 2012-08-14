@@ -28,6 +28,8 @@ public class JarFileArtifactFSTests {
 
     private final FileArtifactFS artifactFS = new JarFileArtifactFS(new File("src/test/resources/artifacts/simple.jar"));
 
+    private final FileArtifactFS artifactFSWithMissingEntries = new JarFileArtifactFS(new File("src/test/resources/artifacts/bundle-with-missing-entries.jar"));
+    
     @Test(expected = IllegalArgumentException.class)
     public void constructorDirectory() {
         new JarFileArtifactFS(new File("target"));
@@ -220,6 +222,33 @@ public class JarFileArtifactFSTests {
         InputStream inputStream = entry.getInputStream();
         String contents = new Scanner(inputStream).useDelimiter("\\A").next();
         assertTrue(contents.startsWith("<beans xmlns=\"http://www.springframework.org/schema/beans\""));
+    }
+    
+    @Test
+    public void getMissingDirectoryEntry() {
+        ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/spring/");
+        assertTrue(entry.exists());
+        assertTrue(entry.isDirectory());
+    }
+    
+    @Test
+    public void getMissingDirectoryEntryName() {
+        ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/spring/");
+        assertEquals("spring", entry.getName());
+    }
+
+    @Test
+    public void getMissingDirectoryEntryChildren() {
+        ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/spring/");
+        ArtifactFSEntry[] children = entry.getChildren();
+        assertEquals(1, children.length);
+    }
+
+    @Test
+    public void getChildrenIncludingMissingEntry() {
+        ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/");
+        ArtifactFSEntry[] children = entry.getChildren();
+        assertEquals(3, children.length);
     }
 
 }
