@@ -36,6 +36,10 @@ import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
  * ZipFile. See the note on caching in http://java.sun.com/developer/technicalArticles/Programming/compression/
  * JarFile's caching behaviour is unsuitable as it produces incorrect results when a JAR file is replaced with a new
  * version since the cache returns entries from the old version.
+ * <p/>
+ * The implementation handles missing directory entries by simulating them. Although this does not faithfully reflect
+ * the structure of a JAR with a missing directory entry, it is more robust for callers who may not expect, or test
+ * with, such JARs.
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
@@ -92,7 +96,11 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
      */
     public boolean isDirectory() {
         ZipEntry zipEntry = findZipEntry();
-        return zipEntry != null ? zipEntry.isDirectory() : false;
+        if (zipEntry != null) {
+            return zipEntry.isDirectory();
+        } else {
+            return hasChildren();
+        }
     }
 
     private ZipEntry findZipEntry() {
@@ -111,10 +119,32 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
         }
     }
 
+    // This method copes with non-existent entries.
+    private boolean hasChildren() {
+        boolean hasChildren = false;
+        if (this.entryName.endsWith("/")) {
+            JarFileScanner scanner = new JarFileScanner();
+            try {
+                ZipEntry entry = scanner.getNextEntry();
+                while (entry != null) {
+                    String name = entry.getName();
+                    if (name != null && name.startsWith(this.entryName)) {
+                        hasChildren = true;
+                        break;
+                    }
+                    entry = scanner.getNextEntry();
+                }
+            } finally {
+                scanner.close();
+            }
+        }
+        return hasChildren;
+    }
+
     /**
      * {@inheritDoc}
      */
-	public InputStream getInputStream() {
+    public InputStream getInputStream() {
         JarFileScanner scanner = new JarFileScanner();
         ZipEntry entry = scanner.getNextEntry();
         while (entry != null && !this.entryName.equals(entry.getName())) {
@@ -155,7 +185,9 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
                 while (entry != null) {
                     String childEntry = entry.getName();
                     if (childEntry.length() > this.entryName.length() && childEntry.startsWith(this.entryName)) {
-                        children.add(new JarFileArtifactFSEntry(this.file, childEntry));
+                        children.add(createChildEntry(childEntry));
+                        // Ensure missing parents of this child are added.
+                        addParentDirectories(childEntry, children);
                     }
                     entry = scanner.getNextEntry();
                 }
@@ -164,6 +196,22 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
             }
         }
         return children.toArray(new ArtifactFSEntry[children.size()]);
+    }
+
+    public JarFileArtifactFSEntry createChildEntry(String childEntryName) {
+        return new JarFileArtifactFSEntry(this.file, childEntryName);
+    }
+
+    // Precondition: childEntry.length() > this.entryName.length() && childEntry.startsWith(this.entryName)
+    private void addParentDirectories(String childEntry, Set<ArtifactFSEntry> children) {
+        int l = this.entryName.length();
+        String childPath = childEntry.substring(l);
+        String[] childPathComponents = childPath.split("/");
+        String parentPath = this.entryName;
+        for (int parent = 0; parent < childPathComponents.length - 1; parent++) {
+            parentPath = parentPath + childPathComponents[parent]+ "/";
+            children.add(createChildEntry(parentPath));
+        }
     }
 
     /**
@@ -177,7 +225,11 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
      * {@inheritDoc}
      */
     public boolean exists() {
-        return findZipEntry() != null;
+        if (findZipEntry() != null) {
+            return true;
+        } else {
+            return hasChildren();
+        }
     }
 
     private class JarFileScanner implements Closeable {
@@ -216,6 +268,43 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((entryName == null) ? 0 : entryName.hashCode());
+        result = prime * result + ((file == null) ? 0 : file.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof JarFileArtifactFSEntry))
+            return false;
+        JarFileArtifactFSEntry other = (JarFileArtifactFSEntry) obj;
+        if (entryName == null) {
+            if (other.entryName != null)
+                return false;
+        } else if (!entryName.equals(other.entryName))
+            return false;
+        if (file == null) {
+            if (other.file != null)
+                return false;
+        } else if (!file.equals(other.file))
+            return false;
+        return true;
     }
 
 }

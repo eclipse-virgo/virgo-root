@@ -235,6 +235,7 @@ public class JarFileArtifactFSTests {
     public void getMissingDirectoryEntryName() {
         ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/spring/");
         assertEquals("spring", entry.getName());
+        assertEquals("META-INF/spring/", entry.getPath());
     }
 
     @Test
@@ -249,6 +250,13 @@ public class JarFileArtifactFSTests {
         ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/");
         ArtifactFSEntry[] children = entry.getChildren();
         assertEquals(3, children.length);
+        boolean found = false;
+        for (ArtifactFSEntry artifactFSEntry : children) {
+            if (artifactFSEntry.getPath().equals("META-INF/spring/")) {
+                found = true;
+            }
+        }
+        assertTrue(found);
     }
 
 }
