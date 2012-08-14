@@ -38,7 +38,7 @@ import org.eclipse.virgo.repository.internal.chain.ChainedRepository;
 import org.eclipse.virgo.repository.internal.external.ExternalStorageRepository;
 import org.eclipse.virgo.repository.internal.remote.RemoteRepository;
 import org.eclipse.virgo.repository.internal.watched.WatchedStorageRepository;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 
 public class StandardRepositoryFactoryTests {
