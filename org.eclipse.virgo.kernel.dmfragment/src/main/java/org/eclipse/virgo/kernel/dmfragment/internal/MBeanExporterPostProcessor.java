@@ -12,7 +12,7 @@
 package org.eclipse.virgo.kernel.dmfragment.internal;
 
 import org.eclipse.virgo.kernel.dmfragment.ModuleBeanFactoryPostProcessor;
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

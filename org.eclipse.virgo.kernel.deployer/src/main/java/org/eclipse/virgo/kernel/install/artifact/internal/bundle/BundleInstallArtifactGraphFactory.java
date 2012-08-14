@@ -14,8 +14,8 @@ package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.core.BundleStarter;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.core.BundleStarter;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -26,8 +26,8 @@ import org.eclipse.virgo.kernel.install.artifact.internal.AbstractArtifactGraphF
 import org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactRefreshHandler;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.serviceability.NonNull;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 import org.eclipse.virgo.util.common.GraphNode;

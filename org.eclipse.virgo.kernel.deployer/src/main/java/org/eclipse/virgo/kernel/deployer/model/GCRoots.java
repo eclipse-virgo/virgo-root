@@ -12,7 +12,7 @@
 package org.eclipse.virgo.kernel.deployer.model;
 
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 
 /**
  * {@link GCRoots}, "garbage collection roots", provides access to the install artifacts that have been installed

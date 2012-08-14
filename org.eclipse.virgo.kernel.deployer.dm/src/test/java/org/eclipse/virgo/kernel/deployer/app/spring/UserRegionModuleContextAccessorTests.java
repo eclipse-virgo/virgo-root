@@ -34,8 +34,8 @@ import static org.easymock.EasyMock.verify;
 import org.eclipse.virgo.kernel.deployer.app.spring.UserRegionModuleContextAccessor;
 import org.eclipse.virgo.kernel.module.ModuleContext;
 import org.eclipse.virgo.kernel.module.ModuleContextAccessor;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 /**
  */

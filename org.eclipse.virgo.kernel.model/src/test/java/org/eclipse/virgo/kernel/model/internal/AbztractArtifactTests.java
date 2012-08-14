@@ -34,9 +34,9 @@ import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.equinox.region.Region;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 public class AbztractArtifactTests {
 

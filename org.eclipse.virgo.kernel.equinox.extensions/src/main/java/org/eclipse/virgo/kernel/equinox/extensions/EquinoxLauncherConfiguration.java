@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.osgi.extensions.equinox;
+package org.eclipse.virgo.kernel.equinox.extensions;
 
 import java.net.URI;
 import java.util.HashMap;

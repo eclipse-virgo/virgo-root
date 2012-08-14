@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.junit.Before;
 import org.junit.Test;
 

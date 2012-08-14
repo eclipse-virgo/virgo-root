@@ -11,10 +11,10 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
-import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.nano.core.BundleStarter;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.osgi.framework.BundleContext;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;

@@ -20,10 +20,10 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
 
-import org.eclipse.virgo.kernel.deployer.core.DeployerLogEvents;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
-import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.ApplicationRecoverer;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 

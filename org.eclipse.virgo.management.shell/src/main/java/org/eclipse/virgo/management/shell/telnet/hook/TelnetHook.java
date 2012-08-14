@@ -9,14 +9,14 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet.hook;
+package org.eclipse.virgo.management.shell.telnet.hook;
 
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.osgi.baseadaptor.BaseAdaptor;
 import org.eclipse.osgi.baseadaptor.hooks.AdaptorHook;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.framework.log.FrameworkLog;
-import org.eclipse.virgo.osgi.console.telnet.TelnetManager;
+import org.eclipse.virgo.management.shell.telnet.TelnetManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 

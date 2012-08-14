@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.kernel.deployer.test
 Export-Package: org.eclipse.virgo.kernel.deployer.test
-Import-Package: org.eclipse.virgo.kernel.core,
- org.eclipse.virgo.kernel.deployer.core,
+Import-Package: org.eclipse.virgo.nano.core,
+ org.eclipse.virgo.nano.deployer.api.core,
  org.eclipse.virgo.kernel.deployer.core.event,
  org.eclipse.virgo.kernel.install.artifact,
  org.eclipse.virgo.kernel.install.environment,

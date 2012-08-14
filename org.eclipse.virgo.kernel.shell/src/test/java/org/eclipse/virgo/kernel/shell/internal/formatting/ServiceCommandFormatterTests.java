@@ -27,7 +27,7 @@ import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiLiveBundle;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiLiveService;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 /**
  * Tests for {@link ServiceCommandFormatter}

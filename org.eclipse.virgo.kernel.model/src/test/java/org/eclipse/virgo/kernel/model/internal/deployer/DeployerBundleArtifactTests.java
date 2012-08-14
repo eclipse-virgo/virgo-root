@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
@@ -23,10 +23,10 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
-import org.eclipse.virgo.teststubs.osgi.support.TrueFilter;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 public class DeployerBundleArtifactTests {
 

@@ -9,9 +9,9 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet;
+package org.eclipse.virgo.management.shell.telnet;
 
-import org.eclipse.virgo.osgi.console.telnet.ANSITerminalTypeMappings;
+import org.eclipse.virgo.management.shell.telnet.ANSITerminalTypeMappings;
 
 public class VT220TerminalTypeMappings extends ANSITerminalTypeMappings {
 

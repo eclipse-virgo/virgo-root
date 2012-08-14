@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,6 +28,7 @@ public class ConsoleInputStreamTests {
             in.read(read, i, 1);
             Assert.assertEquals("Incorrect char read; position " + i + " expected: " + data[i] + ", actual: " + read[i], read[i], data[i]);
         }
+        in.close();
     }
 
     @Test
@@ -39,5 +40,6 @@ public class ConsoleInputStreamTests {
             byte symbol = (byte) in.read();
             Assert.assertEquals("Incorrect char read; position " + i + " expected: " + data[i] + ", actual: " + symbol, symbol, data[i]);
         }
+        in.close();
     }
 }

@@ -30,10 +30,10 @@ import org.osgi.framework.ServiceReference;
 
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 
-import org.eclipse.virgo.kernel.shim.scope.Scope;
-import org.eclipse.virgo.kernel.shim.scope.ScopeFactory;
+import org.eclipse.virgo.nano.shim.scope.Scope;
+import org.eclipse.virgo.nano.shim.scope.ScopeFactory;
 import org.eclipse.virgo.kernel.userregion.internal.ServiceScopingStrategy;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 /**
  */

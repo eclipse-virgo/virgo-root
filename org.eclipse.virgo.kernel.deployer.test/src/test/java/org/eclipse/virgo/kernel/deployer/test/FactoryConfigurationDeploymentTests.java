@@ -28,8 +28,8 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

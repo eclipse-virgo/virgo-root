@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,6 +30,7 @@ public class ConsoleOutputStreamTests {
         }
         out.flush();
         byte[] res = byteOut.toByteArray();
+        out.close();
 
         Assert.assertNotNull("Bytes not written; result null", res);
         Assert.assertFalse("Bytes not written; result empty", res.length == 0);

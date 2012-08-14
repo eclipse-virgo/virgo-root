@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 public enum KEYS {
     UP, DOWN, RIGHT, LEFT, CENTER, HOME, END, PGUP, PGDN, INS, DEL, UNFINISHED, UNKNOWN

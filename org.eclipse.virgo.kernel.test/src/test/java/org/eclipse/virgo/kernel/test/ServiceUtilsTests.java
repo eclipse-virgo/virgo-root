@@ -16,7 +16,7 @@ import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.getWaitLimitS
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.junit.Test;
 
 

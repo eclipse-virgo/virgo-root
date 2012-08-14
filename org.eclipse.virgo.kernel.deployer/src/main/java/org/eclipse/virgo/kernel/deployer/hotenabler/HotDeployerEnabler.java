@@ -11,10 +11,10 @@
 
 package org.eclipse.virgo.kernel.deployer.hotenabler;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
-import org.eclipse.virgo.kernel.deployer.hot.HotDeployer;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.hot.HotDeployer;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;

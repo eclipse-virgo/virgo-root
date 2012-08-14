@@ -20,9 +20,9 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.deployer.ArtifactIdentity;
-import org.eclipse.virgo.kernel.deployer.Deployer;
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.ArtifactIdentity;
+import org.eclipse.virgo.nano.deployer.Deployer;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.kernel.shell.Command;
 
 

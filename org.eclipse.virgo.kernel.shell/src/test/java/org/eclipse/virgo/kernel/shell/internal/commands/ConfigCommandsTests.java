@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import org.eclipse.virgo.kernel.shell.internal.commands.ConfigCommands;
 import org.eclipse.virgo.kernel.shell.internal.formatting.StubManageableCompositeArtifact;
-import org.eclipse.virgo.teststubs.osgi.service.cm.StubConfigurationAdmin;
+import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 
 public class ConfigCommandsTests {
 

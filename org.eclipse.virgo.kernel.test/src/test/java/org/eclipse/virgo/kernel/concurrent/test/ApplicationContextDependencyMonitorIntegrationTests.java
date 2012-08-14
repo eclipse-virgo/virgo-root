@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
-import org.eclipse.virgo.kernel.core.BundleStarter;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.BundleStarter;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
@@ -41,7 +41,8 @@ import org.osgi.framework.ServiceReference;
  */
 public class ApplicationContextDependencyMonitorIntegrationTests extends AbstractKernelIntegrationTest {    
 
-    @Test public void testDependencyMonitoring() throws Exception {
+    @Test 
+    public void testDependencyMonitoring() throws Exception {
         QuasiFramework framework = OsgiFrameworkUtils.getService(this.context, QuasiFrameworkFactory.class).getService().create();
         File file = new File("src/test/resources/QuickConsumer.jar");
         Reader manifestReader = ManifestUtils.manifestReaderFromJar(file);

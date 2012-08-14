@@ -33,7 +33,7 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesExcept
 
 import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.artifact.library.LibraryDefinition;
-import org.eclipse.virgo.kernel.serviceability.Assert;
+import org.eclipse.virgo.nano.serviceability.Assert;
 import org.eclipse.virgo.kernel.userregion.internal.UserRegionLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.repository.ArtifactDescriptor;

@@ -4,13 +4,8 @@ Bundle-Name: Virgo Kernel Deployer
 Bundle-SymbolicName: org.eclipse.virgo.kernel.deployer
 Bundle-Version: ${version}
 Import-Template: 
- org.eclipse.virgo.kernel.artifact.*;version="${version:[=.=.=, =.+1)}",
- org.eclipse.virgo.kernel.osgi.*;version="${version:[=.=.=, =.+1)}",
- org.eclipse.virgo.kernel.services.*;version="${version:[=.=.=, =.+1)}",
- org.eclipse.virgo.kernel.serviceability.*;version="${org.eclipse.virgo.nano:[=.=.=, =.+1)}",
- org.eclipse.virgo.kernel.core.*;version="${org.eclipse.virgo.nano:[=.=.=, =.+1)}",
- org.eclipse.virgo.kernel.shim.*;version="${org.eclipse.virgo.nano:[=.=.=, =.+1)}",
- org.eclipse.virgo.kernel.deployer.*;version="${org.eclipse.virgo.nano:[=.=.=, =.+1)}",
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.nano.*;version="${org.eclipse.virgo.nano:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
  org.eclipse.virgo.repository.*;version="${org.eclipse.virgo.repository:[=.=.=, =.+1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
@@ -28,11 +23,12 @@ Import-Template:
  org.xml.*;version="0",
  org.w3c.*;version="0"
 Excluded-Imports: 
- org.eclipse.virgo.osgi.extensions.*
+ org.eclipse.virgo.kernel.equinox.*,
+ org.eclipse.virgo.nano.deployer.hotenabler
 Excluded-Exports: 
- org.eclipse.virgo.kernel.deployer.app.*,
- org.eclipse.virgo.kernel.deployer.core.module.*,
- org.eclipse.virgo.kernel.deployer.core.parse.*,
- org.eclipse.virgo.kernel.deployer.lib.*,
- org.eclipse.virgo.kernel.deployer.management.*,
+ org.eclipse.virgo.nano.deployer.app.*,
+ org.eclipse.virgo.nano.deployer.core.module.*,
+ org.eclipse.virgo.nano.deployer.core.parse.*,
+ org.eclipse.virgo.nano.deployer.lib.*,
+ org.eclipse.virgo.nano.deployer.management.*,
  *.internal.*

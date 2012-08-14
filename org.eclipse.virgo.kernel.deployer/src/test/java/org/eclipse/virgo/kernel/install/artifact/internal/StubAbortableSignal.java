@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.AbortableSignal;
 
 class StubAbortableSignal implements AbortableSignal {
 

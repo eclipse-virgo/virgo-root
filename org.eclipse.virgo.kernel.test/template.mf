@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.virgo.kernel.test
 Bundle-Version: ${version}
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, +1)}",
+ org.eclipse.virgo.nano.*;version="${org.eclipse.virgo.nano:[=.=.=, +1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
  javax.management.*;version="0",
  org.easymock.*;version="${org.easymock:[=.=.=, +1)}",
@@ -13,8 +14,10 @@ Import-Template:
  org.osgi.*;version="0",
  org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
  org.eclipse.gemini.blueprint.*;version="${org.eclipse.gemini.blueprint:[=.=.=, +1)}"
-Excluded-Imports: subsystem.installation,
+Excluded-Imports: 
+ subsystem.installation,
  com.springsource,
- org.eclipse.virgo.osgi.extensions.*,
+ org.eclipse.virgo.kernel.equinox.*,
+ org.eclipse.virgo.kernel.core,
  org.eclipse.virgo.test.*
 Excluded-Exports: delay,quick,slow,test,config,quasi

@@ -33,9 +33,9 @@ import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependency
 import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependencyWaitTimedOutEvent;
 
 import org.eclipse.virgo.kernel.agent.dm.internal.BlueprintEventPostingOsgiBundleApplicationContextListener;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
-import org.eclipse.virgo.teststubs.osgi.service.event.StubEventAdmin;
-import org.eclipse.virgo.teststubs.osgi.support.ObjectClassFilter;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.service.event.StubEventAdmin;
+import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 
 
 /**

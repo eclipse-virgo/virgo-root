@@ -19,7 +19,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.virgo.kernel.core.AbortableSignal;
+import org.eclipse.virgo.nano.core.AbortableSignal;
 
 public final class TestSignal implements AbortableSignal {
     

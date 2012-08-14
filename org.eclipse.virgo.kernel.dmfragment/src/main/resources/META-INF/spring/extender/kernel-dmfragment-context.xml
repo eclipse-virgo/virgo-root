@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 		
-	<osgi:reference id="tracingService" interface="org.eclipse.virgo.kernel.shim.serviceability.TracingService"/>
+	<osgi:reference id="tracingService" interface="org.eclipse.virgo.nano.shim.serviceability.TracingService"/>
 
 	<bean id="serverExtensionConfigurer" class="org.eclipse.virgo.kernel.dmfragment.internal.KernelExtensionConfiguringOsgiPostProcessor">
 		<constructor-arg>

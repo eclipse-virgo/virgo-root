@@ -14,8 +14,8 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.kernel.core.Signal;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.core.Signal;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 
 
 /**

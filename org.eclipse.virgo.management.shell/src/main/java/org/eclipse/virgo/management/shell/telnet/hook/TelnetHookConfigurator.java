@@ -9,12 +9,12 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet.hook;
+package org.eclipse.virgo.management.shell.telnet.hook;
 
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
 
-import org.eclipse.virgo.osgi.console.telnet.hook.TelnetHook;
+import org.eclipse.virgo.management.shell.telnet.hook.TelnetHook;
 
 public class TelnetHookConfigurator implements HookConfigurator {
 

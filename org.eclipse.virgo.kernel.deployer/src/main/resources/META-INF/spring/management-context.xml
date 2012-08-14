@@ -23,5 +23,5 @@
 			value="#{kernelConfig.getProperty('domain')}:category=Control,type=RecoveryMonitor" />
 	</bean>
 	
-	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.kernel.core.KernelConfig"/>
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 </beans>

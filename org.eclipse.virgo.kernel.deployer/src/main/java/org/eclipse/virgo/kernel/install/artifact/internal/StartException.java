@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 
 public class StartException extends DeploymentException {
 

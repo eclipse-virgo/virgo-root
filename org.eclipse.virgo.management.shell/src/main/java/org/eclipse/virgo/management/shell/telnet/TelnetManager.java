@@ -9,9 +9,9 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet;
+package org.eclipse.virgo.management.shell.telnet;
 
-import org.eclipse.virgo.osgi.console.telnet.TelnetConsoleSession;
+import org.eclipse.virgo.management.shell.telnet.TelnetConsoleSession;
 import org.eclipse.osgi.framework.console.ConsoleSession;
 import org.osgi.framework.BundleContext;
 

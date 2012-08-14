@@ -13,12 +13,12 @@ package org.eclipse.virgo.kernel.deployer.core.internal;
 
 import java.net.URI;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 
 
 /**
- * {@link ApplicationRecoverer} is an interface to an {@link org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer ApplicationDeployer} 
+ * {@link ApplicationRecoverer} is an interface to an {@link org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer ApplicationDeployer} 
  * intended only for use by the recovery agent.
  * <p />
  *

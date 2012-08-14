@@ -32,7 +32,7 @@ import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
 import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.model.management.internal.DelegatingManageableArtifact;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Test;
 import org.osgi.framework.Version;
 

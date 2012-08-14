@@ -1,6 +1,6 @@
 Bundle-ManifestVersion: 2
 Bundle-Name: Console
-Bundle-SymbolicName: org.eclipse.virgo.osgi.console
+Bundle-SymbolicName: org.eclipse.virgo.management.shell
 Bundle-Version: ${version}
 Fragment-Host: org.eclipse.osgi; extension:=framework
 Excluded-Exports:

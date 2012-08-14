@@ -9,11 +9,11 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.common;
+package org.eclipse.virgo.management.shell.common;
 
 import org.junit.Assert;
 
-import org.eclipse.virgo.osgi.console.supportability.HistoryHolder;
+import org.eclipse.virgo.management.shell.supportability.HistoryHolder;
 import org.junit.Test;
 
 public class HistoryHolderTests {

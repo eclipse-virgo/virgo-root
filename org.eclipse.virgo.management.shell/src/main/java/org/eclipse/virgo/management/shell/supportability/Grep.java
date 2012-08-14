@@ -9,9 +9,9 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.supportability;
+package org.eclipse.virgo.management.shell.supportability;
 
-import org.eclipse.virgo.osgi.console.common.ConsoleOutputStream;
+import org.eclipse.virgo.management.shell.common.ConsoleOutputStream;
 
 import java.io.*;
 import java.util.ArrayList;

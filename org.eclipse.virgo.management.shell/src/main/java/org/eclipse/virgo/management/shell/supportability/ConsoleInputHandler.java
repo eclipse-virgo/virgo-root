@@ -9,11 +9,11 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.supportability;
+package org.eclipse.virgo.management.shell.supportability;
 
-import org.eclipse.virgo.osgi.console.supportability.ConsoleInputScanner;
-import org.eclipse.virgo.osgi.console.common.ConsoleInputStream;
-import org.eclipse.virgo.osgi.console.common.InputHandler;
+import org.eclipse.virgo.management.shell.supportability.ConsoleInputScanner;
+import org.eclipse.virgo.management.shell.common.ConsoleInputStream;
+import org.eclipse.virgo.management.shell.common.InputHandler;
 import org.osgi.framework.BundleContext;
 
 import java.io.InputStream;

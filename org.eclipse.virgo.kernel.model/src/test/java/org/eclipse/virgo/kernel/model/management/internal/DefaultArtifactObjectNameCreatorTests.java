@@ -18,7 +18,7 @@ import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
 import org.eclipse.virgo.kernel.model.management.internal.DefaultRuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Test;
 
 

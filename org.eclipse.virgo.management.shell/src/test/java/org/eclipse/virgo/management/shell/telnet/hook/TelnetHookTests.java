@@ -9,7 +9,7 @@
  *    Lazar Kirchev, SAP AG - initial contribution
  ******************************************************************************/
 
-package org.eclipse.virgo.osgi.console.telnet.hook;
+package org.eclipse.virgo.management.shell.telnet.hook;
 
 import java.io.OutputStream;
 import java.net.ConnectException;
