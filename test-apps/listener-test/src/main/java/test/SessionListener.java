@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 
 public class SessionListener implements HttpSessionListener, SessionListenerMBean {
 

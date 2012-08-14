@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
@@ -83,7 +83,6 @@ final class WebBundleTransformer implements Transformer {
         try {
             Configuration config = configAdmin.getConfiguration(WEB_CONFIGURATION_PID, null);
             if (config != null) {
-                @SuppressWarnings("unchecked")
                 Dictionary<String, Object> properties = config.getProperties();
                 if (properties != null) {
                     String wabHeadersPropertyValue = null;

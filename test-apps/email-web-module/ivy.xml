@@ -8,10 +8,10 @@
 	<publications>
 	</publications>
 	<dependencies>
-		<dependency org="javax.activation" name="com.springsource.javax.activation" rev="${javax.activation}" conf="provided->compile"/>
-		<dependency org="javax.mail" name="com.springsource.javax.mail" rev="${javax.mail}" conf="provided->compile"/>
-		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->compile"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.activation" rev="${javax.activation}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
 		<dependency org="org.springframework" name="org.springframework.context.support" rev="${org.springframework}" conf="provided->compile"/>
 		<dependency org="org.springframework" name="org.springframework.web" rev="${org.springframework}" conf="provided->compile"/>
 		<dependency org="org.springframework" name="org.springframework.web.servlet" rev="${org.springframework}" conf="provided->compile"/>

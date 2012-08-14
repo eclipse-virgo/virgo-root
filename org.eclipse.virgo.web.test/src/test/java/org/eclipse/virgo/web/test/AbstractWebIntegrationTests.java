@@ -44,9 +44,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
@@ -66,7 +66,7 @@ public abstract class AbstractWebIntegrationTests {
 
     private static final long WEB_PLAN_DEPLOY_TIMEOUT = 5*60*1000; // 5 minutes
 
-	private static final String CURRENT_VERSION = "3.0.0";
+	private static final String CURRENT_VERSION = "3.5.0";
 
     protected final List<String> deployedWebApps = new ArrayList<String>();
 

@@ -68,7 +68,7 @@ public class PerAppTraceRoutingTests extends AbstractWebIntegrationTests {
             }
             line = reader.readLine();
         }
-
+        reader.close();
         assertTrue("Expected text " + expectedText + " was not found in the application's trace file", expectedText.isEmpty());
     }
 }

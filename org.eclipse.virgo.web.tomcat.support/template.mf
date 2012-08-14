@@ -6,6 +6,7 @@ Fragment-Host: org.eclipse.gemini.web.tomcat
 Bundle-Version: ${version}
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
+ org.eclipse.virgo.nano.*;version="${org.eclipse.virgo.nano:[=.=.=, +1)}",
  org.eclipse.gemini.web.*;version="${org.eclipse.gemini.web:[=.=.=, +1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
  org.eclipse.virgo.web.*;version="${version-RANGE}",
