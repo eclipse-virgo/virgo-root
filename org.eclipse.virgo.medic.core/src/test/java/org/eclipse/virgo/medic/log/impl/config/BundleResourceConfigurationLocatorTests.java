@@ -23,7 +23,7 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.medic.log.LoggingConfiguration;
 import org.eclipse.virgo.medic.log.impl.config.BundleResourceConfigurationLocator;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 public class BundleResourceConfigurationLocatorTests {
 

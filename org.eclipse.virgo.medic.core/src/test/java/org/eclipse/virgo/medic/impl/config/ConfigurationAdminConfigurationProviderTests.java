@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.medic.impl.config;
 
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 import org.junit.Test;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;

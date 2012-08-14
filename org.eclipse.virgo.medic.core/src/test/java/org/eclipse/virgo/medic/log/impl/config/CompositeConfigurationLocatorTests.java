@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.eclipse.virgo.medic.log.LoggingConfiguration;
 import org.eclipse.virgo.medic.log.impl.config.CompositeConfigurationLocator;
 import org.eclipse.virgo.medic.log.impl.config.ConfigurationLocator;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 public class CompositeConfigurationLocatorTests {
 
