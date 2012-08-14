@@ -21,12 +21,10 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import javax.servlet.ServletContext;
-
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
-import org.eclipse.virgo.kernel.core.KernelConfig;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.core.KernelConfig;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity; 
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
@@ -40,7 +38,6 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
@@ -95,7 +92,7 @@ public class WARDeployer implements SimpleDeployer {
 
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
     
-    private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
+    //private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
     
     private static final String DEFAULT_CONTEXT_PATH = "/";
     

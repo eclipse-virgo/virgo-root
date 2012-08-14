@@ -1,7 +1,7 @@
 
-package org.eclipse.virgo.kernel.deployer.hot;
+package org.eclipse.virgo.nano.deployer.hot;
 
-import org.eclipse.virgo.kernel.serviceability.LogEventDelegate;
+import org.eclipse.virgo.nano.serviceability.LogEventDelegate;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 

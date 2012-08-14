@@ -10,7 +10,7 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer;
+package org.eclipse.virgo.nano.deployer;
 
 import java.util.Date;
 import java.util.Map;

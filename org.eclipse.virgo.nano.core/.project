@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.virgo.kernel.core</name>
+	<name>org.eclipse.virgo.nano.core</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -22,6 +22,11 @@
 		</buildCommand>
 		<buildCommand>
 			<name>com.springsource.server.ide.bundlor.core.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.ds.core.builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

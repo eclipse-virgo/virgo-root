@@ -1,9 +1,9 @@
-package org.eclipse.virgo.kernel.deployer.config;
+package org.eclipse.virgo.nano.deployer.api.config;
 
 import java.io.IOException;
 import java.util.Properties;
 
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 
 /**
  * Publishes and Deletes configurations from the config admin that is present in the implementor's region

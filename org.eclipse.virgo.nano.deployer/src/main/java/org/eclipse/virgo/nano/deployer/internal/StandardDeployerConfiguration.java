@@ -14,7 +14,7 @@ package org.eclipse.virgo.nano.deployer.internal;
 
 import java.io.File;
 
-import org.eclipse.virgo.kernel.deployer.core.DeployerConfiguration;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
 import org.eclipse.virgo.util.io.PathReference;
 
 /**

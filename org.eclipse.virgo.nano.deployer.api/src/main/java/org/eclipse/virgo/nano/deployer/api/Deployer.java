@@ -10,13 +10,13 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer;
+package org.eclipse.virgo.nano.deployer;
 
 import javax.management.MXBean;
 import javax.management.openmbean.CompositeData;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 
 
 /**

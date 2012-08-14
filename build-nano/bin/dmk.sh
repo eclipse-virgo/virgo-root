@@ -270,7 +270,7 @@ then
 		-classpath $CLASSPATH \
 		-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 		-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
-		org.eclipse.virgo.kernel.shutdown.ShutdownClient $OTHER_ARGS
+		org.eclipse.virgo.nano.shutdown.ShutdownClient $OTHER_ARGS
 	
 else
 	echo "Unknown command: ${COMMAND}"

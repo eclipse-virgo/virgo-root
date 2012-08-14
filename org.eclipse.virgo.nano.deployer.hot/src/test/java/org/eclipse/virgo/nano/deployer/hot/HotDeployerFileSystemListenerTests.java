@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.deployer.hot;
+package org.eclipse.virgo.nano.deployer.hot;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
@@ -23,10 +23,10 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
-import org.eclipse.virgo.kernel.deployer.hot.HotDeploymentFileSystemListener;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.hot.HotDeploymentFileSystemListener;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.util.io.FileSystemEvent;
 

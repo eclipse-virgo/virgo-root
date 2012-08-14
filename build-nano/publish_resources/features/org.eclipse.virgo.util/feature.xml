@@ -68,4 +68,18 @@
          version="@UTIL.VERSION@"
          unpack="false"/>
 
+   <plugin
+         id="org.eclipse.virgo.util.parser.manifest"
+         download-size="0"
+         install-size="0"
+         version="@UTIL.VERSION@"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.parser.launcher"
+         download-size="0"
+         install-size="0"
+         version="@UTIL.VERSION@"
+         unpack="false"/>
+
 </feature>

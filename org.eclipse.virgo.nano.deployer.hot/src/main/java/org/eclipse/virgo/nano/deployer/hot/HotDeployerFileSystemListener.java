@@ -1,4 +1,4 @@
-package org.eclipse.virgo.kernel.deployer.hot;
+package org.eclipse.virgo.nano.deployer.hot;
 
 import java.io.File;
 import java.net.URI;
@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
-import org.eclipse.virgo.kernel.deployer.core.FatalDeploymentException;
-import org.eclipse.virgo.kernel.serviceability.NonNull;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.util.io.FileSystemEvent;

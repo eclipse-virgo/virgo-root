@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-nano" xmlns:ivy="antlib:org.apache.ivy.ant">
     <path id="unit.test.bundles">
-		<pathelement location="../org.eclipse.virgo.kernel.core"/>
+		<pathelement location="../org.eclipse.virgo.nano.core"/>
         <pathelement location="../org.eclipse.virgo.nano.services.ds"/>
         <pathelement location="../org.eclipse.virgo.nano.services.concurrent"/>
-        <pathelement location="../org.eclipse.virgo.deployer.api"/>
-        <pathelement location="../org.eclipse.virgo.deployer.hot"/>
+        <pathelement location="../org.eclipse.virgo.nano.deployer.api"/>
+        <pathelement location="../org.eclipse.virgo.nano.deployer.hot"/>
         <pathelement location="../org.eclipse.virgo.nano.deployer"/>
         <pathelement location="../org.eclipse.virgo.nano.war.deployer"/>
-        <pathelement location="../org.eclipse.virgo.kernel.authentication"/>
-        <pathelement location="../org.eclipse.virgo.kernel.shutdown"/>
+        <pathelement location="../org.eclipse.virgo.nano.authentication"/>
+        <pathelement location="../org.eclipse.virgo.nano.shutdown"/>
 	</path>
     <path id="bundles">
         <path refid="unit.test.bundles" />

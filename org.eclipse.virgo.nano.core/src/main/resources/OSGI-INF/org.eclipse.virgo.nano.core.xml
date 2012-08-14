@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.virgo.nano.core" immediate="true">
+	<implementation class="org.eclipse.virgo.nano.core.internal.CoreBundleActivator"/>
+	
+	<reference name="EventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLogger"
+		policy="static"/>
+		
+	<reference name="DumpGenerator"
+		interface="org.eclipse.virgo.medic.dump.DumpGenerator"
+		policy="static"/>
+		
+	<reference name="ConfigAdmin"
+		interface="org.osgi.service.cm.ConfigurationAdmin"
+		policy="static"/>
+		
+  	<reference name="EventAdmin"
+		interface="org.osgi.service.event.EventAdmin"
+		policy="static"/>
+
+</scr:component>
