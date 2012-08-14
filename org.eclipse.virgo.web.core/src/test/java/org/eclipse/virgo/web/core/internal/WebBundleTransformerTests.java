@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.medic.eventlog.EventLogger;

@@ -44,9 +44,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-import org.eclipse.virgo.kernel.deployer.core.ApplicationDeployer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;

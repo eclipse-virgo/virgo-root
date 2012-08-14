@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<reference id="tracingService" interface="org.eclipse.virgo.kernel.shim.serviceability.TracingService" />
+	<reference id="tracingService" interface="org.eclipse.virgo.nano.shim.serviceability.TracingService" />
 	
 	<reference id="registry" interface="org.eclipse.virgo.web.core.WebApplicationRegistry"/>
 	
