@@ -12,13 +12,7 @@
 	<target name="precommit" depends="clean, clean-integration, test, findbugs, package, smoke-test"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
 
-	<target name="fetch-nano-updatesite">
-        <unzip src="${nano.target.dir}/assembly/virgo-nano-updatesite-${build.version}.zip" dest="${kernel.p2.repository.dir}">
-			<globmapper from="virgo-nano-updatesite-${build.version}/*" to="*"/>
-		</unzip>
-    </target>
-
-	<target name="package-kernel" depends="ivy.init, fetch-nano-updatesite">
+	<target name="package-kernel" depends="ivy.init">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
         
@@ -32,7 +26,7 @@
 			<fileset dir="${kernel.basedir}/publish_resources/features" excludes="keystore"/>
 			<filterset>
 				<filter token="REGION.VERSION" value="${org.eclipse.equinox.region}"/>
-				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
+				<filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
 				<filter token="SPRING.VERSION" value="${org.springframework}"/>
 				<filter token="JAVAX.SERVLET.VERSION" value="${javax.servlet}"/>
@@ -116,7 +110,7 @@
 				<filter token="EQUINOX.UTIL.VERSION" value="${org.eclipse.equinox.util}"/>
 				<filter token="OSGI.ENTERPRISE.VERSION" value="${org.osgi.enterprise}"/>
 				<filter token="GEMINI.MANAGEMENT.VERSION" value="${org.eclipse.gemini.management}"/>
-				<filter token="KERNEL.VERSION" value="${bundle.version}"/>
+				<filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
 				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
 				<filter token="SLF4J.VERSION" value="${org.slf4j.api}"/>
@@ -191,14 +185,14 @@
 
 		<antcall target="p2.install-virgo-product">
 			<param name="repository" value="${p2.repository.dir}"/>
-			<param name="destination" value="${package.output.dir}"/>
+			<param name="destination" value="${package.dir}/virgo-kernel-${bundle.version}"/>
 			<param name="product.iu" value="kernel.product"/>
 		</antcall>
 		<echo message="Installed Virgo Kernel for distribution purposes."/>
 
-		<delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+		<delete dir="${package.dir}/virgo-kernel-${bundle.version}/Eclipse.app" quiet="true"/>
 
-		<zip destfile="${package.output.file}">
+		<zip destfile="${artifacts.dir}/virgo-kernel-${bundle.version}.zip">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
 			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">

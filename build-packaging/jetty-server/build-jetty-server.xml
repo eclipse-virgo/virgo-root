@@ -1,4 +1,4 @@
-2<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="build-jetty-server" default="precommit" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<path id="bundles"/>
@@ -97,7 +97,7 @@
 
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.output.dir}"/>
+            <param name="destination" value="${package.dir}/virgo-jetty-server-${bundle.version}"/>
             <param name="product.iu" value="jetty-server.product"/>
         </antcall>
         <echo message="Installed Virgo Jetty Server for distribution purposes."/>
@@ -106,7 +106,7 @@
         
         <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
         
-		<zip destfile="${package.output.file}">
+		<zip destfile="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
 			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">

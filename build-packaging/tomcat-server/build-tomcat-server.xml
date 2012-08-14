@@ -80,7 +80,7 @@
 
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.output.dir}"/>
+            <param name="destination" value="${package.dir}/virgo-tomcat-server-${bundle.version}"/>
             <param name="product.iu" value="tomcat-server.product"/>
         </antcall>
         <echo message="Installed Virgo Tomcat Server for distribution purposes."/>
@@ -89,7 +89,7 @@
         
         <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
         
-		<zip destfile="${package.output.file}">
+		<zip destfile="${artifacts.dir}/virgo-tomcat-server-${bundle.version}.zip">
 			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
 			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${package.dir}">
@@ -177,7 +177,7 @@
 		</copy>
 	</target>
 
-	<target name="smoke-test" description="Runs a smoke test on the packaged build">
+	<target name="smoke-test-tomcat-server" description="Runs a smoke test on the packaged build">
 		<path id="smoke.test.bundles">
 			<pathelement location="${tomcat-server.basedir}/org.eclipse.virgo.server.smoketest" />
 		</path>

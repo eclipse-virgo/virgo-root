@@ -23,20 +23,20 @@
    </requires>
 
    <plugin
-         id="org.eclipse.virgo.kernel.core"
+         id="org.eclipse.virgo.nano.core"
          download-size="0"
          install-size="0"
          version="@NANO.VERSION@"
          unpack="false"
          autostart="true"/>
     <plugin
-         id="org.eclipse.virgo.deployer.api"
+         id="org.eclipse.virgo.nano.deployer.api"
          download-size="0"
          install-size="0"
          version="@NANO.VERSION@"
          unpack="false"/>
     <plugin
-         id="org.eclipse.virgo.deployer.hot"
+         id="org.eclipse.virgo.nano.deployer.hot"
          download-size="0"
          install-size="0"
          version="@NANO.VERSION@"

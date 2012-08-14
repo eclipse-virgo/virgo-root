@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="build-packaging" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="build-nano" xmlns:ivy="antlib:org.apache.ivy.ant">
     <path id="bundles">
     </path>
 
@@ -7,6 +7,7 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <property name="nano-full-package" value="virgo-nano-full"/>   
+    <property name="nano-package" value="virgo-nano"/> 
      
     <target name="package-nano" depends="ivy.init">
         <property name="nano.basedir" value="${basedir}/nano"/>
@@ -33,12 +34,12 @@
     </target>
      
      <target name="assemble-zips">
-        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        <delete dir="${package.dir}/${nano-package}-${bundle.version}/Eclipse.app" quiet="true"/>
         <delete dir="${package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
         
-        <property name="nano.package.dir" value="${package.dir}/${package.basename}"/>
+        <property name="nano.package.dir" value="${package.dir}/${nano-package}-${bundle.version}"/>
         <mkdir dir="${artifacts.dir}"/>
-        <zip destfile="${package.output.file}">
+        <zip destfile="${artifacts.dir}/${nano-package}-${bundle.version}.zip">
 			<zipfileset dir="${nano.package.dir}" includes="bin/*.sh" filemode="755"/>
 			<zipfileset dir="${nano.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
 			<zipfileset dir="${nano.package.dir}">
@@ -79,7 +80,7 @@
                 <filter token="HA.VERSION" value="${org.apache.catalina.ha}"/>
                 <filter token="JASPER.VERSION" value="${org.apache.jasper}"/>
                 <filter token="TRIBES.VERSION" value="${org.apache.catalina.tribes}"/>
-				<filter token="NANO.VERSION" value="${bundle.version}"/>
+				<filter token="NANO.VERSION" value="${org.eclipse.virgo.nano}"/>
 				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
 				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
                 <filter token="LOGBACK.CLASSIC.VERSION" value="${ch.qos.logback.classic}"/>
@@ -200,7 +201,7 @@
      <target name="install-packages">
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.output.dir}"/>
+            <param name="destination" value="${package.dir}/${nano-package}-${bundle.version}"/>
             <param name="product.iu" value="nano.product"/>
         </antcall>
         <echo message="Installed Virgo Nano for distribution purposes."/>

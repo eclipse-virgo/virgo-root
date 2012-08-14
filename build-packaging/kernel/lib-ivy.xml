@@ -10,7 +10,7 @@
 
 	<dependencies>
 		<!-- lib -->
-		<dependency org="org.eclipse.virgo.osgi" name="org.eclipse.virgo.osgi.console" rev="${org.eclipse.virgo.osgi}" conf="lib->runtime"/>
+		<dependency org="org.eclipse.virgo.management" name="org.eclipse.virgo.management.shell" rev="${org.eclipse.virgo.kernel}" conf="lib->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.transaction" rev="${javax.transaction}" conf="lib->runtime"/>
 		
 		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
