@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
+import java.io.File;
+
 import org.eclipse.virgo.util.io.PathReference;
 
 /**
@@ -27,7 +29,7 @@ final class GenerationalArtifactStore extends AbstractArtifactStore implements A
 
     private final PathReference baseDirectory;
 
-    private long generation = 0;
+    private long generation;
 
     private final String baseName;
 
@@ -40,9 +42,32 @@ final class GenerationalArtifactStore extends AbstractArtifactStore implements A
         this.baseDirectory = basePathReference.getParent();
         this.baseName = basePathReference.getName();
 
+        final long recoveredGeneration = recoverLastGeneration(this.baseDirectory);
+        this.generation = recoveredGeneration == -1 ? 0 : recoveredGeneration;
+
         PathReference currentPathReference = getGenerationPath(this.generation, this.baseDirectory, this.baseName);
-        currentPathReference.getParent().createDirectory();
-        currentPathReference.delete(true);
+        if (recoveredGeneration == -1) {
+            currentPathReference.getParent().createDirectory();
+            currentPathReference.delete(true);
+        }
+    }
+
+    private static long recoverLastGeneration(PathReference baseDirectory) {
+        long lastGeneration = -1;
+        File file = baseDirectory.toFile();
+        String[] children = file.list();
+        if (children != null) {
+            for (String child : children) {
+                try {
+                    long childGeneration = Long.parseLong(child);
+                    if (childGeneration > lastGeneration) {
+                        lastGeneration = childGeneration;
+                    }
+                } catch (NumberFormatException _) {
+                }
+            }
+        }
+        return lastGeneration;
     }
 
     /**

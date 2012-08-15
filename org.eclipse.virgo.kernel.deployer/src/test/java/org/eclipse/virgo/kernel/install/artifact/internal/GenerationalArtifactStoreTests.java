@@ -27,34 +27,35 @@ public class GenerationalArtifactStoreTests {
     
     private static final String TEST_FILENAME = "some.jar";
     
-    private ArtifactStore artifactHistory;
+    private ArtifactStore artifactStore;
 
     @Before
     public void setUp() throws Exception {
-        this.artifactHistory = new GenerationalArtifactStore(new PathReference(TEST_PATH + TEST_FILENAME));
+        (new PathReference(TEST_PATH)).delete(true);
+        this.artifactStore = new GenerationalArtifactStore(new PathReference(TEST_PATH + TEST_FILENAME));
     }
 
     @Test
     public void testGetCurrentPathReference() {
-        PathReference c = this.artifactHistory.getCurrentPath();
+        PathReference c = this.artifactStore.getCurrentPath();
         checkPath(c);
     }
 
     @Test
     public void testStash() {
-        PathReference original = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.save();
-        PathReference c = this.artifactHistory.getCurrentPath();
+        PathReference original = this.artifactStore.getCurrentPath();
+        this.artifactStore.save();
+        PathReference c = this.artifactStore.getCurrentPath();
         checkPath(c);
         assertFalse(original.equals(c));
     }
 
     @Test
     public void testUnstash() {
-        PathReference original = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.save();
-        this.artifactHistory.restore();
-        PathReference c = this.artifactHistory.getCurrentPath();
+        PathReference original = this.artifactStore.getCurrentPath();
+        this.artifactStore.save();
+        this.artifactStore.restore();
+        PathReference c = this.artifactStore.getCurrentPath();
         checkPath(c);
         assertTrue(original.equals(c));
 
@@ -62,11 +63,11 @@ public class GenerationalArtifactStoreTests {
     
     @Test
     public void testRepeatedStash() {
-        PathReference original = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.save();
-        PathReference next = this.artifactHistory.getCurrentPath();
-        this.artifactHistory.save();
-        PathReference last = this.artifactHistory.getCurrentPath();
+        PathReference original = this.artifactStore.getCurrentPath();
+        this.artifactStore.save();
+        PathReference next = this.artifactStore.getCurrentPath();
+        this.artifactStore.save();
+        PathReference last = this.artifactStore.getCurrentPath();
         checkPath(last);
         assertFalse(original.equals(next));
         assertFalse(original.equals(last));
@@ -74,57 +75,57 @@ public class GenerationalArtifactStoreTests {
     
     @Test
     public void testFileDeletionOnUnstash() {
-        this.artifactHistory.save();
-        PathReference c = this.artifactHistory.getCurrentPath();
+        this.artifactStore.save();
+        PathReference c = this.artifactStore.getCurrentPath();
         c.createFile();
         assertTrue(c.exists());
-        this.artifactHistory.restore();
+        this.artifactStore.restore();
         assertFalse(c.exists());
     }
 
     @Test
     public void testDirectoryDeletionOnUnstash() {
-        this.artifactHistory.save();
-        PathReference c = this.artifactHistory.getCurrentPath();
+        this.artifactStore.save();
+        PathReference c = this.artifactStore.getCurrentPath();
         c.createDirectory();
         assertTrue(c.exists());
-        this.artifactHistory.restore();
+        this.artifactStore.restore();
         assertFalse(c.exists());
     }
 
     @Test
     public void testFileDeletionOnDoubleStash() {
-        PathReference c = this.artifactHistory.getCurrentPath();
+        PathReference c = this.artifactStore.getCurrentPath();
         c.createFile();
         assertTrue(c.exists());
-        this.artifactHistory.save();
+        this.artifactStore.save();
         assertTrue(c.exists());
-        this.artifactHistory.save();
+        this.artifactStore.save();
         assertFalse(c.exists());
     }
     
     @Test
     public void testDirectoryDeletionOnDoubleStash() {
-        PathReference c = this.artifactHistory.getCurrentPath();
+        PathReference c = this.artifactStore.getCurrentPath();
         c.createDirectory();
         assertTrue(c.exists());
-        this.artifactHistory.save();
+        this.artifactStore.save();
         assertTrue(c.exists());
-        this.artifactHistory.save();
+        this.artifactStore.save();
         assertFalse(c.exists());
     }
     
     @Test(expected=IllegalStateException.class)
     public void testBadUnstash() {
-        this.artifactHistory.restore();
+        this.artifactStore.restore();
     }
 
     @Test(expected=IllegalStateException.class)
     public void testDoubleUnstash() {
-        this.artifactHistory.save();
-        this.artifactHistory.save();
-        this.artifactHistory.restore();
-        this.artifactHistory.restore();
+        this.artifactStore.save();
+        this.artifactStore.save();
+        this.artifactStore.restore();
+        this.artifactStore.restore();
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -137,6 +138,78 @@ public class GenerationalArtifactStoreTests {
         new GenerationalArtifactStore(new PathReference(""));
     }
     
+    @Test
+    public void testFileRecovery() {
+        PathReference p1 = this.artifactStore.getCurrentPath();
+        p1.createFile();
+        assertTrue(p1.exists());
+        
+        this.artifactStore.save();
+        PathReference p2 = this.artifactStore.getCurrentPath();
+        p2.createFile();
+        assertTrue(p1.exists());
+        assertTrue(p2.exists());
+        
+        this.artifactStore.save();
+        PathReference p3 = this.artifactStore.getCurrentPath();
+        p3.createFile();
+        assertFalse(p1.exists());
+        assertTrue(p2.exists());
+        assertTrue(p3.exists());
+        
+        this.artifactStore.save();
+        PathReference p4 = this.artifactStore.getCurrentPath();
+        p4.createFile();
+        assertFalse(p1.exists());
+        assertFalse(p2.exists());
+        assertTrue(p3.exists());
+        assertTrue(p4.exists());
+        
+        ArtifactStore newArtifactStore = new GenerationalArtifactStore(new PathReference(TEST_PATH + TEST_FILENAME));
+        PathReference p = newArtifactStore.getCurrentPath();
+        assertEquals(p4, p);
+        assertFalse(p1.exists());
+        assertFalse(p2.exists());
+        assertTrue(p3.exists());
+        assertTrue(p4.exists());
+    }
+    
+    @Test
+    public void testDirectoryRecovery() {
+        PathReference p1 = this.artifactStore.getCurrentPath();
+        p1.createDirectory();
+        assertTrue(p1.exists());
+        
+        this.artifactStore.save();
+        PathReference p2 = this.artifactStore.getCurrentPath();
+        p2.createDirectory();
+        assertTrue(p1.exists());
+        assertTrue(p2.exists());
+        
+        this.artifactStore.save();
+        PathReference p3 = this.artifactStore.getCurrentPath();
+        p3.createDirectory();
+        assertFalse(p1.exists());
+        assertTrue(p2.exists());
+        assertTrue(p3.exists());
+        
+        this.artifactStore.save();
+        PathReference p4 = this.artifactStore.getCurrentPath();
+        p4.createDirectory();
+        assertFalse(p1.exists());
+        assertFalse(p2.exists());
+        assertTrue(p3.exists());
+        assertTrue(p4.exists());
+        
+        ArtifactStore newArtifactStore = new GenerationalArtifactStore(new PathReference(TEST_PATH + TEST_FILENAME));
+        PathReference p = newArtifactStore.getCurrentPath();
+        assertEquals(p4, p);
+        assertFalse(p1.exists());
+        assertFalse(p2.exists());
+        assertTrue(p3.exists());
+        assertTrue(p4.exists());
+    }
+       
     public void testDirectorylessConstructorPath() {
         ArtifactStore ph = new GenerationalArtifactStore(new PathReference("a"));
         assertEquals("a", ph.getCurrentPath().getName());
