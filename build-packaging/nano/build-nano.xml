@@ -30,7 +30,6 @@
         <delete dir="${common.resources.location}" quiet="true"/>
         <delete dir="${specific.resources.location}" quiet="true"/>
         <delete dir="${scripts.location}" quiet="true"/>
-        <delete dir="${tools.dir}" quiet="true"/>
     </target>
      
      <target name="assemble-zips">
@@ -132,8 +131,6 @@
      </target>
      
      <target name="publish-p2-repo">
-        <antcall target="fetch-unzipped-virgo-build-tools"/>
-        
         <antcall target="p2.generate-inf">
             <param name="source" value="${nano.target.dir}/assembly/features"/>
         </antcall>

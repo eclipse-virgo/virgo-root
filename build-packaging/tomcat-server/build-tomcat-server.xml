@@ -50,8 +50,6 @@
 		</copy>
         
         <!-- proceed with publish -->
-        <antcall target="fetch-unzipped-virgo-build-tools"/>
-        
         <property name="p2.products.location" value="${tomcat-server.basedir}/publish_resources/products"/>
         <antcall target="p2.publish-binary">
             <param name="repository" value="${p2.repository.dir}"/>
@@ -96,7 +94,6 @@
         
         <delete dir="${tomcat.server.resources.location}" quiet="true"/>
         <delete dir="${tomcat-server.target.dir}/assembly" quiet="true"/>
-        <delete dir="${tools.dir}" quiet="true"/>
     </target>
 
 	<target name="package.config">

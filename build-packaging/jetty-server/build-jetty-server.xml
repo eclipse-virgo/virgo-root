@@ -60,8 +60,6 @@
 		</copy>
         
         <!-- proceed with publish -->
-        <antcall target="fetch-unzipped-virgo-build-tools"/>
-        
         <property name="p2.products.location" value="${jetty-server.basedir}/publish_resources/products"/>
         <antcall target="p2.publish-binary">
             <param name="repository" value="${p2.repository.dir}"/>
@@ -114,7 +112,6 @@
         <delete dir="${jetty.server.resources.location}" quiet="true"/>
         <delete dir="${jetty.server.scripts.location}" quiet="true"/>
         <delete dir="${jetty-server.target.dir}/assembly" quiet="true"/>
-        <delete dir="${tools.dir}" quiet="true"/>
     </target>
     
 	<target name="jetty.package.config">

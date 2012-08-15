@@ -144,8 +144,6 @@
 		<!-- Publish -->
 		<mkdir dir="${artifacts.dir}"/>
 
-		<antcall target="fetch-unzipped-virgo-build-tools"/>
-
 		<antcall target="p2.generate-inf">
 			<param name="source" value="${kernel.target.dir}/assembly/features"/>
 		</antcall>
@@ -206,7 +204,6 @@
 		<delete dir="${kernel.resources.location}" quiet="true"/>
 		<delete dir="${specific.resources.location}" quiet="true"/>
 		<delete dir="${kernel.target.dir}/assembly" quiet="true"/>
-		<delete dir="${tools.dir}" quiet="true"/>
 	</target>
 	
 	<target name="smoke-test-kernel" description="Runs a smoke test on the kernel packaged build">

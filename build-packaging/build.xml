@@ -17,13 +17,15 @@
     <property name="tomcat-server.target.dir" value="${target.dir}/tomcat-server"/>
     <property name="jetty-server.target.dir" value="${target.dir}/jetty-server"/>
 	
-	<target name="package" depends="ivy.init">		
+	<target name="package" depends="ivy.init,fetch-unzipped-virgo-build-tools">	
         <delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
         <antcall target="package-nano"/>
         <antcall target="package-kernel"/>
         <antcall target="package-tomcat-server"/>
         <antcall target="package-jetty-server"/>
+        
+        <delete dir="${tools.dir}" quiet="true"/>
     </target> 
     
     <target name="smoke-test">
