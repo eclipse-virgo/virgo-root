@@ -22,7 +22,7 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubArtifactFS;
 import org.eclipse.virgo.kernel.stubs.StubBundleInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
-import org.eclipse.virgo.teststubs.osgi.framework.StubBundle;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 
 final class TestUtils {

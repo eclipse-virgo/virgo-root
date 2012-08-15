@@ -8,6 +8,6 @@
 	<publications>
 	</publications>
 	<dependencies>
-		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
 	</dependencies>
 </ivy-module>

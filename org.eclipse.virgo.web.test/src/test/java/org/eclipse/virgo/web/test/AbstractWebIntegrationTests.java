@@ -66,7 +66,7 @@ public abstract class AbstractWebIntegrationTests {
 
     private static final long WEB_PLAN_DEPLOY_TIMEOUT = 5*60*1000; // 5 minutes
 
-	private static final String CURRENT_VERSION = "3.0.0";
+	private static final String CURRENT_VERSION = "3.5.0";
 
     protected final List<String> deployedWebApps = new ArrayList<String>();
 

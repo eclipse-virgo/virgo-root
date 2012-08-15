@@ -11,8 +11,8 @@
 	</publications>
 	
 	<dependencies>
-		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="compile->runtime"/>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.nano.core" rev="latest.integration" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="latest.integration" conf="provided->compile"/>
 	</dependencies>
 	
 </ivy-module>

@@ -83,7 +83,6 @@ final class WebBundleTransformer implements Transformer {
         try {
             Configuration config = configAdmin.getConfiguration(WEB_CONFIGURATION_PID, null);
             if (config != null) {
-                @SuppressWarnings("unchecked")
                 Dictionary<String, Object> properties = config.getProperties();
                 if (properties != null) {
                     String wabHeadersPropertyValue = null;
