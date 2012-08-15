@@ -1,6 +1,6 @@
 # Compile
 org.eclipse.virgo.nano=3.6.0.D-20120813142056
-org.eclipse.virgo.kernel=3.6.0.D-20120814134010
+org.eclipse.virgo.kernel=3.6.0.D-20120815193847
 org.eclipse.virgo.repository=3.6.0.D-20120813144240
 org.eclipse.virgo.util=3.6.0.D-20120813140754
 org.eclipse.virgo.medic=3.6.0.D-20120813141556
