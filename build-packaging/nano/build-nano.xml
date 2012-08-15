@@ -8,9 +8,9 @@
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <property name="nano-full-package" value="virgo-nano-full"/>   
     <property name="nano-package" value="virgo-nano"/> 
+    <property name="nano.basedir" value="${basedir}/nano"/> 
      
     <target name="package-nano" depends="ivy.init">
-        <property name="nano.basedir" value="${basedir}/nano"/>
         <property name="common.resources.location" value="${nano.target.dir}/common_resources_zipped"/>
         <property name="specific.resources.location" value="${nano.target.dir}/specific_resources_zipped"/>
         <property name="scripts.location" value="${nano.target.dir}/scripts_zipped"/>
