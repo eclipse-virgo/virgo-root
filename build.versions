@@ -1,7 +1,7 @@
 # Compile
 org.aspectj=1.6.12.RELEASE
 org.eclipse.virgo.medic=3.6.0.D-20120717201225
-org.eclipse.virgo.repository=3.6.0.D-20120717202028
+org.eclipse.virgo.repository=3.6.0.D-20120814192426
 org.eclipse.virgo.util=3.6.0.D-20120717181632
 org.eclipse.virgo.build.tools=1.3.0.RELEASE
 org.eclipse.gemini.blueprint=1.0.0.RELEASE
@@ -33,6 +33,7 @@ org.apache.mina.core=2.0.2.v201108120515
 org.apache.sshd.core=0.5.0.v201108120515
 org.apache.tomcat.api=7.0.26.v201205020640
 org.apache.tomcat.util=7.0.26.v201205030742
+org.eclipse.virgo.util=3.6.0.D-20120813140754
 org.eclipse.jdt.core.compiler.batch=3.8.0.I20120518-2145
 org.slf4j.api=1.6.4.v20120130-2120
 org.slf4j.jul=1.6.4.v20120130-2120
@@ -115,7 +116,7 @@ org.hsqldb=1.8.0.9
 
 
 org.eclipse.virgo.osgi=3.6.0.D-20120711092707
-org.eclipse.virgo.kernel=3.6.0.D-20120727123513
+org.eclipse.virgo.kernel=3.6.0.D-20120814192534
 org.eclipse.virgo.documentation=3.6.0.D-20120727143446
 org.eclipse.virgo.apps=3.6.0.D-20120727141530
 org.eclipse.virgo.web=3.6.0.D-20120727132746

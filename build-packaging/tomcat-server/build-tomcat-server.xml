@@ -6,24 +6,17 @@
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
-    <property name="tomcat-server.p2.repository.dir" value="${tomcat-server.target.dir}/repository"/>
 
 	<target name="precommit" depends="clean, clean-integration, test, package-tomcat-server, smoke-test-tomcat-server"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
     
-    <target name="fetch-kernel-updatesite">
-        <unzip src="${kernel.target.dir}/assembly/virgo-kernel-updatesite-${build.version}.zip" dest="${tomcat-server.p2.repository.dir}">
-			<globmapper from="virgo-kernel-updatesite-${build.version}/*" to="*"/>
-		</unzip>
-        
-        <unzip src="${tomcat-server.p2.repository.dir}/binary/kernel_specific_resources_1.0.0" dest="${tomcat.server.resources}">
-			<globmapper from="kernel_specific_resources_1.0.0/*" to="*"/>
-		</unzip>
-	</target>
-
-	<target name="package-tomcat-server" depends="fetch-kernel-updatesite">
+	<target name="package-tomcat-server" depends="ivy.init">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
+        
+        <unzip src="${p2.repository.dir}/binary/kernel_specific_resources_1.0.0" dest="${tomcat.server.resources}">
+			<globmapper from="kernel_specific_resources_1.0.0/*" to="*"/>
+		</unzip>
         
         <property name="tomcat-server.basedir" value="${basedir}/tomcat-server"/>
 

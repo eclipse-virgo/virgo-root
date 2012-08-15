@@ -6,49 +6,42 @@
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
-    <property name="jetty-server.p2.repository.dir" value="${jetty-server.target.dir}/repository"/>
     
 	<target name="precommit" depends="clean, clean-integration, package-jetty-server, smoke-test-jetty-server"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
-
-	<target name="fetch-vts-updatesite">
-        <unzip src="${tomcat-server.target.dir}/virgo-tomcat-server-updatesite-${build.version}.zip" dest="${jetty-server.p2.repository.dir}">
-			<globmapper from="virgo-tomcat-server-updatesite-${build.version}/*" to="*"/>
-		</unzip>
-        <unzip src="${jetty-server.p2.repository.dir}/binary/kernel_specific_resources_1.0.0" dest="${jetty.server.resources}">
-			<globmapper from="kernel_specific_resources_1.0.0/*" to="*"/>
-		</unzip>
-        <unzip src="${jetty-server.p2.repository.dir}/binary/scripts_1.0.0" dest="${jetty.server.scripts}">
-			<globmapper from="scripts_1.0.0/*" to="*"/>
-		</unzip>
-	</target>
     
-	<target name="package-jetty-server" depends="fetch-vts-updatesite">
+	<target name="package-jetty-server" depends="ivy.init">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
 
-		<property name="kernel.stage.file" value=""/>
 		<property name="jetty.server.resources" value="${jetty-server.target.dir}/jetty_server_resources"/>
         <property name="jetty.server.scripts" value="${jetty-server.target.dir}/jetty_server_scripts"/>
         <property name="repository.ext" value="${jetty.server.resources}/repository/ext"/>
         <property name="repository.usr" value="${jetty.server.resources}/repository/usr"/>
         <property name="jetty-server.basedir" value="${basedir}/jetty-server"/>
         
+        <unzip src="${p2.repository.dir}/binary/kernel_specific_resources_1.0.0" dest="${jetty.server.resources}">
+			<globmapper from="kernel_specific_resources_1.0.0/*" to="*"/>
+		</unzip>
+        <unzip src="${p2.repository.dir}/binary/scripts_1.0.0" dest="${jetty.server.scripts}">
+			<globmapper from="scripts_1.0.0/*" to="*"/>
+		</unzip>
+        
 		<mkdir dir="${repository.usr}"/>
 		
-		<antcall target="package.config"/>
-		<antcall target="package.docs"/>
-		<antcall target="package.lib"/>
-		<antcall target="package.pickup"/>
-		<antcall target="package.repository"/>
-		<antcall target="package.resources"/>
+		<antcall target="jetty.package.config"/>
+		<antcall target="jetty.package.docs"/>
+		<antcall target="jetty.package.lib"/>
+		<antcall target="jetty.package.pickup"/>
+		<antcall target="jetty.package.repository"/>
+		<antcall target="jetty.package.resources"/>
 		<antcall target="package.jetty"/>
         <antcall target="package.jetty.scripts"/>
-        <antcall target="package.publish"/>
+        <antcall target="jetty.package.publish"/>
         
     </target>
 
-    <target name="package.publish">
+    <target name="jetty.package.publish">
         <property name="jetty.server.resources.location" value="${jetty-server.target.dir}/jetty_server_resources_zipped"/>
 		<zip destfile="${jetty.server.resources.location}/binary/jetty_server_resources">
 			<zipfileset dir="${jetty.server.resources}"/>
@@ -61,7 +54,7 @@
 		</zip>
         <delete dir="${jetty.server.scripts}" quiet="true"/>
         
-        <!--prepare tomcat server feature for publishing -->
+        <!--prepare jetty server features for publishing -->
         <copy todir="${jetty-server.target.dir}/assembly/features" failonerror="false">
 			<fileset dir="${jetty-server.basedir}/publish_resources/features"/>
 		</copy>
@@ -124,7 +117,7 @@
         <delete dir="${tools.dir}" quiet="true"/>
     </target>
     
-	<target name="package.config">
+	<target name="jetty.package.config">
 		<copy todir="${jetty.server.resources}/configuration" failonerror="false" overwrite="true">
 			<fileset dir="${jetty-server.basedir}/configuration"/>
 		</copy>
@@ -141,7 +134,7 @@
 				file="${jetty.server.resources}/configuration/serviceability.xml"/>
 	</target>
 
-	<target name="package.docs" depends="ivy.init">
+	<target name="jetty.package.docs" depends="ivy.init">
 		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/docs-ivy.xml" transitive="false" conf="docs"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${jetty-server.basedir}/target/docs/[artifact]-[revision].[ext]" conf="docs" type="zip, pdf"/>
 
@@ -171,19 +164,19 @@
 
 	</target>
 
-	<target name="package.lib">
+	<target name="jetty.package.lib">
 		<echo file="${jetty.server.resources}/lib/.version" append="true"
 				message="virgo.server.version=${bundle.version}&#xa;"/>
 	</target>
 
-	<target name="package.pickup" depends="ivy.init">
+	<target name="jetty.package.pickup" depends="ivy.init">
 		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/pickup-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${jetty.server.resources}/pickup/[artifact]-[revision].[ext]" type="jar, war, wab" conf="pickup"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${jetty.server.resources}/pickup/[artifact]-[revision].[ext]" type="plan" conf="pickup-plan"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${repository.ext}/[artifact]-[revision].[ext]" type="jar, war, wab" conf="pickup-plan"/>
 	</target>
 
-	<target name="package.repository" depends="ivy.init">
+	<target name="jetty.package.repository" depends="ivy.init">
 		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/repository-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${repository.ext}/[artifact]-[revision].[ext]" conf="ext" type="library,jar,plan"/>
 
@@ -195,7 +188,7 @@
 		</copy>
 	</target>
 
-	<target name="package.resources">
+	<target name="jetty.package.resources">
 		<copy todir="${jetty.server.resources}" failonerror="false">
 			<fileset dir="${jetty-server.basedir}/resources"/>
 		</copy>
