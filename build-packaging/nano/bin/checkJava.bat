@@ -11,7 +11,7 @@ if "%CLASSPATH%" == "" (
 )
 
 rem Run java version check with the discovered java jvm.
-"%JAVA_HOME%\bin\java" -classpath "%CLASSPATH%" org.eclipse.virgo.osgi.launcher.JavaVersionChecker
+"%JAVA_HOME%\bin\java" -classpath "%CLASSPATH%" org.eclipse.virgo.util.env.JavaVersionChecker
 
 rem If non-zero exit then either we cannot find the checker or the Java version is incorrect.
 if not "%ERRORLEVEL%"=="0" exit /B %ERRORLEVEL%

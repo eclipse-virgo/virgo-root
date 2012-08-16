@@ -7,7 +7,7 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <property name="nano-full-package" value="virgo-nano-full"/>   
-    <property name="nano-package" value="virgo-nano"/> 
+    <property name="nano-package" value="virgo-nano"/>
     <property name="nano.basedir" value="${basedir}/nano"/> 
      
     <target name="package-nano" depends="ivy.init">
@@ -383,8 +383,8 @@
 		</path>
 		<antcall target="test.pre"/>
 		<all-bundles target="test-package" buildpathRef="smoke.test.bundles">
-			<property name="package.output.file" value="${package.output.file}"/>
-			<property name="package.basename" value="${package.basename}"/>
+			<property name="package.output.file" value="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip"/>
+			<property name="package.basename" value="${nano-full-package}-${bundle.version}"/>
 		</all-bundles>
 		<antcall target="test.post"/>
 	</target>

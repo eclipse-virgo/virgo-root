@@ -11,7 +11,7 @@
 	</configurations>
 	
 	<dependencies>	    
-		<dependency org="org.eclipse.virgo.management" name="org.eclipse.virgo.management.console" rev="latest.integration" conf="pickup->runtime"/>
+		<dependency org="org.eclipse.virgo.management" name="org.eclipse.virgo.management.console" rev="${org.eclipse.virgo.kernel}" conf="pickup->runtime"/>
 	</dependencies>
 
 </ivy-module>

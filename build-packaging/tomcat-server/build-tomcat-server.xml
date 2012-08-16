@@ -173,8 +173,8 @@
 		</path>
 		<antcall target="test.pre"/>
 		<all-bundles target="test-package" buildpathRef="smoke.test.bundles">
-			<property name="package.output.file" value="${package.output.file}"/>
-			<property name="package.basename" value="${package.basename}"/>
+			<property name="package.output.file" value="${artifacts.dir}/virgo-tomcat-server-${bundle.version}.zip"/>
+			<property name="package.basename" value="virgo-tomcat-server-${bundle.version}"/>
 			<property name="test-results.output.dir" value="${test-results.output.dir}"/>
 		</all-bundles>
 		<antcall target="test.post"/>

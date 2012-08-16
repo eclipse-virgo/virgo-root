@@ -30,6 +30,13 @@
 		version="@KERNEL.VERSION@"
 		unpack="false"
 		autostart="true"/>
+   <plugin
+		id="org.eclipse.virgo.kernel.equinox.extensions"
+		download-size="0"
+		install-size="0"
+		version="@KERNEL.VERSION@"
+		unpack="false"
+		autostart="false"/>
 	<plugin
 		id="org.eclipse.virgo.repository"
 		download-size="0"

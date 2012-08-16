@@ -211,8 +211,8 @@
 		</path>
 		<antcall target="test.pre"/>
 		<all-bundles target="test-package" buildpathRef="smoke.test.bundles">
-			<property name="package.output.file" value="${package.output.file}"/>
-			<property name="package.basename" value="${package.basename}"/>
+			<property name="package.output.file" value="${artifacts.dir}/virgo-kernel-${bundle.version}.zip"/>
+			<property name="package.basename" value="virgo-kernel-${bundle.version}"/>
 		</all-bundles>
 		<antcall target="test.post"/>
 	</target>

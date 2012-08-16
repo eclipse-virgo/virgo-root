@@ -4,10 +4,10 @@
 	<property name="ivy.cache.dir" value="${basedir}/../ivy-cache" />
 	<property name="integration.repo.dir" value="${basedir}/../integration-repo"/>
 
-	<property file="${basedir}/../build.properties"/>
-	<property file="${basedir}/../build.versions"/>
-	<import file="${basedir}/../virgo-build/standard/default.xml"/>
-	<import file="${basedir}/../build-jetty-server/test-package.xml"/>
+	<property file="${basedir}/../../../build.properties"/>
+	<property file="${basedir}/../../../build.versions"/>
+	<import file="${basedir}/../../../virgo-build/standard/default.xml"/>
+	<import file="${basedir}/../test-package.xml"/>
 
 	<property name="apps.dir" value="${basedir}/apps"/>
 	
