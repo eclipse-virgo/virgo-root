@@ -12,7 +12,6 @@
 	
 	<dependencies>	    
 		<dependency org="org.eclipse.virgo.apps" name="org.eclipse.virgo.apps.splash" rev="${org.eclipse.virgo.apps}" conf="pickup->runtime"/>
-		<!--<dependency org="org.eclipse.virgo.apps" name="org.eclipse.virgo.apps.repository" rev="${org.eclipse.virgo.apps}" conf="pickup->runtime"/>-->
 	</dependencies>
 
 </ivy-module>
