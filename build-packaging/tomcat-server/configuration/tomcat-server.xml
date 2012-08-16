@@ -38,8 +38,8 @@
 
 		<Engine name="Catalina" defaultHost="localhost">
 			<Realm className="org.apache.catalina.realm.JAASRealm" appName="virgo-kernel"
-					userClassNames="org.eclipse.virgo.kernel.authentication.User"
-					roleClassNames="org.eclipse.virgo.kernel.authentication.Role"/>
+					userClassNames="org.eclipse.virgo.nano.authentication.User"
+					roleClassNames="org.eclipse.virgo.nano.authentication.Role"/>
 
 			<Host name="localhost"  appBase=""
 					unpackWARs="false" autoDeploy="false"
