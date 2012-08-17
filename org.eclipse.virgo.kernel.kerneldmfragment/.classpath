@@ -29,7 +29,7 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.blueprint.extender/1.0.0.RELEASE/org.eclipse.gemini.blueprint.extender-1.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.blueprint.extender/1.0.0.RELEASE/org.eclipse.gemini.blueprint.extender-sources-1.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.blueprint.io/1.0.0.RELEASE/org.eclipse.gemini.blueprint.io-1.0.0.RELEASE.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.blueprint.io/1.0.0.RELEASE/org.eclipse.gemini.blueprint.io-sources-1.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi/3.8.0.v20120508-2119/org.eclipse.osgi-3.8.0.v20120508-2119.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.0.200809221524/org.eclipse.osgi-3.5.0.200809221524.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120813141556/org.eclipse.virgo.medic-3.6.0.D-20120813141556.jar">
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120817023524/org.eclipse.virgo.medic-3.6.0.D-20120817023524.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
