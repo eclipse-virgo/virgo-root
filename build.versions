@@ -1,9 +1,9 @@
 # Compile
-org.eclipse.virgo.nano=3.6.0.D-20120813142056
-org.eclipse.virgo.kernel=3.6.0.D-20120815193847
-org.eclipse.virgo.repository=3.6.0.D-20120813144240
-org.eclipse.virgo.util=3.6.0.D-20120813140754
-org.eclipse.virgo.medic=3.6.0.D-20120813141556
+org.eclipse.virgo.nano=3.6.0.D-20120817023729
+org.eclipse.virgo.kernel=3.6.0.D-20120817024242
+org.eclipse.virgo.repository=3.6.0.D-20120817024123
+org.eclipse.virgo.util=3.6.0.D-20120817023043
+org.eclipse.virgo.medic=3.6.0.D-20120817023524
 javax.servlet=3.0.0.v201112011016
 org.eclipse.osgi=3.8.0.v20120508-2119
 org.eclipse.equinox.event=1.2.100.v20111010-1614
@@ -23,7 +23,7 @@ ch.qos.logback.classic=1.0.0.v20111214-2030
 ch.qos.logback.core=1.0.0.v20111214-2030
 ch.qos.logback.slf4j=1.0.0.v20120123-1500
 com.dumbster=1.6.0
-org.eclipse.virgo.test=3.6.0.D-20120813141236
+org.eclipse.virgo.test=3.6.0.D-20120817023334
 javax.activation=1.1.0.v201108011116
 javax.jms=1.1.0.v201205091237
 javax.mail=1.4.0.v201005080615
