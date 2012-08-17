@@ -595,7 +595,39 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         }
     }
 
-    protected abstract boolean doRefresh() throws DeploymentException;
+    protected boolean doRefresh() throws DeploymentException {
+        return false;
+    }
+
+    public boolean refresh(String symbolicName) throws DeploymentException {
+        try {
+            this.isRefreshing = true;
+            this.eventLogger.log(DeployerLogEvents.REFRESHING, getType(), getName(), getVersion());
+            this.artifactStorage.synchronize();
+
+            boolean refreshed = doRefresh(symbolicName);
+
+            if (refreshed) {
+                this.eventLogger.log(DeployerLogEvents.REFRESHED, getType(), getName(), getVersion());
+            } else {
+                failRefresh();
+            }
+
+            return refreshed;
+        } catch (DeploymentException de) {
+            failRefresh(de);
+            throw de;
+        } catch (RuntimeException re) {
+            failRefresh(re);
+            throw re;
+        } finally {
+            this.isRefreshing = false;
+        }
+    }
+    
+    protected boolean doRefresh(String symbolicName) throws DeploymentException {
+        return false;
+    }
 
     /**
      * {@inheritDoc}

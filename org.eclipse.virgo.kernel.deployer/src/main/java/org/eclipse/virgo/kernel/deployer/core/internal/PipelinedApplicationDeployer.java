@@ -147,7 +147,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
             InstallArtifact existingArtifact = this.ram.get(normalisedUri);
 
             if (existingArtifact != null) {
-                DeploymentIdentity refreshedIdentity = updateAndRefreshExistingArtifact(normalisedUri, existingArtifact);
+                DeploymentIdentity refreshedIdentity = refreshExistingArtifact(normalisedUri, existingArtifact);
                 if (refreshedIdentity != null) {
                     return refreshedIdentity;
                 }
@@ -223,12 +223,12 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         this.ram.delete(deploymentIdentity);
     }
 
-    private DeploymentIdentity updateAndRefreshExistingArtifact(URI normalisedLocation, InstallArtifact existingArtifact) throws DeploymentException {
+    private DeploymentIdentity refreshExistingArtifact(URI normalisedLocation, InstallArtifact existingArtifact) throws DeploymentException {
         String oldType = existingArtifact.getType();
         String oldName = existingArtifact.getName();
         Version oldVersion = existingArtifact.getVersion();
 
-        DeploymentIdentity deploymentIdentity = updateAndRefresh(normalisedLocation, existingArtifact);
+        DeploymentIdentity deploymentIdentity = refreshArtifact(normalisedLocation, existingArtifact);
         if (deploymentIdentity != null) {
             return deploymentIdentity;
         }
@@ -268,10 +268,8 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
         return deploymentIdentity;
     }
 
-    private DeploymentIdentity updateAndRefresh(URI location, InstallArtifact installArtifact) throws DeploymentException {
+    private DeploymentIdentity refreshArtifact(URI location, InstallArtifact installArtifact) throws DeploymentException {
         DeploymentIdentity deploymentIdentity = null;
-        this.installArtifactGraphInclosure.updateStagingArea(new File(location),
-            new ArtifactIdentity(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
         if (installArtifact.refresh()) {
             this.deploymentListener.refreshed(location);
 
@@ -456,8 +454,6 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
                 DeploymentIdentity originalDeploymentIdentity = getDeploymentIdentity(installArtifact);
                 deploymentIdentity = originalDeploymentIdentity;
                 try {
-                    this.installArtifactGraphInclosure.updateStagingArea(new File(normalisedLocation), new ArtifactIdentity(
-                        installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), installArtifact.getScopeName()));
                     // Attempt to refresh the artifact and escalate to redeploy if this fails.
                     if (refreshInternal(symbolicName, installArtifact)) {
                         this.deploymentListener.refreshed(normalisedLocation);
