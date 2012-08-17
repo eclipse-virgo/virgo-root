@@ -34,4 +34,146 @@
         <antcall target="smoke-test-tomcat-server"/>
         <antcall target="smoke-test-jetty-server"/>
     </target>
+    
+    <property name="nano.package.file" value="${artifacts.dir}/virgo-nano-${bundle.version}.zip"/>
+    <property name="nano.full.package.file" value="${artifacts.dir}/virgo-nano-full-${bundle.version}.zip"/>
+    <property name="kernel.package.file" value="${artifacts.dir}/virgo-kernel-${bundle.version}.zip"/>
+    <property name="tomcat-server.package.file" value="${artifacts.dir}/virgo-tomcat-server-${bundle.version}.zip"/>
+    <property name="jetty-server.package.file" value="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip"/>
+    
+    <target name="publish-packages-build">
+        <antcall target="publish-package-build-temp">
+            <param name="package.file" value="${nano.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-build-temp">
+            <param name="package.file" value="${nano.full.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-build-temp">
+            <param name="package.file" value="${kernel.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-build-temp">
+            <param name="package.file" value="${tomcat-server.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-build-temp">
+            <param name="package.file" value="${jetty-server.package.file}"/>
+        </antcall>
+    </target>
+    
+    <target name="publish-packages-download">
+        <antcall target="publish-package-download-temp">
+            <param name="package.file" value="${nano.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-download-temp">
+            <param name="package.file" value="${nano.full.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-download-temp">
+            <param name="package.file" value="${kernel.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-download-temp">
+            <param name="package.file" value="${tomcat-server.package.file}"/>
+        </antcall>
+        <antcall target="publish-package-download-temp">
+            <param name="package.file" value="${jetty-server.package.file}"/>
+        </antcall>
+    </target>
+
+
+    <!-- TODO:this might be better off in virgo-build -->    
+    <target name="publish-package-build-temp">
+        <fail message="The 'package.file' property must be set on this project.">
+            <condition>
+                <not>
+                    <isset property="package.file"/>
+                </not>
+            </condition>
+        </fail>
+        <fail message="The 'project.name' property must be set on this project.">
+            <condition>
+                <not>
+                    <isset property="project.name"/>
+                </not>
+            </condition>
+        </fail>
+        
+        <checksum file="${package.file}" algorithm="sha1"/>
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.buildId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /opt/public/rt/virgo/zips/${adjusted.release.type}/${project.key}/${bundle.version}"/>
+        <scp localFile="${package.file}"
+                todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/zips/${adjusted.release.type}/${project.key}/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+        <scp localFile="${package.file}.sha1"
+                todir="${eclipse.buildId}@build.eclipse.org:/opt/public/rt/virgo/zips/${adjusted.release.type}/${project.key}/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+    </target>
+    
+    <!-- TODO:this might be better off in virgo-build --> 
+    <target name="publish-package-download-temp">
+        <fail message="The 'package.file' property must be set on this project.">
+            <condition>
+                <not>
+                    <isset property="package.file"/>
+                </not>
+            </condition>
+        </fail>
+        <fail message="The 'project.name' property must be set on this project.">
+            <condition>
+                <not>
+                    <isset property="project.name"/>
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${package.file}" algorithm="sha1"/>
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /home/data/httpd/download.eclipse.org/virgo/${adjusted.release.type}/${project.key}/${bundle.version}"/>
+        <scp localFile="${package.file}"
+                todir="${eclipse.committerId}@build.eclipse.org:/home/data/httpd/download.eclipse.org/virgo/${adjusted.release.type}/${project.key}/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+        <scp localFile="${package.file}.sha1"
+                todir="${eclipse.committerId}@build.eclipse.org:/home/data/httpd/download.eclipse.org/virgo/${adjusted.release.type}/${project.key}/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+    </target>
+    
+    <target name="publish-updatesite-download">
+        <fail message="The 'project.name' property must be set on this project.">
+            <condition>
+                <not>
+                    <isset property="project.name"/>
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${updatesite.output.file}" algorithm="sha1"/>
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}"/>
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /home/data/httpd/download.eclipse.org/virgo/updatesite/${bundle.version}"/>
+        <scp localFile="${updatesite.output.file}"
+                todir="${eclipse.committerId}@build.eclipse.org:/home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+        <scp localFile="${updatesite.output.file}.sha1"
+                todir="${eclipse.committerId}@build.eclipse.org:/home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="unzip /home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}/${updatesite.file.name} -d /home/data/httpd/download.eclipse.org/virgo/updatesite/${bundle.version}"/>
+    </target>
 </project>
