@@ -9,9 +9,9 @@
 	</configurations>
 
 	<dependencies>
-		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="latest.integration" conf="plugins->runtime"/>
-        <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="plugins->runtime"/>
-		<dependency org="org.eclipse.virgo.management" name="org.eclipse.virgo.management.fragment" rev="latest.integration" conf="plugins->runtime"/>
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="plugins->runtime"/>
+        <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="${org.eclipse.virgo.kernel}" conf="plugins->runtime"/>
+		<dependency org="org.eclipse.virgo.management" name="org.eclipse.virgo.management.fragment" rev="${org.eclipse.virgo.kernel}" conf="plugins->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="plugins->runtime"/>
 		<dependency org="org.eclipse.osgi" name="org.eclipse.equinox.http" rev="${org.eclipse.equinox.http}" conf="plugins->runtime" />
 		<dependency org="org.eclipse.virgo.mirrored" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf="plugins->runtime" />

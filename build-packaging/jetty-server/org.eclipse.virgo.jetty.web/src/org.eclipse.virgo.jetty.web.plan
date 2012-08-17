@@ -1,0 +1,11 @@
+<plan name="org.eclipse.virgo.jetty.web" version="3.5.0" scoped="false" atomic="false"
+                xmlns="http://www.eclipse.org/virgo/schema/plan"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="
+				        http://www.eclipse.org/virgo/schema/plan 
+				        http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+		
+		<artifact type="bundle" name="org.eclipse.jetty.osgi.boot" version="[8.1, 9.0)"/>
+		<artifact type="bundle" name="org.eclipse.virgo.web.dm" version="[3.1, 4.0)"/>
+
+</plan>

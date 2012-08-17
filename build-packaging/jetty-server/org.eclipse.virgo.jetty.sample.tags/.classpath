@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JETTY_SERVER_IVY_CACHE/org.springframework/org.springframework.web/3.0.5.RELEASE/org.springframework.web-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="var" path="JETTY_SERVER_IVY_CACHE/org.springframework/org.springframework.web.servlet/3.0.5.RELEASE/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="var" path="JETTY_SERVER_IVY_CACHE/org.springframework/org.springframework.context/3.0.5.RELEASE/org.springframework.context-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

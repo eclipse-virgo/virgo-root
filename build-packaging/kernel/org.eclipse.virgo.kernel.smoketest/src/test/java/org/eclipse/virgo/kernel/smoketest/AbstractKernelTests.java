@@ -99,7 +99,7 @@ public class AbstractKernelTests {
 	protected static String getKernelConfigDir() throws IOException {
 		if (configDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-            configDir = new File(testExpanded, "config").getCanonicalPath();
+            configDir = new File(testExpanded, "configuration").getCanonicalPath();
 		}
 		return configDir;
 	}
