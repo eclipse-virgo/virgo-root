@@ -99,7 +99,7 @@
         
         <mkdir dir="${artifacts.dir}"/>
         
-        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        <delete dir="${package.dir}/virgo-jetty-server-${bundle.version}/Eclipse.app" quiet="true"/>
         
 		<zip destfile="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip">
 			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/bin/*.sh" filemode="755"/>
@@ -138,28 +138,28 @@
 
 	<target name="jetty.package.docs" depends="ivy.init">
 		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/docs-ivy.xml" transitive="false" conf="docs"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${jetty-server.basedir}/target/docs/[artifact]-[revision].[ext]" conf="docs" type="zip, pdf"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${jetty-server.target.dir}/docs/[artifact]-[revision].[ext]" conf="docs" type="zip, pdf"/>
 
 		<copy todir="${jetty.server.resources}/docs/user-guide/pdf" flatten="true">
-			<fileset dir="${jetty-server.basedir}/target/docs">
+			<fileset dir="${jetty-server.target.dir}/docs">
 				<include name="**/virgo-user-guide*.pdf"/>
 			</fileset>
 		</copy>
 
 		<copy todir="${jetty.server.resources}/docs/programmer-guide/pdf" flatten="true">
-			<fileset dir="${jetty-server.basedir}/target/docs">
+			<fileset dir="${jetty-server.target.dir}/docs">
 				<include name="**/virgo-programmer-guide*.pdf"/>
 			</fileset>
 		</copy>
 
 		<unzip dest="${jetty.server.resources}/docs/user-guide">
-			<fileset dir="${jetty-server.basedir}/target/docs">
+			<fileset dir="${jetty-server.target.dir}/docs">
 		        <include name="**/virgo-user-guide*.zip"/>
 		    </fileset>
 		</unzip>
 
 		<unzip dest="${jetty.server.resources}/docs/programmer-guide">
-			<fileset dir="${jetty-server.basedir}/target/docs">
+			<fileset dir="${jetty-server.target.dir}/docs">
 		        <include name="**/virgo-programmer-guide*.zip"/>
 		    </fileset>
 		</unzip>

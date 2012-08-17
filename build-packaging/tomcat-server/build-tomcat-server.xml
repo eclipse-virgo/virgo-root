@@ -78,7 +78,7 @@
         
         <mkdir dir="${artifacts.dir}"/>
         
-        <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
+        <delete dir="${package.dir}/virgo-tomcat-server-${bundle.version}/Eclipse.app" quiet="true"/>
         
 		<zip destfile="${artifacts.dir}/virgo-tomcat-server-${bundle.version}.zip">
 			<zipfileset dir="${package.dir}/virgo-tomcat-server-${bundle.version}" includes="${package.dir}/virgo-tomcat-server-${bundle.version}/bin/*.sh" filemode="755"/>
@@ -112,28 +112,28 @@
 
 	<target name="package.docs" depends="ivy.init">
 		<ivy:resolve resolveId="copy.path" file="${tomcat-server.basedir}/docs-ivy.xml" transitive="false" conf="docs"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${tomcat-server.basedir}/target/docs/[artifact]-[revision].[ext]" conf="docs" type="zip, pdf"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${tomcat-server.target.dir}/docs/[artifact]-[revision].[ext]" conf="docs" type="zip, pdf"/>
 
 		<copy todir="${tomcat.server.resources}/docs/virgo-user-guide/pdf" flatten="true">
-			<fileset dir="${tomcat-server.basedir}/target/docs">
+			<fileset dir="${tomcat-server.target.dir}/docs">
 				<include name="**/virgo-user-guide*.pdf"/>
 			</fileset>
 		</copy>
 
 		<copy todir="${tomcat.server.resources}/docs/virgo-programmer-guide/pdf" flatten="true">
-			<fileset dir="${tomcat-server.basedir}/target/docs">
+			<fileset dir="${tomcat-server.target.dir}/docs">
 				<include name="**/virgo-programmer-guide*.pdf"/>
 			</fileset>
 		</copy>
 
 		<unzip dest="${tomcat.server.resources}/docs/virgo-user-guide">
-			<fileset dir="${tomcat-server.basedir}/target/docs">
+			<fileset dir="${tomcat-server.target.dir}/docs">
 		        <include name="**/virgo-user-guide*.zip"/>
 		    </fileset>
 		</unzip>
 
 		<unzip dest="${tomcat.server.resources}/docs/virgo-programmer-guide">
-			<fileset dir="${tomcat-server.basedir}/target/docs">
+			<fileset dir="${tomcat-server.target.dir}/docs">
 		        <include name="**/virgo-programmer-guide*.zip"/>
 		    </fileset>
 		</unzip>
