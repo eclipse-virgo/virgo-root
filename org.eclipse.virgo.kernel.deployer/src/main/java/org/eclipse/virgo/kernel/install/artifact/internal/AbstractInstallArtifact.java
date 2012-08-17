@@ -588,6 +588,10 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
 
     private void failRefresh(Exception ex) {
         this.artifactStorage.rollBack();
+        issueFailedRefreshMessage(ex);
+    }
+
+    public void issueFailedRefreshMessage(Exception ex) {
         if (ex == null) {
             this.eventLogger.log(DeployerLogEvents.REFRESH_FAILED, getType(), getName(), getVersion());
         } else {
@@ -603,22 +607,21 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         try {
             this.isRefreshing = true;
             this.eventLogger.log(DeployerLogEvents.REFRESHING, getType(), getName(), getVersion());
-            this.artifactStorage.synchronize();
 
             boolean refreshed = doRefresh(symbolicName);
 
             if (refreshed) {
                 this.eventLogger.log(DeployerLogEvents.REFRESHED, getType(), getName(), getVersion());
             } else {
-                failRefresh();
+                issueFailedRefreshMessage(null);
             }
 
             return refreshed;
         } catch (DeploymentException de) {
-            failRefresh(de);
+            issueFailedRefreshMessage(de);
             throw de;
         } catch (RuntimeException re) {
-            failRefresh(re);
+            issueFailedRefreshMessage(re);
             throw re;
         } finally {
             this.isRefreshing = false;
