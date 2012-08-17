@@ -3,7 +3,7 @@
 
 	<property name="test.staging.dir" value="${target.dir}/test-expanded"/>
 	<property name="package.basename" value="${package.basename}"/>
-	<property name="test.package.dir" value="${test.staging.dir}/${package.basename}"/>
+	<property name="test.package.dir" value="${test.staging.dir}"/>
 
 	<target name="test-package"
 			description="Runs a test on the packaged build">

@@ -99,11 +99,11 @@
         <delete dir="${package.output.dir}/Eclipse.app" quiet="true"/>
         
 		<zip destfile="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip">
-			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${package.dir}">
-				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}">
+				<exclude name="${package.dir}/virgo-jetty-server-${bundle.version}/bin/*.sh"/>
+				<exclude name="${package.dir}/virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
         <zip destfile="${updatesite.output.file}">
@@ -113,6 +113,7 @@
         <delete dir="${jetty.server.resources.location}" quiet="true"/>
         <delete dir="${jetty.server.scripts.location}" quiet="true"/>
         <delete dir="${jetty-server.target.dir}/assembly" quiet="true"/>
+        <delete dir="${jetty-server.target.dir}" quiet="true"/>
     </target>
     
 	<target name="jetty.package.config">

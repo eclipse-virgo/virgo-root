@@ -30,6 +30,7 @@
         <delete dir="${common.resources.location}" quiet="true"/>
         <delete dir="${specific.resources.location}" quiet="true"/>
         <delete dir="${scripts.location}" quiet="true"/>
+        <delete dir="${nano.target.dir}" quiet="true"/>
     </target>
      
      <target name="assemble-zips">

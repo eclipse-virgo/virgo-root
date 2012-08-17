@@ -189,11 +189,11 @@
 		<delete dir="${package.dir}/virgo-kernel-${bundle.version}/Eclipse.app" quiet="true"/>
 
 		<zip destfile="${artifacts.dir}/virgo-kernel-${bundle.version}.zip">
-			<zipfileset dir="${package.dir}" includes="${package.basename}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}" includes="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${package.dir}">
-				<exclude name="${package.basename}/bin/*.sh"/>
-				<exclude name="${package.basename}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			<zipfileset dir="${package.dir}/virgo-kernel-${bundle.version}" includes="${package.dir}/virgo-kernel-${bundle.version}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${package.dir}/virgo-kernel-${bundle.version}" includes="${package.dir}/virgo-kernel-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${package.dir}/virgo-kernel-${bundle.version}">
+				<exclude name="${package.dir}/virgo-kernel-${bundle.version}/bin/*.sh"/>
+				<exclude name="${package.dir}/virgo-kernel-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
 		<zip destfile="${updatesite.output.file}">
@@ -203,6 +203,7 @@
 		<delete dir="${kernel.resources.location}" quiet="true"/>
 		<delete dir="${specific.resources.location}" quiet="true"/>
 		<delete dir="${kernel.target.dir}/assembly" quiet="true"/>
+        <delete dir="${kernel.target.dir}" quiet="true"/>
 	</target>
 	
 	<target name="smoke-test-kernel" description="Runs a smoke test on the kernel packaged build">

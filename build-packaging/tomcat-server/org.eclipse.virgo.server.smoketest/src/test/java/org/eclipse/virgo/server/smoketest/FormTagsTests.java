@@ -12,19 +12,22 @@
 package org.eclipse.virgo.server.smoketest;
 
 import org.junit.Test;
+import org.junit.Ignore;
 
 public class FormTagsTests {
-
+    
 	private static final String BASE_URL = "http://localhost:8080/formtags-par/";
-
+    
 	@Test
+	@Ignore
 	public void testFormTagsListScreen() {
 		UrlWaitLatch.waitFor(BASE_URL + "list.htm");
 	}
-
+    
 	@Test
+	@Ignore
 	public void testFormTagsFormScreen() {
 		UrlWaitLatch.waitFor(BASE_URL + "form.htm?id=1");
 	}
-
+    
 }

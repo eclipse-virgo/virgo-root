@@ -61,20 +61,14 @@ public class AbstractKernelTests {
 
 	protected static MBeanServerConnection getMBeanServerConnection()
 			throws Exception {
-		String severDir = null;
 		Map<String, String[]> env = new HashMap<String, String[]>();
 
-		File testExpanded = new File("./target/test-expanded/");
-		for (File mainDir : testExpanded.listFiles()) {
-			if (mainDir.isDirectory()) {
-				severDir = new File(mainDir.toURI()).getCanonicalPath();
+		File testExpanded = new File("./target/test-expanded/");     
 
-			}
-		}
 		String[] creds = { "admin", "springsource" };
 		env.put(JMXConnector.CREDENTIALS, creds);
 
-		System.setProperty("javax.net.ssl.trustStore", severDir
+		System.setProperty("javax.net.ssl.trustStore", testExpanded
 				+ "/configuration/keystore");
 		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 
@@ -97,12 +91,7 @@ public class AbstractKernelTests {
 	private static String getKernelBinDir() throws IOException {
 		if (binDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-			for (File candidate : testExpanded.listFiles()) {
-				if (candidate.isDirectory()) {
-					binDir = new File(candidate, "bin").getCanonicalPath();
-					break;
-				}
-			}
+            binDir = new File(testExpanded, "bin").getCanonicalPath();
 		}
 		return binDir;
 	}
@@ -110,13 +99,7 @@ public class AbstractKernelTests {
 	protected static String getKernelConfigDir() throws IOException {
 		if (configDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-			for (File candidate : testExpanded.listFiles()) {
-				if (candidate.isDirectory()) {
-					configDir = new File(candidate, "config")
-							.getCanonicalPath();
-					break;
-				}
-			}
+            configDir = new File(testExpanded, "config").getCanonicalPath();
 		}
 		return configDir;
 	}
@@ -147,32 +130,20 @@ public class AbstractKernelTests {
 	protected static String getWatchedRepoDir() throws IOException {
 		if (watchRepoDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-			for (File mainDir : testExpanded.listFiles()) {
-				if (mainDir.isDirectory()) {
-					File repositoryDir = new File(mainDir, "repository")
-							.getCanonicalFile();
-					if (repositoryDir.isDirectory()) {
-						watchRepoDir = new File(repositoryDir, "watched-repo")
-								.getCanonicalPath();
-						break;
-					}
-
-				}
-			}
+            File repositoryDir = new File(testExpanded, "repository").getCanonicalFile();
+            if (repositoryDir.isDirectory()) {
+                watchRepoDir = new File(repositoryDir, "watched-repo").getCanonicalPath();
+            }
 		}
 		return watchRepoDir;
 	}
 
 	protected static void createWatchedRepoDir() {
 		File testExpanded = new File("./target/test-expanded/");
-		for (File candidate : testExpanded.listFiles()) {
-			if (candidate.isDirectory()) {
-				File repoDir = new File(candidate, "repository");
-				if (repoDir.mkdir()) {
-					new File(repoDir, "watched-repo").mkdir();
-				}
-			}
-		}
+        File repositoryDir = new File(testExpanded, "repository");
+        if (repositoryDir.mkdir()) {
+            new File(repositoryDir, "watched-repo").mkdir();
+        }
 	}
 
 	public static void waitForKernelStartFully() throws Exception {
