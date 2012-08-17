@@ -208,17 +208,6 @@ public class StandardPlanInstallArtifact extends AbstractInstallArtifact impleme
     /**
      * {@inheritDoc}
      */
-    public boolean refresh(String symbolicName) throws DeploymentException {
-        return false;
-    }
-
-    protected boolean doRefresh() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean refreshScope() {
         return this.refreshHandler.refresh(this);
     }

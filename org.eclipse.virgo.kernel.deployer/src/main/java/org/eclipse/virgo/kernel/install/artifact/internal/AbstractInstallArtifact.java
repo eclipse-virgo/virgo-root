@@ -588,6 +588,10 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
 
     private void failRefresh(Exception ex) {
         this.artifactStorage.rollBack();
+        issueFailedRefreshMessage(ex);
+    }
+
+    public void issueFailedRefreshMessage(Exception ex) {
         if (ex == null) {
             this.eventLogger.log(DeployerLogEvents.REFRESH_FAILED, getType(), getName(), getVersion());
         } else {
@@ -595,7 +599,38 @@ public abstract class AbstractInstallArtifact implements GraphAssociableInstallA
         }
     }
 
-    protected abstract boolean doRefresh() throws DeploymentException;
+    protected boolean doRefresh() throws DeploymentException {
+        return false;
+    }
+
+    public boolean refresh(String symbolicName) throws DeploymentException {
+        try {
+            this.isRefreshing = true;
+            this.eventLogger.log(DeployerLogEvents.REFRESHING, getType(), getName(), getVersion());
+
+            boolean refreshed = doRefresh(symbolicName);
+
+            if (refreshed) {
+                this.eventLogger.log(DeployerLogEvents.REFRESHED, getType(), getName(), getVersion());
+            } else {
+                issueFailedRefreshMessage(null);
+            }
+
+            return refreshed;
+        } catch (DeploymentException de) {
+            issueFailedRefreshMessage(de);
+            throw de;
+        } catch (RuntimeException re) {
+            issueFailedRefreshMessage(re);
+            throw re;
+        } finally {
+            this.isRefreshing = false;
+        }
+    }
+    
+    protected boolean doRefresh(String symbolicName) throws DeploymentException {
+        return false;
+    }
 
     /**
      * {@inheritDoc}

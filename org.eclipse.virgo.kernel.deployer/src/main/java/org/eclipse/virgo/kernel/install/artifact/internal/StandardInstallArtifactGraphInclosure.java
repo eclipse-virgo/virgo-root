@@ -129,12 +129,4 @@ public final class StandardInstallArtifactGraphInclosure implements InstallArtif
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateStagingArea(File sourceFile, ArtifactIdentity identity) throws DeploymentException {
-        this.artifactStorageFactory.create(sourceFile, identity).synchronize();
-    }
-
 }

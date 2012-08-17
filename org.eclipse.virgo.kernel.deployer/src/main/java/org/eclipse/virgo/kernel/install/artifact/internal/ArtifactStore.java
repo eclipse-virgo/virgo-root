@@ -22,6 +22,9 @@ import org.eclipse.virgo.util.io.PathReference;
  * An implementation of this interface may expose a single current path and save the artifact by moving it, it may
  * create a series of paths without moving the artifact, or it may use another approach.
  * <p />
+ * Note that instances of this interface may be stateful, so only a single instance should be used to manage the
+ * disk storage for a particular artifact.
+ * <p />
  * <strong>Concurrent Semantics</strong><br />
  * Implementations of this interface need not be thread safe.
  */
