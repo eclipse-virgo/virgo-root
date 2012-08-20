@@ -58,6 +58,7 @@ public interface QuasiFramework {
      * @return <code>QuasiBundle</code> or <code>null</code> if the id is not known.
      */
     QuasiBundle getBundle(long bundleId);
+    QuasiBundle getBundle(String name, Version version);
 
     /**
      * Return the set of {@link Region} present in this {@link QuasiFramework}.
