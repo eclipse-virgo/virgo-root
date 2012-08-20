@@ -19,20 +19,18 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Version;
-
-
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
+import org.eclipse.virgo.kernel.shell.internal.util.ServiceHolder;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
-import org.eclipse.virgo.kernel.shell.state.internal.StandardQuasiLiveService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFramework;
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 import org.eclipse.virgo.test.stubs.framework.StubServiceReference;
 import org.eclipse.virgo.test.stubs.framework.StubServiceRegistration;
+import org.junit.Before;
+import org.junit.Test;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 /**
  */
@@ -54,11 +52,11 @@ public class StandardQuasiLiveServiceTests {
         stubServiceReference.setBundle(new StubBundle(4l, "Name", new Version("1.2.3"), "Location"));
         stubServiceReference.addUsingBundles(new StubBundle(), new StubBundle());
         StubQuasiFramework stubQuasiFramework = new StubQuasiFramework();
-        this.standardQuasiLiveService = new StandardQuasiLiveService(stubQuasiFramework, stubServiceReference);
+        this.standardQuasiLiveService = new ServiceHolder(stubQuasiFramework, stubServiceReference);
     }
 
     /**
-     * Test method for {@link StandardQuasiLiveService#getServiceId()}.
+     * Test method for {@link ServiceHolder#getServiceId()}.
      */
     @Test
     public void testGetServiceId() {
@@ -66,17 +64,17 @@ public class StandardQuasiLiveServiceTests {
     }
 
     /**
-     * Test method for {@link StandardQuasiLiveService#getConsumers()}.
+     * Test method for {@link ServiceHolder#getConsumers()}.
      */
     @Test
     public void testGetConsumers() {
-        List<QuasiLiveBundle> result = this.standardQuasiLiveService.getConsumers();
+        List<QuasiBundle> result = this.standardQuasiLiveService.getConsumers();
         assertNotNull(result);
         assertEquals(2, result.size());
     }
 
     /**
-     * Test method for {@link StandardQuasiLiveService#getProvider()}.
+     * Test method for {@link ServiceHolder#getProvider()}.
      */
     @Test
     public void testGetProvider() {
@@ -84,7 +82,7 @@ public class StandardQuasiLiveServiceTests {
     }
 
     /**
-     * Test method for {@link StandardQuasiLiveService#getProperties()}.
+     * Test method for {@link ServiceHolder#getProperties()}.
      */
     @Test
     public void testGetProperties() {
@@ -97,7 +95,7 @@ public class StandardQuasiLiveServiceTests {
 
     /**
      * Test method for
-     * {@link StandardQuasiLiveService#compareTo(QuasiLiveService)}
+     * {@link ServiceHolder#compareTo(QuasiLiveService)}
      * .
      */
     @Test

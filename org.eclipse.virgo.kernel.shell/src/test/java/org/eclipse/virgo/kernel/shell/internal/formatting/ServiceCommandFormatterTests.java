@@ -17,17 +17,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Version;
-
-
-import org.eclipse.virgo.kernel.shell.internal.formatting.ServiceCommandFormatter;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
-import org.eclipse.virgo.kernel.shell.stubs.StubQuasiLiveBundle;
+import org.eclipse.virgo.kernel.shell.stubs.StubQuasiBundle;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiLiveService;
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.junit.Test;
+import org.osgi.framework.Version;
 
 /**
  * Tests for {@link ServiceCommandFormatter}
@@ -39,8 +35,8 @@ public class ServiceCommandFormatterTests {
 
     @Test
     public void examine() throws Exception {
-        Bundle bundle = new StubBundle(2L, "bundle.symbolic.name", new Version("1.0.1.asdhjgf"), "/some/location");
-        QuasiLiveBundle liveBundle = new StubQuasiLiveBundle(2L, bundle);
+    	StubBundle bundle = new StubBundle(2L, "bundle.symbolic.name", new Version("1.0.1.asdhjgf"), "/some/location");
+        QuasiBundle liveBundle = new StubQuasiBundle(bundle);
         StubQuasiLiveService service = new StubQuasiLiveService(1, liveBundle);
 
         String[] obj1 = new String[] { "This is a string array....", "Second string" };
@@ -52,10 +48,10 @@ public class ServiceCommandFormatterTests {
 
     @Test
     public void summary() throws Exception {
-        Bundle bundle1 = new StubBundle(2L, "bundle.symbolic.name1", new Version("2.0.1.asdhjgf"), "/some/location");
-        Bundle bundle2 = new StubBundle(4L, "bundle.symbolic.name2", new Version("4.0.1.asdhjgf"), "/some/location");
-        QuasiLiveBundle liveBundle1 = new StubQuasiLiveBundle(2L, bundle1);
-        QuasiLiveBundle liveBundle2 = new StubQuasiLiveBundle(4L, bundle2);
+    	StubBundle bundle1 = new StubBundle(2L, "bundle.symbolic.name1", new Version("2.0.1.asdhjgf"), "/some/location");
+    	StubBundle bundle2 = new StubBundle(4L, "bundle.symbolic.name2", new Version("4.0.1.asdhjgf"), "/some/location");
+        QuasiBundle liveBundle1 = new StubQuasiBundle(bundle1);
+        QuasiBundle liveBundle2 = new StubQuasiBundle(bundle2);
         StubQuasiLiveService service1 = new StubQuasiLiveService(1, liveBundle1);
         StubQuasiLiveService service2 = new StubQuasiLiveService(3476, liveBundle2);
 

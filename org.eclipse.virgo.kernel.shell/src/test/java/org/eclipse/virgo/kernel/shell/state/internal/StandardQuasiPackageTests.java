@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.kernel.shell.state.internal.StandardQuasiPackage;
+import org.eclipse.virgo.kernel.shell.internal.util.PackageHolder;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiExportPackage;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiImportPackage;
 
@@ -32,7 +32,7 @@ public class StandardQuasiPackageTests {
 
     private final String TEST_PACKAGE_NAME = "test.package";
     
-    private StandardQuasiPackage standardQuasiPackage;
+    private PackageHolder standardQuasiPackage;
     
     @Before
     public void setUp() throws Exception {
@@ -40,7 +40,7 @@ public class StandardQuasiPackageTests {
         exports.add(new StubQuasiExportPackage(TEST_PACKAGE_NAME));
         List<QuasiImportPackage> imports = new ArrayList<QuasiImportPackage>();
         imports.add(new StubQuasiImportPackage(TEST_PACKAGE_NAME));
-        this.standardQuasiPackage = new StandardQuasiPackage(exports, imports, TEST_PACKAGE_NAME);
+        this.standardQuasiPackage = new PackageHolder(exports, imports, TEST_PACKAGE_NAME);
     }
 
     @Test
@@ -63,19 +63,19 @@ public class StandardQuasiPackageTests {
 
     @Test
     public void testGetExportersNull() {
-        this.standardQuasiPackage = new StandardQuasiPackage(null, new ArrayList<QuasiImportPackage>(), TEST_PACKAGE_NAME);
+        this.standardQuasiPackage = new PackageHolder(null, new ArrayList<QuasiImportPackage>(), TEST_PACKAGE_NAME);
         assertNotNull(this.standardQuasiPackage.getExporters());
     }
 
     @Test
     public void testGetImportersNull() {
-        this.standardQuasiPackage = new StandardQuasiPackage(new ArrayList<QuasiExportPackage>(), null, TEST_PACKAGE_NAME);
+        this.standardQuasiPackage = new PackageHolder(new ArrayList<QuasiExportPackage>(), null, TEST_PACKAGE_NAME);
         assertNotNull(this.standardQuasiPackage.getImporters());
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testGetPackageNameNull() {
-        this.standardQuasiPackage = new StandardQuasiPackage(new ArrayList<QuasiExportPackage>(), new ArrayList<QuasiImportPackage>(), null);
+        this.standardQuasiPackage = new PackageHolder(new ArrayList<QuasiExportPackage>(), new ArrayList<QuasiImportPackage>(), null);
     }
 
 }

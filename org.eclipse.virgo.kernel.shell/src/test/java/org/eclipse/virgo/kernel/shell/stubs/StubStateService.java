@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.kernel.shell.stubs;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
 import org.eclipse.virgo.kernel.shell.state.StateService;
-import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.osgi.framework.Version;
 
 public class StubStateService implements StateService {
 
@@ -28,13 +27,13 @@ public class StubStateService implements StateService {
     public static final long STUB_STATE_NON_BUNDLE_ID = 6;
     public static final long STUB_STATE_SERVICE_ID = 55;
     
-    private StubQuasiLiveBundle stubQuasiBundle = new StubQuasiLiveBundle(STUB_STATE_BUNDLE_ID, new StubBundle());
+    private StubQuasiBundle stubQuasiBundle = new StubQuasiBundle(STUB_STATE_BUNDLE_ID, "name", new Version("1.0.0"));
 
     /** 
      * {@inheritDoc}
      */
     @Override
-    public List<QuasiBundle> getAllBundles(File source) {
+    public List<QuasiBundle> getAllBundles() {
         return new ArrayList<QuasiBundle>();
     }
 
@@ -42,7 +41,7 @@ public class StubStateService implements StateService {
      * {@inheritDoc}
      */
     @Override
-    public List<QuasiLiveService> getAllServices(File source) {
+    public List<QuasiLiveService> getAllServices() {
         return new ArrayList<QuasiLiveService>();
     }
 
@@ -50,7 +49,7 @@ public class StubStateService implements StateService {
      * {@inheritDoc}
      */
     @Override
-    public QuasiBundle getBundle(File source, long bundleId) {
+    public QuasiBundle getBundle(long bundleId) {
         if (bundleId == stubQuasiBundle.getBundleId()) {
             return this.stubQuasiBundle;
         } else {
@@ -73,7 +72,7 @@ public class StubStateService implements StateService {
      * {@inheritDoc}
      */
     @Override
-    public List<QuasiResolutionFailure> getResolverReport(File source, long bundleId) {
+    public List<QuasiResolutionFailure> getResolverReport(long bundleId) {
         return new ArrayList<QuasiResolutionFailure>();
     }
 
@@ -81,7 +80,7 @@ public class StubStateService implements StateService {
      * {@inheritDoc}
      */
     @Override
-    public QuasiLiveService getService(File source, long serviceId) {
+    public QuasiLiveService getService(long serviceId) {
         return new StubQuasiLiveService(STUB_STATE_SERVICE_ID, this.stubQuasiBundle);
     }
 
@@ -89,20 +88,8 @@ public class StubStateService implements StateService {
      * {@inheritDoc}
      */
     @Override
-    public QuasiPackage getPackages(File source, String packageName) {
+    public QuasiPackage getPackages(String packageName) {
         return new StubQuasiPackage(packageName);
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
-    @Override
-    public List<QuasiBundle> search(File source, String term) {
-        ArrayList<QuasiBundle> arrayList = new ArrayList<QuasiBundle>();
-        if (term.contains("*")) {
-            arrayList.add(this.stubQuasiBundle);
-        }
-        return arrayList;
     }
 
 }

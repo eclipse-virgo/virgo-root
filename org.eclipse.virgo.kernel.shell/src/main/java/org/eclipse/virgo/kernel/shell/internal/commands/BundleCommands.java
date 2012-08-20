@@ -22,7 +22,8 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.BundleInstallArtifactCommandFormatter;
-import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.eclipse.virgo.kernel.shell.internal.util.QuasiBundleUtil;
+import org.eclipse.virgo.kernel.shell.internal.util.QuasiServiceUtil;
 import org.osgi.framework.Version;
 
 /**
@@ -46,20 +47,19 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     private final BundleInstallArtifactCommandFormatter formatter;
 
-    private final StateService stateService;
+    private final QuasiBundleUtil quasiBundleUtil;
 
-    public BundleCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator, StateService stateService,
-        ModuleContextAccessor moduleContextAccessor, RegionDigraph regionDigraph) {
-        super(TYPE, objectNameCreator, new BundleInstallArtifactCommandFormatter(regionDigraph, stateService, moduleContextAccessor), ManageableArtifact.class, regionDigraph);
-        this.stateService = stateService;
-        this.formatter = new BundleInstallArtifactCommandFormatter(regionDigraph, stateService, moduleContextAccessor);
+    public BundleCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator, QuasiBundleUtil quasiBundleUtil, QuasiServiceUtil quasiServiceUtil, ModuleContextAccessor moduleContextAccessor, RegionDigraph regionDigraph) {
+        super(TYPE, objectNameCreator, new BundleInstallArtifactCommandFormatter(regionDigraph, quasiBundleUtil, quasiServiceUtil, moduleContextAccessor), ManageableArtifact.class, regionDigraph);
+        this.quasiBundleUtil = quasiBundleUtil;
+        this.formatter = new BundleInstallArtifactCommandFormatter(regionDigraph, quasiBundleUtil, quasiServiceUtil, moduleContextAccessor);
     }
 
     @Command("examine")
     public List<String> examine(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return examine(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return examine(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
@@ -67,9 +67,9 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     @Command("start")
     public List<String> start(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return start(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return start(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
@@ -77,9 +77,9 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     @Command("stop")
     public List<String> stop(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return stop(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return stop(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
@@ -87,9 +87,9 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     @Command("refresh")
     public List<String> refresh(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return refresh(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return refresh(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
@@ -97,9 +97,9 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     @Command("uninstall")
     public List<String> uninstall(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return uninstall(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return uninstall(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
@@ -107,45 +107,45 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
 
     @Command("diag")
     public List<String> diag(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return diag(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return diag(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
     @Command("diag")
-    public List<String> diag(String name, String version) {
-        QuasiBundle bundle = getBundle(name, version);
+    public List<String> diag(String name, String version, String region) {
+        QuasiBundle bundle = getBundle(name, version, region);
         if (bundle != null) {
-            List<QuasiResolutionFailure> resolverReport = this.stateService.getResolverReport(null, bundle.getBundleId());
+            List<QuasiResolutionFailure> resolverReport = this.quasiBundleUtil.getResolverReport(bundle.getBundleId());
             return this.formatter.formatDiag(bundle, resolverReport);
         } else {
-            return getDoesNotExistMessage(TYPE, name, version);
+            return getDoesNotExistMessage(TYPE, name, version, region);
         }
     }
 
     @Command("headers")
     public List<String> headers(long id) {
-        QuasiBundle bundle = this.stateService.getBundle(null, id);
+        QuasiBundle bundle = this.quasiBundleUtil.getBundle(id);
         if (bundle != null) {
-            return headers(bundle.getSymbolicName(), bundle.getVersion().toString());
+            return headers(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
             return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
     @Command("headers")
-    public List<String> headers(String name, String version) {
-        return this.formatter.formatHeaders(getBundle(name, version));
+    public List<String> headers(String name, String version, String region) {
+        return this.formatter.formatHeaders(getBundle(name, version, region));
     }
 
-    private QuasiBundle getBundle(String name, String version) {
+    private QuasiBundle getBundle(String name, String version, String region) {
         Version v = new Version(version);
-        List<QuasiBundle> bundles = this.stateService.getAllBundles(null);
+        List<QuasiBundle> bundles = this.quasiBundleUtil.getAllBundles();
         for (QuasiBundle bundle : bundles) {
-            if (bundle.getSymbolicName().equals(name) && bundle.getVersion().equals(v)) {
+            if (bundle.getSymbolicName().equals(name) && bundle.getVersion().equals(v) && bundle.getRegion().equals(region)) {
                 return bundle;
             }
         }

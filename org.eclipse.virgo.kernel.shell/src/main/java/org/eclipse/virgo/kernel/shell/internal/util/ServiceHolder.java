@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shell.state.internal;
+package org.eclipse.virgo.kernel.shell.internal.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,29 +22,26 @@ import org.osgi.framework.ServiceReference;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 
 /**
  * <p>
- * StandardQuasiLiveService is the standard implementation of {@link QuasiLiveService}. It provides 
- * an extension of the Quasi abstraction that allows information on the services of a live/running 
- * OSGi state to be explored. It can also be sorted for when it is being rendered to a user interface 
- * from a set.
+ * QuasiServiceUtil provides an extension of the Quasi abstraction that allows information on the services 
+ * of a live/running OSGi state to be explored. It can also be sorted for when it is being rendered to a 
+ * user interface from a set.
  * </p>
  *
  * <strong>Concurrent Semantics</strong><br />
  *
- * StandardQuasiLiveService is threadsafe
+ * QuasiServiceUtil is threadsafe
  *
  */
-final public class StandardQuasiLiveService implements QuasiLiveService, Comparable<QuasiLiveService> {
+public final class ServiceHolder implements Comparable<ServiceHolder> {
 
     private final ServiceReference<?> serviceReference;
     
     private final QuasiFramework quasiFramework;
 
-    public StandardQuasiLiveService(QuasiFramework quasiFramework, ServiceReference<?> serviceReference) {
+    public ServiceHolder(QuasiFramework quasiFramework, ServiceReference<?> serviceReference) {
         this.serviceReference = serviceReference;
         this.quasiFramework = quasiFramework;
     }
@@ -59,13 +56,12 @@ final public class StandardQuasiLiveService implements QuasiLiveService, Compara
     /** 
      * {@inheritDoc}
      */
-    public List<QuasiLiveBundle> getConsumers() {
-        List<QuasiLiveBundle> quasiUsers = new ArrayList<QuasiLiveBundle>();
+    public List<QuasiBundle> getConsumers() {
+        List<QuasiBundle> quasiUsers = new ArrayList<QuasiBundle>();
         Bundle[] usingBundles = this.serviceReference.getUsingBundles();
         if(usingBundles != null){
             for(Bundle user : usingBundles){
-                QuasiBundle quasiUser = this.quasiFramework.getBundle(user.getBundleId());
-                quasiUsers.add(new StandardQuasiLiveBundle(this.quasiFramework, quasiUser, user));
+            	quasiUsers.add(this.quasiFramework.getBundle(user.getBundleId()));
             }
         }
         return quasiUsers;
@@ -74,10 +70,9 @@ final public class StandardQuasiLiveService implements QuasiLiveService, Compara
     /** 
      * {@inheritDoc}
      */
-    public QuasiLiveBundle getProvider() {
+    public QuasiBundle getProvider() {
         Bundle providingBundle = this.serviceReference.getBundle();
-        QuasiBundle quasiProvidingBundle = this.quasiFramework.getBundle(providingBundle.getBundleId());
-        return new StandardQuasiLiveBundle(this.quasiFramework, quasiProvidingBundle, providingBundle);
+        return this.quasiFramework.getBundle(providingBundle.getBundleId());
     }
     
     /**
@@ -97,7 +92,7 @@ final public class StandardQuasiLiveService implements QuasiLiveService, Compara
     /**
      * {@inheritDoc}
      */
-    public int compareTo(QuasiLiveService other) {
+    public int compareTo(ServiceHolder other) {
         return (int) (this.getServiceId() - other.getServiceId());
     }
 
@@ -123,7 +118,7 @@ final public class StandardQuasiLiveService implements QuasiLiveService, Compara
             return false;
         if (getClass() != obj.getClass())
             return false;
-        StandardQuasiLiveService other = (StandardQuasiLiveService) obj;
+        ServiceHolder other = (ServiceHolder) obj;
         if (this.serviceReference == null) {
             if (other.serviceReference != null){
                 return false;

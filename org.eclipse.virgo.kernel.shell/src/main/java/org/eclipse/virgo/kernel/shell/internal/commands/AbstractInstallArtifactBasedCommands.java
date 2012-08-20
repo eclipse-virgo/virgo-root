@@ -43,7 +43,7 @@ import org.eclipse.virgo.kernel.shell.internal.util.ArtifactRetriever;
  */
 abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact> {
 
-    private static final String NO_ARTIFACT_FOR_NAME_AND_VERSION = "No %s with name '%s' and version '%s' was found";
+    private static final String NO_ARTIFACT_FOR_NAME_AND_VERSION = "No %s with name '%s' and version '%s' in Region '%s' was found";
 
     private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
@@ -55,15 +55,14 @@ abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact
 
     private final ArtifactRetriever<T> artifactRetriever;
 
-    private final Region kernelRegion;
+    private final RegionDigraph regionDigraph;
 
-    public AbstractInstallArtifactBasedCommands(String type, RuntimeArtifactModelObjectNameCreator objectNameCreator,
-        InstallArtifactCommandFormatter<T> formatter, Class<T> artifactType, RegionDigraph regionDigraph) {
+    public AbstractInstallArtifactBasedCommands(String type, RuntimeArtifactModelObjectNameCreator objectNameCreator, InstallArtifactCommandFormatter<T> formatter, Class<T> artifactType, RegionDigraph regionDigraph) {
         this.type = type;
         this.objectNameCreator = objectNameCreator;
         this.formatter = formatter;
         this.artifactRetriever = new ArtifactRetriever<T>(type, objectNameCreator, artifactType);
-        this.kernelRegion = regionDigraph == null ? null : regionDigraph.getRegion(0L);
+        this.regionDigraph = regionDigraph;
     }
 
     @Command("list")
@@ -82,61 +81,54 @@ abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact
     }
 
     @Command("examine")
-    public List<String> examine(String name, String versionString) {
-        Version version = convertToVersion(versionString);
+    public List<String> examine(String name, String versionString, String regionName) {
+        Version convertToVersion = convertToVersion(versionString);
+		Region convertToRegion = convertToRegion(regionName);
         try {
-            return this.formatter.formatExamine(this.artifactRetriever.getArtifact(name, version));
+			return this.formatter.formatExamine(this.artifactRetriever.getArtifact(name, convertToVersion, convertToRegion));
         } catch (IllegalArgumentException iae) {
             return Arrays.asList(iae.getMessage());
-        } catch (InstanceNotFoundException e) {
-            if (this.kernelRegion != null) {
-                try {
-                    return this.formatter.formatExamine(this.artifactRetriever.getArtifact(name, version, this.kernelRegion));
-                } catch (InstanceNotFoundException _) {
-                    return getDoesNotExistMessage(this.type, name, versionString);
-                }
-            } else {
-                return getDoesNotExistMessage(this.type, name, versionString);
-            }
+        } catch (InstanceNotFoundException infe) {
+            return Arrays.asList(infe.getMessage());
         }
     }
 
-    protected List<String> getDoesNotExistMessage(String type, String name, String version) {
-        return Arrays.asList(String.format(NO_ARTIFACT_FOR_NAME_AND_VERSION, type, name, version));
+    protected List<String> getDoesNotExistMessage(String type, String name, String version, String regionName) {
+        return Arrays.asList(String.format(NO_ARTIFACT_FOR_NAME_AND_VERSION, type, name, version, regionName));
     }
 
     @Command("start")
-    public List<String> start(String name, String version) {
+    public List<String> start(String name, String version, String regionName) {
         try {
-            this.artifactRetriever.getArtifact(name, convertToVersion(version)).start();
+            this.artifactRetriever.getArtifact(name, convertToVersion(version), convertToRegion(regionName)).start();
             return Arrays.asList(String.format("%s %s:%s started successfully", this.type, name, version));
         } catch (IllegalArgumentException iae) {
             return Arrays.asList(iae.getMessage());
         } catch (InstanceNotFoundException e) {
-            return getDoesNotExistMessage(this.type, name, version);
+            return getDoesNotExistMessage(this.type, name, version, regionName);
         } catch (Exception e) {
             return Arrays.asList(String.format("%s %s:%s start failed", this.type, name, version), "", "", formatException(e));
         }
     }
 
     @Command("stop")
-    public List<String> stop(String name, String version) {
+    public List<String> stop(String name, String version, String regionName) {
         try {
-            this.artifactRetriever.getArtifact(name, convertToVersion(version)).stop();
+            this.artifactRetriever.getArtifact(name, convertToVersion(version), convertToRegion(regionName)).stop();
             return Arrays.asList(String.format("%s %s:%s stopped successfully", this.type, name, version));
         } catch (IllegalArgumentException iae) {
             return Arrays.asList(iae.getMessage());
         } catch (InstanceNotFoundException e) {
-            return getDoesNotExistMessage(this.type, name, version);
+            return getDoesNotExistMessage(this.type, name, version, regionName);
         } catch (Exception e) {
             return Arrays.asList(String.format("%s %s:%s stop failed", this.type, name, version), "", "", formatException(e));
         }
     }
 
     @Command("refresh")
-    public List<String> refresh(String name, String version) {
+    public List<String> refresh(String name, String version, String regionName) {
         try {
-            if (this.artifactRetriever.getArtifact(name, convertToVersion(version)).refresh()) {
+            if (this.artifactRetriever.getArtifact(name, convertToVersion(version), convertToRegion(regionName)).refresh()) {
                 return Arrays.asList(String.format("%s %s:%s refreshed successfully", this.type, name, version));
             } else {
                 return Arrays.asList(String.format("%s %s:%s not refreshed, no changes made", this.type, name, version));
@@ -144,21 +136,21 @@ abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact
         } catch (IllegalArgumentException iae) {
             return Arrays.asList(iae.getMessage());
         } catch (InstanceNotFoundException e) {
-            return getDoesNotExistMessage(this.type, name, version);
+            return getDoesNotExistMessage(this.type, name, version, regionName);
         } catch (Exception e) {
             return Arrays.asList(String.format("%s %s:%s refresh failed", this.type, name, version), "", "", formatException(e));
         }
     }
 
     @Command("uninstall")
-    public List<String> uninstall(String name, String version) {
+    public List<String> uninstall(String name, String version, String regionName) {
         try {
-            this.artifactRetriever.getArtifact(name, convertToVersion(version)).uninstall();
+            this.artifactRetriever.getArtifact(name, convertToVersion(version), convertToRegion(regionName)).uninstall();
             return Arrays.asList(String.format("%s %s%s uninstalled successfully", this.type, name, version));
         } catch (IllegalArgumentException iae) {
             return Arrays.asList(iae.getMessage());
         } catch (InstanceNotFoundException e) {
-            return getDoesNotExistMessage(this.type, name, version);
+            return getDoesNotExistMessage(this.type, name, version, regionName);
         } catch (Exception e) {
             return Arrays.asList(String.format("%s %s:%s uninstall failed", this.type, name, version), "", "", formatException(e));
         }
@@ -181,6 +173,14 @@ abstract class AbstractInstallArtifactBasedCommands<T extends ManageableArtifact
             return new Version(versionString);
         } catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException(String.format("'%s' is not a valid version", versionString));
+        }
+    }
+
+    protected final Region convertToRegion(String regionName) {
+        try {
+            return this.regionDigraph.getRegion(regionName);
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException(String.format("'%s' is not a valid Region name", regionName));
         }
     }
 }

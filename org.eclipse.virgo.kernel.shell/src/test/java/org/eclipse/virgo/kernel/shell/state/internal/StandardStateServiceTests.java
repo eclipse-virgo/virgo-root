@@ -15,12 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.File;
 import java.util.List;
 
-import org.easymock.EasyMock;
-import org.eclipse.equinox.region.Region;
-import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
@@ -43,19 +39,11 @@ import org.osgi.framework.Version;
  */
 public class StandardStateServiceTests {
 
-    private final static File TEST_DUMP_FILE = new File("src/test/resources/fakeDump");
-
     private StandardStateService standardStateService;
 
     private StubBundleContext stubBundleContext;
 
     private QuasiFrameworkFactory stubQuasiFrameworkFactory;
-
-    private Region mockUserRegion;
-
-    private RegionDigraph mockRegionDigraph;
-
-    private Region mockKernelRegion;
 
     /**
      * @throws java.lang.Exception
@@ -68,58 +56,32 @@ public class StandardStateServiceTests {
         this.stubBundleContext.addInstalledBundle(stubSystemBundle);
         
         this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
-        this.mockUserRegion = EasyMock.createMock(Region.class);
-        this.mockKernelRegion = EasyMock.createMock(Region.class);
-        this.mockRegionDigraph = EasyMock.createMock(RegionDigraph.class);
-        EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.anyLong())).andReturn(this.mockUserRegion).anyTimes();
-        EasyMock.expect(this.mockRegionDigraph.getRegion(EasyMock.eq("org.eclipse.equinox.region.kernel"))).andReturn(this.mockKernelRegion).anyTimes();
-        EasyMock.replay(this.mockUserRegion, this.mockKernelRegion, this.mockRegionDigraph);
-        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext, this.mockRegionDigraph);
+        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext);
     }
 
     @Test
     public void getAllBundlesNullDump() {
-        List<QuasiBundle> result = this.standardStateService.getAllBundles(null);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    public void getAllBundlesFromDump() {
-        List<QuasiBundle> result = this.standardStateService.getAllBundles(TEST_DUMP_FILE);
+        List<QuasiBundle> result = this.standardStateService.getAllBundles();
         assertNotNull(result);
         assertEquals(1, result.size());
     }
 
     @Test
     public void getBundleNullDumpExists() {
-        QuasiBundle quasiBundle = this.standardStateService.getBundle(null, 4);
+        QuasiBundle quasiBundle = this.standardStateService.getBundle(4);
         assertNotNull(quasiBundle);
-        assertEquals("fake.test.bundle", quasiBundle.getSymbolicName());
-    }
-
-    @Test
-    public void getBundleFromDumpExists() {
-        QuasiBundle quasiBundle = this.standardStateService.getBundle(TEST_DUMP_FILE, 4);
-        assertNotNull(quasiBundle);
-        assertEquals("fake.test.bundle", quasiBundle.getSymbolicName());
+        assertEquals("test.symbolic.name", quasiBundle.getSymbolicName());
     }
 
     @Test
     public void getBundleNullDumpNoExists() {
-        QuasiBundle quasiBundle = this.standardStateService.getBundle(null, 5);
-        assertNull(quasiBundle);
-    }
-
-    @Test
-    public void getBundleFromDumpNoExists() {
-        QuasiBundle quasiBundle = this.standardStateService.getBundle(TEST_DUMP_FILE, 5);
+        QuasiBundle quasiBundle = this.standardStateService.getBundle(5);
         assertNull(quasiBundle);
     }
 
     @Test
     public void getAllServices() {
-        List<QuasiLiveService> allServices = this.standardStateService.getAllServices(new File(""));
+        List<QuasiLiveService> allServices = this.standardStateService.getAllServices();
         assertNotNull(allServices);
     }
 

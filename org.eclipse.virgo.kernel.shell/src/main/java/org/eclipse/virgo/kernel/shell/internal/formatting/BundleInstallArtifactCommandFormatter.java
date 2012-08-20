@@ -22,10 +22,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Version;
-
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.BundleArtifact;
@@ -36,10 +32,13 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
-import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.eclipse.virgo.kernel.shell.internal.util.QuasiBundleUtil;
+import org.eclipse.virgo.kernel.shell.internal.util.QuasiServiceUtil;
+import org.eclipse.virgo.kernel.shell.internal.util.ServiceHolder;
 import org.eclipse.virgo.util.common.StringUtils;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 public final class BundleInstallArtifactCommandFormatter implements InstallArtifactCommandFormatter<ManageableArtifact> {
 
@@ -70,14 +69,17 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
      */
     private static final int STATE_COLUMN_MIN_WIDTH = 11;
 
-    private final StateService stateService;
-
     private final ModuleContextAccessor moduleContextAccessor;
     
     private final Region userRegion;
 
-    public BundleInstallArtifactCommandFormatter(RegionDigraph regionDigraph, StateService stateService, ModuleContextAccessor moduleContextAccessor) {
-        this.stateService = stateService;
+	private final QuasiBundleUtil quasiBundleUtil;
+
+	private QuasiServiceUtil quasiServiceUtil;
+
+    public BundleInstallArtifactCommandFormatter(RegionDigraph regionDigraph, QuasiBundleUtil quasiBundleUtil, QuasiServiceUtil quasiServiceUtil, ModuleContextAccessor moduleContextAccessor) {
+        this.quasiBundleUtil = quasiBundleUtil;
+		this.quasiServiceUtil = quasiServiceUtil;
         this.moduleContextAccessor = moduleContextAccessor;
         this.userRegion = regionDigraph.getRegion(USER_REGION_NAME);
     }
@@ -119,7 +121,7 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
     public List<String> formatExamine(ManageableArtifact artifact) {
         List<String> lines = new ArrayList<String>();
 
-        List<QuasiBundle> quasiBundles = this.stateService.getAllBundles(null);
+        List<QuasiBundle> quasiBundles = this.quasiBundleUtil.getAllBundles();
         ArtifactHolder artifactHolder = getArtifactHolder(artifact, quasiBundles);
 
         if (artifactHolder == null) {
@@ -150,11 +152,11 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
 
         lines.add("");
         lines.add(String.format("Consumed services:"));
-        List<QuasiLiveService> consumedServices = artifactHolder.getConsumedServices();
+        List<ServiceHolder> consumedServices = artifactHolder.getConsumedServices(this.quasiServiceUtil);
         if (consumedServices.isEmpty()) {
             lines.add(String.format("    None"));
         } else {
-            for (QuasiLiveService consumedService : consumedServices) {
+            for (ServiceHolder consumedService : consumedServices) {
                 String objectClass = extractFirstObjectClass(consumedService.getProperties().get(Constants.OBJECTCLASS));
                 lines.add(String.format("    %3s %s", consumedService.getServiceId(), objectClass));
                 lines.add(String.format("        published by %s", formatBundleSummary(consumedService.getProvider())));
@@ -168,15 +170,15 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
 
         lines.add("");
         lines.add(String.format("Published services:"));
-        List<QuasiLiveService> publishedServices = artifactHolder.getPublishedServices();
+        List<ServiceHolder> publishedServices = artifactHolder.getPublishedServices(this.quasiServiceUtil);
         if (publishedServices.isEmpty()) {
             lines.add(String.format("    None"));
         } else {
-            for (QuasiLiveService publishedService : publishedServices) {
+            for (ServiceHolder publishedService : publishedServices) {
                 String objectClass = extractFirstObjectClass(publishedService.getProperties().get(Constants.OBJECTCLASS));
                 lines.add(String.format("    %3s %s", publishedService.getServiceId(), objectClass));
-                List<QuasiLiveBundle> consumers = publishedService.getConsumers();
-                for (QuasiLiveBundle consumer : consumers) {
+                List<QuasiBundle> consumers = publishedService.getConsumers();
+                for (QuasiBundle consumer : consumers) {
                     lines.add(String.format("        consumed by %s", formatBundleSummary(consumer)));
                 }
             }
@@ -316,7 +318,7 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
     private List<ArtifactHolder> getArtifactHolders(List<ManageableArtifact> artifacts) {
         List<ArtifactHolder> artifactHolders = new ArrayList<ArtifactHolder>(artifacts.size());
 
-        List<QuasiBundle> bundles = this.stateService.getAllBundles(null);
+        List<QuasiBundle> bundles = this.quasiBundleUtil.getAllBundles();
         
         for (ManageableArtifact artifact : artifacts) {
             ArtifactHolder artifactHolder = getArtifactHolder(artifact, bundles);
@@ -416,14 +418,29 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
             return bundle.getHosts();
         }
 
-        public List<QuasiLiveService> getPublishedServices() {
-            QuasiLiveBundle liveBundle = (QuasiLiveBundle) bundle;
-            return liveBundle.getExportedServices();
+        public List<ServiceHolder> getPublishedServices(QuasiServiceUtil quasiServiceUtil) {
+        	List<ServiceHolder> services = new ArrayList<ServiceHolder>();
+        	List<ServiceHolder> allServices = quasiServiceUtil.getAllServices();
+        	for (ServiceHolder quasiLiveService : allServices) {
+				if(quasiLiveService.getProvider().equals(bundle)){
+					services.add(quasiLiveService);
+				}
+			}
+            return services;
         }
 
-        public List<QuasiLiveService> getConsumedServices() {
-            QuasiLiveBundle liveBundle = (QuasiLiveBundle) bundle;
-            return liveBundle.getImportedServices();
+        public List<ServiceHolder> getConsumedServices(QuasiServiceUtil quasiServiceUtil) {
+        	List<ServiceHolder> services = new ArrayList<ServiceHolder>();
+        	List<ServiceHolder> allServices = quasiServiceUtil.getAllServices();
+        	for (ServiceHolder quasiLiveService : allServices) {
+        		List<QuasiBundle> consumers = quasiLiveService.getConsumers();
+        		for (QuasiBundle quasiBundle : consumers) {
+    				if(quasiBundle.equals(bundle) && !services.contains(quasiLiveService)){
+    					services.add(quasiLiveService);
+    				}
+				}
+			}
+            return services;
         }
 
         public int compareTo(ArtifactHolder o) {

@@ -16,12 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.Version;
-
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.test.stubs.framework.StubBundle;
+import org.osgi.framework.Version;
 
 
 /**
@@ -45,7 +43,7 @@ public class StubQuasiExportPackage implements QuasiExportPackage {
      * {@inheritDoc}
      */
     public QuasiBundle getExportingBundle() {
-        return new StubQuasiLiveBundle(5, new StubBundle());
+        return new StubQuasiBundle(5l, "", new Version("1.0.0"));
     }
 
     /** 

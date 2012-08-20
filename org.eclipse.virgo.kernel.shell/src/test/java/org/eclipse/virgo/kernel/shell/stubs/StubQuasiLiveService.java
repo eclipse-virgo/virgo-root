@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 
 
@@ -26,15 +26,15 @@ public class StubQuasiLiveService implements QuasiLiveService {
     
     private long serviceId;
     
-    private QuasiLiveBundle provider;
+    private QuasiBundle provider;
 
-    public StubQuasiLiveService(long serviceId, QuasiLiveBundle provider) {
+    public StubQuasiLiveService(long serviceId, QuasiBundle provider) {
         this.serviceId = serviceId;
         this.provider = provider;
     }
     
-    public List<QuasiLiveBundle> getConsumers() {
-        return new ArrayList<QuasiLiveBundle>();
+    public List<QuasiBundle> getConsumers() {
+        return new ArrayList<QuasiBundle>();
     }
 
     public boolean setProperty(String name, Object value) {
@@ -42,7 +42,7 @@ public class StubQuasiLiveService implements QuasiLiveService {
         return (oldValue!=null);
     }
 
-    public QuasiLiveBundle getProvider() {
+    public QuasiBundle getProvider() {
         return provider;
     }
 

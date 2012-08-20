@@ -20,37 +20,39 @@
 	<bean id="completerRegistry" class="org.eclipse.virgo.kernel.shell.internal.completers.ServiceRegistryCommandCompleterRegistry" init-method="initialize">
 		<constructor-arg ref="bundleContext"/>
 	</bean>
-	
-	<bean id="modelAccessorHelper" class="org.eclipse.virgo.kernel.shell.model.helper.StandardRamAccessorHelper" />
 
 	<!-- START UP THE INTIAL COMMAND PROVIDER -->
-
-	<bean id="stateService" class="org.eclipse.virgo.kernel.shell.state.internal.StandardStateService">
+	
+	<bean id="quasiBundleUtil" class="org.eclipse.virgo.kernel.shell.internal.util.QuasiBundleUtil">
 		<constructor-arg ref="quasiFrameworkFactory" />
-		<constructor-arg ref="userRegionBundleContext" />
-		<constructor-arg ref="regionDigraph" />
+	</bean>
+	<bean id="quasiServiceUtil" class="org.eclipse.virgo.kernel.shell.internal.util.QuasiServiceUtil">
+		<constructor-arg ref="bundleContext"/>
+		<constructor-arg ref="quasiFrameworkFactory" />
 	</bean>
 	
 	<bean id="installCommand" class="org.eclipse.virgo.kernel.shell.internal.commands.InstallCommand"/>
 
 	<bean id="bundleCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.BundleCommands">
 		<constructor-arg ref="objectNameCreator"/>
-		<constructor-arg ref="stateService" />
+		<constructor-arg ref="quasiBundleUtil" />
+		<constructor-arg ref="quasiServiceUtil" />
 		<constructor-arg ref="moduleContextAccessor" />
 		<constructor-arg ref="regionDigraph" />
 	</bean>
 
 	<bean id="serviceCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.ServiceCommands">
-		<constructor-arg ref="stateService" />
+		<constructor-arg ref="quasiServiceUtil" />
 	</bean>
 
 	<bean id="packageCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.PackageCommands">
-		<constructor-arg ref="stateService" />
+		<constructor-arg ref="quasiFrameworkFactory" />
 	</bean>
 
 	<bean id="configCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.ConfigCommands">
 		<constructor-arg ref="objectNameCreator"/>
 		<constructor-arg ref="configAdmin" />
+		<constructor-arg ref="regionDigraph" />
 	</bean>
 
 	<bean id="planCommands" class="org.eclipse.virgo.kernel.shell.internal.commands.PlanCommands">
@@ -83,11 +85,12 @@
 	</bean>
 
 	<bean id="packageCompleter" class="org.eclipse.virgo.kernel.shell.internal.completers.PackageCompleter">
-		<constructor-arg ref="stateService"/>
+		<constructor-arg ref="quasiFrameworkFactory" />
 	</bean>
 
 	<bean id="configCompleter" class="org.eclipse.virgo.kernel.shell.internal.completers.ConfigCompleter">
 		<constructor-arg ref="objectNameCreator"/>
+		<constructor-arg ref="regionDigraph" />
 	</bean>
 	
 	<bean id="parCompleter" class="org.eclipse.virgo.kernel.shell.internal.completers.ParCompleter">

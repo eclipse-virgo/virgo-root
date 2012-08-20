@@ -9,28 +9,27 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shell.state.internal;
+package org.eclipse.virgo.kernel.shell.internal.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
 import org.eclipse.virgo.util.common.StringUtils;
 
 
 /**
  * <p>
- * Standard implementation of QuasiPackage that acts as a simple data holder
+ * QuasiPackageUtil acts as a simple data holder
  * </p>
  *
  * <strong>Concurrent Semantics</strong><br />
  *
- * StandardQuasiPackage is immutable.
+ * QuasiPackageUtil is immutable.
  *
  */
-final class StandardQuasiPackage implements QuasiPackage {
+public final class PackageHolder {
 
     private final String packageName;
     
@@ -38,7 +37,7 @@ final class StandardQuasiPackage implements QuasiPackage {
     
     private final List<QuasiExportPackage> quasiExportPackages;
 
-    public StandardQuasiPackage(List<QuasiExportPackage> quasiExportPackages, List<QuasiImportPackage> quasiImportPackages, String packageName) {
+    public PackageHolder(List<QuasiExportPackage> quasiExportPackages, List<QuasiImportPackage> quasiImportPackages, String packageName) {
         if(!StringUtils.hasLength(packageName)){
             throw new IllegalArgumentException("QuasiPackageName must not be null and have at least one character");
         }

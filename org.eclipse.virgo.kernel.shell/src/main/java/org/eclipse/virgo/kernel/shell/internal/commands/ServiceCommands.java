@@ -16,34 +16,35 @@ import java.util.List;
 
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.ServiceCommandFormatter;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
-import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.eclipse.virgo.kernel.shell.internal.util.QuasiServiceUtil;
+import org.eclipse.virgo.kernel.shell.internal.util.ServiceHolder;
 
 
 @Command("service")
 public final class ServiceCommands {
 
-    private final StateService stateService;
-
     private final ServiceCommandFormatter formatter;
+    
+	private QuasiServiceUtil quasiServiceUtil;
 
-    public ServiceCommands(StateService stateService) {
-        this.stateService = stateService;
+    public ServiceCommands(QuasiServiceUtil quasiServiceUtil) {
+        this.quasiServiceUtil = quasiServiceUtil;
         this.formatter = new ServiceCommandFormatter();
     }
 
     @Command("list")
     public List<String> list() {
-        return this.formatter.formatList(this.stateService.getAllServices(null));
+        return this.formatter.formatList(this.quasiServiceUtil.getAllServices());
     }
 
     @Command("examine")
     public List<String> examine(long serviceId) {
-        QuasiLiveService service = this.stateService.getService(null, serviceId);
+    	ServiceHolder service = this.quasiServiceUtil.getService(serviceId);
         if (service == null) {
             return Arrays.asList(String.format("No service with id '%s' was found", serviceId));
         } else {
             return this.formatter.formatExamine(service);
         }
     }
+    
 }

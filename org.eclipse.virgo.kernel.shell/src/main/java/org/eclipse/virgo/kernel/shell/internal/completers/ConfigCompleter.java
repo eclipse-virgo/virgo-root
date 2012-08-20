@@ -21,6 +21,8 @@ import javax.management.ObjectName;
 
 import org.osgi.framework.Version;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.shell.internal.util.ArtifactRetriever;
@@ -32,6 +34,8 @@ final class ConfigCompleter extends AbstractInstallArtifactCompleter {
     private static final String COMMAND_EXAMINE = "examine";
 
     private static final String STATE_ACTIVE = "ACTIVE";
+    
+    private final Region globalRegion;
 
     private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
@@ -39,9 +43,10 @@ final class ConfigCompleter extends AbstractInstallArtifactCompleter {
 
     private final ArtifactRetriever<ManageableArtifact> artifactRetriever;
 
-    public ConfigCompleter(RuntimeArtifactModelObjectNameCreator objectNameCreator) {
+    public ConfigCompleter(RuntimeArtifactModelObjectNameCreator objectNameCreator, RegionDigraph regionDigraph) {
         super(TYPE, objectNameCreator);
         this.objectNameCreator = objectNameCreator;
+        this.globalRegion = regionDigraph.getRegion("global");
         this.artifactRetriever = new ArtifactRetriever<ManageableArtifact>(TYPE, objectNameCreator, ManageableArtifact.class);
     }
 
@@ -59,7 +64,7 @@ final class ConfigCompleter extends AbstractInstallArtifactCompleter {
     private void filterVersions(String name, Set<String> candidates) {
         for (Iterator<String> i = candidates.iterator(); i.hasNext();) {
             try {
-                ManageableArtifact artifact = this.artifactRetriever.getArtifact(name, new Version(i.next()));
+                ManageableArtifact artifact = this.artifactRetriever.getArtifact(name, new Version(i.next()), globalRegion);
                 if (!STATE_ACTIVE.equals(artifact.getState())) {
                     i.remove();
                 }

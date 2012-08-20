@@ -19,20 +19,22 @@ import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.shell.Command;
 import org.eclipse.virgo.kernel.shell.internal.formatting.PackageCommandFormatter;
-import org.eclipse.virgo.kernel.shell.state.QuasiPackage;
-import org.eclipse.virgo.kernel.shell.state.StateService;
+import org.eclipse.virgo.kernel.shell.internal.util.PackageHolder;
 
 @Command("package")
 public final class PackageCommands {
 
-    private final StateService stateService;
+    private final QuasiFrameworkFactory quasiFrameworkFactory;
 
     private final PackageCommandFormatter formatter;
 
-    public PackageCommands(StateService stateService) {
-        this.stateService = stateService;
+    public PackageCommands(QuasiFrameworkFactory quasiFrameworkFactory) {
+        this.quasiFrameworkFactory = quasiFrameworkFactory;
         this.formatter = new PackageCommandFormatter();
     }
 
@@ -53,7 +55,7 @@ public final class PackageCommands {
             return Arrays.asList(iae.getMessage());
         }
 
-        QuasiPackage packages = this.stateService.getPackages(null, name);
+        PackageHolder packages = this.getPackages(name);
         for (QuasiExportPackage exportPackage : packages.getExporters()) {
             if (exportPackage.getVersion().equals(version)) {
                 matchingExports.add(exportPackage);
@@ -69,9 +71,49 @@ public final class PackageCommands {
 
     private List<QuasiExportPackage> getAllPackages() {
         List<QuasiExportPackage> packages = new ArrayList<QuasiExportPackage>();
-        for (QuasiBundle bundle : this.stateService.getAllBundles(null)) {
+        for (QuasiBundle bundle : this.quasiFrameworkFactory.create().getBundles()) {
             packages.addAll(bundle.getExportPackages());
         }
         return packages;
     }
+
+    private PackageHolder getPackages(String packageName) {
+        QuasiFramework framework = this.quasiFrameworkFactory.create();
+        if (packageName != null) {
+            List<QuasiImportPackage> importers = new ArrayList<QuasiImportPackage>();
+            List<QuasiExportPackage> exporters = new ArrayList<QuasiExportPackage>();
+            List<QuasiBundle> bundles = framework.getBundles();
+            for (QuasiBundle qBundle : bundles) {
+                QuasiImportPackage importPackage = processImporters(qBundle, packageName);
+                if (importPackage != null) {
+                    importers.add(importPackage);
+                }
+                QuasiExportPackage exportPackage = processExporters(qBundle, packageName);
+                if (exportPackage != null) {
+                    exporters.add(exportPackage);
+                }
+            }
+            return new PackageHolder(exporters, importers, packageName);
+        }
+        return null;
+    }
+
+    private QuasiImportPackage processImporters(QuasiBundle qBundle, String packageName) {
+        for (QuasiImportPackage qImportPackage : qBundle.getImportPackages()) {
+            if (qImportPackage.getPackageName().equals(packageName)) {
+                return qImportPackage;
+            }
+        }
+        return null;
+    }
+
+    private QuasiExportPackage processExporters(QuasiBundle qBundle, String packageName) {
+        for (QuasiExportPackage qExportPackage : qBundle.getExportPackages()) {
+            if (qExportPackage.getPackageName().equals(packageName)) {
+                return qExportPackage;
+            }
+        }
+        return null;
+    }
+    
 }

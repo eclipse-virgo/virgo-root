@@ -214,18 +214,6 @@ final class StandardQuasiFramework implements QuasiFramework {
     /**
      * {@inheritDoc}
      */
-    public QuasiBundle getBundle(String name, Version version) {
-        QuasiBundle quasiBundle = null;
-        BundleDescription bundleDescription = this.state.getBundle(name, version);
-        if (bundleDescription != null) {
-            quasiBundle = new StandardQuasiBundle(bundleDescription, null, this.regionDigraph.getRegion(bundleDescription.getBundleId()), this.stateHelper);
-        }
-        return quasiBundle;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public Set<Region> getRegions(){
     	return this.regionDigraph.getRegions();
     }

@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.shell.stubs;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,7 +55,7 @@ public class StubQuasiFramework implements QuasiFramework {
 
     public QuasiBundle getBundle(long bundleId) {
         if (bundleId == 4) {
-            return new StubQuasiLiveBundle(bundleId, this.stubBundle);
+            return new StubQuasiBundle(bundleId, this.stubBundle.getSymbolicName(), this.stubBundle.getVersion());
         } else {
             return null;
         }
@@ -63,12 +64,12 @@ public class StubQuasiFramework implements QuasiFramework {
     public List<QuasiBundle> getBundles() {
         List<QuasiBundle> bundles = new ArrayList<QuasiBundle>();
 
-        bundles.add(new StubQuasiLiveBundle(4, this.stubBundle));
+        bundles.add(new StubQuasiBundle(this.stubBundle));
         return bundles;
     }
 
     public QuasiBundle install(URI location, BundleManifest bundleManifest) throws BundleException {
-        return new StubQuasiLiveBundle(6, null);
+        return new StubQuasiBundle(6l, null, null);
     }
 
     public List<QuasiResolutionFailure> resolve() {
@@ -89,8 +90,7 @@ public class StubQuasiFramework implements QuasiFramework {
 
 	@Override
 	public Set<Region> getRegions() {
-		// TODO Auto-generated method stub
-		return null;
+		return new HashSet<Region>();
 	}
 
 }

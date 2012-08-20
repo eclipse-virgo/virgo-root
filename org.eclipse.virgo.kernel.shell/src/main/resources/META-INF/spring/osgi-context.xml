@@ -20,14 +20,10 @@
 	<osgi:service ref="commandProcessor" interface="org.eclipse.virgo.kernel.shell.internal.CommandProcessor" />
 	
 	<osgi:service ref="singleCommandExecutor" interface="org.eclipse.virgo.kernel.shell.CommandExecutor" />
-	
-	<osgi:service ref="stateService" interface="org.eclipse.virgo.kernel.shell.state.StateService" />
 
 	<osgi:reference id="userRegionBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
 	
 	<osgi:reference id="deployer" interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer"/>
-
-    <osgi:service ref="modelAccessorHelper" interface="org.eclipse.virgo.kernel.shell.model.helper.RamAccessorHelper" />
     
     <osgi:reference id="regionDigraph" interface="org.eclipse.equinox.region.RegionDigraph" />
     
