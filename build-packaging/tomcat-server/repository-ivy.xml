@@ -17,6 +17,7 @@
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.servlet.adapter" rev="${org.eclipse.virgo.web}" conf="ext->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.ejb" rev="${javax.ejb}" conf="ext->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="ext->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="ext->runtime"/>
 		<dependency org="javax.portlet" name="com.springsource.javax.portlet" rev="${javax.portlet}" conf="ext->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="ext->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="ext->runtime"/>
