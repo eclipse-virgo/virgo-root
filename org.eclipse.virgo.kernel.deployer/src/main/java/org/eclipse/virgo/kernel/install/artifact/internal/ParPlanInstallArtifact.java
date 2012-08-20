@@ -212,6 +212,11 @@ final class ParPlanInstallArtifact extends StandardPlanInstallArtifact {
      */
     @Override
     public boolean refresh(String symbolicName) throws DeploymentException {
+        return super.refresh(symbolicName);
+    }
+    
+    @Override
+    protected boolean doRefresh(String symbolicName) throws DeploymentException {
         InstallArtifact childToRefresh = findChild(symbolicName);
 
         if (childToRefresh == null) {

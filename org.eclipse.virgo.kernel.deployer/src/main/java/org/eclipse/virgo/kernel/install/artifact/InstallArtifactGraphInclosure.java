@@ -57,13 +57,4 @@ public interface InstallArtifactGraphInclosure {
      */
     GraphNode<InstallArtifact> recoverInstallGraph(ArtifactIdentity identity, File location);
 
-    /**
-     * Update the copy of the given artefact in the deploy area.
-     * 
-     * @param sourceLocation the location of the artefact to be updated
-     * @param identity the identity of the artifact to be updated
-     * @throws DeploymentException
-     */
-    void updateStagingArea(File sourceLocation, ArtifactIdentity identity) throws DeploymentException;
-
 }

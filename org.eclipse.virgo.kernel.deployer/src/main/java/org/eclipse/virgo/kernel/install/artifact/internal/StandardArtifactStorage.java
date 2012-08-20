@@ -58,6 +58,8 @@ final class StandardArtifactStorage implements ArtifactStorage {
         this.pathGenerator = CONSTANT_PATH_EXTENSIONS.contains(getFileExtension(sourcePathReference)) ? new FileMovingArtifactStore(
             baseStagingPathReference) : new GenerationalArtifactStore(baseStagingPathReference);
 
+        PathReference currentPathReference = this.pathGenerator.getCurrentPath();
+        currentPathReference.delete(true);
         synchronize(this.sourcePathReference);
     }
 
