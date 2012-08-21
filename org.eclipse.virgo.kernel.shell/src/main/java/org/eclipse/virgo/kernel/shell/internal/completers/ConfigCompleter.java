@@ -77,7 +77,8 @@ final class ConfigCompleter extends AbstractInstallArtifactCompleter {
 
     private void filterNames(Set<String> candidates) {
         for (Iterator<String> i = candidates.iterator(); i.hasNext();) {
-            Set<ObjectName> objectNames = this.server.queryNames(this.objectNameCreator.createArtifactVersionsQuery(TYPE, i.next()), null);
+            ObjectName createArtifactVersionsQuery = this.objectNameCreator.createArtifactVersionsQuery(TYPE, i.next());
+			Set<ObjectName> objectNames = this.server.queryNames(createArtifactVersionsQuery, null);
             boolean hasActive = false;
             for (ObjectName objectName : objectNames) {
                 try {

@@ -35,15 +35,13 @@ import org.osgi.framework.Version;
  */
 public final class DefaultRuntimeArtifactModelObjectNameCreator implements RuntimeArtifactModelObjectNameCreator {
 
-    private static final String ARTIFACTS_FORMAT = "%s:type=Model,*";
+    private static final String ALL_ARTIFACTS_FORMAT = "%s:type=ArtifactModel,*";
 
-    private static final String ALL_ARTIFACTS_FORMAT = "%s:type=*Model,*";
+    private static final String ARTIFACTS_OF_TYPE_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,*";
 
-    private static final String ARTIFACTS_OF_TYPE_FORMAT = "%s:type=Model,artifact-type=%s,*";
+    private static final String ARTIFACTS_OF_TYPE_AND_NAME_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,*";
 
-    private static final String ARTIFACTS_OF_TYPE_AND_NAME_FORMAT = "%s:type=Model,artifact-type=%s,name=%s,*";
-
-    private static final String ARTIFACT_FORMAT = "%s:type=Model,artifact-type=%s,name=%s,version=%s";
+    private static final String ARTIFACT_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,version=%s";
     
     private static final String EXTENDED_ARTIFACT_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
 
@@ -99,13 +97,6 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      */
     public ObjectName createArtifactVersionsQuery(String type, String name) {
         return createObjectName(String.format(ARTIFACTS_OF_TYPE_AND_NAME_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name)));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ObjectName createArtifactsQuery() {
-        return createObjectName(String.format(ARTIFACTS_FORMAT, this.domain));
     }
 
     /**

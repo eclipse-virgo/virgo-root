@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shell.state.internal;
+package org.eclipse.virgo.kernel.shell.internal.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.shell.internal.util.ServiceHolder;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFramework;
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
@@ -34,9 +33,9 @@ import org.osgi.framework.Version;
 
 /**
  */
-public class StandardQuasiLiveServiceTests {
+public class ServiceHolderTests {
 
-    private QuasiLiveService standardQuasiLiveService;
+    private ServiceHolder serviceHolder;
 
     /**
      * @throws java.lang.Exception
@@ -49,10 +48,13 @@ public class StandardQuasiLiveServiceTests {
         properties.put("Random", "foo");
         serviceRegistration.setProperties(properties);
         StubServiceReference<Object> stubServiceReference = new StubServiceReference<Object>(38l, 6, serviceRegistration);
-        stubServiceReference.setBundle(new StubBundle(4l, "Name", new Version("1.2.3"), "Location"));
+        
+        StubBundle stubBundle = new StubBundle(4L, "test.symbolic.name", new Version("1.2.3"), "");
+        stubServiceReference.setBundle(stubBundle);
+        
         stubServiceReference.addUsingBundles(new StubBundle(), new StubBundle());
-        StubQuasiFramework stubQuasiFramework = new StubQuasiFramework();
-        this.standardQuasiLiveService = new ServiceHolder(stubQuasiFramework, stubServiceReference);
+        StubQuasiFramework stubQuasiFramework = new StubQuasiFramework(stubBundle);
+        this.serviceHolder = new ServiceHolder(stubQuasiFramework, stubServiceReference);
     }
 
     /**
@@ -60,7 +62,7 @@ public class StandardQuasiLiveServiceTests {
      */
     @Test
     public void testGetServiceId() {
-        assertEquals(38l, this.standardQuasiLiveService.getServiceId());
+        assertEquals(38l, this.serviceHolder.getServiceId());
     }
 
     /**
@@ -68,7 +70,7 @@ public class StandardQuasiLiveServiceTests {
      */
     @Test
     public void testGetConsumers() {
-        List<QuasiBundle> result = this.standardQuasiLiveService.getConsumers();
+        List<QuasiBundle> result = this.serviceHolder.getConsumers();
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -78,7 +80,7 @@ public class StandardQuasiLiveServiceTests {
      */
     @Test
     public void testGetProvider() {
-        assertEquals(4l, this.standardQuasiLiveService.getProvider().getBundleId());
+        assertEquals(4l, this.serviceHolder.getProvider().getBundleId());
     }
 
     /**
@@ -86,7 +88,7 @@ public class StandardQuasiLiveServiceTests {
      */
     @Test
     public void testGetProperties() {
-        Map<String, Object> propertyMap = this.standardQuasiLiveService.getProperties();
+        Map<String, Object> propertyMap = this.serviceHolder.getProperties();
         assertNotNull(propertyMap);
         assertEquals(4, propertyMap.size());
         assertNotNull(propertyMap.get(Constants.SERVICE_ID));
@@ -100,7 +102,7 @@ public class StandardQuasiLiveServiceTests {
      */
     @Test
     public void testCompareTo() {
-        int compareTo = this.standardQuasiLiveService.compareTo(this.standardQuasiLiveService);
+        int compareTo = this.serviceHolder.compareTo(this.serviceHolder);
         assertEquals(0, compareTo);
     }
 

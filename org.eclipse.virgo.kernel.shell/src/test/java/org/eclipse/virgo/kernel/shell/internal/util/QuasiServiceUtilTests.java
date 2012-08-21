@@ -8,18 +8,13 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
+package org.eclipse.virgo.kernel.shell.internal.util;
 
-package org.eclipse.virgo.kernel.shell.state.internal;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
 import org.eclipse.virgo.kernel.shell.stubs.StubQuasiFrameworkFactory;
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
@@ -37,9 +32,9 @@ import org.osgi.framework.Version;
  * Tests
  * 
  */
-public class StandardStateServiceTests {
+public class QuasiServiceUtilTests {
 
-    private StandardStateService standardStateService;
+    private QuasiServiceUtil quasiServiceUtil;
 
     private StubBundleContext stubBundleContext;
 
@@ -56,32 +51,12 @@ public class StandardStateServiceTests {
         this.stubBundleContext.addInstalledBundle(stubSystemBundle);
         
         this.stubQuasiFrameworkFactory = new StubQuasiFrameworkFactory();
-        this.standardStateService = new StandardStateService(this.stubQuasiFrameworkFactory, this.stubBundleContext);
-    }
-
-    @Test
-    public void getAllBundlesNullDump() {
-        List<QuasiBundle> result = this.standardStateService.getAllBundles();
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    public void getBundleNullDumpExists() {
-        QuasiBundle quasiBundle = this.standardStateService.getBundle(4);
-        assertNotNull(quasiBundle);
-        assertEquals("test.symbolic.name", quasiBundle.getSymbolicName());
-    }
-
-    @Test
-    public void getBundleNullDumpNoExists() {
-        QuasiBundle quasiBundle = this.standardStateService.getBundle(5);
-        assertNull(quasiBundle);
+        this.quasiServiceUtil = new QuasiServiceUtil(this.stubBundleContext, this.stubQuasiFrameworkFactory);
     }
 
     @Test
     public void getAllServices() {
-        List<QuasiLiveService> allServices = this.standardStateService.getAllServices();
+        List<ServiceHolder> allServices = this.quasiServiceUtil.getAllServices();
         assertNotNull(allServices);
     }
 

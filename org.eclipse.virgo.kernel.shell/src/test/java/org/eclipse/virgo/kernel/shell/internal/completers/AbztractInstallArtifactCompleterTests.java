@@ -41,7 +41,7 @@ public class AbztractInstallArtifactCompleterTests {
     private volatile ObjectName name;
     {
         try {
-            this.name = new ObjectName("test:type=Model,artifact-type=test,name=test1,version=0.0.0");
+            this.name = new ObjectName("test:type=ArtifactModel,artifact-type=test,name=test1,version=0.0.0");
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }

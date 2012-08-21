@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.shell.state.internal;
+package org.eclipse.virgo.kernel.shell.internal.util;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +28,7 @@ import org.eclipse.virgo.kernel.shell.stubs.StubQuasiImportPackage;
 
 /**
  */
-public class StandardQuasiPackageTests {
+public class PackageHolderTests {
 
     private final String TEST_PACKAGE_NAME = "test.package";
     

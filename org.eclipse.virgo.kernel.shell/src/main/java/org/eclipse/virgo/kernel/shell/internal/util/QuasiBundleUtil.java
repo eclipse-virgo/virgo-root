@@ -25,24 +25,46 @@ public final class QuasiBundleUtil {
 
 	private QuasiFrameworkFactory quasiFrameworkFactory;
 
+	/**
+	 * 
+	 * @param quasiFrameworkFactory
+	 */
 	public QuasiBundleUtil(QuasiFrameworkFactory quasiFrameworkFactory) {
 		this.quasiFrameworkFactory = quasiFrameworkFactory;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
     public List<QuasiBundle> getAllBundles() {
         return this.getQuasiFramework().getBundles();
     }
     
+    /**
+     * 
+     * @param bundleId
+     * @return
+     */
     public QuasiBundle getBundle(long bundleId) {
         return this.getQuasiFramework().getBundle(bundleId);
     }
     
+    /**
+     * 
+     * @param bundleId
+     * @return
+     */
     public List<QuasiResolutionFailure> getResolverReport(long bundleId) {
         QuasiFramework framework = this.getQuasiFramework();
         framework.resolve();
         return framework.diagnose(bundleId);
     }
 
+    /**
+     * 
+     * @return
+     */
     private QuasiFramework getQuasiFramework() {
         return this.quasiFrameworkFactory.create();
     }

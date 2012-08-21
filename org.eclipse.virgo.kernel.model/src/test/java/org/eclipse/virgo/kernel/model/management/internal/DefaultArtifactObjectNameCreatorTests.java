@@ -40,7 +40,7 @@ public class DefaultArtifactObjectNameCreatorTests {
     public void successModel() {
         ObjectName objectName = creator.createModel(new StubCompositeArtifact());
         assertNotNull(objectName);
-        assertEquals("test-domain:artifact-type=test-type,name=test-name,type=Model,version=0.0.0", objectName.getCanonicalName());
+        assertEquals("test-domain:artifact-type=test-type,name=test-name,type=ArtifactModel,version=0.0.0", objectName.getCanonicalName());
     }
 
     @Test
@@ -54,35 +54,28 @@ public class DefaultArtifactObjectNameCreatorTests {
  	public void createArtifactsOfTypeQuery() throws Exception {
  		ObjectName artifactsOfTypeQuery = creator.createArtifactsOfTypeQuery("test-type");
  		assertNotNull(artifactsOfTypeQuery);
- 		assertEquals("test-domain:artifact-type=test-type,type=Model,*", artifactsOfTypeQuery.getCanonicalName());
+ 		assertEquals("test-domain:artifact-type=test-type,type=ArtifactModel,*", artifactsOfTypeQuery.getCanonicalName());
  	}
 
     @Test
  	public void createArtifactsOfTypeQueryQuoting() throws Exception {
  		ObjectName artifactsOfTypeQuery = creator.createArtifactsOfTypeQuery("test:type");
  		assertNotNull(artifactsOfTypeQuery);
- 		assertEquals("test-domain:artifact-type=\"test:type\",type=Model,*", artifactsOfTypeQuery.getCanonicalName());
- 	}
-
-     @Test
- 	public void artifactsQuery() throws Exception {
- 		ObjectName artifactsQuery = creator.createArtifactsQuery();
- 		assertNotNull(artifactsQuery);
- 		assertEquals("test-domain:type=Model,*", artifactsQuery.getCanonicalName());
+ 		assertEquals("test-domain:artifact-type=\"test:type\",type=ArtifactModel,*", artifactsOfTypeQuery.getCanonicalName());
  	}
 
      @Test
  	public void artifactVersionQuery() throws Exception {
  		ObjectName artifactsVersionQuery = creator.createArtifactVersionsQuery("test-type", "test-name");
  		assertNotNull(artifactsVersionQuery);
- 		assertEquals("test-domain:artifact-type=test-type,name=test-name,type=Model,*", artifactsVersionQuery.getCanonicalName());
+ 		assertEquals("test-domain:artifact-type=test-type,name=test-name,type=ArtifactModel,*", artifactsVersionQuery.getCanonicalName());
  	}
 
      @Test
  	public void allArtifactsQuery() throws Exception {
  		ObjectName artifactsQuery = creator.createAllArtifactsQuery();
  		assertNotNull(artifactsQuery);
- 		assertEquals("test-domain:type=*Model,*", artifactsQuery.getCanonicalName());
+ 		assertEquals("test-domain:type=ArtifactModel,*", artifactsQuery.getCanonicalName());
  	}
 
 }

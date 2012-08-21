@@ -63,7 +63,7 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
 
     public ObjectName createArtifactVersionsQuery(String type, String name) {
         try {
-            return new ObjectName("test:type=Model,artifact-type=" + type + ",name=" + name + ",*");
+            return new ObjectName("test:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",*");
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }
