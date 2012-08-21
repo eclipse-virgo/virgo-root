@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.deployer.core.event;
 
-import org.eclipse.virgo.kernel.osgi.common.Version;
+import org.osgi.framework.Version;
 
 
 /**
