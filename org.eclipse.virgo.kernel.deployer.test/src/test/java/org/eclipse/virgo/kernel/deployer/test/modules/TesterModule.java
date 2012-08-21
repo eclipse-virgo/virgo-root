@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.virgo.kernel.osgi.common.Version;
+import org.osgi.framework.Version;
 
 
 /**
@@ -30,13 +30,14 @@ import org.eclipse.virgo.kernel.osgi.common.Version;
 public class TesterModule {
     private final String moduleName;
     private final Version moduleVersion;
+    public static final Version MINIMUM_VERSION = new Version("0");
 
     private final Set<TesterModuleImport> moduleImports;
     private final Set<TesterModuleExport> moduleExports;
     
     public static class Builder {
         private final String moduleName;
-        private Version moduleVersion = Version.MINIMUM_VERSION;
+        private Version moduleVersion = MINIMUM_VERSION;
         private Set<TesterModuleImport> moduleImports = new HashSet<TesterModuleImport>();
         private Set<TesterModuleExport> moduleExports = new HashSet<TesterModuleExport>();
 
@@ -96,7 +97,7 @@ public class TesterModule {
         hdrs.add("Bundle-ManifestVersion: 2");
         hdrs.add("Bundle-Name: TesterModule-" + this.moduleName);
         hdrs.add("Bundle-SymbolicName: " + this.moduleName);
-        if (!this.moduleVersion.equals(Version.MINIMUM_VERSION)) {
+        if (!this.moduleVersion.equals(MINIMUM_VERSION)) {
             hdrs.add("Bundle-Version: " + this.moduleVersion);
         }
         if (!this.moduleExports.isEmpty()) {

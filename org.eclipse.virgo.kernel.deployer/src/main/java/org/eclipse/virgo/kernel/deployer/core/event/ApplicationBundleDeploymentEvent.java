@@ -12,8 +12,7 @@
 package org.eclipse.virgo.kernel.deployer.core.event;
 
 import org.osgi.framework.Bundle;
-
-import org.eclipse.virgo.kernel.osgi.common.Version;
+import org.osgi.framework.Version;
 
 /**
  * {@link ApplicationBundleDeploymentEvent} is the base class for all events relating to deployment of bundles of
