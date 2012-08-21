@@ -75,7 +75,7 @@
 			<bean class="org.springframework.jmx.export.naming.KeyNamingStrategy">
 				<property name="mappings">
 					<props>
-						<prop key="installer">#{kernelConfig.getProperty('domain')}:type=Model,name=installer</prop>
+						<prop key="installer">#{kernelConfig.getProperty('domain')}:type=ArtifactModel,name=installer</prop>
 					</props>
 				</property>
 			</bean>

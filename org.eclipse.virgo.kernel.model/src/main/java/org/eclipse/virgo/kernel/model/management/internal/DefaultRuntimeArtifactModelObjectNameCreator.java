@@ -25,8 +25,6 @@ import org.osgi.framework.Version;
  * on the following pattern:
  * <p />
  * <code>&lt;domain&gt;:type=ArtifactModel,artifact-type=&lt;type&gt;,name=&lt;name&gt;,version=&lt;version&gt;,region=&lt;region&gt;</code>
- * and
- * <code>&lt;domain&gt;:type=Model,artifact-type=&lt;type&gt;,name=&lt;name&gt;,version=&lt;version&gt;</code>
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
