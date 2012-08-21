@@ -32,7 +32,7 @@
         <antcall target="smoke-test-nano"/>
         <antcall target="smoke-test-kernel"/>
         <antcall target="smoke-test-tomcat-server"/>
-        <!--antcall target="smoke-test-jetty-server"/-->
+        <antcall target="smoke-test-jetty-server"/>
     </target>
     
     <property name="nano.package.file" value="${artifacts.dir}/virgo-nano-${bundle.version}.zip"/>
