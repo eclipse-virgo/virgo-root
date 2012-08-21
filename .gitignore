@@ -9,3 +9,4 @@ com.cenqua.clover.core.prefs
 *.class
 build-nano/p2/*
 */bin/*
+user-ivy.properties
