@@ -3,12 +3,9 @@ package org.eclipse.virgo.nano.config.internal;
 
 import java.io.IOException;
 import java.net.BindException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -150,9 +147,10 @@ public class ConsoleConfigurationConvertor {
 
     class ConsoleConfigurator implements ManagedService {
 
-        private Dictionary properties;
+        private Dictionary<String,String> properties;
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public void updated(Dictionary props) throws ConfigurationException {
             if (props != null) {
                 this.properties = props;
@@ -164,14 +162,14 @@ public class ConsoleConfigurationConvertor {
                 ConsoleConfigurationConvertor.this.configuratorRegistration.setProperties(this.properties);
             }
 
-            String telnetHost = (String) this.properties.get(TELNET_HOST);
-            String telnetPort = (String) this.properties.get(TELNET_PORT);
-            String telnetEnabled = (String) this.properties.get(TELNET_ENABLED);
+            String telnetHost = this.properties.get(TELNET_HOST);
+            String telnetPort = this.properties.get(TELNET_PORT);
+            String telnetEnabled = this.properties.get(TELNET_ENABLED);
             updateConfiguration(TELNET_PID, telnetHost, telnetPort, telnetEnabled);
 
-            String sshHost = (String) this.properties.get(SSH_HOST);
-            String sshPort = (String) this.properties.get(SSH_PORT);
-            String sshEnabled = (String) this.properties.get(SSH_ENABLED);
+            String sshHost = this.properties.get(SSH_HOST);
+            String sshPort = this.properties.get(SSH_PORT);
+            String sshEnabled = this.properties.get(SSH_ENABLED);
             updateConfiguration(SSH_PID, sshHost, sshPort, sshEnabled);
         }
     }

@@ -12,7 +12,6 @@
 package org.eclipse.virgo.nano.config.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +22,6 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
-import org.eclipse.virgo.nano.config.internal.ConfigurationPublisher;
-import org.eclipse.virgo.nano.config.internal.PropertiesSource;
 import org.junit.Test;
 import org.osgi.service.cm.Configuration;
 

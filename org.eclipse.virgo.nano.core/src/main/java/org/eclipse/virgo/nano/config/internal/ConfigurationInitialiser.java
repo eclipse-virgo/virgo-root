@@ -13,16 +13,14 @@ package org.eclipse.virgo.nano.config.internal;
 
 import java.io.IOException;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationListener;
-
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.config.internal.commandline.CommandLinePropertiesSource;
 import org.eclipse.virgo.nano.config.internal.ovf.OvfPropertiesSource;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * ConfigurationInitialiser
@@ -35,9 +33,7 @@ import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
 public final class ConfigurationInitialiser {
 
     private final ServiceRegistrationTracker tracker = new ServiceRegistrationTracker();
-    
-    private volatile ConfigurationAdminExporter configAdminExporter;
-    
+        
     private ConsoleConfigurationConvertor consoleConfigurationConvertor;
 
     public KernelConfiguration start(BundleContext context, EventLogger eventLogger) throws IOException {
@@ -58,7 +54,6 @@ public final class ConfigurationInitialiser {
         KernelConfiguration configuration = new KernelConfiguration(context);
 
         publishConfiguration(context, eventLogger, configuration, configAdmin);
-        this.configAdminExporter = initializeConfigAdminExporter(context, configuration, configAdmin);
         initializeDumpContributor(context, configAdmin);
         initializeConsoleConfigurationConvertor(context, configAdmin);
         return configuration;
@@ -79,13 +74,6 @@ public final class ConfigurationInitialiser {
         ConfigurationAdminDumpContributor dumpContributor = new ConfigurationAdminDumpContributor(configAdmin);
         this.tracker.track(context.registerService(DumpContributor.class.getName(), dumpContributor, null));
     }
-
-    private ConfigurationAdminExporter initializeConfigAdminExporter(BundleContext context, KernelConfiguration configuration, ConfigurationAdmin configAdmin) {
-        ConfigurationAdminExporter exporter = new ConfigurationAdminExporter(configuration.getDomain(), configAdmin);
-        this.tracker.track(context.registerService(ConfigurationListener.class.getName(), exporter, null));
-        exporter.init();
-        return exporter;
-    }
     
     private void initializeConsoleConfigurationConvertor(BundleContext context, ConfigurationAdmin configAdmin) {
         consoleConfigurationConvertor = new ConsoleConfigurationConvertor(context, configAdmin);
@@ -95,12 +83,5 @@ public final class ConfigurationInitialiser {
     public void stop() {
         this.tracker.unregisterAll();
         consoleConfigurationConvertor.stop();
-        
-        ConfigurationAdminExporter local = this.configAdminExporter;
-        
-        if (local != null) {
-            this.configAdminExporter = null;
-            local.stop();
-        }
     }
 }
