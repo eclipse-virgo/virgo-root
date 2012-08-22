@@ -13,10 +13,7 @@
  * Scripts to be loaded in to the head of the configuration view
  */
 function pageinit(){
-	
-
 	util.doQuery('search/org.eclipse.equinox.region.domain:type=Region,*', function(response){
-
 		$.each(response.value, function(index, region){
 			var regionName = util.readObjectName(region).get('name');
 			util.doQuery('exec/osgi.compendium:region=' + regionName + ',service=cm,version=1.3/getConfigurations/(service.pid=*)', function(response){
@@ -24,8 +21,6 @@ function pageinit(){
 			});
 		});
 	});
-	
-	//util.doQuery('search/org.eclipse.virgo.kernel:type=Configuration,*', ConfigurationInit.init);
 }
 
 
