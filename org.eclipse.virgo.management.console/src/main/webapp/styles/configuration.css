@@ -8,6 +8,17 @@
  * Christopher Frost - 2011
  */
 
+.config-list {
+	padding-top: 0px;
+}
+
+.config-header {
+	color: #002F5E;
+    font-size: 15px;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
 .config-label {
 	cursor: pointer;
     margin-top: 3px;
