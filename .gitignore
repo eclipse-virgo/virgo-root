@@ -4,3 +4,4 @@ integration-repo
 ivy-cache
 target
 .DS_Store
+user-ivy.properties
