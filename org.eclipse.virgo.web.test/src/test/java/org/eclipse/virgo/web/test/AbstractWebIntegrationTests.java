@@ -349,7 +349,7 @@ public abstract class AbstractWebIntegrationTests {
     @AfterClass
     public static void cleanup() throws Exception {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION);
+        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION);
 
         try {
             mBeanServer.invoke(objectName, "stop", null, null);
@@ -360,7 +360,7 @@ public abstract class AbstractWebIntegrationTests {
 
     private void awaitInitialArtifactDeployment() throws JMException, InterruptedException {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION);
+        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION);
 
         Object state = null;
         long startTime = System.currentTimeMillis();
@@ -399,7 +399,7 @@ public abstract class AbstractWebIntegrationTests {
     private void awaitWebAppStart(String name, String version) throws InterruptedException {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-            ObjectName objectName = new ObjectName(String.format("org.eclipse.virgo.kernel:type=Model,artifact-type=bundle,name=%s,version=%s", name,
+            ObjectName objectName = new ObjectName(String.format("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=bundle,name=%s,version=%s", name,
                 version));
             ManageableArtifact artifact = JMX.newMXBeanProxy(mBeanServer, objectName, ManageableArtifact.class);
 
