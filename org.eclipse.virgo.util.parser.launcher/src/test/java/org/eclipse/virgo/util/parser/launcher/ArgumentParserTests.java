@@ -74,7 +74,7 @@ public class ArgumentParserTests {
         
         BundleEntry bd = bundleDeclarations[0];
         assertFalse(bd.isAutoStart());
-        assertEquals(new File(System.getProperty("user.home") + "/ivy/ivy-cache" +"/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar").toURI(), bd.getURI());
+        assertEquals(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache" +"/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar").toURI(), bd.getURI());
     }
     
     @Test(expected=ParseException.class)

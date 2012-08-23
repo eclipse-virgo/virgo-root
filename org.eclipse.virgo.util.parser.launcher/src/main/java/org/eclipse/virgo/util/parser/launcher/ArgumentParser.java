@@ -46,7 +46,7 @@ public final class ArgumentParser {
 
     private static final String START_FLAG = "start";
     
-    private static final String IVY_CACHE_RELATIVE = "/ivy/ivy-cache";
+    private static final String IVY_CACHE_RELATIVE = "/virgo-build-cache/ivy-cache";
 
     public LaunchCommand parse(String[] args) {
         LaunchCommand command = new LaunchCommand();
