@@ -46,9 +46,9 @@ public final class ArgumentParser {
 
     private static final String START_FLAG = "start";
     
-    private static final String IVY_CACHE_RELATIVE = "/virgo-build-cache/ivy-cache";
+    protected static final String IVY_CACHE_RELATIVE = "/virgo-build-cache/ivy-cache";
     
-    private static final String INTEGRATION_REPO_RELATIVE = "/virgo-build-cache/integration-repo";
+    protected static final String INTEGRATION_REPO_RELATIVE = "/virgo-build-cache/integration-repo";
 
     public LaunchCommand parse(String[] args) {
         LaunchCommand command = new LaunchCommand();
@@ -123,7 +123,12 @@ public final class ArgumentParser {
     }
     
     private String processIntegrationRepoPlaceholder(String path) {
-        return path.replace("${integration.repo.dir}", System.getProperty("user.home") + INTEGRATION_REPO_RELATIVE);
+        String virgoDepsLocation = System.getProperty("virgo.deps.location");
+        if (virgoDepsLocation.equals("integration-repo")) {
+            return path.replace("${integration.repo.dir}", System.getProperty("user.home") + INTEGRATION_REPO_RELATIVE);
+        } else {
+            return path.replace("${integration.repo.dir}", System.getProperty("user.home") + IVY_CACHE_RELATIVE);
+        }
     }
 
     private void parseConfigProperties(String configPath, LaunchCommand command) {

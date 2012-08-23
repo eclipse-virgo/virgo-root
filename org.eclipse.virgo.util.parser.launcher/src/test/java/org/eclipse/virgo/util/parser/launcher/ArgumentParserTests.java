@@ -79,7 +79,7 @@ public class ArgumentParserTests {
     
     @Test
     public void testIntegrationRepoPlaceholderSubstitution() throws URISyntaxException {
-        String commandLine = "-B${integration.repo.dir}/org.eclipse.virgo.util";
+        String commandLine = "-B${integration.repo.dir}";
         LaunchCommand command = parse(commandLine);
         
         BundleEntry[] bundleDeclarations = command.getBundleEntries();
@@ -88,7 +88,12 @@ public class ArgumentParserTests {
         
         BundleEntry bd = bundleDeclarations[0];
         assertFalse(bd.isAutoStart());
-        assertEquals(new File(System.getProperty("user.home") + "/virgo-build-cache/integration-repo" + "/org.eclipse.virgo.util/").toURI(), bd.getURI());
+        String virgoDepsLocation = System.getProperty("virgo.deps.location");
+        if (virgoDepsLocation.equals("integration-repo")) {
+            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.INTEGRATION_REPO_RELATIVE + "/").toURI(), bd.getURI());
+        } else {
+            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.IVY_CACHE_RELATIVE + "/").toURI(), bd.getURI());
+        }
     }
     
     @Test(expected=ParseException.class)
