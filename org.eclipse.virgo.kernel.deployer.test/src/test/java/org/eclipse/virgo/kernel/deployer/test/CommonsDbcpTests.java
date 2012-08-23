@@ -43,7 +43,7 @@ public class CommonsDbcpTests extends AbstractDeployerIntegrationTest {
 
     @Test
     public void testCommonsDbcpClassLoading() throws Exception {
-        this.deployer.deploy(new File(System.getProperty("user.home") + "/ivy/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar").toURI());
+        this.deployer.deploy(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar").toURI());
         this.deployer.deploy(new File("src/test/resources/com.springsource.platform.test.commons-dbcp.jar").toURI());
         ApplicationContextUtils.assertApplicationContextContainsExpectedBeanDefinitions(ApplicationContextUtils.getApplicationContext(this.context, "com.springsource.server.test.commons-dbcp"), "dataSourceTest");
     }    

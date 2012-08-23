@@ -91,7 +91,7 @@ public class BundleBridgeTests {
     @Test
     public void testGenerateArtefact() throws ArtifactGenerationException {
         File jarsDirectory = new File(
-            System.getProperty("user.home") + "/ivy/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
+            System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
         File directoriesDirectory = new File("./src/test/resources/directories");
 
         Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
@@ -128,7 +128,7 @@ public class BundleBridgeTests {
     @Test
     public void testBuildDictionary() throws ArtifactGenerationException, IOException {
         File testFile = new File(
-            System.getProperty("user.home") + "/ivy/ivy-cache/repository/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar");
+            System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar");
 
         ArtifactDescriptor inputArtefact = BUNDLE_BRIDGE.generateArtifactDescriptor(testFile);
 
