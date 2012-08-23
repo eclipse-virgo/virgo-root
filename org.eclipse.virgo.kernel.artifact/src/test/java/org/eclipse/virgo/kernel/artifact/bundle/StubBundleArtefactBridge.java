@@ -64,7 +64,7 @@ final public class StubBundleArtefactBridge implements ArtifactBridge {
 
     private final static RepositoryAwareArtifactDescriptor TEST_DIRECTORY_ARTEFACT = new StubRepositoryAwareArtifactDescriptor(TEST_DIRECTORY_URI, "y.different", new Version("1.2.3"), TEST_ATTRIBUTE_SET_DIRECTORY);
 
-    private final static URI TEST_FILE_URI = URI.create("file:/" + System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/" + "com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
+    private final static URI TEST_FILE_URI = new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/" + "com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar").toURI();
 
     private static final Set<Attribute> TEST_ATTRIBUTE_SET = createAttributeSet("com.springsource.org.apache.commons.dbcp", new Version("1.2.2.osgi"), TEST_FILE_URI);
 
