@@ -124,6 +124,9 @@ public final class ArgumentParser {
     
     private String processIntegrationRepoPlaceholder(String path) {
         String virgoDepsLocation = System.getProperty("virgo.deps.location");
+        if (virgoDepsLocation == null) {
+            return path;
+        }
         if (virgoDepsLocation.equals("integration-repo")) {
             return path.replace("${integration.repo.dir}", System.getProperty("user.home") + INTEGRATION_REPO_RELATIVE);
         } else {
