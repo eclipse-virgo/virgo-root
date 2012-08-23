@@ -69,15 +69,13 @@ final class ConfigurationArtifact extends AbstractArtifact {
         Map<String, String> properties = new HashMap<String, String>(super.getProperties());
         try {
             Configuration configuration = this.configurationAdmin.getConfiguration(this.pid, null);
-            Dictionary dictionary = configuration.getProperties();
-            Enumeration keys = dictionary.keys();
+            Dictionary<String, Object> dictionary = configuration.getProperties();
+            Enumeration<String> keys = dictionary.keys();
             while (keys.hasMoreElements()) {
-                Object key = keys.nextElement();
-                if (key instanceof String) {
-                    Object value = dictionary.get(key);
-                    if (value instanceof String) {
-                        properties.put((String)key, (String)value);
-                    }
+                String key = keys.nextElement();
+                Object value = dictionary.get(key);
+                if (value instanceof String) {
+                	properties.put(key, (String)value);
                 }
             }
         } catch (IOException _) {

@@ -32,8 +32,8 @@ final class DelegatingManageableBundleArtifact extends DelegatingManageableArtif
 
     private final BundleArtifact bundleArtifact;
 
-    public DelegatingManageableBundleArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull BundleArtifact bundleArtifact, boolean newModel) {
-        super(artifactObjectNameCreator, bundleArtifact, newModel);
+    public DelegatingManageableBundleArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull BundleArtifact bundleArtifact) {
+        super(artifactObjectNameCreator, bundleArtifact);
         this.bundleArtifact = bundleArtifact;
     }
 

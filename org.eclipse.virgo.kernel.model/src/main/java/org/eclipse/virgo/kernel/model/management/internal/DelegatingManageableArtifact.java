@@ -35,21 +35,14 @@ import org.eclipse.virgo.nano.serviceability.NonNull;
  * @see Artifact
  */
 class DelegatingManageableArtifact implements ManageableArtifact {
-
-    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
-
-    private static final String GLOBAL_REGION_NAME = "global";
     
     private final RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator;
 
     private final Artifact artifact;
 
-    private final boolean newModel;
-
-    public DelegatingManageableArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull Artifact artifact, boolean newModel) {
+    public DelegatingManageableArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull Artifact artifact) {
         this.artifactObjectNameCreator = artifactObjectNameCreator;
         this.artifact = artifact;
-        this.newModel = newModel;
     }
 
     /**
@@ -137,15 +130,10 @@ class DelegatingManageableArtifact implements ManageableArtifact {
      */
     private final ObjectName[] convertToObjectNames(Set<Artifact> artifacts) {
         Set<ObjectName> objectNames = new HashSet<ObjectName>(artifacts.size());
-        String regionName;
         for (Artifact artifact : artifacts) {
-            regionName = artifact.getRegion().getName();
-            if(newModel || (!USER_REGION_NAME.equals(regionName) && !GLOBAL_REGION_NAME.equals(regionName)) ){
-                objectNames.add(artifactObjectNameCreator.createArtifactModel(artifact));
-            } else {
-                objectNames.add(artifactObjectNameCreator.createModel(artifact));
-            }
+        	objectNames.add(artifactObjectNameCreator.createArtifactModel(artifact));
         }
-        return objectNames.toArray(new ObjectName[objectNames.size()]);
+        ObjectName[] objectNamesArray = new ObjectName[objectNames.size()];
+		return objectNames.toArray(objectNamesArray);
     }
 }

@@ -20,17 +20,9 @@ import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameC
 import org.osgi.framework.Version;
 
 public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeArtifactModelObjectNameCreator {
-
-    public ObjectName createModel(Artifact artifact) {
-        throw new UnsupportedOperationException();
-    }
     
     public ObjectName createArtifactModel(Artifact artifact) {
         throw new UnsupportedOperationException();
-    }
-
-    public ObjectName createModel(String type, String name, Version version) {
-        throw new RuntimeException("Not supported");
     }
 
     @Override
@@ -74,12 +66,13 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
         return objectName.getKeyProperty("name");
     }
 
-    public String getType(ObjectName objectName) {
-        return objectName.getKeyProperty("type");
-    }
-
     public String getVersion(ObjectName objectName) {
         return objectName.getKeyProperty("version");
     }
+
+	@Override
+	public String getRegion(ObjectName objectName) {
+        return objectName.getKeyProperty("region");
+	}
 
 }

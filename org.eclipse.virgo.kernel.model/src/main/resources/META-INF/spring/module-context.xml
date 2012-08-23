@@ -56,30 +56,8 @@
 		<constructor-arg value="#{kernelConfig.getProperty('domain')}"/>
 	</bean>
 	
-	<bean id="installer" class="org.eclipse.virgo.kernel.model.management.internal.DelegatingInstaller">
-		<constructor-arg ref="applicationDeployer"/>
-		<constructor-arg ref="runtimeArtifactModelObjectNameCreator"/>
-	</bean>
-	
 	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
 
 	<context:annotation-config/>
-
-	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
-		<property name="beans">
-		<map>
-			<entry key="installer" value-ref="installer"/>
-		</map>
-		</property>
-		<property name="namingStrategy">
-			<bean class="org.springframework.jmx.export.naming.KeyNamingStrategy">
-				<property name="mappings">
-					<props>
-						<prop key="installer">#{kernelConfig.getProperty('domain')}:type=ArtifactModel,name=installer</prop>
-					</props>
-				</property>
-			</bean>
-		</property>
-	</bean>
 
 </beans>
