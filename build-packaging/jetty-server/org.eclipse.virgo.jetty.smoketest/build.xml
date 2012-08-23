@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.eclipse.virgo.jetty.smoketest">
 
-	<property name="ivy.cache.dir" value="${basedir}/../ivy-cache" />
-	<property name="integration.repo.dir" value="${basedir}/../integration-repo"/>
-
 	<property file="${basedir}/../../../build.properties"/>
 	<property file="${basedir}/../../../build.versions"/>
 	<import file="${basedir}/../../../virgo-build/standard/default.xml"/>
