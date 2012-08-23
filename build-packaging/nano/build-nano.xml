@@ -34,10 +34,10 @@
     </target>
      
      <target name="assemble-zips">
-        <delete dir="${package.dir}/${nano-package}-${bundle.version}/Eclipse.app" quiet="true"/>
-        <delete dir="${package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
+        <property name="nano.package.dir" value="${package.dir}/VN"/>
         
-        <property name="nano.package.dir" value="${package.dir}/${nano-package}-${bundle.version}"/>
+        <delete dir="${nano.package.dir}/${nano-package}-${bundle.version}/Eclipse.app" quiet="true"/>
+        
         <mkdir dir="${artifacts.dir}"/>
         <zip destfile="${artifacts.dir}/${nano-package}-${bundle.version}.zip">
 			<zipfileset dir="${nano.package.dir}" includes="bin/*.sh" filemode="755"/>
@@ -47,7 +47,10 @@
 				<exclude name="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
-        <property name="nano.full.package.dir" value="${package.dir}/${nano-full-package}-${bundle.version}"/>
+        
+        <property name="nano.full.package.dir" value="${package.dir}/VNF"/>
+        <delete dir="${nano.full.package.dir}/${nano-full-package}-${bundle.version}/Eclipse.app" quiet="true"/>
+        
         <zip destfile="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip">
 			<zipfileset dir="${nano.full.package.dir}" includes="bin/*.sh" filemode="755"/>
 			<zipfileset dir="${nano.full.package.dir}" includes="configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
@@ -199,14 +202,14 @@
      <target name="install-packages">
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.dir}/${nano-package}-${bundle.version}"/>
+            <param name="destination" value="${package.dir}/VN/${nano-package}-${bundle.version}"/>
             <param name="product.iu" value="nano.product"/>
         </antcall>
         <echo message="Installed Virgo Nano for distribution purposes."/>
         
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.dir}/${nano-full-package}-${bundle.version}"/>
+            <param name="destination" value="${package.dir}/VNF/${nano-full-package}-${bundle.version}"/>
             <param name="product.iu" value="nano-full.product"/>
         </antcall>
         <echo message="Installed Virgo Nano Full for distribution purposes."/>

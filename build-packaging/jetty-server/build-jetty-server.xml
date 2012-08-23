@@ -90,21 +90,23 @@
         </antcall>
         <echo message="Published jetty server product to ${p2.repository.dir}."/>
 
+        <property name="vjs.package.dir" value="${package.dir}/VJS"/>
+
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.dir}/virgo-jetty-server-${bundle.version}"/>
+            <param name="destination" value="${vjs.package.dir}/virgo-jetty-server-${bundle.version}"/>
             <param name="product.iu" value="jetty-server.product"/>
         </antcall>
         <echo message="Installed Virgo Jetty Server for distribution purposes."/>
         
         <mkdir dir="${artifacts.dir}"/>
         
-        <delete dir="${package.dir}/virgo-jetty-server-${bundle.version}/Eclipse.app" quiet="true"/>
+        <delete dir="${vjs.package.dir}/virgo-jetty-server-${bundle.version}/Eclipse.app" quiet="true"/>
         
 		<zip destfile="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip">
-			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${package.dir}/virgo-jetty-server-${bundle.version}">
+			<zipfileset dir="${vjs.package.dir}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${vjs.package.dir}" includes="${package.dir}/virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${vjs.package.dir}">
 				<exclude name="${package.dir}/virgo-jetty-server-${bundle.version}/bin/*.sh"/>
 				<exclude name="${package.dir}/virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>

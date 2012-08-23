@@ -68,22 +68,24 @@
             <param name="product.file.location" value="${p2.products.location}/tomcat-server/tomcat-server.product"/>
         </antcall>
         <echo message="Published tomcat server product to ${p2.repository.dir}."/>
-
+        
+        <property name="vts.package.dir" value="${package.dir}/VTS"/>
+        
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
-            <param name="destination" value="${package.dir}/virgo-tomcat-server-${bundle.version}"/>
+            <param name="destination" value="${vts.package.dir}/virgo-tomcat-server-${bundle.version}"/>
             <param name="product.iu" value="tomcat-server.product"/>
         </antcall>
         <echo message="Installed Virgo Tomcat Server for distribution purposes."/>
         
         <mkdir dir="${artifacts.dir}"/>
         
-        <delete dir="${package.dir}/virgo-tomcat-server-${bundle.version}/Eclipse.app" quiet="true"/>
+        <delete dir="${vts.package.dir}/virgo-tomcat-server-${bundle.version}/Eclipse.app" quiet="true"/>
         
 		<zip destfile="${artifacts.dir}/virgo-tomcat-server-${bundle.version}.zip">
-			<zipfileset dir="${package.dir}/virgo-tomcat-server-${bundle.version}" includes="${package.dir}/virgo-tomcat-server-${bundle.version}/bin/*.sh" filemode="755"/>
-			<zipfileset dir="${package.dir}/virgo-tomcat-server-${bundle.version}" includes="${package.dir}/virgo-tomcat-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
-			<zipfileset dir="${package.dir}/virgo-tomcat-server-${bundle.version}">
+			<zipfileset dir="${vts.package.dir}" includes="${package.dir}/virgo-tomcat-server-${bundle.version}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${vts.package.dir}" includes="${package.dir}/virgo-tomcat-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${vts.package.dir}">
 				<exclude name="${package.dir}/virgo-tomcat-server-${bundle.version}/bin/*.sh"/>
 				<exclude name="${package.dir}/virgo-tomcat-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
