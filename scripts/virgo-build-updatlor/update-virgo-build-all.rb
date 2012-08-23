@@ -33,10 +33,7 @@ else
     'performance-test' => 'performance-test',
     'system-verification-tests' => 'system-verification-tests',
     'kernel-system-verification-tests' => 'kernel-system-verification-tests',
-    'sample-greenpages' => 'sample-greenpages',
-    'sample-configuration-properties' => 'sample-configuration-properties',
-    'sample-formtags' => 'sample-formtags',
-    'sample-osgi-examples' => 'sample-osgi-examples'
+    'samples' => 'samples'
   }
 end
 
@@ -48,10 +45,7 @@ virgo_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/virg
 gemini_web_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/gemini.web/org.eclipse.gemini.web.'
 
 VIRGO_PERMISSION_REPOS = [
-  Repository.new(virgo_repo_root, 'sample-greenpages',                  paths['sample-greenpages'],                 nil, nil, update_branch),
-  Repository.new(virgo_repo_root, 'sample-configuration-properties',    paths['sample-configuration-properties'],   nil, nil, update_branch),
-  Repository.new(virgo_repo_root, 'sample-formtags',                    paths['sample-formtags'],                   nil, nil, update_branch),
-  Repository.new(virgo_repo_root, 'sample-osgi-examples',               paths['sample-osgi-examples'],              nil, nil, update_branch),
+  Repository.new(virgo_repo_root, 'samples',                            paths['samples'],                           nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'packaging',                          paths['packaging'],                         nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'documentation',                      paths['documentation'],                     nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'apps',                               paths['apps'],                              nil, nil, update_branch),

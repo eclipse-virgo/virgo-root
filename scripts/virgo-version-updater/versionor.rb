@@ -46,6 +46,7 @@ ALL_REPOS = [
   Repository.new(virgo_repo_root, 'web',                                   paths['web'],                              nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'kernel-tools',                          paths['kernel-tools'],                     nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'kernel',                                paths['kernel'],                           nil, nil, update_branch),
+  Repository.new(virgo_repo_root, 'nano',                                  paths['nano'],                             nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'artifact-repository',                   paths['artifact-repository'],              nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'medic',                                 paths['medic'],                            nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'test',                                  paths['test'],                             nil, nil, update_branch),
