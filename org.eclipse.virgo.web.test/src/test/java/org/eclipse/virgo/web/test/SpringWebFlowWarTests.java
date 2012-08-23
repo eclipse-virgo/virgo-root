@@ -23,7 +23,7 @@ public class SpringWebFlowWarTests extends AbstractWebIntegrationTests {
 
     private static final String WEBFLOW_VERSION = "2.0.8.RELEASE";
 
-    private static final String REPO_PATH = System.getProperty("user.home") + "/ivy/ivy-cache/repository/org.springframework.webflow.samples";
+    private static final String REPO_PATH = System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.springframework.webflow.samples";
     
     @Before
     public void configureHttpClient() {
