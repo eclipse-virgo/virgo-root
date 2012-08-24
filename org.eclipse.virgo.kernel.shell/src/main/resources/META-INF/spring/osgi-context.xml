@@ -22,9 +22,7 @@
 	<osgi:service ref="singleCommandExecutor" interface="org.eclipse.virgo.kernel.shell.CommandExecutor" />
 
 	<osgi:reference id="userRegionBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
-	
-	<osgi:reference id="deployer" interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer"/>
-    
+	    
     <osgi:reference id="regionDigraph" interface="org.eclipse.equinox.region.RegionDigraph" />
     
 <!-- SERVICES FOR THE TYPE CONVERTERS -->

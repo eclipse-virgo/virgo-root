@@ -32,8 +32,12 @@ import org.eclipse.virgo.util.io.PathReference;
 /**
  */
 public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
+
+	private static final String ORG_ECLIPSE_VIRGO_REGION_USER = "org.eclipse.virgo.region.user";
     
-    private static final long TIMEOUT = 10000;
+    private static final String GLOBAL_REGION = "global";
+
+	private static final long TIMEOUT = 10000;
     
     private final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
     
@@ -78,8 +82,12 @@ public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
     }
     
     private void awaitActive(String type, String name, String version) {
+    	String region = ORG_ECLIPSE_VIRGO_REGION_USER;
+    	if(type=="configuration"){
+    		region = GLOBAL_REGION;
+    	}
         try {
-            ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version);
+            ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version + ",region=" + region);
             ManageableArtifact artifact = JMX.newMXBeanProxy(this.mBeanServer, objectName, ManageableArtifact.class);
             
             long startTime = System.currentTimeMillis();

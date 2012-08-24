@@ -45,8 +45,7 @@
 		<constructor-arg ref="artifactRepositoryListener"/>
 	</bean>
 
-	<bean id="artifactRepositoryListener" class="org.eclipse.virgo.kernel.model.management.internal.JmxArtifactRepositoryListener"
-			destroy-method="destroy">
+	<bean id="artifactRepositoryListener" class="org.eclipse.virgo.kernel.model.management.internal.JmxArtifactRepositoryListener" destroy-method="destroy">
 		<constructor-arg ref="runtimeArtifactModelObjectNameCreator"/>
 	</bean>
 	
