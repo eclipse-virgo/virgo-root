@@ -90,9 +90,9 @@ public class ArgumentParserTests {
         assertFalse(bd.isAutoStart());
         String virgoDepsLocation = System.getProperty("virgo.deps.location");
         if (virgoDepsLocation.equals("integration-repo")) {
-            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.INTEGRATION_REPO_RELATIVE + "/").toURI(), bd.getURI());
+            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.INTEGRATION_REPO_RELATIVE + File.separator).toURI(), bd.getURI());
         } else {
-            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.IVY_CACHE_RELATIVE + "/").toURI(), bd.getURI());
+            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.IVY_CACHE_RELATIVE + File.separator + "repository" + File.separator).toURI(), bd.getURI());
         }
     }
     
