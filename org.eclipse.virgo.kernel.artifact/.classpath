@@ -35,6 +35,6 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.core/3.6.0.D-20120823175919/org.eclipse.virgo.medic.core-3.6.0.D-20120823175919.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.core/3.5.0.D-20120615070622/org.eclipse.virgo.medic.core-sources-3.5.0.D-20120615070622.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.3.0.v20120307-2102/org.eclipse.osgi.services-3.3.0.v20120307-2102.jar" sourcepath="/KERNEL_IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110513/org.eclipse.osgi.services-sources-3.3.0.v20110513.jar"/>
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/KERNEL_IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20120823180157/org.eclipse.virgo.nano.core-3.6.0.D-20120823180157.jar"/>
+	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.BUILD-20120824122152/org.eclipse.virgo.nano.core-3.6.0.BUILD-20120824122152.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

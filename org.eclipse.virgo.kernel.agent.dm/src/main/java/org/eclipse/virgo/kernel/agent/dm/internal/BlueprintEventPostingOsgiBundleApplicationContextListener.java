@@ -48,7 +48,7 @@ import org.eclipse.gemini.blueprint.service.importer.event.OsgiServiceDependency
  * Thread-safe.
  * 
  */
-public final class BlueprintEventPostingOsgiBundleApplicationContextListener implements OsgiBundleApplicationContextListener {
+public final class BlueprintEventPostingOsgiBundleApplicationContextListener implements OsgiBundleApplicationContextListener<OsgiBundleApplicationContextEvent> {
 
     private static final String PROPERTY_BUNDLE_SYMBOLICNAME = "bundle.symbolicName";
 
