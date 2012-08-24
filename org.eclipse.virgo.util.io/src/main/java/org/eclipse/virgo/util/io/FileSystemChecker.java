@@ -161,8 +161,9 @@ public final class FileSystemChecker {
                         if (size > monitorRecord.getSize()) {
                             // still being written? continue to track it
                             monitorRecord.setSize(size);
-                        } else if (file.renameTo(file)){
-                            // not changing anymore so if we can rename it we can announce it:
+                        } else if (!file.canWrite() || file.renameTo(file)) {
+                            // not changing anymore (at least on r/w file system on Windows) so if we can rename it we
+                            // can announce it:
                             notifyListeners(this.key(file), monitorRecord.getEvent());
                             // do not monitor it anymore
                             monitorRecords.remove(keyFile);
