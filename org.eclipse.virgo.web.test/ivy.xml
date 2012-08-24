@@ -36,6 +36,7 @@
 		<dependency org="org.springframework" name="org.springframework.aspects" rev="${org.springframework}" conf="test->runtime"/>
 		<dependency org="com.dumbster" name="com.springsource.com.dumbster.smtp" rev="${com.dumbster}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="test->compile"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.parser.launcher" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.framework" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
