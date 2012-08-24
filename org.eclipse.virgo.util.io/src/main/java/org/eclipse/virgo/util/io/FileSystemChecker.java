@@ -64,6 +64,8 @@ public final class FileSystemChecker {
 
     private final FilenameFilter includeFilter;
 
+    private static boolean WINDOWS = System.getProperty("os.name").startsWith("Windows");
+
     /**
      * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>.
      * 
@@ -161,7 +163,7 @@ public final class FileSystemChecker {
                         if (size > monitorRecord.getSize()) {
                             // still being written? continue to track it
                             monitorRecord.setSize(size);
-                        } else if (file.renameTo(file)){
+                        } else if (isUnlocked(file)){
                             // not changing anymore so if we can rename it we can announce it:
                             notifyListeners(this.key(file), monitorRecord.getEvent());
                             // do not monitor it anymore
@@ -200,6 +202,11 @@ public final class FileSystemChecker {
             
             }
         }
+    }
+
+    public boolean isUnlocked(File file) {
+        // Heuristic check for the file not being locked on Windows. On *ix, assume the file is unlocked since we can't tell.
+        return !WINDOWS || file.renameTo(file);
     }
 
     private void debugState(final String heading, File[] files) {
