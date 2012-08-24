@@ -33,7 +33,7 @@ import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.NetUtils;
 
 public class AbstractKernelTests {
-
+    
 	private static MBeanServerConnection connection = null;
 	private static String binDir = null;
 	private static String configDir = null;
@@ -42,7 +42,7 @@ public class AbstractKernelTests {
 	private static String srcFileName = "org.eclipse.virgo.repository.properties";
 	private static String bundlesDir = "src/test/resources/bundles";
 	private static String[] bundleNames = new String[] { "org.springframework.dmServer.testtool.incoho.domain-1.0.0.RELEASE.jar" };
-
+    
 	private static Process process = null;
 	private static ProcessBuilder pb = null;
 	private static File startup = null;
@@ -52,108 +52,137 @@ public class AbstractKernelTests {
 	private static File startupURI = null;
 	private static File shutdownURI = null;
 	private static OperatingSystemMXBean os = ManagementFactory
-			.getOperatingSystemMXBean();
+    .getOperatingSystemMXBean();
 	public static final long HALF_SECOND = 500;
-
+    
 	public static final long TWO_MINUTES = 120 * 1000;
 	public static final String STATUS_STARTED = "STARTED";
 	public static final String STATUS_STARTING = "STARTING";
-
+    
 	protected static MBeanServerConnection getMBeanServerConnection()
-			throws Exception {
+    throws Exception {
+		String severDir = null;
 		Map<String, String[]> env = new HashMap<String, String[]>();
-
-		File testExpanded = new File("./target/test-expanded/");     
-
+        
+		File testExpanded = new File("./target/test-expanded/");
+		for (File mainDir : testExpanded.listFiles()) {
+			if (mainDir.isDirectory()) {
+				severDir = new File(mainDir.toURI()).getCanonicalPath();
+                
+			}
+		}
 		String[] creds = { "admin", "springsource" };
 		env.put(JMXConnector.CREDENTIALS, creds);
-
-		System.setProperty("javax.net.ssl.trustStore", testExpanded
-				+ "/configuration/keystore");
+        
+		System.setProperty("javax.net.ssl.trustStore", severDir
+                           + "/configuration/keystore");
 		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-
+        
 		JMXServiceURL url = new JMXServiceURL(
-				"service:jmx:rmi:///jndi/rmi://localhost:9875/jmxrmi");
+                                              "service:jmx:rmi:///jndi/rmi://localhost:9875/jmxrmi");
 		connection = JMXConnectorFactory.connect(url, env)
-				.getMBeanServerConnection();
+        .getMBeanServerConnection();
 		return connection;
 	}
-
+    
 	protected static String getKernelStartUpStatus() throws Exception {
 		String kernelStartupStatus = (String) getMBeanServerConnection()
-				.getAttribute(
-						new ObjectName(
-								"org.eclipse.virgo.kernel:type=KernelStatus"),
-						"Status");
+        .getAttribute(
+                      new ObjectName(
+                                     "org.eclipse.virgo.kernel:type=KernelStatus"),
+                      "Status");
 		return kernelStartupStatus;
 	}
-
+    
 	private static String getKernelBinDir() throws IOException {
 		if (binDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-            binDir = new File(testExpanded, "bin").getCanonicalPath();
+			for (File candidate : testExpanded.listFiles()) {
+				if (candidate.isDirectory()) {
+					binDir = new File(candidate, "bin").getCanonicalPath();
+					break;
+				}
+			}
 		}
 		return binDir;
 	}
-
+    
 	protected static String getKernelConfigDir() throws IOException {
 		if (configDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-            configDir = new File(testExpanded, "configuration").getCanonicalPath();
+			for (File candidate : testExpanded.listFiles()) {
+				if (candidate.isDirectory()) {
+					configDir = new File(candidate, "config")
+                    .getCanonicalPath();
+					break;
+				}
+			}
 		}
 		return configDir;
 	}
-
+    
 	protected static void configureWatchRepoWithDefaultConfiguration(
-			String destDir) {
+                                                                     String destDir) {
 		try {
 			FileCopyUtils.copy(new File(srcDir, srcFileName), new File(destDir,
-					srcFileName));
+                                                                       srcFileName));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		createWatchedRepoDir();
 	}
-
+    
 	protected static void addBundlesToWatchedRepository(String watchRepoDir) {
 		for (String bundleName : bundleNames) {
 			try {
 				FileCopyUtils.copy(new File(bundlesDir, bundleName), new File(
-						watchRepoDir, bundleName));
+                                                                              watchRepoDir, bundleName));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
+        
 	}
-
+    
 	protected static String getWatchedRepoDir() throws IOException {
 		if (watchRepoDir == null) {
 			File testExpanded = new File("./target/test-expanded/");
-            File repositoryDir = new File(testExpanded, "repository").getCanonicalFile();
-            if (repositoryDir.isDirectory()) {
-                watchRepoDir = new File(repositoryDir, "watched-repo").getCanonicalPath();
-            }
+			for (File mainDir : testExpanded.listFiles()) {
+				if (mainDir.isDirectory()) {
+					File repositoryDir = new File(mainDir, "repository")
+                    .getCanonicalFile();
+					if (repositoryDir.isDirectory()) {
+						watchRepoDir = new File(repositoryDir, "watched-repo")
+                        .getCanonicalPath();
+						break;
+					}
+                    
+				}
+			}
 		}
 		return watchRepoDir;
 	}
-
+    
 	protected static void createWatchedRepoDir() {
 		File testExpanded = new File("./target/test-expanded/");
-        File repositoryDir = new File(testExpanded, "repository");
-        if (repositoryDir.mkdir()) {
-            new File(repositoryDir, "watched-repo").mkdir();
-        }
+		for (File candidate : testExpanded.listFiles()) {
+			if (candidate.isDirectory()) {
+				File repoDir = new File(candidate, "repository");
+				if (repoDir.mkdir()) {
+					new File(repoDir, "watched-repo").mkdir();
+				}
+			}
+		}
 	}
-
+    
 	public static void waitForKernelStartFully() throws Exception {
 		waitForKernelStartFully(TWO_MINUTES, HALF_SECOND);
 	}
-
+    
 	public static void waitForKernelShutdownFully() throws Exception {
 		waitForKernelShutdownFully(TWO_MINUTES, HALF_SECOND);
 	}
-
+    
 	private static void waitForKernelStartFully(long duration, long interval) throws Exception {
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() - startTime < duration) {
@@ -173,7 +202,7 @@ public class AbstractKernelTests {
 			Thread.sleep(interval);
 		}
 	}
-
+    
 	private static void waitForKernelShutdownFully(long duration, long interval) throws Exception {
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() - startTime < duration) {
@@ -193,11 +222,11 @@ public class AbstractKernelTests {
 			Thread.sleep(interval);
 		}
 	}
-
+    
 	protected static class KernelStartUpThread implements Runnable {
 		public KernelStartUpThread() {
 		}
-
+        
 		public void run() {
 			String[] args = null;
 			try {
@@ -205,7 +234,7 @@ public class AbstractKernelTests {
 					startup = new File(getKernelBinDir(), "startup.bat");
 					startupURI = new File(startup.toURI());
 					startupFileName = startupURI.getCanonicalPath();
-
+                    
 				} else {
 					startup = new File(getKernelBinDir(), "startup.sh");
 					startupURI = new File(startup.toURI());
@@ -216,9 +245,9 @@ public class AbstractKernelTests {
 				pb.redirectErrorStream(true);
 				Map<String, String> env = pb.environment();
 				env.put("JAVA_HOME", System.getProperty("java.home"));
-
+                
 				process = pb.start();
-
+                
 				InputStream is = process.getInputStream();
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);
@@ -231,11 +260,11 @@ public class AbstractKernelTests {
 			}
 		}
 	}
-
+    
 	protected static class KernelShutdownThread implements Runnable {
 		public KernelShutdownThread() {
 		}
-
+        
 		public void run() {
 			String[] args = null;
 			try {
@@ -253,9 +282,9 @@ public class AbstractKernelTests {
 				pb.redirectErrorStream(true);
 				Map<String, String> env = pb.environment();
 				env.put("JAVA_HOME", System.getProperty("java.home"));
-
+                
 				process = pb.start();
-
+                
 				InputStream is = process.getInputStream();
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);

@@ -2,7 +2,7 @@
 <project name="test-package">
 
 	<property name="test.staging.dir" value="${target.dir}/test-expanded"/>
-	<property name="test.package.dir" value="${test.staging.dir}"/>
+	<property name="test.package.dir" value="${test.staging.dir}/virgo-nano-full-${bundle.version}"/>
 
 	<target name="test-package"
 			description="Runs a test on the packaged build">

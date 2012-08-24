@@ -33,78 +33,95 @@ import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.NetUtils;
 
 public class AbstractNanoTests {
-
+    
     private MBeanServerConnection connection = null;
-
+    
     private String srcDir = "src/test/resources";
-
+    
     private File bundlesDir = null;
-
+    
     private String binDir = null;
-
+    
     private File pickupDir = null;
-
+    
     private Process process = null;
-
+    
     private ProcessBuilder pb = null;
-
+    
     private File startup = null;
-
+    
     private String startupFileName = null;
-
+    
     private File shutdown = null;
-
+    
     private String shutdownFileName = null;
-
+    
     private File startupURI = null;
-
+    
     private File shutdownURI = null;
-
+    
     private OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
-
+    
     public final long HALF_SECOND = 500;
-
+    
     public final long TWO_MINUTES = 120 * 1000;
     
     public final long THIRTY_SECONDS = 30 * 1000;
-
+    
     public final String STATUS_STARTED = "STARTED";
-
+    
     public final String STATUS_STARTING = "STARTING";
-
+    
     protected MBeanServerConnection getMBeanServerConnection() throws Exception {
         Map<String, String[]> env = new HashMap<String, String[]>();
-
-        File serverDir = new File("./target/test-expanded/");
+        
+        File testExpanded = new File("./target/test-expanded/");
+        String serverDir = null;
+        for (File candidate : testExpanded.listFiles()) {
+            if (candidate.isDirectory()) {
+                serverDir = candidate.getCanonicalPath();
+                break;
+            }
+        }
         String[] creds = { "admin", "springsource" };
         env.put(JMXConnector.CREDENTIALS, creds);
-
+        
         System.setProperty("javax.net.ssl.trustStore", serverDir + "/configuration/keystore");
         System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-
+        
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:9875/jmxrmi");
         connection = JMXConnectorFactory.connect(url, env).getMBeanServerConnection();
         return connection;
     }
-
+    
     protected String getNanoStartUpStatus() throws Exception {
         String nanoStartupStatus = (String) getMBeanServerConnection().getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"),
-            "Status");
+                                                                                    "Status");
         return nanoStartupStatus;
     }
-
+    
     private String getNanoBinDir() throws IOException {
-        if (binDir == null) {
-            File testExpanded = new File("./target/test-expanded/");
-            binDir = new File(testExpanded, "bin").getCanonicalPath();
-        }
-        return binDir;
+		if (binDir == null) {
+			File testExpanded = new File("./target/test-expanded/");
+			for (File candidate : testExpanded.listFiles()) {
+				if (candidate.isDirectory()) {
+					binDir = new File(candidate, "bin").getCanonicalPath();
+					break;
+				}
+			}
+		}
+		return binDir;
     }
     
     private File setupNanoPickupDir() throws IOException {
         if (pickupDir == null) {
             File testExpanded = new File("./target/test-expanded/");
-            pickupDir = new File(testExpanded, "pickup");
+			for (File candidate : testExpanded.listFiles()) {
+				if (candidate.isDirectory()) {
+					pickupDir = new File(candidate, "pickup");
+					break;
+				}
+			}
         }
         return pickupDir;
     }
@@ -122,15 +139,15 @@ public class AbstractNanoTests {
         setupBundleResourcesDir();
         FileCopyUtils.copy(new File(bundlesDir, bundleName), new File(pickupDir, bundleName));
     }
-
+    
     public void waitForNanoStartFully() throws Exception {
         waitForNanoStartFully(THIRTY_SECONDS, HALF_SECOND);
     }
-
+    
     public void waitForNanoShutdownFully() throws Exception {
         waitForNanoShutdownFully(THIRTY_SECONDS, HALF_SECOND);
     }
-
+    
     private void waitForNanoStartFully(long duration, long interval) throws Exception {
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < duration) {
@@ -150,7 +167,7 @@ public class AbstractNanoTests {
             Thread.sleep(interval);
         }
     }
-
+    
     private void waitForNanoShutdownFully(long duration, long interval) throws Exception {
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < duration) {
@@ -170,12 +187,12 @@ public class AbstractNanoTests {
             Thread.sleep(interval);
         }
     }
-
+    
     protected class NanoStartUpThread implements Runnable {
-
+        
         public NanoStartUpThread() {
         }
-
+        
         @Override
         public void run() {
             String[] args = null;
@@ -184,7 +201,7 @@ public class AbstractNanoTests {
                     startup = new File(getNanoBinDir(), "startup.bat");
                     startupURI = new File(startup.toURI());
                     startupFileName = startupURI.getCanonicalPath();
-
+                    
                 } else {
                     startup = new File(getNanoBinDir(), "startup.sh");
                     startupURI = new File(startup.toURI());
@@ -195,9 +212,9 @@ public class AbstractNanoTests {
                 pb.redirectErrorStream(true);
                 Map<String, String> env = pb.environment();
                 env.put("JAVA_HOME", System.getProperty("java.home"));
-
+                
                 process = pb.start();
-
+                
                 InputStream is = process.getInputStream();
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
@@ -210,12 +227,12 @@ public class AbstractNanoTests {
             }
         }
     }
-
+    
     protected class NanoShutdownThread implements Runnable {
-
+        
         public NanoShutdownThread() {
         }
-
+        
         @Override
         public void run() {
             String[] args = null;
@@ -234,9 +251,9 @@ public class AbstractNanoTests {
                 pb.redirectErrorStream(true);
                 Map<String, String> env = pb.environment();
                 env.put("JAVA_HOME", System.getProperty("java.home"));
-
+                
                 process = pb.start();
-
+                
                 InputStream is = process.getInputStream();
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
