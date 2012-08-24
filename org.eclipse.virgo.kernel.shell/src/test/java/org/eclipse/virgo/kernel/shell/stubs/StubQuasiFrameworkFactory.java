@@ -15,17 +15,24 @@ import java.io.File;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
+import org.eclipse.virgo.test.stubs.framework.StubBundle;
 
 /**
  */
 public class StubQuasiFrameworkFactory implements QuasiFrameworkFactory {
 
+	private StubBundle[] stubBundles;
+
+	public StubQuasiFrameworkFactory(StubBundle... stubBundles) {
+		this.stubBundles = stubBundles;
+	}
+	
     /**
      * {@inheritDoc}
      */
     @Override
     public QuasiFramework create() {
-        return new StubQuasiFramework();
+        return new StubQuasiFramework(this.stubBundles);
     }
 
     /**
@@ -33,7 +40,7 @@ public class StubQuasiFrameworkFactory implements QuasiFrameworkFactory {
      */
     @Override
     public QuasiFramework create(File arg0) {
-        return new StubQuasiFramework();
+        return new StubQuasiFramework(this.stubBundles);
     }
 
 }

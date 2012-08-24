@@ -13,7 +13,11 @@ package org.eclipse.virgo.kernel.shell.stubs;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.BundleException;
@@ -36,39 +40,42 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  * 
  */
 public class StubQuasiFramework implements QuasiFramework {
-
-    private final StubBundle stubBundle;
-
-    private final StubBundleContext stubBundleContext;
+    
+    private final Map<Long, StubBundle> bundles = new HashMap<Long, StubBundle>();
 
     @SuppressWarnings("unchecked")
-    public StubQuasiFramework() {
-        this.stubBundle = new StubBundle(4L, "test.symbolic.name", new Version("0"), "");
-        this.stubBundleContext = new StubBundleContext(stubBundle);
-        this.stubBundleContext.addInstalledBundle(stubBundle);
-        this.stubBundle.addRegisteredService(new StubServiceReference<Object>(new StubServiceRegistration<Object>(this.stubBundleContext)));
+	public StubQuasiFramework(StubBundle... stubBundles) {
+    	for (StubBundle stubBundle : stubBundles) {
+            this.bundles.put(stubBundle.getBundleId(), stubBundle);
+            StubBundleContext stubBundleContext = new StubBundleContext(stubBundle);
+            stubBundleContext.addInstalledBundle(stubBundle);
+            stubBundle.setBundleContext(stubBundleContext);
+            stubBundle.addRegisteredService(new StubServiceReference<Object>(new StubServiceRegistration<Object>(stubBundleContext)));
+		}
     }
 
     public void commit() throws BundleException {
     }
 
     public QuasiBundle getBundle(long bundleId) {
-        if (bundleId == 4) {
-            return new StubQuasiLiveBundle(bundleId, this.stubBundle);
-        } else {
-            return null;
-        }
+    	if(this.bundles.containsKey(bundleId)){
+            return new StubQuasiBundle(bundleId, this.bundles.get(bundleId).getSymbolicName(), this.bundles.get(bundleId).getVersion());
+    	} else {
+    		return null;
+    	}
     }
 
     public List<QuasiBundle> getBundles() {
         List<QuasiBundle> bundles = new ArrayList<QuasiBundle>();
-
-        bundles.add(new StubQuasiLiveBundle(4, this.stubBundle));
+        Collection<StubBundle> values = this.bundles.values();
+        for (StubBundle stubBundle : values) {
+			bundles.add(new StubQuasiBundle(stubBundle));
+		}
         return bundles;
     }
 
     public QuasiBundle install(URI location, BundleManifest bundleManifest) throws BundleException {
-        return new StubQuasiLiveBundle(6, null);
+        return new StubQuasiBundle(6l, null, null);
     }
 
     public List<QuasiResolutionFailure> resolve() {
@@ -89,8 +96,7 @@ public class StubQuasiFramework implements QuasiFramework {
 
 	@Override
 	public Set<Region> getRegions() {
-		// TODO Auto-generated method stub
-		return null;
+		return new HashSet<Region>();
 	}
 
 }

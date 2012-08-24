@@ -30,18 +30,13 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
     }
 
     public ObjectName createModel(String type, String name, Version version) {
-        try {
-            return new ObjectName("test:type=Model,artifact-type=" + type + ",name=" + name + ",version=" + version);
-        } catch (MalformedObjectNameException e) {
-        } catch (NullPointerException e) {
-        }
-        return null;
+        throw new RuntimeException("Not supported");
     }
 
     @Override
     public ObjectName createArtifactModel(String type, String name, Version version, Region region) {
         try {
-            return new ObjectName("test:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version + "region=" + region.getName());
+            return new ObjectName("test:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version + ",region=" + region.getName());
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }
@@ -68,7 +63,7 @@ public final class StubRuntimeArtifactModelObjectNameCreator implements RuntimeA
 
     public ObjectName createArtifactVersionsQuery(String type, String name) {
         try {
-            return new ObjectName("test:type=Model,artifact-type=" + type + ",name=" + name + ",*");
+            return new ObjectName("test:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",*");
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }

@@ -46,11 +46,6 @@ public class StubQuasiFramework implements QuasiFramework {
 	}
 
 	@Override
-	public QuasiBundle getBundle(String name, Version version) {
-		return null;
-	}
-
-	@Override
 	public List<QuasiResolutionFailure> resolve() {
 		return new ArrayList<QuasiResolutionFailure>();
 	}

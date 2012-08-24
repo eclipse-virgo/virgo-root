@@ -13,17 +13,27 @@
  * Scripts to be loaded in to the head of the configuration view
  */
 function pageinit(){
-	util.doQuery('search/org.eclipse.virgo.kernel:type=Configuration,*', ConfigurationInit.init);
+	util.doQuery('search/org.eclipse.equinox.region.domain:type=Region,*', function(response){
+		$.each(response.value, function(index, region){
+			var regionName = util.readObjectName(region).get('name');
+			util.doQuery('exec/osgi.compendium:region=' + regionName + ',service=cm,version=1.3/getConfigurations/(service.pid=*)', function(response){
+			ConfigurationInit.addConfigurationSection(regionName, response.value);
+			});
+		});
+	});
 }
+
 
 ConfigurationInit = {
 
-	init : function(json){
-		$.each(json.value, function(index, item){
-			var objectName = util.readObjectName(item);
-			var label = ConfigurationInit.getConfigurationLabel(objectName.get('name'));
-			var config = new Configuration(objectName, label);
-			if(util.pageLocation && util.pageLocation == objectName.get('name')){
+	addConfigurationSection : function(regionName, json){
+		ConfigurationInit.appendConfigurationHeader(regionName);
+		$.each(json, function(index, item){
+			var pid = item[0];
+			var location = item[1];
+			var label = ConfigurationInit.getConfigurationLabel(pid);
+			var config = new Configuration(pid, location, regionName, label);
+			if(util.pageLocation && util.pageLocation == regionName + '#' + pid){
 				config.toggle();
 			}
 			$('.config-label', label).click(config, function(event){
@@ -41,17 +51,26 @@ ConfigurationInit = {
 		configContainer.append(configLabel);
 		$('#config-list').append(configContainer);
 		return configContainer;
+	},
+	
+	appendConfigurationHeader : function(regionName){
+		var configLabel = $('<div />', {'class': 'config-header'});
+		configLabel.append($('<span />').text('Region: ' + regionName));
+		$('#config-list').append(configLabel);
 	}
+	
 };
 
 
-var Configuration = function(objectName, label){
+var Configuration = function(pid, location, regionName, label){
 	
 	var self = this;
 	
-	self.objectName = objectName;
+	self.location = location;
 	
-	self.name = objectName.get('name');
+	self.regionName = regionName;
+	
+	self.pid = pid;
 	
 	self.label = label;
 	
@@ -60,7 +79,7 @@ var Configuration = function(objectName, label){
 	self.toggle = function(){
 		if(self.icon.hasClass('plus')){
 			self.setPlusMinusIcon('loader-small.gif', 'spinnerIcon');
-			util.doQuery('read/' + self.objectName.toString, self.createTable);
+			util.doQuery('exec/osgi.compendium:region=' + self.regionName + ',service=cm,version=1.3/getProperties/' + pid, self.createTable);
 		} else {
 			$('.config-properties', self.label).slideToggle(util.fxTime, function(){
 				$(this).remove();
@@ -76,8 +95,8 @@ var Configuration = function(objectName, label){
 	
 	self.createTable = function(json){
 		var tableRows = new Array();
-		$.each(json.value.Properties, function(index, item){
-			tableRows.push([index, item]);
+		$.each(json.value, function(index, item){
+			tableRows.push([index, item.Value]);
 		});
 			
 		var propertiesTable = util.makeTable({ 

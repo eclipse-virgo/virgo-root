@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 
@@ -35,7 +34,7 @@ public class StubQuasiImportPackage implements QuasiImportPackage {
      * {@inheritDoc}
      */
     public QuasiBundle getImportingBundle() {
-        return new StubQuasiLiveBundle(5, new StubBundle());
+        return new StubQuasiBundle(5l, "name", null);
     }
 
     /** 

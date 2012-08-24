@@ -123,7 +123,7 @@ public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
     }
 
     protected static ObjectName getObjectName(String type, String name, String version) throws MalformedObjectNameException {
-        return new ObjectName(String.format("org.eclipse.virgo.kernel:type=Model,artifact-type=%s,name=%s,version=%s", type, name, version));
+        return new ObjectName(String.format("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,name=%s,version=%s", type, name, version));
     }
 
     private void assertArtifactState(String region, String type, String name, String version, String state) throws MalformedObjectNameException,

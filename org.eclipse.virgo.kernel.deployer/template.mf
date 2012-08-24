@@ -26,9 +26,5 @@ Excluded-Imports:
  org.eclipse.virgo.kernel.equinox.*,
  org.eclipse.virgo.nano.deployer.hotenabler
 Excluded-Exports: 
- org.eclipse.virgo.nano.deployer.app.*,
- org.eclipse.virgo.nano.deployer.core.module.*,
- org.eclipse.virgo.nano.deployer.core.parse.*,
- org.eclipse.virgo.nano.deployer.lib.*,
- org.eclipse.virgo.nano.deployer.management.*,
+ org.eclipse.virgo.nano.deployer.*,
  *.internal.*

@@ -58,7 +58,7 @@ public class InstallCompleterTests {
         List<String> completionCandidates = this.completer.getCompletionCandidates("file:zebra" + File.separatorChar + "giraffe");
         assertCompletionsPresent(completionCandidates);
     }
-
+    
     @Ignore("[DMS-2885] FileNameComplet(e|o)r no longer available.")
     @Test
     public void completionWithMultipleOptions() {

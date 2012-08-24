@@ -25,17 +25,22 @@ import javax.management.ObjectName;
 import org.eclipse.virgo.kernel.shell.internal.commands.StubRuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.shell.internal.completers.ConfigCompleter;
 import org.eclipse.virgo.kernel.shell.internal.formatting.StubManageableCompositeArtifact;
+import org.eclipse.virgo.kernel.shell.stubs.StubRegionDigraph;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.BundleException;
 
 
 public class ConfigCompleterTests {
 
-    private final ConfigCompleter completer = new ConfigCompleter(new StubRuntimeArtifactModelObjectNameCreator());
+    private static final StubRegionDigraph REGION_DIGRAPH = new StubRegionDigraph();
+    
+	private final ConfigCompleter completer = new ConfigCompleter(new StubRuntimeArtifactModelObjectNameCreator(), REGION_DIGRAPH);
 
     @Before
-    public void installTestBean() throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+    public void installTestBean() throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException, BundleException {
+    	REGION_DIGRAPH.createRegion("global");
         ManagementFactory.getPlatformMBeanServer().registerMBean(getActiveArtifact(), getObjectName("test1", "0.0.0"));
         ManagementFactory.getPlatformMBeanServer().registerMBean(getActiveArtifact(), getObjectName("test1", "1.0.0"));
         ManagementFactory.getPlatformMBeanServer().registerMBean(getActiveArtifact(), getObjectName("test2", "0.0.0"));
@@ -68,7 +73,7 @@ public class ConfigCompleterTests {
 
     private final ObjectName getObjectName(String name, String version) {
         try {
-            return new ObjectName("test:type=Model,artifact-type=configuration,name=" + name + ",version=" + version);
+            return new ObjectName("test:type=ArtifactModel,artifact-type=configuration,name=" + name + ",version=" + version + ",region=global");
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }

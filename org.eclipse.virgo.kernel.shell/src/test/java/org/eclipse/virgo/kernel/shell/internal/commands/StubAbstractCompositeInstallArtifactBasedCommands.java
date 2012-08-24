@@ -13,11 +13,23 @@ package org.eclipse.virgo.kernel.shell.internal.commands;
 
 import org.eclipse.virgo.kernel.model.management.ManageableCompositeArtifact;
 import org.eclipse.virgo.kernel.shell.internal.commands.AbstractInstallArtifactBasedCommands;
+import org.eclipse.virgo.kernel.shell.stubs.StubRegionDigraph;
+import org.osgi.framework.BundleException;
 
 final class StubAbstractCompositeInstallArtifactBasedCommands extends AbstractInstallArtifactBasedCommands<ManageableCompositeArtifact> {
 
-    public StubAbstractCompositeInstallArtifactBasedCommands() {
-        super("test", new StubRuntimeArtifactModelObjectNameCreator(), new StubInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, null);
+    private static final StubRegionDigraph REGION_DIGRAPH = new StubRegionDigraph();
+
+    {
+    	try {
+			REGION_DIGRAPH.createRegion("region1");
+		} catch (BundleException e) {
+			e.printStackTrace(System.out);
+		}
+    }
+    
+	public StubAbstractCompositeInstallArtifactBasedCommands() {
+        super("test", new StubRuntimeArtifactModelObjectNameCreator(), new StubInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, REGION_DIGRAPH);
     }
 
 }

@@ -19,17 +19,17 @@ import java.util.Set;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.shell.CommandCompleter;
-import org.eclipse.virgo.kernel.shell.state.StateService;
 
 public class PackageCompleter implements CommandCompleter {
 
     private static final String SUBCOMMAND_LIST = "list";
 
-    private final StateService stateService;
+	private QuasiFrameworkFactory quasiFrameworkFactory;
 
-    public PackageCompleter(StateService stateService) {
-        this.stateService = stateService;
+    public PackageCompleter(QuasiFrameworkFactory quasiFrameworkFactory) {
+        this.quasiFrameworkFactory = quasiFrameworkFactory;
     }
 
     public List<String> getCompletionCandidates(String subcommand, String... tokens) {
@@ -79,7 +79,7 @@ public class PackageCompleter implements CommandCompleter {
 
     private List<QuasiExportPackage> getAllPackages() {
         List<QuasiExportPackage> packages = new ArrayList<QuasiExportPackage>();
-        for (QuasiBundle bundle : this.stateService.getAllBundles(null)) {
+        for (QuasiBundle bundle : this.quasiFrameworkFactory.create().getBundles()) {
             packages.addAll(bundle.getExportPackages());
         }
         return packages;

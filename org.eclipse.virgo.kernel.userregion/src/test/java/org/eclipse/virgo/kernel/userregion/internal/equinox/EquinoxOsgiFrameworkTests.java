@@ -97,7 +97,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
      * @throws BundleException
      */
     private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
-        osgi.getBundleContext().installBundle("file:///" + new File("../ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar").getAbsolutePath());
-        return osgi.getBundleContext().installBundle("file:///" + new File("../ivy-cache/repository/org.springframework/org.springframework.core/2.5.6.SEC01/org.springframework.core-2.5.6.SEC01.jar").getAbsolutePath());
+        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar").getAbsolutePath());
+        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.springframework/org.springframework.core/2.5.6.SEC01/org.springframework.core-2.5.6.SEC01.jar").getAbsolutePath());
     }
 }

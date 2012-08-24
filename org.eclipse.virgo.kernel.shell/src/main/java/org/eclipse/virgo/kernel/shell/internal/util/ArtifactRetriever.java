@@ -57,17 +57,6 @@ public final class ArtifactRetriever<T extends ManageableArtifact> {
         this.objectNameCreator = objectNameCreator;
         this.artifactType = artifactType;
     }
-
-    /**
-     * 
-     * @param name
-     * @param version
-     * @return artifact
-     * @throws InstanceNotFoundException
-     */
-    public T getArtifact(String name, Version version) throws InstanceNotFoundException {
-        return getArtifact(this.objectNameCreator.createModel(this.type, name, version));
-    }
     
     /**
      * @param name

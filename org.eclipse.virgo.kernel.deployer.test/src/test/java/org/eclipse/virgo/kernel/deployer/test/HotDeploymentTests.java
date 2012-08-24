@@ -79,7 +79,7 @@ public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
     
     private void awaitActive(String type, String name, String version) {
         try {
-            ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=Model,artifact-type=" + type + ",name=" + name + ",version=" + version);
+            ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version);
             ManageableArtifact artifact = JMX.newMXBeanProxy(this.mBeanServer, objectName, ManageableArtifact.class);
             
             long startTime = System.currentTimeMillis();

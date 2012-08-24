@@ -39,7 +39,7 @@ public class AbztractCompositeInstallArtifactBasedCommandsTests {
     private volatile ObjectName name;
     {
         try {
-            this.name = new ObjectName("test:type=Model,artifact-type=test,name=test1,version=0.0.0");
+            this.name = new ObjectName("test:type=ArtifactModel,artifact-type=test,name=test1,version=0.0.0,region=region1");
         } catch (MalformedObjectNameException e) {
         } catch (NullPointerException e) {
         }
@@ -63,26 +63,26 @@ public class AbztractCompositeInstallArtifactBasedCommandsTests {
 
     @Test
     public void examine() {
-        List<String> lines = this.commands.examine("test1", "0.0.0");
+        List<String> lines = this.commands.examine("test1", "0.0.0", "region1");
         assertFalse(lines.isEmpty());
     }
 
     @Test
     public void start() {
-        this.commands.start("test1", "0.0.0");
+        this.commands.start("test1", "0.0.0", "region1");
         assertTrue(this.artifact.getStartCalled());
     }
 
     @Test
     public void stop() {
-        this.commands.stop("test1", "0.0.0");
+        this.commands.stop("test1", "0.0.0", "region1");
         assertTrue(this.artifact.getStopCalled());
     }
 
     @Test
     public void refreshWork() {
         this.artifact.setShouldRefreshSucceed(true);
-        List<String> lines = this.commands.refresh("test1", "0.0.0");
+        List<String> lines = this.commands.refresh("test1", "0.0.0", "region1");
         assertTrue(this.artifact.getRefreshCalled());
         assertTrue(lines.get(0).contains("refreshed successfully"));
     }
@@ -90,14 +90,14 @@ public class AbztractCompositeInstallArtifactBasedCommandsTests {
     @Test
     public void refreshFail() {
         this.artifact.setShouldRefreshSucceed(false);
-        List<String> lines = this.commands.refresh("test1", "0.0.0");
+        List<String> lines = this.commands.refresh("test1", "0.0.0", "region1");
         assertTrue(this.artifact.getRefreshCalled());
         assertTrue(lines.get(0).contains("not refreshed"));
     }
 
     @Test
     public void uninstall() {
-        this.commands.uninstall("test1", "0.0.0");
+        this.commands.uninstall("test1", "0.0.0", "region1");
         assertTrue(this.artifact.getUninstallCalled());
     }
 }

@@ -17,8 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.eclipse.virgo.kernel.osgi.common.Version;
-
+import org.osgi.framework.Version;
 /**
  * Export for a {@link TesterModule}
  * <p />
@@ -28,7 +27,8 @@ import org.eclipse.virgo.kernel.osgi.common.Version;
  */
 public class TesterModuleExport {
     private static final String HEADER_ENTRY_CLAUSE_SEPARATOR = ";";
-    private static final String HEADER_ENTRY_ATTRIBUTE_NAME_SEPARATOR = ",";
+    private static final String HEADER_ENTRY_ATTRIBUTE_NAME_SEPARATOR = ",";    
+    public static final Version MINIMUM_VERSION = new Version("0");
     private final String pkgName;
     private final Version pkgVersion;
     private final Map<String,String> pkgAttributes;
@@ -39,7 +39,7 @@ public class TesterModuleExport {
         //Required parameters
         private final String pkgName;
         //Optional parameters
-        private Version pkgVersion = Version.MINIMUM_VERSION;
+        private Version pkgVersion = MINIMUM_VERSION;
         private Map<String,String> pkgAttributes = new HashMap<String,String>();
         private Set<String> pkgMandatoryAttributes = new HashSet<String>();
         private Set<String> pkgUses = new HashSet<String>();
@@ -95,7 +95,7 @@ public class TesterModuleExport {
     
     public String headerEntry() {
         StringBuffer sb = new StringBuffer(this.pkgName);
-        if (!this.pkgVersion.equals(Version.MINIMUM_VERSION)) {
+        if (!this.pkgVersion.equals(MINIMUM_VERSION)) {
             sb.append(HEADER_ENTRY_CLAUSE_SEPARATOR).append(versionClause(this.pkgVersion));
         }        
         if (!this.pkgAttributes.isEmpty()) {

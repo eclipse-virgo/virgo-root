@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.osgi.framework.Constants;
 
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveBundle;
-import org.eclipse.virgo.kernel.shell.state.QuasiLiveService;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
+import org.eclipse.virgo.kernel.shell.internal.util.ServiceHolder;
 import org.eclipse.virgo.util.common.StringUtils;
 
 public final class ServiceCommandFormatter {
@@ -35,12 +35,12 @@ public final class ServiceCommandFormatter {
 
     private static final String PROVIDER = "Providing Bundle";
 
-    public List<String> formatList(List<QuasiLiveService> services) {
+    public List<String> formatList(List<ServiceHolder> services) {
         Collections.sort(services, new QuasiLiveServiceComparator());
 
         int maxIdLength = ID.length();
         int maxProviderLength = PROVIDER.length();
-        for (QuasiLiveService service : services) {
+        for (ServiceHolder service : services) {
             int idLength = ((Long) service.getServiceId()).toString().length();
             maxIdLength = idLength > maxIdLength ? idLength : maxIdLength;
             int providerLength = ((Long) service.getProvider().getBundleId()).toString().length();
@@ -53,7 +53,7 @@ public final class ServiceCommandFormatter {
         String format = String.format("%%-%ds %%-%ds %%%ds", maxIdLength, objectClassWidth, maxProviderLength);
         lines.add(String.format(format, ID, OBJECT_CLASSES, PROVIDER));
 
-        for (QuasiLiveService service : services) {
+        for (ServiceHolder service : services) {
             Object objectClass = service.getProperties().get(Constants.OBJECTCLASS);
             lines.add(String.format(format, service.getServiceId(), formatObjectClass(objectClass, objectClassWidth),
                 service.getProvider().getBundleId()));
@@ -62,23 +62,23 @@ public final class ServiceCommandFormatter {
         return lines;
     }
 
-    public List<String> formatExamine(QuasiLiveService service) {
+    public List<String> formatExamine(ServiceHolder service) {
         List<String> lines = new ArrayList<String>();
 
         lines.add(String.format("Properties:"));
         lines.addAll(formatProperties(service.getProperties()));
 
-        QuasiLiveBundle provider = service.getProvider();
+        QuasiBundle provider = service.getProvider();
         lines.add("");
         lines.add(String.format("Publisher: %s %s [%s]", provider.getSymbolicName(), provider.getVersion().toString(), provider.getBundleId()));
 
         lines.add("");
         lines.add(String.format("Consumer(s):"));
-        List<QuasiLiveBundle> consumers = service.getConsumers();
+        List<QuasiBundle> consumers = service.getConsumers();
         if (consumers.size() == 0) {
             lines.add(String.format("    None"));
         } else {
-            for (QuasiLiveBundle consumer : consumers) {
+            for (QuasiBundle consumer : consumers) {
                 lines.add(String.format("    %s %s [%s]", consumer.getSymbolicName(), consumer.getVersion().toString(), consumer.getBundleId()));
             }
         }
@@ -139,9 +139,9 @@ public final class ServiceCommandFormatter {
         return lines;
     }
 
-    private static class QuasiLiveServiceComparator implements Comparator<QuasiLiveService> {
+    private static class QuasiLiveServiceComparator implements Comparator<ServiceHolder> {
 
-        public int compare(QuasiLiveService service1, QuasiLiveService service2) {
+        public int compare(ServiceHolder service1, ServiceHolder service2) {
             Long id1 = service1.getServiceId();
             Long id2 = service2.getServiceId();
             return id1.compareTo(id2);
