@@ -16,8 +16,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.eclipse.virgo.nano.deployer.ArtifactIdentity;
-import org.eclipse.virgo.nano.deployer.Deployer;
+import org.eclipse.virgo.nano.deployer.api.ArtifactIdentity;
+import org.eclipse.virgo.nano.deployer.api.Deployer;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;

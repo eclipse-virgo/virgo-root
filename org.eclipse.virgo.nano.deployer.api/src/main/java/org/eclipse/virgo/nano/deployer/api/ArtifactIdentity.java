@@ -10,7 +10,7 @@
  *   SAP AG - re-factoring
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.deployer;
+package org.eclipse.virgo.nano.deployer.api;
 
 import java.beans.ConstructorProperties;
 

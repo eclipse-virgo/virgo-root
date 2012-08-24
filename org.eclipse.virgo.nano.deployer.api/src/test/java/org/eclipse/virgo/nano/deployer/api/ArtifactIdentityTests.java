@@ -9,11 +9,11 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.deployer;
+package org.eclipse.virgo.nano.deployer.api;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.virgo.nano.deployer.ArtifactIdentity;
+import org.eclipse.virgo.nano.deployer.api.ArtifactIdentity;
 import org.junit.Test;
 
 
