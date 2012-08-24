@@ -27,20 +27,8 @@ public class DefaultArtifactObjectNameCreatorTests {
     private final DefaultRuntimeArtifactModelObjectNameCreator creator = new DefaultRuntimeArtifactModelObjectNameCreator("test-domain");
     
     @Test(expected = FatalAssertionException.class)
-    public void nullModelArtifact() {
-        creator.createModel(null);
-    }
-    
-    @Test(expected = FatalAssertionException.class)
     public void nullArtifactModelArtifact() {
         creator.createArtifactModel(null);
-    }
-
-    @Test
-    public void successModel() {
-        ObjectName objectName = creator.createModel(new StubCompositeArtifact());
-        assertNotNull(objectName);
-        assertEquals("test-domain:artifact-type=test-type,name=test-name,type=ArtifactModel,version=0.0.0", objectName.getCanonicalName());
     }
 
     @Test

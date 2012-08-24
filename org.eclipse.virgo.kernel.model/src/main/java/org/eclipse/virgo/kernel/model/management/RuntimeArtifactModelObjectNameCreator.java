@@ -36,7 +36,7 @@ public interface RuntimeArtifactModelObjectNameCreator {
      * @param artifact The artifact to generate an {@link ObjectName} for
      * @return The {@link ObjectName} for the {@link Artifact}
      */
-    ObjectName createModel(Artifact artifact);
+    //ObjectName createModel(Artifact artifact);
 
     /**
      * Create an ArtifactModel {@link ObjectName} based on an input {@link Artifact}. Names generated from equal (
@@ -55,7 +55,7 @@ public interface RuntimeArtifactModelObjectNameCreator {
      * @param version The version of the object to create an @{link ObjectName} for
      * @return An {@link ObjectName} for the runtime artifact represented by this type, name, and version
      */
-    ObjectName createModel(String type, String name, Version version);
+    //ObjectName createModel(String type, String name, Version version);
 
     /**
      * Creates an ArtifactModel {@link ObjectName} based on an input type, name, version, and region.
@@ -101,7 +101,7 @@ public interface RuntimeArtifactModelObjectNameCreator {
      * @param objectName The identifying {@link ObjectName}
      * @return The type of the artifact
      */
-    String getType(ObjectName objectName);
+    //String getType(ObjectName objectName);
 
     /**
      * Gets the name of an artifact identified by an {@link ObjectName}
@@ -118,5 +118,13 @@ public interface RuntimeArtifactModelObjectNameCreator {
      * @return The version of the artifact
      */
     String getVersion(ObjectName objectName);
+
+    /**
+     * Gets the version of an artifact identified by an {@link ObjectName}
+     * 
+     * @param objectName The identifying {@link ObjectName}
+     * @return The version of the artifact
+     */
+    String getRegion(ObjectName objectName);
 
 }

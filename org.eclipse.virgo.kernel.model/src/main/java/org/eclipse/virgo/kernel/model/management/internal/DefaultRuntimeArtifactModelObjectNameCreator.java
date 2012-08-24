@@ -38,28 +38,19 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     private static final String ARTIFACTS_OF_TYPE_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,*";
 
     private static final String ARTIFACTS_OF_TYPE_AND_NAME_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,*";
-
-    private static final String ARTIFACT_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,version=%s";
     
-    private static final String EXTENDED_ARTIFACT_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
-
-    private static final String KEY_TYPE = "artifact-type";
+    private static final String ARTIFACT_FORMAT = "%s:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s";
 
     private static final String KEY_NAME = "name";
 
     private static final String KEY_VERSION = "version";
 
+    private static final String KEY_REGION = "region";
+
     private final String domain;
 
     public DefaultRuntimeArtifactModelObjectNameCreator(String domain) {
         this.domain = domain;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ObjectName createModel(@NonNull Artifact artifact) {
-        return createModel(artifact.getType(), artifact.getName(), artifact.getVersion());
     }
 
     /**
@@ -72,15 +63,8 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     /**
      * {@inheritDoc}
      */
-    public ObjectName createModel(String type, String name, Version version) {
-        return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString())));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public ObjectName createArtifactModel(String type, String name, Version version, Region region) {
-        return createObjectName(String.format(EXTENDED_ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString()), this.quoteValueIfNeeded(region.getName())));
+        return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString()), this.quoteValueIfNeeded(region.getName())));
     }
 
     /**
@@ -107,9 +91,9 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     /**
      * {@inheritDoc}
      */
-    public String getType(ObjectName objectName) {
-        return objectName.getKeyProperty(KEY_TYPE);
-    }
+	public String getRegion(ObjectName objectName) {
+		return objectName.getKeyProperty(KEY_REGION);
+	}
 
     /**
      * {@inheritDoc}
@@ -141,4 +125,5 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
             throw new RuntimeException(String.format("Unable to create object name '%s'", objectName), e);
         }
     }
+
 }

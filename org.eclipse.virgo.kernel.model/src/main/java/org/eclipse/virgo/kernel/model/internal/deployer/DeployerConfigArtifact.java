@@ -47,7 +47,7 @@ final class DeployerConfigArtifact extends DeployerArtifact {
         Map<String, String> properties = new HashMap<String, String>(super.getProperties());
         try {
             Properties props = this.configInstallArtifact.getProperties();
-            Enumeration keys = props.keys();
+            Enumeration<Object> keys = props.keys();
             while (keys.hasMoreElements()) {
                 Object key = keys.nextElement();
                 if (key instanceof String) {

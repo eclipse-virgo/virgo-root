@@ -86,5 +86,10 @@ public class StubCompositeArtifact implements CompositeArtifact {
     public Map<String, String> getProperties() {
         throw new UnsupportedOperationException();
     }
+    
+    @Override
+    public String toString() {
+    	return "StubCompositeRegion type:" + this.type + " name:" + this.name + " region:" + this.region.getName();
+    }
 
 }

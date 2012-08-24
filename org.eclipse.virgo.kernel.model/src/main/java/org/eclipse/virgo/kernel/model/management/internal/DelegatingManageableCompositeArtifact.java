@@ -32,8 +32,8 @@ final class DelegatingManageableCompositeArtifact extends DelegatingManageableAr
 
     private final CompositeArtifact planArtifact;
 
-    public DelegatingManageableCompositeArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull CompositeArtifact planArtifact, boolean newModel) {
-        super(artifactObjectNameCreator, planArtifact, newModel);
+    public DelegatingManageableCompositeArtifact(@NonNull RuntimeArtifactModelObjectNameCreator artifactObjectNameCreator, @NonNull CompositeArtifact planArtifact) {
+        super(artifactObjectNameCreator, planArtifact);
         this.planArtifact = planArtifact;
     }
 

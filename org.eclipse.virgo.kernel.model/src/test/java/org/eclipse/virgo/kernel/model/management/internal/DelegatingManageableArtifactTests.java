@@ -41,12 +41,12 @@ public class DelegatingManageableArtifactTests {
 
     @Test(expected = FatalAssertionException.class)
     public void nullCreator() {
-        new DelegatingManageableArtifact(null, new StubCompositeArtifact(), true);
+        new DelegatingManageableArtifact(null, new StubCompositeArtifact());
     }
 
     @Test(expected = FatalAssertionException.class)
     public void nullArtifact() {
-        new DelegatingManageableArtifact(createMock(RuntimeArtifactModelObjectNameCreator.class), null, true);
+        new DelegatingManageableArtifact(createMock(RuntimeArtifactModelObjectNameCreator.class), null);
     }
 
     @Test
@@ -54,13 +54,13 @@ public class DelegatingManageableArtifactTests {
         RuntimeArtifactModelObjectNameCreator creator = createMock(RuntimeArtifactModelObjectNameCreator.class);
         Artifact artifact = createMock(Artifact.class);
 
-        DelegatingManageableArtifact manageableArtifact = new DelegatingManageableArtifact(creator, artifact, false);
+        DelegatingManageableArtifact manageableArtifact = new DelegatingManageableArtifact(creator, artifact);
 
         expect(artifact.getDependents()).andReturn(getArtifacts());
-        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value1"));
-        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value2"));
-        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3"));
-        expect(creator.createModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3,region=global"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value1,region=global"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value2,region=global"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3,region=global"));
+        expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3,region=other"));
         expect(artifact.getName()).andReturn("test-name");
         expect(artifact.getState()).andReturn(ArtifactState.ACTIVE);
         expect(artifact.getRegion()).andReturn(new StubRegion("test-region"));
