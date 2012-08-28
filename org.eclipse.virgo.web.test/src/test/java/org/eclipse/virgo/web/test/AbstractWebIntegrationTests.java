@@ -66,7 +66,9 @@ public abstract class AbstractWebIntegrationTests {
 
     private static final long WEB_PLAN_DEPLOY_TIMEOUT = 5*60*1000; // 5 minutes
 
-	private static final String CURRENT_VERSION = "3.5.0";
+	private static final String CURRENT_VERSION = "3.6.0";
+
+    private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
     protected final List<String> deployedWebApps = new ArrayList<String>();
 
@@ -349,7 +351,7 @@ public abstract class AbstractWebIntegrationTests {
     @AfterClass
     public static void cleanup() throws Exception {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION);
+        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION + ",region=global");
 
         try {
             mBeanServer.invoke(objectName, "stop", null, null);
@@ -360,7 +362,7 @@ public abstract class AbstractWebIntegrationTests {
 
     private void awaitInitialArtifactDeployment() throws JMException, InterruptedException {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION);
+        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION + ",region=global");
 
         Object state = null;
         long startTime = System.currentTimeMillis();
@@ -399,8 +401,8 @@ public abstract class AbstractWebIntegrationTests {
     private void awaitWebAppStart(String name, String version) throws InterruptedException {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-            ObjectName objectName = new ObjectName(String.format("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=bundle,name=%s,version=%s", name,
-                version));
+            ObjectName objectName = new ObjectName(String.format("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=bundle,name=%s,version=%s,region=%s", name,
+                version, USER_REGION_NAME));
             ManageableArtifact artifact = JMX.newMXBeanProxy(mBeanServer, objectName, ManageableArtifact.class);
 
             long startTime = System.currentTimeMillis();
