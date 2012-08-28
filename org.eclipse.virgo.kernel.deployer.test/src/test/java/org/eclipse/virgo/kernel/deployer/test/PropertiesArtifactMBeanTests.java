@@ -46,7 +46,7 @@ public class PropertiesArtifactMBeanTests extends AbstractDeployerIntegrationTes
     private final ObjectName objectName;    
     {
         try {
-            objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=configuration,name=test,version=0.0.0");
+            objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=configuration,name=test,version=0.0.0,region=global");
         } catch (JMException jme) {
             throw new RuntimeException(jme);
         }

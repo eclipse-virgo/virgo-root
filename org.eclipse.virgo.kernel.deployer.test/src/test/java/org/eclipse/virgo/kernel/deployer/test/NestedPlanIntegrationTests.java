@@ -106,7 +106,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         GLOBAL_BUNDLE_INFO.setFile(new File(TEST_RESOURCES_DIRECTORY + "global.jar"));
     }
 
-    private RuntimeArtifactRepository ram;
+    private RuntimeArtifactRepository ram = null;
     
     private Region globalRegion;
 
@@ -127,6 +127,10 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         ServiceReference<RuntimeArtifactRepository> runtimeArtifactRepositoryServiceReference = context.getServiceReference(RuntimeArtifactRepository.class);
         if (runtimeArtifactRepositoryServiceReference != null) {
             this.ram = context.getService(runtimeArtifactRepositoryServiceReference);
+        }
+        
+        if(this.ram == null){
+        	throw new RuntimeException("Unable to locate the RuntimeArtifactRepository. Found " + runtimeArtifactRepositoryServiceReference);
         }
         
         Collection<ServiceReference<Region>> regionServiceReferences = context.getServiceReferences(Region.class, "(org.eclipse.virgo.kernel.region.name=global)");
@@ -660,11 +664,11 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
         return (scoped ? "scoped" : "unscoped") + "." + (atomic ? "atomic" : "nonatomic");
     }
 
-    private DeploymentIdentity deploy(TestArtifactInfo i) throws DeploymentException {
-        DeploymentIdentity identity = this.deployer.deploy(i.getFile().toURI());
-        Assert.assertEquals(i.getType(), identity.getType());
-        Assert.assertEquals(i.getName(), identity.getSymbolicName());
-        Assert.assertEquals(i.getVersion(), new Version(identity.getVersion()));
+    private DeploymentIdentity deploy(TestArtifactInfo artifact) throws DeploymentException {
+        DeploymentIdentity identity = this.deployer.deploy(artifact.getFile().toURI());
+        Assert.assertEquals(artifact.getType(), identity.getType());
+        Assert.assertEquals(artifact.getName(), identity.getSymbolicName());
+        Assert.assertEquals(artifact.getVersion(), new Version(identity.getVersion()));
         return identity;
     }
 

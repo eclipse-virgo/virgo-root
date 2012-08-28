@@ -78,7 +78,7 @@ public abstract class AbstractDeployerIntegrationTest {
     @BeforeClass
     public static void awaitKernelStartup() throws Exception {
         MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-        int sleepCount = 600;
+        int sleepCount = 800;
         while (!"STARTED".equals(platformMBeanServer.getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"), "Status"))) {
             Thread.sleep(50);
             if (--sleepCount == 0)
