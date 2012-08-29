@@ -48,6 +48,7 @@ public final class StandardArtifactStorageFactory implements ArtifactStorageFact
         this.artifactFSFactory = artifactFSFactory;
         this.eventLogger = eventLogger;
         this.unpackBundles = unpackBundles;
+        this.workDirectory.newChild(DEPLOYER_STAGING_DIRECTORY).delete(true);
     }
 
     public ArtifactStorage create(File file, ArtifactIdentity artifactIdentity) {
