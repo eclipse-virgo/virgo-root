@@ -48,6 +48,7 @@ public final class StandardArtifactStorageFactory implements ArtifactStorageFact
         this.artifactFSFactory = artifactFSFactory;
         this.eventLogger = eventLogger;
         this.unpackBundles = unpackBundles;
+        this.workDirectory.newChild(DEPLOYER_STAGING_DIRECTORY).delete(true);
     }
 
     public ArtifactStorage create(File file, ArtifactIdentity artifactIdentity) {
@@ -65,12 +66,35 @@ public final class StandardArtifactStorageFactory implements ArtifactStorageFact
     }
 
     private PathReference createStagingPathReference(ArtifactIdentity artifactIdentity, String name) {
-        return this.workDirectory.newChild(DEPLOYER_STAGING_DIRECTORY).newChild(normalizeScopeName(artifactIdentity.getScopeName())).newChild(
-            artifactIdentity.getType()).newChild(artifactIdentity.getName()).newChild(artifactIdentity.getVersion().toString()).newChild(name);
+        PathReference scopeDir = this.workDirectory.newChild(DEPLOYER_STAGING_DIRECTORY).newChild(normalizeScopeName(artifactIdentity.getScopeName()));
+        return createNextChild(scopeDir).newChild(name);
     }
 
     private String normalizeScopeName(String scopeName) {
         return scopeName == null ? "global" : scopeName;
+    }
+
+    private PathReference createNextChild(PathReference scopeDir) {
+        final long nextChildNumber = recoverLastChild(scopeDir) + 1;
+        return scopeDir.newChild(Long.toString(nextChildNumber));
+    }
+    
+    private static long recoverLastChild(PathReference scopeDir) {
+        long lastChildNumber = -1;
+        File file = scopeDir.toFile();
+        String[] children = file.list();
+        if (children != null) {
+            for (String child : children) {
+                try {
+                    long childNumber = Long.parseLong(child);
+                    if (childNumber > lastChildNumber) {
+                        lastChildNumber = childNumber;
+                    }
+                } catch (NumberFormatException _) {
+                }
+            }
+        }
+        return lastChildNumber;
     }
 
 }
