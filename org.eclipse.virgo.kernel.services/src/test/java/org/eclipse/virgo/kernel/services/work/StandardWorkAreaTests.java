@@ -25,31 +25,48 @@ import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.PathReference;
 
-
 /**
  */
 public class StandardWorkAreaTests {
 
     private static final String WORK_DIR_NAME = "com.foo";
-    
+
+    private static final String KERNEL_WORK_DIR_NAME = "bar";
+
+    private static final String KERNEL_BSN = "org.eclipse.virgo.kernel." + KERNEL_WORK_DIR_NAME;
 
     @Before
     public void before() {
         FileSystemUtils.deleteRecursively(new File("./target/work", WORK_DIR_NAME));
+        FileSystemUtils.deleteRecursively(new File("./target/work", KERNEL_WORK_DIR_NAME));
     }
-   
+
     @Test
     public void nonNullWorkDirectory() {
-        
+
         StubBundle bundle = new StubBundle(WORK_DIR_NAME, Version.emptyVersion);
-        
+
         StandardWorkArea manager = new StandardWorkArea(new File("./target/work"), bundle);
         PathReference workDir = manager.getWorkDirectory();
-        
+
         assertNotNull(workDir);
-        assertTrue("work dir does not exist",  workDir.exists());
+        assertTrue("work dir does not exist", workDir.exists());
         assertTrue(workDir.isDirectory());
-        
+
         assertTrue(new File("./target/work", WORK_DIR_NAME + "_" + Version.emptyVersion).exists());
+    }
+
+    @Test
+    public void kernelWorkDirectory() {
+        StubBundle bundle = new StubBundle(KERNEL_BSN, Version.emptyVersion);
+
+        StandardWorkArea manager = new StandardWorkArea(new File("./target/work"), bundle);
+        PathReference workDir = manager.getWorkDirectory();
+
+        assertNotNull(workDir);
+        assertTrue("work dir does not exist", workDir.exists());
+        assertTrue(workDir.isDirectory());
+
+        assertTrue(new File("./target/work", KERNEL_WORK_DIR_NAME).exists());
     }
 }

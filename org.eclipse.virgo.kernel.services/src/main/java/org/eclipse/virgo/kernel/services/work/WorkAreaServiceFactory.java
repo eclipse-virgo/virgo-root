@@ -21,7 +21,7 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * {@link ServiceFactory} that creates a {@link WorkArea} for a given {@link Bundle}. Bundles need only to import a
- * <code>WorkArea</code> servicein their module context file to get access to the correct work area location.
+ * <code>WorkArea</code> service in their module context file to get access to the correct work area location.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />

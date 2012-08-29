@@ -28,6 +28,8 @@ import org.eclipse.virgo.util.io.PathReference;
  */
 final class StandardWorkArea implements WorkArea {
 
+    private static final String KERNEL_PREFIX = "org.eclipse.virgo.kernel.";
+
     private final PathReference workDirectory;
 
     private final Bundle owner;
@@ -45,7 +47,13 @@ final class StandardWorkArea implements WorkArea {
     }
 
     private String createOwnerDirectoryName(Bundle owner) {
-        return String.format("%s_%s", owner.getSymbolicName(), owner.getVersion());
+        String ownerSymbolicName = owner.getSymbolicName();
+        if (ownerSymbolicName.startsWith(KERNEL_PREFIX)) {
+            // Give kernel bundles short work area names to reduce path name lengths on Windows.
+            return ownerSymbolicName.substring(KERNEL_PREFIX.length());
+        } else {
+            return String.format("%s_%s", ownerSymbolicName, owner.getVersion());
+        }
     }
 
     /**

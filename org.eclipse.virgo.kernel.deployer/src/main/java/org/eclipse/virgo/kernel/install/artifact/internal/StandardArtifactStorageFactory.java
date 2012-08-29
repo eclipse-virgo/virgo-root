@@ -12,7 +12,8 @@
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
 import java.io.File;
-
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSFactory;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
@@ -33,17 +34,22 @@ import org.eclipse.virgo.util.io.PathReference;
  */
 public final class StandardArtifactStorageFactory implements ArtifactStorageFactory {
 
-    private static final String DEPLOYER_STAGING_DIRECTORY = "staging";
+    private static final String DEPLOYER_STAGING_DIRECTORY = "s";
 
     private final PathReference workDirectory;
 
     private final ArtifactFSFactory artifactFSFactory;
 
     private final EventLogger eventLogger;
-    
+
     private final String unpackBundles;
 
-    public StandardArtifactStorageFactory(PathReference workDirectory, ArtifactFSFactory artifactFSFactory, EventLogger eventLogger, String unpackBundles) {
+    private final Object monitor = new Object();
+
+    private final Map<PathReference, Long> uniqueId = new HashMap<PathReference, Long>();
+
+    public StandardArtifactStorageFactory(PathReference workDirectory, ArtifactFSFactory artifactFSFactory, EventLogger eventLogger,
+        String unpackBundles) {
         this.workDirectory = workDirectory;
         this.artifactFSFactory = artifactFSFactory;
         this.eventLogger = eventLogger;
@@ -75,26 +81,12 @@ public final class StandardArtifactStorageFactory implements ArtifactStorageFact
     }
 
     private PathReference createNextChild(PathReference scopeDir) {
-        final long nextChildNumber = recoverLastChild(scopeDir) + 1;
-        return scopeDir.newChild(Long.toString(nextChildNumber));
-    }
-    
-    private static long recoverLastChild(PathReference scopeDir) {
-        long lastChildNumber = -1;
-        File file = scopeDir.toFile();
-        String[] children = file.list();
-        if (children != null) {
-            for (String child : children) {
-                try {
-                    long childNumber = Long.parseLong(child);
-                    if (childNumber > lastChildNumber) {
-                        lastChildNumber = childNumber;
-                    }
-                } catch (NumberFormatException _) {
-                }
-            }
+        synchronized (this.monitor) {
+            Long uniqueId = this.uniqueId.get(scopeDir);
+            uniqueId = uniqueId == null ? 0L : uniqueId + 1;
+            this.uniqueId.put(scopeDir, uniqueId);
+            return scopeDir.newChild(uniqueId.toString());
         }
-        return lastChildNumber;
     }
 
 }
