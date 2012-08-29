@@ -53,4 +53,6 @@ org.eclipse.equinox.region=1.1.0.v20120319-1602
 
 # Eclipse classpath references
 org.apache.coyote=7.0.29.v201208230737
+org.apache.el=7.0.29.v201208220722
 org.apache.jasper=7.0.29.v201208230737
+
