@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper;
+import org.eclipse.virgo.shell.osgicommand.helper.ClassLoadingHelper;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
 import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 import org.junit.Before;
