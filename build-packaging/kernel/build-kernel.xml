@@ -71,7 +71,8 @@
 		<copy todir="${kernel.resources}/plugins" failonerror="false">
 			<fileset dir="${kernel.target.dir}/assembly/plugins">
 				<include name="org.eclipse.virgo.kernel.userregion_*.jar"/>
-				<include name="org.eclipse.virgo.kernel.osgicommand_*.jar"/>
+				<include name="org.eclipse.virgo.shell.command_*.jar"/>
+				<!--include name="org.eclipse.virgo.kernel.osgicommand_*.jar"/-->
 			</fileset>
 		</copy>
 
