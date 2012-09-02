@@ -77,25 +77,6 @@ public class ArgumentParserTests {
         assertEquals(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache" + "/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar").toURI(), bd.getURI());
     }
     
-    @Test
-    public void testIntegrationRepoPlaceholderSubstitution() throws URISyntaxException {
-        String commandLine = "-B${integration.repo.dir}";
-        LaunchCommand command = parse(commandLine);
-        
-        BundleEntry[] bundleDeclarations = command.getBundleEntries();
-        assertNotNull(bundleDeclarations);
-        assertEquals(1, bundleDeclarations.length);
-        
-        BundleEntry bd = bundleDeclarations[0];
-        assertFalse(bd.isAutoStart());
-        String virgoDepsLocation = System.getProperty("virgo.deps.location");
-        if (virgoDepsLocation.equals("integration-repo")) {
-            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.INTEGRATION_REPO_RELATIVE + File.separator).toURI(), bd.getURI());
-        } else {
-            assertEquals(new File(System.getProperty("user.home") + ArgumentParser.IVY_CACHE_RELATIVE + File.separator + "repository" + File.separator).toURI(), bd.getURI());
-        }
-    }
-    
     @Test(expected=ParseException.class)
     public void testParseRelativeFileBundleEntryNotExists() {
         String commandLine = "-B/src/test/resources/test-bundleoeuoeu@start";
