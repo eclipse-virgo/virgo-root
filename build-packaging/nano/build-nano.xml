@@ -140,7 +140,6 @@
         </antcall>
         
         <property name="p2.products.location" value="${nano.basedir}/publish_resources/products"/>
-        <property name="p2.categories.location" value="${nano.basedir}/publish_resources/categories"/>
         
         <antcall target="p2.publish-binary-chmod">
             <param name="repository" value="${p2.repository.dir}"/>
@@ -191,12 +190,6 @@
             <param name="product.file.location" value="${p2.products.location}/nano-full-noscripts/nano-full-noscripts.product"/>
         </antcall>
         <echo message="Published nano-full-noscripts product to ${p2.repository.dir}."/>
-   
-        <antcall target="p2.publish-category">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="category.file.location" value="${p2.categories.location}/org.eclipse.virgo.categories/category.xml"/>
-        </antcall>
-        <echo message="Published Virgo Add-Ons feature category in the p2 repository" />
      </target>
      
      <target name="install-packages">
