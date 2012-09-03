@@ -8,7 +8,6 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
-
 package org.eclipse.virgo.test.stubs.framework;
 
 import static org.eclipse.virgo.test.stubs.AdditionalAsserts.assertContains;

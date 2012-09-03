@@ -20,6 +20,7 @@
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="compile->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="compile->runtime"/>
 		<dependency org='org.eclipse.virgo.mirrored' name='org.eclipse.osgi' rev='${org.eclipse.osgi}' conf='compile->runtime'/>
+		<dependency org="org.eclipse.virgo.mirrored" name='org.eclipse.equinox.region' rev='${org.eclipse.equinox.region}' conf='compile->runtime' />
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="compile->runtime"/>
 	</dependencies>
 
