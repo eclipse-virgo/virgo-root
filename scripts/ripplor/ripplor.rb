@@ -19,7 +19,6 @@ if File.exist?(File.expand_path(args[:repository_map]))
   end
 else
   paths = {
-	'eclipse-mirror' => 'eclipse-mirror',
 	'util' => 'util',
 	'test' => 'test',
 	'medic' => 'medic',
@@ -39,7 +38,6 @@ eclipse_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/vi
 ripple_branch = args[:branch_name]
 
 ALL_REPOS = [
-	Repository.new(eclipse_repo_root, 'eclipse-mirror',		paths['eclipse-mirror'],		'org.eclipse.virgo.eclipse-mirror',		nil, ripple_branch, 'clean'),
   Repository.new(eclipse_repo_root, 'util',					paths['util'],					'org.eclipse.virgo.util',				nil, ripple_branch),
   Repository.new(eclipse_repo_root, 'test',					paths['test'],					'org.eclipse.virgo.test',				nil, ripple_branch),
   Repository.new(eclipse_repo_root, 'medic',				paths['medic'],					'org.eclipse.virgo.medic',				nil, ripple_branch),
