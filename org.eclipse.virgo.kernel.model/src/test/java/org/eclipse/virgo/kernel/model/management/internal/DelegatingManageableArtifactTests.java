@@ -29,10 +29,10 @@ import javax.management.ObjectName;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.kernel.model.management.internal.DelegatingManageableArtifact;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
@@ -63,7 +63,7 @@ public class DelegatingManageableArtifactTests {
         expect(creator.createArtifactModel(isA(Artifact.class))).andReturn(new ObjectName("domain:key=value3,region=other"));
         expect(artifact.getName()).andReturn("test-name");
         expect(artifact.getState()).andReturn(ArtifactState.ACTIVE);
-        expect(artifact.getRegion()).andReturn(new StubRegion("test-region"));
+        expect(artifact.getRegion()).andReturn(new StubRegion("test-region", null));
         expect(artifact.getType()).andReturn("test-type");
         expect(artifact.getVersion()).andReturn(Version.emptyVersion);
         expect(artifact.getProperties()).andReturn(Collections.<String, String> emptyMap());
@@ -93,7 +93,7 @@ public class DelegatingManageableArtifactTests {
         for (int i = 0; i < 3; i++) {
             artifacts.add(new StubCompositeArtifact());
         }
-        artifacts.add(new StubCompositeArtifact("foo", "bar", new StubRegion("global")));
+        artifacts.add(new StubCompositeArtifact("foo", "bar", new StubRegion("global", null)));
         return artifacts;
     }
 }

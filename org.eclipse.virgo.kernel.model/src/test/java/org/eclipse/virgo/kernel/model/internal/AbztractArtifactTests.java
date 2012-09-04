@@ -22,21 +22,17 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
-
-
+import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
-import org.eclipse.virgo.kernel.model.StubRegion;
-import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
-import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
+import org.junit.Test;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 
 public class AbztractArtifactTests {
 
@@ -44,7 +40,7 @@ public class AbztractArtifactTests {
 
     private final AbstractArtifact artifact;
 
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
 
     {
         bundleContext = new StubBundleContext();
@@ -134,7 +130,7 @@ public class AbztractArtifactTests {
     private static class StubArtifact extends AbstractArtifact {
 
         public StubArtifact(BundleContext bundleContext) {
-            super(bundleContext, "test-type", "test-name", Version.emptyVersion, new StubRegion("test-region"));
+            super(bundleContext, "test-type", "test-name", Version.emptyVersion, new StubRegion("test-region", null));
         }
 
         public StubArtifact(BundleContext bundleContext, String type, String name, Version version, Region region) {

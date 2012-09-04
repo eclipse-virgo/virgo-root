@@ -21,13 +21,13 @@ import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class ModelInstallArtifactLifecycleListenerTests {
 
     private final StubSpringContextAccessor springContextAccessor = new StubSpringContextAccessor();
 
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
     
     private final StubBundleContext bundleContext;
     {

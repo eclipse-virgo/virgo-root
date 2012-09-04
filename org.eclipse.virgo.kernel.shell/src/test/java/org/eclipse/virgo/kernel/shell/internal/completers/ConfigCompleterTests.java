@@ -23,9 +23,8 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.eclipse.virgo.kernel.shell.internal.commands.StubRuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.kernel.shell.internal.completers.ConfigCompleter;
 import org.eclipse.virgo.kernel.shell.internal.formatting.StubManageableCompositeArtifact;
-import org.eclipse.virgo.kernel.shell.stubs.StubRegionDigraph;
+import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

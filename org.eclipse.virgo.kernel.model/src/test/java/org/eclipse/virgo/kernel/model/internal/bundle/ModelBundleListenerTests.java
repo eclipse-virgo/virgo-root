@@ -19,13 +19,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.StubSpringContextAccessor;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -43,7 +43,7 @@ public class ModelBundleListenerTests {
     
     private final RegionDigraph regionDigraph = createMock(RegionDigraph.class);
     
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
 
     {
         this.bundleContext = new StubBundleContext();
