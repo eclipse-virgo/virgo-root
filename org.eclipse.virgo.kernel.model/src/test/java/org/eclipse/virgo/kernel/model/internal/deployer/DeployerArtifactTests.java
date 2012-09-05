@@ -32,7 +32,6 @@ import org.easymock.IAnswer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.ArtifactState;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerArtifact;
 
@@ -43,6 +42,7 @@ import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 public class DeployerArtifactTests {
@@ -53,7 +53,7 @@ public class DeployerArtifactTests {
         bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
     
     private final DeployerArtifact artifact = new DeployerArtifact(bundleContext, new StubInstallArtifact("bundle"), region);
 

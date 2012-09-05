@@ -16,18 +16,15 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Test;
-import org.osgi.framework.InvalidSyntaxException;
-
-
 import org.eclipse.virgo.kernel.model.ArtifactState;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.model.internal.configurationadmin.ConfigurationArtifact;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
+import org.junit.Test;
+import org.osgi.framework.InvalidSyntaxException;
 
 public class ConfgurationArtifactTests {
 
@@ -40,7 +37,7 @@ public class ConfgurationArtifactTests {
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
     
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
 
     private final ConfigurationArtifact artifact = new ConfigurationArtifact(bundleContext, configurationAdmin, "test-pid", region);
 

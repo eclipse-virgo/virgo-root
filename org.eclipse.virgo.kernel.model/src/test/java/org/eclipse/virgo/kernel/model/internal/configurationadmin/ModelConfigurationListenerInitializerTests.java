@@ -20,11 +20,11 @@ import org.osgi.framework.InvalidSyntaxException;
 
 
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.configurationadmin.ModelConfigurationListenerInitializer;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
@@ -38,7 +38,7 @@ public class ModelConfigurationListenerInitializerTests {
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
 
