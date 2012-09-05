@@ -18,6 +18,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
+import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.equinox.region.Region;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.osgi.framework.Version;
 
 public class StubCompositeArtifact implements CompositeArtifact {
@@ -26,7 +27,7 @@ public class StubCompositeArtifact implements CompositeArtifact {
     private final Region region;
     
     public StubCompositeArtifact() {
-        this("test-type", "test-name", new StubRegion("test-region"));
+        this("test-type", "test-name", new StubRegion("test-region", null));
     }
 
     public StubCompositeArtifact(String type, String name, Region region) {

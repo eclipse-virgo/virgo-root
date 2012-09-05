@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,8 +27,7 @@ public class StandardQuasiImportPackageTests {
 
     private static final String STRING_VERSION_RANGE = "[2,4)";
 
-    private static final org.eclipse.osgi.service.resolver.VersionRange RESOLVER_VERSION_RANGE = new org.eclipse.osgi.service.resolver.VersionRange(
-        STRING_VERSION_RANGE);
+    private static final org.eclipse.osgi.service.resolver.VersionRange RESOLVER_VERSION_RANGE = new org.eclipse.osgi.service.resolver.VersionRange(STRING_VERSION_RANGE);
     
     private static final VersionRange VERSION_RANGE = new VersionRange(STRING_VERSION_RANGE);
 

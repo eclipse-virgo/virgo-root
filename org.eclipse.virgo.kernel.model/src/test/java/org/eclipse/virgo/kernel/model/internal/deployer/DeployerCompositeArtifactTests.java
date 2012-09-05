@@ -16,14 +16,13 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerArtifact;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifact;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 public class DeployerCompositeArtifactTests {
@@ -34,7 +33,7 @@ public class DeployerCompositeArtifactTests {
         bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
     
     private final DeployerCompositeArtifact artifact = new DeployerCompositeArtifact(bundleContext, new StubPlanInstallArtifact(), region);
 

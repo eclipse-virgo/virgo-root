@@ -56,4 +56,3 @@
 	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.felix.gogo.runtime/0.8.0.v201108120515/org.apache.felix.gogo.runtime-0.8.0.v201108120515.jar" sourcepath="/KERNEL_IVY_CACHE/org.apache.felix/org.apache.felix.gogo.runtime/0.8.0.v201107131313/org.apache.felix.gogo.runtime-sources-0.8.0.v201107131313.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
-

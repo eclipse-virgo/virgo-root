@@ -18,12 +18,12 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubArtifactRepository;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
-import org.eclipse.virgo.kernel.model.StubRegion;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.kernel.stubs.StubInstallArtifact;
 import org.eclipse.virgo.kernel.stubs.StubPlanInstallArtifact;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.eclipse.virgo.test.stubs.support.TrueFilter;
 import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
 import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
@@ -40,9 +40,9 @@ public class DeployerCompositeArtifactDependencyDeterminerTests {
         this.bundleContext.addFilter(filterString, new TrueFilter(filterString));
     }
 
-    private final StubRegion region1 = new StubRegion("test-region1");
+    private final StubRegion region1 = new StubRegion("test-region1", null);
     
-    private final StubRegion region2 = new StubRegion("test-region2");
+    private final StubRegion region2 = new StubRegion("test-region2", null);
     
     private final DeployerCompositeArtifactDependencyDeterminer determiner = new DeployerCompositeArtifactDependencyDeterminer(artifactRepository, region1, region2);
 
