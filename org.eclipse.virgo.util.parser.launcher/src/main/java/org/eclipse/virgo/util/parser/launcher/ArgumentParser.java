@@ -184,7 +184,8 @@ public final class ArgumentParser {
         }
 
         if (uri == null) {
-            // now try URI
+            // now try URI; it should contain only slashes
+        	path = replaceBackslashWithSlash(path);
             try {
                 URI u = new URI(path);
                 if (u.isAbsolute()) {
@@ -199,5 +200,9 @@ public final class ArgumentParser {
         }
         
         return uri;
+    }
+    
+    private String replaceBackslashWithSlash(String path) {
+    	return path.replace('\\', '/');
     }
 }
