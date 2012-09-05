@@ -22,7 +22,7 @@ import java.util.Set;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.StubCompositeArtifact;
-import org.eclipse.virgo.kernel.model.StubRegion;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
@@ -71,8 +71,8 @@ public class NotifyingArtifactRepositoryTests {
     
     @Test 
     public void getArtifact(){
-        Region stubRegion1 = new StubRegion("test-region1");
-        Region stubRegion2 = new StubRegion("test-region2");
+        Region stubRegion1 = new StubRegion("test-region1", null);
+        Region stubRegion2 = new StubRegion("test-region2", null);
         Artifact stubArtifact = new StubCompositeArtifact("foo", "bar", stubRegion1);
         Artifact stubArtifact2 = new StubCompositeArtifact("foo2", "bar2", stubRegion2);
         this.artifactRepository.add(stubArtifact);
