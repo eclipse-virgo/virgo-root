@@ -38,7 +38,7 @@ eclipse_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/vi
 ripple_branch = args[:branch_name]
 
 ALL_REPOS = [
-  Repository.new(eclipse_repo_root, 'util',					paths['util'],					'org.eclipse.virgo.util',				nil, ripple_branch),
+  Repository.new(eclipse_repo_root, 'util',					paths['util'],					'org.eclipse.virgo.util',				nil, ripple_branch, 'clean clean-all-integration clean-ivy test publish-ivy'),
   Repository.new(eclipse_repo_root, 'test',					paths['test'],					'org.eclipse.virgo.test',				nil, ripple_branch),
   Repository.new(eclipse_repo_root, 'medic',				paths['medic'],					'org.eclipse.virgo.medic',				nil, ripple_branch),
   Repository.new(eclipse_repo_root, 'nano',					paths['nano'],					'org.eclipse.virgo.nano',				nil, ripple_branch, 'clean clean-integration test publish-ivy'),

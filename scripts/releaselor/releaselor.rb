@@ -44,12 +44,13 @@ end
 virgo_eclipse_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/virgo/org.eclipse.virgo.'
 gemini_eclipse_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/gemini.web/org.eclipse.gemini.web.'
 default_targets = 'clean clean-integration test publish-ivy publish-maven'
+clean_all_targets = 'clean clean-all-integration clean-ivy test publish-ivy publish-maven'
 
 
 if args[:product_release] == 'full-product'
 
   ALL_REPOS = [
-	Repository.new(virgo_eclipse_repo_root,	 'util',					paths['util'],					'org.eclipse.virgo.util',			bundle_version, release_from_branch,		default_targets),
+	Repository.new(virgo_eclipse_repo_root,	 'util',					paths['util'],					'org.eclipse.virgo.util',			bundle_version, release_from_branch,		clean_all_targets),
 	Repository.new(virgo_eclipse_repo_root,	 'test',					paths['test'],					'org.eclipse.virgo.test',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root,	 'medic',					paths['medic'],					'org.eclipse.virgo.medic',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root,	 'nano',					paths['nano'],					'org.eclipse.virgo.nano',			bundle_version, release_from_branch,		'clean clean-integration test publish-ivy publish-maven'),
@@ -68,7 +69,7 @@ if args[:product_release] == 'full-product'
 elsif args[:product_release] == 'kernel'
 
   ALL_REPOS = [
-	Repository.new(virgo_eclipse_repo_root, 'util',						paths['util'],					'org.eclipse.virgo.util',			bundle_version, release_from_branch,		default_targets),
+	Repository.new(virgo_eclipse_repo_root, 'util',						paths['util'],					'org.eclipse.virgo.util',			bundle_version, release_from_branch,		clean_all_targets),
 	Repository.new(virgo_eclipse_repo_root, 'test',						paths['test'],					'org.eclipse.virgo.test',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'medic',					paths['medic'],					'org.eclipse.virgo.medic',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root,	 'nano',					paths['nano'],					'org.eclipse.virgo.nano',			bundle_version, release_from_branch,		'clean clean-integration test package publish-ivy publish-maven publish-multiple-nano-packages-build publish-updatesite-build publish-multiple-nano-packages-download'),
@@ -80,7 +81,7 @@ elsif args[:product_release] == 'kernel'
 elsif args[:product_release] == 'web-server'
 
   ALL_REPOS = [
-	Repository.new(virgo_eclipse_repo_root, 'web',						paths['web'],					'org.eclipse.virgo.web',			bundle_version, release_from_branch,		default_targets),
+	Repository.new(virgo_eclipse_repo_root, 'web',						paths['web'],					'org.eclipse.virgo.web',			bundle_version, release_from_branch,		clean_all_targets),
 	Repository.new(virgo_eclipse_repo_root, 'snaps',					paths['snaps'],					'org.eclipse.virgo.snaps',			bundle_version, release_from_branch,		'clean clean-integration test package publish-ivy publish-maven publish-build publish-download'),
 	Repository.new(virgo_eclipse_repo_root, 'apps',						paths['apps'],					'org.eclipse.virgo.apps',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'documentation',			paths['documentation'],			'org.eclipse.virgo.documentation',	bundle_version, release_from_branch,		'clean clean-integration doc-html package publish-ivy publish-download'),
@@ -91,7 +92,7 @@ elsif args[:product_release] == 'web-server'
 elsif args[:product_release] == 'virgo'
 
   ALL_REPOS = [
-	Repository.new(virgo_eclipse_repo_root, 'util',						paths['util'],					'org.eclipse.virgo.util',			bundle_version, release_from_branch,		default_targets),
+	Repository.new(virgo_eclipse_repo_root, 'util',						paths['util'],					'org.eclipse.virgo.util',			bundle_version, release_from_branch,		clean_all_targets),
 	Repository.new(virgo_eclipse_repo_root, 'test',						paths['test'],					'org.eclipse.virgo.test',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'medic',					paths['medic'],					'org.eclipse.virgo.medic',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root,	 'nano',					paths['nano'],					'org.eclipse.virgo.nano',			bundle_version, release_from_branch,		'clean clean-integration test publish-ivy publish-maven'),
@@ -109,7 +110,7 @@ elsif args[:product_release] == 'virgo'
 else
 
   ALL_REPOS = [
-	Repository.new(virgo_eclipse_repo_root, 'util',					paths['util'],					'org.eclipse.virgo.util',				bundle_version, release_from_branch,		default_targets),
+	Repository.new(virgo_eclipse_repo_root, 'util',					paths['util'],					'org.eclipse.virgo.util',				bundle_version, release_from_branch,		clean_all_targets),
 	Repository.new(virgo_eclipse_repo_root, 'test',					paths['test'],					'org.eclipse.virgo.test',				bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'medic',				paths['medic'],					'org.eclipse.virgo.medic',				bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'artifact-repository',	paths['artifact-repository'],	'org.eclipse.virgo.repository',			bundle_version, release_from_branch,		default_targets),
