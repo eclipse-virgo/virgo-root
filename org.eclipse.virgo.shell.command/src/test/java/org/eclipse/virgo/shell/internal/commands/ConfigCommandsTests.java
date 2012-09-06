@@ -24,7 +24,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.shell.internal.formatting.StubManageableCompositeArtifact;
+import org.eclipse.virgo.shell.internal.formatting.StubManageableCompositeArtifact;
 import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
 import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 import org.junit.After;
