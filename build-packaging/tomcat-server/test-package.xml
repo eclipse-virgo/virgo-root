@@ -79,8 +79,4 @@
 		<echo message="Shutting Down Virgo Server - shutdown" />
 	</target>
 
-	<target name="shutdown.post">
-            <sleep seconds="30"/>
-    </target>
-
 </project>
