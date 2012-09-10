@@ -206,7 +206,7 @@ var Util = function(){
 			});
 		};
 		
-		var doSort = function(table, th){
+		var doSort = function(table, th, type){
 			
 			var upArrow = '\u2191';
 			var downArrow = '\u2193';
@@ -222,7 +222,7 @@ var Util = function(){
 			
 			var index = th.col;
 
-			var compare = function(tr1, tr2){
+			var compareAlpha = function(tr1, tr2){
 				var getText = function(tr){
 					var cell = $('*:nth-child(' + (index+1) + ')', tr);
 					return $(cell).text();
@@ -232,8 +232,20 @@ var Util = function(){
 				return ((text1 < text2) ? -1 : ((text1 > text2) ? 1 : 0));
 			};
 			
-			var revCompare = function(tr1, tr2) {
-				return -compare(tr1, tr2);
+			var compareNumeric = function(tr1, tr2){
+				var getText = function(tr){
+					var cell = $('*:nth-child(' + (index+1) + ')', tr);
+					return $(cell).text();
+				};
+				return getText(tr1) - getText(tr2);
+			};
+			
+			var revCompareAlpha = function(tr1, tr2) {
+				return -compareAlpha(tr1, tr2);
+			};
+			
+			var revCompareNumeric = function(tr1, tr2) {
+				return -compareNumeric(tr1, tr2);
 			};
 			
 			var ths = $(th).siblings();
@@ -258,14 +270,19 @@ var Util = function(){
 			var tBody = $('tbody', table);
 			var tRows = tBody.children();
 			tRows.remove();
-			tRows.sort(isSorted ? revCompare : compare);
+			if(type == 'numeric'){
+				tRows.sort(isSorted ? revCompareNumeric : compareNumeric);
+			}else{
+				tRows.sort(isSorted ? revCompareAlpha : compareAlpha);
+			}
 			tBody.append(tRows);
 		};
 		
 		var sortTable = function(clickEvent){
-			var th = clickEvent.data;
+			var th = clickEvent.data.header;
 			var table = th.parents('table');
-			doSort(table, th);
+			var sortType = clickEvent.data.type;
+			doSort(table, th, sortType);
 			decorate(table);
 		};
 		
@@ -274,10 +291,10 @@ var Util = function(){
 		if(properties.headers){
 			var tHeadRow = $('<tr />');
 			$.each(properties.headers, function(index, item){
-				var th = $('<th>' + item + '</th>');
+				var th = $('<th>' + item.title + '</th>');
 				th.col = index;
 				if (properties.sortable) {
-					th.click(th, sortTable);
+					th.click({header: th, type: item.type}, sortTable);
 				}
 				tHeadRow.append(th);
 				if (properties.sortable && index == properties.sortIndex) {
@@ -315,7 +332,7 @@ var Util = function(){
 		newTable.append(tBody);
 		
 		if(properties.sortable && sortTh != null){
-			doSort(newTable, sortTh);
+			doSort(newTable, sortTh, properties.headers[0].type);
 		};
 		decorate(newTable);
 		
