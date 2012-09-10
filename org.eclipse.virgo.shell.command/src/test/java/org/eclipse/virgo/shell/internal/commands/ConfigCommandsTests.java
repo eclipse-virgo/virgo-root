@@ -26,14 +26,12 @@ import javax.management.ObjectName;
 
 import org.eclipse.virgo.shell.internal.formatting.StubManageableCompositeArtifact;
 import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
-import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.BundleException;
 
 import org.eclipse.virgo.shell.internal.commands.ConfigCommands;
-import org.eclipse.virgo.shell.internal.formatting.StubManageableCompositeArtifact;
 import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
 
 public class ConfigCommandsTests {

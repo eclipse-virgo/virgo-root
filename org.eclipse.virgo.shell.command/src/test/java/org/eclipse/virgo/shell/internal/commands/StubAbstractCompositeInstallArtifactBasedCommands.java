@@ -13,6 +13,7 @@ package org.eclipse.virgo.shell.internal.commands;
 
 import org.eclipse.virgo.kernel.model.management.ManageableCompositeArtifact;
 import org.eclipse.virgo.shell.internal.commands.AbstractInstallArtifactBasedCommands;
+import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
 
 import org.osgi.framework.BundleException;
 
