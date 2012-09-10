@@ -393,7 +393,7 @@ var InfoBox = function(){
 	self.dialogBox = $('<div />');
 	
 	self.initWithBundle = function(rawBundle){
-		self.title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + '_' + rawBundle.Version;
+		self.title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + ': ' + rawBundle.Version;
 		var infoBox = $('<ul></ul>');
 		infoBox.append($('<li>State - ' + rawBundle.State + '</li>'));
 		infoBox.append($('<li>StartLevel - ' + rawBundle.StartLevel + '</li>'));
