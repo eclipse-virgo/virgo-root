@@ -195,7 +195,7 @@ var Tree = function() {
 		}
 
 		fxContainer.append(artifactControlBar);
-		fxContainer.append(self.getArtifactAttribute('Name: ' + fullArtifact.name));
+		fxContainer.append(self.getArtifactAttribute('SymbolicName: ' + fullArtifact.name));
 		fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
 		fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
 		fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
