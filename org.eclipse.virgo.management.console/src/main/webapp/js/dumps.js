@@ -184,6 +184,7 @@ var DumpViewer = function(){
 				self.displayDumps();
 			}
 		});
+		$('#dumps').append($('<div />', {'class' : 'spinner-small'}));
 	};
 
 	self.deleteDump = function(event){

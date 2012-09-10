@@ -43,7 +43,7 @@ var Util = function(){
 			var spinnerElement = $('<div />');
 			self.spinner = spinnerElement.dialog({
 				modal: true,
-				dialogClass: 'spinner-img',
+				dialogClass: 'spinner-large',
 				closeText: '',
 				draggable: false,
 				resizable: false,
@@ -74,7 +74,7 @@ var Util = function(){
 			self.started = true;
 			self.spinner.dialog('close');
 			self.spinner = undefined;
-			$('.spinner-img').remove();
+			$('.spinner-large').remove();
 		}
 	};
 
