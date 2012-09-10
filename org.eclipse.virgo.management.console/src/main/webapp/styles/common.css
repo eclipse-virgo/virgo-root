@@ -148,7 +148,7 @@ a:active, a.active {
 }
 
 #navigation li {
-	display: inline-block;
+	display: inline; /* Can't use inline-block here due to IE bug */
 	cursor: pointer;
 	height: 23px;
 }
