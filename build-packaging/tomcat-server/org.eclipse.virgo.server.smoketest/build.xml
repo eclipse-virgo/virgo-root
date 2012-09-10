@@ -20,6 +20,7 @@
 		<antcall target="startup"/>
 		<antcall target="test.do"/>
 		<antcall target="shutdown"/>
+        <sleep seconds="30"/>
 		<delete quiet="true">
 			<fileset dir="${pickup.dir}">
 				<exclude name="*admin*"/>
