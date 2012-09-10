@@ -21,6 +21,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiBundle;
 import org.eclipse.virgo.kernel.userregion.internal.quasi.StandardQuasiRequiredBundle;
+import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 
 /**

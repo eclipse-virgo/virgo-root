@@ -13,21 +13,18 @@ package org.eclipse.virgo.kernel.model.internal.configurationadmin;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.virgo.kernel.model.StubArtifactRepository;
+import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
+import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
+import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
+import org.eclipse.virgo.test.stubs.framework.StubServiceRegistration;
+import org.eclipse.virgo.test.stubs.region.StubRegion;
+import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
+import org.eclipse.virgo.test.stubs.support.TrueFilter;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
-
-
-import org.eclipse.virgo.kernel.model.StubArtifactRepository;
-import org.eclipse.virgo.kernel.model.StubRegion;
-import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
-import org.eclipse.virgo.kernel.model.internal.configurationadmin.ModelConfigurationListener;
-import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
-import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
-import org.eclipse.virgo.test.stubs.framework.StubServiceRegistration;
-import org.eclipse.virgo.test.stubs.service.cm.StubConfigurationAdmin;
-import org.eclipse.virgo.test.stubs.support.TrueFilter;
 
 public class ModelConfigurationListenerTests {
 
@@ -44,7 +41,7 @@ public class ModelConfigurationListenerTests {
 
     private final StubConfigurationAdmin configurationAdmin = new StubConfigurationAdmin();
 
-    private final StubRegion region = new StubRegion("test-region");
+    private final StubRegion region = new StubRegion("test-region", null);
     
     private final ModelConfigurationListener listener = new ModelConfigurationListener(artifactRepository, bundleContext, configurationAdmin, region);
 
