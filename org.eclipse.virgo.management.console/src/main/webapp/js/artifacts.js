@@ -237,7 +237,7 @@ var Tree = function() {
 	 * @param parent - element to insert the $ in to
 	 */
 	this.getArtifactLabel = function(artifact, parent){
-		var node = self.getNodeContainer(artifact.name + '_' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
+		var node = self.getNodeContainer(artifact.name + ': ' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
 		$('.artifact-label', node).click({'objectName': artifact.objectName, 'node': node}, tree.renderArtifact);
 		return node;
 	};
