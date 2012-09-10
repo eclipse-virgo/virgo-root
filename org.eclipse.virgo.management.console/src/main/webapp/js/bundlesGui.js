@@ -405,19 +405,19 @@ var InfoBox = function(){
 		infoBox.append($('<li>ActivationPolicyUsed - ' + rawBundle.ActivationPolicyUsed + '</li>'));
 		infoBox.append($('<li>Required - ' + rawBundle.Required + '</li>'));
 		if(rawBundle.ExportedPackages.length == 0){
-			infoBox.append($('<li>No exported packages</li>').addClass('indent1'));
+			infoBox.append($('<li>No exported packages</li>'));
 		} else {
-			infoBox.append($('<li>Exported packages</li>').addClass('indent1'));
+			infoBox.append($('<li>Exported packages</li>'));
 			$.each(rawBundle.ExportedPackages, function(index, item){
-				infoBox.append($('<li>' + item + '</li>').addClass('indent2'));
+				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
 			});
 		}
 		if(rawBundle.ImportedPackages.length == 0){
-			infoBox.append($('<li>No imported packages</li>').addClass('indent1'));
+			infoBox.append($('<li>No imported packages</li>'));
 		} else {
-			infoBox.append($('<li>Imported packages</li>').addClass('indent1'));
+			infoBox.append($('<li>Imported packages</li>'));
 			$.each(rawBundle.ImportedPackages, function(index, item){
-				infoBox.append($('<li>' + item + '</li>').addClass('indent2'));
+				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
 			});
 		}
 		self.dialogBox.append(infoBox);
