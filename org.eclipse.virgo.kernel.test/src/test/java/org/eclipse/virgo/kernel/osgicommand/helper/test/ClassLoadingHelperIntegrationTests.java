@@ -29,12 +29,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
- * Class for integration testing {@link org.eclipse.virgo.kernel.osgicommand.helper.ClassLoadingHelper}
+ * Class for integration testing {@link org.eclipse.virgo.shell.osgicommand.helper.ClassLoadingHelper}
  */
 @RunWith(DmKernelTestRunner.class)
 public class ClassLoadingHelperIntegrationTests extends AbstractKernelIntegrationTest {
-    private static final String SHELL_COMMANDS_BUNDLE_NAME = "org.eclipse.virgo.kernel.osgicommand";
-    private static final String CLASSLOADING_PACKAGE = "org.eclipse.virgo.kernel.osgicommand.helper";
+    private static final String SHELL_COMMANDS_BUNDLE_NAME = "org.eclipse.virgo.shell.command";
+    private static final String CLASSLOADING_PACKAGE = "org.eclipse.virgo.shell.osgicommand.helper";
 
     private static final String TEST_CLASS_NAME = ClassLoadingHelperIntegrationTests.class.getName();
     private static final String TEST_CLASS_PACKAGE = ClassLoadingHelperIntegrationTests.class.getPackage().getName();
