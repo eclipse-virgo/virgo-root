@@ -39,7 +39,7 @@ local_repo_root = 'git@git.springsource.org:virgo/'
 virgo_repo_root = 'ssh://' + args[:remote_user] + '@git.eclipse.org/gitroot/virgo/org.eclipse.virgo.'
 
 ALL_REPOS = [
-  Repository.new(virgo_repo_root, 'packaging',                            paths['packaging'],                       nil, nil, update_branch),
+  Repository.new(virgo_repo_root, 'packaging',                             paths['packaging'],                       nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'documentation',                         paths['documentation'],                    nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'apps',                                  paths['apps'],                             nil, nil, update_branch),
   Repository.new(virgo_repo_root, 'snaps',                                 paths['snaps'],                            nil, nil, update_branch),

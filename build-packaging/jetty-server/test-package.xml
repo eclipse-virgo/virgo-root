@@ -88,6 +88,4 @@
 		<fail if="shutdown.failed" message="Virgo Jetty Server shutdown failed"/>
 	</target>
 
-	<target name="shutdown.post"/>
-
 </project>

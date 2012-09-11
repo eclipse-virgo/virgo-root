@@ -16,10 +16,11 @@
 
 	<target name="shutdown.post">
 		<echo message="Testing warm restart"/>
-		<sleep seconds="3"/>
+		<sleep seconds="30"/>
 		<antcall target="startup"/>
 		<antcall target="test.do"/>
 		<antcall target="shutdown"/>
+        <sleep seconds="30"/>
 		<delete quiet="true">
 			<fileset dir="${pickup.dir}">
 				<exclude name="*admin*"/>
@@ -27,5 +28,4 @@
 			</fileset>
 		</delete>
 	</target>
-
 </project>
