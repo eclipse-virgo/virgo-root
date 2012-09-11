@@ -72,20 +72,6 @@
 		version="@KERNEL.VERSION@"
 		unpack="false"
 		autostart="true"/>
-	<!--plugin
-		id="org.eclipse.virgo.kernel.shell"
-		download-size="0"
-		install-size="0"
-		version="@KERNEL.VERSION@"
-		unpack="false"
-		autostart="true"/-->
-  <!--plugin
-		id="org.eclipse.virgo.shell.command"
-		download-size="0"
-		install-size="0"
-		version="@KERNEL.VERSION@"
-		unpack="false"
-		autostart="true"/-->
 	<plugin
 		id="org.eclipse.virgo.kernel.osgi"
 		download-size="0"
