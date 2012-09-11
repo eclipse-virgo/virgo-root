@@ -76,7 +76,7 @@ renderArtifactDescriptorSummaries: function(artifactDescriptorSummaries){
 	
 	var descriptorTable = util.makeTable({
 		clazz: 'repository-table table-selectable',
-		headers: ['Type', 'Name', 'Version'],
+		headers: [{title: 'Type'}, {title: 'Name'}, {title: 'Version'}],
 		rows: rows,
 		selectable: true,
 		sortable: true,

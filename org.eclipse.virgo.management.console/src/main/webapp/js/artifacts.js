@@ -195,7 +195,7 @@ var Tree = function() {
 		}
 
 		fxContainer.append(artifactControlBar);
-		fxContainer.append(self.getArtifactAttribute('Name: ' + fullArtifact.name));
+		fxContainer.append(self.getArtifactAttribute('SymbolicName: ' + fullArtifact.name));
 		fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
 		fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
 		fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
@@ -237,7 +237,7 @@ var Tree = function() {
 	 * @param parent - element to insert the $ in to
 	 */
 	this.getArtifactLabel = function(artifact, parent){
-		var node = self.getNodeContainer(artifact.name + '_' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
+		var node = self.getNodeContainer(artifact.name + ': ' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
 		$('.artifact-label', node).click({'objectName': artifact.objectName, 'node': node}, tree.renderArtifact);
 		return node;
 	};

@@ -209,16 +209,15 @@ a:active, a.active {
 /*
  * SPINNER STYLES
  */
- 
-.spinner {
-	opacity: 0.9;
-	filter: alpha(opacity=90);
-	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
-	z-index: 999;
-	background: #fff;
+
+.spinner-small {
+	background: url(../images/loader-small.gif) no-repeat;
+	width: 16px;
+	height: 16px;
+	margin: 0 auto;
 }
 
-.spinner-img {
+.spinner-large {
 	background: url(../images/loader-large.gif) no-repeat;
 	width: 48px;
 	height: 48px;
