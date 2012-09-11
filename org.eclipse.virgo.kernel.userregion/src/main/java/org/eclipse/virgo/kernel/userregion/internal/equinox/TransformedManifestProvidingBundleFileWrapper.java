@@ -51,12 +51,7 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
     private final ThreadLocal<Stack<ManifestTransformer>> manifestTransformer;
     
     public TransformedManifestProvidingBundleFileWrapper(ImportExpander importExpander) {
-        this.manifestTransformer = new ThreadLocal<Stack<ManifestTransformer>>() {
-            @Override
-            public Stack<ManifestTransformer> initialValue() {
-                return new Stack<ManifestTransformer>();
-            }
-        };
+        this.manifestTransformer = new ManifestTransformerStackThreadLocal();
         this.importExpander = importExpander;
     }
 
@@ -75,6 +70,14 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
         this.manifestTransformer.get().pop();
     }
     
+    private static final class ManifestTransformerStackThreadLocal extends ThreadLocal<Stack<ManifestTransformer>> {
+
+        @Override
+        public Stack<ManifestTransformer> initialValue() {
+            return new Stack<ManifestTransformer>();
+        }
+    }
+
     /**
      * A concrete extension of {@link BundleFile} that intercepts attempts to access a bundle's manifest
      * a returns a transform copy of the manifest that has, e.g. expanded any Import-Library and Import-Bundle
