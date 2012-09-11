@@ -35,6 +35,22 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
  */
 final class BundleThreadContextManager {
 
+    private static final class ApplicationTraceNameStackThreadLocal extends ThreadLocal<BlockingDeque<String>> {
+
+        @Override
+        protected BlockingDeque<String> initialValue() {
+            return new LinkedBlockingDeque<String>();
+        }
+    }
+
+    private static final class ContextClassLoaderStackThreadLocal extends ThreadLocal<BlockingDeque<ClassLoader>> {
+
+        @Override
+        protected BlockingDeque<ClassLoader> initialValue() {
+            return new LinkedBlockingDeque<ClassLoader>();
+        }
+    }
+
     private static final String WRAPPED_NULL = "WRAPPED_NULL";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -49,21 +65,9 @@ final class BundleThreadContextManager {
 
     private final TracingService tracingService;
 
-    private final ThreadLocal<BlockingDeque<ClassLoader>> contextClassLoaderStack = new ThreadLocal<BlockingDeque<ClassLoader>>() {
+    private final ThreadLocal<BlockingDeque<ClassLoader>> contextClassLoaderStack = new ContextClassLoaderStackThreadLocal();
 
-        @Override
-        protected BlockingDeque<ClassLoader> initialValue() {
-            return new LinkedBlockingDeque<ClassLoader>();
-        }
-    };
-
-    private final ThreadLocal<BlockingDeque<String>> applicationTraceNameStack = new ThreadLocal<BlockingDeque<String>>() {
-
-        @Override
-        protected BlockingDeque<String> initialValue() {
-            return new LinkedBlockingDeque<String>();
-        }
-    };
+    private final ThreadLocal<BlockingDeque<String>> applicationTraceNameStack = new ApplicationTraceNameStackThreadLocal();
 
     /**
      * @param osgi
