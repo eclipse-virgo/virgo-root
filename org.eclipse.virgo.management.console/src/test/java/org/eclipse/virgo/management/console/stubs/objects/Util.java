@@ -76,7 +76,12 @@ public class Util {
 	}
 	
 	public Object makeTable(Scriptable properties) {
-	    this.lastMakeTableHeaders = (String[]) Context.jsToJava(ScriptableObject.getProperty(properties, "headers"), String[].class);
+		Object[] headers = (Object[]) Context.jsToJava(ScriptableObject.getProperty(properties, "headers"), Object[].class);
+	    this.lastMakeTableHeaders = new String[headers.length]; 
+	    for (int i = 0; i < headers.length; i++) {
+			this.lastMakeTableHeaders[i] = (String) Context.jsToJava(ScriptableObject.getProperty((Scriptable) headers[i], "title"), String.class);
+		}
+	    
 	    this.lastMakeTableRows = (String[]) Context.jsToJava(ScriptableObject.getProperty(properties, "rows"), String[].class);
 
 	    Function elementConstructor = (Function) SCOPE.get("Element", SCOPE);

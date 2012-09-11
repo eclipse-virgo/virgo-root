@@ -28,12 +28,12 @@ import sun.org.mozilla.javascript.internal.Scriptable;
  *
  *
  */
-public class ExplorerJSTests extends AbstractJSTests {
+public class WiringsJSTests extends AbstractJSTests {
 	
 	@Test
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
-		readFile("src/main/webapp/js/explorer.js");
+		readFile("src/main/webapp/js/wirings.js");
 		createTestLayoutManager();
 		createRaphael();
 		

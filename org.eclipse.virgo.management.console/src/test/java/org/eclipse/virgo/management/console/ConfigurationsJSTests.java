@@ -31,7 +31,7 @@ import sun.org.mozilla.javascript.internal.Scriptable;
  *
  *
  */
-public class ConfigurationJSTests extends AbstractJSTests {
+public class ConfigurationsJSTests extends AbstractJSTests {
 	
 	/**
 	 * Test that the init script for the page reports back that the page is ready for display
@@ -44,7 +44,7 @@ public class ConfigurationJSTests extends AbstractJSTests {
 	@Ignore
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
-		readFile("src/main/webapp/js/configuration.js");
+		readFile("src/main/webapp/js/configurations.js");
 
 		invokePageInit();
 		assertNotNull(commonUtil.getLastQueryCallBack());
