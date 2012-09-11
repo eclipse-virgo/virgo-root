@@ -11,18 +11,18 @@
 				<li><input name="1" type="file" size="70"></input></li>
 			</ul>
 		</form>
-		<div id="add-upload-box" class="upload-control" onclick="uploadHandler.addUploadBox()"></div>
-		<div id="minus-upload-box" class="upload-control" onclick="uploadHandler.minusUploadBox()"></div>
+		<div id="add-upload-box" class="upload-control" onclick="uploadManager.addUploadBox()"></div>
+		<div id="minus-upload-box" class="upload-control" onclick="uploadManager.minusUploadBox()"></div>
 
-		<iframe id = "upload-target-id" name="upload-target" src="" onload="uploadHandler.uploadComplete()"></iframe>
+		<iframe id = "upload-target-id" name="upload-target" src="" onload="uploadManager.uploadComplete()"></iframe>
 
 		<div class="button-container">
        		<div class="control-cap-left"></div>
        		<div class="controls">
-				<div class="button" onclick="uploadHandler.startUpload()">
+				<div class="button" onclick="uploadManager.startUpload()">
 					<div class="button-cap-left-blue"></div><div class="button-text">Deploy</div><div class="button-cap-right-blue"></div>
 				</div>
-				<div class="button" onclick="uploadHandler.resetForm()">
+				<div class="button" onclick="uploadManager.resetForm()">
 					<div class="button-cap-left-blue"></div><div class="button-text">Reset Form</div><div class="button-cap-right-blue"></div>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 	<div class="button-container">
 		<div class="control-cap-left"></div>
 		<div class="controls">
-			<div id="upload-toggle-button" class="button" onclick="uploadHandler.toggle()">
+			<div id="upload-toggle-button" class="button" onclick="uploadManager.toggle()">
 				<div class="button-cap-left-blue"></div><div class="button-text">Deployer</div><div class="button-cap-right-blue"></div>
 			</div>
 		</div>
