@@ -24,6 +24,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
+import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.junit.Assert;
@@ -60,6 +61,10 @@ public class QuasiFrameworkStateDumpIntegrationTests extends AbstractKernelInteg
         this.quasiFramework = this.quasiFrameworkFactory.create();
         Assert.assertNotNull(this.quasiFramework);
         this.dumpDir = new File("target/serviceability/dump/");
+        if(this.dumpDir.exists()){
+        	FileSystemUtils.deleteRecursively(this.dumpDir);
+        }
+    	this.dumpDir.mkdirs();
     }
 
     @Test

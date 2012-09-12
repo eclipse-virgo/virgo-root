@@ -5,7 +5,7 @@
 		xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
 		version="1.3">
 
-	<info organisation="org.eclipse.virgo.server.test" module="${ant.project.name}">
+	<info organisation="${project.organisation}" module="${ant.project.name}">
 		<ivyauthor name="sbrannen"/>
 	</info>
 
@@ -18,7 +18,7 @@
 
 	<dependencies>
 		<dependency org="com.opensymphony.quartz" name="com.springsource.org.quartz" rev="${com.opensymphony.quartz}" conf="provided->compile"/>
-		<dependency org="org.eclipse.osgi" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
         <dependency org="org.springframework" name="org.springframework.beans" rev="${org.springframework}" conf="provided->compile"/>
         <dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="provided->compile"/>
         <dependency org="org.springframework" name="org.springframework.context.support" rev="${org.springframework}" conf="provided->compile"/>

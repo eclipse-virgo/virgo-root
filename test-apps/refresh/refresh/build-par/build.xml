@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="RefreshTest">
 	
-	<import file="${basedir}/../../../../virgo-build/multi-bundle/default.xml"/>
-	
 	<path id="bundles">
             <pathelement location="../exporter"/>
             <pathelement location="../exporter2"/>
@@ -10,8 +8,11 @@
             <pathelement location="../importer"/>
     </path>
 
+	<property file="${basedir}/../../../build.properties"/>
+    <property file="${basedir}/../../../../build.versions"/>
 	<property name="par.expanded.dir" value="${basedir}/target/par-expanded"/>
-	
+	<import file="${basedir}/../../../../virgo-build/par/default.xml"/>
+
 	<target name="jar">
 		<all-bundles target="jar"/>
 		

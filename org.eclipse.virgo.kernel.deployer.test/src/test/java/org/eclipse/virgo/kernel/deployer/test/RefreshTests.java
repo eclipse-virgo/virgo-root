@@ -37,14 +37,10 @@ import org.osgi.framework.ServiceReference;
  * 
  */
 public class RefreshTests extends AbstractDeployerIntegrationTest {
-    
-    private static final String REFRESH_IMPORTER_VERSION = "1.0.0.BUILD-20100310081114";
-
-    private static final String REFRESH_EXPORTER_VERSION = "1.0.0.BUILD-20100310081114";
 
     private final String TEST_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshTest-1-RefreshImporter";
 
-    private final String TEST_IMPORT_BUNDLE_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshTest-Import-Bundle-1-RefreshImporter";
+    private final String TEST_IMPORT_BUNDLE_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshTest-Import-Bundle-" + TEST_APPS_VERSION + "-RefreshImporter";
 
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
 
@@ -159,19 +155,19 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
 
         // Ensure bundles are not already deployed.
         try {
-            this.appDeployer.undeploy("bundle", "RefreshExporter.jar", REFRESH_EXPORTER_VERSION);
+            this.appDeployer.undeploy("bundle", "RefreshExporter.jar", TEST_APPS_VERSION);
         } catch (DeploymentException e) {
         }
         try {
-            this.appDeployer.undeploy("bundle", "RefreshImporter.jar", REFRESH_IMPORTER_VERSION);
+            this.appDeployer.undeploy("bundle", "RefreshImporter.jar", TEST_APPS_VERSION);
         } catch (DeploymentException e) {
         }
 
         DeploymentIdentity diExporter = this.appDeployer.deploy(explodedExporterJar.toURI());
         DeploymentIdentity diImporter = this.appDeployer.deploy(explodedImporterJar.toURI());
 
-        assertDeploymentIdentityEquals(diExporter, "RefreshExporter", "bundle", "RefreshExporter", REFRESH_EXPORTER_VERSION);
-        assertDeploymentIdentityEquals(diImporter, "RefreshImporter", "bundle", "RefreshImporter", REFRESH_IMPORTER_VERSION);
+        assertDeploymentIdentityEquals(diExporter, "RefreshExporter", "bundle", "RefreshExporter", TEST_APPS_VERSION);
+        assertDeploymentIdentityEquals(diImporter, "RefreshImporter", "bundle", "RefreshImporter", TEST_APPS_VERSION);
         
         // Check that the test bundle's application contexts are created.
         ApplicationContextUtils.awaitApplicationContext(this.context, "RefreshImporter", 10);
@@ -198,7 +194,7 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
         
         // Redeploy the importer which should now succeed.
         DeploymentIdentity deploymentIdentity = this.appDeployer.deploy(explodedImporterJar.toURI());
-        assertDeploymentIdentityEquals(deploymentIdentity, "RefreshImporter", "bundle", "RefreshImporter", REFRESH_IMPORTER_VERSION);
+        assertDeploymentIdentityEquals(deploymentIdentity, "RefreshImporter", "bundle", "RefreshImporter", TEST_APPS_VERSION);
     }
     
     private void checkV1Classes() {

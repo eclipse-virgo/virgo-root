@@ -40,7 +40,7 @@ public class Spring256ABundleTests extends AbstractDeployerIntegrationTest {
 
     private static final String SPRING_256A_BUNDLE_SYMBOLIC_NAME = "spring.256A.sample";
 
-    private static final String SPRING_256A_BUNDLE_VERSION = "1.0.0.BUILD-20090921151600";
+    private static final String SPRING_256A_BUNDLE_VERSION = TEST_APPS_VERSION;
 
     private ApplicationDeployer appDeployer;
 

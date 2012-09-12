@@ -77,7 +77,7 @@ public class ParDeploymentTests extends AbstractDeployerIntegrationTest {
     @Test
     public void deployParContainingPlan() throws DeploymentException {
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(PAR_CONTAINING_PLAN.toURI());
-        assertBundlePresent("par.with.plan-1-simple.bundle.one", new Version(1, 0, 0, "BUILD-20090326114035"));
+        assertBundlePresent("par.with.plan-1-simple.bundle.one", new Version(TEST_APPS_VERSION));
         this.deployer.undeploy(deploymentIdentity);
     }
 
