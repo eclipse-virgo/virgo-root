@@ -144,7 +144,7 @@ public class WARDeployer implements SimpleDeployer {
     public void activate(ComponentContext context) {
         warDeployerInternalInit(context.getBundleContext());
     }
-
+    
     @Override
     public final boolean deploy(URI path) {
         this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
@@ -606,7 +606,7 @@ public class WARDeployer implements SimpleDeployer {
     public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
         this.webBundleManifestTransformer = transformer;
     }
-
+    
     public void unbindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
         this.webBundleManifestTransformer = null;
     }
@@ -635,4 +635,85 @@ public class WARDeployer implements SimpleDeployer {
         this.kernelConfig = null;
     }
 
+   @Override
+	public boolean install(URI uri) {
+		this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
+        final String warName = extractWarNameFromString(uri.toString());
+        final File deployedFile = new File(uri);
+        final File warDir = new File(this.webAppsDir, warName);
+        deleteStatusFile(warName, this.pickupDir);
+        final long lastModified = deployedFile.lastModified();
+
+        if (!canWrite(uri)) {
+            this.logger.error("Cannot open the file " + uri + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING_ERROR, uri);
+            return false;
+        }
+        final Bundle installed;
+        try {
+            // extract the war file to the webapps directory
+            JarUtils.unpackTo(new PathReference(deployedFile), new PathReference(warDir));
+            // make the manifest transformation in the unpacked location
+            transformUnpackedManifest(warDir, warName);
+            // install the bundle
+            installed = this.bundleContext.installBundle(createInstallLocation(warDir));
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
+        } catch (Exception e) {
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING_ERROR, e, uri);
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
+            return false;
+        }
+		return true;
+	}
+	
+	@Override
+	public boolean start(URI uri) {
+		Bundle bundle = getInstalledBundle(uri);
+		final String warName = extractWarNameFromString(uri.toString());
+        deleteStatusFile(warName, this.pickupDir);
+        final long lastModified = new File(uri).lastModified();
+		this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTING, bundle.getSymbolicName(), bundle.getVersion());
+        try {
+        	bundle.start();
+        } catch (Exception e) {
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STARTING_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
+            return STATUS_ERROR;
+        }
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTED, bundle.getSymbolicName(), bundle.getVersion());
+        
+        // now update bundle's info	
+        if (!updateBundlesInfo(bundle)){
+            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
+            return STATUS_ERROR;
+        }
+        createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundle.getBundleId(), lastModified);
+        return STATUS_OK;
+	}
+	
+    private boolean updateBundlesInfo(Bundle bundle){
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("Bundles info will be updated for web app bundle with simbolic name '" + bundle.getSymbolicName() + "' .");
+        }
+    	 try {
+             if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
+                 registerToBundlesInfo(bundle);
+             }
+         } catch (Exception e) {
+             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+             return STATUS_ERROR;
+         }
+         return STATUS_OK;
+    }
+    
+    private Bundle getInstalledBundle(URI path){
+    	final String warName = extractWarNameFromString(path.toString());
+        final File warDir = new File(this.webAppsDir, warName);
+        if (!warDir.exists()) {
+            return null;
+        }
+        return this.bundleContext.getBundle(createInstallLocation(warDir));
+    }
+	
 }
