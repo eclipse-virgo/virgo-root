@@ -7,12 +7,15 @@ import java.util.List;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.osgi.framework.Bundle;
 
-
 public interface SimpleDeployer {
     
     public final int HOT_DEPLOYED_ARTIFACTS_START_LEVEL = 5;
 
     public boolean deploy(URI path);
+    
+    public boolean install(URI path);
+    
+    public boolean start(URI path);
     
     public boolean update(URI path);
     
