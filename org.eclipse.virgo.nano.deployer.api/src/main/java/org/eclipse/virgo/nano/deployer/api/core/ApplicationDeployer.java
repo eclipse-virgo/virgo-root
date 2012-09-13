@@ -13,6 +13,7 @@
 package org.eclipse.virgo.nano.deployer.api.core;
 
 import java.net.URI;
+import java.util.List;
 
 import org.osgi.framework.Version;
 
@@ -38,7 +39,8 @@ public interface ApplicationDeployer {
      * @throws DeploymentException if installation fails.
      */
     DeploymentIdentity install(URI uri, DeploymentOptions options) throws DeploymentException;
-
+    
+    
     /**
      * Deploys the artifact are the supplied <code>location</code>. The supplied <code>options</code> govern how the
      * installed artifact is handled by the deployed, e.g. if it is recovered and re-installed upon warm restart.
@@ -65,6 +67,20 @@ public interface ApplicationDeployer {
      */
     DeploymentIdentity deploy(URI uri) throws DeploymentException;
 
+    /**
+     * Deploys a bunch of deployable artifacts altogether 
+     * so that if there are dependencies in between,they are resolved successfully.
+     * Note that this may not always be the case if they are deployed one by one 
+     * through some of the other deploy methods.
+     * Therefore the method is convenient to solve dependency resolution issues   
+     * that are caused due to the order in which deployable bundles are deployed.   
+     * @param uris the location paths of the deployable artifacts
+     * @param options the options for this deployment
+     * @return an array of the successfully deployed applications's {@link DeploymentIdentity}. 
+     * @throws DeploymentException
+     */
+    DeploymentIdentity[] bulkDeploy (List<URI> uris, DeploymentOptions options) throws DeploymentException;
+    
     /**
      * Deploy an application which may be either an OSGi application or a legacy application such as a WAR. This is used
      * by admin. and hot deployment.
@@ -105,6 +121,7 @@ public interface ApplicationDeployer {
      * @throws DeploymentException
      */
     DeploymentIdentity deploy(String type, String name, Version version, DeploymentOptions options) throws DeploymentException;
+    
 
     /**
      * Undeploy an application with a given symbolic name and version.

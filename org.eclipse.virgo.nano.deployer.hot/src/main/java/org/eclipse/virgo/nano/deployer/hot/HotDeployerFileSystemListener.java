@@ -3,6 +3,8 @@ package org.eclipse.virgo.nano.deployer.hot;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.util.io.FileSystemEvent;
 import org.eclipse.virgo.util.io.FileSystemListener;
 import org.eclipse.virgo.util.io.PathReference;
+
 
 /**
  * {@link FileSystemListener} that monitors a pickup directory for file system events. When a file is created it is
@@ -80,6 +83,59 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
             determineFailureAndLogMessage(event, fileName, ex);
         }
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * Reacts to initial event in the pickup directory and calls the bulk deploy method in {@link ApplicationDeployer}.
+     */
+    public void onInitialEvent(List<String> paths) {
+    	this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_PROCESSING_FILE, FileSystemEvent.INITIAL, getConcatenatedPaths(paths));
+        try {
+        	bulkDeployIfNotDeployed(paths);
+           } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+            determineFailureAndLogMessage(FileSystemEvent.INITIAL, getConcatenatedPaths(paths), ex);
+        }
+    }
+    
+    private String getConcatenatedPaths(List<String> paths){
+    	StringBuilder sb = new StringBuilder("");
+    	for (String path:paths){
+    		sb.append(new PathReference(path).getName()).append("; ");
+    	}
+    	return new String(sb);
+    }
+    
+    /**
+     * Collects only the source artifacts that are not yet deployed and transforms the given paths to URIs.
+     * 
+     */
+    private List<URI> getNotDeployedUris (List<String> sourceArtefacts){
+    	List<URI> notDeployedFileUris =  new ArrayList<URI>(); 
+    	for (String sourceArtefact:sourceArtefacts){
+    	 if (!isDeployed(sourceArtefact)) {
+    		 notDeployedFileUris.add(getDefinitiveUri(sourceArtefact));
+    		 logger.info("ApplicationConditionallyDeploying path '{}'.", sourceArtefact);
+         } else {
+             this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, sourceArtefact);
+         }
+    	}
+    	return notDeployedFileUris;
+    }
+    
+    
+    /**
+     * Triggers bulk deployment of source artifacts that are not yet deployed. 
+     *  
+     * @param sourceArtefact the source artifact URI string
+     * @throws DeploymentException
+     */
+    private void bulkDeployIfNotDeployed(List<String> sourceArtefacts) throws DeploymentException{
+    		this.deployer.bulkDeploy(getNotDeployedUris(sourceArtefacts), new DeploymentOptions(true, true, false));
+    }
+    
 
     /**
      * Determines the {@link LogEvent} that corresponds the {@link FileSystemEvent}.
@@ -152,7 +208,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
         }
         return baseUri;
     }
-
+    
     /**
      * Deploys the application at the supplied PathReference asynchronously.
      * 
@@ -177,6 +233,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
             this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, fileName);
         }
     }
+
 
     /**
      * {@inheritDoc}
