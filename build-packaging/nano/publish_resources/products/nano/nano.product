@@ -22,6 +22,7 @@
    
    <configurations>
 	  <plugin id="org.eclipse.virgo.nano.deployer" autoStart="true" startLevel="5"/>
-   </configurations>
+	  <property name="org.eclipse.virgo.fschecker.initialEventMode" value="bulk"/>
+   </configurations>	
 
 </product>
