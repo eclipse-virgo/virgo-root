@@ -6,15 +6,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.core.KernelConfig;
+import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
-import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.support.HotDeployerEnabler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -45,7 +45,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     public void activate(ComponentContext context) throws Exception {
         this.bundleContext = context.getBundleContext();
         this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
-        this.simpleDeployers.add(defaultDeployer);
+        this.simpleDeployers.add(this.defaultDeployer);
         initialiseHotDeployer();
 
         // TODO register the deployer MBean when the management classes are factored out in a new bundle.
@@ -73,47 +73,45 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
             if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
                 isThereSuitableDeployer = true;
                 if (!deployer.isDeployFileValid(new File(uri))) {
-                	this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
-				} else {
-					if (deployer.isDeployed(uri)) {
-						deployer.update(uri);
-					} else {
-						deployer.deploy(uri);
-					}
-				}
+                    this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
+                } else {
+                    if (deployer.isDeployed(uri)) {
+                        deployer.update(uri);
+                    } else {
+                        deployer.deploy(uri);
+                    }
+                }
             }
         }
         if (!isThereSuitableDeployer) {
-        	handleUnsupportedFileType(uri);
+            handleUnsupportedFileType(uri);
         }
         return null;
     }
-    
-	@Override
-	public DeploymentIdentity[] bulkDeploy(List<URI> uris,
-			DeploymentOptions options) throws DeploymentException {
-		if (uris != null && !uris.isEmpty()) {
-			installDeployables(uris);
-			startDeployables(uris);
-			return getDeploymentIdentities(uris);
-		}else{
-			this.logger
-			.warn("Cannot perform bulk deploy operation of the given URIs list as it is either empty or null.");
-			return null;
-		}
-	}
-    
-    private DeploymentIdentity[] getDeploymentIdentities(List<URI> uris){
-    	List<DeploymentIdentity> accumulatedDIs = new ArrayList<DeploymentIdentity>();
-    	for(URI uri:uris){
-    		DeploymentIdentity di = getDeploymentIdentity(uri);
-    		if (di != null){
-    			accumulatedDIs.add(di);
-    		}
-    	}
-    	return accumulatedDIs.toArray(new DeploymentIdentity[0]);
+
+    @Override
+    public DeploymentIdentity[] bulkDeploy(List<URI> uris, DeploymentOptions options) throws DeploymentException {
+        if (uris != null && !uris.isEmpty()) {
+            installDeployables(uris);
+            startDeployables(uris);
+            return getDeploymentIdentities(uris);
+        } else {
+            this.logger.warn("Cannot perform bulk deploy operation of the given URIs list as it is either empty or null.");
+            return null;
+        }
     }
- 
+
+    private DeploymentIdentity[] getDeploymentIdentities(List<URI> uris) {
+        List<DeploymentIdentity> accumulatedDIs = new ArrayList<DeploymentIdentity>();
+        for (URI uri : uris) {
+            DeploymentIdentity di = getDeploymentIdentity(uri);
+            if (di != null) {
+                accumulatedDIs.add(di);
+            }
+        }
+        return accumulatedDIs.toArray(new DeploymentIdentity[0]);
+    }
+
     @Override
     public void undeploy(DeploymentIdentity deploymentIdentity) throws DeploymentException {
         if (this.bundleContext != null) {
@@ -255,55 +253,55 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     public void unbindSimpleDeployer(SimpleDeployer deployer) {
         this.simpleDeployers.remove(deployer);
     }
-    
-    private void handleUnsupportedFileType(URI uri){
-    	List<String> acceptedTypes = new ArrayList<String>();
-		for (SimpleDeployer deployer : this.simpleDeployers) {
-			acceptedTypes.addAll(deployer.getAcceptedFileTypes());
-		}
-		this.eventLogger.log(NanoDeployerLogEvents.NANO_UNRECOGNIZED_TYPE, uri, acceptedTypes);
-    }
-    
-    private void installDeployables(List<URI> uris){
-    	for (URI uri:uris){
-        	boolean isThereSuitableDeployer = false;
-    		for (SimpleDeployer deployer : this.simpleDeployers) {
-    			if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
-    				isThereSuitableDeployer = true;
-    				if (!deployer.isDeployFileValid(new File(uri))) {
-    					this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
-    				} else {
-    					if (deployer.isDeployed(uri)) { 
-    						deployer.update(uri);
-    					} else {
-    						deployer.install(uri);
-    					}
-    				}
-    			}
-    		}
-    		if (!isThereSuitableDeployer) {
-    			handleUnsupportedFileType(uri);
-    		}
-    	}
+
+    private void handleUnsupportedFileType(URI uri) {
+        List<String> acceptedTypes = new ArrayList<String>();
+        for (SimpleDeployer deployer : this.simpleDeployers) {
+            acceptedTypes.addAll(deployer.getAcceptedFileTypes());
+        }
+        this.eventLogger.log(NanoDeployerLogEvents.NANO_UNRECOGNIZED_TYPE, uri, acceptedTypes);
     }
 
-    private  void startDeployables (List<URI> uris){
-    	for (URI uri:uris){
-        	boolean isThereSuitableDeployer = false;
-    		for (SimpleDeployer deployer : this.simpleDeployers) {
-    			if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
-    				isThereSuitableDeployer = true;
-    				if (!deployer.isDeployFileValid(new File(uri))) {
-    					this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
-    				} else {
-    						deployer.start(uri);
-    				}    				
-    			}
-    		}
-    		if (!isThereSuitableDeployer) {
-    			handleUnsupportedFileType(uri);
-    		}
-    	}
+    private void installDeployables(List<URI> uris) {
+        for (URI uri : uris) {
+            boolean isThereSuitableDeployer = false;
+            for (SimpleDeployer deployer : this.simpleDeployers) {
+                if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                    isThereSuitableDeployer = true;
+                    if (!deployer.isDeployFileValid(new File(uri))) {
+                        this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
+                    } else {
+                        if (deployer.isDeployed(uri)) {
+                            deployer.update(uri);
+                        } else {
+                            deployer.install(uri);
+                        }
+                    }
+                }
+            }
+            if (!isThereSuitableDeployer) {
+                handleUnsupportedFileType(uri);
+            }
+        }
+    }
+
+    private void startDeployables(List<URI> uris) {
+        for (URI uri : uris) {
+            boolean isThereSuitableDeployer = false;
+            for (SimpleDeployer deployer : this.simpleDeployers) {
+                if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                    isThereSuitableDeployer = true;
+                    if (!deployer.isDeployFileValid(new File(uri))) {
+                        this.eventLogger.log(NanoDeployerLogEvents.NANO_INVALID_FILE);
+                    } else {
+                        deployer.start(uri);
+                    }
+                }
+            }
+            if (!isThereSuitableDeployer) {
+                handleUnsupportedFileType(uri);
+            }
+        }
     }
 
 }

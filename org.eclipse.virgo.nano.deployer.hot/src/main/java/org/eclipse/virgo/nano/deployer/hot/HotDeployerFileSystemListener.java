@@ -1,3 +1,4 @@
+
 package org.eclipse.virgo.nano.deployer.hot;
 
 import java.io.File;
@@ -6,22 +7,19 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
+import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.nano.serviceability.NonNull;
-import org.eclipse.virgo.medic.eventlog.EventLogger;
-import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.util.io.FileSystemEvent;
 import org.eclipse.virgo.util.io.FileSystemListener;
 import org.eclipse.virgo.util.io.PathReference;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link FileSystemListener} that monitors a pickup directory for file system events. When a file is created it is
@@ -61,21 +59,22 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
      * 
      * Reacts to changes in the pickup directory and calls the {@link ApplicationDeployer} as appropriate.
      */
+    @Override
     public void onChange(String path, FileSystemEvent event) {
         String fileName = new PathReference(path).getName();
         this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_PROCESSING_FILE, event, fileName);
         try {
             if (event == FileSystemEvent.CREATED) {
-                logger.info("ApplicationDeploying path '{}'.", path);
+                this.logger.info("ApplicationDeploying path '{}'.", path);
                 deploy(path);
             } else if (event == FileSystemEvent.MODIFIED) {
-                logger.info("Redeploying path '{}'.", path);
+                this.logger.info("Redeploying path '{}'.", path);
                 deploy(path);
             } else if (event == FileSystemEvent.DELETED) {
-                logger.info("ApplicationUndeploying path '{}'.", path);
+                this.logger.info("ApplicationUndeploying path '{}'.", path);
                 undeploy(path);
             } else if (event == FileSystemEvent.INITIAL) {
-                logger.info("ApplicationConditionallyDeploying path '{}'.", path);
+                this.logger.info("ApplicationConditionallyDeploying path '{}'.", path);
                 deployIfNotDeployed(path, fileName);
             }
         } catch (Exception ex) {
@@ -83,59 +82,56 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
             determineFailureAndLogMessage(event, fileName, ex);
         }
     }
-    
-    
+
     /**
      * {@inheritDoc}
      * 
      * Reacts to initial event in the pickup directory and calls the bulk deploy method in {@link ApplicationDeployer}.
      */
     public void onInitialEvent(List<String> paths) {
-    	this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_PROCESSING_FILE, FileSystemEvent.INITIAL, getConcatenatedPaths(paths));
+        this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_PROCESSING_FILE, FileSystemEvent.INITIAL, getConcatenatedPaths(paths));
         try {
-        	bulkDeployIfNotDeployed(paths);
-           } catch (Exception ex) {
+            bulkDeployIfNotDeployed(paths);
+        } catch (Exception ex) {
             ex.printStackTrace(System.out);
             determineFailureAndLogMessage(FileSystemEvent.INITIAL, getConcatenatedPaths(paths), ex);
         }
     }
-    
-    private String getConcatenatedPaths(List<String> paths){
-    	StringBuilder sb = new StringBuilder("");
-    	for (String path:paths){
-    		sb.append(new PathReference(path).getName()).append("; ");
-    	}
-    	return new String(sb);
+
+    private String getConcatenatedPaths(List<String> paths) {
+        StringBuilder sb = new StringBuilder("");
+        for (String path : paths) {
+            sb.append(new PathReference(path).getName()).append("; ");
+        }
+        return new String(sb);
     }
-    
+
     /**
      * Collects only the source artifacts that are not yet deployed and transforms the given paths to URIs.
      * 
      */
-    private List<URI> getNotDeployedUris (List<String> sourceArtefacts){
-    	List<URI> notDeployedFileUris =  new ArrayList<URI>(); 
-    	for (String sourceArtefact:sourceArtefacts){
-    	 if (!isDeployed(sourceArtefact)) {
-    		 notDeployedFileUris.add(getDefinitiveUri(sourceArtefact));
-    		 logger.info("ApplicationConditionallyDeploying path '{}'.", sourceArtefact);
-         } else {
-             this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, sourceArtefact);
-         }
-    	}
-    	return notDeployedFileUris;
+    private List<URI> getNotDeployedUris(List<String> sourceArtefacts) {
+        List<URI> notDeployedFileUris = new ArrayList<URI>();
+        for (String sourceArtefact : sourceArtefacts) {
+            if (!isDeployed(sourceArtefact)) {
+                notDeployedFileUris.add(getDefinitiveUri(sourceArtefact));
+                this.logger.info("ApplicationConditionallyDeploying path '{}'.", sourceArtefact);
+            } else {
+                this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, sourceArtefact);
+            }
+        }
+        return notDeployedFileUris;
     }
-    
-    
+
     /**
-     * Triggers bulk deployment of source artifacts that are not yet deployed. 
-     *  
+     * Triggers bulk deployment of source artifacts that are not yet deployed.
+     * 
      * @param sourceArtefact the source artifact URI string
      * @throws DeploymentException
      */
-    private void bulkDeployIfNotDeployed(List<String> sourceArtefacts) throws DeploymentException{
-    		this.deployer.bulkDeploy(getNotDeployedUris(sourceArtefacts), new DeploymentOptions(true, true, false));
+    private void bulkDeployIfNotDeployed(List<String> sourceArtefacts) throws DeploymentException {
+        this.deployer.bulkDeploy(getNotDeployedUris(sourceArtefacts), new DeploymentOptions(true, true, false));
     }
-    
 
     /**
      * Determines the {@link LogEvent} that corresponds the {@link FileSystemEvent}.
@@ -208,7 +204,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
         }
         return baseUri;
     }
-    
+
     /**
      * Deploys the application at the supplied PathReference asynchronously.
      * 
@@ -233,7 +229,6 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
             this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, fileName);
         }
     }
-
 
     /**
      * {@inheritDoc}

@@ -13,11 +13,11 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
 
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
@@ -49,7 +49,7 @@ public class BundleDeployer implements SimpleDeployer {
     private static final String UNKNOWN = "unknown";
 
     private static final String INSTALL_BY_REFERENCE_PREFIX = "reference:file:";
-    
+
     private static final String FRAGMEN_HOST_HEADER = "Fragment-Host";
 
     private final EventLogger eventLogger;
@@ -78,8 +78,8 @@ public class BundleDeployer implements SimpleDeployer {
         String staging = "staging";
         this.workBundleInstallLocation = new File(kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging);
     }
-    
-    private Boolean createInstallationFolder(){
+
+    private Boolean createInstallationFolder() {
         if (!this.workBundleInstallLocation.exists()) {
             if (!this.workBundleInstallLocation.mkdirs()) {
                 this.logger.error("Failed to create staging directory '" + this.workBundleInstallLocation.getAbsolutePath()
@@ -89,52 +89,52 @@ public class BundleDeployer implements SimpleDeployer {
         }
         return true;
     }
-    
-    private boolean validateUri(URI uri){
-		if (!canWrite(uri)) {
+
+    private boolean validateUri(URI uri) {
+        if (!canWrite(uri)) {
             this.logger.error("Cannot open the file " + uri + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
             return false;
-		}
-		return true;
+        }
+        return true;
     }
-    
-    private Boolean isFragment(FragmentHost hostHolder){
-    	return (hostHolder != null && hostHolder.getBundleSymbolicName() != null);
+
+    private Boolean isFragment(FragmentHost hostHolder) {
+        return hostHolder != null && hostHolder.getBundleSymbolicName() != null;
     }
-    
-    private Boolean isFragment(Bundle bundle){
-    	Enumeration<String> keys = bundle.getHeaders().keys();
-    	while (keys.hasMoreElements()){
-    		if (keys.nextElement().equalsIgnoreCase(FRAGMEN_HOST_HEADER) ){
-    			return true;
-    		}
-    	}
-    	return false;
+
+    private Boolean isFragment(Bundle bundle) {
+        Enumeration<String> keys = bundle.getHeaders().keys();
+        while (keys.hasMoreElements()) {
+            if (keys.nextElement().equalsIgnoreCase(FRAGMEN_HOST_HEADER)) {
+                return true;
+            }
+        }
+        return false;
     }
-    
-    private void refreshHosts(FragmentHost hostHolder, Bundle fragment){
-    	 try {
-             Bundle[] hosts = this.packageAdmin.getBundles(hostHolder.getBundleSymbolicName(), null);
-             if (hosts != null) {
-             	this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, fragment.getSymbolicName(), fragment.getVersion());
-             	this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, fragment.getSymbolicName(), fragment.getVersion());
-                 this.packageAdmin.refreshPackages(hosts);
-                 this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHED_HOST, fragment.getSymbolicName(), fragment.getVersion());
-             }
-         } catch (Exception e) {
-             this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESH_HOST_ERROR, e, fragment.getSymbolicName(), fragment.getVersion());
-         }
-         try {
-             if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
-                 registerToBundlesInfo(fragment, true);
-             }
-         } catch (Exception e) {
-             this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, e, fragment.getSymbolicName(), fragment.getVersion());
-         }
+
+    private void refreshHosts(FragmentHost hostHolder, Bundle fragment) {
+        try {
+            Bundle[] hosts = this.packageAdmin.getBundles(hostHolder.getBundleSymbolicName(), null);
+            if (hosts != null) {
+                this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, fragment.getSymbolicName(), fragment.getVersion());
+                this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, fragment.getSymbolicName(), fragment.getVersion());
+                this.packageAdmin.refreshPackages(hosts);
+                this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHED_HOST, fragment.getSymbolicName(), fragment.getVersion());
+            }
+        } catch (Exception e) {
+            this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESH_HOST_ERROR, e, fragment.getSymbolicName(), fragment.getVersion());
+        }
+        try {
+            if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
+                registerToBundlesInfo(fragment, true);
+            }
+        } catch (Exception e) {
+            this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, e, fragment.getSymbolicName(), fragment.getVersion());
+        }
     }
-    
-    private void updateBundleInfo(Bundle bundle, Boolean isFragment){
-    	try {
+
+    private void updateBundleInfo(Bundle bundle, Boolean isFragment) {
+        try {
             if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
                 registerToBundlesInfo(bundle, true);
             }
@@ -142,64 +142,64 @@ public class BundleDeployer implements SimpleDeployer {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, ex, bundle.getSymbolicName(), bundle.getVersion());
         }
     }
-    
-	@Override
-	public boolean install(URI uri) {
-		this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
-		try{
-			if (!validateUri(uri) || !(createInstallationFolder())) {
-				this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, uri);
-				return STATUS_ERROR;
-			}
-			// copy bundle to work folder
-			File stagedFile = new File(workBundleInstallLocation, extractJarFileNameFromString(uri.toString()));
-			FileCopyUtils.copy(new File(uri), stagedFile);
-			
-			// install the bundle
-			final Bundle installed = this.bundleContext.installBundle(createInstallLocation(stagedFile));
-			final FragmentHost hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagedFile);
-			this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
-			
-			//if fragment, refresh hosts and update bundles.info
-			if (isFragment(hostHolder)){
-				refreshHosts(hostHolder, installed);
-				updateBundleInfo(installed, true);
-			}
-		} catch (Exception e) {
-			this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, uri);
-			return STATUS_ERROR;
-		}            
-		return STATUS_OK;
-	}
-	
 
-	@Override
-	public boolean start(URI uri) {
-		Bundle installedBundle = getInstalledBundle(uri);
-		if (installedBundle != null){
-			this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installedBundle.getSymbolicName(), installedBundle.getVersion());
-			try {
-				if (!isFragment(installedBundle)){
-					installedBundle.start();
-					updateBundleInfo(installedBundle, false);
-				}else{
-					this.logger.warn("The installed bundle for the given url ["+ uri +"] is a fragment bundle. Start operation for this url failed. ");
-					return STATUS_ERROR;
-				}
-			} catch (Exception e) {
-				this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING_ERROR, e, installedBundle.getSymbolicName(), installedBundle.getVersion());
-				return STATUS_ERROR;
-			}
-			this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installedBundle.getSymbolicName(), installedBundle.getVersion());
-		}
-			return STATUS_OK;
-	}
-    
+    @Override
+    public boolean install(URI uri) {
+        this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
+        try {
+            if (!validateUri(uri) || !createInstallationFolder()) {
+                this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, uri);
+                return STATUS_ERROR;
+            }
+            // copy bundle to work folder
+            File stagedFile = new File(this.workBundleInstallLocation, extractJarFileNameFromString(uri.toString()));
+            FileCopyUtils.copy(new File(uri), stagedFile);
+
+            // install the bundle
+            final Bundle installed = this.bundleContext.installBundle(createInstallLocation(stagedFile));
+            final FragmentHost hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagedFile);
+            this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
+
+            // if fragment, refresh hosts and update bundles.info
+            if (isFragment(hostHolder)) {
+                refreshHosts(hostHolder, installed);
+                updateBundleInfo(installed, true);
+            }
+        } catch (Exception e) {
+            this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, uri);
+            return STATUS_ERROR;
+        }
+        return STATUS_OK;
+    }
+
+    @Override
+    public boolean start(URI uri) {
+        Bundle installedBundle = getInstalledBundle(uri);
+        if (installedBundle != null) {
+            this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installedBundle.getSymbolicName(), installedBundle.getVersion());
+            try {
+                if (!isFragment(installedBundle)) {
+                    installedBundle.start();
+                    updateBundleInfo(installedBundle, false);
+                } else {
+                    this.logger.warn("The installed bundle for the given url [" + uri
+                        + "] is a fragment bundle. Start operation for this url failed. ");
+                    return STATUS_ERROR;
+                }
+            } catch (Exception e) {
+                this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING_ERROR, e, installedBundle.getSymbolicName(), installedBundle.getVersion());
+                return STATUS_ERROR;
+            }
+            this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installedBundle.getSymbolicName(), installedBundle.getVersion());
+        }
+        return STATUS_OK;
+    }
+
     @Override
     public boolean deploy(URI path) {
         this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
         final File deployedFile = new File(path);
-        
+
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
@@ -217,7 +217,7 @@ public class BundleDeployer implements SimpleDeployer {
                     return STATUS_ERROR;
                 }
             }
-            File stagedFile = new File(workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
+            File stagedFile = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
             FileCopyUtils.copy(deployedFile, stagedFile);
             // install the bundle
             installed = this.bundleContext.installBundle(createInstallLocation(stagedFile));
@@ -267,7 +267,7 @@ public class BundleDeployer implements SimpleDeployer {
                 bundleJar.getInputStream(bundleJar.getEntry(JarFile.MANIFEST_NAME))));
             return manifest.getFragmentHost();
         } catch (IOException ioe) {
-            this.logger.error("Failed to extract the fragment host header from file '"+ stagedFile.getAbsolutePath() +"'.", ioe);
+            this.logger.error("Failed to extract the fragment host header from file '" + stagedFile.getAbsolutePath() + "'.", ioe);
             return null;
         } catch (BundleManifestParseException bmpe) {
             return null;
@@ -352,9 +352,9 @@ public class BundleDeployer implements SimpleDeployer {
     public boolean canServeFileType(String fileType) {
         return JAR.equals(fileType);
     }
-    
-    private Bundle getInstalledBundle(URI uri){
-    	File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(uri.toString()));
+
+    private Bundle getInstalledBundle(URI uri) {
+        File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(uri.toString()));
         return this.bundleContext.getBundle(createInstallLocation(matchingStagingBundle));
     }
 
@@ -441,33 +441,32 @@ public class BundleDeployer implements SimpleDeployer {
         final String warName = path.substring(path.lastIndexOf(SLASH) + 1);
         return warName;
     }
-    
+
     @Override
     public boolean isDeployFileValid(File file) {
-    	JarFile jarFile = null;
-    	try {
+        JarFile jarFile = null;
+        try {
             jarFile = new JarFile(file);
         } catch (IOException e) {
             this.logger.error("The deployed file '" + file.getAbsolutePath() + "' is an invalid zip file.");
             return false;
         } finally {
-        	try {
-        		if (jarFile != null) {
-        			jarFile.close();
-        		}
-        	} catch (IOException e) {
-        		// do nothing
-        	}
+            try {
+                if (jarFile != null) {
+                    jarFile.close();
+                }
+            } catch (IOException e) {
+                // do nothing
+            }
         }
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public List<String> getAcceptedFileTypes() {
-		List<String> types = new ArrayList<String>();
-		types.add(JAR);
-		return types;
-	}
-
+    @Override
+    public List<String> getAcceptedFileTypes() {
+        List<String> types = new ArrayList<String>();
+        types.add(JAR);
+        return types;
+    }
 
 }

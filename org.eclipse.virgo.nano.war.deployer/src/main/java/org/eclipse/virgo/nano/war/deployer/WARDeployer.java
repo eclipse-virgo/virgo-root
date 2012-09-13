@@ -23,11 +23,11 @@ import java.util.jar.Manifest;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
-import org.eclipse.virgo.nano.core.KernelConfig;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity; 
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.core.KernelConfig;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
@@ -91,21 +91,21 @@ public class WARDeployer implements SimpleDeployer {
     private static final String UNKNOWN = "unknown";
 
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
-    
-    //private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
-    
+
+    // private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
+
     private static final String DEFAULT_CONTEXT_PATH = "/";
-    
+
     private static final String ROOT_WAR_NAME = "ROOT";
-    
+
     private static final String PROPERTY_WAB_HEADERS = "WABHeaders";
 
     private static final String PROPERTY_VALUE_WAB_HEADERS_STRICT = "strict";
 
     private static final String PROPERTY_VALUE_WAB_HEADERS_DEFAULTED = "defaulted";
-    
+
     private static final String HEADER_DEFAULT_WAB_HEADERS = "org-eclipse-gemini-web-DefaultWABHeaders";
-    
+
     private static final String WEB_BUNDLE_MODULE_TYPE = "web-bundle";
 
     private EventLogger eventLogger;
@@ -127,7 +127,7 @@ public class WARDeployer implements SimpleDeployer {
     private File webAppsDir;
 
     private KernelConfig kernelConfig;
-    
+
     public WARDeployer() {
         warDeployerInternalInit(null);
     }
@@ -144,7 +144,7 @@ public class WARDeployer implements SimpleDeployer {
     public void activate(ComponentContext context) {
         warDeployerInternalInit(context.getBundleContext());
     }
-    
+
     @Override
     public final boolean deploy(URI path) {
         this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
@@ -212,20 +212,20 @@ public class WARDeployer implements SimpleDeployer {
 
     @Override
     public boolean isDeployFileValid(File file) {
-    	JarFile jarFile = null;
-    	try {
+        JarFile jarFile = null;
+        try {
             jarFile = new JarFile(file);
         } catch (IOException e) {
             this.logger.error("The deployed file '" + file.getAbsolutePath() + "' is an invalid zip file.");
             return false;
         } finally {
-        	try {
-        		if (jarFile != null) {
-        			jarFile.close();
-        		}
-        	} catch (IOException e) {
-        		// do nothing
-        	}
+            try {
+                if (jarFile != null) {
+                    jarFile.close();
+                }
+            } catch (IOException e) {
+                // do nothing
+            }
         }
         return true;
     }
@@ -245,7 +245,7 @@ public class WARDeployer implements SimpleDeployer {
         String warPath = extractWarPath(bundleLocation);
         final File warDir = new File(warPath);
         String warName = extractWarName(warPath);
-        
+
         deleteStatusFile(warName, this.pickupDir);
 
         if (bundle != null) {
@@ -277,7 +277,7 @@ public class WARDeployer implements SimpleDeployer {
         createStatusFile(warName, OP_UNDEPLOY, STATUS_OK, bundle.getBundleId(), bundle.getLastModified());
         return STATUS_OK;
     }
-    
+
     private String extractWarName(String warPath) {
         return warPath.substring(warPath.lastIndexOf(File.separatorChar) + 1, warPath.length());
     }
@@ -451,17 +451,17 @@ public class WARDeployer implements SimpleDeployer {
             mfIS = new FileInputStream(srcFile + File.separator + JarFile.MANIFEST_NAME);
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(mfIS));
             if (manifest.getModuleType() == null || "web".equalsIgnoreCase(manifest.getModuleType())) {
-            	boolean strictWABHeaders = getStrictWABHeadersValue();
-            	if (!strictWABHeaders) {
+                boolean strictWABHeaders = getStrictWABHeadersValue();
+                if (!strictWABHeaders) {
                     manifest.setHeader(HEADER_DEFAULT_WAB_HEADERS, "true");
                 }
-            	manifest.setModuleType(WEB_BUNDLE_MODULE_TYPE);
-            	InstallationOptions installationOptions = prepareInstallationOptions(strictWABHeaders, warName, manifest);
-            	boolean isWebBundle = WebBundleUtils.isWebApplicationBundle(manifest);
+                manifest.setModuleType(WEB_BUNDLE_MODULE_TYPE);
+                InstallationOptions installationOptions = prepareInstallationOptions(strictWABHeaders, warName, manifest);
+                boolean isWebBundle = WebBundleUtils.isWebApplicationBundle(manifest);
                 this.webBundleManifestTransformer.transform(manifest, srcFile.toURI().toURL(), installationOptions, isWebBundle);
             } else {
-            	this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
-        		return;
+                this.logger.info("Skipping transformation of application '" + warName + "' because it is already a web bundle.");
+                return;
             }
             fos = new FileOutputStream(destFile);
             toManifest(manifest.toDictionary()).write(fos);
@@ -472,19 +472,19 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private InstallationOptions prepareInstallationOptions(boolean strictWABHeaders, String warName, BundleManifest manifest) {
-    	Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
         if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
-        	if (warName.equals(ROOT_WAR_NAME)) {
-        		map.put(HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
-        	} else {
-        		map.put(HEADER_WEB_CONTEXT_PATH, warName);
-        	}
+            if (warName.equals(ROOT_WAR_NAME)) {
+                map.put(HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
+            } else {
+                map.put(HEADER_WEB_CONTEXT_PATH, warName);
+            }
         }
-                
+
         InstallationOptions installationOptions = new InstallationOptions(map);
         installationOptions.setDefaultWABHeaders(!strictWABHeaders);
-        
+
         return installationOptions;
     }
 
@@ -585,28 +585,28 @@ public class WARDeployer implements SimpleDeployer {
         this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
     }
 
-	private boolean getStrictWABHeadersValue() {
-		boolean strictWABHeaders = true;
+    private boolean getStrictWABHeadersValue() {
+        boolean strictWABHeaders = true;
         String wabHeadersPropertyValue = null;
-        if (kernelConfig.getProperty(PROPERTY_WAB_HEADERS) != null) {
-           wabHeadersPropertyValue = kernelConfig.getProperty(PROPERTY_WAB_HEADERS).toString();
+        if (this.kernelConfig.getProperty(PROPERTY_WAB_HEADERS) != null) {
+            wabHeadersPropertyValue = this.kernelConfig.getProperty(PROPERTY_WAB_HEADERS).toString();
         }
         if (wabHeadersPropertyValue != null) {
             if (PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {
                 strictWABHeaders = false;
-                logger.info("Property '%s' has value [defaulted]", new String[] { PROPERTY_WAB_HEADERS });
+                this.logger.info("Property '%s' has value [defaulted]", new String[] { PROPERTY_WAB_HEADERS });
             } else if (!PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
-            	logger.error("Property '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS, wabHeadersPropertyValue });
-            } 
+                this.logger.error("Property '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS, wabHeadersPropertyValue });
+            }
         }
-        
+
         return strictWABHeaders;
-	}
+    }
 
     public void bindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
         this.webBundleManifestTransformer = transformer;
     }
-    
+
     public void unbindWebBundleManifestTransformer(WebBundleManifestTransformer transformer) {
         this.webBundleManifestTransformer = null;
     }
@@ -626,7 +626,7 @@ public class WARDeployer implements SimpleDeployer {
     public void unbindPackageAdmin(PackageAdmin packageAdmin) {
         this.packageAdmin = null;
     }
-    
+
     public void bindKernelConfig(KernelConfig kernelConfig) {
         this.kernelConfig = kernelConfig;
     }
@@ -635,9 +635,9 @@ public class WARDeployer implements SimpleDeployer {
         this.kernelConfig = null;
     }
 
-   @Override
-	public boolean install(URI uri) {
-		this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
+    @Override
+    public boolean install(URI uri) {
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
         final String warName = extractWarNameFromString(uri.toString());
         final File deployedFile = new File(uri);
         final File warDir = new File(this.webAppsDir, warName);
@@ -664,56 +664,56 @@ public class WARDeployer implements SimpleDeployer {
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
             return false;
         }
-		return true;
-	}
-	
-	@Override
-	public boolean start(URI uri) {
-		Bundle bundle = getInstalledBundle(uri);
-		final String warName = extractWarNameFromString(uri.toString());
+        return true;
+    }
+
+    @Override
+    public boolean start(URI uri) {
+        Bundle bundle = getInstalledBundle(uri);
+        final String warName = extractWarNameFromString(uri.toString());
         deleteStatusFile(warName, this.pickupDir);
         final long lastModified = new File(uri).lastModified();
-		this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTING, bundle.getSymbolicName(), bundle.getVersion());
+        this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTING, bundle.getSymbolicName(), bundle.getVersion());
         try {
-        	bundle.start();
+            bundle.start();
         } catch (Exception e) {
             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_STARTING_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
             return STATUS_ERROR;
         }
         this.eventLogger.log(NanoWARDeployerLogEvents.NANO_WEB_STARTED, bundle.getSymbolicName(), bundle.getVersion());
-        
-        // now update bundle's info	
-        if (!updateBundlesInfo(bundle)){
+
+        // now update bundle's info
+        if (!updateBundlesInfo(bundle)) {
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
             return STATUS_ERROR;
         }
         createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundle.getBundleId(), lastModified);
         return STATUS_OK;
-	}
-	
-    private boolean updateBundlesInfo(Bundle bundle){
+    }
+
+    private boolean updateBundlesInfo(Bundle bundle) {
         if (this.logger.isInfoEnabled()) {
             this.logger.info("Bundles info will be updated for web app bundle with simbolic name '" + bundle.getSymbolicName() + "' .");
         }
-    	 try {
-             if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
-                 registerToBundlesInfo(bundle);
-             }
-         } catch (Exception e) {
-             this.eventLogger.log(NanoWARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
-             return STATUS_ERROR;
-         }
-         return STATUS_OK;
+        try {
+            if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
+                registerToBundlesInfo(bundle);
+            }
+        } catch (Exception e) {
+            this.eventLogger.log(NanoWARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+            return STATUS_ERROR;
+        }
+        return STATUS_OK;
     }
-    
-    private Bundle getInstalledBundle(URI path){
-    	final String warName = extractWarNameFromString(path.toString());
+
+    private Bundle getInstalledBundle(URI path) {
+        final String warName = extractWarNameFromString(path.toString());
         final File warDir = new File(this.webAppsDir, warName);
         if (!warDir.exists()) {
             return null;
         }
         return this.bundleContext.getBundle(createInstallLocation(warDir));
     }
-	
+
 }
