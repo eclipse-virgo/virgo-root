@@ -425,7 +425,7 @@ public class FileSystemCheckerTests {
             assertEquals("Expected no onChange events:", 0, onChangeEventsCounter.get());
             onInitialEventsCounter.set(0);
             onChangeEventsCounter.set(0);
-
+            Thread.sleep(1000); // give the test chance to recognise the changed files
             f1.setLastModified(System.currentTimeMillis());
             f2.setLastModified(System.currentTimeMillis());
             checker.check();// here only marked for monitoring
