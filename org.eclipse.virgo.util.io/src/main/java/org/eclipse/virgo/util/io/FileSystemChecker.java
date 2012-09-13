@@ -13,12 +13,15 @@ package org.eclipse.virgo.util.io;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 import org.eclipse.virgo.util.common.Assert;
@@ -47,6 +50,15 @@ public final class FileSystemChecker {
 
     private final Logger logger;
     private final Object checkLock = new Object();
+    
+
+    /**
+     * Enables bulk handling of all initially observed file system objects (so that they are handled altogether at once
+     * and not one by one) 
+     */
+	private final String INITIAL_EVENT_HANDLING_MODE = "org.eclipse.virgo.fschecker.initialEventMode";
+	private final String BULK_MODE_VALUE = "bulk";	
+	private AtomicBoolean isInitialEventsHandlingInitiatedOnce = new AtomicBoolean(false);
 
     /**
      * The files we know about -- with their last modified date (as a Long) are in <code>fileState</code>.<br/>
@@ -63,7 +75,7 @@ public final class FileSystemChecker {
     private final List<FileSystemListener> listeners = new CopyOnWriteArrayList<FileSystemListener>();
 
     private final FilenameFilter includeFilter;
-
+    
     private static boolean WINDOWS = System.getProperty("os.name").startsWith("Windows");
 
     /**
@@ -128,30 +140,133 @@ public final class FileSystemChecker {
     public void addListener(FileSystemListener listener) {
         this.listeners.add(listener);
     }
+    
+	/**
+	 * Returns a list of all the files that are recorded as INITIAL events.
+	 * 
+	 * @param files
+	 *            - the array of files that is checked
+	 */
+	private List<File> getInitialFiles(File[] files) {
+		List<File> resultFiles = new ArrayList<File>();
+		for (File file : files) {
+			String keyFilePath = this.key(file);
+			if (monitorRecords.containsKey(keyFilePath)) {
+				MonitorRecord monitorRecord = monitorRecords.get(keyFilePath);
+				if (FileSystemEvent.INITIAL.equals(monitorRecord.getEvent())) {
+					resultFiles.add(file);
+				}
+			}
+		}
+		return resultFiles;
+	}
 
-    /**
-     * Instructs this <code>FileSystemChecker</code> to check the configured directory and notifies any registered
-     * listeners of changes to the directory files.
-     */
-    public void check() {
-        synchronized (this.checkLock) {
-            try {
-                File[] currentFiles;
-                try {
-                    currentFiles = listCurrentDirFiles();
-                } catch (Exception e) {
-                    if (logger!=null) logger.warn("FileSystemChecker caught exception from listFiles()", e);
-                    throw e;
-                }
-                
-                debugState("before check:", currentFiles);
-                
-                Set<String> currentFileKeys = new HashSet<String>(currentFiles.length);
+	/**
+	 * Bulk handling of initial files (not one by one).
+	 * 
+	 * @param initialFiles
+	 */
+	private void handleInitialFiles(List<File> initialFiles) {
+		notifyListenersOnInitialEvent(initialFiles);
+		for (File file : initialFiles) {
+			monitorRecords.remove(this.key(file));
+			setKnownFileState(file);
+		}
+	}
+
+	/**
+	 * Returns the absolute file paths of the given files
+	 * 
+	 * @param files
+	 * @return
+	 */
+	private List<String> getPaths(List<File> files) {
+		List<String> filePaths = new ArrayList<String>();
+		for (File file : files) {
+			filePaths.add(this.key(file));
+		}
+		return filePaths;
+	}
+
+	/**
+	 * Notify once all registered listeners for the INITIAL event
+	 * 
+	 * @param initialFiles
+	 */
+	private void notifyListenersOnInitialEvent(List<File> initialFiles) {
+		List<String> initialFilesPaths = getPaths(initialFiles);
+		for (FileSystemListener listener : this.listeners) {
+			try {
+				listener.onInitialEvent(initialFilesPaths);
+			} catch (Throwable e) {
+				if (logger != null) {
+					logger.warn("Listener threw exception for event "
+							+ FileSystemEvent.INITIAL, e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Removes a given list of files from a given array.
+	 * 
+	 * @param inputArray
+	 * @param filesToRemove
+	 * @return
+	 */
+	private File[] removeFilesFromArray(File[] inputArray,
+			List<File> filesToRemove) {
+		List<File> reducedFiles = new ArrayList<File>(Arrays.asList(inputArray));
+		reducedFiles.removeAll(filesToRemove);
+		return reducedFiles.toArray(new File[reducedFiles.size()]);
+	}
+
+	private void addToCurrentFileKeys(Set<String> currentFileKeys,
+			List<File> files) {
+		for (File file : files) {
+			currentFileKeys.add(this.key(file));
+		}
+	}
+
+	/**
+	 * Instructs this <code>FileSystemChecker</code> to check the configured
+	 * directory and notifies any registered listeners of changes to the
+	 * directory files.
+	 */
+	public void check() {
+		synchronized (this.checkLock) {
+			try {
+				File[] currentFiles;
+				try {
+					currentFiles = listCurrentDirFiles();
+				} catch (Exception e) {
+					if (logger != null)
+						logger.warn("FileSystemChecker caught exception from listFiles()", e);
+					throw e;
+				}
+
+				debugState("before check:", currentFiles);
+
+				Set<String> currentFileKeys = new HashSet<String>(
+						currentFiles.length);
+
+				if (isInitialEventsBulkHandlingEnabled()) {
+					// optimize handling of initial events - do it only once
+					if (isInitialEventsHandlingInitiatedOnce.compareAndSet(false, true)) {
+						List<File> initialFiles = getInitialFiles(currentFiles);
+						if (!initialFiles.isEmpty()) {
+							handleInitialFiles(initialFiles);
+							addToCurrentFileKeys(currentFileKeys, initialFiles);
+							// skip further processing of initialFiles in the current check
+							currentFiles = removeFilesFromArray(currentFiles, initialFiles);
+						}
+					}
+				}
+
                 for (File file : currentFiles) {
                     // remember seen files to allow comparison for delete
                     String keyFile = this.key(file);
                     currentFileKeys.add(keyFile);
-
                     if (!isKnown(file)) {
                         // not seen it before -- start monitoring it -- a potential newly created file
                         monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.CREATED));
@@ -203,7 +318,7 @@ public final class FileSystemChecker {
             }
         }
     }
-
+    
     public boolean isUnlocked(File file) {
         // Heuristic check for the file not being locked on Windows. On *ix, assume the file is unlocked since we can't tell.
         return !WINDOWS || file.renameTo(file);
@@ -353,7 +468,10 @@ public final class FileSystemChecker {
 
         public FileSystemEvent getEvent() {
             return event;
-        }
-
+        }        
     }
+    
+	private boolean isInitialEventsBulkHandlingEnabled(){
+		return BULK_MODE_VALUE.equalsIgnoreCase(System.getProperty(INITIAL_EVENT_HANDLING_MODE));
+	}
 }

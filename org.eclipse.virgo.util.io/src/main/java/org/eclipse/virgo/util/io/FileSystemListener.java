@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.util.io;
 
+import java.util.List;
+
 /**
  * Listener that is notified of file system modifications.<p/>
  * 
@@ -28,4 +30,14 @@ public interface FileSystemListener {
      * @param event the event that occurred.
      */
     void onChange(String path, FileSystemEvent event);
+    
+   
+    /**
+     * Signals once for all initially observed file system objects.
+     * The method is convenient when all initial file system events 
+     * need to be handled all together, not one by one.  
+     * @param paths all the file paths for which INITIAL event occurred
+     */
+    void onInitialEvent(List<String> paths);
+    
 }

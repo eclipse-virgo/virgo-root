@@ -25,9 +25,11 @@ import org.eclipse.virgo.util.io.FileSystemEvent;
 import org.eclipse.virgo.util.io.FileSystemListener;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.StubLogger.StubLogEntry;
+import org.eclipse.virgo.util.io.StubLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  */
@@ -64,6 +66,10 @@ public class FileSystemCheckerTests {
                     eventReceived.set(true);
                 }
             }
+            
+            public void onInitialEvent(List<String> paths){
+            }
+            
         });
         File newFile = new File(this.checkDir, fileName);
         newFile.createNewFile();
@@ -91,6 +97,10 @@ public class FileSystemCheckerTests {
                     eventReceived.set(true);
                 }
             }
+            
+            public void onInitialEvent(List<String> paths){
+            }
+            
         });
         File newFile = new File(this.checkDir, fileName);
         newFile.createNewFile();
@@ -117,6 +127,9 @@ public class FileSystemCheckerTests {
                 if (file.endsWith(fileName) && FileSystemEvent.CREATED.equals(event)) {
                     eventReceived.set(true);
                 }
+            }
+            
+            public void onInitialEvent(List<String> paths){
             }
         });
         File newFile = new File(this.checkDir, fileName);
@@ -145,6 +158,9 @@ public class FileSystemCheckerTests {
                     eventReceived.set(true);
                 }
             }
+            
+            public void onInitialEvent(List<String> paths){
+            }            
         });
         File updateFile = new File(this.checkDir, fileName);
         updateFile.createNewFile();
@@ -213,6 +229,9 @@ public class FileSystemCheckerTests {
                         break;
                 }
             }
+        }
+        
+        public void onInitialEvent(List<String> paths){
         }
 
         public boolean checkEvents(int all, int ini, int cre, int del, int mod) {
@@ -298,14 +317,19 @@ public class FileSystemCheckerTests {
                     initialEvents.incrementAndGet();
                 }
             }
+            
+            public void onInitialEvent(List<String> paths){
+            }
         });
         checker.check();
         assertEquals("Expected 2 INITIAL events", 2, initialEvents.get());
 
         checker.check();
         assertEquals("Too many INITIAL events", 2, initialEvents.get());
-    } @Test
+    } 
     
+    
+    @Test
     public void initialStateDebug() throws Exception {
         StubLogger stubLogger = new StubLogger();
         new File(this.checkDir, "a.txt").createNewFile();
@@ -318,6 +342,9 @@ public class FileSystemCheckerTests {
                 if (FileSystemEvent.INITIAL.equals(event)) {
                     initialEvents.incrementAndGet();
                 }
+            }
+            
+            public void onInitialEvent(List<String> paths){
             }
         });
         checker.check();
@@ -345,5 +372,70 @@ public class FileSystemCheckerTests {
 //        for (StubLogEntry sle : entries) {
 //            System.out.println(sle);
 //        }
+    }
+    
+    @Test
+    public void onInitialEventTest() throws Exception {
+    	try{
+    		//enables onInitialFSChanges notifications
+    		System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "bulk");    
+    		File f1 = new File(this.checkDir, "a.txt");
+    		File f2 = new File(this.checkDir, "b.txt");
+    		f1.createNewFile();
+    		f2.createNewFile();
+    		final AtomicInteger onChangeEventsCounter = new AtomicInteger(0);
+    		final AtomicInteger onInitialEventsCounter = new AtomicInteger(0);
+    		final AtomicBoolean eventFilesCheckFlag = new AtomicBoolean(true);
+    		FileSystemChecker checker = new FileSystemChecker(this.checkDir);
+    		checker.addListener(new FileSystemListener() {
+
+    			public void onChange(String file, FileSystemEvent event) {
+    					onChangeEventsCounter.incrementAndGet();
+    			}
+
+    			public void onInitialEvent(List<String> paths){
+    				onInitialEventsCounter.incrementAndGet();
+    				if (paths.size()== 2){
+    					for (String s:paths){
+    						if (!(s.endsWith("a.txt") || s.endsWith("b.txt"))){
+    							eventFilesCheckFlag.set(false);
+    						}
+    					}
+    				} else eventFilesCheckFlag.set(false);
+    			}
+
+    		});
+    		checker.check();
+    		assertEquals("Expected only 1 onInitialEvent event for the 2 files:", 1, onInitialEventsCounter.get());
+    		assertTrue("Expected onInitialFSChanges event for 2 files - a.txt and b.txt:", eventFilesCheckFlag.get());
+    		assertEquals("Expected no onChange events:", 0, onChangeEventsCounter.get());
+    		onInitialEventsCounter.set(0);
+    		onChangeEventsCounter.set(0);
+    		
+    		f1.setLastModified(System.currentTimeMillis());
+    		f2.setLastModified(System.currentTimeMillis());
+    		checker.check();//here only marked for monitoring
+    		checker.check();//onChange events
+    		assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
+    		assertEquals("Expected 2 onChange event for the 2 updated files:", 2, onChangeEventsCounter.get());
+    		onInitialEventsCounter.set(0);
+    		onChangeEventsCounter.set(0);
+    		
+    		new File(this.checkDir, "c.txt").createNewFile();
+    		checker.check();//here only marked for monitoring
+    		checker.check();//onChange events
+    		assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
+    		assertEquals("Expected 1 onChange event for the new file:", 1, onChangeEventsCounter.get());
+    		onInitialEventsCounter.set(0);
+    		onChangeEventsCounter.set(0);
+    		
+    		createDir(); //clear dir
+    		checker.check();
+    		assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
+    		assertEquals("Expected 3 onChange events for the 3 deleted files:", 3, onChangeEventsCounter.get());
+    		
+    	}finally {
+    		System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "singular");
+    	}
     }
 }
