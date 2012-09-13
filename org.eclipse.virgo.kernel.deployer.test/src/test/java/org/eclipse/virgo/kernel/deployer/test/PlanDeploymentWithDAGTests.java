@@ -44,8 +44,6 @@ import org.osgi.framework.Version;
 // TODO 1c. (transitive dependencies) (@see https://bugs.eclipse.org/bugs/show_bug.cgi?id=365034)
 public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest {
 
-    private static final String BUNDLE_ONE_VERSION = "1.0.0.BUILD-20090326114035";
-
     private static final String BUNDLE_ONE_SYMBOLIC_NAME = "simple.bundle.one";
 
     private static final DeploymentIdentity BUNDLE_ONE_IDENTITY = new DeploymentIdentity() {
@@ -64,7 +62,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
 
         @Override
         public String getVersion() {
-            return BUNDLE_ONE_VERSION;
+            return TEST_APPS_VERSION;
         }
     };
 
@@ -1182,7 +1180,7 @@ public class PlanDeploymentWithDAGTests extends AbstractDeployerIntegrationTest 
     
     private Bundle getUnderlyingBundle() {
         for (Bundle bundle : this.context.getBundles()) {
-            if (BUNDLE_ONE_SYMBOLIC_NAME.equals(bundle.getSymbolicName()) && (new Version(BUNDLE_ONE_VERSION)).equals(bundle.getVersion())) {
+            if (BUNDLE_ONE_SYMBOLIC_NAME.equals(bundle.getSymbolicName()) && (new Version(TEST_APPS_VERSION)).equals(bundle.getVersion())) {
                 return bundle;
             }
         }

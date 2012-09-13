@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: but.C
-Import-Package: but,org.osgi.framework
-Bundle-Activator: but.c.C
-
-

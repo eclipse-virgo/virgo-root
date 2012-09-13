@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="test-apps">
+
+	<path id="bundles">
+		<pathelement location="activator-tccl/"/>
+		<pathelement location="bundle-activation-policy/build-par"/>
+		<pathelement location="deployer-edge-tests/clashing-exports-in-a-scope/build-par"/>
+		<pathelement location="manual-context/"/>
+		<pathelement location="plan-deployment/simple.bundle.one"/>
+		<pathelement location="plan-deployment/simple.bundle.two"/>
+		<pathelement location="plan-deployment/simple.bundle.three"/>
+		<pathelement location="quartz-scheduler/quartz.bundle.a"/>
+		<pathelement location="quartz-scheduler/quartz.bundle.b"/>
+		<pathelement location="quartz-scheduler/quartz.bundle.same1"/>
+		<pathelement location="quartz-scheduler/quartz.bundle.same2"/>
+		<pathelement location="redeploy-refresh/simple.bundle.bad"/>
+		<pathelement location="redeploy-refresh/simple.bundle.ok"/>
+		<pathelement location="refresh/refresh/build-par"/>
+		<pathelement location="refresh/refresh-import-bundle/build-par"/>
+		<pathelement location="service-publication-from-repo-bundles/consumer"/>
+		<pathelement location="service-publication-from-repo-bundles/publisher"/>
+		<pathelement location="service-scoping/build-par"/>
+		<pathelement location="service-scoping-engine-1265/build-par"/>
+		<pathelement location="service-scoping-platform-183/build-par"/>
+		<pathelement location="spring-2.5.6.A-sample/"/>
+		<pathelement location="synthetic-tccl/synthetic.tccl.global"/>
+		<pathelement location="synthetic-tccl/build-par"/>
+	</path>
+
+	<property file="${basedir}/build.properties"/>
+    <property file="${basedir}/../build.versions"/>
+	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
+
+</project>

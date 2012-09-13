@@ -1,1 +1,0 @@
-Require-Bundle: com.foo.bar

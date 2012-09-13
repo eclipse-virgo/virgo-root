@@ -43,6 +43,8 @@ public abstract class AbstractDeployerIntegrationTest {
 
     protected final BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
+    protected static final String TEST_APPS_VERSION = "1.0.0.BUILD-20120912133003";
+
     protected volatile OsgiFramework framework;
 
     protected volatile ApplicationDeployer deployer;

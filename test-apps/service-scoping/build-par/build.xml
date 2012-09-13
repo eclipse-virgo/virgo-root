@@ -6,7 +6,7 @@
 		<pathelement location="../scoping.service.module.b"/>
 	</path>
 
-	<property file="${basedir}/../build.properties"/>
+	<property file="${basedir}/../../build.properties"/>
 	<property name="par.output.file" value="${basedir}/../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/service-scoping/service-scoping.par"/>
 	<import file="${basedir}/../../../virgo-build/par/default.xml"/>
 

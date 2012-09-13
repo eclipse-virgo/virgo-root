@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="RefreshImporter">
+<project name="RefreshBundleImporter">
 	
-	<property name="bundle.version" value="1.0.0"/>
-
-	<property file="${basedir}/../build.properties"/>
-
+	<property file="${basedir}/../../../build.properties"/>
 	<import file="${basedir}/../../../../virgo-build/standard/default.xml"/>
 
 </project>
