@@ -28,7 +28,6 @@ import org.eclipse.virgo.util.common.Assert;
 import org.eclipse.virgo.util.math.Sets;
 import org.slf4j.Logger;
 
-
 /**
  * Checks a directory on the file system for modifications. Maintains a known state of the files to determine if the
  * changes are new files, modified files or deleted files.
@@ -49,16 +48,18 @@ public final class FileSystemChecker {
     private final File checkDir;
 
     private final Logger logger;
+
     private final Object checkLock = new Object();
-    
 
     /**
      * Enables bulk handling of all initially observed file system objects (so that they are handled altogether at once
-     * and not one by one) 
+     * and not one by one)
      */
-	private final String INITIAL_EVENT_HANDLING_MODE = "org.eclipse.virgo.fschecker.initialEventMode";
-	private final String BULK_MODE_VALUE = "bulk";	
-	private AtomicBoolean isInitialEventsHandlingInitiatedOnce = new AtomicBoolean(false);
+    private final String INITIAL_EVENT_HANDLING_MODE = "org.eclipse.virgo.fschecker.initialEventMode";
+
+    private final String BULK_MODE_VALUE = "bulk";
+
+    private final AtomicBoolean isInitialEventsHandlingInitiatedOnce = new AtomicBoolean(false);
 
     /**
      * The files we know about -- with their last modified date (as a Long) are in <code>fileState</code>.<br/>
@@ -75,7 +76,7 @@ public final class FileSystemChecker {
     private final List<FileSystemListener> listeners = new CopyOnWriteArrayList<FileSystemListener>();
 
     private final FilenameFilter includeFilter;
-    
+
     private static boolean WINDOWS = System.getProperty("os.name").startsWith("Windows");
 
     /**
@@ -88,8 +89,8 @@ public final class FileSystemChecker {
     }
 
     /**
-     * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>, except those that match
-     * <code>excludePattern</code>. No diagnostics logging.
+     * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>, except
+     * those that match <code>excludePattern</code>. No diagnostics logging.
      * 
      * @param checkDir the directory to check.
      * @param excludePattern regular expression for files to exclude.
@@ -97,9 +98,10 @@ public final class FileSystemChecker {
     public FileSystemChecker(File checkDir, String excludePattern) {
         this(checkDir, excludePattern, null);
     }
-    
+
     /**
-     * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>. Diagnostics to logger.
+     * Creates a new <code>FileSystemChecker</code>. Identifies changes on all files in <code>checkDir</code>.
+     * Diagnostics to logger.
      * 
      * @param checkDir the directory to check.
      * @param logger where to log diagnostics -- can be null
@@ -120,10 +122,12 @@ public final class FileSystemChecker {
         Assert.isTrue(checkDir.isDirectory(), "Check directory '%s' must exist and must be a directory.", checkDir.getAbsolutePath());
         this.checkDir = checkDir;
         this.logger = logger;
-        
-        final Pattern compiledExcludePattern = (excludePattern==null) ? null : Pattern.compile(excludePattern);
+
+        final Pattern compiledExcludePattern = excludePattern == null ? null : Pattern.compile(excludePattern);
 
         this.includeFilter = new FilenameFilter() {
+
+            @Override
             public boolean accept(File dir, String name) {
                 return compiledExcludePattern == null || !compiledExcludePattern.matcher(name).matches();
             }
@@ -140,128 +144,123 @@ public final class FileSystemChecker {
     public void addListener(FileSystemListener listener) {
         this.listeners.add(listener);
     }
-    
-	/**
-	 * Returns a list of all the files that are recorded as INITIAL events.
-	 * 
-	 * @param files
-	 *            - the array of files that is checked
-	 */
-	private List<File> getInitialFiles(File[] files) {
-		List<File> resultFiles = new ArrayList<File>();
-		for (File file : files) {
-			String keyFilePath = this.key(file);
-			if (monitorRecords.containsKey(keyFilePath)) {
-				MonitorRecord monitorRecord = monitorRecords.get(keyFilePath);
-				if (FileSystemEvent.INITIAL.equals(monitorRecord.getEvent())) {
-					resultFiles.add(file);
-				}
-			}
-		}
-		return resultFiles;
-	}
 
-	/**
-	 * Bulk handling of initial files (not one by one).
-	 * 
-	 * @param initialFiles
-	 */
-	private void handleInitialFiles(List<File> initialFiles) {
-		notifyListenersOnInitialEvent(initialFiles);
-		for (File file : initialFiles) {
-			monitorRecords.remove(this.key(file));
-			setKnownFileState(file);
-		}
-	}
+    /**
+     * Returns a list of all the files that are recorded as INITIAL events.
+     * 
+     * @param files - the array of files that is checked
+     */
+    private List<File> getInitialFiles(File[] files) {
+        List<File> resultFiles = new ArrayList<File>();
+        for (File file : files) {
+            String keyFilePath = this.key(file);
+            if (this.monitorRecords.containsKey(keyFilePath)) {
+                MonitorRecord monitorRecord = this.monitorRecords.get(keyFilePath);
+                if (FileSystemEvent.INITIAL.equals(monitorRecord.getEvent())) {
+                    resultFiles.add(file);
+                }
+            }
+        }
+        return resultFiles;
+    }
 
-	/**
-	 * Returns the absolute file paths of the given files
-	 * 
-	 * @param files
-	 * @return
-	 */
-	private List<String> getPaths(List<File> files) {
-		List<String> filePaths = new ArrayList<String>();
-		for (File file : files) {
-			filePaths.add(this.key(file));
-		}
-		return filePaths;
-	}
+    /**
+     * Bulk handling of initial files (not one by one).
+     * 
+     * @param initialFiles
+     */
+    private void handleInitialFiles(List<File> initialFiles) {
+        notifyListenersOnInitialEvent(initialFiles);
+        for (File file : initialFiles) {
+            this.monitorRecords.remove(this.key(file));
+            setKnownFileState(file);
+        }
+    }
 
-	/**
-	 * Notify once all registered listeners for the INITIAL event
-	 * 
-	 * @param initialFiles
-	 */
-	private void notifyListenersOnInitialEvent(List<File> initialFiles) {
-		List<String> initialFilesPaths = getPaths(initialFiles);
-		for (FileSystemListener listener : this.listeners) {
-			try {
-				listener.onInitialEvent(initialFilesPaths);
-			} catch (Throwable e) {
-				if (logger != null) {
-					logger.warn("Listener threw exception for event "
-							+ FileSystemEvent.INITIAL, e);
-				}
-			}
-		}
-	}
+    /**
+     * Returns the absolute file paths of the given files
+     * 
+     * @param files
+     * @return
+     */
+    private List<String> getPaths(List<File> files) {
+        List<String> filePaths = new ArrayList<String>();
+        for (File file : files) {
+            filePaths.add(this.key(file));
+        }
+        return filePaths;
+    }
 
-	/**
-	 * Removes a given list of files from a given array.
-	 * 
-	 * @param inputArray
-	 * @param filesToRemove
-	 * @return
-	 */
-	private File[] removeFilesFromArray(File[] inputArray,
-			List<File> filesToRemove) {
-		List<File> reducedFiles = new ArrayList<File>(Arrays.asList(inputArray));
-		reducedFiles.removeAll(filesToRemove);
-		return reducedFiles.toArray(new File[reducedFiles.size()]);
-	}
+    /**
+     * Notify once all registered listeners for the INITIAL event
+     * 
+     * @param initialFiles
+     */
+    private void notifyListenersOnInitialEvent(List<File> initialFiles) {
+        List<String> initialFilesPaths = getPaths(initialFiles);
+        for (FileSystemListener listener : this.listeners) {
+            try {
+                listener.onInitialEvent(initialFilesPaths);
+            } catch (Throwable e) {
+                if (this.logger != null) {
+                    this.logger.warn("Listener threw exception for event " + FileSystemEvent.INITIAL, e);
+                }
+            }
+        }
+    }
 
-	private void addToCurrentFileKeys(Set<String> currentFileKeys,
-			List<File> files) {
-		for (File file : files) {
-			currentFileKeys.add(this.key(file));
-		}
-	}
+    /**
+     * Removes a given list of files from a given array.
+     * 
+     * @param inputArray
+     * @param filesToRemove
+     * @return
+     */
+    private File[] removeFilesFromArray(File[] inputArray, List<File> filesToRemove) {
+        List<File> reducedFiles = new ArrayList<File>(Arrays.asList(inputArray));
+        reducedFiles.removeAll(filesToRemove);
+        return reducedFiles.toArray(new File[reducedFiles.size()]);
+    }
 
-	/**
-	 * Instructs this <code>FileSystemChecker</code> to check the configured
-	 * directory and notifies any registered listeners of changes to the
-	 * directory files.
-	 */
-	public void check() {
-		synchronized (this.checkLock) {
-			try {
-				File[] currentFiles;
-				try {
-					currentFiles = listCurrentDirFiles();
-				} catch (Exception e) {
-					if (logger != null)
-						logger.warn("FileSystemChecker caught exception from listFiles()", e);
-					throw e;
-				}
+    private void addToCurrentFileKeys(Set<String> currentFileKeys, List<File> files) {
+        for (File file : files) {
+            currentFileKeys.add(this.key(file));
+        }
+    }
 
-				debugState("before check:", currentFiles);
+    /**
+     * Instructs this <code>FileSystemChecker</code> to check the configured directory and notifies any registered
+     * listeners of changes to the directory files.
+     */
+    public void check() {
+        synchronized (this.checkLock) {
+            try {
+                File[] currentFiles;
+                try {
+                    currentFiles = listCurrentDirFiles();
+                } catch (Exception e) {
+                    if (this.logger != null) {
+                        this.logger.warn("FileSystemChecker caught exception from listFiles()", e);
+                    }
+                    throw e;
+                }
 
-				Set<String> currentFileKeys = new HashSet<String>(
-						currentFiles.length);
+                debugState("before check:", currentFiles);
 
-				if (isInitialEventsBulkHandlingEnabled()) {
-					// optimize handling of initial events - do it only once
-					if (isInitialEventsHandlingInitiatedOnce.compareAndSet(false, true)) {
-						List<File> initialFiles = getInitialFiles(currentFiles);
-						if (!initialFiles.isEmpty()) {
-							handleInitialFiles(initialFiles);
-							addToCurrentFileKeys(currentFileKeys, initialFiles);
-							// skip further processing of initialFiles in the current check
-							currentFiles = removeFilesFromArray(currentFiles, initialFiles);
-						}
-					}
-				}
+                Set<String> currentFileKeys = new HashSet<String>(currentFiles.length);
+
+                if (isInitialEventsBulkHandlingEnabled()) {
+                    // optimize handling of initial events - do it only once
+                    if (this.isInitialEventsHandlingInitiatedOnce.compareAndSet(false, true)) {
+                        List<File> initialFiles = getInitialFiles(currentFiles);
+                        if (!initialFiles.isEmpty()) {
+                            handleInitialFiles(initialFiles);
+                            addToCurrentFileKeys(currentFileKeys, initialFiles);
+                            // skip further processing of initialFiles in the current check
+                            currentFiles = removeFilesFromArray(currentFiles, initialFiles);
+                        }
+                    }
+                }
 
                 for (File file : currentFiles) {
                     // remember seen files to allow comparison for delete
@@ -269,35 +268,35 @@ public final class FileSystemChecker {
                     currentFileKeys.add(keyFile);
                     if (!isKnown(file)) {
                         // not seen it before -- start monitoring it -- a potential newly created file
-                        monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.CREATED));
+                        this.monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.CREATED));
                         setKnownFileState(file);
-                    } else if (monitorRecords.containsKey(keyFile)) {
+                    } else if (this.monitorRecords.containsKey(keyFile)) {
                         // we are monitoring this file
-                        MonitorRecord monitorRecord = monitorRecords.get(keyFile);
+                        MonitorRecord monitorRecord = this.monitorRecords.get(keyFile);
                         long size = file.length();
                         if (size > monitorRecord.getSize()) {
                             // still being written? continue to track it
                             monitorRecord.setSize(size);
-                        } else if (isUnlocked(file)){
+                        } else if (isUnlocked(file)) {
                             // not changing anymore so if we can rename it we can announce it:
                             notifyListeners(this.key(file), monitorRecord.getEvent());
                             // do not monitor it anymore
-                            monitorRecords.remove(keyFile);
+                            this.monitorRecords.remove(keyFile);
                         }
                         setKnownFileState(file);
                     } else if (file.lastModified() > knownLastModified(file)) {
                         // we know about this file, we are not monitoring it, but it has changed
                         // start monitoring it until it stabilises
-                        monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.MODIFIED));
+                        this.monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.MODIFIED));
                         setKnownFileState(file);
                     }
                 }
 
                 Set<String> deletedFiles = Sets.difference(this.fileState.keySet(), currentFileKeys);
                 for (String deletedFile : deletedFiles) {
-                    if (monitorRecords.containsKey(deletedFile)) {
+                    if (this.monitorRecords.containsKey(deletedFile)) {
                         // we were monitoring it when it disappeared
-                        MonitorRecord monitorRecord = monitorRecords.get(deletedFile);
+                        MonitorRecord monitorRecord = this.monitorRecords.get(deletedFile);
                         if (monitorRecord.getEvent().equals(FileSystemEvent.MODIFIED)) {
                             notifyListeners(deletedFile, FileSystemEvent.DELETED);
                         }
@@ -309,29 +308,32 @@ public final class FileSystemChecker {
                 }
             } catch (Exception _) {
                 // FatalIOException can arise from listCurrentDirFiles() which means that we cannot determine the list.
-                // In this case we have already retried the list, and we can ignore this check().   
+                // In this case we have already retried the list, and we can ignore this check().
                 // The check() then becomes a no-op which is better than assuming the directory is empty.
             } finally {
-                
+
                 debugState("after check:", null);
-            
+
             }
         }
     }
-    
+
     public boolean isUnlocked(File file) {
-        // Heuristic check for the file not being locked on Windows. On *ix, assume the file is unlocked since we can't tell.
+        // Heuristic check for the file not being locked on Windows. On *ix, assume the file is unlocked since we can't
+        // tell.
         return !WINDOWS || file.renameTo(file);
     }
 
     private void debugState(final String heading, File[] files) {
-        if (logger!=null && logger.isDebugEnabled()) {
+        if (this.logger != null && this.logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder().append(this.checkDir).append(" - ").append(heading);
             if (files != null) {
                 sb.append("\n\tFileList():  [");
                 boolean first = true;
                 for (File f : files) {
-                    if (!first) sb.append(", ");
+                    if (!first) {
+                        sb.append(", ");
+                    }
                     sb.append(f.getName());
                     first = false;
                 }
@@ -341,7 +343,9 @@ public final class FileSystemChecker {
                 sb.append("\n\tKnown files: [");
                 boolean first = true;
                 for (String s : this.fileState.keySet()) {
-                    if (!first) sb.append(", ");
+                    if (!first) {
+                        sb.append(", ");
+                    }
                     sb.append(s);
                     first = false;
                 }
@@ -351,23 +355,25 @@ public final class FileSystemChecker {
                 sb.append("\n\tMonitored:   [");
                 boolean first = true;
                 for (String s : this.monitorRecords.keySet()) {
-                    if (!first) sb.append(", ");
+                    if (!first) {
+                        sb.append(", ");
+                    }
                     sb.append(s);
                     first = false;
                 }
                 sb.append("]");
             }
-            logger.debug(sb.toString());
+            this.logger.debug(sb.toString());
         }
     }
-    
+
     private void notifyListeners(String file, FileSystemEvent event) {
         for (FileSystemListener listener : this.listeners) {
             try {
                 listener.onChange(file, event);
             } catch (Throwable e) {
-                if (logger!=null) {
-                    logger.warn("Listener threw exception for event " + event, e);
+                if (this.logger != null) {
+                    this.logger.warn("Listener threw exception for event " + event, e);
                 }
             }
         }
@@ -375,19 +381,22 @@ public final class FileSystemChecker {
 
     /**
      * Initialises known files (<code>fileState</code>) from the check directory and starts monitoring them.
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     private void populateInitialState() throws RuntimeException {
         File[] initialList;
         try {
             initialList = listCurrentDirFiles();
         } catch (RuntimeException e) {
-            if (logger!=null) logger.warn("FileSystemChecker caught exception from listFiles()", e);
+            if (this.logger != null) {
+                this.logger.warn("FileSystemChecker caught exception from listFiles()", e);
+            }
             throw e;
         }
         for (File file : initialList) {
             String keyFile = key(file);
-            monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.INITIAL));
+            this.monitorRecords.put(keyFile, new MonitorRecord(file.length(), FileSystemEvent.INITIAL));
             setKnownFileState(file);
         }
         debugState("initial state:", initialList);
@@ -459,7 +468,7 @@ public final class FileSystemChecker {
         }
 
         public long getSize() {
-            return size;
+            return this.size;
         }
 
         public void setSize(long size) {
@@ -467,11 +476,11 @@ public final class FileSystemChecker {
         }
 
         public FileSystemEvent getEvent() {
-            return event;
-        }        
+            return this.event;
+        }
     }
-    
-	private boolean isInitialEventsBulkHandlingEnabled(){
-		return BULK_MODE_VALUE.equalsIgnoreCase(System.getProperty(INITIAL_EVENT_HANDLING_MODE));
-	}
+
+    private boolean isInitialEventsBulkHandlingEnabled() {
+        return this.BULK_MODE_VALUE.equalsIgnoreCase(System.getProperty(this.INITIAL_EVENT_HANDLING_MODE));
+    }
 }

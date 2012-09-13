@@ -20,16 +20,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.virgo.util.io.FileSystemChecker;
-import org.eclipse.virgo.util.io.FileSystemEvent;
-import org.eclipse.virgo.util.io.FileSystemListener;
-import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.StubLogger.StubLogEntry;
-import org.eclipse.virgo.util.io.StubLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  */
@@ -61,15 +55,17 @@ public class FileSystemCheckerTests {
         final AtomicBoolean eventReceived = new AtomicBoolean(false);
         checker.addListener(new FileSystemListener() {
 
+            @Override
             public void onChange(String file, FileSystemEvent event) {
                 if (file.endsWith(fileName) && FileSystemEvent.CREATED.equals(event)) {
                     eventReceived.set(true);
                 }
             }
-            
-            public void onInitialEvent(List<String> paths){
+
+            @Override
+            public void onInitialEvent(List<String> paths) {
             }
-            
+
         });
         File newFile = new File(this.checkDir, fileName);
         newFile.createNewFile();
@@ -92,15 +88,17 @@ public class FileSystemCheckerTests {
         final AtomicBoolean eventReceived = new AtomicBoolean(false);
         checker.addListener(new FileSystemListener() {
 
+            @Override
             public void onChange(String file, FileSystemEvent event) {
                 if (file.endsWith(fileName) && FileSystemEvent.CREATED.equals(event)) {
                     eventReceived.set(true);
                 }
             }
-            
-            public void onInitialEvent(List<String> paths){
+
+            @Override
+            public void onInitialEvent(List<String> paths) {
             }
-            
+
         });
         File newFile = new File(this.checkDir, fileName);
         newFile.createNewFile();
@@ -123,13 +121,15 @@ public class FileSystemCheckerTests {
         final AtomicBoolean eventReceived = new AtomicBoolean(false);
         checker.addListener(new FileSystemListener() {
 
+            @Override
             public void onChange(String file, FileSystemEvent event) {
                 if (file.endsWith(fileName) && FileSystemEvent.CREATED.equals(event)) {
                     eventReceived.set(true);
                 }
             }
-            
-            public void onInitialEvent(List<String> paths){
+
+            @Override
+            public void onInitialEvent(List<String> paths) {
             }
         });
         File newFile = new File(this.checkDir, fileName);
@@ -153,14 +153,16 @@ public class FileSystemCheckerTests {
         final AtomicBoolean eventReceived = new AtomicBoolean(false);
         checker.addListener(new FileSystemListener() {
 
+            @Override
             public void onChange(String file, FileSystemEvent event) {
                 if (file.endsWith(fileName) && FileSystemEvent.MODIFIED.equals(event)) {
                     eventReceived.set(true);
                 }
             }
-            
-            public void onInitialEvent(List<String> paths){
-            }            
+
+            @Override
+            public void onInitialEvent(List<String> paths) {
+            }
         });
         File updateFile = new File(this.checkDir, fileName);
         updateFile.createNewFile();
@@ -183,10 +185,10 @@ public class FileSystemCheckerTests {
     /**
      * Instrumented {@link FileSystemListener} to listen for all {@link FileSystemEvent}s for a specific file
      * <p />
-     *
+     * 
      * <strong>Concurrent Semantics</strong><br />
      * thread safe
-     *
+     * 
      */
     private final class TestFileSystemListener implements FileSystemListener {
 
@@ -204,13 +206,14 @@ public class FileSystemCheckerTests {
 
         public TestFileSystemListener(String fileName, int all, int ini, int cre, int del, int mod) {
             this.fileName = fileName;
-            eA = new AtomicInteger(all);
-            eI = new AtomicInteger(ini);
-            eC = new AtomicInteger(cre);
-            eD = new AtomicInteger(del);
-            eM = new AtomicInteger(mod);
+            this.eA = new AtomicInteger(all);
+            this.eI = new AtomicInteger(ini);
+            this.eC = new AtomicInteger(cre);
+            this.eD = new AtomicInteger(del);
+            this.eM = new AtomicInteger(mod);
         }
 
+        @Override
         public void onChange(String file, FileSystemEvent event) {
             if (file.endsWith(this.fileName)) {
                 this.eA.incrementAndGet(); // count all notifications for this file
@@ -230,8 +233,9 @@ public class FileSystemCheckerTests {
                 }
             }
         }
-        
-        public void onInitialEvent(List<String> paths){
+
+        @Override
+        public void onInitialEvent(List<String> paths) {
         }
 
         public boolean checkEvents(int all, int ini, int cre, int del, int mod) {
@@ -249,13 +253,13 @@ public class FileSystemCheckerTests {
         File delFile = new File(this.checkDir, delFileName);
         delFile.createNewFile();
 
-        TestFileSystemListener tlUpd = new TestFileSystemListener(updFileName,0,0,0,0,0);
-        TestFileSystemListener tlDel = new TestFileSystemListener(delFileName,0,0,0,0,0);
-        
+        TestFileSystemListener tlUpd = new TestFileSystemListener(updFileName, 0, 0, 0, 0, 0);
+        TestFileSystemListener tlDel = new TestFileSystemListener(delFileName, 0, 0, 0, 0, 0);
+
         checker.addListener(tlUpd);
         checker.addListener(tlDel);
 
-        File updateFile = new File(checkDir, updFileName);
+        File updateFile = new File(this.checkDir, updFileName);
         updateFile.createNewFile();
 
         // First call triggers monitoring of the file
@@ -288,10 +292,10 @@ public class FileSystemCheckerTests {
     public void deleteFile() throws Exception {
         final String fileName = "delete.txt";
         FileSystemChecker checker = new FileSystemChecker(this.checkDir);
-       
-        TestFileSystemListener delListener = new TestFileSystemListener(fileName,0,0,0,0,0);
+
+        TestFileSystemListener delListener = new TestFileSystemListener(fileName, 0, 0, 0, 0, 0);
         checker.addListener(delListener);
-        
+
         File deleteFile = new File(this.checkDir, fileName);
         deleteFile.createNewFile();
 
@@ -312,13 +316,15 @@ public class FileSystemCheckerTests {
         final AtomicInteger initialEvents = new AtomicInteger(0);
         checker.addListener(new FileSystemListener() {
 
+            @Override
             public void onChange(String file, FileSystemEvent event) {
                 if (FileSystemEvent.INITIAL.equals(event)) {
                     initialEvents.incrementAndGet();
                 }
             }
-            
-            public void onInitialEvent(List<String> paths){
+
+            @Override
+            public void onInitialEvent(List<String> paths) {
             }
         });
         checker.check();
@@ -326,9 +332,8 @@ public class FileSystemCheckerTests {
 
         checker.check();
         assertEquals("Too many INITIAL events", 2, initialEvents.get());
-    } 
-    
-    
+    }
+
     @Test
     public void initialStateDebug() throws Exception {
         StubLogger stubLogger = new StubLogger();
@@ -338,13 +343,15 @@ public class FileSystemCheckerTests {
         final AtomicInteger initialEvents = new AtomicInteger(0);
         checker.addListener(new FileSystemListener() {
 
+            @Override
             public void onChange(String file, FileSystemEvent event) {
                 if (FileSystemEvent.INITIAL.equals(event)) {
                     initialEvents.incrementAndGet();
                 }
             }
-            
-            public void onInitialEvent(List<String> paths){
+
+            @Override
+            public void onInitialEvent(List<String> paths) {
             }
         });
         checker.check();
@@ -352,90 +359,97 @@ public class FileSystemCheckerTests {
 
         checker.check();
         assertEquals("Too many INITIAL events", 2, initialEvents.get());
-        
+
         List<StubLogEntry> entries = stubLogger.getEntries();
-        assertTrue("There should be five states debugged.", 5==entries.size());
-        
+        assertTrue("There should be five states debugged.", 5 == entries.size());
+
         String initialStateHeader = "work - initial state:";
         String beforeStateHeader = "work - before check:";
         String afterStateHeader = "work - after check:";
-        
+
         assertTrue("Initial state not output in correct place.", entries.get(0).getString().contains(initialStateHeader));
-        assertTrue("Initial state not reporting a.txt and b.txt files.", entries.get(0).getString().contains("FileList():  [a.txt, b.txt]") || entries.get(0).getString().contains("FileList():  [b.txt, a.txt]"));
+        assertTrue("Initial state not reporting a.txt and b.txt files.", entries.get(0).getString().contains("FileList():  [a.txt, b.txt]")
+            || entries.get(0).getString().contains("FileList():  [b.txt, a.txt]"));
         assertTrue("Before state not output in correct place.", entries.get(1).getString().contains(beforeStateHeader));
-        assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(1).getString().contains("FileList():  [a.txt, b.txt]") || entries.get(1).getString().contains("FileList():  [b.txt, a.txt]"));
+        assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(1).getString().contains("FileList():  [a.txt, b.txt]")
+            || entries.get(1).getString().contains("FileList():  [b.txt, a.txt]"));
         assertTrue("After state not output in correct place.", entries.get(2).getString().contains(afterStateHeader));
         assertTrue("Before state not output in correct place.", entries.get(3).getString().contains(beforeStateHeader));
-        assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(3).getString().contains("FileList():  [a.txt, b.txt]") || entries.get(3).getString().contains("FileList():  [b.txt, a.txt]"));
+        assertTrue("Before state not reporting a.txt and b.txt files.", entries.get(3).getString().contains("FileList():  [a.txt, b.txt]")
+            || entries.get(3).getString().contains("FileList():  [b.txt, a.txt]"));
         assertTrue("After state not output in correct place.", entries.get(4).getString().contains(afterStateHeader));
 
-//        for (StubLogEntry sle : entries) {
-//            System.out.println(sle);
-//        }
+        // for (StubLogEntry sle : entries) {
+        // System.out.println(sle);
+        // }
     }
-    
+
     @Test
     public void onInitialEventTest() throws Exception {
-    	try{
-    		//enables onInitialFSChanges notifications
-    		System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "bulk");    
-    		File f1 = new File(this.checkDir, "a.txt");
-    		File f2 = new File(this.checkDir, "b.txt");
-    		f1.createNewFile();
-    		f2.createNewFile();
-    		final AtomicInteger onChangeEventsCounter = new AtomicInteger(0);
-    		final AtomicInteger onInitialEventsCounter = new AtomicInteger(0);
-    		final AtomicBoolean eventFilesCheckFlag = new AtomicBoolean(true);
-    		FileSystemChecker checker = new FileSystemChecker(this.checkDir);
-    		checker.addListener(new FileSystemListener() {
+        try {
+            // enables onInitialFSChanges notifications
+            System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "bulk");
+            File f1 = new File(this.checkDir, "a.txt");
+            File f2 = new File(this.checkDir, "b.txt");
+            f1.createNewFile();
+            f2.createNewFile();
+            final AtomicInteger onChangeEventsCounter = new AtomicInteger(0);
+            final AtomicInteger onInitialEventsCounter = new AtomicInteger(0);
+            final AtomicBoolean eventFilesCheckFlag = new AtomicBoolean(true);
+            FileSystemChecker checker = new FileSystemChecker(this.checkDir);
+            checker.addListener(new FileSystemListener() {
 
-    			public void onChange(String file, FileSystemEvent event) {
-    					onChangeEventsCounter.incrementAndGet();
-    			}
+                @Override
+                public void onChange(String file, FileSystemEvent event) {
+                    onChangeEventsCounter.incrementAndGet();
+                }
 
-    			public void onInitialEvent(List<String> paths){
-    				onInitialEventsCounter.incrementAndGet();
-    				if (paths.size()== 2){
-    					for (String s:paths){
-    						if (!(s.endsWith("a.txt") || s.endsWith("b.txt"))){
-    							eventFilesCheckFlag.set(false);
-    						}
-    					}
-    				} else eventFilesCheckFlag.set(false);
-    			}
+                @Override
+                public void onInitialEvent(List<String> paths) {
+                    onInitialEventsCounter.incrementAndGet();
+                    if (paths.size() == 2) {
+                        for (String s : paths) {
+                            if (!(s.endsWith("a.txt") || s.endsWith("b.txt"))) {
+                                eventFilesCheckFlag.set(false);
+                            }
+                        }
+                    } else {
+                        eventFilesCheckFlag.set(false);
+                    }
+                }
 
-    		});
-    		checker.check();
-    		assertEquals("Expected only 1 onInitialEvent event for the 2 files:", 1, onInitialEventsCounter.get());
-    		assertTrue("Expected onInitialFSChanges event for 2 files - a.txt and b.txt:", eventFilesCheckFlag.get());
-    		assertEquals("Expected no onChange events:", 0, onChangeEventsCounter.get());
-    		onInitialEventsCounter.set(0);
-    		onChangeEventsCounter.set(0);
-    		
-    		f1.setLastModified(System.currentTimeMillis());
-    		f2.setLastModified(System.currentTimeMillis());
-    		checker.check();//here only marked for monitoring
-    		checker.check();//onChange events
-    		assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
-    		assertEquals("Expected 2 onChange event for the 2 updated files:", 2, onChangeEventsCounter.get());
-    		onInitialEventsCounter.set(0);
-    		onChangeEventsCounter.set(0);
-    		
-    		new File(this.checkDir, "c.txt").createNewFile();
-    		checker.check();//here only marked for monitoring
-    		checker.check();//onChange events
-    		assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
-    		assertEquals("Expected 1 onChange event for the new file:", 1, onChangeEventsCounter.get());
-    		onInitialEventsCounter.set(0);
-    		onChangeEventsCounter.set(0);
-    		
-    		createDir(); //clear dir
-    		checker.check();
-    		assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
-    		assertEquals("Expected 3 onChange events for the 3 deleted files:", 3, onChangeEventsCounter.get());
-    		
-    	}finally {
-    		System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "singular");
-    	}
+            });
+            checker.check();
+            assertEquals("Expected only 1 onInitialEvent event for the 2 files:", 1, onInitialEventsCounter.get());
+            assertTrue("Expected onInitialFSChanges event for 2 files - a.txt and b.txt:", eventFilesCheckFlag.get());
+            assertEquals("Expected no onChange events:", 0, onChangeEventsCounter.get());
+            onInitialEventsCounter.set(0);
+            onChangeEventsCounter.set(0);
+
+            f1.setLastModified(System.currentTimeMillis());
+            f2.setLastModified(System.currentTimeMillis());
+            checker.check();// here only marked for monitoring
+            checker.check();// onChange events
+            assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
+            assertEquals("Expected 2 onChange event for the 2 updated files:", 2, onChangeEventsCounter.get());
+            onInitialEventsCounter.set(0);
+            onChangeEventsCounter.set(0);
+
+            new File(this.checkDir, "c.txt").createNewFile();
+            checker.check();// here only marked for monitoring
+            checker.check();// onChange events
+            assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
+            assertEquals("Expected 1 onChange event for the new file:", 1, onChangeEventsCounter.get());
+            onInitialEventsCounter.set(0);
+            onChangeEventsCounter.set(0);
+
+            createDir(); // clear dir
+            checker.check();
+            assertEquals("Expected no new onInitialEvent events:", 0, onInitialEventsCounter.get());
+            assertEquals("Expected 3 onChange events for the 3 deleted files:", 3, onChangeEventsCounter.get());
+
+        } finally {
+            System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "singular");
+        }
     }
 }
