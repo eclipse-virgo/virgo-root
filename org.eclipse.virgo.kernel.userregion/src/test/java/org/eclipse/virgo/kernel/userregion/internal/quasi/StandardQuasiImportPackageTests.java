@@ -45,8 +45,6 @@ public class StandardQuasiImportPackageTests {
 
     private QuasiBundle qb;
 
-    private StubStateHelper stateHelper;
-
     private StubExportPackageDescription exportPackage;
 
 	private Region stubRegion;
@@ -56,8 +54,7 @@ public class StandardQuasiImportPackageTests {
         this.bundleDescription = new StubBundleDescription();
         this.bundleDescription.setBundleSymbolicName(BSN);
         this.stubRegion = new StubRegionDigraph().createRegion("testRegion");
-        this.stateHelper = new StubStateHelper();
-        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion, this.stateHelper);
+        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion);
         this.importPackage = new StubImportPackageSpecification(PN);
         this.exportPackage = new StubExportPackageDescription(PN);
     }

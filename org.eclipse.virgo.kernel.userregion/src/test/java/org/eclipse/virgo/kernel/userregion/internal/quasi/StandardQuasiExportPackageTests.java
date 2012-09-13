@@ -14,7 +14,6 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 import java.util.List;
 
 import org.eclipse.equinox.region.Region;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
@@ -41,17 +40,14 @@ public class StandardQuasiExportPackageTests {
 
     private QuasiBundle qb;
 
-    private StubStateHelper stateHelper;
-
 	private Region stubRegion;
 
     @Before
     public void setUp() throws BundleException {
         this.bundleDescription = new StubBundleDescription();
         this.bundleDescription.setBundleSymbolicName(BSN);
-        this.stateHelper = new StubStateHelper();
         this.stubRegion = new StubRegionDigraph().createRegion("testRegion");
-        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion, this.stateHelper);
+        this.qb = new StandardQuasiBundle(this.bundleDescription, null, this.stubRegion);
         this.exportPackage = new StubExportPackageDescription(PN);
     }
 
@@ -80,7 +76,7 @@ public class StandardQuasiExportPackageTests {
         StubImportPackageSpecification ips = new StubImportPackageSpecification(PN);
         dependentBundle.addImportPackage(ips);
         ips.setSupplier(this.exportPackage);
-        this.stateHelper.setDependentBundles(new BundleDescription[] { dependentBundle });
+        this.bundleDescription.addDependent(dependentBundle);
         this.exportPackage.setExporter(this.bundleDescription);
         QuasiExportPackage qep = new StandardQuasiExportPackage(this.exportPackage, this.qb);
         List<QuasiImportPackage> consumers = qep.getConsumers();

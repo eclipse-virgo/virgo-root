@@ -18,11 +18,10 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.StateHelper;
-import org.osgi.framework.Version;
-
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.osgi.framework.Version;
 
 /**
  * {@link StandardQuasiExportPackage} is the default implementation of {@link QuasiExportPackage}.
@@ -43,10 +42,6 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
         super(exportPackageDescription);
         this.exportPackageDescription = exportPackageDescription;
         this.exporter = exporter;
-    }
-
-    private StateHelper getStateHelper() {
-        return ((StandardQuasiBundle) exporter).getStateHelper();
     }
 
     /**
@@ -75,42 +70,28 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
      */
     public List<QuasiImportPackage> getConsumers() {
         List<QuasiImportPackage> consumers = new ArrayList<QuasiImportPackage>();
-        StateHelper stateHelper = getStateHelper();
-        for (BundleDescription dependentBundle : getDependentBundles(stateHelper)) {
-            if (isConsumer(dependentBundle)) {
-                addConsumer(dependentBundle, consumers, stateHelper);
+        BundleDescription[] dependents = this.exportPackageDescription.getExporter().getDependents();
+        for (BundleDescription dependentBundle : dependents) {
+        	for(ImportPackageSpecification importPackageSpecification : isConsumer(dependentBundle)){
+                addConsumer(dependentBundle, importPackageSpecification, consumers);
             }
         }
         return consumers;
     }
 
-    private BundleDescription[] getDependentBundles(StateHelper stateHelper) {
-        return stateHelper.getDependentBundles(new BundleDescription[] { this.exportPackageDescription.getExporter() });
-    }
-
-    private boolean isConsumer(BundleDescription dependentBundle) {
+    private List<ImportPackageSpecification> isConsumer(BundleDescription dependentBundle) {
+    	List<ImportPackageSpecification> filteredImportedPackages = new ArrayList<ImportPackageSpecification>();
         ImportPackageSpecification[] importedPackages = dependentBundle.getImportPackages();
-        
         for (ImportPackageSpecification importedPackage : importedPackages) {
             if (this.exportPackageDescription.equals(importedPackage.getSupplier())) {
-                return true;
+                filteredImportedPackages.add(importedPackage);
             }
         }
-        return false;
+        return filteredImportedPackages;
     }
 
-    private void addConsumer(BundleDescription dependentBundle, List<QuasiImportPackage> consumers, StateHelper stateHelper) {
-        ImportPackageSpecification[] dependentImportPackages = dependentBundle.getImportPackages();
-        for (ImportPackageSpecification dependentImportPackage : dependentImportPackages) {
-            if (matches(dependentImportPackage, this.exportPackageDescription)) {
-                consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null, this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId()), stateHelper)));
-                break;
-            }
-        }
-    }
-
-    private boolean matches(ImportPackageSpecification i, ExportPackageDescription e) {
-        return i.isSatisfiedBy(e);
+    private void addConsumer(BundleDescription dependentBundle, ImportPackageSpecification dependentImportPackage, List<QuasiImportPackage> consumers) {
+    	consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null, this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId()))));
     }
     
     /** 

@@ -19,8 +19,6 @@ import org.eclipse.osgi.service.resolver.BaseDescription;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
-import org.eclipse.osgi.service.resolver.StateHelper;
-
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
@@ -45,10 +43,6 @@ public class StandardQuasiImportPackage extends StandardQuasiParameterised imple
         super(importPackageSpecification);
         this.importPackageSpecification = importPackageSpecification;
         this.importingBundle = importingBundle;
-    }
-
-    private StateHelper getStateHelper() {
-        return ((StandardQuasiBundle) importingBundle).getStateHelper();
     }
 
     /**
@@ -103,7 +97,7 @@ public class StandardQuasiImportPackage extends StandardQuasiParameterised imple
 
     private QuasiExportPackage constructProvider(ExportPackageDescription providerDescription) {
         BundleDescription exporter = providerDescription.getExporter();
-		StandardQuasiBundle quasiExporter = new StandardQuasiBundle(exporter, null, this.importingBundle.getRegion().getRegionDigraph().getRegion(exporter.getBundleId()), getStateHelper());
+		StandardQuasiBundle quasiExporter = new StandardQuasiBundle(exporter, null, this.importingBundle.getRegion().getRegionDigraph().getRegion(exporter.getBundleId()));
         return new StandardQuasiExportPackage(providerDescription, quasiExporter);
     }
 
