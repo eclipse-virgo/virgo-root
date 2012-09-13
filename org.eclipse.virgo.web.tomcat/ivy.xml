@@ -5,7 +5,7 @@
 		xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
 		version="1.3">
 
-	<info organisation="org.eclipse.virgo.web" module="${ant.project.name}"/>
+	<info organisation="${project.organisation}" module="${ant.project.name}"/>
 
 	<configurations>
 		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
@@ -18,11 +18,12 @@
 
 	<dependencies>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="provided->runtime"/>
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.kernel.core" rev="${org.eclipse.virgo.nano}" conf="provided->runtime"/>
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.deployer.api" rev="${org.eclipse.virgo.nano}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="provided->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="${org.eclipse.virgo.nano}" conf="provided->runtime"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.core" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.dm" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.tomcat.support" rev="latest.integration"/>
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.servlet.adapter" rev="latest.integration"/>
 	</dependencies>
 
 </ivy-module>

@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.web.tomcat.support;
 
-import org.eclipse.virgo.kernel.serviceability.LogEventDelegate;
+import org.eclipse.virgo.nano.serviceability.LogEventDelegate;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 

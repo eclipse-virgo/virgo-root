@@ -6,25 +6,26 @@ Fragment-Host: org.eclipse.gemini.web.tomcat
 Bundle-Version: ${version}
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
+ org.eclipse.virgo.nano.*;version="${org.eclipse.virgo.nano:[=.=.=, +1)}",
  org.eclipse.gemini.web.*;version="${org.eclipse.gemini.web:[=.=.=, +1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
- org.eclipse.virgo.web.*;version="${version-RANGE}",
+ org.eclipse.virgo.web.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
  org.apache.catalina.*;version="${org.apache.catalina:[=.=.=, =.+1)}",
- javax.servlet.*;version="${javax.servlet:[=.=.=, +1)}",
+ javax.servlet.*;version="${javax.servlet:[-1.6.=, +1)}",
  org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
  org.osgi.framework.*;version="0"
 Import-Package: 
- org.apache.catalina.ha;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.ha.tcp;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.ha.session;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.ha.deploy;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.io;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.group;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.membership;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.transport.nio;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.transport;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.group.interceptors;version="${org.apache.catalina:[=.=.=, =.+1)}";resolution:=optional
+ org.apache.catalina.ha;version="${org.apache.catalina.ha:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.ha.tcp;version="${org.apache.catalina.ha:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.ha.session;version="${org.apache.catalina.ha:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.ha.deploy;version="${org.apache.catalina.ha:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.io;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.group;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.membership;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.transport.nio;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.transport;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ org.apache.catalina.tribes.group.interceptors;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional
 Excluded-Exports: 
  *

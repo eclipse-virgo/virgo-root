@@ -6,7 +6,7 @@
 	xmlns:osgi="http://www.springframework.org/schema/osgi">
 
 
-	<osgi:reference id="tracingService" interface="org.eclipse.virgo.kernel.shim.serviceability.TracingService"/>
+	<osgi:reference id="tracingService" interface="org.eclipse.virgo.nano.shim.serviceability.TracingService"/>
 	
 	<bean class="test.TracingServiceHolder" factory-method="getInstance">
 		<property name="tracingService" ref="tracingService"/>

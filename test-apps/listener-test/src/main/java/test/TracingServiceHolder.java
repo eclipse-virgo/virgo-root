@@ -11,7 +11,7 @@
 
 package test;
 
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 
 public class TracingServiceHolder {
 

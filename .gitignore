@@ -5,3 +5,4 @@ integration-repo
 ivy-cache
 derby.log
 */work
+user-ivy.properties

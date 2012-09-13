@@ -145,10 +145,10 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.spi,\
  javax.xml.ws.spi;version="2.1.1",\
  javax.xml.xpath,\
- org.eclipse.virgo.osgi.extensions.equinox;version="3.5.0",\
- org.eclipse.virgo.osgi.extensions.equinox.hooks;version="3.5.0",\
- org.eclipse.virgo.osgi.launcher;version="3.5.0",\
- org.eclipse.virgo.osgi.launcher.parser;version="3.5.0",\
+ org.eclipse.virgo.kernel.equinox.extensions;version="3.6.0",\
+ org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.6.0",\
+ org.eclipse.virgo.test.launcher;version="3.6.0",\
+ org.eclipse.virgo.util.parser.launcher;version="3.6.0",\
  org.ietf.jgss,\
  org.omg.CORBA,\
  org.omg.CORBA_2_3,\
@@ -195,7 +195,7 @@ org.osgi.framework.bootdelegation = \
  com_cenqua_clover,\
  com.cenqua.*,\
  com.yourkit.*,\
- org.eclipse.virgo.kernel.authentication,\
+ org.eclipse.virgo.nano.authentication,\
  com.sun.*,\
  javax.xml.*,\
  org.apache.xerces.jaxp.*,\

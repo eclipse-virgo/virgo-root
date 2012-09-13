@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.kernel.deployer.core.DeploymentIdentity;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentOptions;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.junit.Test;
 
 public class WebAppThreadContextClassloaderTests extends AbstractWebIntegrationTests {

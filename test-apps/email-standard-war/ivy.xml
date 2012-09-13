@@ -8,9 +8,9 @@
 	<publications>
 	</publications>
 	<dependencies>
-		<dependency org="javax.activation" name="com.springsource.javax.activation" rev="${javax.activation}" conf="compile->runtime"/>
-		<dependency org="javax.mail" name="com.springsource.javax.mail" rev="${javax.mail}" conf="compile->runtime"/>
-		<dependency org="javax.servlet" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.activation" rev="${javax.activation}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="compile->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="provided->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.context.support" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.web" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.web.servlet" rev="${org.springframework}" conf="compile->runtime"/>

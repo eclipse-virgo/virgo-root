@@ -30,13 +30,11 @@ import java.util.List;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
-import org.eclipse.virgo.kernel.deployer.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.util.common.GraphNode;
-import org.eclipse.virgo.util.common.GraphNode.DirectedAcyclicGraphVisitor;
-import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.internal.StandardBundleManifest;
 import org.junit.Test;
@@ -259,7 +257,7 @@ public class WebBundleTransformerTests {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         Configuration config = createMock(Configuration.class);
         expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String) isNull())).andReturn(config);
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("WABHeaders", "strict");
         expect(config.getProperties()).andReturn(properties);
         EventLogger eventLogger = createMock(EventLogger.class);
@@ -294,7 +292,7 @@ public class WebBundleTransformerTests {
         ConfigurationAdmin configAdmin = createMock(ConfigurationAdmin.class);
         Configuration config = createMock(Configuration.class);
         expect(configAdmin.getConfiguration(eq("org.eclipse.virgo.web"), (String) isNull())).andReturn(config);
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("WABHeaders", "defaulted");
         expect(config.getProperties()).andReturn(properties);
         EventLogger eventLogger = createMock(EventLogger.class);
@@ -323,6 +321,29 @@ public class WebBundleTransformerTests {
 
         assertEquals("true", bundleManifest.getHeader("org-eclipse-gemini-web-DefaultWABHeaders"));
     }
+    
+    @Test
+    public void rootWarTransformation() throws IOException, DeploymentException {
+    	BundleManifest bundleManifest = new StandardBundleManifest(null);
+
+        File sourceFile = new File("/ROOT.war");
+        URI sourceUri = sourceFile.toURI();
+
+        BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
+
+        manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
+
+        replay(manifestTransformer);
+
+        GraphNode<InstallArtifact> installGraph = createGraphNode(installArtifact);
+        webBundleTransformer.transform(installGraph, null);
+
+        verify(manifestTransformer);
+        
+        assertEquals("/", bundleManifest.getHeader("Web-ContextPath"));
+    }
+    
+    
 
     public void assertManifestTransformations(BundleManifest bundleManifest, String expectedModuleType) {
         assertEquals(expectedModuleType, bundleManifest.getHeader("Module-Type"));

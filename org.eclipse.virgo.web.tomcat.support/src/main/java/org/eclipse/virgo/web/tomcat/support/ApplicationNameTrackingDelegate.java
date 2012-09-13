@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.web.tomcat.support;
 
-import org.eclipse.virgo.kernel.shim.serviceability.TracingService;
+import org.eclipse.virgo.nano.shim.serviceability.TracingService;
 import org.eclipse.virgo.web.core.WebApplicationRegistry;
 
 class ApplicationNameTrackingDelegate {
