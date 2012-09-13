@@ -21,8 +21,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.D-20120913090800/org.eclipse.virgo.util.io-3.6.0.D-20120913090800.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.D-20111205151812/org.eclipse.virgo.util.io-sources-3.1.0.D-20111205151812.jar"/>
-	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120913091804/org.eclipse.virgo.medic-3.6.0.D-20120913091804.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-sources-3.1.0.D-20111205152504.jar"/>
+	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.D-20120913214519/org.eclipse.virgo.util.io-3.6.0.D-20120913214519.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.D-20111205151812/org.eclipse.virgo.util.io-sources-3.1.0.D-20111205151812.jar"/>
+	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.D-20120913215226/org.eclipse.virgo.medic-3.6.0.D-20120913215226.jar" sourcepath="/NANO_IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-sources-3.1.0.D-20111205152504.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/NANO_IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.aspectj/com.springsource.org.aspectj.runtime/1.6.12.RELEASE/com.springsource.org.aspectj.runtime-1.6.12.RELEASE.jar"/>
 	<classpathentry kind="var" path="NANO_IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi/3.8.0.v20120508-2119/org.eclipse.osgi-3.8.0.v20120508-2119.jar"/>
