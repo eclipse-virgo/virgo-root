@@ -10,6 +10,7 @@
 	<path id="bundles">
 		<path refid="unit.test.bundles" />
 		<pathelement location="../org.eclipse.virgo.web.test"/>
+        <pathelement location="../org.eclipse.virgo.web.spring.integration"/>
         <pathelement location="../org.eclipse.virgo.web.servlet.adapter"/>
 		<pathelement location="../org.eclipse.virgo.web.tomcat"/>
 	</path>

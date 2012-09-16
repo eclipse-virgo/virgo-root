@@ -6,6 +6,7 @@
 				        http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
 
         <artifact type="configuration" name="org.eclipse.virgo.web"/>
+        <artifact type="bundle" name="org.eclipse.virgo.web.spring.integration" version="[3.0, 4)"/>
         <artifact type="bundle" name="org.eclipse.gemini.web.core" version="[2.0, 3.0)"/>
         <artifact type="bundle" name="org.eclipse.gemini.web.tomcat" version="[2.0, 3.0)"/>
         <artifact type="bundle" name="org.eclipse.virgo.web.core" version="[3.0, 4.0)"/>
