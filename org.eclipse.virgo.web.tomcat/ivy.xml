@@ -24,6 +24,7 @@
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.dm" rev="latest.integration"/>
 		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.tomcat.support" rev="latest.integration"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.servlet.adapter" rev="latest.integration"/>
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.spring.integration" rev="latest.integration"/>
 	</dependencies>
 
 </ivy-module>
