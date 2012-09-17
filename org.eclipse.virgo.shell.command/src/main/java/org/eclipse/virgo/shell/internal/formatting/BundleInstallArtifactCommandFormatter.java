@@ -297,21 +297,23 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
         return lines;
     }
 
-    public List<String> formatHeaders(QuasiBundle bundle) {
-        if (bundle == null) {
+    public List<String> formatHeaders(QuasiBundle quasiBundle) {
+        if (quasiBundle == null) {
             return Arrays.asList("Unable to locate bundle");
         }
 
         List<String> lines = new ArrayList<String>();
 
-        Dictionary<String, String> headers = bundle.getBundle().getHeaders();
-        Enumeration<String> keys = headers.keys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            lines.add(String.format("%s: ", key));
-            lines.addAll(formatHeaderValue(headers.get(key)));
+        Bundle bundle = quasiBundle.getBundle();
+        if(bundle != null){
+			Dictionary<String, String> headers = bundle.getHeaders();
+	        Enumeration<String> keys = headers.keys();
+	        while (keys.hasMoreElements()) {
+	            String key = keys.nextElement();
+	            lines.add(String.format("%s: ", key));
+	            lines.addAll(formatHeaderValue(headers.get(key)));
+	        }
         }
-
         return lines;
     }
 
@@ -388,7 +390,7 @@ public final class BundleInstallArtifactCommandFormatter implements InstallArtif
         }
 
         public String getBundleLocation() {
-            return this.bundle.getBundle().getLocation();
+            return this.bundle.getBundleLocation();
         }
 
         public boolean getSpringPowered() {

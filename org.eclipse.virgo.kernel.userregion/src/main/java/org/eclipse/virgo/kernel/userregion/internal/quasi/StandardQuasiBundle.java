@@ -27,7 +27,10 @@ import org.eclipse.osgi.service.resolver.HostSpecification;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.osgi.service.resolver.StateHelper;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
@@ -47,11 +50,13 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  */
 final class StandardQuasiBundle implements QuasiBundle {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     private final BundleDescription bundleDescription;
 
     private final BundleManifest bundleManifest;
 
-    private volatile Bundle bundle;
+    private volatile Bundle bundle = null;
 
     private final String bsn;
 
@@ -110,9 +115,19 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     /**
      * {@inheritDoc}
+     * @throws BundleException 
      */
     public void uninstall() {
-        throw new UnsupportedOperationException("not implemented yet");
+    	Bundle bundle = this.getBundle();
+    	this.bundle = null;
+    	if(bundle != null){
+        	this.region.removeBundle(bundle);                
+        	try {
+                bundle.uninstall();
+            } catch (BundleException e) {
+                this.logger.error("Uninstall of '{}' failed", e, this);
+            }
+    	}
     }
 
     public void setBundle(Bundle bundle) {
@@ -123,6 +138,9 @@ final class StandardQuasiBundle implements QuasiBundle {
      * {@inheritDoc}
      */
     public Bundle getBundle() {
+    	if(this.bundle == null){
+    		return this.region.getBundle(this.bsn, this.bv);
+    	}
         return this.bundle;
     }
 
@@ -132,7 +150,18 @@ final class StandardQuasiBundle implements QuasiBundle {
     public long getBundleId() {
         return this.bundleDescription.getBundleId();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+	public String getBundleLocation() {
+		Bundle bundle = this.getBundle();
+		if(bundle == null){
+			return this.bundleDescription.getLocation();
+		}
+		return this.bundle.getLocation();
+	}
+	
     /**
      * {@inheritDoc}
      */
@@ -249,7 +278,7 @@ final class StandardQuasiBundle implements QuasiBundle {
      */
     @Override
     public String toString() {
-        return "QuasiBundle(" + getSymbolicName() + ", " + getVersion() + ")";
+        return "QuasiBundle(" + getRegion().getName() + "[" + getSymbolicName() + ", " + getVersion() + "])";
     }
 
     /**

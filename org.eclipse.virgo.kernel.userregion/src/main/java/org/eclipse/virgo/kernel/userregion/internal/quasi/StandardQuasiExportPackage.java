@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
@@ -103,7 +104,8 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
         ImportPackageSpecification[] dependentImportPackages = dependentBundle.getImportPackages();
         for (ImportPackageSpecification dependentImportPackage : dependentImportPackages) {
             if (matches(dependentImportPackage, this.exportPackageDescription)) {
-                consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null, this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId()), stateHelper)));
+                Region region = this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId());
+				consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null, region, stateHelper)));
                 break;
             }
         }
