@@ -17,7 +17,6 @@ ch.qos.logback.classic=1.0.3.v20120828-0612
 ch.qos.logback.core=1.0.3.v20120828-0612
 ch.qos.logback.slf4j=1.0.0.v201208311022
 javax.activation=1.1.0.v201108011116
-javax.ejb=3.0.0.v201203061215
 javax.mail=1.4.0.v201005080615
 javax.persistence.orbit=1.0.0.v200905011740
 javax.xml.rpc=1.1.0.v201005080400
