@@ -19,7 +19,7 @@ org.slf4j.jul=1.6.4.v20120130-2120
 org.slf4j.spi=1.6.1
 
 # Test
-javax.ejb=3.0.0.v201203061215
+javax.ejb=3.1.1.v201204261316
 ch.qos.logback.classic=1.0.3.v20120828-0612
 ch.qos.logback.core=1.0.3.v20120828-0612
 ch.qos.logback.slf4j=1.0.0.v201208311022
