@@ -5,6 +5,7 @@
 		<pathelement location="../org.eclipse.virgo.web.dm"/>
 		<pathelement location="../org.eclipse.virgo.web.core"/>
 		<pathelement location="../org.eclipse.virgo.web.tomcat.support"/>
+        <pathelement location="../org.eclipse.virgo.web.war.deployer"/>
 	</path>
 
 	<path id="bundles">
