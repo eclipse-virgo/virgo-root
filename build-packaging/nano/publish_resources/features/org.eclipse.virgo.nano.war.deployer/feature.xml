@@ -23,7 +23,7 @@
    </requires>
 
     <plugin
-         id="org.eclipse.virgo.nano.war.deployer"
+         id="org.eclipse.virgo.web.war.deployer"
          download-size="0"
          install-size="0"
          version="@NANO.VERSION@"

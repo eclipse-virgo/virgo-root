@@ -13,11 +13,12 @@
 		<!-- nano runtime -->	
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
-        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.war.deployer" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services.ds" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.services.concurrent" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.hot" rev="${org.eclipse.virgo.nano}" conf="nano-runtime->runtime" />
+        
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.war.deployer" rev="${org.eclipse.virgo.web}" conf="nano-runtime->runtime" />
         
 		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="nano-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="nano-runtime->runtime"/>
