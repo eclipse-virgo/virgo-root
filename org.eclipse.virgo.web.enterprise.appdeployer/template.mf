@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise App Deployer
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.appdeployer
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/virgo.web.enterprise.appdeployer.xml
+Import-Template: javax.ejb;version="${javax.ejb:[=.=.=, +1)}",
+ javax.validation;version="${javax.validation:[=.=.=, +1)}",
+ org.apache.catalina.*;version="${org.apache.catalina:[=.=.=, +1)}",
+ org.apache.naming.*;version="${org.apache.catalina:[=.=.=, +1)}",
+ org.apache.openejb.*;version="0",
+ org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
+ org.slf4j;version="0",
+ javax.naming;version="0"
+Excluded-Exports:
+ *.internal.*

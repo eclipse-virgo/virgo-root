@@ -18,8 +18,24 @@ org.slf4j.log4j=1.6.4.v20120130-2120
 org.slf4j.jul=1.6.4.v20120130-2120
 org.slf4j.spi=1.6.1
 
-# Test
+# Enterprise Compile
+org.apache.openejb.core=4.0.0.beta-2
+org.apache.openejb.loader=4.0.0.beta-2
+org.apache.openejb.jee=4.0.0.beta-2
+javax.validation=1.0.0.GA
+javax.transaction=1.1.1.v201105210645
+org.glassfish.com.sun.faces=2.1.6.v201205171319
+org.ow2.jotm.jotm-core=2.1.9.v201204271116
 javax.ejb=3.1.1.v201204261316
+org.apache.tomcat.api=7.0.29.v201208220722
+javax.persistence=2.0.4.v201112200901
+javax.annotation=1.1.0.v201108011116
+org.apache.bval=0.3.0.v201205161050
+org.apache.derby=10.5.1.1
+org.eclipse.persistence.core=2.4.0.v20120608-r11652
+org.eclipse.persistence.jpa=2.4.0.v20120608-r11652
+
+# Test
 ch.qos.logback.classic=1.0.3.v20120828-0612
 ch.qos.logback.core=1.0.3.v20120828-0612
 ch.qos.logback.slf4j=1.0.0.v201208311022
@@ -29,7 +45,6 @@ javax.activation=1.1.0.v201108011116
 javax.jms=1.1.0.v201205091237
 javax.mail=1.4.0.v201005080615
 javax.portlet=2.0.0.v20110525
-javax.transaction=1.1.1.v201105210645
 javax.faces=1.2.0.09
 org.apache.catalina=7.0.29.v201208221210
 org.apache.catalina.ha=7.0.29.v201208230613

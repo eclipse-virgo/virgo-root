@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="virgo.web.enterprise.appdeployer" immediate="true" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
+	<implementation class="org.eclipse.virgo.web.enterprise.openejb.deployer.EventLoggerHolder"/>
+	
+	<reference name="EventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLogger"
+		policy="dynamic" 
+		cardinality="1..1" 
+		bind="bindEventLogger" 
+		unbind="unbindEventLogger"/>
+		
+</component>
