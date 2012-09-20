@@ -64,6 +64,8 @@ import org.slf4j.LoggerFactory;
  */
 final class StandardBundleInstallArtifact extends AbstractInstallArtifact implements BundleInstallArtifact {
 
+    private static final String DEFAULTED_BSN = "org-eclipse-virgo-kernel-DefaultedBSN";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String MANIFEST_ENTRY_NAME = "META-INF/MANIFEST.MF";
@@ -124,6 +126,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
         BundleSymbolicName bundleSymbolicName = bundleManifest.getBundleSymbolicName();
         if (!getName().equals(bundleSymbolicName.getSymbolicName())) {
             bundleSymbolicName.setSymbolicName(getName());
+            bundleManifest.setHeader(DEFAULTED_BSN, "true");
         }
     }
 
