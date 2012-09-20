@@ -271,7 +271,8 @@
     download-size="0"
     install-size="0"
     version="@NANO.VERSION@"
-    unpack="false"/>
+    unpack="false"
+    autostart="true"/>
     
     <plugin
     id="org.eclipse.virgo.nano.deployer"
@@ -299,21 +300,24 @@
     download-size="0"
     install-size="0"
     version="@NANO.VERSION@"
-    unpack="false"/>
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.virgo.nano.services.ds"
+    download-size="0"
+    install-size="0"
+    version="@NANO.VERSION@"
+    unpack="false"
+    autostart="true"/>
     
     <plugin
     id="org.eclipse.virgo.web.war.deployer"
     download-size="0"
     install-size="0"
     version="@WEB.VERSION@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.eclipse.gemini.blueprint"
-    download-size="0"
-    install-size="0"
-    version="@SPRING.DM.VERSION@"
-    unpack="false"/>
+    unpack="false"
+    autostart="true"/>
     
     <plugin
     id="org.eclipse.virgo.util.common"
