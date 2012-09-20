@@ -33,6 +33,10 @@
 		<beans:constructor-arg ref="eventLogger"/>
 	</beans:bean>
 	
+	<service interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer" ranking="1900">
+		<beans:bean class="org.eclipse.virgo.web.core.internal.WarDetectingTransformer"/>
+	</service>
+	
 	<service interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer" ranking="10000">
 		<beans:bean class="org.eclipse.virgo.web.core.internal.WebBundleTransformer">
 			<beans:constructor-arg ref="environment"/>
