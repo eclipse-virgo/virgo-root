@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.nano.detailed"
+      label="%featureName"
+      version="@NANO.VERSION@"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+    id="org.eclipse.osgi"
+    download-size="0"
+    install-size="0"
+    version="@OSGI@"
+    unpack="false"/>
+    
+    <plugin
+    id="com.springsource.org.aspectj.weaver"
+    download-size="0"
+    install-size="0"
+    version="@ASPECTJ@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.activation"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.ACTIVATION@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.annotation"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.ANNOTATION@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.ejb"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.EJB@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.el"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.EL@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.mail"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.MAIL@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.persistence"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.PERSISTENCE@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.servlet"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.SERVLET@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.servlet.jsp"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.SERVLET.JSP@"
+    unpack="false"/>
+    
+    <plugin
+    id="javax.xml.rpc"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.XML.RPC@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.catalina"
+    download-size="0"
+    install-size="0"
+    version="@CATALINA@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.catalina.ha"
+    download-size="0"
+    install-size="0"
+    version="@CATALINA.HA@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.jasper"
+    download-size="0"
+    install-size="0"
+    version="@JASPER.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.catalina.tribes"
+    download-size="0"
+    install-size="0"
+    version="@TRIBES.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.coyote"
+    download-size="0"
+    install-size="0"
+    version="@COYOTE@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.el"
+    download-size="0"
+    install-size="0"
+    version="@EL@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.juli.extras"
+    download-size="0"
+    install-size="0"
+    version="@JULI.EXTRAS@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.tomcat.api"
+    download-size="0"
+    install-size="0"
+    version="@TOMCAT.API@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.tomcat.util"
+    download-size="0"
+    install-size="0"
+    version="@TOMCAT.UTIL@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.equinox.cm"
+    download-size="0"
+    install-size="0"
+    version="@EQUINOX.CM@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.equinox.event"
+    download-size="0"
+    install-size="0"
+    version="@EQUINOX.EVENT@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.equinox.region"
+    download-size="0"
+    install-size="0"
+    version="@EQUINOX.REGION@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.equinox.util"
+    download-size="0"
+    install-size="0"
+    version="@EQUINOX.UTIL@"
+    unpack="false"
+    autostart="true"/>
+
+    
+    <plugin
+    id="org.eclipse.jdt.core.compiler.batch"
+    download-size="0"
+    install-size="0"
+    version="@COMPILER.BATCH@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.osgi.services"
+    download-size="0"
+    install-size="0"
+    version="@OSGI.SERVICES@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.sat4j.core"
+    download-size="0"
+    install-size="0"
+    version="@SAT4J.CORE@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.sat4j.pb"
+    download-size="0"
+    install-size="0"
+    version="@SAT4J.PB@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.slf4j.api"
+    download-size="0"
+    install-size="0"
+    version="@SLF4J.API@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.slf4j.jul"
+    download-size="0"
+    install-size="0"
+    version="@SLF4J.JUL@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.equinox.ds"
+    download-size="0"
+    install-size="0"
+    version="@EQUINOX.DS.VERSION@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.gemini.web.tomcat"
+    download-size="0"
+    install-size="0"
+    version="@GEMINI.WEB@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.gemini.web.extender"
+    download-size="0"
+    install-size="0"
+    version="@GEMINI.WEB@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.gemini.web.core"
+    download-size="0"
+    install-size="0"
+    version="@GEMINI.WEB@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.virgo.nano.core"
+    download-size="0"
+    install-size="0"
+    version="@NANO.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.nano.deployer"
+    download-size="0"
+    install-size="0"
+    version="@NANO.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.nano.deployer.api"
+    download-size="0"
+    install-size="0"
+    version="@NANO.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.nano.deployer.hot"
+    download-size="0"
+    install-size="0"
+    version="@NANO.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.nano.services.concurrent"
+    download-size="0"
+    install-size="0"
+    version="@NANO.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.web.war.deployer"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.gemini.blueprint"
+    download-size="0"
+    install-size="0"
+    version="@SPRING.DM.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.common"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.io"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.jmx"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.math"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.osgi"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"
+    autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.osgi.manifest"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.util.parser.manifest"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+
+</feature>
