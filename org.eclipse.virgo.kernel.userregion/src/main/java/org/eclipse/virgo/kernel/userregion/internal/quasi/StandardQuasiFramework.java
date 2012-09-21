@@ -378,19 +378,14 @@ final class StandardQuasiFramework implements QuasiFramework {
     }
 
     private void startBundle(Bundle bundle) throws BundleException {
-        if (!isFragmentBundle(bundle)) {
+        String fragmentHostHeader = (String) bundle.getHeaders().get(Constants.FRAGMENT_HOST);
+        if (!StringUtils.hasText(fragmentHostHeader)) {
             try {
                 bundle.start();
             } catch (BundleException be) {
                 throw new BundleException("Failed to start bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "'", be);
             }
         }
-    }
-
-    // TODO Move this method into utils project
-    private static boolean isFragmentBundle(Bundle bundle) {
-        String fragmentHostHeader = (String) bundle.getHeaders().get(Constants.FRAGMENT_HOST);
-        return StringUtils.hasText(fragmentHostHeader);
     }
 
     private List<Bundle> installOtherBundles(Set<Long> installedQuasiBundles) throws BundleException {
@@ -497,15 +492,7 @@ final class StandardQuasiFramework implements QuasiFramework {
 
     private void uninstallQuasiBundles() {
         for (StandardQuasiBundle quasiBundle : this.installedQuasiBundles) {
-            Bundle bundle = quasiBundle.getBundle();
-            if (bundle != null) {
-                try {
-                    bundle.uninstall();
-                } catch (BundleException e) {
-                    this.logger.error("Uninstall of '{}' failed", e, quasiBundle);
-                }
-                quasiBundle.setBundle(null);
-            }
+            quasiBundle.uninstall();
         }
     }
 

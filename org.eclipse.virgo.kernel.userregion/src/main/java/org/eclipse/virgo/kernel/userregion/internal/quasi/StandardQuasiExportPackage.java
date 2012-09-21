@@ -14,6 +14,7 @@ package org.eclipse.virgo.kernel.userregion.internal.quasi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.equinox.region.Region;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;

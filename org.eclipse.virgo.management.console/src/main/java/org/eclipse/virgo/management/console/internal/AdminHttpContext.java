@@ -36,7 +36,7 @@ import org.osgi.service.http.HttpContext;
  */
 public class AdminHttpContext implements HttpContext {
 	
-	private static final String REALM = "Virgo Server Admin Console";
+	private static final String REALM = "Virgo Admin Console";
 	
 	private final Bundle bundle;
 	
@@ -62,9 +62,9 @@ public class AdminHttpContext implements HttpContext {
 		int colon = credentials.indexOf(':');
 		String userid = credentials.substring(0, colon);
 		String password = credentials.substring(colon + 1);
-		
+
 		try {
-			Subject subject = login(request.getSession(false), userid, password);
+			Subject subject = login(request.getSession(true), userid, password);
 			if(subject == null){
 				return reject(request, response);
 			}

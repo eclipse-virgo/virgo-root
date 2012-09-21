@@ -39,7 +39,6 @@
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.shell.command" rev="latest.integration" conf="test->runtime"/>
-		<!--dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgicommand" rev="latest.integration" conf="test->runtime"/-->
 
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
@@ -65,6 +64,7 @@
         <exclude org="org.eclipse.osgi"/>
 
 		<!-- Allow Equinox to be upgraded point-wise before rippling -->
+		<override org="org.springframework" rev="${org.springframework}"/>
 		<override org="org.aspectj" rev="${org.aspectj}" />
 		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
 	</dependencies>

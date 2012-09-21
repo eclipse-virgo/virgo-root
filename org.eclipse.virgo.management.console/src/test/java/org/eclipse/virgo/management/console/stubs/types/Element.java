@@ -102,9 +102,6 @@ public class Element extends ParentStub {
 	
     public void jsFunction_attr(String attr) {
     }
-
-    public void jsFunction_attr(String attr, String value) {
-    }
     
     public void jsFunction_prop(String prop){
     }

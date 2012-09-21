@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 
 /**
@@ -56,8 +57,9 @@ public interface QuasiBundle {
     /**
      * Uninstalls this {@link QuasiBundle} from its {@link QuasiFramework}. This does not modify any committed
      * {@link Bundle} in the OSGi framework.
+     * @throws BundleException 
      */
-    void uninstall();
+    void uninstall() throws BundleException;
 
     /**
      * If this {@link QuasiBundle} has been successfully committed, returns the corresponding {@link Bundle} in the OSGi
@@ -76,6 +78,13 @@ public interface QuasiBundle {
      */
     long getBundleId();
 
+    /**
+     * Returns the location of the file or directory that the bundle that this QuasiBundle represents was installed from.
+     * 
+     * @return the location of the file or directory the bundle was installed from
+     */
+    String getBundleLocation();
+    
     /**
      * Return the Region containing this bundle
      * 

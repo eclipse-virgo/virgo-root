@@ -120,4 +120,9 @@ public class StubQuasiBundle implements QuasiBundle {
 		return null;
 	}
 
+	@Override
+	public String getBundleLocation() {
+		return null;
+	}
+
 }
