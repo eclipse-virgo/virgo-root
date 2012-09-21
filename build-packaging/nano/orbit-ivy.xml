@@ -16,7 +16,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="javax.activation" rev="${javax.activation}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.ejb" rev="${javax.ejb}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="orbit-runtime->runtime"/>
-        <dependency org="org.eclipse.virgo.mirrored" name="javax.persistence" rev="${javax.persistence.orbit}" conf="orbit-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.persistence" rev="${javax.persistence}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.xml.rpc" rev="${javax.xml.rpc}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina" rev="${org.apache.catalina}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina.ha" rev="${org.apache.catalina.ha}" conf="orbit-runtime->runtime"/>

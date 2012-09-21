@@ -40,6 +40,13 @@
     unpack="false"/>
     
     <plugin
+    id="javax.transaction"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.TRANSACTION@"
+    unpack="false"/>
+    
+    <plugin
     id="javax.annotation"
     download-size="0"
     install-size="0"

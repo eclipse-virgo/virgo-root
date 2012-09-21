@@ -80,8 +80,9 @@
 			<fileset dir="${nano.basedir}/publish_resources/features" excludes="keystore"/>
             <filterset>
                 <filter token="OSGI" value="${org.eclipse.osgi}"/>
-                <filter token="ASPECTJ" value="${org.aspectj}"/> com.springsource.org.aspectj.weaver
+                <filter token="ASPECTJ" value="${org.aspectj}"/>
                 <filter token="JAVAX.ACTIVATION" value="${javax.activation}"/>
+                <filter token="JAVAX.TRANSACTION" value="${javax.transaction}"/>
                 <filter token="JAVAX.ANNOTATION" value="${javax.annotation}"/>
                 <filter token="JAVAX.EJB" value="${javax.ejb}"/>
                 <filter token="JAVAX.EL" value="${javax.el}"/>

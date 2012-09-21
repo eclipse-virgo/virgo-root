@@ -23,7 +23,8 @@
     download-size="0"
     install-size="0"
     version="@WEB.VERSION@"
-    unpack="false"/>
+    unpack="false"
+    autostart="true"/>
     
     <plugin
     id="org.eclipse.virgo.web.enterprise.applistener"
@@ -81,430 +82,376 @@
     download-size="0"
     install-size="0"
     version="@JAVASSIST@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.jms"
     download-size="0"
     install-size="0"
     version="@JAVAX.JMS@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.servlet.jsp.jstl.impl"
     download-size="0"
     install-size="0"
     version="@JSTL.IMPL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.servlet.jsp.jstl.api"
     download-size="0"
     install-size="0"
     version="@JSTL.API@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.validation"
     download-size="0"
     install-size="0"
     version="@JAVAX.VALIDATION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.ws.rs"
     download-size="0"
     install-size="0"
     version="@JAVAX.WS.RS@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.slf4j.jcl"
     download-size="0"
     install-size="0"
     version="@SLF4J.JCL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.slf4j.log4j"
     download-size="0"
     install-size="0"
     version="@SLF4J.LOG4J@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.quartz"
     download-size="0"
     install-size="0"
     version="@QUARTZ@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openwebbeans.ee.common"
     download-size="0"
     install-size="0"
     version="@WB.COMMON@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openwebbeans.ee"
     download-size="0"
     install-size="0"
     version="@WB.EE@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openwebbeans.ejb"
     download-size="0"
     install-size="0"
     version="@WB.EJB@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openwebbeans.impl"
     download-size="0"
     install-size="0"
     version="@WB.IMPL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openwebbeans.spi"
     download-size="0"
     install-size="0"
     version="@WB.SPI@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openwebbeans.web"
     download-size="0"
     install-size="0"
     version="@WB.WEB@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.commons.beanutils"
     download-size="0"
     install-size="0"
     version="@COMMOMS.BEANUTILS@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.commons.cli"
     download-size="0"
     install-size="0"
     version="@COMMONS.CLI@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.commons.collections"
     download-size="0"
     install-size="0"
     version="@COMMONS.COLLECTIONS@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.commons.dbcp"
     download-size="0"
     install-size="0"
     version="@COMMONS.DBCP@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.commons.lang"
     download-size="0"
     install-size="0"
     version="@COMMONS.LANG@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.commons.pool"
     download-size="0"
     install-size="0"
     version="@COMMONS.POOL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.derby"
     download-size="0"
     install-size="0"
     version="@DERBY@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.bval"
     download-size="0"
     install-size="0"
     version="@BVAL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.geronimo.components.connector"
     download-size="0"
     install-size="0"
     version="@G.CONNECTOR@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.geronimo.components.transaction"
     download-size="0"
     install-size="0"
     version="@G.TRANSACTIONS@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.geronimo.specs.j2ee.management"
     download-size="0"
     install-size="0"
     version="@G.MANAGEMENT@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.geronimo.specs.osgi.locator"
     download-size="0"
     install-size="0"
     version="@G.OSGI.LOCATOR@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.geronimo.specs.osgi.registry"
     download-size="0"
     install-size="0"
     version="@G.OSGI.REGISTRY@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="cdi.api"
     download-size="0"
     install-size="0"
     version="@CDI.API@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openejb.api"
     download-size="0"
     install-size="0"
     version="@OE.API@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openejb.core"
     download-size="0"
     install-size="0"
     version="@OE.CORE@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openejb.javaagent"
     download-size="0"
     install-size="0"
     version="@OE.JAVAAGENT@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openejb.jee"
     download-size="0"
     install-size="0"
     version="@OE.JEE@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.openejb.loader"
     download-size="0"
     install-size="0"
     version="@OE.LOADER@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.wsdl"
     download-size="0"
     install-size="0"
     version="@JAVAX.WSDL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.xbean.asm"
     download-size="0"
     install-size="0"
     version="@XB.ASM@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.xbean.bundleutils"
     download-size="0"
     install-size="0"
     version="@XB.BUNDLEUTILS@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.xbean.finder"
     download-size="0"
     install-size="0"
     version="@XB.FINDER@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.xbean.naming"
     download-size="0"
     install-size="0"
     version="@XB.NAMING@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.apache.xbean.reflect"
     download-size="0"
     install-size="0"
     version="@XB.REFLECT@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.gemini.jpa"
     download-size="0"
     install-size="0"
     version="@GEMINI.JPA@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.persistence.antlr"
     download-size="0"
     install-size="0"
     version="@EL.ANTLR@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.persistence.asm"
     download-size="0"
     install-size="0"
     version="@EL.ASM@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.persistence.core"
     download-size="0"
     install-size="0"
     version="@EL.CORE@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.persistence.jpa"
     download-size="0"
     install-size="0"
     version="@EL.JPA@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.glassfish.com.sun.faces"
     download-size="0"
     install-size="0"
     version="@FACES@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.inject"
     download-size="0"
     install-size="0"
     version="@JAVAX.INJECT@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.resource"
     download-size="0"
     install-size="0"
     version="@JAVAX.RESOURCE@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.security.auth.message"
     download-size="0"
     install-size="0"
     version="@JAVAX.SECURITY.AUTH@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.security.jacc"
     download-size="0"
     install-size="0"
     version="@JAVAX.SECURITY.JACC@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.ow2.jotm.jotm-core"
     download-size="0"
     install-size="0"
     version="@JOTM@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="osgi.enterprise"
     download-size="0"
     install-size="0"
     version="@OSGI.ENTERPRISE@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="scannotation"
     download-size="0"
     install-size="0"
     version="@SCANNOTATION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="javax.ejb"
     download-size="0"
     install-size="0"
     version="@JAVAX.EJB@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
 </feature>
