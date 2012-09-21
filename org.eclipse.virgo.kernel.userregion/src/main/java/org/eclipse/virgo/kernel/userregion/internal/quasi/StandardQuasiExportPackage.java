@@ -73,7 +73,7 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
         List<QuasiImportPackage> consumers = new ArrayList<QuasiImportPackage>();
         BundleDescription[] dependents = this.exportPackageDescription.getExporter().getDependents();
         for (BundleDescription dependentBundle : dependents) {
-        	ImportPackageSpecification importPackageSpecification = isConsumer(dependentBundle);
+        	ImportPackageSpecification importPackageSpecification = findImportingPackageSpecification(dependentBundle);
             if(importPackageSpecification != null){
             	addConsumer(dependentBundle, importPackageSpecification, consumers);
             }
@@ -81,7 +81,7 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
         return consumers;
     }
 
-    private ImportPackageSpecification isConsumer(BundleDescription dependentBundle) {
+    private ImportPackageSpecification findImportingPackageSpecification(BundleDescription dependentBundle) {
         ImportPackageSpecification[] importedPackages = dependentBundle.getImportPackages();
         for (ImportPackageSpecification importedPackage : importedPackages) {
             if (this.exportPackageDescription.equals(importedPackage.getSupplier())) {

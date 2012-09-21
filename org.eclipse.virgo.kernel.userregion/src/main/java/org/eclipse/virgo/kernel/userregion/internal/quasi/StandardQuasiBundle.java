@@ -71,7 +71,7 @@ final class StandardQuasiBundle implements QuasiBundle {
      * 
      * @param bundleDescription the <code>BundleDescription</code> for this <code>QuasiBundle</code>
      * @param bundleManifest
-     * @param stateHelper a {@link StateHelper} for analysing wiring
+     * @param region the <code>Region</code> this bundle belongs to
      */
     public StandardQuasiBundle(BundleDescription bundleDescription, BundleManifest bundleManifest, Region region) {
         this.bundleDescription = bundleDescription;
