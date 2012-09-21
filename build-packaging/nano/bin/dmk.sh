@@ -199,6 +199,7 @@ then
             -Dosgi.configuration.area=$CONFIG_AREA \
             -Dssh.server.keystore="$CONFIG_DIR/hostkey.ser" \
             -Dosgi.frameworkClassPath=$FWCLASSPATH \
+            -Djava.endorsed.dirs="$KERNEL_HOME/lib/endorsed" \
             -classpath $CLASSPATH \
 			org.eclipse.equinox.launcher.Main \
             -noExit \

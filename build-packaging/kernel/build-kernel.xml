@@ -37,9 +37,6 @@
 		<!-- prepare Kernel's resources - configurations and bundles that are not installed initially -->
 		<property name="kernel.resources" value="${kernel.target.dir}/kernel_resources"/>
 
-		<ivy:resolve resolveId="copy.path" file="${kernel.basedir}/lib-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
-
 		<ivy:resolve resolveId="copy.path" file="${kernel.basedir}/repository-ext-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${kernel.resources}/repository/ext/[artifact]_[revision].[ext]" conf="repository-ext" type="jar"/>
 		
