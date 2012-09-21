@@ -135,7 +135,7 @@ var DumpViewer = function(){
 		});
 		$('#' + event.data.dumpEntryId).addClass('selected-item');
 		if(-1 < event.data.queryString.indexOf('StateDumpInspector')){
-			self.displayOSGiStateDump(event.data.dumpId);
+			self.displayOSGiStateDumpEntry(event.data.dumpId);
 		} else {
 			$.ajax({
 				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + event.data.queryString, 
@@ -158,7 +158,7 @@ var DumpViewer = function(){
 		}
 	};
 	
-	self.displayOSGiStateDump = function(dumpId){
+	self.displayOSGiStateDumpEntry = function(dumpId){
 		$('#dump-item-content').empty();
 		$('#dump-item-content').append($('<div />', {id: 'bundle-canvas'}));
 		var width = 1000;
@@ -168,8 +168,13 @@ var DumpViewer = function(){
 		var dataSource = new QuasiDataSource(self.dumpLocation + '!/' + dumpId);
 		dataSource.updateData(function(){
 			dataSource.getUnresolvedBundleIds(function(bundles){
-				console.log(bundles);
-				new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundles[0]);
+				var bundleToDisplay;
+				if(bundles.length == 0){
+					bundleToDisplay = 1;
+				}else{
+					bundleToDisplay = bundles[0];
+				}
+				//new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundleToDisplay);
 			});
 		});
 	};
@@ -224,6 +229,7 @@ var QuasiDataSource = function(dumpFolder){
 	
 	self.getUnresolvedBundleIds = function(callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getUnresolvedBundleIds/' + self.dumpFolder, function(response){
+			//console.log(response.value);
 			callback(response.value);
 		});
 	};
@@ -231,6 +237,13 @@ var QuasiDataSource = function(dumpFolder){
 	self.updateData = function(callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/listBundles/' + self.dumpFolder, function(response){
 			console.log(response.value);
+			self.bundles = {};
+
+			$.each(response.value, function(index, item){
+				
+			});
+			
+			
 			callback();
 		});
 	};
@@ -238,7 +251,7 @@ var QuasiDataSource = function(dumpFolder){
 
 	self.updateBundle = function(bundleId, callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getBundle/' + self.dumpFolder + '/' + bundleId, function(response){
-			console.log(response.value);
+			//console.log(response.value);
 
 			
 		});
