@@ -19,22 +19,20 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Locale;
 
-import org.osgi.framework.Constants;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.gemini.web.core.InstallationOptions;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.BundleInstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.common.GraphNode.ExceptionThrowingDirectedAcyclicGraphVisitor;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <strong>Concurrent Semantics</strong><br />
@@ -43,6 +41,10 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
  * 
  */
 final class WebBundleTransformer implements Transformer {
+    
+    private static final String WAR_HEADER = "org-eclipse-virgo-web-war-detected";
+    
+    private static final String WAR_EXTENSION = ".war";
 
     private static final String HEADER_DEFAULT_WAB_HEADERS = "org-eclipse-gemini-web-DefaultWABHeaders";
 
@@ -67,8 +69,6 @@ final class WebBundleTransformer implements Transformer {
     static final String WEB_BUNDLE_MODULE_TYPE = "web-bundle";
 
     static final String MANIFEST_HEADER_MODULE_TYPE = "Module-Type";
-
-    private static final String WAR_EXTENSION = ".war";
 
     private static final String MANIFEST_HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
 
@@ -129,7 +129,10 @@ final class WebBundleTransformer implements Transformer {
             BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact) installArtifact;
             if (hasWebContextPath(bundleInstallArtifact)) {
                 return true;
-            } else if (hasWarSuffix(installArtifact)) {
+            } else if (isWar(bundleInstallArtifact)) {
+                setDefaultWebContextPath(bundleInstallArtifact);
+                return true;
+            } else if (!this.strictWABHeaders && hasWarSuffix(installArtifact)) {
                 setDefaultWebContextPath(bundleInstallArtifact);
                 return true;
             }
@@ -137,6 +140,14 @@ final class WebBundleTransformer implements Transformer {
         return false;
     }
 
+    private boolean isWar(BundleInstallArtifact installArtifact) {
+        try {
+            return installArtifact.getBundleManifest().getHeader(WAR_HEADER) != null;
+        } catch (IOException e_) {
+            return false;
+        }
+    }
+    
     private boolean hasWarSuffix(InstallArtifact installArtifact) {
         return installArtifact.getArtifactFS().getFile().getName().toLowerCase(Locale.ENGLISH).endsWith(WAR_EXTENSION);
     }
@@ -219,14 +230,15 @@ final class WebBundleTransformer implements Transformer {
     private void applyWebContainerTransformations(BundleInstallArtifact bundleArtifact) throws DeploymentException {
         try {
             BundleManifest bundleManifest = bundleArtifact.getBundleManifest();
-            if (bundleManifest.getModuleType() == null || "web".equalsIgnoreCase(bundleManifest.getModuleType())) {
-                if (!this.strictWABHeaders) {
+            if (bundleManifest.getModuleType() == null || WEB_BUNDLE_MODULE_TYPE.equalsIgnoreCase(bundleManifest.getModuleType())) {
+                boolean webBundle = WebContainerUtils.isWebApplicationBundle(bundleManifest);
+                boolean defaultWABHeaders = !webBundle || !this.strictWABHeaders;
+                if (defaultWABHeaders) {
                     bundleManifest.setHeader(HEADER_DEFAULT_WAB_HEADERS, "true");
                 }
                 bundleManifest.setModuleType(WEB_BUNDLE_MODULE_TYPE);
-                boolean webBundle = /* WebContainerUtils. */isWebApplicationBundle(bundleManifest);
                 InstallationOptions installationOptions = new InstallationOptions(Collections.<String, String> emptyMap());
-                installationOptions.setDefaultWABHeaders(!this.strictWABHeaders);
+                installationOptions.setDefaultWABHeaders(defaultWABHeaders);
                 this.environment.getManifestTransformer().transform(bundleManifest, getSourceUrl(bundleArtifact), installationOptions, webBundle);
             } else {
                 logger.debug("Bundle '{}' version '{}' is not being transformed as it already has a Module-Type of '{}'", new Object[] {
@@ -251,38 +263,4 @@ final class WebBundleTransformer implements Transformer {
         }
     }
 
-    // Following methods temporarily copied from WebContainerUtils
-    /**
-     * Determines whether the given manifest represents a web application bundle. According to the R4.2 Enterprise
-     * Specification, this is true if and only if the manifest contains any of the headers in Table 128.3:
-     * Bundle-SymbolicName, Bundle-Version, Bundle-ManifestVersion, Import-Package, Web-ContextPath. Note: there is no
-     * need to validate the manifest as if it is invalid it will cause an error later.
-     * 
-     * @param manifest the bundle manifest
-     * @return <code>true</code> if and only if the given manifest represents a web application bundle
-     */
-    public static boolean isWebApplicationBundle(BundleManifest manifest) {
-        return specifiesBundleSymbolicName(manifest) || specifiesBundleVersion(manifest) || specifiesBundleManifestVersion(manifest)
-            || specifiesImportPackage(manifest) || specifiesWebContextPath(manifest);
-    }
-
-    private static boolean specifiesBundleSymbolicName(BundleManifest manifest) {
-        return manifest.getBundleSymbolicName().getSymbolicName() != null;
-    }
-
-    private static boolean specifiesBundleVersion(BundleManifest manifest) {
-        return manifest.getHeader(Constants.BUNDLE_VERSION) != null;
-    }
-
-    private static boolean specifiesBundleManifestVersion(BundleManifest manifest) {
-        return manifest.getBundleManifestVersion() != 1;
-    }
-
-    private static boolean specifiesImportPackage(BundleManifest manifest) {
-        return !manifest.getImportPackage().getImportedPackages().isEmpty();
-    }
-
-    private static boolean specifiesWebContextPath(BundleManifest manifest) {
-        return manifest.getHeader("Web-ContextPath") != null;
-    }
 }

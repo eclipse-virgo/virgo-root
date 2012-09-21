@@ -58,18 +58,21 @@ public class WebBundleTransformerTests {
         eventLogger);
 
     private WebBundleTransformer webBundleTransformer = new WebBundleTransformer(environment);
+    
+    private static final String WAR_HEADER = "org-eclipse-virgo-web-war-detected";
 
     @Test
     public void transformation() throws IOException, DeploymentException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
+        bundleManifest.setHeader(WAR_HEADER, "true");
 
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
 
-        manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
+        manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(false));
 
         replay(manifestTransformer);
 
@@ -234,6 +237,7 @@ public class WebBundleTransformerTests {
     public void testWABHeaderDefaulting() throws IOException, DeploymentException {
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
+        bundleManifest.setHeader("Web-ContextPath", "blah");
 
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
@@ -267,6 +271,7 @@ public class WebBundleTransformerTests {
 
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
+        bundleManifest.setHeader("Web-ContextPath", "blah");
 
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
@@ -302,6 +307,7 @@ public class WebBundleTransformerTests {
 
         BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
+        bundleManifest.setHeader("Web-ContextPath", "blah");
 
         File sourceFile = new File("/bar.war");
         URI sourceUri = sourceFile.toURI();
@@ -325,13 +331,14 @@ public class WebBundleTransformerTests {
     @Test
     public void rootWarTransformation() throws IOException, DeploymentException {
     	BundleManifest bundleManifest = new StandardBundleManifest(null);
+        bundleManifest.setHeader(WAR_HEADER, "true");
 
         File sourceFile = new File("/ROOT.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
 
-        manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(true));
+        manifestTransformer.transform(eq(bundleManifest), eq(sourceUri.toURL()), isA(InstallationOptions.class), eq(false));
 
         replay(manifestTransformer);
 
