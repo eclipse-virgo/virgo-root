@@ -99,7 +99,7 @@
     unpack="false"/>
     
     <plugin
-    id="javax.servlet.jsp.jstl.api"
+    id="javax.servlet.jsp.jstl"
     download-size="0"
     install-size="0"
     version="@JSTL.API@"
@@ -190,7 +190,7 @@
     unpack="false"/>
     
     <plugin
-    id="org.apache.commons.cli"
+    id="com.springsource.org.apache.commons.cli"
     download-size="0"
     install-size="0"
     version="@COMMONS.CLI@"
@@ -396,7 +396,14 @@
     id="org.glassfish.com.sun.faces"
     download-size="0"
     install-size="0"
-    version="@FACES@"
+    version="@FACES.IMPL@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.glassfish.javax.faces"
+    download-size="0"
+    install-size="0"
+    version="@FACES.API@"
     unpack="false"/>
     
     <plugin

@@ -26,7 +26,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.spi" rev="${org.apache.openwebbeans.spi}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.web" rev="${org.apache.openwebbeans.web}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.beanutils" rev="${org.apache.commons.beanutils}" conf="enterprise->runtime"/>
-        <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.cli" rev="${org.apache.commons.cli}" conf="enterprise->runtime"/>
+        <dependency org="org.apache.commons" name="com.springsource.org.apache.commons.cli" rev="${org.apache.commons.cli}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.collections" rev="${org.apache.commons.collections}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.dbcp" rev="${org.apache.commons.dbcp}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.lang" rev="${org.apache.commons.lang}" conf="enterprise->runtime"/>
@@ -55,7 +55,9 @@
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.asm" rev="${org.eclipse.persistence.asm}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.core" rev="${org.eclipse.persistence.core}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.jpa" rev="${org.eclipse.persistence.jpa}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.jpa.jpql" rev="${org.eclipse.persistence.jpa.jpql}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.glassfish.com.sun.faces" rev="${org.glassfish.com.sun.faces}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.glassfish.javax.faces" rev="${org.glassfish.javax.faces}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.inject" rev="${javax.inject}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.resource" rev="${javax.resource}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.security.auth.message" rev="${javax.security.auth.message}" conf="enterprise->runtime"/>

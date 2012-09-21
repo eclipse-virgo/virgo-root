@@ -242,6 +242,20 @@
     unpack="false"/>
     
     <plugin
+    id="org.slf4j.jcl"
+    download-size="0"
+    install-size="0"
+    version="@SLF4J.JCL@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.slf4j.log4j"
+    download-size="0"
+    install-size="0"
+    version="@SLF4J.LOG4J@"
+    unpack="false"/>
+    
+    <plugin
     id="org.eclipse.equinox.ds"
     download-size="0"
     install-size="0"

@@ -16,6 +16,7 @@
 	  <feature id="org.eclipse.virgo.p2.provisioning" version="0.0.0"/>
 	  <feature id="org.eclipse.gemini.web" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.nano.war.deployer" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.enterprise" version="0.0.0"/>
    </features>
 
 </product>

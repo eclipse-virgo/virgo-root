@@ -74,6 +74,9 @@
         
         <ivy:resolve resolveId="copy.path" file="${nano.basedir}/gemini-web-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
+         
+        <ivy:resolve resolveId="copy.path" file="${nano.basedir}/enterprise-ivy.xml" transitive="false"/>
+        <ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="enterprise" type="jar"/>
         
         <!-- Prepare the features for publishing -->
         <copy todir="${nano.target.dir}/assembly/features" failonerror="false">
@@ -159,11 +162,11 @@
                 <filter token="P2.T.E.VERSION" value="${org.eclipse.equinox.p2.touchpoint.eclipse}"/>
                 <filter token="P2.T.ECF.VERSION" value="${org.eclipse.equinox.p2.transport.ecf}"/>
                 <filter token="P2.T.N.VERSION" value="${org.eclipse.equinox.p2.touchpoint.natives}"/>
-                <filter token="JAVASSIST" value="${javassist}"/>
+                <filter token="JAVASSIST" value="${javassist.feature}"/>
                 <filter token="JAVAX.JMS" value="${javax.jms}"/>
                 <filter token="JSTL.IMPL" value="${javax.servlet.jsp.jstl.impl}"/>
                 <filter token="JSTL.API" value="${javax.servlet.jsp.jstl.api}"/>
-                <filter token="JAVAX.VALIDATION" value="${javax.validation}"/>
+                <filter token="JAVAX.VALIDATION" value="${javax.validation.feature}"/>
                 <filter token="JAVAX.WS.RS" value="${javax.ws.rs}"/>
                 <filter token="SLF4J.JCL" value="${org.slf4j.jcl}"/>
                 <filter token="SLF4J.LOG4J" value="${org.slf4j.log4j}"/>
@@ -180,7 +183,7 @@
                 <filter token="COMMONS.DBCP" value="${org.apache.commons.dbcp}"/>
                 <filter token="COMMONS.LANG" value="${org.apache.commons.lang}"/>
                 <filter token="COMMONS.POOL" value="${org.apache.commons.pool}"/>
-                <filter token="DERBY" value="${org.apache.derby}"/>
+                <filter token="DERBY" value="${org.apache.derby.feature}"/>
                 <filter token="BVAL" value="${org.apache.bval}"/>
                 <filter token="G.CONNECTOR" value="${org.apache.geronimo.components.connector}"/>
                 <filter token="G.TRANSACTIONS" value="${org.apache.geronimo.components.transaction}"/>
@@ -188,11 +191,11 @@
                 <filter token="G.OSGI.LOCATOR" value="${org.apache.geronimo.specs.osgi.locator}"/>
                 <filter token="G.OSGI.REGISTRY" value="${org.apache.geronimo.specs.osgi.registry}"/>
                 <filter token="CDI.API" value="${cdi.api}"/>
-                <filter token="OE.API" value="${org.apache.openejb.api}"/>
-                <filter token="OE.CORE" value="${org.apache.openejb.core}"/>
-                <filter token="OE.JAVAAGENT" value="${org.apache.openejb.javaagent}"/>
-                <filter token="OE.JEE" value="${org.apache.openejb.jee}"/>
-                <filter token="OE.LOADER" value="${org.apache.openejb.loader}"/>
+                <filter token="OE.API" value="${org.apache.openejb.api.feature}"/>
+                <filter token="OE.CORE" value="${org.apache.openejb.core.feature}"/>
+                <filter token="OE.JAVAAGENT" value="${org.apache.openejb.javaagent.feature}"/>
+                <filter token="OE.JEE" value="${org.apache.openejb.jee.feature}"/>
+                <filter token="OE.LOADER" value="${org.apache.openejb.loader.feature}"/>
                 <filter token="JAVAX.WSDL" value="${javax.wsdl}"/>
                 <filter token="XB.ASM" value="${org.apache.xbean.asm}"/>
                 <filter token="XB.BUNDLEUTILS" value="${org.apache.xbean.bundleutils}"/>
@@ -204,7 +207,8 @@
                 <filter token="EL.ASM" value="${org.eclipse.persistence.asm}"/>
                 <filter token="EL.CORE" value="${org.eclipse.persistence.core}"/>
                 <filter token="EL.JPA" value="${org.eclipse.persistence.jpa}"/>
-                <filter token="FACES" value="${org.glassfish.com.sun.faces}"/>
+                <filter token="FACES.IMPL" value="${org.glassfish.com.sun.faces}"/>
+                <filter token="FACES.API" value="${org.glassfish.javax.faces}"/>
                 <filter token="JAVAX.INJECT" value="${javax.inject}"/>
                 <filter token="JAVAX.RESOURCE" value="${javax.resource}"/>
                 <filter token="JAVAX.SECURITY.AUTH" value="${javax.security.auth.message}"/>
@@ -267,12 +271,6 @@
             <param name="product.file.location" value="${p2.products.location}/nano-full/nano-full.product"/>
         </antcall>
         <echo message="Published nano-full product to ${p2.repository.dir}."/>
-        
-        <antcall target="p2.publish-product">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="product.file.location" value="${p2.products.location}/nano-full-noscripts/nano-full-noscripts.product"/>
-        </antcall>
-        <echo message="Published nano-full-noscripts product to ${p2.repository.dir}."/>
      </target>
      
      <target name="install-packages">
