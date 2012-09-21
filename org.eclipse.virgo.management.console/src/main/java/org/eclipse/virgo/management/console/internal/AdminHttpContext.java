@@ -36,7 +36,7 @@ import org.osgi.service.http.HttpContext;
  */
 public class AdminHttpContext implements HttpContext {
 	
-	private static final String REALM = "Virgo Server Admin Console";
+	private static final String REALM = "Virgo Admin Console";
 	
 	private final Bundle bundle;
 	

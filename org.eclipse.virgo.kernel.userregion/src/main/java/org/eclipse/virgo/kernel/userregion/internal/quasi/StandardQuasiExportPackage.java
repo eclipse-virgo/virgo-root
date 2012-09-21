@@ -18,12 +18,11 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
-import org.eclipse.osgi.service.resolver.StateHelper;
-import org.osgi.framework.Version;
-
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
+import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.framework.Version;
 
 /**
  * {@link StandardQuasiExportPackage} is the default implementation of {@link QuasiExportPackage}.
@@ -44,10 +43,6 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
         super(exportPackageDescription);
         this.exportPackageDescription = exportPackageDescription;
         this.exporter = exporter;
-    }
-
-    private StateHelper getStateHelper() {
-        return ((StandardQuasiBundle) exporter).getStateHelper();
     }
 
     /**
@@ -76,43 +71,30 @@ public class StandardQuasiExportPackage extends StandardQuasiParameterised imple
      */
     public List<QuasiImportPackage> getConsumers() {
         List<QuasiImportPackage> consumers = new ArrayList<QuasiImportPackage>();
-        StateHelper stateHelper = getStateHelper();
-        for (BundleDescription dependentBundle : getDependentBundles(stateHelper)) {
-            if (isConsumer(dependentBundle)) {
-                addConsumer(dependentBundle, consumers, stateHelper);
+        BundleDescription[] dependents = this.exportPackageDescription.getExporter().getDependents();
+        for (BundleDescription dependentBundle : dependents) {
+        	ImportPackageSpecification importPackageSpecification = findImportingPackageSpecification(dependentBundle);
+            if(importPackageSpecification != null){
+            	addConsumer(dependentBundle, importPackageSpecification, consumers);
             }
         }
         return consumers;
     }
 
-    private BundleDescription[] getDependentBundles(StateHelper stateHelper) {
-        return stateHelper.getDependentBundles(new BundleDescription[] { this.exportPackageDescription.getExporter() });
-    }
-
-    private boolean isConsumer(BundleDescription dependentBundle) {
+    private ImportPackageSpecification findImportingPackageSpecification(BundleDescription dependentBundle) {
         ImportPackageSpecification[] importedPackages = dependentBundle.getImportPackages();
-        
         for (ImportPackageSpecification importedPackage : importedPackages) {
             if (this.exportPackageDescription.equals(importedPackage.getSupplier())) {
-                return true;
+                return importedPackage;
             }
         }
-        return false;
+        return null;
     }
 
-    private void addConsumer(BundleDescription dependentBundle, List<QuasiImportPackage> consumers, StateHelper stateHelper) {
-        ImportPackageSpecification[] dependentImportPackages = dependentBundle.getImportPackages();
-        for (ImportPackageSpecification dependentImportPackage : dependentImportPackages) {
-            if (matches(dependentImportPackage, this.exportPackageDescription)) {
-                Region region = this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId());
-				consumers.add(new StandardQuasiImportPackage(dependentImportPackage, new StandardQuasiBundle(dependentBundle, null, region, stateHelper)));
-                break;
-            }
-        }
-    }
-
-    private boolean matches(ImportPackageSpecification i, ExportPackageDescription e) {
-        return i.isSatisfiedBy(e);
+    private void addConsumer(BundleDescription dependentBundle, ImportPackageSpecification dependentImportPackage, List<QuasiImportPackage> consumers) {
+    	Region region = this.exporter.getRegion().getRegionDigraph().getRegion(dependentBundle.getBundleId());
+    	StandardQuasiBundle importingBundle = new StandardQuasiBundle(dependentBundle, null, region);
+		consumers.add(new StandardQuasiImportPackage(dependentImportPackage, importingBundle));
     }
     
     /** 

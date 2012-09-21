@@ -42,10 +42,6 @@ final class StandardQuasiRequiredBundle implements QuasiRequiredBundle {
         this.bundleSpecification = bundleSpecification;
         this.requiringBundle = requiringBundle;
     }
-    
-    private StateHelper getStateHelper() {
-        return ((StandardQuasiBundle) requiringBundle).getStateHelper();
-    }
 
     /**
      * {@inheritDoc}
@@ -81,7 +77,7 @@ final class StandardQuasiRequiredBundle implements QuasiRequiredBundle {
     public QuasiBundle getProvider() {
         if (isResolved()) {
             BundleDescription supplier = this.bundleSpecification.getSupplier().getSupplier();
-			return new StandardQuasiBundle(supplier, null, this.requiringBundle.getRegion().getRegionDigraph().getRegion(supplier.getBundleId()), getStateHelper());
+			return new StandardQuasiBundle(supplier, null, this.requiringBundle.getRegion().getRegionDigraph().getRegion(supplier.getBundleId()));
         } else {
             return null;
         }

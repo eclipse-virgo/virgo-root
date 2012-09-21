@@ -62,8 +62,6 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     private Version bv;
 
-    private final StateHelper stateHelper;
-
 	private final Region region;
 
     private volatile Provisioning provisioning = Provisioning.AUTO;
@@ -73,15 +71,14 @@ final class StandardQuasiBundle implements QuasiBundle {
      * 
      * @param bundleDescription the <code>BundleDescription</code> for this <code>QuasiBundle</code>
      * @param bundleManifest
-     * @param stateHelper a {@link StateHelper} for analysing wiring
+     * @param region the <code>Region</code> this bundle belongs to
      */
-    public StandardQuasiBundle(BundleDescription bundleDescription, BundleManifest bundleManifest, Region region, StateHelper stateHelper) {
+    public StandardQuasiBundle(BundleDescription bundleDescription, BundleManifest bundleManifest, Region region) {
         this.bundleDescription = bundleDescription;
         this.bundleManifest = bundleManifest;
 		this.region = region;
         this.bsn = bundleDescription.getSymbolicName();
         this.bv = bundleDescription.getVersion();
-        this.stateHelper = stateHelper;
     }
 
     BundleDescription getBundleDescription() {
@@ -225,7 +222,7 @@ final class StandardQuasiBundle implements QuasiBundle {
         List<QuasiBundle> quasiBundles = new ArrayList<QuasiBundle>();
         for (BundleDescription bundleDescription : bundleDescriptions) {
 			Region bundleRegion = this.region.getRegionDigraph().getRegion(bundleDescription.getBundleId());
-			quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, bundleRegion, this.stateHelper));
+			quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, bundleRegion));
         }
         return Collections.unmodifiableList(quasiBundles);
     }
@@ -316,10 +313,6 @@ final class StandardQuasiBundle implements QuasiBundle {
         } else if (!bv.equals(other.bv))
             return false;
         return true;
-    }
-
-    public StateHelper getStateHelper() {
-        return this.stateHelper;
     }
 
     public File getBundleFile() {

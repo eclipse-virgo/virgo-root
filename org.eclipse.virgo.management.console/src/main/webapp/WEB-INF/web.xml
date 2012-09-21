@@ -81,7 +81,7 @@
   
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>Virgo Server Admin Console</realm-name>
+    <realm-name>Virgo Admin Console</realm-name>
   </login-config>
   
   <security-role>
