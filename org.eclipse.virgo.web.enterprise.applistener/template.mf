@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.applistener
 Bundle-Version: ${version}
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: org.eclipse.gemini.web.tomcat
-Import-Template: javax.servlet;version="${javax.servlet:[=.=.=, +1)}",
+Import-Template: javax.servlet;version="0",
  org.eclipse.virgo.web.enterprise.openejb.deployer;version="0",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, +1)}",
  org.apache.catalina.*;version="${org.apache.catalina:[=.=.=, +1)}",

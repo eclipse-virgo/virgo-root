@@ -4,10 +4,10 @@ Bundle-Name: Virgo Web Enterprise JSF support
 Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.jsf.support
 Bundle-Version: ${version}
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Template: javax.annotation;version="${javax.annotation:[=.=.=, +1)}",
- javax.ejb;version="${javax.ejb:[=.=.=, +1)}",
- javax.persistence;version="${javax.persistence:[=.=.=, +1)}",
- com.sun.faces.spi;version="${org.glassfish.com.sun.faces:[=.=.=, +1)}",
+Import-Template: javax.annotation;version="0",
+ javax.ejb;version="0",
+ javax.persistence;version="0",
+ com.sun.faces.spi;version="0",
  org.apache.naming;version="${org.apache.catalina:[=.=.=, +1)}",
  javax.naming;version="0"
 Excluded-Exports:
