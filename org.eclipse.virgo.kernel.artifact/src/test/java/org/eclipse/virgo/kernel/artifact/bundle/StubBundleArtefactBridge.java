@@ -64,11 +64,11 @@ final public class StubBundleArtefactBridge implements ArtifactBridge {
 
     private final static RepositoryAwareArtifactDescriptor TEST_DIRECTORY_ARTEFACT = new StubRepositoryAwareArtifactDescriptor(TEST_DIRECTORY_URI, "y.different", new Version("1.2.3"), TEST_ATTRIBUTE_SET_DIRECTORY);
 
-    private final static URI TEST_FILE_URI = new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/" + "com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar").toURI();
+    private final static URI TEST_FILE_URI = new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/org.apache.commons.dbcp-1.4.0.v201204271417.jar").toURI();
 
-    private static final Set<Attribute> TEST_ATTRIBUTE_SET = createAttributeSet("com.springsource.org.apache.commons.dbcp", new Version("1.2.2.osgi"), TEST_FILE_URI);
+    private static final Set<Attribute> TEST_ATTRIBUTE_SET = createAttributeSet("org.apache.commons.dbcp", new Version("1.4.0.v201204271417"), TEST_FILE_URI);
 
-    private final static RepositoryAwareArtifactDescriptor TEST_ARTEFACT = new StubRepositoryAwareArtifactDescriptor(TEST_FILE_URI, "com.springsource.org.apache.commons.dbcp", new Version("1.2.2.osgi"), TEST_ATTRIBUTE_SET);
+    private final static RepositoryAwareArtifactDescriptor TEST_ARTEFACT = new StubRepositoryAwareArtifactDescriptor(TEST_FILE_URI, "org.apache.commons.dbcp", new Version("1.4.0.v201204271417"), TEST_ATTRIBUTE_SET);
 
     private static Set<Attribute> createAttributeSet(String name, Version version, URI uri) {
         Set<Attribute> attributes = new HashSet<Attribute>();
