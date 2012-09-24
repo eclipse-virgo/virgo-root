@@ -53,7 +53,7 @@
         id="org.apache.catalina.ha"
         download-size="0"
         install-size="0"
-        version="@HA.VERSION@"
+        version="@CATALINA.HA@"
         unpack="false"/>
     
     <plugin
