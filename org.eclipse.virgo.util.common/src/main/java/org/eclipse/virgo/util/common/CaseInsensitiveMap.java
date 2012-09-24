@@ -346,6 +346,9 @@ public class CaseInsensitiveMap<V> extends AbstractMap<String, V> {
 
     }
 
+    public CaseInsensitiveMap(CaseInsensitiveMap<? extends V> map) {
+        this.map.putAll(map.map);
+    }
     /**
      * {@inheritDoc}
      */

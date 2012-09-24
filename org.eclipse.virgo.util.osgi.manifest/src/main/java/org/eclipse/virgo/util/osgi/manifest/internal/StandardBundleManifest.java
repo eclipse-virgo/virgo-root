@@ -334,10 +334,7 @@ public class StandardBundleManifest implements BundleManifest {
     public Dictionary<String, String> toDictionary() {
         synchroniseContentsWithHeaders();
 
-        Hashtable<String, String> output = new Hashtable<String, String>();
-        output.putAll(this.contents);
-
-        return output;
+        return new MapToDictionaryAdapter(new CaseInsensitiveMap<String>(this.contents));
     }
 
     /**
