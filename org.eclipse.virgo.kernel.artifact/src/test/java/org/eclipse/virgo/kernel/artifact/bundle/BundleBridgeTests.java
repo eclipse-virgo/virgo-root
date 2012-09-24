@@ -91,7 +91,7 @@ public class BundleBridgeTests {
     @Test
     public void testGenerateArtefact() throws ArtifactGenerationException {
         File jarsDirectory = new File(
-            System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.apache.commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi/com.springsource.org.apache.commons.dbcp-1.2.2.osgi.jar");
+            System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/org.apache.commons.dbcp-1.4.0.v201204271417.jar");
         File directoriesDirectory = new File("./src/test/resources/directories");
 
         Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
