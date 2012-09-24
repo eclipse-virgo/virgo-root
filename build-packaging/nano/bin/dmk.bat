@@ -186,6 +186,7 @@ rem ------------------------------
 	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.install.area="%KERNEL_HOME%"
 	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.configuration.area="%KERNEL_HOME%\work" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Dosgi.frameworkClassPath="%FWCLASSPATH%"
+      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djava.endorsed.dirs="%KERNEL_HOME%\lib\endorsed"
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -classpath "%CLASSPATH%" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% org.eclipse.equinox.launcher.Main
 	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -noExit

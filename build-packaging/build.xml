@@ -6,6 +6,8 @@
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
 	
+    <property name="javaprofile.location" value="${basedir}/nano/configuration/java6-server.profile"/>
+        
     <import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <import file="${basedir}/nano/build-nano.xml"/>
     <import file="${basedir}/kernel/build-kernel.xml"/>

@@ -62,7 +62,7 @@ if args[:product_release] == 'full-product'
 	Repository.new(virgo_eclipse_repo_root,	 'snaps',					paths['snaps'],					'org.eclipse.virgo.snaps',			bundle_version, release_from_branch,		'clean clean-integration test package publish-ivy publish-maven publish-build publish-download'),
 	Repository.new(virgo_eclipse_repo_root,	 'apps',					paths['apps'],					'org.eclipse.virgo.apps',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root,	 'documentation',			paths['documentation'],			'org.eclipse.virgo.documentation',	bundle_version, release_from_branch,		'clean clean-integration doc-html package publish-ivy publish-download'),
-    Repository.new(eclipse_repo_root, 'packaging',                      paths['packaging'],             'org.eclipse.virgo.packaging',		bundle_version,        
+    Repository.new(virgo_eclipse_repo_root, 'packaging',                      paths['packaging'],             'org.eclipse.virgo.packaging',		bundle_version,        
         release_from_branch,        'clean clean-integration test package smoke-test publish-ivy publish-packages-build publish-packages-download publish-updatesite-download')
   ]
 
@@ -103,7 +103,7 @@ elsif args[:product_release] == 'virgo'
 	Repository.new(virgo_eclipse_repo_root, 'snaps',					paths['snaps'],					'org.eclipse.virgo.snaps',			bundle_version, release_from_branch,		'clean clean-integration test package publish-ivy publish-maven publish-build publish-download'),
 	Repository.new(virgo_eclipse_repo_root, 'apps',						paths['apps'],					'org.eclipse.virgo.apps',			bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'documentation',			paths['documentation'],			'org.eclipse.virgo.documentation',	bundle_version, release_from_branch,		'clean clean-integration doc-html package publish-ivy publish-download'),
-    Repository.new(eclipse_repo_root, 'packaging',                      paths['packaging'],             'org.eclipse.virgo.packaging',		bundle_version,        
+    Repository.new(virgo_eclipse_repo_root, 'packaging',                      paths['packaging'],             'org.eclipse.virgo.packaging',		bundle_version,        
         release_from_branch,        'clean clean-integration test package smoke-test publish-ivy publish-packages-build publish-packages-download publish-updatesite-download')
   ]
 
@@ -122,7 +122,7 @@ else
 	Repository.new(virgo_eclipse_repo_root, 'snaps',				paths['snaps'],					'org.eclipse.virgo.snaps',				bundle_version, release_from_branch,		'clean clean-integration test package publish-ivy publish-maven publish-build publish-download'),
 	Repository.new(virgo_eclipse_repo_root, 'apps',					paths['apps'],					'org.eclipse.virgo.apps',				bundle_version, release_from_branch,		default_targets),
 	Repository.new(virgo_eclipse_repo_root, 'documentation',		paths['documentation'],			'org.eclipse.virgo.documentation',		bundle_version, release_from_branch,		'clean clean-integration doc-html package publish-ivy publish-download'),
-    Repository.new(eclipse_repo_root, 'packaging',                      paths['packaging'],             'org.eclipse.virgo.packaging',		bundle_version,        
+    Repository.new(virgo_eclipse_repo_root, 'packaging',                      paths['packaging'],             'org.eclipse.virgo.packaging',		bundle_version,        
         release_from_branch,        'clean clean-integration test package smoke-test publish-ivy publish-packages-build publish-packages-download publish-updatesite-download')
     ]
 

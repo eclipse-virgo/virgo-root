@@ -74,42 +74,79 @@
         
         <ivy:resolve resolveId="copy.path" file="${nano.basedir}/gemini-web-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="gemini-web" type="jar"/>
+         
+        <ivy:resolve resolveId="copy.path" file="${nano.basedir}/enterprise-ivy.xml" transitive="false"/>
+        <ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="enterprise" type="jar"/>
         
         <!-- Prepare the features for publishing -->
         <copy todir="${nano.target.dir}/assembly/features" failonerror="false">
 			<fileset dir="${nano.basedir}/publish_resources/features" excludes="keystore"/>
             <filterset>
-				<filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
-                <filter token="HA.VERSION" value="${org.apache.catalina.ha}"/>
+                <filter token="OSGI" value="${org.eclipse.osgi}"/>
+                <filter token="ASPECTJ" value="${org.aspectj}"/>
+                <filter token="JAVAX.ACTIVATION" value="${javax.activation}"/>
+                <filter token="JAVAX.TRANSACTION" value="${javax.transaction}"/>
+                <filter token="JAVAX.ANNOTATION" value="${javax.annotation}"/>
+                <filter token="JAVAX.EJB" value="${javax.ejb}"/>
+                <filter token="JAVAX.EL" value="${javax.el}"/>
+                <filter token="JAVAX.MAIL" value="${javax.mail}"/>
+                <filter token="JAVAX.PERSISTENCE" value="${javax.persistence}"/>
+                <filter token="JAVAX.SERVLET" value="${javax.servlet}"/>
+                <filter token="JAVAX.SERVLET.JSP" value="${javax.servlet.jsp}"/>
+                <filter token="JAVAX.XML.RPC" value="${javax.xml.rpc}"/>
+                <filter token="CATALINA" value="${org.apache.catalina}"/>
+                <filter token="CATALINA.HA" value="${org.apache.catalina.ha}"/>
                 <filter token="JASPER.VERSION" value="${org.apache.jasper}"/>
                 <filter token="TRIBES.VERSION" value="${org.apache.catalina.tribes}"/>
-				<filter token="NANO.VERSION" value="${org.eclipse.virgo.nano}"/>
-				<filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
-				<filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
-                <filter token="LOGBACK.CLASSIC.VERSION" value="${ch.qos.logback.classic}"/>
-                <filter token="LOGBACK.CORE.VERSION" value="${ch.qos.logback.core}"/>
-                <filter token="LOGBACK.SLF4J.VERSION" value="${ch.qos.logback.slf4j}"/>
-				<filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
-                <filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
+                <filter token="COYOTE" value="${org.apache.coyote}"/>
+                <filter token="EL" value="${org.apache.el}"/>
+                <filter token="JULI.EXTRAS" value="${org.apache.juli.extras}"/>
+                <filter token="TOMCAT.API" value="${org.apache.tomcat.api}"/>
+                <filter token="TOMCAT.UTIL" value="${org.apache.tomcat.util}"/>
+                <filter token="EQUINOX.CM" value="${org.eclipse.equinox.cm}"/>
+                <filter token="EQUINOX.EVENT" value="${org.eclipse.equinox.event}"/>
+                <filter token="EQUINOX.REGION" value="${org.eclipse.equinox.region}"/>
+                <filter token="EQUINOX.UTIL" value="${org.eclipse.equinox.util}"/>
+                <filter token="COMPILER.BATCH" value="${org.eclipse.jdt.core.compiler.batch}"/>
+                <filter token="OSGI.SERVICES" value="${org.eclipse.osgi.services}"/>
+                <filter token="SAT4J.CORE" value="${org.sat4j.core}"/>
+                <filter token="SAT4J.PB" value="${org.sat4j.pb}"/>
+                <filter token="SLF4J.API" value="${org.slf4j.api}"/>
+                <filter token="SLF4J.JUL" value="${org.slf4j.jul}"/>
+                <filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console}"/>
+                <filter token="EQUINOX.DS.VERSION" value="${org.eclipse.equinox.ds}"/>
+                <filter token="FELIX.GOGO.SHELL.VERSION" value="${org.apache.felix.gogo.shell}"/>
                 <filter token="FELIX.GOGO.COMMAND.VERSION" value="${org.apache.felix.gogo.command}"/>
-				<filter token="MINA.CORE.VERSION" value="${org.apache.mina.core}"/>
-				<filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
-				<filter token="EQUINOX.CONSOLE.VERSION" value="${org.eclipse.equinox.console}"/>
-                <filter token="EQUINOX.CONSOLE.SSH.VERSION" value="${org.eclipse.equinox.console.ssh}"/>
-				<filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>
-				<filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
+                <filter token="FELIX.GOGO.RUNTIME.VERSION" value="${org.apache.felix.gogo.runtime}"/>
+                <filter token="GEMINI.WEB" value="${org.eclipse.gemini.web}"/>
+                <filter token="MEDIC.VERSION" value="${org.eclipse.virgo.medic}"/>
+                <filter token="MINA.CORE.VERSION" value="${org.apache.mina.core}"/>
+                <filter token="NANO.VERSION" value="${org.eclipse.virgo.nano}"/>
+                <filter token="WEB.VERSION" value="${org.eclipse.virgo.web}"/>
+                <filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>
+                <filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
+                <filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
                 <filter token="CONTENTTYPE.VERSION" value="${org.eclipse.core.contenttype}"/>
-                <filter token="JOBS.VERSION" value="${org.eclipse.core.jobs}"/>
                 <filter token="CORE.VERSION" value="${org.eclipse.core.runtime}"/>
-                <filter token="ECF.VERSION" value="${org.eclipse.ecf}"/>
                 <filter token="ECF.FT.VERSION" value="${org.eclipse.ecf.filetransfer}"/>
                 <filter token="ECF.I.VERSION" value="${org.eclipse.ecf.identity}"/>
                 <filter token="ECF.P.FT.VERSION" value="${org.eclipse.ecf.provider.filetransfer}"/>
                 <filter token="ECF.SSL.VERSION" value="${org.eclipse.ecf.ssl}"/>
+                <filter token="ECF.VERSION" value="${org.eclipse.ecf}"/>
                 <filter token="EQUINOX.APP.VERSION" value="${org.eclipse.equinox.app}"/>
                 <filter token="EQUINOX.COMMON.VERSION" value="${org.eclipse.equinox.common}"/>
-                <filter token="EQUINOX.FRKA.VERSION" value="${org.eclipse.equinox.frameworkadmin}"/>
+                <filter token="EQUINOX.CONSOLE.SSH.VERSION" value="${org.eclipse.equinox.console.ssh}"/>
                 <filter token="EQUINOX.FRKA.E.VERSION" value="${org.eclipse.equinox.frameworkadmin.equinox}"/>
+                <filter token="EQUINOX.FRKA.VERSION" value="${org.eclipse.equinox.frameworkadmin}"/>
+                <filter token="EQUINOX.PFRCS.VERSION" value="${org.eclipse.equinox.preferences}"/>
+                <filter token="EQUINOX.REGISTRY.VERSION" value="${org.eclipse.equinox.registry}"/>
+                <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
+                <filter token="EQUINOX.SC.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
+                <filter token="EQUINOX.SECURITY.VERSION" value="${org.eclipse.equinox.security}"/>
+                <filter token="JOBS.VERSION" value="${org.eclipse.core.jobs}"/>
+                <filter token="LOGBACK.CLASSIC.VERSION" value="${ch.qos.logback.classic}"/>
+                <filter token="LOGBACK.CORE.VERSION" value="${ch.qos.logback.core}"/>
+                <filter token="LOGBACK.SLF4J.VERSION" value="${ch.qos.logback.slf4j}"/>
                 <filter token="P2.A.R.VERSION" value="${org.eclipse.equinox.p2.artifact.repository}"/>
                 <filter token="P2.CONSOLE.VERSION" value="${org.eclipse.equinox.p2.console}"/>
                 <filter token="P2.CORE.VERSION" value="${org.eclipse.equinox.p2.core}"/>
@@ -117,19 +154,69 @@
                 <filter token="P2.ENGINE.VERSION" value="${org.eclipse.equinox.p2.engine}"/>
                 <filter token="P2.GC.VERSION" value="${org.eclipse.equinox.p2.garbagecollector}"/>
                 <filter token="P2.JP.VERSION" value="${org.eclipse.equinox.p2.jarprocessor}"/>
-                <filter token="P2.METADATA.VERSION" value="${org.eclipse.equinox.p2.metadata}"/>
                 <filter token="P2.M.R.VERSION" value="${org.eclipse.equinox.p2.metadata.repository}"/>
-                <filter token="P2.PUBLISHER.VERSION" value="${org.eclipse.equinox.p2.publisher}"/>
+                <filter token="P2.METADATA.VERSION" value="${org.eclipse.equinox.p2.metadata}"/>
                 <filter token="P2.P.E.VERSION" value="${org.eclipse.equinox.p2.publisher.eclipse}"/>
+                <filter token="P2.PUBLISHER.VERSION" value="${org.eclipse.equinox.p2.publisher}"/>
                 <filter token="P2.REPOSITORY.VERSION" value="${org.eclipse.equinox.p2.repository}"/>
                 <filter token="P2.T.E.VERSION" value="${org.eclipse.equinox.p2.touchpoint.eclipse}"/>
-                <filter token="P2.T.N.VERSION" value="${org.eclipse.equinox.p2.touchpoint.natives}"/>
                 <filter token="P2.T.ECF.VERSION" value="${org.eclipse.equinox.p2.transport.ecf}"/>
-                <filter token="EQUINOX.PFRCS.VERSION" value="${org.eclipse.equinox.preferences}"/>
-                <filter token="EQUINOX.REGISTRY.VERSION" value="${org.eclipse.equinox.registry}"/>
-                <filter token="EQUINOX.SECURITY.VERSION" value="${org.eclipse.equinox.security}"/>
-                <filter token="EQUINOX.SC.VERSION" value="${org.eclipse.equinox.simpleconfigurator}"/>
-                <filter token="EQUINOX.SC.M.VERSION" value="${org.eclipse.equinox.simpleconfigurator.manipulator}"/>
+                <filter token="P2.T.N.VERSION" value="${org.eclipse.equinox.p2.touchpoint.natives}"/>
+                <filter token="JAVASSIST" value="${javassist.feature}"/>
+                <filter token="JAVAX.JMS" value="${javax.jms}"/>
+                <filter token="JSTL.IMPL" value="${javax.servlet.jsp.jstl.impl}"/>
+                <filter token="JSTL.API" value="${javax.servlet.jsp.jstl.api}"/>
+                <filter token="JAVAX.VALIDATION" value="${javax.validation.feature}"/>
+                <filter token="JAVAX.WS.RS" value="${javax.ws.rs}"/>
+                <filter token="SLF4J.JCL" value="${org.slf4j.jcl}"/>
+                <filter token="SLF4J.LOG4J" value="${org.slf4j.log4j}"/>
+                <filter token="QUARTZ" value="${org.quartz}"/>
+                <filter token="WB.COMMON" value="${org.apache.openwebbeans.ee.common}"/>
+                <filter token="WB.EE" value="${org.apache.openwebbeans.ee}"/>
+                <filter token="WB.EJB" value="${org.apache.openwebbeans.ejb}"/>
+                <filter token="WB.IMPL" value="${org.apache.openwebbeans.impl}"/>
+                <filter token="WB.SPI" value="${org.apache.openwebbeans.spi}"/>
+                <filter token="WB.WEB" value="${org.apache.openwebbeans.web}"/>
+                <filter token="COMMOMS.BEANUTILS" value="${org.apache.commons.beanutils}"/>
+                <filter token="COMMONS.CLI" value="${org.apache.commons.cli}"/>
+                <filter token="COMMONS.COLLECTIONS" value="${org.apache.commons.collections}"/>
+                <filter token="COMMONS.DBCP" value="${org.apache.commons.dbcp}"/>
+                <filter token="COMMONS.LANG" value="${org.apache.commons.lang}"/>
+                <filter token="COMMONS.POOL" value="${org.apache.commons.pool}"/>
+                <filter token="DERBY" value="${org.apache.derby.feature}"/>
+                <filter token="BVAL" value="${org.apache.bval}"/>
+                <filter token="G.CONNECTOR" value="${org.apache.geronimo.components.connector}"/>
+                <filter token="G.TRANSACTIONS" value="${org.apache.geronimo.components.transaction}"/>
+                <filter token="G.MANAGEMENT" value="${org.apache.geronimo.specs.j2ee.management}"/>
+                <filter token="G.OSGI.LOCATOR" value="${org.apache.geronimo.specs.osgi.locator}"/>
+                <filter token="G.OSGI.REGISTRY" value="${org.apache.geronimo.specs.osgi.registry}"/>
+                <filter token="CDI.API" value="${cdi.api}"/>
+                <filter token="OE.API" value="${org.apache.openejb.api.feature}"/>
+                <filter token="OE.CORE" value="${org.apache.openejb.core.feature}"/>
+                <filter token="OE.JAVAAGENT" value="${org.apache.openejb.javaagent.feature}"/>
+                <filter token="OE.JEE" value="${org.apache.openejb.jee.feature}"/>
+                <filter token="OE.LOADER" value="${org.apache.openejb.loader.feature}"/>
+                <filter token="JAVAX.WSDL" value="${javax.wsdl}"/>
+                <filter token="XB.ASM" value="${org.apache.xbean.asm}"/>
+                <filter token="XB.BUNDLEUTILS" value="${org.apache.xbean.bundleutils}"/>
+                <filter token="XB.FINDER" value="${org.apache.xbean.finder}"/>
+                <filter token="XB.NAMING" value="${org.apache.xbean.naming}"/>
+                <filter token="XB.REFLECT" value="${org.apache.xbean.reflect}"/>
+                <filter token="GEMINI.JPA" value="${org.eclipse.gemini.jpa}"/>
+                <filter token="EL.ANTLR" value="${org.eclipse.persistence.antlr}"/>
+                <filter token="EL.ASM" value="${org.eclipse.persistence.asm}"/>
+                <filter token="EL.CORE" value="${org.eclipse.persistence.core}"/>
+                <filter token="EL.JPA" value="${org.eclipse.persistence.jpa}"/>
+                <filter token="FACES.IMPL" value="${org.glassfish.com.sun.faces}"/>
+                <filter token="FACES.API" value="${org.glassfish.javax.faces}"/>
+                <filter token="JAVAX.INJECT" value="${javax.inject}"/>
+                <filter token="JAVAX.RESOURCE" value="${javax.resource}"/>
+                <filter token="JAVAX.SECURITY.AUTH" value="${javax.security.auth.message}"/>
+                <filter token="JAVAX.SECURITY.JACC" value="${javax.security.jacc}"/>
+                <filter token="JOTM" value="${org.ow2.jotm.jotm-core}"/>
+                <filter token="OSGI.ENTERPRISE" value="${osgi.enterprise}"/>
+                <filter token="SCANNOTATION" value="${scannotation}"/>
+                <filter token="JAVAX.EJB" value="${javax.ejb}"/>
 			</filterset>
 		</copy>
      </target>
@@ -184,12 +271,6 @@
             <param name="product.file.location" value="${p2.products.location}/nano-full/nano-full.product"/>
         </antcall>
         <echo message="Published nano-full product to ${p2.repository.dir}."/>
-        
-        <antcall target="p2.publish-product">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="product.file.location" value="${p2.products.location}/nano-full-noscripts/nano-full-noscripts.product"/>
-        </antcall>
-        <echo message="Published nano-full-noscripts product to ${p2.repository.dir}."/>
      </target>
      
      <target name="install-packages">
@@ -212,6 +293,10 @@
         <property name="common.resources" value="${nano.target.dir}/common_resources"/>
 		<ivy:resolve resolveId="copy.path" file="${nano.basedir}/lib-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/[artifact]_[revision].[ext]" conf="lib" type="jar"/>
+         
+        <property name="common.resources" value="${nano.target.dir}/common_resources"/>
+        <ivy:resolve resolveId="copy.path" file="${nano.basedir}/endorsed-ivy.xml" transitive="false"/>
+        <ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/endorsed/[artifact]_[revision].[ext]" conf="endorsed" type="jar"/>
 		
 		<mkdir dir="${common.resources}/configuration"/>
 		<mkdir dir="${common.resources}/pickup"/>
