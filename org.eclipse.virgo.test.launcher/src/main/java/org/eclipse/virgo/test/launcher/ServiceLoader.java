@@ -65,11 +65,14 @@ public final class ServiceLoader<T> {
         Set<T> results = new HashSet<T>();
         try {
             Enumeration<URL> serviceFiles = findServiceFiles(classLoader);
+            Set<Class<?>> implTypes = new HashSet<Class<?>>();
             while (serviceFiles.hasMoreElements()) {
                 URL url = (URL) serviceFiles.nextElement();
                 String implName = readImplementationClassName(url);
                 Class<?> cl = loadImplType(classLoader, implName);
-                results.add(createInstance(cl));
+                if (implTypes.add(cl)) {
+                    results.add(createInstance(cl));
+                }
             }
         } catch (IOException e) {
             throw new ServiceLoaderError("Unable to read config locations", e);

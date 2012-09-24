@@ -2,3 +2,4 @@ target
 ivy-cache
 integration-repo
 springsource-dm-server
+user-ivy.properties
