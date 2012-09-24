@@ -5,11 +5,11 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-3.0.0.v201103241009.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.beans/3.1.0.RELEASE/org.springframework.beans-3.1.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-3.1.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.core/3.1.0.RELEASE/org.springframework.core-3.1.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.web/3.1.0.RELEASE/org.springframework.web-3.1.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="WEB_IVY_CACHE/org.springframework/org.springframework.web.servlet/3.1.0.RELEASE/org.springframework.web.servlet-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/javax.servlet/javax.servlet/3.0.0.v201103241009/javax.servlet-3.0.0.v201103241009.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.beans/3.1.0.RELEASE/org.springframework.beans-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.core/3.1.0.RELEASE/org.springframework.core-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.web/3.1.0.RELEASE/org.springframework.web-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.web.servlet/3.1.0.RELEASE/org.springframework.web.servlet-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
