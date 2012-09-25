@@ -28,6 +28,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.eclipse.virgo.util.common.CaseInsensitiveMap;
+import org.eclipse.virgo.util.common.MapToDictionaryAdapter;
 import org.eclipse.virgo.util.osgi.manifest.BundleActivationPolicy;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleSymbolicName;
