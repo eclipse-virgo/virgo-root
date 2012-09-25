@@ -181,6 +181,10 @@ then
 		# Ensure that the tmp directory exists
 		mkdir -p $TMP_DIR
 
+        JAVA_OPTS="$JAVA_OPTS \
+                    -Xmx512m \
+                    -XX:MaxPermSize=512m"
+
 		cd $KERNEL_HOME; exec $JAVA_HOME/bin/java \
 			$JAVA_OPTS \
 			$DEBUG_OPTS \

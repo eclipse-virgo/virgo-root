@@ -167,6 +167,7 @@ rem ------------------------------
       set TMP_DIR="%KERNEL_HOME%\work\tmp"
       if not exist "%TMP_DIR%" mkdir "%TMP_DIR%"
 
+	set JAVA_OPTS=%JAVA_OPTS% -Xmx512m -XX:MaxPermSize=512m
     rem Run the server
   
       rem Marshall parameters
