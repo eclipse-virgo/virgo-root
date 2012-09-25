@@ -16,6 +16,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
@@ -28,6 +29,8 @@ import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.HashGenerator;
 import org.eclipse.virgo.repository.builder.ArtifactDescriptorBuilder;
 import org.eclipse.virgo.repository.builder.AttributeBuilder;
+import org.eclipse.virgo.util.common.CaseInsensitiveMap;
+import org.eclipse.virgo.util.common.MapToDictionaryAdapter;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleSymbolicName;
 import org.eclipse.virgo.util.osgi.manifest.ExportedPackage;
@@ -154,18 +157,32 @@ public final class BundleBridge implements ArtifactBridge {
      * @return the new dictionary or null if the provided <code>artifactDescriptor</code> was not created by this bridge
      */
     public static Dictionary<String, String> convertToDictionary(ArtifactDescriptor artifactDescriptor) {
+        Map<String, String> map = convertToMap(artifactDescriptor);
+        
+        return map == null ? null : new MapToDictionaryAdapter(map);
 
+    }
+    
+    /**
+     * Providing the <code>artifactDescriptor</code> was created by this bridge in the first place then all its
+     * attributes from the main section of the manifest are placed in to a case insensitive map and returned. If not then
+     * <code>null</code> is returned.
+     *
+     * @param artifactDescriptor to be converted
+     * @return the new map or null if the provided <code>artifactDescriptor</code> was not created by this bridge
+     */
+    public static Map<String, String> convertToMap(ArtifactDescriptor artifactDescriptor) {
         if (!BRIDGE_TYPE.equals(artifactDescriptor.getType())) {
             return null;
         }
 
-        Hashtable<String, String> dictionary = new Hashtable<String, String>();
+        CaseInsensitiveMap<String> map = new CaseInsensitiveMap<String>();
         for (Attribute attribute : artifactDescriptor.getAttributes()) {
             if (attribute.getKey().startsWith(RAW_HEADER_PREFIX)) {
-                dictionary.put(attribute.getKey().substring(RAW_HEADER_PREFIX.length()), attribute.getValue());
+                map.put(attribute.getKey().substring(RAW_HEADER_PREFIX.length()), attribute.getValue());
             }
         }
-        return dictionary;
+        return map;
     }
 
     private String applyBundleSymbolicName(ArtifactDescriptorBuilder artifactBuilder, BundleManifest bundleManifest) {
