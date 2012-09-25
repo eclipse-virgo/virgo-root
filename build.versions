@@ -2,7 +2,6 @@
 org.aspectj=1.6.12.RELEASE
 org.eclipse.virgo.medic=3.6.0.M01
 org.eclipse.virgo.util=3.6.0.M01
-org.eclipse.virgo.build.tools=1.3.0.RELEASE
 org.eclipse.gemini.blueprint=1.0.2.RELEASE
 org.slf4j=1.6.1
 
