@@ -1,7 +1,7 @@
 # Compile
 org.aspectj=1.6.12.RELEASE
-org.eclipse.virgo.medic=3.6.0.D-20120924151302
-org.eclipse.virgo.util=3.6.0.D-20120924150604
+org.eclipse.virgo.medic=3.6.0.M01
+org.eclipse.virgo.util=3.6.0.M01
 org.eclipse.virgo.build.tools=1.3.0.RELEASE
 org.eclipse.gemini.blueprint=1.0.2.RELEASE
 org.slf4j=1.6.1
@@ -20,4 +20,4 @@ org.eclipse.equinox.simpleconfigurator.manipulator=2.0.0.v20110808-1657
 #Test
 org.easymock=2.3.0
 org.junit=4.7.0
-org.eclipse.virgo.test=3.6.0.D-20120924151038
+org.eclipse.virgo.test=3.6.0.M01
