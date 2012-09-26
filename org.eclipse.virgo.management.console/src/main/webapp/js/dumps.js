@@ -172,9 +172,9 @@ var DumpViewer = function(){
 				if(bundles.length == 0){
 					bundleToDisplay = 1;
 				}else{
-					bundleToDisplay = bundles[0];
+					bundleToDisplay = bundles[0].identifier;
 				}
-				//new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundleToDisplay);
+				new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundleToDisplay);
 			});
 		});
 	};
@@ -229,21 +229,25 @@ var QuasiDataSource = function(dumpFolder){
 	
 	self.getUnresolvedBundleIds = function(callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getUnresolvedBundleIds/' + self.dumpFolder, function(response){
-			//console.log(response.value);
 			callback(response.value);
 		});
 	};
 	
 	self.updateData = function(callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/listBundles/' + self.dumpFolder, function(response){
-			console.log(response.value);
+			//console.log(response.value);
 			self.bundles = {};
-
 			$.each(response.value, function(index, item){
-				
+				self.bundles[item.identifier] = {	'SymbolicName': item.symbolicName,
+													'Version': item.version,
+													'Identifier': item.identifier,
+													'State': item.state,
+													'Region': item.region,
+													'Location': item.location,
+													'Fragment': item.fragment,
+													'ExportedPackages': item.exportedPackages,
+													'ImportedPackages': item.importedPackages};
 			});
-			
-			
 			callback();
 		});
 	};
@@ -251,17 +255,13 @@ var QuasiDataSource = function(dumpFolder){
 
 	self.updateBundle = function(bundleId, callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getBundle/' + self.dumpFolder + '/' + bundleId, function(response){
-			//console.log(response.value);
-
-			
+			console.log(response.value);
+			self.bundles[bundleId].ProvidedWires = response.value.providedWires;
+			self.bundles[bundleId].RequiredWires = response.value.requiredWires;
+			//self.bundles[bundleId].Capabilities = response.value.capabilities;
+			//self.bundles[bundleId].Requirements = response.value.requirements;
+			callback();
 		});
-		self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
-		self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
-		self.bundles[bundleId].Capabilities = response[0].value.Capabilities;
-		self.bundles[bundleId].Requirements = response[0].value.Requirements;
-		self.bundles[bundleId].RegisteredServices = response[1].value;
-		self.bundles[bundleId].ServicesInUse = response[2].value;
-		callback();
 	};
 
 };

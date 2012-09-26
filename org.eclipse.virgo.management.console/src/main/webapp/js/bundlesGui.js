@@ -396,15 +396,23 @@ var InfoBox = function(){
 		self.title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + ': ' + rawBundle.Version;
 		var infoBox = $('<ul></ul>');
 		infoBox.append($('<li>State - ' + rawBundle.State + '</li>'));
-		infoBox.append($('<li>StartLevel - ' + rawBundle.StartLevel + '</li>'));
+		if(rawBundle.StartLevel){
+			infoBox.append($('<li>StartLevel - ' + rawBundle.StartLevel + '</li>'));
+		}
 		infoBox.append($('<li>Region - ' + rawBundle.Region + '</li>'));
 		infoBox.append($('<li>Location - ' + rawBundle.Location + '</li>'));
-		infoBox.append($('<li>LastModified - ' + rawBundle.LastModified + '</li>'));
+		if(rawBundle.LastModified){
+			infoBox.append($('<li>LastModified - ' + rawBundle.LastModified + '</li>'));
+		}
 		infoBox.append($('<li>Is a fragment - ' + rawBundle.Fragment + '</li>'));
-		infoBox.append($('<li>PersistentlyStarted - ' + rawBundle.PersistentlyStarted + '</li>'));
-		infoBox.append($('<li>ActivationPolicyUsed - ' + rawBundle.ActivationPolicyUsed + '</li>'));
+		if(rawBundle.PersistentlyStarted){
+			infoBox.append($('<li>PersistentlyStarted - ' + rawBundle.PersistentlyStarted + '</li>'));
+		}
+		if(rawBundle.ActivationPolicyUsed){
+			infoBox.append($('<li>ActivationPolicyUsed - ' + rawBundle.ActivationPolicyUsed + '</li>'));
+		}
 		infoBox.append($('<li>Required - ' + rawBundle.Required + '</li>'));
-		if(rawBundle.ExportedPackages.length == 0){
+		if(!rawBundle.ExportedPackages || rawBundle.ExportedPackages.length == 0){
 			infoBox.append($('<li>No exported packages</li>'));
 		} else {
 			infoBox.append($('<li>Exported packages</li>'));
@@ -412,7 +420,7 @@ var InfoBox = function(){
 				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
 			});
 		}
-		if(rawBundle.ImportedPackages.length == 0){
+		if(!rawBundle.ImportedPackages || rawBundle.ImportedPackages.length == 0){
 			infoBox.append($('<li>No imported packages</li>'));
 		} else {
 			infoBox.append($('<li>Imported packages</li>'));

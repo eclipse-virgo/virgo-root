@@ -150,8 +150,8 @@ var GeminiDataSource = function(){
 		util.doBulkQuery(bundleQuery, function(response){
 			self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
 			self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
-			self.bundles[bundleId].Capabilities = response[0].value.Capabilities;
-			self.bundles[bundleId].Requirements = response[0].value.Requirements;
+//			self.bundles[bundleId].Capabilities = response[0].value.Capabilities;
+//			self.bundles[bundleId].Requirements = response[0].value.Requirements;
 			self.bundles[bundleId].RegisteredServices = response[1].value;
 			self.bundles[bundleId].ServicesInUse = response[2].value;
 			
