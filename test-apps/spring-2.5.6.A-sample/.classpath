@@ -7,6 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.springsource.server.ide.server.core.runtime.classpath/SpringSource dm Server (Runtime) v2.0"/>
-	<classpathentry kind="var" path="KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-2.5.6.A.jar" sourcepath="/KERNEL_IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-sources-2.5.6.A.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-2.5.6.A.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-sources-2.5.6.A.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
