@@ -41,17 +41,16 @@ var DumpViewer = function(){
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
 			dataType: 'json',
+			cache: false,
 			success: function (response){
 				self.displayDumpsResponse(response.value);
 				if(self.selectedDump){
 					// Look up the id of the selected dump again.
 					var dumpId = self.selectedDump.attr("id");
 					self.selectedDump = $('#' + dumpId);
-					
 					if (self.selectedDump){
 						$(self.selectedDump).addClass('selected-item');
 					}
-				
 				}
 				self.displaySelectedDump();
 			}
@@ -64,10 +63,7 @@ var DumpViewer = function(){
 			$.each(json, function(index, item){
 				var dumpListItem = $('<li />', {'class' : 'dump'});
 				dumpListItem.attr("id", item);
-				var label = $('<div />', {'class' : 'label'});
-				label.text(item);
-				label.click(dumpListItem, self.displayDumpEntries);
-				dumpListItem.append(label);
+				dumpListItem.append($('<div />', {'class' : 'label'}).text(item).click(dumpListItem, self.displayDumpEntries));
 				dumpListItem.append($('<div />', {'class' : 'delete'}).text("Delete").click(dumpListItem, self.deleteDump));
 				$('#dumps').append(dumpListItem);
 			});
@@ -97,6 +93,7 @@ var DumpViewer = function(){
 			$.ajax({
 				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
 				dataType: 'json',
+				cache: false,
 				success: function (response){
 					self.displaySelectedDumpResponse(response.value, self.selectedDump);
 				}
@@ -187,6 +184,7 @@ var DumpViewer = function(){
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
 			dataType: 'json',
+			cache: false,
 			success: function (response){
 				self.displayDumps();
 			}
@@ -199,6 +197,7 @@ var DumpViewer = function(){
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' +  dumpId, 
 			dataType: 'json',
+			cache: false,
 			success: function (response){
 				if(dumpListItem == self.selectedDump){
 					self.selectedDump = null;
