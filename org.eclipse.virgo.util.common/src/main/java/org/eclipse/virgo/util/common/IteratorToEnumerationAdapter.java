@@ -36,7 +36,6 @@ public class IteratorToEnumerationAdapter<T> implements Enumeration<T> {
 
     @Override
     public T nextElement() {
-        // TODO Auto-generated method stub
         return iterator.next();
     }
 

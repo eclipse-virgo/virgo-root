@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  */
 public class CaseInsensitiveMapTests {
-
+    
     @Test
     public void testClear() {
         CaseInsensitiveMap<Integer> m = new CaseInsensitiveMap<Integer>();
@@ -224,4 +224,14 @@ public class CaseInsensitiveMapTests {
         assertTrue((CaseInsensitiveMap.CaseInsensitiveKey.objectToKey(null)).equals(CaseInsensitiveMap.CaseInsensitiveKey.objectToKey(null)));
         CaseInsensitiveMap.CaseInsensitiveKey.objectToKey("t");
     }
+    
+    @Test
+    public void testConstructorFromMap() {
+        CaseInsensitiveMap<String> m = new CaseInsensitiveMap<String>();
+        m.put("a", "a");
+        CaseInsensitiveMap<String> n = new CaseInsensitiveMap<String>(m);
+        assertEquals(m, n);
+    }
+    
 }
+
