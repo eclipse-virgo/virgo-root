@@ -58,8 +58,16 @@ public class FileSystemDumpInspector implements DumpInspector {
 	@Override
 	public String[] getDumps() throws IOException {
 		File dumpDir = getDumpDirectory();
+		List<String> dumps = new ArrayList<String>();
 		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
-			return FileSystemUtils.list(dumpDir, this.logger);
+			String[] list = FileSystemUtils.list(dumpDir, this.logger);
+			for (String dumpFolderName : list) {
+				File dumpFolder = new File(dumpDir, dumpFolderName);
+				if(dumpFolder.exists() && dumpFolder.isDirectory()){
+					dumps.add(dumpFolderName);
+				}
+			}
+			return dumps.toArray(new String[dumps.size()]);
 		} else {
 			return new String[0];
 		}
