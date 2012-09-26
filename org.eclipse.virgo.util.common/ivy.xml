@@ -18,6 +18,7 @@
 
 	<dependencies>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
+		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
 	</dependencies>
 
 </ivy-module>
