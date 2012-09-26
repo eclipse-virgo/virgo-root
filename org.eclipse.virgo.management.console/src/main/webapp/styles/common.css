@@ -211,17 +211,14 @@ a:active, a.active {
  */
 
 .spinner-small {
-	background: url(../images/loader-small.gif) no-repeat;
-	width: 16px;
+	background: url(../images/loader-small.gif) no-repeat center center;
+ 	width: 16px;
 	height: 16px;
 	margin: 0 auto;
 }
 
 .spinner-large {
-	background: url(../images/loader-large.gif) no-repeat;
-	width: 48px;
-	height: 48px;
-	margin: 0 auto;
+	background: url(../images/loader-large.gif) no-repeat center center;
 }
 
 /*
@@ -236,6 +233,7 @@ a:active, a.active {
 }
 
 #content {
+	min-height: 400px;
 	padding: 0px 22px 40px 22px;
 }
 

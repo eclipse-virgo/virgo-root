@@ -160,10 +160,11 @@ var DumpViewer = function(){
 	
 	self.displayOSGiStateDumpEntry = function(dumpId){
 		$('#dump-item-content').empty();
-		$('#dump-item-content').append($('<div />', {id: 'bundle-canvas'}));
+		var bundleCanvas = $('<div />', {id: 'bundle-canvas'});
+		$('#dump-item-content').append(bundleCanvas);
 		var width = 1000;
 		var height = 562;
-		$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
+		bundleCanvas.css({'width' : width, 'height' : height + 18});
 		
 		var dataSource = new QuasiDataSource(self.dumpLocation + '!/' + dumpId);
 		dataSource.updateData(function(){
@@ -174,7 +175,7 @@ var DumpViewer = function(){
 				}else{
 					bundleToDisplay = bundles[0].identifier;
 				}
-				new LayoutManager(Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundleToDisplay);
+				new LayoutManager(bundleCanvas, Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundleToDisplay);
 			});
 		});
 	};
@@ -182,6 +183,7 @@ var DumpViewer = function(){
 	//CREATE AND DELETE DUMPS
 	
 	self.createDump = function(){
+		$('#dumps').append($('<div />', {'class' : 'spinner-small'}));
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
 			dataType: 'json',
@@ -189,7 +191,6 @@ var DumpViewer = function(){
 				self.displayDumps();
 			}
 		});
-		$('#dumps').append($('<div />', {'class' : 'spinner-small'}));
 	};
 
 	self.deleteDump = function(event){

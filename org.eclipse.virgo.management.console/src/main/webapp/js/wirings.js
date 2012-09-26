@@ -17,11 +17,12 @@ function pageinit() {
 	
 			var width = 900;
 			var height = 551;
-			$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
+			var bundleCanvas = $('#bundle-canvas');
+			bundleCanvas.css({'width' : width, 'height' : height + 18});
 			
 			var dataSource = new GeminiDataSource();
 			dataSource.updateData(function(){
-				layoutManager = new LayoutManager(Raphael('bundle-canvas', width, height), dataSource);
+				layoutManager = new LayoutManager(bundleCanvas, Raphael('bundle-canvas', width, height), dataSource);
 				new SideBar(layoutManager, dataSource).init();
 				util.pageReady();
 			});

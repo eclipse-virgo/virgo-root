@@ -10,7 +10,7 @@
 *   
 *******************************************************************************/
 
-var LayoutManager = function(paper, dataSource){
+var LayoutManager = function(bundleCanvas, paper, dataSource){
 
 	var self = this;
 
@@ -26,7 +26,9 @@ var LayoutManager = function(paper, dataSource){
 
 	self.bundleSpacing = 10; //Pixels to leave between bundles when rendering
 
-	self.paper = paper;	
+	self.bundleCanvas = bundleCanvas;
+	
+	self.paper = paper;
 	
 	self.setFocusListener = function(listener) {
 		self.focusListener = listener;
@@ -56,6 +58,7 @@ var LayoutManager = function(paper, dataSource){
 	
 	self.displayBundle = function(bundleId){
 		self.hideAll();
+		self.bundleCanvas.addClass('spinner-large');
 		self.focused = -1;
 		var bundle;
 		self.dataSource.updateBundle(bundleId, function(){
@@ -73,6 +76,7 @@ var LayoutManager = function(paper, dataSource){
 			}else{
 				self.renderServices(bundle);
 			}
+			self.bundleCanvas.removeClass('spinner-large');
 		});
 		if(self.focusListener){
 			self.focusListener(bundleId);
