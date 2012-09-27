@@ -7,4 +7,6 @@ integration-repo
 ivy-cache
 spring-build/lib/findbugs
 *.graffle
+user-ivy.properties
+
 
