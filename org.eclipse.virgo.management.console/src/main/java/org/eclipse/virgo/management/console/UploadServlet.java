@@ -13,8 +13,15 @@ package org.eclipse.virgo.management.console;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.openmbean.CompositeDataSupport;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,9 +42,13 @@ import org.slf4j.LoggerFactory;
  */
 public class UploadServlet extends HttpServlet {
 
+	private static final String[] DEPLOYMENT_IDENTITY_FIELDS = new String[]{"type", "symbolicName", "version"};
+
 	private static final int HTTP_RESPONSE_INTERNAL_SERVER_ERROR = 500;
 
     private static final String ORG_ECLIPSE_VIRGO_KERNEL_HOME = "org.eclipse.virgo.kernel.home";
+    
+    private static final String DEPLOYER_MBEAN_NAME = "org.eclipse.virgo.kernel:category=Control,type=Deployer";
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -45,6 +56,8 @@ public class UploadServlet extends HttpServlet {
 	
 	private static final Logger log = LoggerFactory.getLogger(UploadServlet.class);
 
+	private MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+	
 	private String serverHome = null;
 	
 	private BundleContext bundleContext = null;
@@ -73,10 +86,9 @@ public class UploadServlet extends HttpServlet {
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 		    response.setContentType("text/html");
-		    PrintWriter writer = response.getWriter();
-            writer.append("<ol id=\"uploadLocations\">");
 			@SuppressWarnings("unchecked")
 			List<FileItem> items = (List<FileItem>) upload.parseRequest(request);
+			List<File> uploadedFiles = new ArrayList<File>();
 			for (FileItem fileItem : items) {
 				if (!fileItem.isFormField()) {
 					String name = fileItem.getName();
@@ -84,16 +96,44 @@ public class UploadServlet extends HttpServlet {
 						File uploadedFile = new File(stagingDir, name);
 						fileItem.write(uploadedFile);
 						log.info(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
-						writer.append("<li>" + uploadedFile.getAbsolutePath() + "</li>");
+						uploadedFiles.add(uploadedFile);
 					}
 				}
 			}
-            writer.append("</ol>");
-			writer.close();
+			doDeployment(uploadedFiles, response);
 		} catch (Exception e) {
 		    log.error(e.toString());
 			response.sendError(HTTP_RESPONSE_INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private void doDeployment(List<File> uploadedFiles, HttpServletResponse response) throws MalformedObjectNameException, NullPointerException, IOException{
+		ObjectName objectName = new ObjectName(DEPLOYER_MBEAN_NAME);
+	    PrintWriter writer = response.getWriter();
+        writer.append("<ol id=\"uploadResults\">");
+        for (File file : uploadedFiles) {
+			URI uri = file.toURI();
+			try {
+				Object invoke = this.mBeanServer.invoke(objectName, "deploy", new Object[]{uri.toString()}, new String[]{String.class.getName()});
+				writer.append("<li>" + file.getName() + " deployed as " + getDeploymentIdentity(invoke) + "</li>");
+			} catch (Exception e) {
+				writer.append("<li>" + file.getName() + " failed to deploy '" + e.getMessage() + "'</li>");
+			}
+		}
+        writer.append("</ol>");
+		writer.close();
+	}
+	
+	private String getDeploymentIdentity(Object deploymentIdentity) {
+		StringBuilder builder = new StringBuilder();
+		if(deploymentIdentity instanceof CompositeDataSupport){
+			CompositeDataSupport deploymentIdentityInstance = (CompositeDataSupport) deploymentIdentity;
+			Object[] all = deploymentIdentityInstance.getAll(DEPLOYMENT_IDENTITY_FIELDS);
+			builder.append(all[0]);
+			builder.append(" - ").append(all[1]);
+			builder.append(": ").append(all[2]);
+		}
+		return builder.toString();
 	}
 
     private File createStagingDirectory() throws IOException {

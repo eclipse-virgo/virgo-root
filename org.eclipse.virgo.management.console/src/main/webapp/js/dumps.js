@@ -235,7 +235,7 @@ var QuasiDataSource = function(dumpFolder){
 	
 	self.updateData = function(callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/listBundles/' + self.dumpFolder, function(response){
-			//console.log(response.value);
+			console.log(response.value);
 			self.bundles = {};
 			$.each(response.value, function(index, item){
 				self.bundles[item.identifier] = {	'SymbolicName': item.symbolicName,

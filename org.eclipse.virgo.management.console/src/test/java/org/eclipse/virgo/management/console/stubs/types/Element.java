@@ -110,6 +110,9 @@ public class Element extends ParentStub {
     	CLICK_COUNT++;
     }
 
+    public void jsFunction_load() {
+    }
+
     public void jsFunction_submit() {
     	this.isSubmitted = true;
     }

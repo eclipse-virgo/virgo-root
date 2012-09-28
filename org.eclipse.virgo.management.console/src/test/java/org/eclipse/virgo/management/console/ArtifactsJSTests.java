@@ -72,19 +72,10 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		Element element4 = (Element) ((Function) scope.get("Element", scope)).construct(context, scope, new Object[]{"#uploadLocations"});
 		element3.setContentDocument(element4);
         Dollar.setDollarLookupResultForIds(new Scriptable[]{element3}, 1);
-		ScriptableObject.callMethod(uploadManager, "uploadComplete", new Object[]{});
+		ScriptableObject.callMethod(uploadManager, "deployComplete", new Object[]{});
 		assertFalse((Boolean) Context.jsToJava(ScriptableObject.getProperty(uploadManager, "uploading"), Boolean.class));
-		
-        readString("var URLs = ['artifact'];");
-        Scriptable URLs = (Scriptable) scope.get("URLs", scope);
+		assertTrue(alertMsg.startsWith("Deployment result"));
         
-        readString("var successFunction = function(response){};");
-        Function successFunction = (Function) scope.get("successFunction", scope);
-
-        readString("var failureFunction = function(xmlHttpRequest, textStatus, errorThrown){};");
-        Function failureFunction = (Function) scope.get("failureFunction", scope);
-        
-        ScriptableObject.callMethod(uploadManager, "deploy", new Object[]{URLs, successFunction, failureFunction});
 	}
 
 	@Test

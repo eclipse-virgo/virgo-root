@@ -14,6 +14,9 @@
  */
 function pageinit(){
 	uploadManager = new UploadManager();
+	$('#upload-target-id').load(uploadManager.deployComplete);
+	$('#add-upload-box').click(uploadManager.addUploadBox);
+	$('#minus-upload-box').click(uploadManager.minusUploadBox);
 	util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
 		tree = new Tree();
 		tree.setup(response.value, 'type');
@@ -42,7 +45,7 @@ var Tree = function() {
 		$.each(mbeans, function(index, mbean){
 			var artifact = new Artifact(util.readObjectName(mbean));
 			var artifactFilterValue = artifact[filter];
-			if(-1 == filterMatches.indexOf(artifactFilterValue)){
+			if(-1 == $.inArray(artifactFilterValue, filterMatches)){
 				filterMatches.push(artifactFilterValue);
 			};
 			
@@ -438,62 +441,21 @@ var UploadManager = function() {
 		$('#upload-list').append(self.getUploadFormElement('1'));
 	};
 	
-	this.uploadComplete = function(){
+	this.deployComplete = function(){
 		if(self.uploading){
-			self.uploading = false;
 			var iframe = $('#upload-target-id');
-			var locationLIs = $('#uploadLocations', iframe[0].contentDocument).children();
-			var URLs = new Array();
-		    $.each(locationLIs, function(i, locationLI){
-		    	var location = $(locationLI).text();
-		    	URLs.push('file:' + location);
+			var results = $('#uploadResults', iframe[0].contentDocument).children();
+			
+			var resultString = '';
+		    $.each(results, function(i, result){
+		    	resultString = resultString + '\n' + $(result).text();
 		    });
-		    var numURLs = URLs.length;
-		    var error = false;
-		    self.deploy(URLs, function(){
-		    	if (--numURLs == 0 && !error){
-		    		alert("Deployment successful");
-		    	}
-		    }, function(){
-		    	--numURLs;
-		    	error = true;
-		    });
-			self.resetForm();
+		    alert('Deployment result\n\n' + resultString);
+		    self.resetForm();
+			self.uploading = false;
 		}
 	};
-	
-	this.deploy = function(URLs, successFunction, failureFunction){
-		var artifact = URLs.shift();
-		var done = URLs.length == 0;
-		
-		var request = new Array();
-		request.push({
-			"type":"EXEC",
-			"mbean":"org.eclipse.virgo.kernel:category=Control,type=Deployer",
-			"operation":"deploy(java.lang.String)",
-			"arguments":[artifact]
-		});
-		
-		util.doBulkQuery(request, function(response){
-			var error = response[0].error;
-			if (error){
-				console.log(error);
-				alert(error);
-				failureFunction();
-			}else{
-				successFunction();
-			}
-		}, function(xmlHttpRequest, textStatus, errorThrown){
-			console.log(xmlHttpRequest, textStatus, errorThrown);
-			alert('Deployment failed \'' + textStatus + '\': ' + xmlHttpRequest + ' ' + errorThrown);
-			failureFunction();
-		});
-		
-		// Tail recursion instead of a loop. Variety is the spice of life.
-		if (!done){
-			self.deploy(URLs, successFunction, failureFunction);
-		}
-	};
+
 	
 	this.getUploadFormElement = function(number){
 		var uploadBox = $('<input />');

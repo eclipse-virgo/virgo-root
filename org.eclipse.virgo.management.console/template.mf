@@ -16,6 +16,6 @@ Import-Template:
  org.osgi.framework.*;version="0",
  org.osgi.service.*;version="0",
  org.osgi.util.tracker.*;version="0",
- javax.management;version="0",
+ javax.management.*;version="0",
  javax.security.*;version="0"
 Excluded-Exports: *
