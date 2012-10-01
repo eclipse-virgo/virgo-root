@@ -40,8 +40,8 @@ var Util = function(){
 	self.start = function(){
 		if(!self.starting && !self.started){
 			self.starting = true;
-			var spinnerElement = $('<div />');
-			self.spinner = spinnerElement.dialog({
+			self.spinnerElement = $('<div />');
+			self.spinner = self.spinnerElement.dialog({
 				modal: true,
 				dialogClass: 'spinner-large',
 				closeText: '',
@@ -50,7 +50,7 @@ var Util = function(){
 				closeOnEscape: false,
 				width: '48px',
 				close : function(){
-					spinnerElement.remove();
+					self.spinnerElement.remove();
 				}
 			});
 			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -74,7 +74,7 @@ var Util = function(){
 			self.started = true;
 			self.spinner.dialog('close');
 			self.spinner = undefined;
-			$('.spinner-large').remove();
+			self.spinnerElement.remove();
 		}
 	};
 

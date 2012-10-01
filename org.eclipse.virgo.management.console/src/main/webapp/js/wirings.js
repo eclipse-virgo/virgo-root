@@ -24,7 +24,7 @@ function pageinit() {
 			dataSource.updateData(function(){
 				layoutManager = new LayoutManager(bundleCanvas, Raphael('bundle-canvas', width, height), dataSource);
 				new SideBar(layoutManager, dataSource).init();
-				if(util.pageLocation){
+				if(util.pageLocation && util.pageLocation.length > 0){
 					layoutManager.displayBundle(util.pageLocation);
 				}
 				util.pageReady();
@@ -45,17 +45,21 @@ var SideBar = function(layoutManager, dataSource){
 	
 	self.layoutManager.setFocusListener(function(bundleId){
 		if(bundleId != self.focused){
-			self.focused = bundleId;
-			var rowIds = $('td:first-child', self.bundlesTable);
-			$.each(rowIds, function(index, rowId){
-				if($(rowId).text() == bundleId){
-					rowId.scrollIntoView(true);
-					$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
-					$(rowId).parent().addClass('table-tr-selected');
-				}
-			});
+			self.setFocused(bundleId);
 		}
 	});
+	
+	self.setFocused = function(bundleId){
+		self.focused = bundleId;
+		var rowIds = $('td:first-child', self.bundlesTable);
+		$.each(rowIds, function(index, rowId){
+			if($(rowId).text() == bundleId){
+				rowId.scrollIntoView(true);
+				$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
+				$(rowId).parent().addClass('table-tr-selected');
+			}
+		});
+	};
 	
 	self.init = function(){
 		var tRows = new Array();
@@ -72,6 +76,9 @@ var SideBar = function(layoutManager, dataSource){
 			selectable : self.clickEvent
 		});
 		$('#side-bar').append(self.bundlesTable);
+		if(util.pageLocation && util.pageLocation.length > 0){
+			self.setFocused(util.pageLocation);
+		}
 	};
 	
 	self.clickEvent = function(row){
@@ -156,7 +163,7 @@ var GeminiDataSource = function(){
 			self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
 			self.bundles[bundleId].RegisteredServices = response[1].value;
 			self.bundles[bundleId].ServicesInUse = response[2].value;
-			
+
 			callback();
 		});
 	};

@@ -57,29 +57,31 @@ var LayoutManager = function(bundleCanvas, paper, dataSource){
 	};
 	
 	self.displayBundle = function(bundleId){
-		self.hideAll();
-		self.bundleCanvas.addClass('spinner-large');
-		self.focused = -1;
-		var bundle;
-		self.dataSource.updateBundle(bundleId, function(){
-			if(self.bundles[bundleId]){
-				bundle = self.bundles[bundleId];
-			}else{
-				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], self.displayBundle);
-				self.bundles[bundleId] = bundle;
+		if(!isNaN(bundleId)){
+			self.hideAll();
+			self.bundleCanvas.addClass('spinner-large');
+			self.focused = -1;
+			var bundle;
+			self.dataSource.updateBundle(bundleId, function(){
+				if(self.bundles[bundleId]){
+					bundle = self.bundles[bundleId];
+				}else{
+					bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], self.displayBundle);
+					self.bundles[bundleId] = bundle;
+				}
+				self.focused = bundle;
+				bundle.move(Math.round(self.paper.width/2), Math.round(self.paper.height/2));
+				bundle.show();
+				if(self.relationshipType == 'wires'){
+					self.renderWires(bundle);
+				}else{
+					self.renderServices(bundle);
+				}
+				self.bundleCanvas.removeClass('spinner-large');
+			});
+			if(self.focusListener){
+				self.focusListener(bundleId);
 			}
-			self.focused = bundle;
-			bundle.move(Math.round(self.paper.width/2), Math.round(self.paper.height/2));
-			bundle.show();
-			if(self.relationshipType == 'wires'){
-				self.renderWires(bundle);
-			}else{
-				self.renderServices(bundle);
-			}
-			self.bundleCanvas.removeClass('spinner-large');
-		});
-		if(self.focusListener){
-			self.focusListener(bundleId);
 		}
 	};
 	
