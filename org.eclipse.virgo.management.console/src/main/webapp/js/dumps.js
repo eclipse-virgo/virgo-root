@@ -258,8 +258,6 @@ var QuasiDataSource = function(dumpFolder){
 			console.log(response.value);
 			self.bundles[bundleId].ProvidedWires = response.value.providedWires;
 			self.bundles[bundleId].RequiredWires = response.value.requiredWires;
-			//self.bundles[bundleId].Capabilities = response.value.capabilities;
-			//self.bundles[bundleId].Requirements = response.value.requirements;
 			callback();
 		});
 	};
