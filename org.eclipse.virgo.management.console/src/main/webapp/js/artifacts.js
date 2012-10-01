@@ -204,21 +204,30 @@ var Tree = function() {
 		fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
 		fxContainer.append(self.getArtifactAttribute(fullArtifact.state, 'state-' + fullArtifact.state));
 		
+		var spring = false;
 		$.each(fullArtifact.properties, function(key, value){
+			if(key == 'Spring'){
+				spring = true;
+				fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
+			}
 			if(value == 'true' || value == true){
-				if(key == 'Spring' || key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
+				if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
 					fxContainer.append(self.getArtifactAttribute(key, key));
 				} else {
 					fxContainer.append(self.getArtifactAttribute(key));
 				}
 			} else {
 				if(key == 'Bundle Id'){
-					fxContainer.append(self.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/explorer#' + value));
+					fxContainer.append(self.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/wirings#' + value));
 				} else {
 					fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
 				}
 			}
 		});
+		
+		if(spring == false){
+			fxContainer.append(self.getArtifactAttribute('No Spring', 'Spring'));
+		}
 		
 		var dependents = fullArtifact.dependents.sort(function(a, b){
 			return a.compare(b);
