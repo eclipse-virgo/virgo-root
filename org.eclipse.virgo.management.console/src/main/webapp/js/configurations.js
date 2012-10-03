@@ -101,7 +101,7 @@ var Configuration = function(pid, location, regionName, label){
 			
 		var propertiesTable = util.makeTable({ 
 			clazz: "config-table", 
-			headers: ['Key', 'Value'], 
+			headers: [{title: 'Property'}, {title: 'Value'}], 
 			rows: tableRows
 		});
 

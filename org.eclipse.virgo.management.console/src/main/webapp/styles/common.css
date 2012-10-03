@@ -459,3 +459,64 @@ td {
     color: #999;
     text-decoration: none;
 }
+
+/*
+ * INFO BOX
+ */
+ 
+
+.info-box {
+	background: #FFFFFF;
+	border: 3px solid #002F5E;
+	-moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+    z-index: 1500;
+    position:absolute;
+}
+
+.info-box .box-title-close {
+	float: right;
+	cursor: pointer;
+}
+
+.info-box .box-title {
+	font-weight: bold;
+	text-align: center;
+	color: #002F5E;
+	padding: 5px;
+	border-bottom: 1px solid #B6D9ED;
+}
+
+.info-box .box-content {
+    margin: 5px 0;
+    max-height: 300px;
+    overflow: auto;
+    padding: 0 5px;
+	min-width: 500px;
+}
+
+.info-box .section-title {
+	padding: 5px;
+	font-weight: bold;
+}
+
+.info-box .indent1 {
+	padding-left: 20px;
+}
+.info-box .indent2 {
+	padding-left: 40px;
+}
+
+.info-box .li-odd {
+	background: #E8F6FF;
+}
+
+.info-box li {
+	padding: 3px;
+}
+	
+.info-box li:hover {
+	background: #BAD9EC;
+}

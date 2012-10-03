@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.virgo.management.console;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
 import javax.script.ScriptException;
@@ -18,7 +20,9 @@ import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
+import sun.org.mozilla.javascript.internal.FunctionObject;
 import sun.org.mozilla.javascript.internal.Scriptable;
+import sun.org.mozilla.javascript.internal.ScriptableObject;
 
 /**
  *
@@ -29,13 +33,24 @@ public class BundlesGuiJSTests extends AbstractJSTests {
 	@Test
 	public void testConstructors() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
+
+		FunctionObject raphaelFunction = new FunctionObject("Raphael", BundlesGuiJSTests.class.getDeclaredMethod("raphael", String.class, int.class, int.class), scope);
+		ScriptableObject.putProperty(scope, "Raphael", raphaelFunction);
+		
 		readFile("src/main/webapp/js/bundlesGui.js");
 
-		((Function) scope.get("LayoutManager", scope)).construct(context, scope, new Object[]{null, null, null});
+		((Function) scope.get("LayoutManager", scope)).construct(context, scope, new Object[]{"DrawOnMe", 500, 600, null});
 		((Function) scope.get("Bundle", scope)).construct(context, scope, new Object[]{getTestPaper(), getTestRawBundle(), null});
 		((Function) scope.get("Relationship", scope)).construct(context, scope, new Object[]{getTestPaper(), getTestRawBundle(), getTestRawBundle(), null});
 		((Function) scope.get("InfoBox", scope)).construct(context, scope, new Object[]{});
 
+	}
+	
+	public static Object raphael(String element, int width, int height){
+		assertEquals("DrawOnMe", element);
+		assertEquals(500, width);
+		assertEquals(600, height);
+		return null;
 	}
 
 	private Scriptable getTestRawBundle() throws IOException{

@@ -237,6 +237,9 @@ var Util = function(){
 					var cell = $('*:nth-child(' + (index+1) + ')', tr);
 					return $(cell).text();
 				};
+				console.log(getText(tr1));
+				console.log(getText(tr2));
+				console.log(getText(tr1) - getText(tr2));
 				return getText(tr1) - getText(tr2);
 			};
 			
@@ -338,12 +341,62 @@ var Util = function(){
 		
 		return newTable;
 	};
+	
+};
 
-	/**
-	 * Create a new div element of the given class.
-	 */
-	self.makeDiv = function(clazz) {
-		return $('<div />', {'class' : clazz});
+/**
+ * 
+ */
+var InfoBox = function(properties){
+	
+	var self = this;
+	
+	self.isVisible = false;
+	
+	self.dialogBox = $('<div />').addClass(properties.name).addClass('info-box');
+	
+	self.title = $('<div />', {'class': 'box-title'}).text(properties.title);
+	self.dialogBox.append(self.title);
+
+	self.content = $('<div />', {'class': 'box-content'}).append(properties.content);
+	self.dialogBox.append(self.content);
+
+	var position = $('#content').position();
+	self.dialogBox.css({top: position.top + 80, left: position.left + 80});
+	
+	if(properties.modal){
+		
+	}
+	if(properties.closeable){
+		self.title.append($('<div />', {'class': 'box-title-close'}).append('x').click(function(){
+			self.hide();
+		}));
+	}
+	
+	self.dialogBox.draggable({  scroll: false, stack: '.info-box'});
+	
+	self.addInfoBox = function(newInfoBox){
+		$.each(newInfoBox.content.children(), function(index, item){
+			self.content.append(item);
+		});
+	};
+	
+	self.show = function(){
+		if(!self.isVisible){
+			$("li", self.dialogBox).removeClass('li-odd');
+			$("li:odd", self.dialogBox).addClass('li-odd');
+			$('body').append(self.dialogBox);
+			self.dialogBox.show();
+			self.isVisible = true;
+		}
+	};
+	
+	self.hide = function(){
+		if(self.isVisible){
+			self.dialogBox.detach();
+			self.dialogBox.hide();
+			self.isVisible = false;
+		}
 	};
 	
 };

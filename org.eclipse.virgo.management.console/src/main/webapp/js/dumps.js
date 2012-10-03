@@ -172,7 +172,7 @@ var DumpViewer = function(){
 				}else{
 					bundleToDisplay = bundles[0].identifier;
 				}
-				new LayoutManager(bundleCanvas, Raphael('bundle-canvas', width, height),  dataSource).displayBundle(bundleToDisplay);
+				new LayoutManager('bundle-canvas', width, height, dataSource).displayBundle(bundleToDisplay);
 			});
 		});
 	};

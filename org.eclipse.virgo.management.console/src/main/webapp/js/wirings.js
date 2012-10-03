@@ -17,12 +17,11 @@ function pageinit() {
 	
 			var width = 900;
 			var height = 551;
-			var bundleCanvas = $('#bundle-canvas');
-			bundleCanvas.css({'width' : width, 'height' : height + 18});
+			$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
 			
 			var dataSource = new GeminiDataSource();
 			dataSource.updateData(function(){
-				layoutManager = new LayoutManager(bundleCanvas, Raphael('bundle-canvas', width, height), dataSource);
+				layoutManager = new LayoutManager('bundle-canvas', width, height, dataSource);
 				new SideBar(layoutManager, dataSource).init();
 				if(util.pageLocation && util.pageLocation.length > 0){
 					layoutManager.displayBundle(util.pageLocation);
@@ -54,7 +53,9 @@ var SideBar = function(layoutManager, dataSource){
 		var rowIds = $('td:first-child', self.bundlesTable);
 		$.each(rowIds, function(index, rowId){
 			if($(rowId).text() == bundleId){
-				rowId.scrollIntoView(true);
+				//rowId.scrollIntoView(true);
+				$('#side-bar').scrollTop($(rowId).position().top);
+				
 				$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
 				$(rowId).parent().addClass('table-tr-selected');
 			}
