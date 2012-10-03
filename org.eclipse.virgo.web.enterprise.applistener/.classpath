@@ -3,6 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="var" path="VIRGO_INSTALL_FOLDER/plugins/org.apache.openejb.core_4.0.0.beta-2.jar"/>
+	<classpathentry kind="var" path="VIRGO_INSTALL_FOLDER/plugins/org.apache.openejb.core_4.0.0.beta-2_v201205260545.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
