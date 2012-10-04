@@ -487,6 +487,7 @@ td {
 	color: #002F5E;
 	padding: 5px;
 	border-bottom: 1px solid #B6D9ED;
+	cursor: move;
 }
 
 .info-box .box-content {
@@ -494,7 +495,10 @@ td {
     max-height: 300px;
     overflow: auto;
     padding: 0 5px;
-	min-width: 500px;
+	min-width: 400px;
+	max-width: 800px;
+	word-wrap: break-word;
+	word-break: break-all;
 }
 
 .info-box .section-title {

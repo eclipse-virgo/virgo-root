@@ -349,21 +349,13 @@ var InfoBox = function(properties){
 	var self = this;
 	
 	self.isVisible = false;
-	
 	self.dialogBox = $('<div />').addClass(properties.name).addClass('info-box');
-	
 	self.title = $('<div />', {'class': 'box-title'}).text(properties.title);
-	self.dialogBox.append(self.title);
-
 	self.content = $('<div />', {'class': 'box-content'}).append(properties.content);
+
+	self.dialogBox.append(self.title);
 	self.dialogBox.append(self.content);
 
-	var position = $('#content').position();
-	self.dialogBox.css({top: position.top + 80, left: position.left + 80});
-	
-	if(properties.modal){
-		
-	}
 	if(properties.closeable){
 		self.title.append($('<div />', {'class': 'box-title-close'}).append('x').click(function(){
 			self.hide();
@@ -372,8 +364,8 @@ var InfoBox = function(properties){
 	
 	self.dialogBox.draggable({  scroll: false, stack: '.info-box'});
 	
-	self.addInfoBox = function(newInfoBox){
-		$.each(newInfoBox.content.children(), function(index, item){
+	self.addContent = function(newContent){
+		$.each(newContent.children(), function(index, item){
 			self.content.append(item);
 		});
 	};
@@ -382,9 +374,34 @@ var InfoBox = function(properties){
 		if(!self.isVisible){
 			$("li", self.dialogBox).removeClass('li-odd');
 			$("li:odd", self.dialogBox).addClass('li-odd');
+			
+			var position = $('#content').position();
+			var infoBoxCount = $('.info-box').length;
+			var floorCount = Math.floor(infoBoxCount/10);
+			var xOffSet = floorCount * 250;
+			infoBoxCount = infoBoxCount - (floorCount * 10);
+			var zIndex = 0;
+			$.each($('.info-box'), function(index, otherInfoBox){
+				if($(otherInfoBox).css('z-index') >= zIndex){
+					zIndex = $(otherInfoBox).css('z-index') + 1;
+				}
+			});
+			self.dialogBox.css({left: position.left + 40 + xOffSet + (infoBoxCount*25), top: position.top + 40 + (infoBoxCount*25), 'z-index': zIndex});
+			self.dialogBox.show();	
 			$('body').append(self.dialogBox);
-			self.dialogBox.show();
 			self.isVisible = true;
+		}else{
+			var zIndex = self.dialogBox.css('z-index');
+			var needToMove = false;
+			$.each($('.info-box'), function(index, otherInfoBox){
+				if($(otherInfoBox).css('z-index') >= zIndex){
+					zIndex = $(otherInfoBox).css('z-index') + 1;
+					needToMove = true;
+				}
+			});
+			if(needToMove){
+				self.dialogBox.css({'z-index': zIndex});
+			}
 		}
 	};
 	

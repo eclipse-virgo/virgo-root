@@ -57,36 +57,31 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 			self.focused = NaN;
 			self.dataSource.updateBundle(bundleId, function(){
 				var bundle;
-				var rawBundle = self.dataSource.bundles[bundleId];
+				if(self.bundles[bundleId]){
+					bundle = self.bundles[bundleId];
+				}else{
+					bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], 5, 5, self.displayBundle);
+					self.bundles[bundleId] = bundle;
+				}
+
+				self.focused = bundleId;
 				
 				if(self.relationshipType == 'wires'){
-					self.renderWires(rawBundle);
+					self.renderWires(bundle);
 				}else{
-					self.renderServices(rawBundle);
+					self.renderServices(bundle);
 				}
 				
 				var middleX = Math.round(self.paper.width/2);
 				var middleY = Math.round(self.paper.height/2);
-				if(self.bundles[bundleId]){
-					bundle = self.bundles[bundleId];
-				}else{
-					bundle = new Bundle(self.paper, rawBundle, middleX, middleY, self.displayBundle);
-					self.bundles[bundleId] = bundle;
-				}
 				bundle.move(middleX - (bundle.boxWidth/2), middleY);
+				bundle.show();
+				self.bundleCanvas.scrollLeft(middleX - (self.minimumWidth/2));
 				
-				$.each(self.relationships, function(relationshipKey, relationship){
-					if(relationship.fromBundle == undefined){
-						relationship.fromBundle = bundle;
-					}else if(relationship.toBundle == undefined){
-						relationship.toBundle = bundle;
-					}
+				$.each(self.relationships, function(key, relationship){
 					relationship.display();
 				});
 				
-				self.focused = bundleId;
-				bundle.show();
-				self.bundleCanvas.scrollLeft(middleX - (self.minimumWidth/2));
 				self.bundleCanvas.removeClass('spinner-large');
 			});
 			if(self.focusListener){
@@ -95,64 +90,69 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		}
 	};
 	
-	self.renderWires = function(rawBundle){
+	self.renderWires = function(bundle){
 		var topRowBundleIds = {};
-		$.each(rawBundle.RequiredWires, function(index, wire){
+		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
 			topRowBundleIds[wire.ProviderBundleId] = self.getInfoBoxWithWire(wire);
 		});
-		var topWidth = self.renderBundleRow(topRowBundleIds, -239, rawBundle, true);
+		var topWidth = self.renderBundleRow(topRowBundleIds, -239, bundle, true);
 		var bottomRowBundleIds = {};
-		$.each(rawBundle.ProvidedWires, function(index, wire){
+		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
 			bottomRowBundleIds[wire.RequirerBundleId] = self.getInfoBoxWithWire(wire);
 		});
-		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, rawBundle, false);
+		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, bundle, false);
 		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
 		newWidth < self.minimumWidth ? self.paper.setSize(self.minimumWidth, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
 	};
 	
-	self.renderServices = function(rawBundle){
+	self.renderServices = function(bundle){
 		var topRowBundleIds = {};
-		$.each(rawBundle.ServicesInUse, function(index, service){
-			topRowBundleIds[service.BundleIdentifier] = self.getInfoBoxWithService(service, service.BundleIdentifier, rawBundle.Identifier);
+		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
+			topRowBundleIds[service.BundleIdentifier] = self.getInfoBoxWithService(service, service.BundleIdentifier, bundle.rawBundle.Identifier);
 		});
-		var topWidth = self.renderBundleRow(topRowBundleIds, -239, rawBundle, true);
+		var topWidth = self.renderBundleRow(topRowBundleIds, -239, bundle, true);
 		var bottomRowBundleIds = {};
-		$.each(rawBundle.RegisteredServices, function(index, service){
+		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
-				bottomRowBundleIds[bundleId] = self.getInfoBoxWithService(service, bundleId, rawBundle.Identifier);
+				bottomRowBundleIds[bundleId] = self.getInfoBoxWithService(service, bundleId, bundle.rawBundle.Identifier);
 			});
 		});
-		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, rawBundle, false);
+		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, bundle, false);
 		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
 		newWidth < self.minimumWidth ? self.paper.setSize(self.minimumWidth, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
 	};
 	
-	self.renderBundleRow = function(bundleIds, offset, focusedRawBundle, topRow){
+	self.renderBundleRow = function(bundleIds, offset, focusedBundle, topRow){
 		var yPos = (self.paper.height/2) + offset;
 		var xPos = this.bundleSpacing;
-		var bundle;
+		var focusedBundleId = focusedBundle.rawBundle.Identifier;
 		$.each(bundleIds, function(bundleId, relationshipInfoBox){
+			var bundle;
+			var existingBundle = false;
+			var releationshipKey = self.getRelationshipKey(bundleId, focusedBundleId);
 			if(self.bundles[bundleId]){
 				bundle = self.bundles[bundleId];
-				bundle.move(xPos, yPos);
-			}else{
+				existingBundle = true;
+			}else{ //New Bundle so we will definitely be adding it on this loop. 
 				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], xPos, yPos, self.displayBundle);
 				self.bundles[bundleId] = bundle;
 			}
-			var releationshipKey = self.getRelationshipKey(bundleId, focusedRawBundle.Identifier);
-			if(!bundle.isVisible || focusedRawBundle.Identifier != bundleId){
+			if(!bundle.isVisible && focusedBundleId != bundleId){// If the bundle is not visible and is not the focused bundle
 				var relationship;
 				if(topRow){
-					relationship = new Relationship(self.paper, bundle, undefined, relationshipInfoBox);
+					relationship = new Relationship(self.paper, bundle, focusedBundle, relationshipInfoBox);
 				}else{
-					relationship = new Relationship(self.paper, undefined, bundle, relationshipInfoBox);
+					relationship = new Relationship(self.paper, focusedBundle, bundle, relationshipInfoBox);
 				}
 				self.relationships[releationshipKey] = relationship;
+				if(existingBundle){
+					bundle.move(xPos, yPos);
+				}
 				bundle.show();
 				xPos = xPos + bundle.boxWidth + self.bundleSpacing;
 			} else {
 				var existingRelationship = self.relationships[releationshipKey];
-				if(bundle.rawBundle.Identifier == focusedRawBundle.Identifier){
+				if(bundle.rawBundle.Identifier == focusedBundleId){
 					if(existingRelationship){
 						existingRelationship.increaseCount(relationshipInfoBox);
 					}else{//Handle the first self relationship
@@ -161,12 +161,12 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 					}
 				} else {
 					var existingFromBundle = existingRelationship.fromBundle.rawBundle.Identifier;
-					if(topRow && focusedRawBundle.Identifier == existingFromBundle){// On the bottom row
+					if(!topRow && existingFromBundle == focusedBundleId){// On the bottom row
 						existingRelationship.increaseCount(relationshipInfoBox);
-					} else if(!topRow && bundle.rawBundle.Identifier == existingFromBundle){// On the top row
+					} else if(topRow && bundle.rawBundle.Identifier == existingFromBundle){// On the top row
 						existingRelationship.increaseCount(relationshipInfoBox); 
 					} else {
-						existingRelationship.increaseBackCount(relationshipInfoBox); //On the top row
+						existingRelationship.increaseBackCount(relationshipInfoBox); //On either row and its a back relationship
 					}
 				}
 			}
@@ -390,7 +390,7 @@ var Relationship = function(paper, fromBundle, toBundle, infoBox) {
 	self.fromBundle = fromBundle;
 	self.toBundle = toBundle;
 	self.infoBox = infoBox;
-	self.doubleEnded = false;
+	self.doubleEnded = 'none';
 
 	self.count = 1;
 	self.controlPointOffset = 90;
@@ -436,6 +436,7 @@ var Relationship = function(paper, fromBundle, toBundle, infoBox) {
 									',' + self.endPointControl.x + ',' + self.endPointControl.y + 
 									',' + self.endPoint.x + ',' + self.endPoint.y).attr({
 			'arrow-end' : 'block-wide-long',
+			'arrow-start': self.doubleEnded,
 			'stroke-width' : 3,
 			'stroke' : '#002F5E'
 		}).toBack();
@@ -468,14 +469,16 @@ var Relationship = function(paper, fromBundle, toBundle, infoBox) {
 		if(self.infoPointText){
 			self.infoPointText.attr({'text': self.count});
 		}
-		self.infoBox.addInfoBox(relationshipInfoBox);
+		self.infoBox.addContent(relationshipInfoBox.content);
 	};
 	
 	self.increaseBackCount = function(relationshipInfoBox) {
 		self.increaseCount(relationshipInfoBox);
-		if(!self.doubleEnded){
-			self.doubleEnded = true;
-			self.visual.attr({'arrow-start' : 'block-wide-long'});
+		if('none' == self.doubleEnded){
+			self.doubleEnded = 'block-wide-long';
+			if(self.visual){
+				self.visual.attr({'arrow-start': 'block-wide-long'});
+			}
 		}
 	};
 	
