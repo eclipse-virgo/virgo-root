@@ -283,18 +283,14 @@ public class LogController implements ConfigurationChangeListener {
     }
 
     private synchronized void updateLogConfiguration(Dictionary<String, Object> configuration) {
-        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
+        String logSysOutConfiguration = (String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT);
+        if (Boolean.valueOf(logSysOutConfiguration)) {
             delegatingSysOutRegistration = publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE);
             sysOutRegistration = publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT);
             
             System.setOut(wrapPrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
         } else {
-            if (ConfigurationProvider.LOG_TEE_SYSSTREAMS.equals((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
-                delegatingSysOutRegistration = publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE);
-                sysOutRegistration = publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT);
-                
-                System.setOut(decoratePrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
-            } else {
+            if (Boolean.FALSE.toString().equals(logSysOutConfiguration)) {
                 if (delegatingSysOutRegistration != null) {
                     registrationTracker.unregister(delegatingSysOutRegistration);
                     delegatingSysOutRegistration = null;
@@ -304,21 +300,26 @@ public class LogController implements ConfigurationChangeListener {
                     sysOutRegistration = null;
                 }
                 System.setOut((PrintStream) delegatingSysOut);
+            } else {
+                delegatingSysOutRegistration = publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE);
+                sysOutRegistration = publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT);
+
+                System.setOut(decoratePrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
+
+                if (!ConfigurationProvider.LOG_TEE_SYSSTREAMS.equals(logSysOutConfiguration)) {
+                    System.out.println("Invalid value '" + logSysOutConfiguration + "' for configuration key '" + ConfigurationProvider.KEY_LOG_WRAP_SYSOUT + "'. Valid values are 'true | tee | false'. Defaulted to 'tee'.");
+                }
             }
         }
 
-        if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
+        String logSysErrConfiguration = (String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR);
+        if (Boolean.valueOf(logSysErrConfiguration)) {
             delegatingSysErrRegistration = publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE);
             sysErrRegistration = publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR);
             
             System.setErr(wrapPrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
         } else {
-            if (ConfigurationProvider.LOG_TEE_SYSSTREAMS.equals((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
-                delegatingSysErrRegistration = publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE);
-                sysErrRegistration = publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR);
-                
-                System.setErr(decoratePrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
-            } else {
+            if (Boolean.FALSE.toString().equals(logSysErrConfiguration)) {
                 if (delegatingSysErrRegistration != null) {
                     registrationTracker.unregister(delegatingSysErrRegistration);
                     delegatingSysErrRegistration = null;
@@ -328,6 +329,15 @@ public class LogController implements ConfigurationChangeListener {
                     sysErrRegistration = null;
                 }
                 System.setErr((PrintStream) delegatingSysErr);
+            } else {
+                delegatingSysErrRegistration = publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE);
+                sysErrRegistration = publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR);
+
+                System.setErr(decoratePrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
+                
+                if (!ConfigurationProvider.LOG_TEE_SYSSTREAMS.equals(logSysErrConfiguration)) {
+                    System.err.println("Invalid value '" + logSysErrConfiguration + "' for configuration key '" + ConfigurationProvider.KEY_LOG_WRAP_SYSERR + "'. Valid values are 'true | tee | false'. Defaulted to 'tee'.");
+                }
             }
         }
 

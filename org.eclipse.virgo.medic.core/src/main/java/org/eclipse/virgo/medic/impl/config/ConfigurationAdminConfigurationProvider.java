@@ -25,8 +25,6 @@ import org.osgi.service.cm.ConfigurationListener;
 
 public final class ConfigurationAdminConfigurationProvider implements ConfigurationProvider, ConfigurationListener {
     
-    private static final String TEE_MODE = ConfigurationProvider.LOG_TEE_SYSSTREAMS;
-
     private static final String CONFIG_ADMIN_PID = "org.eclipse.virgo.medic";
 
     private static final Dictionary<String, Object> DEFAULT_CONFIG = createDefaultConfiguration();
@@ -86,15 +84,8 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     private static Dictionary<String, Object> createDefaultConfiguration() {
         Dictionary<String, Object> configuration = new Hashtable<String, Object>();
         configuration.put(KEY_DUMP_ROOT_DIRECTORY, ".");
-        
-        String defaultConfiguration = System.getProperty("org.eclipse.virgo.default.log.wrapSystemStreams");
-        if (defaultConfiguration != null && !defaultConfiguration.isEmpty() && defaultConfiguration.equals(TEE_MODE)) {
-            configuration.put(KEY_LOG_WRAP_SYSOUT, TEE_MODE);
-            configuration.put(KEY_LOG_WRAP_SYSERR, TEE_MODE);
-        } else {
             configuration.put(KEY_LOG_WRAP_SYSOUT, Boolean.toString(Boolean.TRUE));
             configuration.put(KEY_LOG_WRAP_SYSERR, Boolean.toString(Boolean.TRUE));
-        }
         return configuration;
     }    
     
