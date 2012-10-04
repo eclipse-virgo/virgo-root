@@ -237,9 +237,6 @@ var Util = function(){
 					var cell = $('*:nth-child(' + (index+1) + ')', tr);
 					return $(cell).text();
 				};
-				console.log(getText(tr1));
-				console.log(getText(tr2));
-				console.log(getText(tr1) - getText(tr2));
 				return getText(tr1) - getText(tr2);
 			};
 			

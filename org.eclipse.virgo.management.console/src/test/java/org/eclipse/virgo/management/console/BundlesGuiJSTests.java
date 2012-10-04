@@ -42,8 +42,6 @@ public class BundlesGuiJSTests extends AbstractJSTests {
 		((Function) scope.get("LayoutManager", scope)).construct(context, scope, new Object[]{"DrawOnMe", 500, 600, null});
 		((Function) scope.get("Bundle", scope)).construct(context, scope, new Object[]{getTestPaper(), getTestRawBundle(), null});
 		((Function) scope.get("Relationship", scope)).construct(context, scope, new Object[]{getTestPaper(), getTestRawBundle(), getTestRawBundle(), null});
-		((Function) scope.get("InfoBox", scope)).construct(context, scope, new Object[]{});
-
 	}
 	
 	public static Object raphael(String element, int width, int height){
