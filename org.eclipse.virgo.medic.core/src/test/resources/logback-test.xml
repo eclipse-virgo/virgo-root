@@ -47,4 +47,13 @@
     	<appender-ref ref="STDOUT"/>
   	</logger>
   	
+  	<logger name="org.eclipse.virgo.medic.log.impl.TeeLoggingPrintStreamWrapperTests">
+  		<appender name="capturingAppender" class="org.eclipse.virgo.medic.log.impl.CapturingAppender">
+    		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      			<Pattern>%msg</Pattern>
+    		</encoder>
+    	</appender>
+    	<appender-ref ref="STDOUT"/>
+  	</logger>
+  	
 </configuration>

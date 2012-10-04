@@ -199,6 +199,11 @@ public class LogController implements ConfigurationChangeListener {
         return wrapper;
     }
     
+    private PrintStream decoratePrintStream(PrintStream printStream, String loggerName, LoggingLevel loggingLevel, ExecutionStackAccessor stackAccessor, ConfigurationProvider configurationProvider, String configurationProperty) {
+        TeeLoggingPrintStreamWrapper decorator = new TeeLoggingPrintStreamWrapper(printStream, loggerName, loggingLevel, stackAccessor, configurationProvider, configurationProperty);
+        return decorator;
+    }
+    
     private ServiceRegistration<PrintStream> publishPrintStream(PrintStream printStream, String name) {
     	Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("org.eclipse.virgo.medic.log.printStream", name);
@@ -284,15 +289,22 @@ public class LogController implements ConfigurationChangeListener {
             
             System.setOut(wrapPrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
         } else {
-            if (delegatingSysOutRegistration != null) {
-                registrationTracker.unregister(delegatingSysOutRegistration);
-                delegatingSysOutRegistration = null;
+            if (ConfigurationProvider.LOG_TEE_SYSSTREAMS.equals((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
+                delegatingSysOutRegistration = publishDelegatingPrintStream(delegatingSysOut, LOGGER_NAME_SYSOUT_DELEGATE);
+                sysOutRegistration = publishPrintStream(this.sysOut, LOGGER_NAME_SYSOUT);
+                
+                System.setOut(decoratePrintStream(System.out, LOGGER_NAME_SYSOUT, LoggingLevel.INFO, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSOUT));
+            } else {
+                if (delegatingSysOutRegistration != null) {
+                    registrationTracker.unregister(delegatingSysOutRegistration);
+                    delegatingSysOutRegistration = null;
+                }
+                if (sysOutRegistration != null) {
+                    registrationTracker.unregister(sysOutRegistration);
+                    sysOutRegistration = null;
+                }
+                System.setOut((PrintStream) delegatingSysOut);
             }
-            if (sysOutRegistration != null) {
-                registrationTracker.unregister(sysOutRegistration);
-                sysOutRegistration = null;
-            }
-            System.setOut((PrintStream)delegatingSysOut);
         }
 
         if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSERR))) {
@@ -301,15 +313,22 @@ public class LogController implements ConfigurationChangeListener {
             
             System.setErr(wrapPrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
         } else {
-            if (delegatingSysErrRegistration != null) {
-                registrationTracker.unregister(delegatingSysErrRegistration);
-                delegatingSysErrRegistration = null;
+            if (ConfigurationProvider.LOG_TEE_SYSSTREAMS.equals((String)configuration.get(ConfigurationProvider.KEY_LOG_WRAP_SYSOUT))) {
+                delegatingSysErrRegistration = publishDelegatingPrintStream(delegatingSysErr, LOGGER_NAME_SYSERR_DELEGATE);
+                sysErrRegistration = publishPrintStream(this.sysErr, LOGGER_NAME_SYSERR);
+                
+                System.setErr(decoratePrintStream(System.err, LOGGER_NAME_SYSERR, LoggingLevel.ERROR, stackAccessor, configurationProvider, ConfigurationProvider.KEY_LOG_WRAP_SYSERR));
+            } else {
+                if (delegatingSysErrRegistration != null) {
+                    registrationTracker.unregister(delegatingSysErrRegistration);
+                    delegatingSysErrRegistration = null;
+                }
+                if (sysErrRegistration != null) {
+                    registrationTracker.unregister(sysErrRegistration);
+                    sysErrRegistration = null;
+                }
+                System.setErr((PrintStream) delegatingSysErr);
             }
-            if (sysErrRegistration != null) {
-                registrationTracker.unregister(sysErrRegistration);
-                sysErrRegistration = null;
-            }
-            System.setErr((PrintStream)delegatingSysErr);
         }
 
         if (Boolean.valueOf((String)configuration.get(ConfigurationProvider.KEY_ENABLE_JUL_CONSOLE_HANDLER))) {

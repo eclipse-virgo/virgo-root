@@ -21,6 +21,8 @@ public interface ConfigurationProvider {
     
     public static final String KEY_LOG_WRAP_SYSERR = "log.wrapSysErr";
     
+    public static final String LOG_TEE_SYSSTREAMS = "tee";
+    
     public static final String KEY_LOG_DUMP_BUFFERSIZE = "log.dump.bufferSize";
     
     public static final String KEY_LOG_DUMP_LEVEL = "log.dump.level";
