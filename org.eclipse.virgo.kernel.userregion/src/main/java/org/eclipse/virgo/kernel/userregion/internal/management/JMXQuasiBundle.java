@@ -13,7 +13,6 @@ package org.eclipse.virgo.kernel.userregion.internal.management;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
@@ -44,7 +43,7 @@ public final class JMXQuasiBundle extends JMXQuasiMinimalBundle{
 		List<QuasiBundle> fragments = this.quasiBundle.getFragments();
 		if(fragments != null && fragments.size() > 0){
 			for (QuasiBundle fragment : fragments) {
-				wires.add(new JMXQuasiWire(this.quasiBundle, fragment, BundleDescription.HOST_NAMESPACE));
+				wires.add(new JMXQuasiWire(this.quasiBundle, fragment));
 			}
 		}
 		return wires.toArray(new JMXQuasiWire[wires.size()]);
@@ -59,13 +58,13 @@ public final class JMXQuasiBundle extends JMXQuasiMinimalBundle{
 		List<QuasiRequiredBundle> requiredBundles = this.quasiBundle.getRequiredBundles();
 		if(requiredBundles != null && requiredBundles.size() > 0){
 			for (QuasiRequiredBundle quasiRequiredBundle : requiredBundles) {
-				wires.add(new JMXQuasiWire(quasiRequiredBundle, this.quasiBundle, BundleDescription.BUNDLE_NAMESPACE));
+				wires.add(new JMXQuasiWire(quasiRequiredBundle, this.quasiBundle));
 			}
 		}
 		List<QuasiBundle> hosts = this.quasiBundle.getHosts();
 		if(hosts != null && hosts.size() > 0){
 			for (QuasiBundle host : hosts) {
-				wires.add(new JMXQuasiWire(host, this.quasiBundle, BundleDescription.HOST_NAMESPACE));
+				wires.add(new JMXQuasiWire(host, this.quasiBundle));
 			}
 		}
 		return wires.toArray(new JMXQuasiWire[wires.size()]);

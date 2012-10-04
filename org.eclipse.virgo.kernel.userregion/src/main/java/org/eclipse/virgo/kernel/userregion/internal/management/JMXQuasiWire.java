@@ -12,6 +12,7 @@ package org.eclipse.virgo.kernel.userregion.internal.management;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
@@ -26,26 +27,26 @@ public class JMXQuasiWire {
 	
 	private final long requirerId;
 	
-	private final Map<String, Object> bundleCapabilityAttributes;
+	private final Map<String, String> bundleCapabilityAttributes;
 	
-	private final Map<String, Object> bundleCapabilityDirectives;
+	private final Map<String, String> bundleCapabilityDirectives;
 	
-	private final Map<String, Object> bundleRequirementAttributes;
+	private final Map<String, String> bundleRequirementAttributes;
 	
-	private final Map<String, Object> bundleRequirementDirectives;
+	private final Map<String, String> bundleRequirementDirectives;
 	
 	public JMXQuasiWire(QuasiImportPackage quasiImportPackage) {
 		this.namespace = BundleDescription.PACKAGE_NAMESPACE;
 		this.providerId = quasiImportPackage.getProvider().getExportingBundle().getBundleId();
 		this.requirerId = quasiImportPackage.getImportingBundle().getBundleId();
-		this.bundleCapabilityAttributes = quasiImportPackage.getProvider().getAttributes();
-		this.bundleCapabilityDirectives = quasiImportPackage.getProvider().getDirectives();
-		this.bundleRequirementAttributes = quasiImportPackage.getAttributes();
-		this.bundleRequirementDirectives = quasiImportPackage.getDirectives();
+		this.bundleCapabilityAttributes = this.stringifyMap(quasiImportPackage.getProvider().getAttributes());
+		this.bundleCapabilityDirectives = this.stringifyMap(quasiImportPackage.getProvider().getDirectives());
+		this.bundleRequirementAttributes = this.stringifyMap(quasiImportPackage.getAttributes());
+		this.bundleRequirementDirectives = this.stringifyMap(quasiImportPackage.getDirectives());
 	}
 	
-	public JMXQuasiWire(QuasiBundle provider, QuasiBundle requirer, String hostNamespace) {
-		this.namespace = hostNamespace;
+	public JMXQuasiWire(QuasiBundle provider, QuasiBundle requirer) {
+		this.namespace = BundleDescription.HOST_NAMESPACE;
 		this.providerId = provider.getBundleId();
 		this.requirerId = requirer.getBundleId();
 		this.bundleCapabilityAttributes = this.getProperties();
@@ -54,8 +55,8 @@ public class JMXQuasiWire {
 		this.bundleRequirementDirectives = this.getProperties();
 	}
 
-	public JMXQuasiWire(QuasiRequiredBundle provider,QuasiBundle requirer, String bundleNamespace) {
-		this.namespace = bundleNamespace;
+	public JMXQuasiWire(QuasiRequiredBundle provider,QuasiBundle requirer) {
+		this.namespace = BundleDescription.BUNDLE_NAMESPACE;
 		QuasiBundle quasiProvider = provider.getProvider();
 		if(quasiProvider == null){
 			this.providerId = -1l;
@@ -63,42 +64,50 @@ public class JMXQuasiWire {
 			this.providerId = quasiProvider.getBundleId();
 		}
 		this.requirerId = requirer.getBundleId();
-		this.bundleCapabilityAttributes = provider.getAttributes();
-		this.bundleCapabilityDirectives = provider.getDirectives();
+		this.bundleCapabilityAttributes = this.stringifyMap(provider.getAttributes());
+		this.bundleCapabilityDirectives = this.stringifyMap(provider.getDirectives());
 		this.bundleRequirementAttributes = this.getProperties(new String[]{"Required-Bundle", provider.getRequiredBundleName()}, new String[]{"Version-Constraint", provider.getVersionConstraint().toString()});
 		this.bundleRequirementDirectives = this.getProperties();
 	}
 
-	public final long RequirerBundleId(){
+	public final long getRequirerBundleId(){
 		return this.requirerId;
 	}
 	
-	public final long ProviderBundleId(){
+	public final long getProviderBundleId(){
 		return this.providerId;
 	}
 	
-	public final String Namespace(){
+	public final String getNamespace(){
 		return this.namespace;
 	}
 	
-	public final Map<String, Object> BundleCapabilityAttributes(){
+	public final Map<String, String> getBundleCapabilityAttributes(){
 		return this.bundleCapabilityAttributes;
 	}
 
-	public final Map<String, Object> BundleCapabilityDirectives(){
+	public final Map<String, String> getBundleCapabilityDirectives(){
 		return this.bundleCapabilityDirectives;
 	}
 	
-	public final Map<String, Object> BundleRequirementAttributes(){
+	public final Map<String, String> getBundleRequirementAttributes(){
 		return this.bundleRequirementAttributes;
 	}
 	
-	public final Map<String, Object> BundleRequirementDirectives(){
+	public final Map<String, String> getBundleRequirementDirectives(){
 		return this.bundleRequirementDirectives;
 	}
 	
-	private final Map<String, Object> getProperties(String[]... strings){
-		Map<String, Object> properties = new HashMap<String, Object>();
+	private Map<String, String> stringifyMap(Map<String, Object> map){
+		Map<String, String> properties = new HashMap<String, String>();
+		for(Entry<String, Object> entry: map.entrySet()){
+			properties.put(entry.getKey(), entry.getValue().toString());
+		}
+		return properties;
+	}
+	
+	private Map<String, String> getProperties(String[]... strings){
+		Map<String, String> properties = new HashMap<String, String>();
 		for (int i = 0; i < strings.length; i++) {
 			properties.put(strings[i][0], strings[i][1]);
 		}
