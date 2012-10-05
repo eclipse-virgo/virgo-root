@@ -157,7 +157,9 @@ var DumpViewer = function(){
 	
 	self.displayOSGiStateDumpEntry = function(dumpId){
 		$('#dump-item-content').empty();
+		var controls = $('<div />', {id: 'gui-controls'});
 		var bundleCanvas = $('<div />', {id: 'bundle-canvas'});
+		$('#dump-item-content').append(controls);
 		$('#dump-item-content').append(bundleCanvas);
 		var width = 1000;
 		var height = 562;
@@ -166,13 +168,18 @@ var DumpViewer = function(){
 		var dataSource = new QuasiDataSource(self.dumpLocation + '!/' + dumpId);
 		dataSource.updateData(function(){
 			dataSource.getUnresolvedBundleIds(function(bundles){
-				var bundleToDisplay;
-				if(bundles.length == 0){
-					bundleToDisplay = 1;
+				layoutManager = new LayoutManager('bundle-canvas', width, height, dataSource);
+				if(bundles.length < 1){
+					controls.append($('<div />').text('There were no unresolved bundles at the time of this state dump.'));
+					layoutManager.displayBundle(5);
 				}else{
-					bundleToDisplay = bundles[0].identifier;
+					$.each(bundles, function(index, unresolvedBundle){
+						var displayLink = $('<div />').text('Bundle ' + unresolvedBundle.identifier + ' unresolved.').click(unresolvedBundle.identifier, layoutManager.displayBundle);
+						var cause = $('<div />', {'class': 'unresolved-bundle-cause'}).text(unresolvedBundle.description);
+						controls.append($('<div />', {'class': 'unresolved-bundle'}).append(displayLink).append(cause));
+					});
+					layoutManager.displayBundle(bundles[0].identifier);
 				}
-				new LayoutManager('bundle-canvas', width, height, dataSource).displayBundle(bundleToDisplay);
 			});
 		});
 	};
@@ -256,10 +263,33 @@ var QuasiDataSource = function(dumpFolder){
 	self.updateBundle = function(bundleId, callback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getBundle/' + self.dumpFolder + '/' + bundleId, function(response){
 			console.log(response.value);
-			self.bundles[bundleId].ProvidedWires = response.value.providedWires;
-			self.bundles[bundleId].RequiredWires = response.value.requiredWires;
+			self.bundles[bundleId].ProvidedWires = self.processWires(response.value.providedWires);
+			self.bundles[bundleId].RequiredWires = self.processWires(response.value.requiredWires);
 			callback();
 		});
+	};
+	
+	self.processWires = function(badlyFormattedWires){
+		var wellFormattedWires = new Array();
+		$.each(badlyFormattedWires, function(index, badlyFormattedWire){
+			wellFormattedWires.push({ProviderBundleId: badlyFormattedWire.providerBundleId, 
+									 RequirerBundleId: badlyFormattedWire.requirerBundleId, 
+									 BundleRequirement: {Namespace: badlyFormattedWire.namespace,
+										 				 Attributes: self.processProperties(badlyFormattedWire.bundleRequirementAttributes),
+										 				 Directives: self.processProperties(badlyFormattedWire.bundleRequirementDirectives)},
+									 BundleCapability: {Namespace: badlyFormattedWire.namespace,
+										 				 Attributes: self.processProperties(badlyFormattedWire.bundleCapabilityAttributes),
+						 				 				 Directives: self.processProperties(badlyFormattedWire.bundleCapabilityDirectives)}});
+		});
+		return wellFormattedWires;
+	};
+	
+	self.processProperties = function(wellFormattedProperties){
+		var specFormattedProperties = {};
+		$.each(wellFormattedProperties, function(key, value){
+			specFormattedProperties[key] = {'Key': key, 'Value': value};
+		});
+		return specFormattedProperties;
 	};
 
 };

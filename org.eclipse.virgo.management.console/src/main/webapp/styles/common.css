@@ -497,6 +497,7 @@ td {
     padding: 0 5px;
 	min-width: 400px;
 	max-width: 800px;
+	white-space: pre-wrap;
 	word-wrap: break-word;
 	word-break: break-all;
 }

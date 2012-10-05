@@ -212,6 +212,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	};
 	
 	self.getInfoBoxWithWire = function(wire){
+		console.log(wire);
 		var name = 'wire' + wire.ProviderBundleId + '-' + wire.RequirerBundleId;
 		var title = 'Wire(s) between Bundles ' + wire.ProviderBundleId + ' and ' + wire.RequirerBundleId;
 		var infoBox = $('<ul></ul>');
@@ -344,23 +345,17 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback){
 		var name = 'bundle' + rawBundle.Identifier;
 		var title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + ': ' + rawBundle.Version;
 		var infoBox = $('<ul></ul>');
-		infoBox.append($('<li>State - ' + rawBundle.State + '</li>'));
-		if(rawBundle.StartLevel){
-			infoBox.append($('<li>StartLevel - ' + rawBundle.StartLevel + '</li>'));
-		}
 		infoBox.append($('<li>Region - ' + rawBundle.Region + '</li>'));
 		infoBox.append($('<li>Location - ' + rawBundle.Location + '</li>'));
-		if(rawBundle.LastModified){
-			infoBox.append($('<li>LastModified - ' + rawBundle.LastModified + '</li>'));
-		}
-		infoBox.append($('<li>Is a fragment - ' + rawBundle.Fragment + '</li>'));
-		if(rawBundle.PersistentlyStarted){
-			infoBox.append($('<li>PersistentlyStarted - ' + rawBundle.PersistentlyStarted + '</li>'));
-		}
-		if(rawBundle.ActivationPolicyUsed){
-			infoBox.append($('<li>ActivationPolicyUsed - ' + rawBundle.ActivationPolicyUsed + '</li>'));
-		}
-		infoBox.append($('<li>Required - ' + rawBundle.Required + '</li>'));
+
+		self.appendIfPresent(infoBox, 'State', rawBundle.State);
+		self.appendIfPresent(infoBox, 'LastModified', rawBundle.LastModified);
+		self.appendIfPresent(infoBox, 'Fragment', rawBundle.Fragment);
+		self.appendIfPresent(infoBox, 'StartLevel', rawBundle.StartLevel);
+		self.appendIfPresent(infoBox, 'PersistentlyStarted', rawBundle.PersistentlyStarted);
+		self.appendIfPresent(infoBox, 'ActivationPolicyUsed', rawBundle.ActivationPolicyUsed);
+		self.appendIfPresent(infoBox, 'Required', rawBundle.Required);
+
 		if(!rawBundle.ExportedPackages || rawBundle.ExportedPackages.length == 0){
 			infoBox.append($('<li>No exported packages</li>'));
 		} else {
@@ -378,6 +373,12 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback){
 			});
 		}
 		return new InfoBox({name: name, title: title, content: infoBox, closeable: true});
+	};
+	
+	self.appendIfPresent = function(element, name, field){
+		if(field){
+			element.append($('<li>' + name + ' - ' + field + '</li>'));	
+		}
 	};
 
 };

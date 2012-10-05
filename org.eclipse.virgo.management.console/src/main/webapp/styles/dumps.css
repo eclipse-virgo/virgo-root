@@ -11,7 +11,7 @@
 #side-bar {
     position: absolute;
     width: 250px;
-    min-height: 550px;
+    min-height: 594px;
 }
 
 #side-bar h2 {
@@ -71,6 +71,18 @@
 
 .dump-file-line:hover {
 	background-color: #BAD9EC;
+}
+
+#gui-controls {
+	margin: 15px 0;
+}
+
+.unresolved-bundle {
+	margin-bottom: 10px;
+}
+
+.unresolved-bundle-cause {
+	padding-left: 20px;
 }
 
 #bundle-canvas {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,10 +51,10 @@ public class JMXQuasiWire {
 		this.namespace = BundleDescription.HOST_NAMESPACE;
 		this.providerId = provider.getBundleId();
 		this.requirerId = requirer.getBundleId();
-		this.bundleCapabilityAttributes = this.getProperties();
-		this.bundleCapabilityDirectives = this.getProperties();
+		this.bundleCapabilityAttributes = new HashMap<String, String>();
+		this.bundleCapabilityDirectives = new HashMap<String, String>();
 		this.bundleRequirementAttributes = this.getProperties(new String[]{"host", provider.getSymbolicName()}, new String[]{"bundle-version", provider.getVersion().toString()});
-		this.bundleRequirementDirectives = this.getProperties();
+		this.bundleRequirementDirectives = new HashMap<String, String>();
 	}
 
 	public JMXQuasiWire(QuasiRequiredBundle provider,QuasiBundle requirer) {
@@ -67,7 +69,7 @@ public class JMXQuasiWire {
 		this.bundleCapabilityAttributes = this.stringifyMap(provider.getAttributes());
 		this.bundleCapabilityDirectives = this.stringifyMap(provider.getDirectives());
 		this.bundleRequirementAttributes = this.getProperties(new String[]{"Required-Bundle", provider.getRequiredBundleName()}, new String[]{"Version-Constraint", provider.getVersionConstraint().toString()});
-		this.bundleRequirementDirectives = this.getProperties();
+		this.bundleRequirementDirectives = new HashMap<String, String>();
 	}
 
 	public final long getRequirerBundleId(){
@@ -101,7 +103,19 @@ public class JMXQuasiWire {
 	private Map<String, String> stringifyMap(Map<String, Object> map){
 		Map<String, String> properties = new HashMap<String, String>();
 		for(Entry<String, Object> entry: map.entrySet()){
-			properties.put(entry.getKey(), entry.getValue().toString());
+			if(entry.getValue().getClass().isArray()){
+				Object[] valueArray = (Object[]) entry.getValue();
+				StringBuilder builder = new StringBuilder();
+				for (int i = 0; i < valueArray.length; i++) {
+					builder.append(valueArray[i].toString());
+					if(i < valueArray.length -1){
+						builder.append(", ");
+					}
+				}
+				properties.put(entry.getKey(), builder.toString());
+			}else{
+				properties.put(entry.getKey(), entry.getValue().toString());
+			}
 		}
 		return properties;
 	}
