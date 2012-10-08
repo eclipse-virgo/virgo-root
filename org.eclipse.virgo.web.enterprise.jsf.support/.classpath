@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="var" path="VIRGO_INSTALL_FOLDER/plugins/javax.annotation_1.1.0.v201105051105.jar"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/javax.annotation/1.1.0.v201108011116/javax.annotation-1.1.0.v201108011116.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/javax.ejb/3.1.1.v201204261316/javax.ejb-3.1.1.v201204261316.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/javax.persistence/2.0.4.v201112200901/javax.persistence-2.0.4.v201112200901.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.29.v201208221210/org.apache.catalina-7.0.29.v201208221210.jar" sourcepath="/IVY_CACHE/org.apache.catalina/com.springsource.org.apache.catalina/7.0.26/com.springsource.org.apache.catalina-sources-7.0.26.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.glassfish.com.sun.faces/2.1.6.v201205171319/org.glassfish.com.sun.faces-2.1.6.v201205171319.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

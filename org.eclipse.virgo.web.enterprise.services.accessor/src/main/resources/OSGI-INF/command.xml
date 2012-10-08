@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="services_accessor_command">
+   <implementation class="org.eclipse.virgo.web.enterprise.services.accessor.ServicesAccessorCommandProvider"/>
+   <reference bind="bindCustomizer" cardinality="1..1" interface="org.eclipse.gemini.web.tomcat.spi.ClassLoaderCustomizer" name="WABClassLoaderCustomizer" policy="static" unbind="unbindCustomizer"/>
+</scr:component>

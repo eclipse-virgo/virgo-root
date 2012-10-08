@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.virgo.javaee.web.openejb.fragment.jpa</name>
+	<name>org.eclipse.virgo.web.enterprise.openejb.fragment.jpa</name>
 	<comment></comment>
 	<projects>
 	</projects>

@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.web.enterprise.services.accessor.internal.loader;
+package org.eclipse.virgo.web.enterprise.services.accessor;
 
 import java.io.File;
 import java.io.IOException;
