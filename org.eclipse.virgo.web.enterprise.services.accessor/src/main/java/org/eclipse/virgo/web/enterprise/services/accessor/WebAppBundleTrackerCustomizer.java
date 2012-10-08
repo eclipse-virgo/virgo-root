@@ -51,8 +51,9 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
 
     private boolean initialized = false;
     
-    // TODO May be it will be good if we configure which bundles to be scanned
-    private static final List<String> bundleNamesForJarScanner = Arrays.asList(new String[] {"com.springsource.javax.servlet.jsp.jstl", "org.glassfish.com.sun.faces"});
+    // move these values in config ini
+    private final List<String> bundleNamesForJarScanner;
+    //= Arrays.asList(new String[] {"com.springsource.javax.servlet.jsp.jstl", "org.glassfish.com.sun.faces"});
 
     private final Set<Bundle> bundlesForJarScanner = new HashSet<Bundle>();
     
@@ -69,6 +70,12 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
     private final Map<String, VersionRange> implBundles;
 
     public WebAppBundleTrackerCustomizer(WebAppBundleClassLoaderDelegateHook wabClassLoaderDelegateHook) {
+        String bundlesForJarScanner = System.getProperty("org.eclipse.virgo.jarscanner.bundles");
+        if (bundlesForJarScanner != null) {
+            this.bundleNamesForJarScanner = Arrays.asList(bundlesForJarScanner.split(","));
+        } else {
+            this.bundleNamesForJarScanner = new ArrayList<String>();
+        }
         this.wabClassLoaderDelegateHook = wabClassLoaderDelegateHook;
         this.apiBundles = Collections.unmodifiableMap(getBundles(System.getProperty(API_BUNDLES)));
         this.implBundles = Collections.unmodifiableMap(getBundles(System.getProperty(IMPL_BUNDLES)));
@@ -294,7 +301,7 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
     }
     
     Set<Bundle> getBundlesForJarScanner() {
-        return bundlesForJarScanner;
+        return this.bundlesForJarScanner;
     }
 
 }
