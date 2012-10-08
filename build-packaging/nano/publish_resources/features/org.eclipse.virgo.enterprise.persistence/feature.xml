@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.enterprise.persistence"
+      label="%featureName"
+      version="@NANO.VERSION@"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+    
+    <plugin
+    id="org.eclipse.persistence.antlr"
+    download-size="0"
+    install-size="0"
+    version="@EL.ANTLR@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.persistence.asm"
+    download-size="0"
+    install-size="0"
+    version="@EL.ASM@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.persistence.core"
+    download-size="0"
+    install-size="0"
+    version="@EL.CORE@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.persistence.jpa"
+    download-size="0"
+    install-size="0"
+    version="@EL.JPA@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.persistence.jpa.jpql"
+    download-size="0"
+    install-size="0"
+    version="@EL.JPA@"
+    unpack="false"/>
+
+</feature>

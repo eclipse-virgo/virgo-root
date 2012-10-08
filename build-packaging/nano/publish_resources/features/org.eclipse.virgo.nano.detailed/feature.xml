@@ -33,13 +33,6 @@
     unpack="false"/>
     
     <plugin
-    id="javax.activation"
-    download-size="0"
-    install-size="0"
-    version="@JAVAX.ACTIVATION@"
-    unpack="false"/>
-    
-    <plugin
     id="javax.transaction"
     download-size="0"
     install-size="0"
@@ -68,24 +61,10 @@
     unpack="false"/>
     
     <plugin
-    id="javax.mail"
-    download-size="0"
-    install-size="0"
-    version="@JAVAX.MAIL@"
-    unpack="false"/>
-    
-    <plugin
     id="javax.persistence"
     download-size="0"
     install-size="0"
     version="@JAVAX.PERSISTENCE@"
-    unpack="false"/>
-    
-    <plugin
-    id="javax.servlet"
-    download-size="0"
-    install-size="0"
-    version="@JAVAX.SERVLET@"
     unpack="false"/>
     
     <plugin
@@ -100,69 +79,6 @@
     download-size="0"
     install-size="0"
     version="@JAVAX.XML.RPC@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.catalina"
-    download-size="0"
-    install-size="0"
-    version="@CATALINA@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.catalina.ha"
-    download-size="0"
-    install-size="0"
-    version="@CATALINA.HA@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.jasper"
-    download-size="0"
-    install-size="0"
-    version="@JASPER.VERSION@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.catalina.tribes"
-    download-size="0"
-    install-size="0"
-    version="@TRIBES.VERSION@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.coyote"
-    download-size="0"
-    install-size="0"
-    version="@COYOTE@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.el"
-    download-size="0"
-    install-size="0"
-    version="@EL@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.juli.extras"
-    download-size="0"
-    install-size="0"
-    version="@JULI.EXTRAS@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.tomcat.api"
-    download-size="0"
-    install-size="0"
-    version="@TOMCAT.API@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.tomcat.util"
-    download-size="0"
-    install-size="0"
-    version="@TOMCAT.UTIL@"
     unpack="false"/>
     
     <plugin
@@ -385,6 +301,13 @@
     
     <plugin
     id="org.eclipse.virgo.util.parser.manifest"
+    download-size="0"
+    install-size="0"
+    version="@UTIL.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.kernel.equinox.extensions"
     download-size="0"
     install-size="0"
     version="@UTIL.VERSION@"
