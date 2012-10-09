@@ -19,6 +19,7 @@ import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
+import org.eclipse.virgo.nano.deployer.util.BundleLocationUtil;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -34,6 +35,8 @@ import org.slf4j.LoggerFactory;
 
 public class BundleDeployer implements SimpleDeployer {
 
+    private static final String KERNEL_HOME_PROP = "org.eclipse.virgo.kernel.home";
+
     private static final String JAR = "jar";
 
     private static final boolean STATUS_ERROR = false;
@@ -42,13 +45,7 @@ public class BundleDeployer implements SimpleDeployer {
 
     private static final char SLASH = '/';
 
-    private static final char BACKSLASH = '\\';
-
-    private static final String FILE_PROTOCOL = "file";
-
     private static final String UNKNOWN = "unknown";
-
-    private static final String INSTALL_BY_REFERENCE_PREFIX = "reference:file:";
 
     private static final String FRAGMEN_HOST_HEADER = "Fragment-Host";
 
@@ -72,13 +69,21 @@ public class BundleDeployer implements SimpleDeployer {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
         this.packageAdmin = packageAdmin;
-        String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
-        this.kernelHomeFile = new File(kernelHome);
-        File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
-        this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
-        String thisBundleName = this.bundleContext.getBundle().getSymbolicName();
-        String staging = "staging";
-        this.workBundleInstallLocation = new File(kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging);
+        String kernelHome = System.getProperty(KERNEL_HOME_PROP);
+        if (kernelHome != null) {
+            this.kernelHomeFile = new File(kernelHome);
+            if (this.kernelHomeFile.exists()) {
+                File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
+                this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+                String thisBundleName = this.bundleContext.getBundle().getSymbolicName();
+                String staging = "staging";
+                this.workBundleInstallLocation = new File(kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging);
+            } else {
+                throw new IllegalStateException("Required location '" + this.kernelHomeFile.getAbsolutePath() + "' does not exist. Check the value of the '"+ KERNEL_HOME_PROP +"' propery");
+            }
+        } else {
+            throw new IllegalStateException("Missing value for required property '" + KERNEL_HOME_PROP + "'");
+        }
     }
 
     private Boolean createInstallationFolder() {
@@ -158,7 +163,7 @@ public class BundleDeployer implements SimpleDeployer {
             FileCopyUtils.copy(new File(uri), stagedFile);
 
             // install the bundle
-            final Bundle installed = this.bundleContext.installBundle(createInstallLocation(stagedFile));
+            final Bundle installed = this.bundleContext.installBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, stagedFile));
             final FragmentHost hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagedFile);
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
 
@@ -222,7 +227,7 @@ public class BundleDeployer implements SimpleDeployer {
             File stagedFile = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
             FileCopyUtils.copy(deployedFile, stagedFile);
             // install the bundle
-            installed = this.bundleContext.installBundle(createInstallLocation(stagedFile));
+            installed = this.bundleContext.installBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, stagedFile));
             hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagedFile);
         } catch (Exception e) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
@@ -287,7 +292,7 @@ public class BundleDeployer implements SimpleDeployer {
             return STATUS_ERROR;
         }
 
-        final Bundle bundle = this.bundleContext.getBundle(createInstallLocation(matchingStagedFile));
+        final Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, matchingStagedFile));
         if (bundle != null) {
             try {
                 // copy the updated bundle over the old one
@@ -312,7 +317,7 @@ public class BundleDeployer implements SimpleDeployer {
     @Override
     public boolean undeploy(Bundle bundle) {
         if (bundle != null) {
-            File stagingFileToDelete = new File(bundle.getLocation().substring(BundleDeployer.INSTALL_BY_REFERENCE_PREFIX.length()));
+            File stagingFileToDelete = new File(bundle.getLocation().substring(BundleLocationUtil.REFERENCE_PREFIX.length()));
             final FragmentHost hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagingFileToDelete);
             try {
                 if (this.logger.isInfoEnabled()) {
@@ -357,13 +362,13 @@ public class BundleDeployer implements SimpleDeployer {
 
     private Bundle getInstalledBundle(URI uri) {
         File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(uri.toString()));
-        return this.bundleContext.getBundle(createInstallLocation(matchingStagingBundle));
+        return this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, matchingStagingBundle));
     }
 
     @Override
     public boolean isDeployed(URI path) {
         File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
-        if (this.bundleContext.getBundle(createInstallLocation(matchingStagingBundle)) == null) {
+        if (this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, matchingStagingBundle)) == null) {
             return false;
         }
         return true;
@@ -372,7 +377,7 @@ public class BundleDeployer implements SimpleDeployer {
     @Override
     public DeploymentIdentity getDeploymentIdentity(URI path) {
         File matchingStagingBundle = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
-        Bundle bundle = this.bundleContext.getBundle(createInstallLocation(matchingStagingBundle));
+        Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, matchingStagingBundle));
         if (bundle == null) {
             return null;
         }
@@ -410,12 +415,7 @@ public class BundleDeployer implements SimpleDeployer {
     }
 
     private final void registerToBundlesInfo(Bundle bundle, boolean isFragment) throws URISyntaxException, IOException, BundleException {
-        String location = bundle.getLocation().replace(BACKSLASH, SLASH);
-        location = location.replaceAll(" ", "%20");
-        String scheme = new URI(location).getScheme();
-        if (scheme != null && !scheme.equals(FILE_PROTOCOL)) {
-            location = new URI(location).getRawSchemeSpecificPart();
-        }
+        String location = bundle.getLocation();
         String symbolicName = bundle.getSymbolicName();
         this.bundleInfosUpdater.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
             bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
@@ -423,26 +423,16 @@ public class BundleDeployer implements SimpleDeployer {
     }    
 
     private final void unregisterToBundlesInfo(Bundle bundle, boolean isFragment) throws IOException, BundleException, URISyntaxException {
-        String location = bundle.getLocation().replace(BACKSLASH, SLASH);
-        location = location.replaceAll(" ", "%20");
-        String scheme = new URI(location).getScheme();
-        if (scheme != null && !scheme.equals(FILE_PROTOCOL)) {
-            location = new URI(location).getRawSchemeSpecificPart();
-        }
+        String location = bundle.getLocation();
         String symbolicName = bundle.getSymbolicName();
         this.bundleInfosUpdater.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
             bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
         this.bundleInfosUpdater.updateBundleInfosRepository();
     }
 
-    private String createInstallLocation(final File jarFile) {
-        URI relativeUriLocation = this.kernelHomeFile.toURI().relativize(jarFile.toURI());
-        return INSTALL_BY_REFERENCE_PREFIX + relativeUriLocation;
-    }
-
     private String extractJarFileNameFromString(String path) {
-        final String warName = path.substring(path.lastIndexOf(SLASH) + 1);
-        return warName;
+        final String jarName = path.substring(path.lastIndexOf(SLASH) + 1);
+        return jarName;
     }
 
     @Override
