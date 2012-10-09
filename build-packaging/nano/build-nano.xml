@@ -208,6 +208,7 @@
                 <filter token="EL.ASM" value="${org.eclipse.persistence.asm}"/>
                 <filter token="EL.CORE" value="${org.eclipse.persistence.core}"/>
                 <filter token="EL.JPA" value="${org.eclipse.persistence.jpa}"/>
+                <filter token="EL.JPQL" value="${org.eclipse.persistence.jpa.jpql}"/>
                 <filter token="FACES.IMPL" value="${org.glassfish.com.sun.faces}"/>
                 <filter token="FACES.API" value="${org.glassfish.javax.faces}"/>
                 <filter token="JAVAX.INJECT" value="${javax.inject}"/>
