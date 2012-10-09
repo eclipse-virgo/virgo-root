@@ -86,10 +86,14 @@ public class WARDeployer implements SimpleDeployer {
     private static final String UNKNOWN = "unknown";
 
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
+    
+    private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
 
     private static final String DEFAULT_CONTEXT_PATH = "/";
 
     private static final String ROOT_WAR_NAME = "ROOT";
+    
+    private static final char HASH_SIGN = '#';
 
     private static final String PROPERTY_WAB_HEADERS = "WABHeaders";
 
@@ -145,7 +149,7 @@ public class WARDeployer implements SimpleDeployer {
         this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
         final String warName = extractWarNameFromString(path.toString());
         final File deployedFile = new File(path);
-        final File warDir = new File(this.webAppsDir, warName);
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
 
         deleteStatusFile(warName, this.pickupDir);
 
@@ -294,7 +298,7 @@ public class WARDeployer implements SimpleDeployer {
     public final boolean update(URI path) {
         final String warName = extractWarNameFromString(path.toString());
         final File updatedFile = new File(path);
-        final File warDir = new File(this.webAppsDir, warName);
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
 
         if (!warDir.exists()) {
             this.logger.info("Can't update artifact for path '" + path + "'. It is not deployed.");
@@ -469,8 +473,12 @@ public class WARDeployer implements SimpleDeployer {
             if (warName.equals(ROOT_WAR_NAME)) {
                 map.put(HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
             } else {
-                map.put(HEADER_WEB_CONTEXT_PATH, warName);
+                map.put(HEADER_WEB_CONTEXT_PATH, replaceHashSigns(warName,SLASH));
             }
+        }
+        String bundleSymbolicNameHeader = manifest.getHeader(HEADER_BUNDLE_SYMBOLIC_NAME);
+        if (bundleSymbolicNameHeader == null || bundleSymbolicNameHeader.trim().length() == 0) {
+        	map.put(HEADER_BUNDLE_SYMBOLIC_NAME, replaceHashSigns(warName, DOT)); 
         }
 
         InstallationOptions installationOptions = new InstallationOptions(map);
@@ -521,7 +529,7 @@ public class WARDeployer implements SimpleDeployer {
     @Override
     public boolean isDeployed(URI path) {
         final String warName = extractWarNameFromString(path.toString());
-        final File warDir = new File(this.webAppsDir, warName);
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
             return false;
         }
@@ -534,7 +542,7 @@ public class WARDeployer implements SimpleDeployer {
     @Override
     public DeploymentIdentity getDeploymentIdentity(URI path) {
         final String warName = extractWarNameFromString(path.toString());
-        final File warDir = new File(this.webAppsDir, warName);
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
             return null;
         }
@@ -625,7 +633,7 @@ public class WARDeployer implements SimpleDeployer {
         this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
         final String warName = extractWarNameFromString(uri.toString());
         final File deployedFile = new File(uri);
-        final File warDir = new File(this.webAppsDir, warName);
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         deleteStatusFile(warName, this.pickupDir);
         final long lastModified = deployedFile.lastModified();
 
@@ -699,7 +707,7 @@ public class WARDeployer implements SimpleDeployer {
 
     private Bundle getInstalledBundle(URI path) {
         final String warName = extractWarNameFromString(path.toString());
-        final File warDir = new File(this.webAppsDir, warName);
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
         	logger.warn("Directory with name [" + warName+ "] cannot be found in web applications directory." +
 			" See logs for previous failures during install.");
@@ -707,5 +715,9 @@ public class WARDeployer implements SimpleDeployer {
         }
         return this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
     }
-
+    
+    private String replaceHashSigns(String str, char newChar){
+        return str.replace(HASH_SIGN, newChar);
+    }
+    
 }
