@@ -5,10 +5,13 @@ import java.net.URI;
 
 public class BundleLocationUtil {
     
-    public static final String REFERENCE_PREFIX = "reference:file:";
+    public static final String REFERENCE_FILE_PREFIX = "reference:file:";
     
-    public static String createInstallLocation(final File kernelHomeFile, final File jarFile) {
-        URI relativeUriLocation = kernelHomeFile.toURI().relativize(jarFile.toURI());
-        return REFERENCE_PREFIX + relativeUriLocation;
+    public static String createInstallLocation(final File kernelHomeFile, final File archiveFile) {
+        return REFERENCE_FILE_PREFIX + getRelativisedURI(kernelHomeFile, archiveFile);
+    }
+    
+    public static URI getRelativisedURI(final File kernelHomeFile, final File archiveFile) {
+        return kernelHomeFile.toURI().relativize(archiveFile.toURI());
     }
 }
