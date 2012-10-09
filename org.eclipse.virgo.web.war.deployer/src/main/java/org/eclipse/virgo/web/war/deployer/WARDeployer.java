@@ -60,7 +60,9 @@ public class WARDeployer implements SimpleDeployer {
 
     private static final String PICKUP_DIR = "pickup";
     
-    private static final char SLASH = '/';
+    private static final String SLASH = "/";
+    
+    private static final char SLASH_CHAR = '/';
 
     private static final char DOT = '.';
 
@@ -238,10 +240,11 @@ public class WARDeployer implements SimpleDeployer {
         String bundleLocation = removeTrailingFileSeparator(bundle.getLocation());
         String warPath = extractWarPath(bundleLocation);
         final File warDir = new File(replaceHashSigns(warPath, DOT));
-        String warName = extractDecodedWarName(warPath);
+        String warName = extractWarNameFromBundleLocation(warPath);
 
-        deleteStatusFile(warName, this.pickupDir);
-
+        String statusFilePrefix = calculateStatusFilePrefix(bundle, warName);
+        deleteStatusFile(statusFilePrefix, this.pickupDir);
+        
         if (bundle != null) {
             try {
                 if (this.logger.isInfoEnabled()) {
@@ -261,7 +264,8 @@ public class WARDeployer implements SimpleDeployer {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_STOPPED, bundle.getSymbolicName(), bundle.getVersion());
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.uninstall();
-                FileSystemUtils.deleteRecursively(warDir);
+                // we need to decode the path before delete or a /webapps entry might leak
+                FileSystemUtils.deleteRecursively(new File(URLDecoder.decode(warDir.getAbsolutePath())));
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (BundleException e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
@@ -273,15 +277,34 @@ public class WARDeployer implements SimpleDeployer {
             }
         }
 
-        createStatusFile(warName, OP_UNDEPLOY, STATUS_OK, bundle.getBundleId(), bundle.getLastModified());
+        createStatusFile(statusFilePrefix, OP_UNDEPLOY, STATUS_OK, bundle.getBundleId(), bundle.getLastModified());
         return STATUS_OK;
     }
-
-    private String extractDecodedWarName(String warPath) {
-    	warPath = warPath.substring(warPath.lastIndexOf(File.separatorChar) + 1, warPath.length());
-        return URLDecoder.decode(warPath);
+    
+    private String calculateStatusFilePrefix(Bundle bundle, String warName) {
+        if (warName.contains(String.valueOf(DOT))) {
+            String webContextPath = bundle.getHeaders().get(HEADER_WEB_CONTEXT_PATH);
+            if ((warName.charAt(0) == DOT && webContextPath.indexOf(DOT) == 1) || 
+                (warName.charAt(0) != DOT && webContextPath.indexOf(DOT) != 1)) {
+                webContextPath = webContextPath.substring(1);
+            }
+            if (webContextPath.contains(SLASH) && webContextPath.replace(SLASH_CHAR, DOT).equals(warName)) {
+                return URLDecoder.decode(webContextPath.replace(SLASH_CHAR, HASH_SIGN));
+            }
+        }
+        return URLDecoder.decode(warName);
     }
 
+    private String extractWarNameFromBundleLocation(String bundleLocation) {
+        String[] pathItems = bundleLocation.split(SLASH);
+        if (pathItems.length > 0) {
+            return pathItems[pathItems.length - 1];
+        } else {
+            logger.warn("Cannot calculate war name on the given warPath [" + bundleLocation + "]");
+            return "";
+        }
+    }
+    
     private String extractWarPath(String bundleLocation) {
         String warPath;
         if (bundleLocation.startsWith(BundleLocationUtil.REFERENCE_FILE_PREFIX)) {
@@ -478,7 +501,7 @@ public class WARDeployer implements SimpleDeployer {
             if (warName.equals(ROOT_WAR_NAME)) {
                 map.put(HEADER_WEB_CONTEXT_PATH, DEFAULT_CONTEXT_PATH);
             } else {
-                map.put(HEADER_WEB_CONTEXT_PATH, replaceHashSigns(warName,SLASH));
+                map.put(HEADER_WEB_CONTEXT_PATH, replaceHashSigns(warName, SLASH_CHAR));
             }
         }
 
