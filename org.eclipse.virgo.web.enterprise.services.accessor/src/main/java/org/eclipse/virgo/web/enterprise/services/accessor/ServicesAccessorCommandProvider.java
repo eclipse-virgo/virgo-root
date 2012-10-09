@@ -55,8 +55,8 @@ public class ServicesAccessorCommandProvider {
                 }
             }
         } else {
-            System.out.println();
-            System.out.println("Specify -api , -impl or -clash option");
+            System.out.println("Usage: list_exposed_content <option>");
+            System.out.println("Specify -api, -impl or -clash option");
         }
     }
 	
