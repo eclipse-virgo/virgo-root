@@ -29,6 +29,7 @@ import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
+import org.eclipse.virgo.nano.deployer.util.BundleLocationUtil;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.io.JarUtils;
@@ -45,6 +46,8 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
 public class WARDeployer implements SimpleDeployer {
+    
+    private static final String KERNEL_HOME_PROP = "org.eclipse.virgo.kernel.home";
 
     private static final String WAR = "war";
 
@@ -54,13 +57,7 @@ public class WARDeployer implements SimpleDeployer {
 
     private static final String PICKUP_DIR = "pickup";
     
-    private static final String REFERENCE_PREFIX = "reference:";
-
-    private static final String INSTALL_BY_REFERENCE_PREFIX = REFERENCE_PREFIX +"file:";
-
     private static final char SLASH = '/';
-
-    private static final char BACKSLASH = '\\';
 
     private static final char DOT = '.';
 
@@ -86,15 +83,9 @@ public class WARDeployer implements SimpleDeployer {
 
     private static final String WEBAPPS_DIR = "webapps";
 
-    private static final String WEBBUNDLE_PROTOCOL = "webbundle";
-
-    private static final String FILE_PROTOCOL = "file";
-
     private static final String UNKNOWN = "unknown";
 
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
-
-    // private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
 
     private static final String DEFAULT_CONTEXT_PATH = "/";
 
@@ -175,7 +166,7 @@ public class WARDeployer implements SimpleDeployer {
             transformUnpackedManifest(warDir, warName);
 
             // install the bundle
-            installed = this.bundleContext.installBundle(createInstallLocation(warDir));
+            installed = this.bundleContext.installBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
@@ -233,12 +224,7 @@ public class WARDeployer implements SimpleDeployer {
         }
         return true;
     }
-
-    private String createInstallLocation(final File warDir) {
-    	URI relativeUriLocation = this.kernelHomeFile.toURI().relativize(warDir.toURI());
-    	return INSTALL_BY_REFERENCE_PREFIX + relativeUriLocation;
-    }
-
+    
     private String extractWarNameFromString(String path) {
         final String warName = path.substring(path.lastIndexOf(SLASH) + 1, path.length() - 4);
         return warName;
@@ -289,8 +275,8 @@ public class WARDeployer implements SimpleDeployer {
 
     private String extractWarPath(String bundleLocation) {
         String warPath;
-        if (bundleLocation.startsWith(INSTALL_BY_REFERENCE_PREFIX)) {
-            warPath = bundleLocation.substring(INSTALL_BY_REFERENCE_PREFIX.length());
+        if (bundleLocation.startsWith(BundleLocationUtil.REFERENCE_PREFIX)) {
+            warPath = bundleLocation.substring(BundleLocationUtil.REFERENCE_PREFIX.length());
         } else {
             warPath = bundleLocation;
         }
@@ -326,7 +312,7 @@ public class WARDeployer implements SimpleDeployer {
             return STATUS_ERROR;
         }
 
-        final Bundle bundle = this.bundleContext.getBundle(createInstallLocation(warDir));
+        final Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         if (bundle != null) {
             try {
                 // extract the war file to the webapps directory
@@ -508,34 +494,20 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private final void registerToBundlesInfo(Bundle bundle) throws URISyntaxException, IOException, BundleException {
-        String location = bundle.getLocation().replace(BACKSLASH, SLASH);
-        if (!location.contains(WEBBUNDLE_PROTOCOL)) {
-            location = location.replaceAll(" ", "%20");
-            String scheme = new URI(location).getScheme();
-            if (scheme != null && !scheme.equals(FILE_PROTOCOL)) {
-                location = new URI(location).getRawSchemeSpecificPart();
-            }
-            String symbolicName = bundle.getSymbolicName();
-            this.bundleInfosUpdaterUtil.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-                bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
-            this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
-        }
+        String location = bundle.getLocation();
+        String symbolicName = bundle.getSymbolicName();
+        this.bundleInfosUpdaterUtil.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
+            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
+        this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
     }
 
     private final void unregisterToBundlesInfo(Bundle bundle) {
         try {
-            String location = bundle.getLocation().replace(BACKSLASH, SLASH);
-            if (!location.contains(WEBBUNDLE_PROTOCOL)) {
-                location = location.replaceAll(" ", "%20");
-                String scheme = new URI(location).getScheme();
-                if (scheme != null && !scheme.equals(FILE_PROTOCOL)) {
-                    location = new URI(location).getRawSchemeSpecificPart();
-                }
-                String symbolicName = bundle.getSymbolicName();
-                this.bundleInfosUpdaterUtil.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-                    bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
-                this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
-            }
+            String location = bundle.getLocation();
+            String symbolicName = bundle.getSymbolicName();
+            this.bundleInfosUpdaterUtil.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
+                bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
+            this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
         } catch (Exception e) {
             this.logger.error("Cannot update bundles info while unregistering [" + bundle.getSymbolicName() + "].", e);
         }
@@ -553,7 +525,7 @@ public class WARDeployer implements SimpleDeployer {
         if (!warDir.exists()) {
             return false;
         }
-        if (this.bundleContext.getBundle(createInstallLocation(warDir)) == null) {
+        if (this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir)) == null) {
             return false;
         }
         return true;
@@ -566,7 +538,7 @@ public class WARDeployer implements SimpleDeployer {
         if (!warDir.exists()) {
             return null;
         }
-        Bundle bundle = this.bundleContext.getBundle(createInstallLocation(warDir));
+        Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         if (bundle == null) {
             return null;
         }
@@ -582,12 +554,20 @@ public class WARDeployer implements SimpleDeployer {
 
     private void warDeployerInternalInit(BundleContext bundleContext) {
         String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
-        this.kernelHomeFile = new File(kernelHome);
-        File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
-        this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);
-        this.webAppsDir = new File(kernelHomeFile, WEBAPPS_DIR);
-        this.bundleContext = bundleContext;
-        this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+        if (kernelHome != null) {
+            this.kernelHomeFile = new File(kernelHome);
+            if (this.kernelHomeFile.exists()) {
+                File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
+                this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);
+                this.webAppsDir = new File(kernelHomeFile, WEBAPPS_DIR);
+                this.bundleContext = bundleContext;
+                this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+            } else {
+                throw new IllegalStateException("Required location '" + this.kernelHomeFile.getAbsolutePath() + "' does not exist. Check the value of the '"+ KERNEL_HOME_PROP +"' propery");
+            }
+        } else {
+            throw new IllegalStateException("Missing value for required property '" + KERNEL_HOME_PROP + "'");
+        }
     }
 
     private boolean getStrictWABHeadersValue() {
@@ -662,7 +642,7 @@ public class WARDeployer implements SimpleDeployer {
             // make the manifest transformation in the unpacked location
             transformUnpackedManifest(warDir, warName);
             // install the bundle
-            installed = this.bundleContext.installBundle(createInstallLocation(warDir));
+            installed = this.bundleContext.installBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING_ERROR, e, uri);
@@ -725,7 +705,7 @@ public class WARDeployer implements SimpleDeployer {
 			" See logs for previous failures during install.");
             return null;
         }
-        return this.bundleContext.getBundle(createInstallLocation(warDir));
+        return this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
     }
 
 }
