@@ -16,31 +16,56 @@ import org.eclipse.equinox.internal.simpleconfigurator.manipulator.SimpleConfigu
 import org.eclipse.equinox.internal.simpleconfigurator.utils.BundleInfo;
 import org.eclipse.equinox.internal.simpleconfigurator.utils.SimpleConfiguratorUtils;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.virgo.nano.deployer.SimpleDeployer;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
+/**
+ * 
+ * Utility class that updates a bundles.info file.
+ *
+ * <strong>Concurrent Semantics</strong><br />
+ * Not thread-safe.
+ */
 public class BundleInfosUpdater {
 
-    private final File bundlesInfoFile;
+    private static final String UNKNOWN = "unknown";
+    
+    private static File bundlesInfoFile;
 
-    private final File baseDir;
+    private static File baseDir;
 
-    private final HashMap<String, BundleInfo> toBeAddedInBundlesInfo;
+    private static HashMap<String, BundleInfo> toBeAddedInBundlesInfo;
 
-    private final HashMap<String, BundleInfo> toBeRemovedFromBundlesInfo;
+    private static HashMap<String, BundleInfo> toBeRemovedFromBundlesInfo;
 
     public BundleInfosUpdater(URL bundlesInfoURL, File base) {
-        this.bundlesInfoFile = new File(bundlesInfoURL.getFile());
-        this.toBeAddedInBundlesInfo = new HashMap<String, BundleInfo>();
-        this.toBeRemovedFromBundlesInfo = new HashMap<String, BundleInfo>();
-        this.baseDir = base;
+        bundlesInfoFile = new File(bundlesInfoURL.getFile());
+        toBeAddedInBundlesInfo = new HashMap<String, BundleInfo>();
+        toBeRemovedFromBundlesInfo = new HashMap<String, BundleInfo>();
+        baseDir = base;
     }
 
     public BundleInfosUpdater(File bundlesInfo, File base) {
-        this.bundlesInfoFile = bundlesInfo;
-        this.toBeAddedInBundlesInfo = new HashMap<String, BundleInfo>();
-        this.toBeRemovedFromBundlesInfo = new HashMap<String, BundleInfo>();
-        this.baseDir = base;
+        bundlesInfoFile = bundlesInfo;
+        toBeAddedInBundlesInfo = new HashMap<String, BundleInfo>();
+        toBeRemovedFromBundlesInfo = new HashMap<String, BundleInfo>();
+        baseDir = base;
+    }
+    
+    public static void registerToBundlesInfo(Bundle bundle, String stagedRelativeLocation, boolean isFragment) throws URISyntaxException, IOException, BundleException {
+        String symbolicName = bundle.getSymbolicName();
+        addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(stagedRelativeLocation),
+            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
+        updateBundleInfosRepository();
+    }    
+
+    public static void unregisterToBundlesInfo(Bundle bundle, String stagedRelativeLocation, boolean isFragment) throws IOException, BundleException, URISyntaxException {
+        String symbolicName = bundle.getSymbolicName();
+        removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(stagedRelativeLocation),
+            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
+        updateBundleInfosRepository();
     }
 
     // writes an array to a bundles.info file
@@ -48,12 +73,12 @@ public class BundleInfosUpdater {
         for (File currFile : files) {
             BundleInfo currBundleInfo = bundleFile2BundleInfo(currFile, 4, true);
             if (currBundleInfo != null) {
-                this.toBeAddedInBundlesInfo.put(getIdentifier(currBundleInfo), currBundleInfo);
+                toBeAddedInBundlesInfo.put(getIdentifier(currBundleInfo), currBundleInfo);
             }
         }
     }
 
-    private String getIdentifier(BundleInfo bundleInfo) {
+    private static String getIdentifier(BundleInfo bundleInfo) {
         return bundleInfo.getSymbolicName() + "=" + bundleInfo.getVersion();
     }
 
@@ -61,28 +86,28 @@ public class BundleInfosUpdater {
     public void addBundleToBundlesInfo(File file, int startLevel, boolean autoStartFlag) throws IOException, BundleException {
         BundleInfo bundleInfo = bundleFile2BundleInfo(file, startLevel, autoStartFlag);
         if (bundleInfo != null) {
-            this.toBeAddedInBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
+            toBeAddedInBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
         }
     }
 
-    public void addBundleToBundlesInfo(String bundleSymbolicName, URI url, String bundleVersion, int startLevel, boolean autoStartFlag)
+    private static void addBundleToBundlesInfo(String bundleSymbolicName, URI url, String bundleVersion, int startLevel, boolean autoStartFlag)
         throws IOException, BundleException {
         try {
             BundleInfo bundleInfo = createBundleInfo(bundleSymbolicName, bundleVersion, url, startLevel, autoStartFlag);
             if (bundleInfo != null) {
-                this.toBeAddedInBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
+                toBeAddedInBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
             }
         } catch (URISyntaxException ex) {
             throw new IOException(ex.getCause());
         }
     }
 
-    public void removeBundleFromBundlesInfo(String bundleSymbolicName, URI url, String bundleVersion, int startLevel, boolean autoStartFlag)
+    private static void removeBundleFromBundlesInfo(String bundleSymbolicName, URI url, String bundleVersion, int startLevel, boolean autoStartFlag)
         throws IOException, BundleException {
         try {
             BundleInfo bundleInfo = createBundleInfo(bundleSymbolicName, bundleVersion, url, startLevel, autoStartFlag);
             if (bundleInfo != null) {
-                this.toBeRemovedFromBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
+                toBeRemovedFromBundlesInfo.put(getIdentifier(bundleInfo), bundleInfo);
             }
         } catch (URISyntaxException ex) {
             throw new IOException(ex.getCause());
@@ -90,10 +115,10 @@ public class BundleInfosUpdater {
     }
 
     public boolean isAvailable() {
-        return this.bundlesInfoFile.exists();
+        return bundlesInfoFile.exists();
     }
 
-    private HashMap<String, BundleInfo> readBundleInfosInMap(List<BundleInfo> bundleInfos) {
+    private static HashMap<String, BundleInfo> readBundleInfosInMap(List<BundleInfo> bundleInfos) {
         HashMap<String, BundleInfo> infos = new HashMap<String, BundleInfo>();
         for (BundleInfo bundleInfo : bundleInfos) {
             infos.put(getIdentifier(bundleInfo), bundleInfo);
@@ -102,28 +127,28 @@ public class BundleInfosUpdater {
     }
 
     @SuppressWarnings("unchecked")
-	public void updateBundleInfosRepository() throws IOException {
-        List<BundleInfo> readConfiguration = SimpleConfiguratorUtils.readConfiguration(this.bundlesInfoFile.toURI().toURL(), this.baseDir == null ? null : this.baseDir.toURI());
+	private static void updateBundleInfosRepository() throws IOException {
+        List<BundleInfo> readConfiguration = SimpleConfiguratorUtils.readConfiguration(bundlesInfoFile.toURI().toURL(), baseDir == null ? null : baseDir.toURI());
 		HashMap<String, BundleInfo> currentBundleInfos = readBundleInfosInMap(readConfiguration);
 
-        currentBundleInfos.putAll(this.toBeAddedInBundlesInfo);
-        this.toBeAddedInBundlesInfo.clear();
+        currentBundleInfos.putAll(toBeAddedInBundlesInfo);
+        toBeAddedInBundlesInfo.clear();
 
-        for (String identifier : this.toBeRemovedFromBundlesInfo.keySet()) {
+        for (String identifier : toBeRemovedFromBundlesInfo.keySet()) {
             currentBundleInfos.remove(identifier);
         }
-        this.toBeRemovedFromBundlesInfo.clear();
+        toBeRemovedFromBundlesInfo.clear();
 
-        if (this.bundlesInfoFile.exists()) {
-            String backupName = this.bundlesInfoFile.getName() + System.currentTimeMillis();
-            File backupFile = new File(this.bundlesInfoFile.getParentFile(), backupName);
-            if (!this.bundlesInfoFile.renameTo(backupFile)) {
-                throw new IOException("Fail to rename from (" + this.bundlesInfoFile + ") to (" + backupFile + ")");
+        if (bundlesInfoFile.exists()) {
+            String backupName = bundlesInfoFile.getName() + System.currentTimeMillis();
+            File backupFile = new File(bundlesInfoFile.getParentFile(), backupName);
+            if (!bundlesInfoFile.renameTo(backupFile)) {
+                throw new IOException("Fail to rename from (" + bundlesInfoFile + ") to (" + backupFile + ")");
             }
         }
 
         SimpleConfiguratorManipulatorUtils.writeConfiguration(currentBundleInfos.values().toArray(new BundleInfo[currentBundleInfos.size()]),
-            this.bundlesInfoFile);
+            bundlesInfoFile);
     }
 
     private static BundleInfo bundleFile2BundleInfo(File file, int startLevel, boolean autoStartFlag) throws IOException, BundleException {

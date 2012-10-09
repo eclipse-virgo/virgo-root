@@ -45,8 +45,6 @@ public class BundleDeployer implements SimpleDeployer {
 
     private static final char SLASH = '/';
 
-    private static final String UNKNOWN = "unknown";
-
     private static final String FRAGMEN_HOST_HEADER = "Fragment-Host";
 
     private final EventLogger eventLogger;
@@ -137,7 +135,7 @@ public class BundleDeployer implements SimpleDeployer {
         try {
             URI location = BundleLocationUtil.getRelativisedURI(this.kernelHomeFile, stagedFile);
             if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
-                registerToBundlesInfo(bundle, location.toString(), isFragment);
+                BundleInfosUpdater.registerToBundlesInfo(bundle, location.toString(), isFragment);
             }
         } catch (Exception ex) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, ex, bundle.getSymbolicName(), bundle.getVersion());
@@ -254,7 +252,7 @@ public class BundleDeployer implements SimpleDeployer {
         try {
             if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
                 String bundlesInfoLocation = BundleLocationUtil.getRelativisedURI(kernelHomeFile, stagedFile).toString();
-                registerToBundlesInfo(installed, bundlesInfoLocation, hostHolder != null && hostHolder.getBundleSymbolicName() != null);
+                BundleInfosUpdater.registerToBundlesInfo(installed, bundlesInfoLocation, hostHolder != null && hostHolder.getBundleSymbolicName() != null);
             }
         } catch (Exception e) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
@@ -321,7 +319,7 @@ public class BundleDeployer implements SimpleDeployer {
                 }
                 if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
                     String bundlesInfoLocation = BundleLocationUtil.getRelativisedURI(kernelHomeFile, stagingFileToDelete).toString();
-                    unregisterToBundlesInfo(bundle, bundlesInfoLocation, hostHolder != null && hostHolder.getBundleSymbolicName() != null);
+                    BundleInfosUpdater.unregisterToBundlesInfo(bundle, bundlesInfoLocation, hostHolder != null && hostHolder.getBundleSymbolicName() != null);
                     this.logger.info("Successfully removed bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion()
                         + "' from bundles.info.");
                 } else {
@@ -412,20 +410,6 @@ public class BundleDeployer implements SimpleDeployer {
             tries++;
         }
         return isWritable;
-    }
-
-    private final void registerToBundlesInfo(Bundle bundle, String stagedRelativeLocation, boolean isFragment) throws URISyntaxException, IOException, BundleException {
-        String symbolicName = bundle.getSymbolicName();
-        this.bundleInfosUpdater.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(stagedRelativeLocation),
-            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
-        this.bundleInfosUpdater.updateBundleInfosRepository();
-    }    
-
-    private final void unregisterToBundlesInfo(Bundle bundle, String stagedRelativeLocation, boolean isFragment) throws IOException, BundleException, URISyntaxException {
-        String symbolicName = bundle.getSymbolicName();
-        this.bundleInfosUpdater.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(stagedRelativeLocation),
-            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
-        this.bundleInfosUpdater.updateBundleInfosRepository();
     }
 
     private String extractJarFileNameFromString(String path) {
