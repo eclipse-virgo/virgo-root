@@ -229,9 +229,8 @@ public class WARDeployer implements SimpleDeployer {
     }
     
     private String extractDecodedWarNameFromString(String path) {
-        path = URLDecoder.decode(path);
         final String warName = path.substring(path.lastIndexOf(SLASH) + 1, path.length() - 4);
-        return warName;
+        return URLDecoder.decode(warName);
     }
 
     @Override
@@ -279,8 +278,8 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private String extractDecodedWarName(String warPath) {
-    	warPath = URLDecoder.decode(warPath);
-        return warPath.substring(warPath.lastIndexOf(File.separatorChar) + 1, warPath.length());
+    	warPath = warPath.substring(warPath.lastIndexOf(File.separatorChar) + 1, warPath.length());
+        return URLDecoder.decode(warPath);
     }
 
     private String extractWarPath(String bundleLocation) {
