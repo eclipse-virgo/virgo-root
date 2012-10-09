@@ -65,13 +65,15 @@ public class BundleDeployer implements SimpleDeployer {
     private final PackageAdmin packageAdmin;
 
     private final File workBundleInstallLocation;
+    
+    private final File kernelHomeFile;
 
     public BundleDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, EventLogger eventLogger) {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
         this.packageAdmin = packageAdmin;
         String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
-        File kernelHomeFile = new File(kernelHome);
+        this.kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
         String thisBundleName = this.bundleContext.getBundle().getSymbolicName();
@@ -418,7 +420,7 @@ public class BundleDeployer implements SimpleDeployer {
         this.bundleInfosUpdater.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
             bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, !isFragment);
         this.bundleInfosUpdater.updateBundleInfosRepository();
-    }
+    }    
 
     private final void unregisterToBundlesInfo(Bundle bundle, boolean isFragment) throws IOException, BundleException, URISyntaxException {
         String location = bundle.getLocation().replace(BACKSLASH, SLASH);
@@ -434,7 +436,8 @@ public class BundleDeployer implements SimpleDeployer {
     }
 
     private String createInstallLocation(final File jarFile) {
-        return INSTALL_BY_REFERENCE_PREFIX + jarFile.getAbsolutePath();
+        URI relativeUriLocation = this.kernelHomeFile.toURI().relativize(jarFile.toURI());
+        return INSTALL_BY_REFERENCE_PREFIX + relativeUriLocation;
     }
 
     private String extractJarFileNameFromString(String path) {
