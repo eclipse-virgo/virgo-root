@@ -13,12 +13,12 @@ import org.osgi.framework.BundleContext;
 
 public class ServicesAccessorCommandProvider {
 	
-	private final String CMD_HELP_MSG = "---Services accessor commands---\r\n" +  
-			"\tlist_exposed_content <option> - display information about apis, which will be transparently added to applications, apis' implementations and JNDI consumption of services\r\n" +
-			"\t\tOptions:\r\n" +
-			"\t\t-api - display all API bundles\r\n" +
-	        "\t\t-impl - display all Implementation bundles\r\n" +
-	        "\t\t-clash - display all clashing API/Implementation bundles and which one is chosen\r\n";
+	private final String CMD_HELP_MSG = "Shows exposed content in the framework\r\n" +  
+			"   list_exposed_content <option> - display information about apis, which will be transparently added to applications, apis' implementations and JNDI consumption of services\r\n" +
+			"      Options:\r\n" +
+			"      -api - display all API bundles\r\n" +
+	        "      -impl - display all Implementation bundles\r\n" +
+	        "      -clash - display all clashing API/Implementation bundles and which one is chosen\r\n";
 	
 	private static String API_OPTION = "-api";
 	private static String IMPL_OPTION = "-impl";
@@ -35,28 +35,30 @@ public class ServicesAccessorCommandProvider {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("osgi.command.scope", "enterprise");
 		properties.put("osgi.command.function", new String[] {"list_exposed_content"});
-		context.registerService(ServicesAccessorCommandProvider.class, new ServicesAccessorCommandProvider(), properties);
+		context.registerService(ServicesAccessorCommandProvider.class, this, properties);
 	}
 	
 	@Descriptor(CMD_HELP_MSG)
-	public void list_exposed_content(String option) {
-		synchronized (monitor) {
-			if (wabClassLoaderDelegateHook != null) {
-				if (API_OPTION.equalsIgnoreCase(option)) {
-					bundleType = API_BUNDLE_TYPE;
-					displayBundles(wabClassLoaderDelegateHook.getApiBundles());
-				} else if (IMPL_OPTION.equalsIgnoreCase(option)) {
-					bundleType = IMPL_BUNDLE_TYPE;
-					displayBundles(wabClassLoaderDelegateHook.getImplBundles());
-				} else if (CLASH_OPTION.equalsIgnoreCase(option)) {
-					findClashes();
-				} else {
-					System.out.println();
-					System.out.println("Specify -api , -impl, -clash or -factories option");
-				}	
-			} 
-		}
-	}
+    public void list_exposed_content(String... option) {
+        if (option != null && option.length == 1) {
+            synchronized (monitor) {
+                if (wabClassLoaderDelegateHook != null) {
+                    if (API_OPTION.equalsIgnoreCase(option[0])) {
+                        bundleType = API_BUNDLE_TYPE;
+                        displayBundles(wabClassLoaderDelegateHook.getApiBundles());
+                    } else if (IMPL_OPTION.equalsIgnoreCase(option[0])) {
+                        bundleType = IMPL_BUNDLE_TYPE;
+                        displayBundles(wabClassLoaderDelegateHook.getImplBundles());
+                    } else if (CLASH_OPTION.equalsIgnoreCase(option[0])) {
+                        findClashes();
+                    }
+                }
+            }
+        } else {
+            System.out.println();
+            System.out.println("Specify -api , -impl or -clash option");
+        }
+    }
 	
 	private void displayBundles (Set<Bundle> bundles) {
 		if (bundles.size() == 0) {
