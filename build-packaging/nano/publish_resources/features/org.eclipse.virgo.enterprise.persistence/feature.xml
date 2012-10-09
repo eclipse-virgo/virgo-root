@@ -50,7 +50,7 @@
     id="org.eclipse.persistence.jpa.jpql"
     download-size="0"
     install-size="0"
-    version="@EL.JPA@"
+    version="@EL.JPQL@"
     unpack="false"/>
 
 </feature>

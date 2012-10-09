@@ -69,13 +69,13 @@
     unpack="false"
     autostart="true"/>
     
+    <!-- requires product configuration - started before any app; SL4 won't do -->
     <plugin
     id="org.eclipse.virgo.web.enterprise.services.accessor"
     download-size="0"
     install-size="0"
     version="@WEB.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
    <plugin
     id="javassist"
