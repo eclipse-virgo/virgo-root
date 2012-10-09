@@ -53,8 +53,10 @@ public class WARDeployer implements SimpleDeployer {
     private static final boolean STATUS_ERROR = false;
 
     private static final String PICKUP_DIR = "pickup";
+    
+    private static final String REFERENCE_PREFIX = "reference:";
 
-    private static final String INSTALL_BY_REFERENCE_PREFIX = "reference:file:";
+    private static final String INSTALL_BY_REFERENCE_PREFIX = REFERENCE_PREFIX +"file:";
 
     private static final char SLASH = '/';
 
@@ -127,6 +129,8 @@ public class WARDeployer implements SimpleDeployer {
     private File webAppsDir;
 
     private KernelConfig kernelConfig;
+    
+    private File kernelHomeFile;
 
     public WARDeployer() {
         warDeployerInternalInit(null);
@@ -231,7 +235,8 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private String createInstallLocation(final File warDir) {
-        return INSTALL_BY_REFERENCE_PREFIX + warDir.getAbsolutePath();
+    	URI relativeUriLocation = this.kernelHomeFile.toURI().relativize(warDir.toURI());
+    	return INSTALL_BY_REFERENCE_PREFIX + relativeUriLocation;
     }
 
     private String extractWarNameFromString(String path) {
@@ -577,7 +582,7 @@ public class WARDeployer implements SimpleDeployer {
 
     private void warDeployerInternalInit(BundleContext bundleContext) {
         String kernelHome = System.getProperty("org.eclipse.virgo.kernel.home");
-        File kernelHomeFile = new File(kernelHome);
+        this.kernelHomeFile = new File(kernelHome);
         File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
         this.pickupDir = new File(kernelHomeFile, PICKUP_DIR);
         this.webAppsDir = new File(kernelHomeFile, WEBAPPS_DIR);
@@ -670,6 +675,11 @@ public class WARDeployer implements SimpleDeployer {
     @Override
     public boolean start(URI uri) {
         Bundle bundle = getInstalledBundle(uri);
+        if (bundle == null){
+			this.eventLogger.log(WARDeployerLogEvents.NANO_STARTING_ERROR, uri);
+			logger.error("Cannot start deployable with URI + ["+ uri +"]. There is no bundle installed with this URI.");
+			return false;
+		}
         final String warName = extractWarNameFromString(uri.toString());
         deleteStatusFile(warName, this.pickupDir);
         final long lastModified = new File(uri).lastModified();
@@ -711,6 +721,8 @@ public class WARDeployer implements SimpleDeployer {
         final String warName = extractWarNameFromString(path.toString());
         final File warDir = new File(this.webAppsDir, warName);
         if (!warDir.exists()) {
+        	logger.warn("Directory with name [" + warName+ "] cannot be found in web applications directory." +
+			" See logs for previous failures during install.");
             return null;
         }
         return this.bundleContext.getBundle(createInstallLocation(warDir));
