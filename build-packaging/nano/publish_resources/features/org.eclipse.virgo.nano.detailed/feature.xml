@@ -310,7 +310,7 @@
     id="org.eclipse.virgo.kernel.equinox.extensions"
     download-size="0"
     install-size="0"
-    version="@UTIL.VERSION@"
+    version="@KERNEL.VERSION@"
     unpack="false"/>
 
 </feature>

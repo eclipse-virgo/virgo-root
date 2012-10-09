@@ -126,6 +126,7 @@
                 <filter token="SPRING.DM.VERSION" value="${org.eclipse.gemini.blueprint}"/>
                 <filter token="SSHD.CORE.VERSION" value="${org.apache.sshd.core}"/>
                 <filter token="UTIL.VERSION" value="${org.eclipse.virgo.util}"/>
+                <filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
                 <filter token="CONTENTTYPE.VERSION" value="${org.eclipse.core.contenttype}"/>
                 <filter token="CORE.VERSION" value="${org.eclipse.core.runtime}"/>
                 <filter token="ECF.FT.VERSION" value="${org.eclipse.ecf.filetransfer}"/>
