@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -47,6 +48,8 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("deprecation")
 public class WARDeployer implements SimpleDeployer {
     
+    private static final boolean NOT_A_FRAGMENT = false;
+
     private static final String KERNEL_HOME_PROP = "org.eclipse.virgo.kernel.home";
 
     private static final String WAR = "war";
@@ -83,12 +86,8 @@ public class WARDeployer implements SimpleDeployer {
 
     private static final String WEBAPPS_DIR = "webapps";
 
-    private static final String UNKNOWN = "unknown";
-
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
     
-    private static final String HEADER_BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
-
     private static final String DEFAULT_CONTEXT_PATH = "/";
 
     private static final String ROOT_WAR_NAME = "ROOT";
@@ -147,7 +146,7 @@ public class WARDeployer implements SimpleDeployer {
     @Override
     public final boolean deploy(URI path) {
         this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
-        final String warName = extractWarNameFromString(path.toString());
+        final String warName = extractDecodedWarNameFromString(path.toString());
         final File deployedFile = new File(path);
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
 
@@ -197,7 +196,7 @@ public class WARDeployer implements SimpleDeployer {
 
         try {
             if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
-                registerToBundlesInfo(installed);
+                BundleInfosUpdater.registerToBundlesInfo(installed, getLocationForBundlesInfo(path), NOT_A_FRAGMENT);
             }
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
@@ -229,7 +228,8 @@ public class WARDeployer implements SimpleDeployer {
         return true;
     }
     
-    private String extractWarNameFromString(String path) {
+    private String extractDecodedWarNameFromString(String path) {
+        path = URLDecoder.decode(path);
         final String warName = path.substring(path.lastIndexOf(SLASH) + 1, path.length() - 4);
         return warName;
     }
@@ -238,8 +238,8 @@ public class WARDeployer implements SimpleDeployer {
     public final boolean undeploy(Bundle bundle) {
         String bundleLocation = removeTrailingFileSeparator(bundle.getLocation());
         String warPath = extractWarPath(bundleLocation);
-        final File warDir = new File(warPath);
-        String warName = extractWarName(warPath);
+        final File warDir = new File(replaceHashSigns(warPath, DOT));
+        String warName = extractDecodedWarName(warPath);
 
         deleteStatusFile(warName, this.pickupDir);
 
@@ -249,7 +249,8 @@ public class WARDeployer implements SimpleDeployer {
                     this.logger.info("Removing bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "' from bundles.info.");
                 }
                 if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
-                    unregisterToBundlesInfo(bundle);
+                    String locationForBundlesInfo = BundleLocationUtil.getRelativisedURI(kernelHomeFile, warDir).toString();
+                    BundleInfosUpdater.unregisterToBundlesInfo(bundle, locationForBundlesInfo, NOT_A_FRAGMENT);
                     this.logger.info("Successfully removed bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion()
                         + "' from bundles.info.");
                 } else {
@@ -266,6 +267,10 @@ public class WARDeployer implements SimpleDeployer {
             } catch (BundleException e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
                 return STATUS_ERROR;
+            } catch (IOException e) {
+                this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+            } catch (URISyntaxException e) {
+                this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
             }
         }
 
@@ -273,14 +278,15 @@ public class WARDeployer implements SimpleDeployer {
         return STATUS_OK;
     }
 
-    private String extractWarName(String warPath) {
+    private String extractDecodedWarName(String warPath) {
+    	warPath = URLDecoder.decode(warPath);
         return warPath.substring(warPath.lastIndexOf(File.separatorChar) + 1, warPath.length());
     }
 
     private String extractWarPath(String bundleLocation) {
         String warPath;
-        if (bundleLocation.startsWith(BundleLocationUtil.REFERENCE_PREFIX)) {
-            warPath = bundleLocation.substring(BundleLocationUtil.REFERENCE_PREFIX.length());
+        if (bundleLocation.startsWith(BundleLocationUtil.REFERENCE_FILE_PREFIX)) {
+            warPath = bundleLocation.substring(BundleLocationUtil.REFERENCE_FILE_PREFIX.length());
         } else {
             warPath = bundleLocation;
         }
@@ -296,7 +302,7 @@ public class WARDeployer implements SimpleDeployer {
 
     @Override
     public final boolean update(URI path) {
-        final String warName = extractWarNameFromString(path.toString());
+        final String warName = extractDecodedWarNameFromString(path.toString());
         final File updatedFile = new File(path);
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
 
@@ -476,10 +482,6 @@ public class WARDeployer implements SimpleDeployer {
                 map.put(HEADER_WEB_CONTEXT_PATH, replaceHashSigns(warName,SLASH));
             }
         }
-        String bundleSymbolicNameHeader = manifest.getHeader(HEADER_BUNDLE_SYMBOLIC_NAME);
-        if (bundleSymbolicNameHeader == null || bundleSymbolicNameHeader.trim().length() == 0) {
-        	map.put(HEADER_BUNDLE_SYMBOLIC_NAME, replaceHashSigns(warName, DOT)); 
-        }
 
         InstallationOptions installationOptions = new InstallationOptions(map);
         installationOptions.setDefaultWABHeaders(!strictWABHeaders);
@@ -501,26 +503,6 @@ public class WARDeployer implements SimpleDeployer {
         return manifest;
     }
 
-    private final void registerToBundlesInfo(Bundle bundle) throws URISyntaxException, IOException, BundleException {
-        String location = bundle.getLocation();
-        String symbolicName = bundle.getSymbolicName();
-        this.bundleInfosUpdaterUtil.addBundleToBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-            bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
-        this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
-    }
-
-    private final void unregisterToBundlesInfo(Bundle bundle) {
-        try {
-            String location = bundle.getLocation();
-            String symbolicName = bundle.getSymbolicName();
-            this.bundleInfosUpdaterUtil.removeBundleFromBundlesInfo(symbolicName == null ? UNKNOWN : symbolicName, new URI(location),
-                bundle.getVersion().toString(), SimpleDeployer.HOT_DEPLOYED_ARTIFACTS_START_LEVEL, true);
-            this.bundleInfosUpdaterUtil.updateBundleInfosRepository();
-        } catch (Exception e) {
-            this.logger.error("Cannot update bundles info while unregistering [" + bundle.getSymbolicName() + "].", e);
-        }
-    }
-
     @Override
     public boolean canServeFileType(String fileType) {
         return fileType.toLowerCase().equals(WAR);
@@ -528,7 +510,7 @@ public class WARDeployer implements SimpleDeployer {
 
     @Override
     public boolean isDeployed(URI path) {
-        final String warName = extractWarNameFromString(path.toString());
+        final String warName = extractDecodedWarNameFromString(path.toString());
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
             return false;
@@ -541,7 +523,7 @@ public class WARDeployer implements SimpleDeployer {
 
     @Override
     public DeploymentIdentity getDeploymentIdentity(URI path) {
-        final String warName = extractWarNameFromString(path.toString());
+        final String warName = extractDecodedWarNameFromString(path.toString());
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
             return null;
@@ -631,7 +613,7 @@ public class WARDeployer implements SimpleDeployer {
     @Override
     public boolean install(URI uri) {
         this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
-        final String warName = extractWarNameFromString(uri.toString());
+        final String warName = extractDecodedWarNameFromString(uri.toString());
         final File deployedFile = new File(uri);
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         deleteStatusFile(warName, this.pickupDir);
@@ -668,7 +650,7 @@ public class WARDeployer implements SimpleDeployer {
 			logger.error("Cannot start deployable with URI + ["+ uri +"]. There is no bundle installed with this URI.");
 			return false;
 		}
-        final String warName = extractWarNameFromString(uri.toString());
+        final String warName = extractDecodedWarNameFromString(uri.toString());
         deleteStatusFile(warName, this.pickupDir);
         final long lastModified = new File(uri).lastModified();
         this.eventLogger.log(WARDeployerLogEvents.NANO_WEB_STARTING, bundle.getSymbolicName(), bundle.getVersion());
@@ -682,7 +664,7 @@ public class WARDeployer implements SimpleDeployer {
         this.eventLogger.log(WARDeployerLogEvents.NANO_WEB_STARTED, bundle.getSymbolicName(), bundle.getVersion());
 
         // now update bundle's info
-        if (!updateBundlesInfo(bundle)) {
+        if (!updateBundlesInfo(bundle, getLocationForBundlesInfo(uri))) {
             createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
             return STATUS_ERROR;
         }
@@ -690,13 +672,13 @@ public class WARDeployer implements SimpleDeployer {
         return STATUS_OK;
     }
 
-    private boolean updateBundlesInfo(Bundle bundle) {
+    private boolean updateBundlesInfo(Bundle bundle, String location) {
         if (this.logger.isInfoEnabled()) {
             this.logger.info("Bundles info will be updated for web app bundle with simbolic name '" + bundle.getSymbolicName() + "' .");
         }
         try {
             if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
-                registerToBundlesInfo(bundle);
+                BundleInfosUpdater.registerToBundlesInfo(bundle, location, NOT_A_FRAGMENT);
             }
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
@@ -706,7 +688,8 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private Bundle getInstalledBundle(URI path) {
-        final String warName = extractWarNameFromString(path.toString());
+        final String warName = extractDecodedWarNameFromString(path.toString());
+
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
         	logger.warn("Directory with name [" + warName+ "] cannot be found in web applications directory." +
@@ -714,6 +697,17 @@ public class WARDeployer implements SimpleDeployer {
             return null;
         }
         return this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
+    }
+    
+    private String getLocationForBundlesInfo(URI path) {
+        final String warName = extractDecodedWarNameFromString(path.toString());
+        final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
+        if (!warDir.exists()) {
+            logger.warn("Directory with name [" + warName+ "] cannot be found in web applications directory." +
+            " See logs for previous failures during install.");
+            return null;
+        }
+        return BundleLocationUtil.getRelativisedURI(kernelHomeFile, warDir).toString();
     }
     
     private String replaceHashSigns(String str, char newChar){
