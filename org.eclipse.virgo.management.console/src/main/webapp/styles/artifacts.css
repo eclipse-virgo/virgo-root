@@ -79,7 +79,8 @@ iframe {
 }
 
 .artifact-attribute {
-	overflow-x: auto; 
+	overflow-x: auto;
+	overflow-y: hidden;
 	word-wrap: break-word;	
 }
 
