@@ -108,8 +108,8 @@
 				replace="initialArtifacts=repository:plan/org.eclipse.virgo.kernel.userregion.blueprint,repository:plan/org.eclipse.virgo.web.tomcat,repository:configuration/org.eclipse.virgo.apps.repository" flags="s"
 				file="${tomcat.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>
 
-		<replaceregexp match="javax\.servlet\.\*;.*?,\\"
-				replace="\\\\" flags="s"
+		<replaceregexp match=" javax\.servlet\.\*;.*?,\\.*? "
+				replace=" " flags="s"
 				file="${tomcat.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>			
                 
         <replaceregexp match="virgo-kernel" replace="virgo-server" flags="g"
