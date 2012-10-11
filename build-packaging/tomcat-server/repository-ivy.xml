@@ -6,7 +6,7 @@
 
 	<configurations>
 		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
-		<conf name="ext" visibility="public" description="Dependencies to be packaged in repository/bundles/ext"/>
+		<conf name="ext" visibility="public" description="Dependencies to be packaged in repository/ext"/>
 		<conf name="transitive" visibility="public" description="Dependencies to be packaged with their transitive dependencies in repository/ext"/>
 	</configurations>
 
