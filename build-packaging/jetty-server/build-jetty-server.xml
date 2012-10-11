@@ -134,6 +134,10 @@
 			replace="initialArtifacts=repository:plan/org.eclipse.virgo.kernel.userregion.blueprint, repository:plan/org.eclipse.virgo.jetty.web" flags="s"
 			file="${jetty.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>
 
+		<replaceregexp match="javax\.servlet\.\*;.*?,\\"
+			replace="\\\\" flags="s"
+			file="${jetty.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>			                
+
 		<replaceregexp match="virgo-kernel" replace="virgo-jetty-server" flags="g"
 				file="${jetty.server.resources}/configuration/serviceability.xml"/>
 	</target>
