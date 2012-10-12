@@ -156,8 +156,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 					if(existingRelationship){
 						existingRelationship.increaseCount(relationshipInfoBox);
 					}else{//Handle the first self relationship
-						var relationship = new Relationship(self.paper, bundle, bundle, relationshipInfoBox);
-						self.relationships[releationshipKey] = relationship;
+						self.relationships[releationshipKey] = new Relationship(self.paper, bundle, bundle, relationshipInfoBox);
 					}
 				} else {
 					var existingFromBundle = existingRelationship.fromBundle.rawBundle.Identifier;
@@ -212,7 +211,6 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	};
 	
 	self.getInfoBoxWithWire = function(wire){
-		console.log(wire);
 		var name = 'wire' + wire.ProviderBundleId + '-' + wire.RequirerBundleId;
 		var title = 'Wire(s) between Bundles ' + wire.ProviderBundleId + ' and ' + wire.RequirerBundleId;
 		var infoBox = $('<ul></ul>');

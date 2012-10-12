@@ -53,9 +53,7 @@ var SideBar = function(layoutManager, dataSource){
 		var rowIds = $('td:first-child', self.bundlesTable);
 		$.each(rowIds, function(index, rowId){
 			if($(rowId).text() == bundleId){
-				//rowId.scrollIntoView(true);
-				$('#side-bar').scrollTop($(rowId).position().top);
-				
+				$('#side-bar').scrollTop($(rowId).position().top);				
 				$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
 				$(rowId).parent().addClass('table-tr-selected');
 			}
@@ -64,8 +62,8 @@ var SideBar = function(layoutManager, dataSource){
 	
 	self.init = function(){
 		var tRows = new Array();
-		$.each(dataSource.bundles, function(id, bundle){
-			tRows.push([id, bundle.SymbolicName, bundle.Version]);
+		$.each(dataSource.bundles, function(id, bundle){		
+			tRows.push([id, self.getFormattedBundleName(bundle), bundle.Version]);
 		});
 		
 		self.bundlesTable = util.makeTable({ 
@@ -80,6 +78,23 @@ var SideBar = function(layoutManager, dataSource){
 		if(util.pageLocation && util.pageLocation.length > 0){
 			self.setFocused(util.pageLocation);
 		}
+	};
+	
+	self.getFormattedBundleName = function(bundle){
+		var formatBundleList = function(bundleIdArray){
+			var result = bundleIdArray[0];
+			for(var i = 1; i < bundleIdArray.length; i++) {
+				result = result + ', ' + bundleIdArray[i];
+			}
+			return result;
+		};
+		if(bundle.Fragments.length > 0){
+			return bundle.SymbolicName + ' - Fragments [' + formatBundleList(bundle.Fragments) + ']';
+		}
+		if(bundle.Hosts.length > 0){
+			return bundle.SymbolicName + ' - Host [' + formatBundleList(bundle.Hosts) + ']';
+		}
+		return bundle.SymbolicName;
 	};
 	
 	self.clickEvent = function(row){
