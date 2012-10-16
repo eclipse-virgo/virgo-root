@@ -41,6 +41,7 @@ import org.apache.openejb.config.AppModule;
 import org.apache.openejb.config.ConfigurationFactory;
 import org.apache.openejb.config.DeploymentLoader;
 import org.apache.openejb.config.DeploymentModule;
+import org.apache.openejb.config.DynamicDeployer;
 import org.apache.openejb.config.ServiceUtils;
 import org.apache.openejb.config.sys.Resource;
 import org.apache.openejb.config.sys.ServiceProvider;
@@ -56,6 +57,10 @@ import org.slf4j.LoggerFactory;
 @TransactionManagement(BEAN)
 public class VirgoDeployerEjb extends DeployerEjb {
 
+	private static final String JTA_MANAGED_PROP = "JtaManaged";
+	private static final String NON_TRANSACTIONAL_TYPE = "non-transactional";
+	private static final String TRANSACTION_TYPE_PROP = "transactionType";
+	private static final String STANDARD_CONTEXT_PROPERTY = "CatalinaStandardContext";
 	private static final String OPENEJB_SCHEME = "openejb:";
     private static final String JAVA_SCHEME = "java:";
     private static final String TRANSACTION_TYPE_BEAN = "Bean";
@@ -75,6 +80,7 @@ public class VirgoDeployerEjb extends DeployerEjb {
 	private List<ServiceProvider> resourceProviders;
 	private final String webContextPath;
 	private final ClassLoader servletClassLoader;
+	private DynamicDeployer dynamicDeployer = null;
 
 	private static final String PROVIDER = "provider";
 	
@@ -84,7 +90,12 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		// this custom deployment loader fixes deployment of archived web apps
 		// and sets the webcontextPath as moduleId
 		deploymentLoader = new VirgoDeploymentLoader(webContextPath);
-		configurationFactory = new ConfigurationFactory();
+		dynamicDeployer = DynamicDeployerHolder.getDynamicDeployer();
+		if (dynamicDeployer != null) {
+			configurationFactory = new ConfigurationFactory(false, dynamicDeployer);
+		} else {
+			configurationFactory = new ConfigurationFactory();
+		}
 		assembler = (Assembler) SystemInstance.get().getComponent(org.apache.openejb.spi.Assembler.class);
 		try {
 			resourceProviders = ServiceUtils.getServiceProvidersByServiceType("Resource");
@@ -94,12 +105,18 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		this.webContextPath = webContextPath;
 		this.servletClassLoader = servletClassLoader;
 	}
-
+	
 	public AppInfo deploy(String loc, StandardContext standardContext) throws OpenEJBException {
 		if (loc == null) {
 			throw new NullPointerException("location is null");
 		}
 
+		if (dynamicDeployer != null) {
+			if (dynamicDeployer instanceof DynamicDeployerWithStandardContext) {
+				((DynamicDeployerWithStandardContext)dynamicDeployer).setStandardContext(standardContext);
+			}
+		}
+		
 		Properties p = new Properties();
 
 		AppModule appModule = null;
@@ -279,22 +296,22 @@ public class VirgoDeployerEjb extends DeployerEjb {
 
 		for (ContextResource contextResource : contextResources) {
 			if (isResourceTypeSupported(contextResource)) {
-				Resource resource = createResource(contextResource, appModule.getModuleId());
+				Resource resource = createResource(contextResource, standardContext, appModule.getModuleId());
 				appModule.getResources().add(resource);
 			}
 		}
 	}
 
-	private Resource createResource(final ContextResource contextResource, final String appModuleId) {
+	private Resource createResource(final ContextResource contextResource, StandardContext standardContext, final String appModuleId) {
 		final String id = appModuleId + '/' + contextResource.getName();
 		final String type = contextResource.getType();
 		String provider = (String) contextResource.getProperty(PROVIDER);
 		Resource resource = new Resource(id, type, provider);
-		populateResourceProperties(contextResource, resource);
+		populateResourceProperties(contextResource, resource, standardContext);
 		return resource;
 	}
 
-	private void populateResourceProperties(ContextResource contextResource, Resource resource) {
+	private void populateResourceProperties(ContextResource contextResource, Resource resource, StandardContext standardContext) {
 		Properties resProperties = resource.getProperties();
 		Iterator<String> ctxResPropertiesItr = contextResource.listProperties();
 		boolean isDataSource = contextResource.getType().contains(DATA_SOURCE);
@@ -308,6 +325,16 @@ public class VirgoDeployerEjb extends DeployerEjb {
 				key = transformKey(key);
 			}
 			resProperties.put(key, value);
+		}
+		if (isDataSource) {
+			resProperties.put(STANDARD_CONTEXT_PROPERTY, standardContext);
+			if (resProperties.get(JTA_MANAGED_PROP) == null) {
+				if (NON_TRANSACTIONAL_TYPE.equals(resProperties.get(TRANSACTION_TYPE_PROP))) {
+					resProperties.put(JTA_MANAGED_PROP, "false");
+				} else {
+					resProperties.put(JTA_MANAGED_PROP, "true");
+				}
+			}
 		}
 	}
 

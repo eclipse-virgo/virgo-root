@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="virgo.web.enterprise.appdeployer.deployer" immediate="true" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
+	<implementation class="org.eclipse.virgo.web.enterprise.openejb.deployer.DynamicDeployerHolder"/>
+	
+	<reference name="DynamicDeployer"
+		interface="org.apache.openejb.config.DynamicDeployer"
+		policy="dynamic" 
+		cardinality="1..1" 
+		bind="bindDynamicDeployer" 
+		unbind="unbindDynamicDeployer"/>
+		
+</component>
+
