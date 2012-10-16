@@ -79,32 +79,28 @@
     download-size="0"
     install-size="0"
     version="@EQUINOX.CM@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.equinox.event"
     download-size="0"
     install-size="0"
     version="@EQUINOX.EVENT@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.equinox.region"
     download-size="0"
     install-size="0"
     version="@EQUINOX.REGION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.equinox.util"
     download-size="0"
     install-size="0"
     version="@EQUINOX.UTIL@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
 
     
     <plugin
@@ -119,8 +115,7 @@
     download-size="0"
     install-size="0"
     version="@OSGI.SERVICES@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.sat4j.core"
@@ -169,40 +164,35 @@
     download-size="0"
     install-size="0"
     version="@EQUINOX.DS.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.gemini.web.tomcat"
     download-size="0"
     install-size="0"
     version="@GEMINI.WEB@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.gemini.web.extender"
     download-size="0"
     install-size="0"
     version="@GEMINI.WEB@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.gemini.web.core"
     download-size="0"
     install-size="0"
     version="@GEMINI.WEB@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.virgo.nano.core"
     download-size="0"
     install-size="0"
     version="@NANO.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.virgo.nano.deployer"
@@ -230,24 +220,21 @@
     download-size="0"
     install-size="0"
     version="@NANO.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.virgo.nano.services.ds"
     download-size="0"
     install-size="0"
     version="@NANO.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.virgo.web.war.deployer"
     download-size="0"
     install-size="0"
     version="@WEB.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.virgo.util.common"
@@ -282,8 +269,7 @@
     download-size="0"
     install-size="0"
     version="@UTIL.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <plugin
     id="org.eclipse.virgo.util.osgi.manifest"
