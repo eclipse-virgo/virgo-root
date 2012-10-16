@@ -61,13 +61,6 @@
     unpack="false"/>
     
     <plugin
-    id="javax.persistence"
-    download-size="0"
-    install-size="0"
-    version="@JAVAX.PERSISTENCE@"
-    unpack="false"/>
-    
-    <plugin
     id="javax.servlet.jsp"
     download-size="0"
     install-size="0"
