@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.web.enterprise.services.accessor.internal.loader;
+package org.eclipse.virgo.web.enterprise.services.accessor;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.security.AccessController;
@@ -43,6 +43,8 @@ public class WebAppBundleClassloaderCustomizer implements ClassLoaderCustomizer,
             LOGGER.debug("Extending web application bundle " + bundle);
         }
 
+        this.webAppBundleCustomizer.processAdditionalAPIBundles(this.bundleTracker.getBundles());
+
         // TODO when we will remove the bundle?
         this.wabClassLoaderDelegateHook.addWebAppBundle(bundle);
 
@@ -54,8 +56,7 @@ public class WebAppBundleClassloaderCustomizer implements ClassLoaderCustomizer,
             }
         });
     }
-    
-    //TODO: reconsider exposing JarScannerCustomizer
+
     protected final void activate(ComponentContext componentContext) {
         this.bundleTracker = new BundleTracker<String>(componentContext.getBundleContext(), Bundle.RESOLVED | Bundle.STARTING | Bundle.ACTIVE,
             this.webAppBundleCustomizer);
@@ -68,11 +69,19 @@ public class WebAppBundleClassloaderCustomizer implements ClassLoaderCustomizer,
     	PluggableDelegatingClassLoaderDelegateHook.getInstance().removeDelegate(this.wabClassLoaderDelegateHook);
 
         this.bundleTracker.close();
-    }
 
-	@Override
+    }
+    
+    @Override
 	public JarScanner[] extendJarScannerChain(Bundle arg0) {
 		return new JarScanner[] { new ClassLoaderJarScanner(webAppBundleCustomizer.getBundlesForJarScanner()) };
 	}
-    
+
+    WebAppBundleClassLoaderDelegateHook getWebAppBundleClassLoaderDelegateHook() {
+        return this.wabClassLoaderDelegateHook;
+    }
+
+    WebAppBundleTrackerCustomizer getWebAppBundleTrackerCustomizer() {
+        return this.webAppBundleCustomizer;
+    }
 }

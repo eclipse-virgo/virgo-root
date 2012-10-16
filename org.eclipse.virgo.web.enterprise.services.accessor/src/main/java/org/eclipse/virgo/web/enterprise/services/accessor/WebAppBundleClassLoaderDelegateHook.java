@@ -1,5 +1,5 @@
 
-package org.eclipse.virgo.web.enterprise.services.accessor.internal.loader;
+package org.eclipse.virgo.web.enterprise.services.accessor;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -254,5 +254,13 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
             return null;
         }
     }
+
+	Set<Bundle> getApiBundles() {
+		return apiBundles;
+	}
+
+	Set<Bundle> getImplBundles() {
+		return implBundles;
+	}
 
 }

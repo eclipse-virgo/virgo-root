@@ -16,3 +16,4 @@ Import-Template: org.osgi.framework;version="0",
  javax.naming;version="0"
 Excluded-Exports:
  *
+Bundle-Activator: org.eclipse.virgo.web.enterprise.openejb.initialiser.Activator
