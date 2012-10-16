@@ -59,11 +59,11 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 				var bundle;
 				if(self.bundles[bundleId]){
 					bundle = self.bundles[bundleId];
+					bundle.relationship.infoBoxData = new Array();
 				}else{
-					bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], 5, 5, self.displayBundle);
+					bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], 5, 5, self.displayBundle, 'middle', self.relationshipType);
 					self.bundles[bundleId] = bundle;
 				}
-
 				self.focused = bundleId;
 				
 				if(self.relationshipType == 'wires'){
@@ -74,12 +74,15 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 				
 				var middleX = Math.round(self.paper.width/2);
 				var middleY = Math.round(self.paper.height/2);
-				bundle.move(middleX - (bundle.boxWidth/2), middleY);
-				bundle.show();
+				var selfInfoBoxData = bundle.relationship.infoBoxData;
+				bundle.reset(middleX - (bundle.boxWidth/2), middleY, 'middle', self.relationshipType);
+				bundle.relationship.infoBoxData = selfInfoBoxData;
 				self.bundleCanvas.scrollLeft(middleX - (self.minimumWidth/2));
 				
-				$.each(self.relationships, function(key, relationship){
-					relationship.display();
+				$.each(self.bundles, function(key, localBundle){
+					if(localBundle.state == 'waiting'){
+						localBundle.show();
+					}
 				});
 				
 				self.bundleCanvas.removeClass('spinner-large');
@@ -93,14 +96,14 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	self.renderWires = function(bundle){
 		var topRowBundleIds = {};
 		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
-			topRowBundleIds[wire.ProviderBundleId] = self.getInfoBoxWithWire(wire);
+			topRowBundleIds[wire.ProviderBundleId] = wire;
 		});
-		var topWidth = self.renderBundleRow(topRowBundleIds, -239, bundle, true);
+		var topWidth = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
-			bottomRowBundleIds[wire.RequirerBundleId] = self.getInfoBoxWithWire(wire);
+			bottomRowBundleIds[wire.RequirerBundleId] = wire;
 		});
-		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, bundle, false);
+		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
 		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
 		newWidth < self.minimumWidth ? self.paper.setSize(self.minimumWidth, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
 	};
@@ -108,136 +111,54 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	self.renderServices = function(bundle){
 		var topRowBundleIds = {};
 		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
-			topRowBundleIds[service.BundleIdentifier] = self.getInfoBoxWithService(service, service.BundleIdentifier, bundle.rawBundle.Identifier);
+			topRowBundleIds[service.BundleIdentifier] = {'service': service, 'consumerId': bundle.rawBundle.Identifier};
 		});
-		var topWidth = self.renderBundleRow(topRowBundleIds, -239, bundle, true);
+		var topWidth = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
-				bottomRowBundleIds[bundleId] = self.getInfoBoxWithService(service, bundleId, bundle.rawBundle.Identifier);
+				bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
 			});
 		});
-		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, bundle, false);
+		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
 		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
 		newWidth < self.minimumWidth ? self.paper.setSize(self.minimumWidth, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
 	};
 	
-	self.renderBundleRow = function(bundleIds, offset, focusedBundle, topRow){
+	self.renderBundleRow = function(bundleIds, offset, position, focusedBundle){
 		var yPos = (self.paper.height/2) + offset;
 		var xPos = this.bundleSpacing;
 		var focusedBundleId = focusedBundle.rawBundle.Identifier;
-		$.each(bundleIds, function(bundleId, relationshipInfoBox){
-			var bundle;
-			var existingBundle = false;
-			var releationshipKey = self.getRelationshipKey(bundleId, focusedBundleId);
-			if(self.bundles[bundleId]){
-				bundle = self.bundles[bundleId];
-				existingBundle = true;
-			}else{ //New Bundle so we will definitely be adding it on this loop. 
-				bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], xPos, yPos, self.displayBundle);
+		$.each(bundleIds, function(bundleId, relationshipInfoData){
+			if(!self.bundles[bundleId]){
+				var bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
+				bundle.increaseCount(relationshipInfoData);
 				self.bundles[bundleId] = bundle;
-			}
-			if(!bundle.isVisible && focusedBundleId != bundleId){// If the bundle is not visible and is not the focused bundle
-				var relationship;
-				if(topRow){
-					relationship = new Relationship(self.paper, bundle, focusedBundle, relationshipInfoBox);
-				}else{
-					relationship = new Relationship(self.paper, focusedBundle, bundle, relationshipInfoBox);
-				}
-				self.relationships[releationshipKey] = relationship;
-				if(existingBundle){
-					bundle.move(xPos, yPos);
-				}
-				bundle.show();
 				xPos = xPos + bundle.boxWidth + self.bundleSpacing;
-			} else {
-				var existingRelationship = self.relationships[releationshipKey];
-				if(bundle.rawBundle.Identifier == focusedBundleId){
-					if(existingRelationship){
-						existingRelationship.increaseCount(relationshipInfoBox);
-					}else{//Handle the first self relationship
-						self.relationships[releationshipKey] = new Relationship(self.paper, bundle, bundle, relationshipInfoBox);
+			}else if(focusedBundleId == bundleId){
+				focusedBundle.increaseCount(relationshipInfoData);
+			}else {
+				var bundle = self.bundles[bundleId];
+				if(bundle.state == 'waiting'){
+					if(position != bundle.position){
+						bundle.increaseBackCount(relationshipInfoData);
+					}else{
+						bundle.increaseCount(relationshipInfoData);
 					}
-				} else {
-					var existingFromBundle = existingRelationship.fromBundle.rawBundle.Identifier;
-					if(!topRow && existingFromBundle == focusedBundleId){// On the bottom row
-						existingRelationship.increaseCount(relationshipInfoBox);
-					} else if(topRow && bundle.rawBundle.Identifier == existingFromBundle){// On the top row
-						existingRelationship.increaseCount(relationshipInfoBox); 
-					} else {
-						existingRelationship.increaseBackCount(relationshipInfoBox); //On either row and its a back relationship
-					}
+				}else{//bundle.state == 'hidden'
+					bundle.reset(xPos, yPos, position, self.relationshipType, focusedBundle);
+					bundle.increaseCount(relationshipInfoData);
+					xPos = xPos + bundle.boxWidth + self.bundleSpacing;
 				}
 			}
 		});
 		return xPos;
 	};
-	
-	self.getRelationshipKey = function(bundleId1, bundleId2){
-		if(bundleId1 == bundleId2){
-			return 'self' + bundleId1;
-		}
-		if(bundleId1 < bundleId2){
-			return bundleId1 + '-' + bundleId2;
-		}
-		return bundleId2 + '-' + bundleId1;
-	};
 
 	self.hideAll = function(){
-		$.each(self.bundles, function(index, value){
-			value.hide();
+		$.each(self.bundles, function(index, bundle){
+			bundle.hide();
 		});
-		$.each(self.relationships, function(index, value){
-			value.remove();
-		});
-		self.relationships = {};
-	};
-	
-	self.getInfoBoxWithService = function(service, bundleId1, bundleId2){
-		var name = 'service' + service.Identifier;
-		var title = 'Service(s) between Bundles ' + bundleId1 + ' and ' + bundleId2;
-		var infoBox = $('<ul></ul>');
-		infoBox.append($('<li>Service [' + service.Identifier + '] ' + service.objectClass[0] + (service.objectClass.length > 1 ? '...' : '') + '</li>').addClass('section-title'));
-		infoBox.append($('<li>Published by Bundle ' + service.BundleIdentifier + '</li>'));
-		infoBox.append($('<li>Used by</li>'));
-		$.each(service.UsingBundles, function(index, item){
-			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
-		});
-		infoBox.append($('<li>ObjectClass</li>'));
-		$.each(service.objectClass, function(index, item){
-			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
-		});
-		return new InfoBox({name: name, title: title, content: infoBox, closeable: true});
-	};
-	
-	self.getInfoBoxWithWire = function(wire){
-		var name = 'wire' + wire.ProviderBundleId + '-' + wire.RequirerBundleId;
-		var title = 'Wire(s) between Bundles ' + wire.ProviderBundleId + ' and ' + wire.RequirerBundleId;
-		var infoBox = $('<ul></ul>');
-		infoBox.append($('<li>"' + wire.BundleRequirement.Namespace + '" provided by Bundle ' + wire.ProviderBundleId + ' to Bundle ' + wire.RequirerBundleId + '</li>').addClass('section-title'));
-		infoBox.append($('<li>Capability</li>'));
-		self.addWireProperties(infoBox, wire.BundleCapability.Attributes, '=', 'Attributes');
-		self.addWireProperties(infoBox, wire.BundleCapability.Directives, ':=', 'Directives');
-		infoBox.append($('<li>Requirement</li>'));
-		self.addWireProperties(infoBox, wire.BundleRequirement.Attributes, '=', 'Attributes');
-		self.addWireProperties(infoBox, wire.BundleRequirement.Directives, ':=', 'Directives');
-		return new InfoBox({name: name, title: title, content: infoBox, closeable: true});
-	};
-	
-	self.addWireProperties = function(list, attributes, delimiter, type){
-		var firstItem = $('<li></li>').addClass('indent1');
-		list.append(firstItem);
-		var itemsAdded = false;
-		$.each(attributes, function(key, value){
-			if(!itemsAdded){
-				itemsAdded = true;
-				firstItem.text(type);
-			}
-			list.append($('<li>' + value.Key + delimiter + value.Value + '</li>').addClass('indent2'));
-		});
-		if(!itemsAdded){
-			firstItem.text('No ' + type);
-		}
 	};
 	
 };
@@ -245,15 +166,22 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 /**
  * Bundle
  */
-var Bundle = function(paper, rawBundle, x, y, dblClickCallback){
+var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, otherBundle){
 
 	var self = this;
 	
 	self.paper = paper;
 	self.rawBundle = rawBundle;
 	self.dblClickCallback = dblClickCallback;
-	self.relationships = {};
-	self.isVisible = false;
+	self.position = position;
+	if(position == 'top'){
+		self.relationship = new Relationship(self.paper, type, self, otherBundle);
+	}else if(position == 'bottom'){
+		self.relationship = new Relationship(self.paper, type, otherBundle, self);
+	}else{
+		self.relationship = new Relationship(self.paper, type, self, self);
+	};	
+	self.state = 'waiting'; //One of 'hidden', 'waiting' or 'visible'
 	//Display attributes
 	self.bundleMargin = 8;
 	self.boxHeight = 28 + (2*self.bundleMargin); // Starter value to get text in the right place
@@ -303,25 +231,30 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback){
 	});
 	
 	self.show = function(){
-		if(!self.isVisible){
+		if(self.state == 'waiting'){
 			self.text.show();
 			self.box.show();
 			self.info.show();
-			self.isVisible = true;
+			self.relationship.show();
+			self.state = 'visible';
 		}
 	};
 	
 	self.hide = function(){
-		if(self.isVisible){
+		if(self.state != 'hidden'){
 			self.text.hide();
 			self.box.hide();
 			self.info.hide();
 			self.infoBox = undefined;//Force it to be reloaded as the underlying data may have changed
-			self.isVisible = false;
+			self.relationship.hide();
+			self.state = 'hidden';
 		}
 	};
 	
-	self.move = function(x, y) {
+	self.reset = function(x, y, position, type, otherBundle) {
+		if(self.state == 'visible'){
+			self.hide();
+		}
 		self.x = Math.round(x);
 		self.y = Math.round(y);
 		self.text.attr({
@@ -336,7 +269,23 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback){
 			'x' : self.x + (self.boxWidth - 1.5*self.bundleMargin), 
 			'y' : self.y
 		});
-		
+		self.position = position;
+		if(position == 'top'){
+			self.relationship.reset(type, self, otherBundle);
+		}else if(position == 'bottom'){
+			self.relationship.reset(type, otherBundle, self);
+		}else{
+			self.relationship.reset(type, self, self);
+		};
+		self.state = 'waiting';
+	};
+	
+	self.increaseCount = function(relationshipInfoData) {
+		self.relationship.increaseCount(relationshipInfoData);
+	};
+	
+	self.increaseBackCount = function(relationshipInfoData) {
+		self.relationship.increaseBackCount(relationshipInfoData);
 	};
 	
 	self.getInfoBoxWithBundle = function(rawBundle){
@@ -381,34 +330,41 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback){
 
 };
 
-var Relationship = function(paper, fromBundle, toBundle, infoBox) {
+var Relationship = function(paper, type, fromBundle, toBundle) {
 	
 	var self = this;
 	
 	self.paper = paper;
 	self.fromBundle = fromBundle;
 	self.toBundle = toBundle;
-	self.infoBox = infoBox;
+	self.type = type;
+	self.infoBoxData = new Array();
 	self.doubleEnded = 'none';
-
-	self.count = 1;
 	self.controlPointOffset = 90;
 	
 	self.setCoordinates = function(){
+		var startPoint;
+		var endPoint;
+		var startPointControl;
+		var endPointControl;
 		if(self.fromBundle.rawBundle.Identifier == self.toBundle.rawBundle.Identifier){
 			var xOffSet = self.fromBundle.x + self.toBundle.boxWidth;
-			self.startPoint = {'x' : xOffSet - 20, 'y' : self.fromBundle.y - (self.fromBundle.boxHeight/2)};
-			self.endPoint = {'x' : xOffSet - 20, 'y' : Math.round(self.toBundle.y + (self.toBundle.boxHeight/2))};
-			self.startPointControl = {'x' : self.startPoint.x + self.controlPointOffset, 'y' : self.startPoint.y - self.controlPointOffset}; 
-			self.endPointControl = {'x' : self.endPoint.x + self.controlPointOffset, 'y' : self.endPoint.y + self.controlPointOffset};
+			startPoint = {'x' : xOffSet - 20, 'y' : self.fromBundle.y - (self.fromBundle.boxHeight/2)};
+			endPoint = {'x' : xOffSet - 20, 'y' : Math.round(self.toBundle.y + (self.toBundle.boxHeight/2))};
+			startPointControl = {'x' : startPoint.x + self.controlPointOffset, 'y' : startPoint.y - self.controlPointOffset}; 
+			endPointControl = {'x' : endPoint.x + self.controlPointOffset, 'y' : endPoint.y + self.controlPointOffset};
 			self.midPoint = {'x' : xOffSet + 47, 'y' : self.fromBundle.y};
 		}else{
-			self.startPoint = {'x' : Math.round(self.fromBundle.x + self.fromBundle.boxWidth/2), 'y' : self.fromBundle.y + (self.fromBundle.boxHeight/2)};
-			self.endPoint = {'x' : Math.round(self.toBundle.x + self.toBundle.boxWidth/2), 'y' : self.toBundle.y - (self.fromBundle.boxHeight/2)};
-			self.startPointControl = {'x' : self.startPoint.x, 'y' : self.startPoint.y + self.controlPointOffset}; 
-			self.endPointControl = {'x' : self.endPoint.x, 'y' : self.endPoint.y - self.controlPointOffset};
-			self.midPoint = self.calculateMidpoint(self.startPoint.x, self.startPoint.y, self.endPoint.x, self.endPoint.y);
+			startPoint = {'x' : Math.round(self.fromBundle.x + self.fromBundle.boxWidth/2), 'y' : self.fromBundle.y + (self.fromBundle.boxHeight/2)};
+			endPoint = {'x' : Math.round(self.toBundle.x + self.toBundle.boxWidth/2), 'y' : self.toBundle.y - (self.fromBundle.boxHeight/2)};
+			startPointControl = {'x' : startPoint.x, 'y' : startPoint.y + self.controlPointOffset}; 
+			endPointControl = {'x' : endPoint.x, 'y' : endPoint.y - self.controlPointOffset};
+			self.midPoint = self.calculateMidpoint(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 		}
+		self.pathString = 'M' + startPoint.x + ',' + startPoint.y + 
+			'C' + startPointControl.x + ',' + startPointControl.y + 
+			',' + endPointControl.x + ',' + endPointControl.y + 
+			',' + endPoint.x + ',' + endPoint.y;
 	};
 	
 	self.calculateMidpoint = function(startX, startY, endX, endY){
@@ -426,62 +382,71 @@ var Relationship = function(paper, fromBundle, toBundle, infoBox) {
 		return {'x' : midX, 'y' : midY};
 	};
 	
-	self.display = function() {
-		self.remove();
-		self.setCoordinates();
-		self.tooltip = 'From bundle ' + self.fromBundle.summary + '\n To bundle ' + self.toBundle.summary;
-		self.visual = self.paper.path('M' + self.startPoint.x + ',' + self.startPoint.y + 
-									'C' + self.startPointControl.x + ',' + self.startPointControl.y + 
-									',' + self.endPointControl.x + ',' + self.endPointControl.y + 
-									',' + self.endPoint.x + ',' + self.endPoint.y).attr({
-			'arrow-end' : 'block-wide-long',
-			'arrow-start': self.doubleEnded,
-			'stroke-width' : 3,
-			'stroke' : '#002F5E'
-		}).toBack();
-		self.infoPoint = self.paper.circle(self.midPoint.x, self.midPoint.y, 10).attr({
-			'fill' : '#BAD9EC', 
-			'stroke' : 'none',
-			'cursor' : 'pointer',
-			'title' : self.tooltip
-		});
-		self.infoPointText = self.paper.text(self.midPoint.x, self.midPoint.y + 1, self.count).attr({
-			'font' : '13px serif', 
-			'stroke' : '#002F5E',
-			'cursor' : 'pointer',
-			'title' : self.tooltip
-		});
-		
-		self.infoPoint.click(function(){self.displayInfoBox();});
-		self.infoPointText.click(function(){self.displayInfoBox();});
-		
-		self.infoPoint.hover(function(){self.glow = self.visual.glow();}, function(){self.glow.remove();}, self, self);
-		self.infoPointText.hover(function(){self.glow = self.visual.glow();}, function(){self.glow.remove();}, self, self);
+	self.show = function() {
+		if(0 < self.infoBoxData.length){
+			self.setCoordinates();
+			self.tooltip = 'From bundle ' + self.fromBundle.summary + '\n To bundle ' + self.toBundle.summary;
+			self.visual = self.paper.path(self.pathString).attr({
+				'arrow-start': self.doubleEnded,
+				'stroke-width' : 3,
+				'stroke' : '#002F5E'
+			}).toBack();
+			self.infoPoint = self.paper.circle(self.midPoint.x, self.midPoint.y, 10).attr({
+				'fill' : '#BAD9EC', 
+				'stroke' : 'none',
+				'cursor' : 'pointer',
+				'title' : self.tooltip
+			});
+			self.infoPointText = self.paper.text(self.midPoint.x, self.midPoint.y + 1, self.infoBoxData.length).attr({
+				'font' : '13px serif', 
+				'stroke' : '#002F5E',
+				'cursor' : 'pointer',
+				'title' : self.tooltip
+			});
+
+			self.infoPoint.click(function(){self.displayInfoBox();});
+			self.infoPointText.click(function(){self.displayInfoBox();});
+			
+			self.infoPoint.hover(function(){self.glow = self.visual.glow();}, function(){self.glow.remove();}, self, self);
+			self.infoPointText.hover(function(){self.glow = self.visual.glow();}, function(){self.glow.remove();}, self, self);
+		}
 	};
 	
 	self.displayInfoBox = function() {
+		if(!self.infoBox){
+			if(self.type == 'wires'){
+				self.infoBox = self.getInfoBoxWithWire(self.infoBoxData[0]);
+				for ( var i = 1; i < self.infoBoxData.length; i++) {
+					self.infoBox.addContent(self.getInfoBoxWithWireContent(self.infoBoxData[i]));
+				}
+			} else if(type == 'services'){
+				self.infoBox = self.getInfoBoxWithService(self.infoBoxData[0]);
+				for ( var i = 1; i < self.infoBoxData.length; i++) {
+					self.infoBox.addContent(self.getInfoBoxWithServiceContent(self.infoBoxData[i].service, self.infoBoxData[i].consumerId));
+				}
+			}
+		}
 		self.infoBox.show();
 	};
 	
-	self.increaseCount = function(relationshipInfoBox) {
-		self.count = self.count + 1;
+	self.increaseCount = function(relationshipInfoData) {		
 		if(self.infoPointText){
 			self.infoPointText.attr({'text': self.count});
 		}
-		self.infoBox.addContent(relationshipInfoBox.content);
+		self.infoBoxData.push(relationshipInfoData);
 	};
 	
-	self.increaseBackCount = function(relationshipInfoBox) {
-		self.increaseCount(relationshipInfoBox);
+	self.increaseBackCount = function(relationshipInfoData) {
+		self.increaseCount(relationshipInfoData);
 		if('none' == self.doubleEnded){
 			self.doubleEnded = 'block-wide-long';
 			if(self.visual){
-				self.visual.attr({'arrow-start': 'block-wide-long'});
+				self.visual.attr({'arrow-start': self.doubleEnded});
 			}
 		}
 	};
 	
-	self.remove = function() {
+	self.hide = function() {
 		if(self.visual){
 			self.visual.remove();
 		}
@@ -492,5 +457,79 @@ var Relationship = function(paper, fromBundle, toBundle, infoBox) {
 			self.infoPointText.remove();
 		}
 	};
+	
+	self.reset = function(type, fromBundle, toBundle){
+		self.fromBundle = fromBundle;
+		self.toBundle = toBundle;
+		self.type = type;
+		self.infoBoxData = new Array();
+		self.doubleEnded = 'none';
+		if(self.visual){
+			self.visual.attr({'arrow-start': self.doubleEnded});
+		}
+		if(self.infoBox){
+			self.infoBox = undefined;
+		}
+	};
+	
+	self.getInfoBoxWithService = function(serviceData){
+		var name = 'service' + serviceData.service.Identifier;
+		var title = 'Service(s) between Bundles ' + serviceData.service.BundleIdentifier + ' and ' + serviceData.consumerId;
+		var content = self.getInfoBoxWithServiceContent(serviceData.service, serviceData.consumerId);
+		return new InfoBox({name: name, title: title, content: content, closeable: true});
+	};
+	
+	self.getInfoBoxWithServiceContent = function(service, consumerId){
+		var infoBox = $('<ul></ul>');
+		infoBox.append($('<li>Service [' + service.Identifier + '] ' + service.objectClass[0] + (service.objectClass.length > 1 ? '...' : '') + '</li>').addClass('section-title'));
+		infoBox.append($('<li>Published by Bundle ' + service.BundleIdentifier + '</li>'));
+		infoBox.append($('<li>Used by bundle ' + consumerId + '</li>'));
+		infoBox.append($('<li>Also used by</li>'));
+		$.each(service.UsingBundles, function(index, item){
+			if(item != consumerId){
+				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+			}
+		});
+		infoBox.append($('<li>ObjectClass</li>'));
+		$.each(service.objectClass, function(index, item){
+			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+		});
+		return infoBox;
+	};
+	
+	self.getInfoBoxWithWire = function(wire){
+		var name = 'wire' + wire.ProviderBundleId + '-' + wire.RequirerBundleId;
+		var title = 'Wire(s) between Bundles ' + wire.ProviderBundleId + ' and ' + wire.RequirerBundleId;
+		var content = self.getInfoBoxWithWireContent(wire);
+		return new InfoBox({name: name, title: title, content: content, closeable: true});
+	};
 
+	self.getInfoBoxWithWireContent = function(wire){
+		var infoBox = $('<ul></ul>');
+		infoBox.append($('<li>"' + wire.BundleRequirement.Namespace + '" provided by Bundle ' + wire.ProviderBundleId + ' to Bundle ' + wire.RequirerBundleId + '</li>').addClass('section-title'));
+		infoBox.append($('<li>Capability</li>'));
+		self.addWireProperties(infoBox, wire.BundleCapability.Attributes, '=', 'Attributes');
+		self.addWireProperties(infoBox, wire.BundleCapability.Directives, ':=', 'Directives');
+		infoBox.append($('<li>Requirement</li>'));
+		self.addWireProperties(infoBox, wire.BundleRequirement.Attributes, '=', 'Attributes');
+		self.addWireProperties(infoBox, wire.BundleRequirement.Directives, ':=', 'Directives');
+		return infoBox;
+	};
+	
+	self.addWireProperties = function(list, attributes, delimiter, type){
+		var firstItem = $('<li></li>').addClass('indent1');
+		list.append(firstItem);
+		var itemsAdded = false;
+		$.each(attributes, function(key, value){
+			if(!itemsAdded){
+				itemsAdded = true;
+				firstItem.text(type);
+			}
+			list.append($('<li>' + value.Key + delimiter + value.Value + '</li>').addClass('indent2'));
+		});
+		if(!itemsAdded){
+			firstItem.text('No ' + type);
+		}
+	};
+	
 };
