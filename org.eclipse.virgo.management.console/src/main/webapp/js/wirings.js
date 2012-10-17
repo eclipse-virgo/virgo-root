@@ -68,7 +68,7 @@ var SideBar = function(layoutManager, dataSource){
 		
 		self.bundlesTable = util.makeTable({ 
 			id: 'bundle-table',
-			headers: [{title: 'Id', type: 'numeric'}, {title: 'SymbolicName', type: 'char'}, {title: 'Version', type: 'numeric'}], 
+			headers: [{title: 'Id', type: 'numeric'}, {title: 'SymbolicName', type: 'alpha'}, {title: 'Version', type: 'version'}], 
 			rows: tRows,
 			sortable : true,
 			sortIndex: 0,

@@ -80,7 +80,7 @@ Repositories = {
 		
 		var descriptorTable = util.makeTable({
 			clazz: 'repository-table table-selectable',
-			headers: [{title: 'Type'}, {title: 'Name'}, {title: 'Version', type: 'numeric'}],
+			headers: [{title: 'Type', type: 'alpha'}, {title: 'Name', type: 'alpha'}, {title: 'Version', type: 'version'}],
 			rows: rows,
 			selectable: true,
 			sortable: true,

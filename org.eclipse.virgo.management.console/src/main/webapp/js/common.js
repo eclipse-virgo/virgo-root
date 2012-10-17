@@ -240,12 +240,36 @@ var Util = function(){
 				return getText(tr1) - getText(tr2);
 			};
 			
+			var compareVersion = function(tr1, tr2){
+				var getText = function(tr){
+					var cell = $('*:nth-child(' + (index+1) + ')', tr);
+					return $(cell).text();
+				};
+				var ver1 = getText(tr1).split('.');
+				var ver2 = getText(tr2).split('.');
+				var result = ver1[0] - ver2[0];
+				if(result == 0){
+					result = ver1[1] - ver2[1];
+				}
+				if(result == 0){
+					result = ver1[2] - ver2[2];
+				}
+				if(result == 0){
+					result = ((ver1[3] < ver2[3]) ? -1 : ((ver1[3] > ver2[3]) ? 1 : 0));
+				}
+				return result;
+			};
+			
 			var revCompareAlpha = function(tr1, tr2) {
 				return -compareAlpha(tr1, tr2);
 			};
 			
 			var revCompareNumeric = function(tr1, tr2) {
 				return -compareNumeric(tr1, tr2);
+			};
+			
+			var revCompareVersion = function(tr1, tr2){
+				return -compareVersion(tr1, tr2);
 			};
 			
 			var ths = $(th).siblings();
@@ -272,8 +296,10 @@ var Util = function(){
 			tRows.remove();
 			if(type == 'numeric'){
 				tRows.sort(isSorted ? revCompareNumeric : compareNumeric);
-			}else{
+			}else if(type == 'alpha'){
 				tRows.sort(isSorted ? revCompareAlpha : compareAlpha);
+			}else{
+				tRows.sort(isSorted ? revCompareVersion : compareVersion);
 			}
 			tBody.append(tRows);
 		};
