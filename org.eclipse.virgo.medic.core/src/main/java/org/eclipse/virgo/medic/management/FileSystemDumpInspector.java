@@ -11,9 +11,11 @@
 package org.eclipse.virgo.medic.management;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,8 @@ import org.eclipse.virgo.util.io.FileSystemUtils;;
 public class FileSystemDumpInspector implements DumpInspector {
     
 	private static final String OSGI_STATE_STRING = "OSGi-state";
+
+	private static final long LARGE_FILE_SIZE_LIMIT = 1024000l;
 	
     private final Logger logger = LoggerFactory.getLogger(FileSystemDumpInspector.class);
     
@@ -110,10 +114,14 @@ public class FileSystemDumpInspector implements DumpInspector {
 		if(dumpDir != null && dumpDir.exists() && dumpDir.isDirectory()){
 			File dumpEntry = new File(dumpDir, dumpId + File.separatorChar + entryName);
 			if(dumpEntry != null){
-				LineNumberReader reader = null;
+				RandomAccessFile reader = null;
 				try {
-					reader = new LineNumberReader(new FileReader(dumpEntry));
-					while (reader.ready()){
+					reader = new RandomAccessFile(dumpEntry, "r");
+					while (reader.getFilePointer() < reader.length()){
+						if(reader.getFilePointer() > LARGE_FILE_SIZE_LIMIT){
+							lines.add("File exceeds 1MB, truncated.");
+							break;
+						}
 						String rawLine = reader.readLine();
 						if(rawLine != null){
 							lines.add(this.escapeAngleBrackets(rawLine));
