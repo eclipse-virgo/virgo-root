@@ -28,8 +28,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
             if (realPath != null) {
                 deployer.deploy(realPath, standardContext);
             } else {
-                String docBase = standardContext.getDocBase();
-                deployer.deploy(System.getProperty("org.eclipse.virgo.kernel.home") + File.separator + docBase);              
+                deployer.deploy(getAppModuleId(standardContext.getDocBase()));              
             }
         } catch (Exception e) {
             // failing to initialise enterprise container should not kill the app's deployment
@@ -47,12 +46,24 @@ public class OpenEjbApplicationListener implements LifecycleListener {
             if (realPath != null) {
                 deployer.undeploy(realPath);
             } else {
-                String docBase = standardContext.getDocBase();
-                deployer.undeploy(System.getProperty("org.eclipse.virgo.kernel.home") + File.separator + docBase);
+                deployer.undeploy(getAppModuleId(standardContext.getDocBase()));
             }
         } catch (Exception e) {
             // failing to destroy enterprise container should not kill the app's undeployment
         }
+    }
+    
+    private String getAppModuleId(String docBase) {
+        String appModuleId;
+
+        File appLocation = new File (docBase);
+        if(!appLocation.isAbsolute()) {
+            appModuleId = System.getProperty("org.eclipse.virgo.kernel.home") + File.separator + docBase;
+        } else {
+            appModuleId = docBase;
+        }
+        
+        return appModuleId;
     }
 
 	@Override
