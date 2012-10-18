@@ -7,9 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -24,7 +21,6 @@ import javax.naming.NamingException;
 import javax.naming.RefAddr;
 
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.deploy.ContextResource;
 import org.apache.naming.ContextAccessController;
 import org.apache.openejb.AppContext;
 import org.apache.openejb.ClassLoaderUtil;
@@ -42,13 +38,10 @@ import org.apache.openejb.config.ConfigurationFactory;
 import org.apache.openejb.config.DeploymentLoader;
 import org.apache.openejb.config.DeploymentModule;
 import org.apache.openejb.config.DynamicDeployer;
-import org.apache.openejb.config.ServiceUtils;
-import org.apache.openejb.config.sys.Resource;
-import org.apache.openejb.config.sys.ServiceProvider;
 import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.util.ContextUtil;
-import org.eclipse.virgo.web.enterprise.openejb.deployer.log.OpenEjbDeployerLogEvents;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
+import org.eclipse.virgo.web.enterprise.openejb.deployer.log.OpenEjbDeployerLogEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,32 +50,20 @@ import org.slf4j.LoggerFactory;
 @TransactionManagement(BEAN)
 public class VirgoDeployerEjb extends DeployerEjb {
 
-	private static final String JTA_MANAGED_PROP = "JtaManaged";
-	private static final String NON_TRANSACTIONAL_TYPE = "non-transactional";
-	private static final String TRANSACTION_TYPE_PROP = "transactionType";
-	private static final String STANDARD_CONTEXT_PROPERTY = "CatalinaStandardContext";
 	private static final String OPENEJB_SCHEME = "openejb:";
     private static final String JAVA_SCHEME = "java:";
     private static final String TRANSACTION_TYPE_BEAN = "Bean";
 	private static final String META_INF = "META-INF";
 	private static final String DISABLED_SUFFIX = ".disabled";
 	private static final String RESOURCES_XML = "resources.xml";
-	private static final String DATA_SOURCE = "DataSource";
-	private static final String OPENEJB_JDBC_DRIVER = "JdbcDriver";
-	private static final String TOMCAT_DRIVER_CLASS_NAME = "driverClassName";
-	private static final String OPENEJB_JDBC_URL = "JdbcUrl";
-	private static final String TOMCAT_JDBC_URL = "url";
-	private static final String OPENEJB_USERNAME = "UserName";
-	private static final String TOMCAT_USERNAME = "username";
 	private final DeploymentLoader deploymentLoader;
 	private final ConfigurationFactory configurationFactory;
 	private final Assembler assembler;
-	private List<ServiceProvider> resourceProviders;
+
 	private final String webContextPath;
 	private final ClassLoader servletClassLoader;
 	private DynamicDeployer dynamicDeployer = null;
-
-	private static final String PROVIDER = "provider";
+	private ResourceOperator resourceOperator = null;
 	
 	private Logger logger = LoggerFactory.getLogger(VirgoDeployerEjb.class);
 
@@ -90,18 +71,14 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		// this custom deployment loader fixes deployment of archived web apps
 		// and sets the webcontextPath as moduleId
 		deploymentLoader = new VirgoDeploymentLoader(webContextPath);
-		dynamicDeployer = DynamicDeployerHolder.getDynamicDeployer();
+		dynamicDeployer = OpenEjbDeployerDSComponent.getDynamicDeployer();
 		if (dynamicDeployer != null) {
 			configurationFactory = new ConfigurationFactory(false, dynamicDeployer);
 		} else {
 			configurationFactory = new ConfigurationFactory();
 		}
 		assembler = (Assembler) SystemInstance.get().getComponent(org.apache.openejb.spi.Assembler.class);
-		try {
-			resourceProviders = ServiceUtils.getServiceProvidersByServiceType("Resource");
-		} catch (OpenEJBException e) {
-			resourceProviders = new ArrayList<ServiceProvider>(0);
-		}
+
 		this.webContextPath = webContextPath;
 		this.servletClassLoader = servletClassLoader;
 	}
@@ -130,7 +107,11 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			disableResourcesDescriptors(appModule);
 
 			// set resources
-			setResources(loc, appModule, standardContext);
+			resourceOperator = OpenEjbDeployerDSComponent.getResourceOperator();
+			if (resourceOperator == null) {
+			    resourceOperator = new StandardResourceOperator();
+			}
+			resourceOperator.processResources(appModule, standardContext);
 
 			final AppInfo appInfo = configurationFactory.configureApplication(appModule);
 			if (p != null && p.containsKey(OPENEJB_DEPLOYER_FORCED_APP_ID_PROP)) {
@@ -286,100 +267,6 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		return modules;
 	}
 
-	private void setResources(String loc, AppModule appModule, StandardContext standardContext) {
-
-		ContextResource[] contextResources = standardContext.getNamingResources().findResources();
-
-		if (contextResources == null) {
-			return;
-		}
-
-		for (ContextResource contextResource : contextResources) {
-			if (isResourceTypeSupported(contextResource)) {
-				Resource resource = createResource(contextResource, standardContext, appModule.getModuleId());
-				appModule.getResources().add(resource);
-			}
-		}
-	}
-
-	private Resource createResource(final ContextResource contextResource, StandardContext standardContext, final String appModuleId) {
-		final String id = appModuleId + '/' + contextResource.getName();
-		final String type = contextResource.getType();
-		String provider = (String) contextResource.getProperty(PROVIDER);
-		Resource resource = new Resource(id, type, provider);
-		populateResourceProperties(contextResource, resource, standardContext);
-		return resource;
-	}
-
-	private void populateResourceProperties(ContextResource contextResource, Resource resource, StandardContext standardContext) {
-		Properties resProperties = resource.getProperties();
-		Iterator<String> ctxResPropertiesItr = contextResource.listProperties();
-		boolean isDataSource = contextResource.getType().contains(DATA_SOURCE);
-		while (ctxResPropertiesItr.hasNext()) {
-			String key = ctxResPropertiesItr.next();
-			if (PROVIDER.equals(key) || key.length() == 0) {
-				continue;
-			}
-			final Object value = contextResource.getProperty(key);
-			if (isDataSource) {
-				key = transformKey(key);
-			}
-			resProperties.put(key, value);
-		}
-		if (isDataSource) {
-			resProperties.put(STANDARD_CONTEXT_PROPERTY, standardContext);
-			if (resProperties.get(JTA_MANAGED_PROP) == null) {
-				if (NON_TRANSACTIONAL_TYPE.equals(resProperties.get(TRANSACTION_TYPE_PROP))) {
-					resProperties.put(JTA_MANAGED_PROP, "false");
-				} else {
-					resProperties.put(JTA_MANAGED_PROP, "true");
-				}
-			}
-		}
-	}
-
-	private String transformKey(String key) {
-		String transformedKey;
-		if (TOMCAT_USERNAME.equals(key)) {
-			transformedKey = OPENEJB_USERNAME;
-		} else if (TOMCAT_JDBC_URL.equals(key)) {
-			transformedKey = OPENEJB_JDBC_URL;
-		} else if (TOMCAT_DRIVER_CLASS_NAME.equals(key)) {
-			transformedKey = OPENEJB_JDBC_DRIVER;
-		} else {
-			StringBuffer buffer = new StringBuffer(key);
-			buffer.setCharAt(0, Character.toUpperCase(buffer.charAt(0)));
-			transformedKey = buffer.toString();
-		}
-
-		return transformedKey;
-	}
-
-	private boolean isResourceTypeSupported(ContextResource contextResource) {
-		String resourceType = contextResource.getType();
-		for (ServiceProvider serviceProvider : resourceProviders) {
-			if (serviceProvider.getTypes().contains(resourceType)) {
-				return true;
-			}
-		}
-
-		String provider = (String) contextResource.getProperty(PROVIDER);
-		if (provider == null) {
-			return false;
-		}
-
-		try {
-			ServiceProvider serviceProvider = ServiceUtils.getServiceProvider(provider);
-			if (serviceProvider.getTypes().contains(resourceType)) {
-				return true;
-			}
-		} catch (OpenEJBException e) {
-			return false;
-		}
-
-		return false;
-	}
-
 	private void disableResourcesDescriptors(final AppModule appModule) {
 		final Map<String, DeploymentModule> modules = getAllModules(appModule);
 		for (final DeploymentModule module : modules.values()) {
@@ -424,10 +311,10 @@ public class VirgoDeployerEjb extends DeployerEjb {
 	}
 
 	private void logMessage(String message, LogEvent event) {
-		if (EventLoggerHolder.getEventLogger() == null) {
+		if (OpenEjbDeployerDSComponent.getEventLogger() == null) {
 			System.out.println(message);
 		} else {
-			EventLoggerHolder.getEventLogger().log(event, this.webContextPath);
+			OpenEjbDeployerDSComponent.getEventLogger().log(event, this.webContextPath);
 		}
 	}
 }
