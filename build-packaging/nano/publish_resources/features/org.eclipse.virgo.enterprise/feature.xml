@@ -274,41 +274,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.apache.openejb.api"
-    download-size="0"
-    install-size="0"
-    version="@OE.API@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.openejb.core"
-    download-size="0"
-    install-size="0"
-    version="@OE.CORE@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.openejb.javaagent"
-    download-size="0"
-    install-size="0"
-    version="@OE.JAVAAGENT@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.openejb.jee"
-    download-size="0"
-    install-size="0"
-    version="@OE.JEE@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.openejb.loader"
-    download-size="0"
-    install-size="0"
-    version="@OE.LOADER@"
-    unpack="false"/>
-    
-    <plugin
     id="javax.wsdl"
     download-size="0"
     install-size="0"
