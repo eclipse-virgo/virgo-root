@@ -304,7 +304,7 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 	};
 	
 	self.moveHorizontaly = function(horizontalAdjustment){
-		self.x = self.x + horizontalAdjustment;
+		self.x = self.x + (horizontalAdjustment - self.bundleMargin);
 		self.text.attr({
 			'x' : self.x + self.bundleMargin, 
 		});
@@ -455,7 +455,7 @@ var Relationship = function(paper, type, fromBundle, toBundle) {
 				for ( var i = 1; i < self.infoBoxData.length; i++) {
 					self.infoBox.addContent(self.getInfoBoxWithWireContent(self.infoBoxData[i]));
 				}
-			} else if(type == 'services'){
+			} else if(self.type == 'services'){
 				self.infoBox = self.getInfoBoxWithService(self.infoBoxData[0]);
 				for ( var i = 1; i < self.infoBoxData.length; i++) {
 					self.infoBox.addContent(self.getInfoBoxWithServiceContent(self.infoBoxData[i].service, self.infoBoxData[i].consumerId));
