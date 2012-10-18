@@ -98,14 +98,13 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
 			topRowBundleIds[wire.ProviderBundleId] = wire;
 		});
-		var topWidth = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
+		var topRowRenderResult = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
 			bottomRowBundleIds[wire.RequirerBundleId] = wire;
 		});
-		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
-		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
-		newWidth < self.minimumWidth ? self.paper.setSize(self.minimumWidth, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
+		var bottomRowRenderResult = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
+		self.centerBundles(topRowRenderResult, bottomRowRenderResult);
 	};
 	
 	self.renderServices = function(bundle){
@@ -113,26 +112,27 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
 			topRowBundleIds[service.BundleIdentifier] = {'service': service, 'consumerId': bundle.rawBundle.Identifier};
 		});
-		var topWidth = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
+		var topRowRenderResult = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
 				bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
 			});
 		});
-		var bottomWidth = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
-		var newWidth = topWidth < bottomWidth ? bottomWidth : topWidth;
-		newWidth < self.minimumWidth ? self.paper.setSize(self.minimumWidth, self.paper.height) : self.paper.setSize(newWidth, self.paper.height);
+		var bottomRowRenderResult = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
+		self.centerBundles(topRowRenderResult, bottomRowRenderResult);
 	};
 	
 	self.renderBundleRow = function(bundleIds, offset, position, focusedBundle){
 		var yPos = (self.paper.height/2) + offset;
 		var xPos = this.bundleSpacing;
 		var focusedBundleId = focusedBundle.rawBundle.Identifier;
+		var renderedBundleIds = new Array();
 		$.each(bundleIds, function(bundleId, relationshipInfoData){
 			if(!self.bundles[bundleId]){
 				var bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
 				bundle.increaseCount(relationshipInfoData);
+				renderedBundleIds.push(bundleId);
 				self.bundles[bundleId] = bundle;
 				xPos = xPos + bundle.boxWidth + self.bundleSpacing;
 			}else if(focusedBundleId == bundleId){
@@ -148,11 +148,34 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 				}else{//bundle.state == 'hidden'
 					bundle.reset(xPos, yPos, position, self.relationshipType, focusedBundle);
 					bundle.increaseCount(relationshipInfoData);
+					renderedBundleIds.push(bundleId);
 					xPos = xPos + bundle.boxWidth + self.bundleSpacing;
 				}
 			}
 		});
-		return xPos;
+		return {bundleIds: renderedBundleIds, width: xPos};
+	};
+	
+	self.centerBundles = function(topRowRenderResult, bottomRowRenderResult){
+		var newWidth = topRowRenderResult.width < bottomRowRenderResult.width ? bottomRowRenderResult.width : topRowRenderResult.width;
+		if(newWidth < self.minimumWidth){
+			self.paper.setSize(self.minimumWidth, self.paper.height);
+			newWidth = self.minimumWidth;
+		}else{
+			self.paper.setSize(newWidth, self.paper.height);
+		}
+		if(topRowRenderResult.width < newWidth){
+			self.moveRow(topRowRenderResult.bundleIds, Math.round((newWidth-topRowRenderResult.width)/2));
+		}
+		if(bottomRowRenderResult.width < newWidth){
+			self.moveRow(bottomRowRenderResult.bundleIds, Math.round((newWidth-bottomRowRenderResult.width)/2));
+		}
+	};
+	
+	self.moveRow = function(bundleIds, horizontalAdjustment){
+		$.each(bundleIds, function(index, bundleId){
+			self.bundles[bundleId].moveHorizontaly(horizontalAdjustment);
+		});
 	};
 
 	self.hideAll = function(){
@@ -278,6 +301,19 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 			self.relationship.reset(type, self, self);
 		};
 		self.state = 'waiting';
+	};
+	
+	self.moveHorizontaly = function(horizontalAdjustment){
+		self.x = self.x + horizontalAdjustment;
+		self.text.attr({
+			'x' : self.x + self.bundleMargin, 
+		});
+		self.box.attr({
+			'x' : self.x,
+		});
+		self.info.attr({
+			'x' : self.x + (self.boxWidth - 1.5*self.bundleMargin), 
+		});
 	};
 	
 	self.increaseCount = function(relationshipInfoData) {
