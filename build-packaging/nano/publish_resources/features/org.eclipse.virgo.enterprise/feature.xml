@@ -253,13 +253,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.apache.geronimo.specs.j2ee.management"
-    download-size="0"
-    install-size="0"
-    version="@G.MANAGEMENT@"
-    unpack="false"/>
-    
-    <plugin
     id="org.apache.geronimo.specs.osgi.locator"
     download-size="0"
     install-size="0"
