@@ -121,10 +121,10 @@ public class VirgoDeployerEjb extends DeployerEjb {
 
 			bindOpenEjbRefsInTomcat(appInfo, appContext, standardContext);
 
-			logMessage("Deployed application with real path '" + loc + "' and context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.DEPLOYED_APP);
+			logMessage("Initialised enterprise container for application with context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.DEPLOYED_APP);
 			return appInfo;
 		} catch (Throwable e) {
-			logMessage("Failed to deploy application with real path '" + loc + "' and context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.FAILED_TO_DEPLOY_APP);
+			logMessage("Failed to initialise enterprise container for application with context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.FAILED_TO_DEPLOY_APP);
 			// destroy the class loader for the failed application
 			if (appModule != null) {
 				ClassLoaderUtil.destroyClassLoader(appModule.getJarLocation());
@@ -303,9 +303,9 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			undeployer.undeploy();
 			super.undeploy(moduleId);
 			undeployer.clearResources(moduleId);
-			logMessage("Undeployed application with context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.UNDEPLOYED_APP);
+			logMessage("Destroyed enterprise container for application with context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.UNDEPLOYED_APP);
 		} catch (Throwable e) {
-			logMessage("Failed to undeploy application with context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.FAILED_TO_UNDEPLOY_APP);
+			logMessage("Failed to destroy enterprise container for application with context path '" + this.webContextPath + "'.", OpenEjbDeployerLogEvents.FAILED_TO_UNDEPLOY_APP);
 			throw new UndeployException("Error while undeploying application with module id and web context path '" + this.webContextPath + "'.", e);
 		}
 	}

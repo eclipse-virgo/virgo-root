@@ -6,9 +6,9 @@ import org.eclipse.virgo.medic.eventlog.LogEvent;
 public enum OpenEjbDeployerLogEvents implements LogEvent {
 
         DEPLOYED_APP(0, Level.INFO),
-        FAILED_TO_DEPLOY_APP(1, Level.ERROR),
+        FAILED_TO_DEPLOY_APP(1, Level.WARNING),
         UNDEPLOYED_APP(2, Level.INFO),
-        FAILED_TO_UNDEPLOY_APP(3, Level.ERROR);
+        FAILED_TO_UNDEPLOY_APP(3, Level.WARNING);
 
         private static final String PREFIX = "OE";
         

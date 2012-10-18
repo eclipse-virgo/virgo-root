@@ -32,8 +32,8 @@ public class OpenEjbApplicationListener implements LifecycleListener {
                 deployer.deploy(System.getProperty("org.eclipse.virgo.kernel.home") + File.separator + docBase);              
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            // failing to initialise enterprise container should not kill the app's deployment
+            // it might not need enterprise handling 
         }
        
     }
@@ -51,8 +51,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
                 deployer.undeploy(System.getProperty("org.eclipse.virgo.kernel.home") + File.separator + docBase);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            // failing to destroy enterprise container should not kill the app's undeployment
         }
     }
 
