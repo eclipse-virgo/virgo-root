@@ -412,7 +412,10 @@ var InfoBox = function(properties){
 					zIndex = $(otherInfoBox).css('z-index') + 1;
 				}
 			});
-			self.dialogBox.css({left: position.left + 40 + xOffSet + (infoBoxCount*25), top: position.top + 40 + (infoBoxCount*25), 'z-index': zIndex});
+			self.dialogBox.css({position: 'absolute', 
+								left: position.left + 40 + xOffSet + (infoBoxCount*25), 
+								top: position.top + 50 + (infoBoxCount*25), 
+								'z-index': zIndex});
 			self.dialogBox.show();	
 			$('body').append(self.dialogBox);
 			self.isVisible = true;
