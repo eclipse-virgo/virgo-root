@@ -3,5 +3,6 @@
    <implementation class="org.eclipse.virgo.web.enterprise.services.accessor.WebAppBundleClassloaderCustomizer"/>
    <service>
       <provide interface="org.eclipse.gemini.web.tomcat.spi.ClassLoaderCustomizer"/>
+      <provide interface="org.eclipse.gemini.web.tomcat.spi.JarScannerCustomizer"/>
    </service>
 </scr:component>
