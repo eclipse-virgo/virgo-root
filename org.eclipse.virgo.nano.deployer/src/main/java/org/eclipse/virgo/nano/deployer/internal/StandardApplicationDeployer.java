@@ -52,7 +52,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         if (frameworkStartTimeString != null) {
             Long frameworkStartTime = Long.valueOf(frameworkStartTimeString);
             long sinceStart = System.currentTimeMillis() - frameworkStartTime;
-            this.eventLogger.log(NanoLogEvents.NANO_STARTED, sinceStart/1000);
+            this.eventLogger.log(NanoLogEvents.NANO_STARTED, String.valueOf(sinceStart/1000) + "." + String.valueOf(sinceStart%1000));
         } else {
             this.eventLogger.log(NanoLogEvents.NANO_STARTED_NOTIME);
         }
