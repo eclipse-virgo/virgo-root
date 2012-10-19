@@ -130,7 +130,7 @@ public class VirgoDeployerEjb extends DeployerEjb {
 				ClassLoaderUtil.destroyClassLoader(appModule.getJarLocation());
 			}
 
-			e.printStackTrace();
+			logger.error("Error while deploying application with real path '" + loc + "' and web context path '" + this.webContextPath + "'", e);
 
 			if (e instanceof javax.validation.ValidationException) {
 				throw (javax.validation.ValidationException) e;
