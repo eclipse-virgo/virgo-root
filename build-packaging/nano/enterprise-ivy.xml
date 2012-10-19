@@ -50,7 +50,6 @@
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.xbean.finder" rev="${org.apache.xbean.finder}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.xbean.naming" rev="${org.apache.xbean.naming}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.xbean.reflect" rev="${org.apache.xbean.reflect}" conf="enterprise->runtime"/>
-        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.gemini.jpa" rev="${org.eclipse.gemini.jpa}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.antlr" rev="${org.eclipse.persistence.antlr}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.asm" rev="${org.eclipse.persistence.asm}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.persistence.core" rev="${org.eclipse.persistence.core}" conf="enterprise->runtime"/>

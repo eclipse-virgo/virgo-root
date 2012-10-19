@@ -337,13 +337,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.eclipse.gemini.jpa"
-    download-size="0"
-    install-size="0"
-    version="@GEMINI.JPA@"
-    unpack="false"/>
-    
-    <plugin
     id="org.glassfish.com.sun.faces"
     download-size="0"
     install-size="0"
