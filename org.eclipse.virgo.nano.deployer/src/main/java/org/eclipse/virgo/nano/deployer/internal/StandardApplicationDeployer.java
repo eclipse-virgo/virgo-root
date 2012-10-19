@@ -9,6 +9,7 @@ import java.util.List;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.core.KernelConfig;
 import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.NanoLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
@@ -46,6 +47,16 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         this.bundleContext = context.getBundleContext();
         this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
         this.simpleDeployers.add(this.defaultDeployer);
+        
+        String frameworkStartTimeString = this.bundleContext.getProperty("eclipse.startTime");
+        if (frameworkStartTimeString != null) {
+            Long frameworkStartTime = Long.valueOf(frameworkStartTimeString);
+            long sinceStart = System.currentTimeMillis() - frameworkStartTime;
+            this.eventLogger.log(NanoLogEvents.NANO_STARTED, sinceStart/1000);
+        } else {
+            this.eventLogger.log(NanoLogEvents.NANO_STARTED_NOTIME);
+        }
+        
         initialiseHotDeployer();
 
         // TODO register the deployer MBean when the management classes are factored out in a new bundle.
