@@ -77,6 +77,27 @@
     version="@WEB.VERSION@"
     unpack="false"/>
     
+    <plugin
+    id="org.eclipse.virgo.web.enterprise.security"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.web.enterprise.security.valve"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
    <plugin
     id="javassist"
     download-size="0"
