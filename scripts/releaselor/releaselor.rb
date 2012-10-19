@@ -37,7 +37,8 @@ else
         'snaps' => 'snaps',
         'apps' => 'apps',
         'documentation' => 'documentation',
-        'packaging' => 'packaging'  
+        'packaging' => 'packaging',
+        'gemini-web' => 'gemini-web' 
     }
 end
 
