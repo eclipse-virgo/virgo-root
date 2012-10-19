@@ -304,7 +304,7 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 	};
 	
 	self.moveHorizontaly = function(horizontalAdjustment){
-		self.x = self.x + (horizontalAdjustment - self.bundleMargin);
+		self.x = self.x + horizontalAdjustment;
 		self.text.attr({
 			'x' : self.x + self.bundleMargin, 
 		});
