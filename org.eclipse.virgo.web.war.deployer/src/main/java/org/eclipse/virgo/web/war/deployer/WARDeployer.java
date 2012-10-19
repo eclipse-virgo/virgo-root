@@ -165,8 +165,8 @@ public class WARDeployer implements SimpleDeployer {
         }
         final Bundle installed;
         try {
-            // extract the war file to the webapps directory
-            JarUtils.unpackTo(new PathReference(deployedFile), new PathReference(warDir));
+            // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
+            JarUtils.unpackToDestructive(new PathReference(deployedFile), new PathReference(warDir));
             // make the manifest transformation in the unpacked location
             transformUnpackedManifest(warDir, warName);
 
@@ -347,7 +347,7 @@ public class WARDeployer implements SimpleDeployer {
         final Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         if (bundle != null) {
             try {
-                // extract the war file to the webapps directory
+                // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
                 JarUtils.unpackToDestructive(new PathReference(updatedFile), new PathReference(warDir));
                 // make the manifest transformation in the unpacked location
                 transformUnpackedManifest(warDir, warName);
@@ -649,8 +649,8 @@ public class WARDeployer implements SimpleDeployer {
         }
         final Bundle installed;
         try {
-            // extract the war file to the webapps directory
-            JarUtils.unpackTo(new PathReference(deployedFile), new PathReference(warDir));
+            // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
+            JarUtils.unpackToDestructive(new PathReference(deployedFile), new PathReference(warDir));
             // make the manifest transformation in the unpacked location
             transformUnpackedManifest(warDir, warName);
             // install the bundle
