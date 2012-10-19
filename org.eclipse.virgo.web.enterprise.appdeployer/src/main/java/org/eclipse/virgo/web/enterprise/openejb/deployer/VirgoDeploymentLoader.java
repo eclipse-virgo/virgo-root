@@ -35,6 +35,11 @@ public class VirgoDeploymentLoader extends DeploymentLoader {
         result.setModuleId(webContextPath.substring(1));
         return result;
     }
+    
+    @Override
+    protected String getContextRoot() {
+        return webContextPath;
+    }
 
     @Override
     protected Map<String, URL> getWebDescriptors(File warFile) throws IOException {
