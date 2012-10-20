@@ -157,6 +157,8 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 				postConstruct.invoke(managedBean);
 				postConstruct.setAccessible(accessibility);
 			}
+		} catch (RuntimeException re) {
+		    throw re;
 		} catch (Exception e) {
 			System.err.println("PostConstruct failed on managed bean.");
 			e.printStackTrace();
