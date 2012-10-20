@@ -129,6 +129,7 @@
                 <filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
                 <filter token="CONTENTTYPE.VERSION" value="${org.eclipse.core.contenttype}"/>
                 <filter token="CORE.VERSION" value="${org.eclipse.core.runtime}"/>
+                <filter token="CORE.NET.VERSION" value="${org.eclipse.core.net}"/>
                 <filter token="ECF.FT.VERSION" value="${org.eclipse.ecf.filetransfer}"/>
                 <filter token="ECF.I.VERSION" value="${org.eclipse.ecf.identity}"/>
                 <filter token="ECF.P.FT.VERSION" value="${org.eclipse.ecf.provider.filetransfer}"/>
