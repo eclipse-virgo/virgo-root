@@ -246,13 +246,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.apache.derby"
-    download-size="0"
-    install-size="0"
-    version="@DERBY@"
-    unpack="false"/>
-    
-    <plugin
     id="org.apache.bval"
     download-size="0"
     install-size="0"
