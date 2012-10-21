@@ -66,8 +66,7 @@
     download-size="0"
     install-size="0"
     version="@WEB.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <!-- requires product configuration - started before any app; SL4 won't do -->
     <plugin
