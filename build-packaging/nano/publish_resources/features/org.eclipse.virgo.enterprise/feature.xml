@@ -337,20 +337,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.glassfish.com.sun.faces"
-    download-size="0"
-    install-size="0"
-    version="@FACES.IMPL@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.glassfish.javax.faces"
-    download-size="0"
-    install-size="0"
-    version="@FACES.API@"
-    unpack="false"/>
-    
-    <plugin
     id="javax.inject"
     download-size="0"
     install-size="0"
