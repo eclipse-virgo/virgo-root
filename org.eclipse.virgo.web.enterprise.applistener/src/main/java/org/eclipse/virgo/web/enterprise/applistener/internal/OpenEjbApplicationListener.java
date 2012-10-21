@@ -28,7 +28,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
             if (realPath != null) {
                 deployer.deploy(realPath, standardContext);
             } else {
-                deployer.deploy(getAppModuleId(standardContext.getDocBase()));              
+                deployer.deploy(getAppModuleId(standardContext.getDocBase()), standardContext);              
             }
         } catch (Exception e) {
             // failing to initialise enterprise container should not kill the app's deployment
