@@ -1,5 +1,6 @@
 package org.eclipse.virgo.web.enterprise.jsf.support;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,8 +16,6 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
-
-import org.apache.naming.ContextBindings;
 
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderException;
@@ -41,7 +40,7 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 		if (this.namingContext != null) {
 			try {
 				// Initialize fields annotations
-				Class currentBeanClass = managedBean.getClass();
+				Class<?> currentBeanClass = managedBean.getClass();
 				while (currentBeanClass != null) {
 					// Initialize the annotations
 					processFields(managedBean, currentBeanClass);
@@ -56,7 +55,7 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 
 	}
 
-	private void processMethods(Object managedBean, Class currentBeanClass) throws NamingException, IllegalAccessException, InvocationTargetException {
+	private void processMethods(Object managedBean, Class<?> currentBeanClass) throws NamingException, IllegalAccessException, InvocationTargetException {
 		Method[] methods = currentBeanClass.getDeclaredMethods();
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(Resource.class)) {
@@ -86,7 +85,7 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 		}
 	}
 
-	private void processFields(Object managedBean, Class currentBeanClass) throws NamingException, IllegalAccessException {
+	private void processFields(Object managedBean, Class<?> currentBeanClass) throws NamingException, IllegalAccessException {
 		Field[] fields = currentBeanClass.getDeclaredFields();
 		if (fields != null) {
 			for (Field field : fields) {
@@ -127,73 +126,64 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 		}
 	}
 
-	@Override
-	public void invokePostConstruct(Object managedBean) throws InjectionProviderException {
-		// TODO do we need to process these for super classes as well?
-		try {
-			Method postConstruct = null;
-			Class currentClass = managedBean.getClass();
-			while (currentClass != null) {
-				Method[] methods = currentClass.getDeclaredMethods();
-				for (Method method : methods) {
-					if (method.isAnnotationPresent(PostConstruct.class)) {
-						if ((postConstruct != null) || (method.getParameterTypes().length != 0) || (Modifier.isStatic(method.getModifiers())) || (method.getExceptionTypes().length > 0)
-								|| (!method.getReturnType().getName().equals("void"))) {
-							throw new IllegalArgumentException("Invalid PostConstruct annotation");
-						}
-						postConstruct = method;
-						break;
-					}
-				}
-				if (postConstruct != null) break;
-				currentClass = currentClass.getSuperclass();
-			}
+    @Override
+    public void invokePostConstruct(Object managedBean) throws InjectionProviderException {
+        Method postConstruct = findAnnotatedMethod(managedBean, PostConstruct.class);
 
-			// At the end the postconstruct annotated
-			// method is invoked
-			if (postConstruct != null) {
-				boolean accessibility = postConstruct.isAccessible();
-				postConstruct.setAccessible(true);
-				postConstruct.invoke(managedBean);
-				postConstruct.setAccessible(accessibility);
-			}
-		} catch (RuntimeException re) {
-		    throw re;
-		} catch (Exception e) {
-			System.err.println("PostConstruct failed on managed bean.");
-			e.printStackTrace();
-		}
-	}
+        // At the end the PostConstruct annotated method is invoked
+        if (postConstruct != null) {
+            boolean accessibility = postConstruct.isAccessible();
+            postConstruct.setAccessible(true);
+            try {
+                postConstruct.invoke(managedBean);
+            } catch (Exception e) {
+                throw new InjectionProviderException(e.getMessage(), e);
+            } finally {
+                postConstruct.setAccessible(accessibility);
+            }
+        }
+    }
 
-	@Override
-	public void invokePreDestroy(Object managedBean) throws InjectionProviderException {
-		// TODO do we need to process these for super classes as well?
-		try {
-			Method[] methods = managedBean.getClass().getDeclaredMethods();
-			Method preDestroy = null;
-			for (int i = 0; i < methods.length; i++) {
-				if (methods[i].isAnnotationPresent(PreDestroy.class)) {
-					if ((preDestroy != null) || (methods[i].getParameterTypes().length != 0) || (Modifier.isStatic(methods[i].getModifiers())) || (methods[i].getExceptionTypes().length > 0)
-							|| (!methods[i].getReturnType().getName().equals("void"))) {
-						throw new IllegalArgumentException("Invalid PreDestroy annotation");
-					}
-					preDestroy = methods[i];
-				}
-			}
+    @Override
+    public void invokePreDestroy(Object managedBean) throws InjectionProviderException {
+        Method preDestroy = findAnnotatedMethod(managedBean, PreDestroy.class);
 
-			// At the end the postconstruct annotated
-			// method is invoked
-			if (preDestroy != null) {
-				boolean accessibility = preDestroy.isAccessible();
-				preDestroy.setAccessible(true);
-				preDestroy.invoke(managedBean);
-				preDestroy.setAccessible(accessibility);
-			}
-		} catch (Exception e) {
-			System.err.println("PreDestroy failed on managed bean.");
-			e.printStackTrace();
-		}
-	}
+        // At the end the PreDestroy annotated method is invoked
+        if (preDestroy != null) {
+            boolean accessibility = preDestroy.isAccessible();
+            preDestroy.setAccessible(true);
+            try {
+                preDestroy.invoke(managedBean);
+            } catch (Exception e) {
+                throw new InjectionProviderException(e.getMessage(), e);
+            } finally {
+                preDestroy.setAccessible(accessibility);
+            }
+        }
+    }
+
+    private Method findAnnotatedMethod(Object managedBean, Class<? extends Annotation> annotation) {
+        Method result = null;
+        Class<?> currentClass = managedBean.getClass();
+        while (currentClass != null) {
+            Method[] methods = currentClass.getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(annotation)) {
+                    if ((result != null) || (method.getParameterTypes().length != 0) || (Modifier.isStatic(method.getModifiers()))
+                        || (method.getExceptionTypes().length > 0) || (!method.getReturnType().getName().equals("void"))) {
+                        throw new IllegalArgumentException("Invalid annotation " + annotation.getName());
+                    }
+                    result = method;
+                    break;
+                }
+            }
+            if (result != null) {
+                break;
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        return result;
+    }
 
 	protected static void lookupFieldResource(javax.naming.Context context, Object instance, String beanClassName, Field field, String name) throws NamingException, IllegalAccessException {
 		Object lookedupResource = null;
