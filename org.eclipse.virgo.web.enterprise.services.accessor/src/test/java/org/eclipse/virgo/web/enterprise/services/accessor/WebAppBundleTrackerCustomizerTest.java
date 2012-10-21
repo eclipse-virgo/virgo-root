@@ -26,8 +26,9 @@ public class WebAppBundleTrackerCustomizerTest {
 
         Bundle bundle1 = createMock(Bundle.class);
         expect(bundle1.getHeaders()).andReturn(dictionary).anyTimes();
-        expect(bundle1.getSymbolicName()).andReturn("test").andReturn("test").andReturn("test4").andReturn("test4").andReturn("test").times(4).andReturn("test4").times(4);
-        expect(bundle1.getVersion()).andReturn(new Version("1.1.1")).andReturn(new Version("1.0"));
+        expect(bundle1.getSymbolicName()).andReturn("test").andReturn("test").andReturn("test4").andReturn("test4").andReturn("test").times(5).andReturn(
+            "test4").times(5);
+        expect(bundle1.getVersion()).andReturn(new Version("1.1.1")).times(2).andReturn(new Version("1.0"));
 
         replay(bundle1);
 

@@ -50,13 +50,14 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
     private Map<String, List<Bundle>> bundlesWithSameBSNMap;
 
     private boolean initialized = false;
-    
+
     // move these values in config ini
     private final List<String> bundleNamesForJarScanner;
-    //= Arrays.asList(new String[] {"com.springsource.javax.servlet.jsp.jstl", "org.glassfish.com.sun.faces"});
+
+    // = Arrays.asList(new String[] {"com.springsource.javax.servlet.jsp.jstl", "org.glassfish.com.sun.faces"});
 
     private final Set<Bundle> bundlesForJarScanner = new HashSet<Bundle>();
-    
+
     /**
      * @deprecated Expose-AdditionalAPI header should be used instead of this
      */
@@ -87,13 +88,15 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
 
     @Override
     public String addingBundle(Bundle bundle, BundleEvent event) {
-        if(bundleNamesForJarScanner.contains(bundle.getSymbolicName())) {
-            bundlesForJarScanner.add(bundle);
+        if (this.bundleNamesForJarScanner.contains(bundle.getSymbolicName())) {
+            this.bundlesForJarScanner.add(bundle);
         }
-        
+
         if (isApiBundle(bundle)) {
             this.wabClassLoaderDelegateHook.addApiBundle(bundle);
-        } else if (isImplBundle(bundle)) {
+        }
+
+        if (isImplBundle(bundle)) {
             this.wabClassLoaderDelegateHook.addImplBundle(bundle);
         }
 
@@ -111,7 +114,7 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
     public void removedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
         this.wabClassLoaderDelegateHook.removeApiBundle(bundle);
         this.wabClassLoaderDelegateHook.removeImplBundle(bundle);
-        bundlesForJarScanner.remove(bundle);
+        this.bundlesForJarScanner.remove(bundle);
     }
 
     // TODO more fine tuned synchronization needed
@@ -299,7 +302,7 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
     private String getHeaderValue(Bundle bundle, String headerName) {
         return bundle.getHeaders().get(headerName);
     }
-    
+
     Set<Bundle> getBundlesForJarScanner() {
         return this.bundlesForJarScanner;
     }
