@@ -138,14 +138,18 @@ var GeminiDataSource = function(){
 			util.doBulkQuery(bundlesRequest, function(response){
 				$.each(response, function(index, regionBundles){
 					var region = util.readObjectName(regionBundles.request.mbean).get('region');
-					$.each(regionBundles.value, function(bundleId, bundle){
-						if(self.bundles[bundleId]){
-							self.bundles[bundleId].Region.push(region);
-						}else{
-							self.bundles[bundleId] = bundle;
-							self.bundles[bundleId].Region = [region];
-						}
-					});
+					if(regionBundles.value){
+						$.each(regionBundles.value, function(bundleId, bundle){
+							if(self.bundles[bundleId]){
+								self.bundles[bundleId].Region.push(region);
+							}else{
+								self.bundles[bundleId] = bundle;
+								self.bundles[bundleId].Region = [region];
+							}
+						});
+					}else{
+						$("#main-button-container").after($('<div />', {'class': 'warning-note'}).text('Region ' + region + ' is not publishing management information, unable to display it\'s bundles'));
+					};
 				});
 				callback();
 			}, function(){alert('Error loading page, please refresh.');});

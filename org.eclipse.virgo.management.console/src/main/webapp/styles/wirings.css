@@ -30,6 +30,11 @@ svg:not(:root) {
 	width: 65%;
 }
 
+.warning-note{
+    margin: 10px;
+    text-align: center;
+}
+
 #bundle-canvas {
 	border: 1px solid #BAD9EC;
 	margin-top: 13px;
