@@ -43,17 +43,6 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
                 Bundle bundle = bd.getBundle();
 
-                if (this.webAppBundles.contains(bundle)) {
-                    try {
-                        return doFindApiClass(name);
-                    } catch (ClassNotFoundException e) {
-                        // normal delegation should continue
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
-                        }
-                    }
-                }
-
                 if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
                     if (tccl != null) {
@@ -139,7 +128,26 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     @Override
     public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
-        // no-op
+    	if (this.delegationInProgress.get() == null) {
+            try {
+                this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
+
+                Bundle bundle = bd.getBundle();
+
+                if (this.webAppBundles.contains(bundle)) {
+                    try {
+                        return doFindApiClass(name);
+                    } catch (ClassNotFoundException e) {
+                        // normal delegation should continue
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
+                        }
+                    }
+                }
+            } finally {
+                this.delegationInProgress.set(null);
+            }
+        }
         return null;
     }
 
