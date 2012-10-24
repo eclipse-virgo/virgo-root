@@ -148,7 +148,7 @@ var GeminiDataSource = function(){
 							}
 						});
 					}else{
-						$("#main-button-container").after($('<div />', {'class': 'warning-note'}).text('Region ' + region + ' is not publishing management information, unable to display it\'s bundles'));
+						$("#main-button-container").after($('<div />', {'class': 'warning-note'}).text('Region ' + region + ' does not contain Gemini Management, unable to display its bundles'));
 					};
 				});
 				callback();

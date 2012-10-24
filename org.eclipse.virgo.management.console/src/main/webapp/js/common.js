@@ -565,7 +565,12 @@ var Server = function(){
 		}];
 		
 		util.doBulkQuery(request, function(response) {
-			var virgo = ['OSGi Container', response[0].value.info.product + ' ' + response[0].value.info.version + ' (' + response[0].value.info.extraInfo.type + ')'];
+			var virgo;
+			if(response[0].value.info.extraInfo){
+				virgo = ['OSGi Container', response[0].value.info.product + ' ' + response[0].value.info.version + ' (' + response[0].value.info.extraInfo.type + ')'];
+			}else{				
+				virgo = ['OSGi Container', response[0].value.info.product + ' ' + response[0].value.info.version];
+			}
 			var runtime = ['Virtual Machine', response[5].value + ' version ' + response[6].value + ' (' + response[4].value + ')'];
 			var os = ['Operating System', response[1].value + ' ' + response[2].value + ' (' + response[3].value + ')'];
 			callback([virgo, runtime, os]);
