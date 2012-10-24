@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 SAP AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   SAP AG - initial contribution
+ *******************************************************************************/
 
 package org.eclipse.virgo.web.enterprise.services.accessor;
 
@@ -9,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
 import org.eclipse.osgi.framework.adaptor.BundleData;
@@ -22,10 +33,14 @@ import org.slf4j.LoggerFactory;
 class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebAppBundleClassLoaderDelegateHook.class);
+    
+    private static final int MAX_API_SEARCH_DEPTH = 1;
+    
+    private static final int MAX_IMPL_SEARCH_DEPTH = 2;
+    
+    private static final int MAX_RESOURCE_SEARCH_DEPTH = 1;
 
-    private static final Object DELEGATION_IN_PROGRESS_MARKER = new Object();
-
-    private final ThreadLocal<Object> delegationInProgress = new ThreadLocal<Object>();
+    private final ThreadLocal<AtomicInteger> delegationInProgress = new ThreadLocal<AtomicInteger>();
 
     private final Set<Bundle> apiBundles = new CopyOnWriteArraySet<Bundle>();
 
@@ -37,9 +52,9 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     @Override
     public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
-        if (this.delegationInProgress.get() == null) {
+        if (shouldEnter(MAX_IMPL_SEARCH_DEPTH)) {
             try {
-                this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
+                enter();
 
                 Bundle bundle = bd.getBundle();
 
@@ -53,11 +68,16 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                             if (LOGGER.isDebugEnabled()) {
                                 LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
                             }
+                        } catch (NoClassDefFoundError e) {
+                        	// normal delegation should continue
+                            if (LOGGER.isDebugEnabled()) {
+                                LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
+                            }
                         }
                     }
                 }
             } finally {
-                this.delegationInProgress.set(null);
+                exit();
             }
         }
         return null;
@@ -71,9 +91,9 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     @Override
     public URL postFindResource(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
-        if (this.delegationInProgress.get() == null) {
+        if (shouldEnter(MAX_RESOURCE_SEARCH_DEPTH)) {
             try {
-                this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
+                enter();
 
                 Bundle bundle = bd.getBundle();
 
@@ -88,17 +108,47 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                     }
                 }
             } finally {
-                this.delegationInProgress.set(null);
+                exit();
             }
         }
         return null;
     }
+    
+    private boolean shouldEnter(int maxDepth) {
+    	if (this.delegationInProgress.get() == null) {
+    		return true;
+    	}
+    	
+    	if (this.delegationInProgress.get().get() < maxDepth) {
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
+    private void enter() {
+    	if (this.delegationInProgress.get() == null) {
+    		this.delegationInProgress.set(new AtomicInteger(0));
+    	}
+    	
+    	this.delegationInProgress.get().incrementAndGet();
+    }
+    
+    private void exit() {
+    	if (this.delegationInProgress.get() != null) {
+    		if (this.delegationInProgress.get().get() > 0) {
+    			this.delegationInProgress.get().decrementAndGet();
+    		}
+    	}
+    }
+    
+    
 
     @Override
     public Enumeration<URL> postFindResources(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
-        if (this.delegationInProgress.get() == null) {
+        if (shouldEnter(MAX_RESOURCE_SEARCH_DEPTH)) {
             try {
-                this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
+                enter();
 
                 Bundle bundle = bd.getBundle();
 
@@ -120,7 +170,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                     }
                 }
             } finally {
-                this.delegationInProgress.set(null);
+                exit();
             }
         }
         return null;
@@ -128,9 +178,9 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     @Override
     public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
-    	if (this.delegationInProgress.get() == null) {
+    	if (shouldEnter(MAX_API_SEARCH_DEPTH)) {
             try {
-                this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
+                enter();
 
                 Bundle bundle = bd.getBundle();
 
@@ -145,7 +195,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                     }
                 }
             } finally {
-                this.delegationInProgress.set(null);
+                exit();
             }
         }
         return null;
