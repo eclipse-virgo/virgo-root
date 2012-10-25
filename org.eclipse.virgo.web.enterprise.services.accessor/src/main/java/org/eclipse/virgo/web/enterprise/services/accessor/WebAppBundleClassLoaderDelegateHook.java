@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,18 +28,21 @@ import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("restriction")
 class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebAppBundleClassLoaderDelegateHook.class);
-    
+
     private static final int MAX_API_SEARCH_DEPTH = 1;
-    
+
     private static final int MAX_IMPL_SEARCH_DEPTH = 2;
-    
+
     private static final int MAX_RESOURCE_SEARCH_DEPTH = 1;
 
     private final ThreadLocal<AtomicInteger> delegationInProgress = new ThreadLocal<AtomicInteger>();
@@ -48,7 +53,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     private final Map<Bundle, ClassLoader> implBundlesClassloaders = new ConcurrentHashMap<Bundle, ClassLoader>();
 
-    private final Set<Bundle> webAppBundles = new CopyOnWriteArraySet<Bundle>();
+    private final Map<Bundle, Set<String>> webAppBundles = new ConcurrentHashMap<Bundle, Set<String>>();
 
     @Override
     public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
@@ -69,7 +74,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                                 LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
                             }
                         } catch (NoClassDefFoundError e) {
-                        	// normal delegation should continue
+                            // normal delegation should continue
                             if (LOGGER.isDebugEnabled()) {
                                 LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
                             }
@@ -97,7 +102,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
                 Bundle bundle = bd.getBundle();
 
-                if (this.webAppBundles.contains(bundle)) {
+                if (this.webAppBundles.containsKey(bundle)) {
                     return doFindApiResource(name);
                 }
 
@@ -113,36 +118,34 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         }
         return null;
     }
-    
+
     private boolean shouldEnter(int maxDepth) {
-    	if (this.delegationInProgress.get() == null) {
-    		return true;
-    	}
-    	
-    	if (this.delegationInProgress.get().get() < maxDepth) {
-    		return true;
-    	}
-    	
-    	return false;
+        if (this.delegationInProgress.get() == null) {
+            return true;
+        }
+
+        if (this.delegationInProgress.get().get() < maxDepth) {
+            return true;
+        }
+
+        return false;
     }
-    
+
     private void enter() {
-    	if (this.delegationInProgress.get() == null) {
-    		this.delegationInProgress.set(new AtomicInteger(0));
-    	}
-    	
-    	this.delegationInProgress.get().incrementAndGet();
+        if (this.delegationInProgress.get() == null) {
+            this.delegationInProgress.set(new AtomicInteger(0));
+        }
+
+        this.delegationInProgress.get().incrementAndGet();
     }
-    
+
     private void exit() {
-    	if (this.delegationInProgress.get() != null) {
-    		if (this.delegationInProgress.get().get() > 0) {
-    			this.delegationInProgress.get().decrementAndGet();
-    		}
-    	}
+        if (this.delegationInProgress.get() != null) {
+            if (this.delegationInProgress.get().get() > 0) {
+                this.delegationInProgress.get().decrementAndGet();
+            }
+        }
     }
-    
-    
 
     @Override
     public Enumeration<URL> postFindResources(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
@@ -152,7 +155,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
                 Bundle bundle = bd.getBundle();
 
-                if (this.webAppBundles.contains(bundle)) {
+                if (this.webAppBundles.containsKey(bundle)) {
                     return doFindApiResources(name);
                 }
 
@@ -178,15 +181,19 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     @Override
     public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
-    	if (shouldEnter(MAX_API_SEARCH_DEPTH)) {
+        if (shouldEnter(MAX_API_SEARCH_DEPTH)) {
             try {
                 enter();
 
                 Bundle bundle = bd.getBundle();
 
-                if (this.webAppBundles.contains(bundle)) {
+                if (this.webAppBundles.containsKey(bundle)) {
                     try {
-                        return doFindApiClass(name);
+                        if (checkPackageInImport(name, this.webAppBundles.get(bundle))) {
+                            return null;
+                        } else {
+                            return doFindApiClass(name);
+                        }
                     } catch (ClassNotFoundException e) {
                         // normal delegation should continue
                         if (LOGGER.isDebugEnabled()) {
@@ -199,6 +206,15 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
             }
         }
         return null;
+    }
+
+    private boolean checkPackageInImport(String className, Set<String> importedPackages) {
+        int index = className.lastIndexOf('.');
+        String packageName = className;
+        if (index > -1) {
+            packageName = className.substring(0, index);
+        }
+        return importedPackages.contains(packageName);
     }
 
     @Override
@@ -254,7 +270,46 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     void addWebAppBundle(Bundle bundle) {
-        this.webAppBundles.add(bundle);
+        this.webAppBundles.put(bundle, cacheRequiredCapabilities(bundle));
+    }
+
+    void removeWebAppBundle(Bundle bundle) {
+        this.webAppBundles.remove(bundle);
+    }
+
+    private Set<String> cacheRequiredCapabilities(Bundle bundle) {
+        Set<String> importedPackages = new HashSet<String>();
+
+        BundleWiring bundleWiring = bundle.adapt(BundleRevision.class).getWiring();
+        importedPackages.addAll(getImportedPackages(bundleWiring));
+        importedPackages.addAll(getImportedPackagesFromRequiredBundles(bundleWiring));
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Deploying web bundle " + bundle.getSymbolicName() + " with import packages " + importedPackages);
+        }
+
+        return importedPackages;
+    }
+
+    private Set<String> getImportedPackagesFromRequiredBundles(BundleWiring bundleWiring) {
+        Set<String> importedPackages = new HashSet<String>();
+        List<BundleWire> requiredWires = bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE);
+        for (BundleWire requiredWire : requiredWires) {
+            List<BundleCapability> capabilities = requiredWire.getProviderWiring().getCapabilities(BundleRevision.PACKAGE_NAMESPACE);
+            for (BundleCapability capability : capabilities) {
+                importedPackages.add((String) capability.getAttributes().get(BundleRevision.PACKAGE_NAMESPACE));
+            }
+        }
+        return importedPackages;
+    }
+
+    private Set<String> getImportedPackages(BundleWiring bundleWiring) {
+        Set<String> importedPackages = new HashSet<String>();
+        List<BundleWire> requiredWires = bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE);
+        for (BundleWire requiredWire : requiredWires) {
+            importedPackages.add((String) requiredWire.getCapability().getAttributes().get(BundleRevision.PACKAGE_NAMESPACE));
+        }
+        return importedPackages;
     }
 
     ClassLoader[] getImplBundlesClassloaders() {
@@ -313,12 +368,12 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         }
     }
 
-	Set<Bundle> getApiBundles() {
-		return apiBundles;
-	}
+    Set<Bundle> getApiBundles() {
+        return this.apiBundles;
+    }
 
-	Set<Bundle> getImplBundles() {
-		return implBundles;
-	}
+    Set<Bundle> getImplBundles() {
+        return this.implBundles;
+    }
 
 }

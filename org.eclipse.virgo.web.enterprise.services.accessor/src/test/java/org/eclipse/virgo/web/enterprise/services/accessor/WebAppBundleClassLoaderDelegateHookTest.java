@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 SAP AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   SAP AG - initial contribution
+ *******************************************************************************/
 
 package org.eclipse.virgo.web.enterprise.services.accessor;
 
@@ -19,8 +29,10 @@ import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
 import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 
-@SuppressWarnings("restriction")
 public class WebAppBundleClassLoaderDelegateHookTest {
 
     @SuppressWarnings("unchecked")
@@ -30,6 +42,8 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         BundleClassLoader bcl = createMock(BundleClassLoader.class);
         Bundle wab = createMock(Bundle.class);
         Bundle apiBundle = createMock(Bundle.class);
+        BundleRevision bundleRevision = createMock(BundleRevision.class);
+        BundleWiring bundleWiring = createMock(BundleWiring.class);
         expect(bd.getBundle()).andReturn(wab).anyTimes();
         expect((Class<String>) apiBundle.loadClass("")).andReturn(String.class).andThrow(new ClassNotFoundException());
         expect(apiBundle.getResource("")).andReturn(new URL("file:foo.txt")).andReturn(null);
@@ -37,8 +51,12 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         resources.add(new URL("file:foo.txt"));
         Enumeration<URL> enumeration = Collections.enumeration(resources);
         expect(apiBundle.getResources("")).andReturn(enumeration).andReturn(null).andThrow(new IOException());
+        expect(wab.adapt(BundleRevision.class)).andReturn(bundleRevision);
+        expect(bundleRevision.getWiring()).andReturn(bundleWiring);
+        expect(bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)).andReturn(new ArrayList<BundleWire>());
+        expect(bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE)).andReturn(new ArrayList<BundleWire>());
 
-        replay(bd, bcl, wab, apiBundle);
+        replay(bd, bcl, wab, apiBundle, bundleRevision, bundleWiring);
 
         WebAppBundleClassLoaderDelegateHook webAppBundleClassLoaderDelegateHook = new WebAppBundleClassLoaderDelegateHook();
         webAppBundleClassLoaderDelegateHook.addWebAppBundle(wab);
@@ -51,7 +69,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         checkExpectations(webAppBundleClassLoaderDelegateHook, "", bcl, bd, new Object[] { null, null, null });
         assertEquals(null, webAppBundleClassLoaderDelegateHook.postFindResources("", bcl, bd));
 
-        verify(bd, bcl, wab/*, apiBundle*/);
+        verify(bd, bcl, wab/* , apiBundle */, bundleRevision, bundleWiring);
     }
 
     @Test
@@ -122,7 +140,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
 
     private void checkExpectations(WebAppBundleClassLoaderDelegateHook webAppBundleClassLoaderDelegateHook, String name, BundleClassLoader bcl,
         BundleData bd, Object[] expected) throws ClassNotFoundException, IOException {
-//        assertEquals(expected[0], webAppBundleClassLoaderDelegateHook.postFindClass(name, bcl, bd));
+        // assertEquals(expected[0], webAppBundleClassLoaderDelegateHook.postFindClass(name, bcl, bd));
         assertEquals(expected[1], webAppBundleClassLoaderDelegateHook.postFindResource(name, bcl, bd));
         assertEquals(expected[2], webAppBundleClassLoaderDelegateHook.postFindResources(name, bcl, bd));
     }
