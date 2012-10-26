@@ -199,6 +199,11 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
         if (versionRange != null && versionRange.includes(bundle.getVersion())) {
             return true;
         }
+        
+        versionRange = this.exposeAdditionalApiBundles.get(bundle.getSymbolicName());
+        if (versionRange != null && versionRange.includes(bundle.getVersion())) {
+            return true;
+        }
 
         return false;
     }
