@@ -18,50 +18,58 @@ public class WebAppBundleTrackerCustomizerTest {
 
     @Test
     public void testAddingBundleRemovedBundle() {
-        System.setProperty(WebAppBundleTrackerCustomizer.API_BUNDLES,// NOSONAR
-            "test;bundle-version=[1.0,2.0),test1;bundle-version=1.0,test2,test3;1.0,test5;bundle-version=[1.0,1.0]");// NOSONAR
-        System.setProperty(WebAppBundleTrackerCustomizer.IMPL_BUNDLES, "test4;bundle-version=[1.0,2.0),test1;bundle-version=1.0,test2,test3;1.0");// NOSONAR
+        System.setProperty(WebAppBundleTrackerCustomizer.API_BUNDLES,
+            "test;bundle-version=[1.0,2.0),test1;bundle-version=1.0,test2,test3;1.0,test5;bundle-version=[1.0,1.0]");
+        System.setProperty(WebAppBundleTrackerCustomizer.IMPL_BUNDLES, "test4;bundle-version=[1.0,2.0),test1;bundle-version=1.0,test2,test3;1.0");
 
-        Dictionary<String, String> dictionary = new Hashtable<String, String>();
+        Dictionary<String, String> dictionary1 = new Hashtable<String, String>();
+        Dictionary<String, String> dictionary2 = new Hashtable<String, String>();
 
         Bundle bundle1 = createMock(Bundle.class);
-        expect(bundle1.getHeaders()).andReturn(dictionary).anyTimes();
-        expect(bundle1.getSymbolicName()).andReturn("test").andReturn("test").andReturn("test4").andReturn("test4").andReturn("test").times(5).andReturn(
-            "test4").times(5);
-        expect(bundle1.getVersion()).andReturn(new Version("1.1.1")).times(2).andReturn(new Version("1.0"));
-
+        expect(bundle1.getHeaders()).andReturn(dictionary1).anyTimes();
+        expect(bundle1.getSymbolicName()).andReturn("test").times(7);
+        expect(bundle1.getVersion()).andReturn(new Version("1.1.1"));
         replay(bundle1);
+        
+        Bundle bundle2 = createMock(Bundle.class);
+        expect(bundle2.getHeaders()).andReturn(dictionary2).anyTimes();
+        expect(bundle2.getSymbolicName()).andReturn("test4").times(9);
+        expect(bundle2.getVersion()).andReturn(new Version("1.0"));
+        replay(bundle2);
 
         WebAppBundleClassLoaderDelegateHook webAppBundleClassLoaderDelegateHook = new WebAppBundleClassLoaderDelegateHook();
         WebAppBundleTrackerCustomizer webAppBundleTrackerCustomizer = createWebAppBundleTrackerCustomizer(webAppBundleClassLoaderDelegateHook);
 
-        dictionary.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE, WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE_API_VALUE);
+        dictionary1.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE, WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE_API_VALUE);
         webAppBundleTrackerCustomizer.addingBundle(bundle1, null);
         assertTrue(webAppBundleClassLoaderDelegateHook.getApiBundles().contains(bundle1));
 
-        dictionary.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE,
+        dictionary2.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE,
             WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE_IMPL_VALUE);
+        webAppBundleTrackerCustomizer.addingBundle(bundle2, null);
+        assertTrue(webAppBundleClassLoaderDelegateHook.getImplBundles().contains(bundle2));
+
+        dictionary1.remove(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE);
+        dictionary2.remove(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE);
+
+        dictionary1.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSE_ADDITIONAL_API, "test;bundle-version=[1.0,2.0),test1;bundle-version=1.0");
         webAppBundleTrackerCustomizer.addingBundle(bundle1, null);
         assertTrue(webAppBundleClassLoaderDelegateHook.getApiBundles().contains(bundle1));
 
-        dictionary.remove(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE);
-
-        dictionary.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSE_ADDITIONAL_API, "test;bundle-version=[1.0,2.0),test1;bundle-version=1.0");
-        webAppBundleTrackerCustomizer.addingBundle(bundle1, null);
-        assertTrue(webAppBundleClassLoaderDelegateHook.getImplBundles().contains(bundle1));
-
-        dictionary.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSE_ADDITIONAL_API, "test;bundle-version=[1.2,1.5),test1;bundle-version=1.5");
-        webAppBundleTrackerCustomizer.addingBundle(bundle1, null);
-        assertTrue(webAppBundleClassLoaderDelegateHook.getImplBundles().contains(bundle1));
+        dictionary2.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSE_ADDITIONAL_API, "test;bundle-version=[1.2,1.5),test1;bundle-version=1.5");
+        webAppBundleTrackerCustomizer.addingBundle(bundle2, null);
+        assertTrue(webAppBundleClassLoaderDelegateHook.getImplBundles().contains(bundle2));
 
         assertTrue(webAppBundleTrackerCustomizer.getExposeAdditionalApiBundles().get("test").toString().equals("[1.2.0, 1.5.0)"));
         assertTrue(webAppBundleTrackerCustomizer.getExposeAdditionalApiBundles().get("test1").toString().equals("[1.5.0, oo)"));
 
         webAppBundleTrackerCustomizer.removedBundle(bundle1, null, null);
+        webAppBundleTrackerCustomizer.removedBundle(bundle2, null, null);
         assertTrue(!webAppBundleClassLoaderDelegateHook.getApiBundles().contains(bundle1));
-        assertTrue(!webAppBundleClassLoaderDelegateHook.getImplBundles().contains(bundle1));
+        assertTrue(!webAppBundleClassLoaderDelegateHook.getImplBundles().contains(bundle2));
 
         verify(bundle1);
+        verify(bundle2);
     }
 
     private WebAppBundleTrackerCustomizer createWebAppBundleTrackerCustomizer(WebAppBundleClassLoaderDelegateHook webAppBundleClassLoaderDelegateHook) {
