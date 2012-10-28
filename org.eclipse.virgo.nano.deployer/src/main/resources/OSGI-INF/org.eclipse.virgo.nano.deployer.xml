@@ -9,6 +9,13 @@
 		bind="bindEventLogger" 
 		unbind="unbindEventLogger"/>
 		
+	<reference name="EventAdmin"
+		interface="org.osgi.service.event.EventAdmin"
+		policy="static"
+		cardinality="1..1" 
+		bind="bindEventAdmin" 
+		unbind="unbindEventAdmin"/>
+		
 	<reference name="PackageAdmin"
 		interface="org.osgi.service.packageadmin.PackageAdmin"
 		policy="static" 

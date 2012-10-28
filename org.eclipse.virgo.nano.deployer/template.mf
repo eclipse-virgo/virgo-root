@@ -9,6 +9,7 @@ Import-Template:
  org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, =.+1)}",
  org.eclipse.virgo.medic.*;version="${org.eclipse.virgo.medic:[=.=.=, =.+1)}",
  org.osgi.framework.*;version="0",
+ org.osgi.service.*;version="0",
  javax.management.*;version="0",
  javax.xml.*;version="0",
  org.xml.*;version="0",

@@ -5,11 +5,11 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.core.KernelConfig;
 import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
-import org.eclipse.virgo.nano.deployer.NanoLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
@@ -21,12 +21,16 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StandardApplicationDeployer implements ApplicationDeployer {
 
+    private static final String TOPIC_RECOVERY_COMPLETED = "org/eclipse/virgo/kernel/deployer/recovery/COMPLETED";
+    
     private EventLogger eventLogger;
 
     private PackageAdmin packageAdmin;
@@ -43,20 +47,14 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private BundleDeployer defaultDeployer;
 
+    private EventAdmin eventAdmin;
+
     public void activate(ComponentContext context) throws Exception {
         this.bundleContext = context.getBundleContext();
         this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
         this.simpleDeployers.add(this.defaultDeployer);
         
-        String frameworkStartTimeString = this.bundleContext.getProperty("eclipse.startTime");
-        if (frameworkStartTimeString != null) {
-            Long frameworkStartTime = Long.valueOf(frameworkStartTimeString);
-            long sinceStart = System.currentTimeMillis() - frameworkStartTime;
-            this.eventLogger.log(NanoLogEvents.NANO_STARTED, String.valueOf(sinceStart/1000) + "." + String.valueOf(sinceStart%1000));
-        } else {
-            this.eventLogger.log(NanoLogEvents.NANO_STARTED_NOTIME);
-        }
-        
+        recoveryComplete();
         initialiseHotDeployer();
 
         // TODO register the deployer MBean when the management classes are factored out in a new bundle.
@@ -240,6 +238,14 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     public void unbindEventLogger(EventLogger logger) {
         this.eventLogger = null;
     }
+    
+    public void bindEventAdmin(EventAdmin admin) {
+        this.eventAdmin = admin;
+    }
+
+    public void unbindEventAdmin(EventAdmin admin) {
+        this.eventAdmin = null;
+    }
 
     public void bindKernelConfig(KernelConfig config) {
         this.kernelConfig = config;
@@ -315,4 +321,8 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         }
     }
 
+    private void recoveryComplete() {
+        eventAdmin.postEvent(new Event(TOPIC_RECOVERY_COMPLETED, (Map<String, ?>)null));
+    }
+    
 }

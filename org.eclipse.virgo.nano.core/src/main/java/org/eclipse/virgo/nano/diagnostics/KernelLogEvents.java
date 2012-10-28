@@ -30,6 +30,8 @@ public enum KernelLogEvents implements LogEvent {
     KERNEL_START_TIMED_OUT(4, Level.ERROR), //
     KERNEL_PLAN_ARGUMENTS_INCORRECT(5, Level.WARNING), //
     KERNEL_EVENT_START_ABORTED(6, Level.ERROR), //
+    VIRGO_STARTED(7, Level.INFO), //
+    VIRGO_STARTED_NOTIME(8, Level.INFO), //
     
     SHUTDOWN_INITIATED(10, Level.INFO), //
     IMMEDIATE_SHUTDOWN_INITIATED(11, Level.INFO), //
