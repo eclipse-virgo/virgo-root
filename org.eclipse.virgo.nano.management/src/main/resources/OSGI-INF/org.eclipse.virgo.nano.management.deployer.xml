@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="Nano Deployer MBean" immediate="true">
+   <implementation class="org.eclipse.virgo.nano.management.deployer.NanoDeployer"/>
+    
+   <reference name="ApplicationDeployer" 
+   	interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer" 
+   	policy="static"
+   	bind="bindAppDeployer" 
+   	unbind="unbindAppDeployer"/>
+   	
+    <service>
+       <provide interface="org.eclipse.virgo.nano.deployer.api.Deployer"/>
+    </service>
+    
+</scr:component>

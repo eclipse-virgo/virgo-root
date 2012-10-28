@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="Nano Management Controller" immediate="true">
+   <implementation class="org.eclipse.virgo.nano.management.controller.NanoManagementController"/>
+ 
+   	<reference name="DeployerMBean" 
+   	interface="org.eclipse.virgo.nano.deployer.api.Deployer" 
+   	policy="static"
+   	bind="bindDeployerMBean" 
+   	unbind="unbindDeployerMBean"/>
+   	
+   	<reference name="RecoveryMonitorMBean" 
+   	interface="org.eclipse.virgo.nano.deployer.api.RecoveryMonitor" 
+   	policy="static"
+   	bind="bindRecoveryMBean" 
+   	unbind="unbindRecoveryMBean"/>
+   	
+   	<reference name="KernelConfig" 
+   	interface="org.eclipse.virgo.nano.core.KernelConfig" 
+   	policy="static"
+   	bind="bindKernelConfig" 
+   	unbind="unbindKernelConfig"/>
+    
+</scr:component>

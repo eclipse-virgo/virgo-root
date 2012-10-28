@@ -12,6 +12,8 @@
         <pathelement location="../org.eclipse.virgo.nano.deployer.api"/>
         <pathelement location="../org.eclipse.virgo.nano.deployer.hot"/>
         <pathelement location="../org.eclipse.virgo.nano.deployer"/>
+        <pathelement location="../org.eclipse.virgo.nano.management"/>
+        <pathelement location="../org.eclipse.virgo.nano.management.controller"/>
         <pathelement location="../org.eclipse.virgo.nano.authentication"/>
         <pathelement location="../org.eclipse.virgo.nano.shutdown"/>
 	</path>

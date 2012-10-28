@@ -36,5 +36,9 @@
 		cardinality="0..n" 
 		bind="bindSimpleDeployer" 
 		unbind="unbindSimpleDeployer"/>
+ 
+ 	<service>
+    	<provide interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer"/>
+ 	</service>
 
 </scr:component>
