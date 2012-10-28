@@ -23,4 +23,6 @@
 	</bean>
 	
 	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+	
+	<osgi:reference id="recoveryMonitor" interface="org.eclipse.virgo.nano.deployer.api.RecoveryMonitor" />
 </beans>

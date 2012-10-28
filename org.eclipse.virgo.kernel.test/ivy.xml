@@ -36,6 +36,7 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.console.ssh" rev="${org.eclipse.equinox.console.ssh}" conf="test->runtime" />
 
 		<dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.management" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.deployer" rev="latest.integration" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.shell.command" rev="latest.integration" conf="test->runtime"/>

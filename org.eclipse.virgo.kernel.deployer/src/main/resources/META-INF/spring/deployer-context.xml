@@ -84,15 +84,7 @@
 		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
 		ref="importExpandingTransformer" ranking="5000" />
 
-	<service id="recoveryMonitorService" ref="recoveryMonitor"
-		interface="org.osgi.service.event.EventHandler">
-		<service-properties>
-			<beans:entry key="event.topics" value="org/eclipse/virgo/kernel/*" />
-		</service-properties>
-	</service>
-
-	<beans:bean id="recoveryMonitor"
-		class="org.eclipse.virgo.kernel.deployer.management.StandardRecoveryMonitor" />
+	<reference id="recoveryMonitor" interface="org.eclipse.virgo.nano.deployer.api.RecoveryMonitor" />
 
 	<service id="recoveryAgent" interface="org.osgi.service.event.EventHandler">
 		<service-properties>
