@@ -23,7 +23,6 @@
          download-size="0"
          install-size="0"
          version="@EQUINOX.DS.VERSION@"
-         unpack="false"
-         autostart="true"/>
+         unpack="false"/>
 
 </feature>
