@@ -24,6 +24,7 @@
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.hot" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.management" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.services" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>		
