@@ -3,8 +3,7 @@
 # make sure we have JAVA_HOME set
 if [ -z "$JAVA_HOME" ]
 then
-echo The JAVA_HOME environment variable is not defined
-exit 1
+echo The JAVA_HOME environment variable is not defined. Using PATH instead.
 fi
 
 CLASSPATH=
