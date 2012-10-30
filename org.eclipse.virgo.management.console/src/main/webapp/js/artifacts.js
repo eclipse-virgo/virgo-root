@@ -447,6 +447,7 @@ var UploadManager = function() {
 	
 	this.resetForm = function() {
 		$('#upload-list').empty();
+		$('#upload-target-id').empty();
 		$('#upload-list').append(self.getUploadFormElement('1'));
 	};
 	
@@ -454,12 +455,15 @@ var UploadManager = function() {
 		if(self.uploading){
 			var iframe = $('#upload-target-id');
 			var results = $('#uploadResults', iframe[0].contentDocument).children();
-			
-			var resultString = '';
-		    $.each(results, function(i, result){
-		    	resultString = resultString + '\n' + $(result).text();
-		    });
-		    alert('Deployment result\n\n' + resultString);
+			if(results.length == 0){
+				alert('Nothing Deployed');
+			}else{
+				var resultString = '';
+			    $.each(results, function(i, result){
+			    	resultString = resultString + '\n' + $(result).text();
+			    });
+			    alert('Deployment result\n\n' + resultString);
+			}
 		    self.resetForm();
 			self.uploading = false;
 		}
