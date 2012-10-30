@@ -29,12 +29,12 @@ org.glassfish.com.sun.faces=2.1.6.v201205171319
 org.ow2.jotm.jotm-core=2.1.9.v201204271116
 javax.ejb=3.1.1.v201204261316
 org.apache.tomcat.api=7.0.29.v201208220722
-javax.persistence=2.0.4.v201112200901
+javax.persistence=2.0.4.v201112161009
 javax.annotation=1.1.0.v201108011116
 org.apache.bval=0.3.0.v201205161050
 org.apache.derby=10.5.1.1_v201108232300
-org.eclipse.persistence.core=2.4.0.v20120608-r11652
-org.eclipse.persistence.jpa=2.4.0.v20120608-r11652
+org.eclipse.persistence.core=2.4.1.v20121003-ad44345
+org.eclipse.persistence.jpa=2.4.1.v20121003-ad44345
 
 # Test
 ch.qos.logback.classic=1.0.3.v20120828-0612
