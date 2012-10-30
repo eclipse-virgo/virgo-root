@@ -10,6 +10,7 @@ Import-Template: javax.annotation;version="0",
  javax.persistence;version="0",
  com.sun.faces.spi;version="0",
  org.apache.naming;version="${org.apache.catalina:[=.=.=, +1)}",
- javax.naming;version="0"
+ javax.naming;version="0",
+ org.slf4j.*;version="0"
 Excluded-Exports:
  *.internal.*

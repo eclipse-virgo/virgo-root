@@ -31,8 +31,12 @@ import javax.persistence.PersistenceUnit;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class VirgoJsfInjectionProvider implements InjectionProvider {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final String COMP_ENV = "java:comp/env/";
 	private Context namingContext = null;
 
@@ -41,13 +45,28 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 			//this.namingContext = (Context) ContextBindings.getClassLoader().lookup("");
 			this.namingContext = new InitialContext();
 		} catch (NamingException e) {
-			System.err.println("Injection of naming resources into JSF managed beans disabled.");
-			e.printStackTrace();
+		    if (logger.isErrorEnabled()) {
+		        logger.error("Injection of naming resources into JSF managed beans disabled.", e);
+		    }
 		}
 	}
 
 	@Override
 	public void inject(Object managedBean) throws InjectionProviderException {
+	    // try injecting everything with OWB's injector instance
+	    try {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            if (tccl != null) {
+                Class<?> injector = tccl.loadClass("org.apache.webbeans.inject.OWBInjector");
+                Object injectorInstance = injector.newInstance();
+                Method method = injector.getDeclaredMethod("inject", new Class<?>[] { Object.class });
+                injectorInstance = method.invoke(injectorInstance, new Object[] { managedBean });
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	    // if TCCL is not available fall back to the manual processing
 		if (this.namingContext != null) {
 			try {
 				// Initialize fields annotations
@@ -59,11 +78,11 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 					currentBeanClass = currentBeanClass.getSuperclass();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.err.println("Failed to inject managed bean in FacesServlet:" + e);
+			    if (logger.isErrorEnabled()) {
+			        logger.error("Failed to inject managed bean in FacesServlet:", e);
+			    }
 			}
-		}
-
+        }
 	}
 
 	private void processMethods(Object managedBean, Class<?> currentBeanClass) throws NamingException, IllegalAccessException, InvocationTargetException {
