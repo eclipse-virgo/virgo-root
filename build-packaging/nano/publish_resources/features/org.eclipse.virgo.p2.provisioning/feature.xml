@@ -45,6 +45,13 @@
          version="@CORE.VERSION@"
          unpack="false"
          autostart="true"/>
+    
+    <plugin
+    id="org.eclipse.core.net"
+    download-size="0"
+    install-size="0"
+    version="@CORE.NET.VERSION@"
+    unpack="false"/>
 
    <plugin
          id="org.eclipse.ecf"

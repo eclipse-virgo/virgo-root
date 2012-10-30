@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.virgo.ds"
+      id="org.eclipse.virgo.nano.mbeans.controller"
       label="%featureName"
-      version="@EQUINOX.DS.VERSION@"
+      version="@NANO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -19,10 +19,11 @@
    </license>
 
    <plugin
-         id="org.eclipse.equinox.ds"
+         id="org.eclipse.virgo.nano.management.controller"
          download-size="0"
          install-size="0"
-         version="@EQUINOX.DS.VERSION@"
-         unpack="false"/>
+         version="@NANO.VERSION@"
+         unpack="false"
+         autostart="true"/>
 
 </feature>

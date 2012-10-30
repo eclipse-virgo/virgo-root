@@ -66,8 +66,7 @@
     download-size="0"
     install-size="0"
     version="@WEB.VERSION@"
-    unpack="false"
-    autostart="true"/>
+    unpack="false"/>
     
     <!-- requires product configuration - started before any app; SL4 won't do -->
     <plugin
@@ -246,13 +245,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.apache.derby"
-    download-size="0"
-    install-size="0"
-    version="@DERBY@"
-    unpack="false"/>
-    
-    <plugin
     id="org.apache.bval"
     download-size="0"
     install-size="0"
@@ -334,20 +326,6 @@
     download-size="0"
     install-size="0"
     version="@XB.REFLECT@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.glassfish.com.sun.faces"
-    download-size="0"
-    install-size="0"
-    version="@FACES.IMPL@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.glassfish.javax.faces"
-    download-size="0"
-    install-size="0"
-    version="@FACES.API@"
     unpack="false"/>
     
     <plugin

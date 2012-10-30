@@ -19,6 +19,12 @@
 	  <feature id="org.eclipse.virgo.enterprise" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.enterprise.persistence" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.enterprise.openejb" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.enterprise.jsf" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.enterprise.derby" version="0.0.0"/>
    </features>
+   
+   <configurations>
+		<plugin id="org.eclipse.virgo.web.enterprise.openejb.initialiser" autoStart="true" startLevel="3" />
+   </configurations>
 
 </product>

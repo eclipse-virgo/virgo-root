@@ -17,6 +17,7 @@
       <feature id="org.eclipse.virgo.medic" version="0.0.0"/>
       <feature id="org.eclipse.virgo.shell" version="0.0.0"/>
       <feature id="org.eclipse.virgo.ds" version="0.0.0"/>
+      <feature id="org.eclipse.virgo.nano.mbeans" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.nano.common.resources" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.simpleconfigurator" version="0.0.0"/>
    </features>
@@ -32,6 +33,7 @@
 		<plugin id="org.eclipse.osgi.services" autoStart="true" />
 		<plugin id="org.eclipse.virgo.medic" autoStart="true" startLevel="3"/>
 		<plugin id="org.eclipse.virgo.medic.core" autoStart="true" startLevel="3"/>
+		<plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3"/>
 		<plugin id="org.eclipse.virgo.util.osgi" autoStart="true"/>
 		
 		<property name="osgi.compatibility.bootdelegation" value="false"/>

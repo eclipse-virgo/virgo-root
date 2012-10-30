@@ -17,7 +17,7 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.core.contenttype" rev="${org.eclipse.core.contenttype}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.core.jobs" rev="${org.eclipse.core.jobs}" conf="p2-runtime->runtime"/>
-        <!--dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.core.net" rev="${org.eclipse.core.net}" conf="p2-runtime->runtime"/-->
+        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.core.net" rev="${org.eclipse.core.net}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.core.runtime" rev="${org.eclipse.core.runtime}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.ecf" rev="${org.eclipse.ecf}" conf="p2-runtime->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.ecf.filetransfer" rev="${org.eclipse.ecf.filetransfer}" conf="p2-runtime->runtime"/>
