@@ -22,15 +22,16 @@ import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 import org.eclipse.virgo.web.enterprise.openejb.deployer.VirgoDeployerEjb;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpenEjbApplicationListener implements LifecycleListener {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     public void deploy(StandardContext standardContext) throws Exception {
         ServletContext context = standardContext.getServletContext();
         String contextPath = context.getContextPath();
-        if (contextPath.equals("")) {
-            return;
-        }
         VirgoDeployerEjb deployer = new VirgoDeployerEjb(contextPath, context.getClassLoader());
         try {
 
@@ -41,8 +42,10 @@ public class OpenEjbApplicationListener implements LifecycleListener {
                 deployer.deploy(getAppModuleId(standardContext.getDocBase()), standardContext);
             }
         } catch (Exception e) {
-            // failing to initialise enterprise container should not kill the app's deployment
-            // it might not need enterprise handling
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to initialise enterprise container for application with context path '" + contextPath + "'", e);
+            }
+            throw e;
         }
 
     }
@@ -59,7 +62,10 @@ public class OpenEjbApplicationListener implements LifecycleListener {
                 deployer.undeploy(new File(getAppModuleId(standardContext.getDocBase())).getAbsolutePath());
             }
         } catch (Exception e) {
-            // failing to destroy enterprise container should not kill the app's undeployment
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to destroy enterprise container for application with context path '" + contextPath + "'", e);
+            }
+            throw e;
         }
     }
 

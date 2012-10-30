@@ -14,7 +14,7 @@
 
 	<dependencies>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="compile->runtime"/>
-        
+        <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.api" rev="${org.slf4j.api}" conf="compile->runtime"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.appdeployer" rev="latest.integration" conf="compile->runtime"/>
         
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="compile->runtime"/>

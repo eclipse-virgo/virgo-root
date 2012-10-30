@@ -32,6 +32,7 @@ import org.apache.openejb.config.DeploymentLoader;
  */
 public class VirgoDeploymentLoader extends DeploymentLoader {
     
+    private static final String VIRGO_ROOT_APPLICATION_RESERVED_MODULE_ID = "virgoRootApplicationReservedModuleID";
     private final String webContextPath;
     
     public VirgoDeploymentLoader(String webContextPath) {
@@ -43,9 +44,17 @@ public class VirgoDeploymentLoader extends DeploymentLoader {
     public AppModule load(File arg0) throws OpenEJBException {
         //Sets the web context path as the moduleId, leaving the original logic unchanged
         AppModule result = super.load(arg0);
-        result.setModuleId(webContextPath.substring(1));
+        result.setModuleId(createModuleIDFromWebContextPath());
         return result;
     }
+    
+    private String createModuleIDFromWebContextPath() {
+        if (this.webContextPath.equals("")) {
+          return VIRGO_ROOT_APPLICATION_RESERVED_MODULE_ID;
+        }
+        // remove the slash at the beginning of each webContextPath
+        return this.webContextPath.substring(1);
+      }
     
     @Override
     protected String getContextRoot() {
