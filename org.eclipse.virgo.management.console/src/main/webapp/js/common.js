@@ -406,12 +406,7 @@ var InfoBox = function(properties){
 			var floorCount = Math.floor(infoBoxCount/10);
 			var xOffSet = floorCount * 250;
 			infoBoxCount = infoBoxCount - (floorCount * 10);
-			var zIndex = 0;
-			$.each($('.info-box'), function(index, otherInfoBox){
-				if($(otherInfoBox).css('z-index') >= zIndex){
-					zIndex = $(otherInfoBox).css('z-index') + 1;
-				}
-			});
+			var zIndex = self.getHighestZIndex() + 1;
 			self.dialogBox.css({position: 'absolute', 
 								left: position.left + 40 + xOffSet + (infoBoxCount*25), 
 								top: position.top + 50 + (infoBoxCount*25), 
@@ -420,18 +415,19 @@ var InfoBox = function(properties){
 			$('body').append(self.dialogBox);
 			self.isVisible = true;
 		}else{
-			var zIndex = self.dialogBox.css('z-index');
-			var needToMove = false;
-			$.each($('.info-box'), function(index, otherInfoBox){
-				if($(otherInfoBox).css('z-index') >= zIndex){
-					zIndex = $(otherInfoBox).css('z-index') + 1;
-					needToMove = true;
-				}
-			});
-			if(needToMove){
-				self.dialogBox.css({'z-index': zIndex});
-			}
+			self.dialogBox.css({'z-index': self.getHighestZIndex() + 1});
 		}
+	};
+	
+	self.getHighestZIndex = function(){
+		var zIndex = 0;
+		$.each($('.info-box'), function(index, otherInfoBox){
+			var checkZIndex = new Number($(otherInfoBox).css('z-index')).valueOf();
+			if(checkZIndex > zIndex){
+				zIndex = checkZIndex;
+			}
+		});
+		return zIndex;
 	};
 	
 	self.hide = function(){
