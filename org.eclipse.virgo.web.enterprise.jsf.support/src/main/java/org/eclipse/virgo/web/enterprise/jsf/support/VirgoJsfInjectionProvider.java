@@ -64,9 +64,9 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
                 return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to invoke OWBInjector for managedBean '"+ managedBean.toString() +"', will fallback to manual processing", e);
         }
-	    // if TCCL is not available fall back to the manual processing
+	    // if TCCL is not available or we can get an instance of OWBInjector fall back to the manual processing
 		if (this.namingContext != null) {
 			try {
 				// Initialize fields annotations
