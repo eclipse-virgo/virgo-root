@@ -19,6 +19,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.felix.gogo.runtime/0.8.0.v201108120515/org.apache.felix.gogo.runtime-0.8.0.v201108120515.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/IVY_CACHE/org.junit/com.springsource.org.junit/4.4.0/com.springsource.org.junit-sources-4.4.0.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.tomcat/2.2.0.BUILD-20121007155412/org.eclipse.gemini.web.tomcat-2.2.0.BUILD-20121007155412.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.tomcat/2.2.0.BUILD-20121031194216/org.eclipse.gemini.web.tomcat-2.2.0.BUILD-20121031194216.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
