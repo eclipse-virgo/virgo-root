@@ -7,7 +7,7 @@ if "%SCRIPT_DIR%"=="" (
 )
 
 rem Derive KERNEL_HOME full path from script's parent (no backslash)
-  for %%I in ("%SCRIPT_DIR%..") do set KERNEL_HOME=%%~dpfsI
+  for %%I in ("%SCRIPT_DIR%..") do set KERNEL_HOME=%%~fsI
 
 rem Check files exist (exit if not)
   set ChkLst="%KERNEL_HOME%\bin\setupClasspath.bat","%KERNEL_HOME%\bin\checkJava.bat"
