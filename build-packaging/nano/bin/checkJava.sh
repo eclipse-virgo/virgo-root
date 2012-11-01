@@ -7,8 +7,15 @@ if $cygwin; then
     CLASSPATH=$(cygpath -wp $CLASSPATH)
 fi
 
+if [ -z "$JAVA_HOME" ]
+then
+  	JAVA_EXECUTABLE=java
+else
+  	JAVA_EXECUTABLE=$JAVA_HOME/bin/java
+fi
+
 # Run java version check with the discovered java jvm.
-$JAVA_HOME/bin/java \
+$JAVA_EXECUTABLE \
 	-classpath $CLASSPATH \
 	org.eclipse.virgo.util.env.JavaVersionChecker
 

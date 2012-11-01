@@ -173,6 +173,13 @@ then
 		-Dcom.sun.management.jmxremote.ssl=true \
 		-Dcom.sun.management.jmxremote.ssl.need.client.auth=false"
 
+   	if [ -z "$JAVA_HOME" ]
+    then
+      	JAVA_EXECUTABLE=java
+    else
+     	JAVA_EXECUTABLE=$JAVA_HOME/bin/java
+    fi
+
 	# If we get here we have the correct Java version.
 	
 	if [ -z "$NO_START_FLAG" ]
@@ -185,7 +192,7 @@ then
                     -Xmx512m \
                     -XX:MaxPermSize=512m"
 
-		cd $KERNEL_HOME; exec $JAVA_HOME/bin/java \
+		cd $KERNEL_HOME; exec $JAVA_EXECUTABLE \
 			$JAVA_OPTS \
 			$DEBUG_OPTS \
 			$JMX_OPTS \
@@ -271,7 +278,7 @@ then
         CONFIG_DIR=$(cygpath -wp $CONFIG_DIR)
     fi
 
-	exec $JAVA_HOME/bin/java $JAVA_OPTS $JMX_OPTS \
+	exec $JAVA_EXECUTABLE $JAVA_OPTS $JMX_OPTS \
 		-classpath $CLASSPATH \
 		-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 		-Dorg.eclipse.virgo.kernel.authentication.file=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties \
