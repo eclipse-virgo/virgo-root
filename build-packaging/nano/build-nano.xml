@@ -179,6 +179,8 @@
                 <filter token="WB.IMPL" value="${org.apache.openwebbeans.impl}"/>
                 <filter token="WB.SPI" value="${org.apache.openwebbeans.spi}"/>
                 <filter token="WB.WEB" value="${org.apache.openwebbeans.web}"/>
+                <filter token="WB.JSF" value="${org.apache.openwebbeans.jsf}"/>
+                <filter token="WB.TOMCAT7" value="${org.apache.openwebbeans.tomcat7}"/>
                 <filter token="COMMOMS.BEANUTILS" value="${org.apache.commons.beanutils}"/>
                 <filter token="COMMONS.CLI" value="${org.apache.commons.cli}"/>
                 <filter token="COMMONS.COLLECTIONS" value="${org.apache.commons.collections}"/>

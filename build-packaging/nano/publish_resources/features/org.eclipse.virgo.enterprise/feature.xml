@@ -203,6 +203,20 @@
     unpack="false"/>
     
     <plugin
+    id="org.apache.openwebbeans.jsf"
+    download-size="0"
+    install-size="0"
+    version="@WB.JSF@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.apache.openwebbeans.tomcat7"
+    download-size="0"
+    install-size="0"
+    version="@WB.TOMCAT7@"
+    unpack="false"/>
+    
+    <plugin
     id="org.apache.commons.beanutils"
     download-size="0"
     install-size="0"

@@ -25,6 +25,8 @@
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.impl" rev="${org.apache.openwebbeans.impl}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.spi" rev="${org.apache.openwebbeans.spi}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.web" rev="${org.apache.openwebbeans.web}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.jsf" rev="${org.apache.openwebbeans.jsf}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openwebbeans.tomcat7" rev="${org.apache.openwebbeans.tomcat7}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.beanutils" rev="${org.apache.commons.beanutils}" conf="enterprise->runtime"/>
         <dependency org="org.apache.commons" name="com.springsource.org.apache.commons.cli" rev="${org.apache.commons.cli}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.collections" rev="${org.apache.commons.collections}" conf="enterprise->runtime"/>
