@@ -294,41 +294,6 @@
     unpack="false"/>
     
     <plugin
-    id="org.apache.xbean.asm"
-    download-size="0"
-    install-size="0"
-    version="@XB.ASM@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.xbean.bundleutils"
-    download-size="0"
-    install-size="0"
-    version="@XB.BUNDLEUTILS@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.xbean.finder"
-    download-size="0"
-    install-size="0"
-    version="@XB.FINDER@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.xbean.naming"
-    download-size="0"
-    install-size="0"
-    version="@XB.NAMING@"
-    unpack="false"/>
-    
-    <plugin
-    id="org.apache.xbean.reflect"
-    download-size="0"
-    install-size="0"
-    version="@XB.REFLECT@"
-    unpack="false"/>
-    
-    <plugin
     id="javax.inject"
     download-size="0"
     install-size="0"
