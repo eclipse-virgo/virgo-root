@@ -97,6 +97,27 @@
     version="@WEB.VERSION@"
     unpack="false"/>
     
+    <plugin
+    id="org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
+    <plugin
+    id="org.eclipse.virgo.web.enterprise.openwebbeans.initialiser"
+    download-size="0"
+    install-size="0"
+    version="@WEB.VERSION@"
+    unpack="false"/>
+    
    <plugin
     id="javassist"
     download-size="0"
