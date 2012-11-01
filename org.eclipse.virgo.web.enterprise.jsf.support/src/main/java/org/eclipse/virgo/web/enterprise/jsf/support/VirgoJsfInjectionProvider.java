@@ -61,15 +61,15 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
                 Object injectorInstance = injector.newInstance();
                 Method method = injector.getDeclaredMethod("inject", new Class<?>[] { Object.class });
                 injectorInstance = method.invoke(injectorInstance, new Object[] { managedBean });
-                return;
             }
         } catch (Exception e) {
-            logger.error("Failed to invoke OWBInjector for managedBean '"+ managedBean.toString() +"', will fallback to manual processing", e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to invoke OWBInjector for managedBean '"+ managedBean.toString() +"', will fallback to manual processing", e);
+            }
         }
-	    // if TCCL is not available or we can get an instance of OWBInjector fall back to the manual processing
+	    // if TCCL is not available or an error occurred fall back to manual processing
 		if (this.namingContext != null) {
 			try {
-				// Initialize fields annotations
 				Class<?> currentBeanClass = managedBean.getClass();
 				while (currentBeanClass != null) {
 					// Initialize the annotations
@@ -79,7 +79,7 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 				}
 			} catch (Exception e) {
 			    if (logger.isErrorEnabled()) {
-			        logger.error("Failed to inject managed bean in FacesServlet:", e);
+			        logger.error("Failed to inject managed bean in FacesServlet", e);
 			    }
 			}
         }
@@ -215,7 +215,7 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
         return result;
     }
 
-	protected static void lookupFieldResource(javax.naming.Context context, Object instance, String beanClassName, Field field, String name) throws NamingException, IllegalAccessException {
+	protected void lookupFieldResource(javax.naming.Context context, Object instance, String beanClassName, Field field, String name) throws NamingException, IllegalAccessException {
 		Object lookedupResource = null;
 		boolean accessibility = false;
 
@@ -224,14 +224,25 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 		} else {
 			lookedupResource = context.lookup(getFullyQualifiedName(beanClassName + "/" + field.getName()));
 		}
-
-		accessibility = field.isAccessible();
-		field.setAccessible(true);
-		field.set(instance, lookedupResource);
-		field.setAccessible(accessibility);
+		
+        if (lookedupResource != null) {
+            if (logger.isDebugEnabled()) {
+                Object oldValue = field.get(instance);
+                logger.debug("Overriding old value '"+ oldValue +"' for field '"+ field +"' with new value '"+ lookedupResource +"'");
+            }
+            accessibility = field.isAccessible();
+            field.setAccessible(true);
+            field.set(instance, lookedupResource);
+            field.setAccessible(accessibility);
+        } else {
+            if (logger.isDebugEnabled()) {
+                Object oldValue = field.get(instance);
+                logger.debug("No resource found from lookup => did not override old value '"+ oldValue +"' for field '"+ field +"'");
+            }
+        }
 	}
 
-	protected static void lookupMethodResource(javax.naming.Context context, Object instance, String beanClassName, Method method, String name) throws NamingException, IllegalAccessException,
+	protected void lookupMethodResource(javax.naming.Context context, Object instance, String beanClassName, Method method, String name) throws NamingException, IllegalAccessException,
 			InvocationTargetException {
 		if (!method.getName().startsWith("set") || method.getParameterTypes().length != 1 || !method.getReturnType().getName().equals("void")) {
 			throw new IllegalArgumentException("Invalid method resource injection annotation");
@@ -250,13 +261,22 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 			lookedupResource = context.lookup(getFullyQualifiedName(beanClassName + "/" + fieldName));
 		}
 
-		accessibility = method.isAccessible();
-		method.setAccessible(true);
-		method.invoke(instance, lookedupResource);
-		method.setAccessible(accessibility);
+        if (lookedupResource != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Invoking method '" + method + "' with looked value '" + lookedupResource + "'");
+            }
+            accessibility = method.isAccessible();
+            method.setAccessible(true);
+            method.invoke(instance, lookedupResource);
+            method.setAccessible(accessibility);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("No resource found from lookup => did not invoke method '" + method + "'");
+            }
+        }
 	}
 
-	private static String getFullyQualifiedName(String name) {
+	private String getFullyQualifiedName(String name) {
 		return COMP_ENV + name;
 	}
 
