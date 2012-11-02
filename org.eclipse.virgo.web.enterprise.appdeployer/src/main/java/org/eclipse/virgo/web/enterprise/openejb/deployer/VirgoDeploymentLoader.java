@@ -67,8 +67,9 @@ public class VirgoDeploymentLoader extends DeploymentLoader {
         Map<String, URL> descriptors = new TreeMap<String, URL>();
         if (warFile.isFile()) {
             URL jarURL = new URL("jar", "", -1, warFile.toURI().toURL() + "!/");
+            JarFile jarFile = null;
             try {
-                JarFile jarFile = new JarFile(warFile);
+                jarFile = new JarFile(warFile);
                 for (JarEntry entry : Collections.list(jarFile.entries())) {
                     String entryName = entry.getName();
                     if (!entry.isDirectory() && entryName.startsWith("WEB-INF/") && entryName.indexOf('/', "WEB-INF".length()) > 0) {
@@ -77,6 +78,14 @@ public class VirgoDeploymentLoader extends DeploymentLoader {
                 }
             } catch (IOException e) {
                 // most likely an invalid jar file
+            } finally {
+            	try {
+            		if (jarFile != null) {
+            			jarFile.close();
+            		}
+            	} catch (IOException e) {
+            		// do nothing
+            	}
             }
         }
         descriptors.putAll(super.getWebDescriptors(warFile));
