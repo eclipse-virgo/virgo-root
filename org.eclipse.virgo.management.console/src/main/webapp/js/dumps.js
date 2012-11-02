@@ -180,6 +180,10 @@ var DumpViewer = function(){
 					});
 					layoutManager.displayBundle(bundles[0].identifier);
 				}
+				var tableHolder = $('<div />', {id: 'table-holder'});
+				controls.append(tableHolder);
+				new TopBar(tableHolder, layoutManager, dataSource).init();
+				$('#side-bar').height($('#dump-item-content').height() - 32);
 			});
 		});
 	};
@@ -290,5 +294,83 @@ var QuasiDataSource = function(dumpFolder){
 		return specFormattedProperties;
 	};
 
+};
+
+
+var TopBar = function(container, layoutManager, dataSource){
+
+	var self = this;
+	
+	self.dataSource = dataSource;
+	
+	self.layoutManager = layoutManager;
+	
+	self.container = container;
+	
+	self.focused = -1;
+	
+	self.layoutManager.setFocusListener(function(bundleId){
+		if(bundleId != self.focused){
+			self.setFocused(bundleId);
+		}
+	});
+	
+	self.setFocused = function(bundleId){
+		self.focused = bundleId;
+		var rowIds = $('td:first-child', self.bundlesTable);
+		$.each(rowIds, function(index, rowId){
+			if($(rowId).text() == bundleId){
+				self.container.scrollTop($(rowId).position().top);				
+				$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
+				$(rowId).parent().addClass('table-tr-selected');
+			}
+		});
+	};
+	
+	self.init = function(){
+		var tRows = new Array();
+		$.each(dataSource.bundles, function(id, bundle){		
+			tRows.push([id, self.getFormattedBundleName(bundle), bundle.Version]);
+		});
+		
+		self.bundlesTable = util.makeTable({ 
+			id: 'bundle-table',
+			headers: [{title: 'Id', type: 'numeric'}, {title: 'SymbolicName', type: 'alpha'}, {title: 'Version', type: 'version'}], 
+			rows: tRows,
+			sortable : true,
+			sortIndex: 0,
+			selectable : self.clickEvent
+		});
+		self.container.append(self.bundlesTable);
+		if(util.pageLocation && util.pageLocation.length > 0){
+			self.setFocused(util.pageLocation);
+		}
+	};
+	
+	self.getFormattedBundleName = function(bundle){
+		var formatBundleList = function(bundleIdArray){
+			var result = bundleIdArray[0];
+			for(var i = 1; i < bundleIdArray.length; i++) {
+				result = result + ', ' + bundleIdArray[i];
+			}
+			return result;
+		};
+		if(bundle.Fragments && bundle.Fragments.length > 0){
+			return bundle.SymbolicName + ' - Fragments [' + formatBundleList(bundle.Fragments) + ']';
+		}
+		if(bundle.Hosts && bundle.Hosts.length > 0){
+			return bundle.SymbolicName + ' - Host [' + formatBundleList(bundle.Hosts) + ']';
+		}else if(bundle.Fragment == 'true'){
+			return bundle.SymbolicName + ' Is Fragments';
+		}
+		return bundle.SymbolicName;
+	};
+	
+	self.clickEvent = function(row){
+		var bundleId = $('td:first-child', row).text();
+		self.focused = bundleId;
+		self.layoutManager.displayBundle(bundleId);
+	};
+	
 };
 		

@@ -11,7 +11,7 @@
 #side-bar {
     position: absolute;
     width: 250px;
-    min-height: 594px;
+    min-height: 550px;
 }
 
 #side-bar h2 {
@@ -75,6 +75,12 @@
 
 #gui-controls {
 	margin: 15px 0;
+}
+
+#table-holder {
+	margin-top: 15px;
+	max-height: 200px;
+	overflow: auto;
 }
 
 .unresolved-bundle {

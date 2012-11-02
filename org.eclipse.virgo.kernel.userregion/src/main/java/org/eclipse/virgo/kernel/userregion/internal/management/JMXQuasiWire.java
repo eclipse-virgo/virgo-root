@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.virgo.kernel.userregion.internal.management;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
+import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 
@@ -41,8 +40,14 @@ public class JMXQuasiWire {
 		this.namespace = BundleDescription.PACKAGE_NAMESPACE;
 		this.providerId = quasiImportPackage.getProvider().getExportingBundle().getBundleId();
 		this.requirerId = quasiImportPackage.getImportingBundle().getBundleId();
-		this.bundleCapabilityAttributes = this.stringifyMap(quasiImportPackage.getProvider().getAttributes());
-		this.bundleCapabilityDirectives = this.stringifyMap(quasiImportPackage.getProvider().getDirectives());
+		QuasiExportPackage provider = quasiImportPackage.getProvider();
+		if(provider != null){
+			this.bundleCapabilityAttributes = this.stringifyMap(provider.getAttributes());
+			this.bundleCapabilityDirectives = this.stringifyMap(provider.getDirectives());
+		}else{
+			this.bundleCapabilityAttributes = new HashMap<String, String>();
+			this.bundleCapabilityDirectives = new HashMap<String, String>();
+		}
 		this.bundleRequirementAttributes = this.stringifyMap(quasiImportPackage.getAttributes());
 		this.bundleRequirementDirectives = this.stringifyMap(quasiImportPackage.getDirectives());
 	}
