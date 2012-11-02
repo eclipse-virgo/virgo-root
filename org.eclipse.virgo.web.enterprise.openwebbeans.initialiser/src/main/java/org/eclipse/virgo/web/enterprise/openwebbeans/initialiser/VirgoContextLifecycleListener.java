@@ -34,14 +34,12 @@ import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.core.StandardServer;
 import org.apache.naming.ContextAccessController;
-
 import org.apache.tomcat.InstanceManager;
-
 import org.apache.webbeans.web.tomcat.TomcatInstanceManager;
 import org.apache.webbeans.web.tomcat.TomcatUtil;
 
 /**
- * Context lifecycle listener. Adapted from OWB and updated.
+ * Virgo Context lifecycle listener. Adapted from OWB and updated.
  * 
  */
 public class VirgoContextLifecycleListener implements PropertyChangeListener, LifecycleListener, ContainerListener {
@@ -69,7 +67,34 @@ public class VirgoContextLifecycleListener implements PropertyChangeListener, Li
 
                     String[] oldListeners = context.findApplicationListeners();
                     addWebBeansConfigListenerAtFront(context, oldListeners);
-                } else if (event.getType().equals("beforeContextInitialized")) {
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void addWebBeansConfigListenerAtFront(StandardContext context, String[] oldListeners) {
+        LinkedList<String> listeners = new LinkedList<String>();
+        listeners.addFirst("org.apache.webbeans.servlet.WebBeansConfigurationListener");
+        for (String listener : oldListeners) {
+            listeners.add(listener);
+            context.removeApplicationListener(listener);
+        }
+        for (String listener : listeners) {
+            context.addApplicationListener(listener);
+        }
+    }
+
+    @Override
+    public void containerEvent(ContainerEvent event) {
+        StandardContext context = null;
+
+        try {
+            if (event.getSource() instanceof StandardContext) {
+                context = (StandardContext) event.getSource();
+
+                if (event.getType().equals("beforeContextInitialized")) {
                     ClassLoader loader = context.getLoader().getClassLoader();
                     Object listener = event.getData();
 
@@ -107,26 +132,10 @@ public class VirgoContextLifecycleListener implements PropertyChangeListener, Li
                     }
                 }
             }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void addWebBeansConfigListenerAtFront(StandardContext context, String[] oldListeners) {
-        LinkedList<String> listeners = new LinkedList<String>();
-        listeners.addFirst("org.apache.webbeans.servlet.WebBeansConfigurationListener");
-        for (String listener : oldListeners) {
-            listeners.add(listener);
-            context.removeApplicationListener(listener);
-        }
-        for (String listener : listeners) {
-            context.addApplicationListener(listener);
-        }
-    }
-
-    @Override
-    public void containerEvent(ContainerEvent event) {
-
     }
 
     public void start() {
@@ -134,7 +143,6 @@ public class VirgoContextLifecycleListener implements PropertyChangeListener, Li
         this.standardServer.addPropertyChangeListener(this);
         this.standardServer.addLifecycleListener(this);
         for (Service service : this.standardServer.findServices()) {
-            //TODO This should lead to registration of a ContainerListener, why it doesn't?
             serviceAdded(service);
         }
     }
@@ -312,10 +320,6 @@ public class VirgoContextLifecycleListener implements PropertyChangeListener, Li
 
         @Override
         public Object remove(Object key) {
-            return extracted(key);
-        }
-
-        private Object extracted(Object key) {
             Object value = super.remove(key);
             PropertyChangeEvent event = new PropertyChangeEvent(this.source, this.propertyName, value, null);
             this.listener.propertyChange(event);
