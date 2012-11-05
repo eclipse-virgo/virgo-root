@@ -35,7 +35,6 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.core.StandardServer;
 import org.apache.naming.ContextAccessController;
 import org.apache.tomcat.InstanceManager;
-import org.apache.webbeans.web.tomcat.TomcatInstanceManager;
 import org.apache.webbeans.web.tomcat.TomcatUtil;
 
 /**
@@ -111,7 +110,7 @@ public class VirgoContextLifecycleListener implements PropertyChangeListener, Li
 
                     if (listener.getClass().getName().equals("org.apache.webbeans.servlet.WebBeansConfigurationListener")) {
                         InstanceManager processor = context.getInstanceManager();
-                        InstanceManager custom = new TomcatInstanceManager(context.getLoader().getClassLoader(), processor);
+                        InstanceManager custom = new VirgoInstanceManager(context.getLoader().getClassLoader(), processor);
                         context.setInstanceManager(custom);
 
                         context.getServletContext().setAttribute(InstanceManager.class.getName(), custom);
