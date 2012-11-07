@@ -120,7 +120,10 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			// set resources
 			resourceOperator = OpenEjbDeployerDSComponent.getResourceOperator();
 			if (resourceOperator == null) {
-			    resourceOperator = new StandardResourceOperator();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unable to discover mandatory resource operator, check the framework's services and DS components.");
+                }
+                throw new OpenEJBException("Unable to discover mandatory resource operator");
 			}
 			resourceOperator.processResources(appModule, standardContext);
 
