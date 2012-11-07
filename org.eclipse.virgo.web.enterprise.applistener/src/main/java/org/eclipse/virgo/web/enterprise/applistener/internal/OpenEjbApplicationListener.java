@@ -26,7 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OpenEjbApplicationListener implements LifecycleListener {
-
+    // globally synchronize deployment because of overlapping app data
+    private static Object monitor = new Object();
+    
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     public void deploy(StandardContext standardContext) throws Exception {
@@ -34,12 +36,13 @@ public class OpenEjbApplicationListener implements LifecycleListener {
         String contextPath = context.getContextPath();
         VirgoDeployerEjb deployer = new VirgoDeployerEjb(contextPath, context.getClassLoader());
         try {
-
             String realPath = context.getRealPath("");
-            if (realPath != null) {
-                deployer.deploy(realPath, standardContext);
-            } else {
-                deployer.deploy(getAppModuleId(standardContext.getDocBase()), standardContext);
+            synchronized (monitor) {
+                if (realPath != null) {
+                    deployer.deploy(realPath, standardContext);
+                } else {
+                    deployer.deploy(getAppModuleId(standardContext.getDocBase()), standardContext);
+                }
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
@@ -47,9 +50,9 @@ public class OpenEjbApplicationListener implements LifecycleListener {
             }
             throw e;
         }
-
     }
 
+    // no need to synchronize the undeploy operation as it is stateless
     public void undeploy(StandardContext standardContext) throws Exception {
         ServletContext context = standardContext.getServletContext();
         String contextPath = context.getContextPath();
