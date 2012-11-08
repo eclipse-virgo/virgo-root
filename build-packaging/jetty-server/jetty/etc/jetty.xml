@@ -161,7 +161,7 @@
 	<Call name="addBean">
 		<Arg>
 			<New class="org.eclipse.jetty.security.HashLoginService">
-				<Set name="name">Virgo Server Admin Console</Set>
+				<Set name="name">Virgo Admin Console</Set>
 				<Set name="config"><Property name="jetty.home" default="."/>/etc/realm.properties</Set>
 				<Set name="refreshInterval">0</Set>
 			</New>
