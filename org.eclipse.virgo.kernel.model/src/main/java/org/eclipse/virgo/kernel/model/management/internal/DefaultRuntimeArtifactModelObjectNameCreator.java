@@ -46,6 +46,8 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
     private static final String KEY_VERSION = "version";
 
     private static final String KEY_REGION = "region";
+    
+    private static final String NULL_REGION_NAME = "global";
 
     private final String domain;
 
@@ -64,7 +66,11 @@ public final class DefaultRuntimeArtifactModelObjectNameCreator implements Runti
      * {@inheritDoc}
      */
     public ObjectName createArtifactModel(String type, String name, Version version, Region region) {
-        return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString()), this.quoteValueIfNeeded(region.getName())));
+        return createObjectName(String.format(ARTIFACT_FORMAT, this.domain, this.quoteValueIfNeeded(type), this.quoteValueIfNeeded(name), this.quoteValueIfNeeded(version.toString()), this.quoteValueIfNeeded(getRegionName(region))));
+    }
+
+    private String getRegionName(Region region) {
+        return region == null ? NULL_REGION_NAME : region.getName();
     }
 
     /**
