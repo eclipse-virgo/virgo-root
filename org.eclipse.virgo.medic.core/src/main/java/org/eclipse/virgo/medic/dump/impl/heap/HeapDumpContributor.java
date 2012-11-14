@@ -12,15 +12,21 @@
 package org.eclipse.virgo.medic.dump.impl.heap;
 
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import javax.management.MBeanServer;
 
 import org.eclipse.virgo.medic.dump.Dump;
 import org.eclipse.virgo.medic.dump.DumpContributionFailedException;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 
-
 public final class HeapDumpContributor implements DumpContributor {
+
+    private static final MBeanServer MBEAN_SERVER = ManagementFactory.getPlatformMBeanServer();
+
+    private static final String HOTSPOT_DIAGNOSTIC_MBEAN_NAME = "com.sun.management:type=HotSpotDiagnostic";
 
     private final Method heapDumpMethod;
 
@@ -31,14 +37,34 @@ public final class HeapDumpContributor implements DumpContributor {
         Method heapDumpMethod = null;
         Object diagnosticMBean = null;
 
+        // Java 7 strategy
         try {
-            Class<?> managementFactoryClass = Class.forName("sun.management.ManagementFactory", true, HeapDumpContributor.class.getClassLoader());
-            Method method = managementFactoryClass.getMethod("getDiagnosticMXBean");
-            diagnosticMBean = method.invoke(null);
-            heapDumpMethod = diagnosticMBean.getClass().getMethod("dumpHeap", String.class, boolean.class);
+            Class<?> diagnosticMbeanClass = Class.forName("com.sun.management.HotSpotDiagnosticMXBean", true,
+                HeapDumpContributor.class.getClassLoader());
+            diagnosticMBean = ManagementFactory.newPlatformMXBeanProxy(MBEAN_SERVER, HOTSPOT_DIAGNOSTIC_MBEAN_NAME, diagnosticMbeanClass);
         } catch (Exception e) {
-            heapDumpMethod = null;
-            diagnosticMBean = null;
+            // Ignore
+        }
+
+        if (diagnosticMBean == null) {
+            // Java 6 strategy
+            try {
+                Class<?> managementFactoryClass = Class.forName("sun.management.ManagementFactory", true, HeapDumpContributor.class.getClassLoader());
+                Method method = managementFactoryClass.getMethod("getDiagnosticMXBean");
+                diagnosticMBean = method.invoke(null);
+            } catch (Exception e) {
+                heapDumpMethod = null;
+                diagnosticMBean = null;
+            }
+        }
+
+        if (diagnosticMBean != null) {
+            try {
+                heapDumpMethod = diagnosticMBean.getClass().getMethod("dumpHeap", String.class, boolean.class);
+            } catch (Exception e) {
+                heapDumpMethod = null;
+                diagnosticMBean = null;
+            }
         }
 
         this.heapDumpMethod = heapDumpMethod;

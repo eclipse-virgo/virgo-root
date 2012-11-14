@@ -15,8 +15,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.management.MBeanServer;
 
 import org.eclipse.virgo.medic.dump.Dump;
 import org.eclipse.virgo.medic.dump.DumpContributionFailedException;
@@ -26,8 +29,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class HeapDumpContributorTests {
+
+    private static final MBeanServer MBEAN_SERVER = ManagementFactory.getPlatformMBeanServer();
+
+    private static final String HOTSPOT_DIAGNOSTIC_MBEAN_NAME = "com.sun.management:type=HotSpotDiagnostic";
 
     private final File dumpDirectory = new File("target");
 
@@ -52,15 +58,26 @@ public class HeapDumpContributorTests {
 
         contributor.contribute(dump);
 
-        boolean managementFactoryAvailable;
+        boolean diagnostMbeanAvailable;
 
         try {
-            Class.forName("sun.management.ManagementFactory").getMethod("getDiagnosticMXBean");
-            managementFactoryAvailable = true;
+            Class<?> diagnosticMbeanClass = Class.forName("com.sun.management.HotSpotDiagnosticMXBean", true,
+                HeapDumpContributor.class.getClassLoader());
+            ManagementFactory.newPlatformMXBeanProxy(MBEAN_SERVER, HOTSPOT_DIAGNOSTIC_MBEAN_NAME, diagnosticMbeanClass);
+            diagnostMbeanAvailable = true;
         } catch (Exception e) {
-            managementFactoryAvailable = false;
+            diagnostMbeanAvailable = false;
         }
 
-        assertEquals(managementFactoryAvailable, new File(this.dumpDirectory, "heap.out").exists());
+        if (!diagnostMbeanAvailable) {
+            try {
+                Class.forName("sun.management.ManagementFactory").getMethod("getDiagnosticMXBean");
+                diagnostMbeanAvailable = true;
+            } catch (Exception e) {
+                diagnostMbeanAvailable = false;
+            }
+        }
+
+        assertEquals(diagnostMbeanAvailable, new File(this.dumpDirectory, "heap.out").exists());
     }
 }
