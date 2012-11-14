@@ -82,7 +82,7 @@ Repositories = {
 			clazz: 'repository-table table-selectable',
 			headers: [{title: 'Type', type: 'alpha'}, {title: 'Name', type: 'alpha'}, {title: 'Version', type: 'version'}],
 			rows: rows,
-			selectable: true,
+			selectable: function(){},
 			sortable: true,
 			sortIndex: 1
 		});
