@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="IVY_CACHE/com.opensymphony.quartz/com.springsource.org.quartz/1.6.0/com.springsource.org.quartz-1.6.0.jar" sourcepath="/IVY_CACHE/com.opensymphony.quartz/com.springsource.org.quartz/1.6.0/com.springsource.org.quartz-sources-1.6.0.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/com.opensymphony.quartz/com.springsource.org.quartz/1.6.2/com.springsource.org.quartz-1.6.2.jar" sourcepath="/IVY_CACHE/com.opensymphony.quartz/com.springsource.org.quartz/1.6.2/com.springsource.org.quartz-sources-1.6.2.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-sources-3.7.1.R37x_v20110808-1106.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.beans/3.1.0.RELEASE/org.springframework.beans-3.1.0.RELEASE.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.beans/3.1.0.RELEASE/org.springframework.beans-sources-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-3.1.0.RELEASE.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-sources-3.1.0.RELEASE.jar"/>
