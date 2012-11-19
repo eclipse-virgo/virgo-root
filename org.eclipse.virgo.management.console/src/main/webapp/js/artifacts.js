@@ -192,7 +192,7 @@ var Tree = function() {
 		var artifactControlBar = self.getArtifactControlBar(fullArtifact);
 		if(fullArtifact.type == 'configuration'){
 			var configControl = $('<a />', {'class': 'artifact-control'});
-			configControl.attr('href', util.getCurrentHost() + '/content/configuration#' + fullArtifact.name);
+			configControl.attr('href', util.getCurrentHost() + '/content/configurations#' + fullArtifact.name);
 			configControl.text('VIEW');
 			artifactControlBar.append(configControl);
 		}

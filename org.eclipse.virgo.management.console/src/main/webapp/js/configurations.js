@@ -33,7 +33,7 @@ ConfigurationInit = {
 			var location = item[1];
 			var label = ConfigurationInit.getConfigurationLabel(pid);
 			var config = new Configuration(pid, location, regionName, label);
-			if(util.pageLocation && util.pageLocation == regionName + '#' + pid){
+			if(util.pageLocation && util.pageLocation == pid){
 				config.toggle();
 			}
 			$('.config-label', label).click(config, function(event){
