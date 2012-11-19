@@ -43,6 +43,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.AbstractRefreshableWebApplicationContext;
 import org.springframework.web.context.support.ServletContextAwareProcessor;
 import org.springframework.web.context.support.ServletContextResourcePatternResolver;
+import org.springframework.web.context.support.StandardServletEnvironment;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -364,6 +365,7 @@ public class ServerOsgiBundleXmlWebApplicationContext extends OsgiBundleXmlAppli
     /**
      * {@inheritDoc}
      */
+    @Override
     public ConfigurableWebEnvironment getEnvironment() {
         ConfigurableEnvironment env = super.getEnvironment();
         if (env instanceof ConfigurableWebEnvironment) {
@@ -371,6 +373,14 @@ public class ServerOsgiBundleXmlWebApplicationContext extends OsgiBundleXmlAppli
         } else {
             throw new IllegalStateException("Environment is not a ConfigurableWebEnvironment");
         }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    protected ConfigurableEnvironment createEnvironment() {
+        return new StandardServletEnvironment();
     }
 
 }
