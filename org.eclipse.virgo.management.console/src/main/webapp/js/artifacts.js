@@ -206,26 +206,25 @@ var Tree = function() {
 		
 		var spring = false;
 		$.each(fullArtifact.properties, function(key, value){
-			if(key == 'Spring'){
-				spring = true;
-				fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
-			}
 			if(value == 'true' || value == true){
-				if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
+				if(key == 'Spring'){
+					spring = true;
+					fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
+				} else if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
 					fxContainer.append(self.getArtifactAttribute(key, key));
 				} else {
-					fxContainer.append(self.getArtifactAttribute(key));
+					fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
 				}
 			} else {
 				if(key == 'Bundle Id'){
-					fxContainer.append(self.getArtifactAttribute(key + ': ' + value, null, util.getCurrentHost() + '/content/wirings#' + value));
+					fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getCurrentHost() + '/content/wirings#' + value));
 				} else {
 					fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
 				}
 			}
 		});
 		
-		if(spring == false){
+		if(spring == false && fullArtifact.type == 'bundle'){
 			fxContainer.append(self.getArtifactAttribute('No Spring', 'Spring'));
 		}
 		
