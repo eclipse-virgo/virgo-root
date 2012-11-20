@@ -105,7 +105,7 @@ Repositories = {
 		}];
 		
 		util.doBulkQuery(request, function(response){
-			if(response.value){
+			if(response[0].value){
 				alert('Deployed artifact of type:' + response[0].value.type + ', name: ' + response[0].value.symbolicName + ', version: ' + response[0].value.version + '. If the version doesn\'t match, then that version was found in the configured repository chain.');
 			}else{
 				alert('Deployment failed (A Dump may have been generated): ' + response[0].error);
