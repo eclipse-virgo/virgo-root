@@ -327,7 +327,7 @@ var Util = function(){
 					sortTh = th;
 				}
 			});
-			newTable.append($('<thead />').append(tHeadRow));
+			newTable.append($('<thead />', {'class': 'table-head'}).append(tHeadRow));
 		}
 		if(properties.clazz){
 			newTable.addClass(properties.clazz);
@@ -341,7 +341,7 @@ var Util = function(){
 		if(properties.selectable){
 			newTable.addClass('table-selectable');
 		}
-		var tBody = $('<tbody />');
+		var tBody = $('<tbody />', {'class': 'table-body'});
 		if(properties.rows){
 			$.each(properties.rows, function(i, row){
 				var newRow = $('<tr />');
