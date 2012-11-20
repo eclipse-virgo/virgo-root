@@ -71,18 +71,19 @@ Repositories = {
 		var rows = [];
 		
 		$.each(artifactDescriptorSummaries, function(i, summary){
-			var deployButton = $('<td />', {'class' : 'repository-deploy', 'onClick': 'Repositories.deploy("repository:' + summary.type + '/' + summary.name + '")'}).text('deploy');
-			rows.push([summary.type, 
-			           summary.name, 
-			           summary.version,
-			           deployButton]);
+			var row = [summary.type, summary.name, summary.version];
+			if(summary.type != 'library'){
+				row.push($('<td />', {'class' : 'repository-deploy', 'onClick': 'Repositories.deploy("repository:' + summary.type + '/' + summary.name + '")'}).text('deploy'));
+			}else{
+				row.push('');
+			}
+			rows.push(row);
 		});
 		
 		var descriptorTable = util.makeTable({
-			clazz: 'repository-table table-selectable',
+			clazz: 'repository-table',
 			headers: [{title: 'Type', type: 'alpha'}, {title: 'Name', type: 'alpha'}, {title: 'Version', type: 'version'}],
 			rows: rows,
-			selectable: function(){},
 			sortable: true,
 			sortIndex: 1
 		});
