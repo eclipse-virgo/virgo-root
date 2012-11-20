@@ -37,7 +37,9 @@ public final class JMXQuasiBundle extends JMXQuasiMinimalBundle{
 		for (QuasiExportPackage quasiExportPackage : exportPackages) {
 			List<QuasiImportPackage> consumers = quasiExportPackage.getConsumers();
 			for (QuasiImportPackage quasiImportPackage : consumers) {
-				wires.add(new JMXQuasiWire(quasiImportPackage));
+				if(quasiImportPackage != null){
+					wires.add(new JMXQuasiWire(quasiImportPackage));
+				}
 			}
 		}
 		List<QuasiBundle> fragments = this.quasiBundle.getFragments();
@@ -53,7 +55,9 @@ public final class JMXQuasiBundle extends JMXQuasiMinimalBundle{
 		List<QuasiImportPackage> importPackages = this.quasiBundle.getImportPackages();
 		List<JMXQuasiWire> wires = new ArrayList<JMXQuasiWire>();
 		for (QuasiImportPackage quasiImportPackage : importPackages) {
-			wires.add(new JMXQuasiWire(quasiImportPackage));
+			if(quasiImportPackage != null){
+				wires.add(new JMXQuasiWire(quasiImportPackage));
+			}
 		}
 		List<QuasiRequiredBundle> requiredBundles = this.quasiBundle.getRequiredBundles();
 		if(requiredBundles != null && requiredBundles.size() > 0){

@@ -38,13 +38,14 @@ public class JMXQuasiWire {
 	
 	public JMXQuasiWire(QuasiImportPackage quasiImportPackage) {
 		this.namespace = BundleDescription.PACKAGE_NAMESPACE;
-		this.providerId = quasiImportPackage.getProvider().getExportingBundle().getBundleId();
 		this.requirerId = quasiImportPackage.getImportingBundle().getBundleId();
 		QuasiExportPackage provider = quasiImportPackage.getProvider();
 		if(provider != null){
+			this.providerId = quasiImportPackage.getProvider().getExportingBundle().getBundleId();
 			this.bundleCapabilityAttributes = this.stringifyMap(provider.getAttributes());
 			this.bundleCapabilityDirectives = this.stringifyMap(provider.getDirectives());
 		}else{
+			this.providerId = -1l;
 			this.bundleCapabilityAttributes = new HashMap<String, String>();
 			this.bundleCapabilityDirectives = new HashMap<String, String>();
 		}
