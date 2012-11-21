@@ -35,9 +35,12 @@ public class StubQuasiBundle implements QuasiBundle {
 
     private volatile Provisioning provisioning = Provisioning.AUTO;
 
-    public StubQuasiBundle(String name, Version version) {
+	private long bundleId;
+
+    public StubQuasiBundle(String name, Version version, long bundleId) {
         this.name = name;
         this.version = version;
+		this.bundleId = bundleId;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class StubQuasiBundle implements QuasiBundle {
 
     @Override
     public long getBundleId() {
-        return 0;
+        return bundleId;
     }
 
     @Override

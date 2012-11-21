@@ -20,7 +20,7 @@ import javax.management.MXBean;
 @MXBean
 public interface StateDumpMXBean {
 
-	public JMXQuasiResolutionFailure[] getUnresolvedBundleIds(String dumpFile);
+	public JMXQuasiResolutionFailure[] getUnresolvedBundleFailures(String dumpFile);
 
 	public JMXQuasiMinimalBundle[] listBundles(String dumpFile);
 	

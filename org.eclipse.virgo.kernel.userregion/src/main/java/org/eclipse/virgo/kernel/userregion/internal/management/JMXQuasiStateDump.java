@@ -36,12 +36,21 @@ public class JMXQuasiStateDump implements StateDumpMXBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public JMXQuasiResolutionFailure[] getUnresolvedBundleIds(String dumpFile) {
+	public JMXQuasiResolutionFailure[] getUnresolvedBundleFailures(String dumpFile) {
 		QuasiFramework quasiFramework = this.getQuasiFramework(dumpFile);
-		List<QuasiResolutionFailure> resolve = quasiFramework.resolve();
 		List<JMXQuasiResolutionFailure> fails = new ArrayList<JMXQuasiResolutionFailure>();
-		for (QuasiResolutionFailure quasiResolutionFailure : resolve) {
-			fails.add(new JMXQuasiResolutionFailure(quasiResolutionFailure));
+		List<QuasiBundle> bundles = quasiFramework.getBundles();
+		for (QuasiBundle quasiBundle : bundles) {
+			if(!quasiBundle.isResolved()){
+				List<QuasiResolutionFailure> diagnoses = quasiFramework.diagnose(quasiBundle.getBundleId());
+				if(diagnoses != null){
+					for (QuasiResolutionFailure quasiResolutionFailure : diagnoses) {
+						if(quasiResolutionFailure != null){
+							fails.add(new JMXQuasiResolutionFailure(quasiResolutionFailure));
+						}
+					}
+				}
+			}
 		}
 		return fails.toArray(new JMXQuasiResolutionFailure[fails.size()]);
 	}

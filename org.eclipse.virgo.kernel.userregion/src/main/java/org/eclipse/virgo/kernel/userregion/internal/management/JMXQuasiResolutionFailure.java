@@ -28,6 +28,14 @@ public class JMXQuasiResolutionFailure {
 		return this.quasiResolutionFailure.getUnresolvedQuasiBundle().getBundleId();
 	}
 	
+	public String getSymbolicName(){
+		return this.quasiResolutionFailure.getUnresolvedQuasiBundle().getSymbolicName();
+	}
+	
+	public String getVersion(){
+		return this.quasiResolutionFailure.getUnresolvedQuasiBundle().getVersion().toString();
+	}
+	
 	public String getDescription(){
 		return this.quasiResolutionFailure.getDescription();
 	}

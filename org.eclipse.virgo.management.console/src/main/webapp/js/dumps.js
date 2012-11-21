@@ -239,7 +239,7 @@ var QuasiDataSource = function(dumpFolder){
 	self.services = {};
 	
 	self.getUnresolvedBundleIds = function(callback){
-		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getUnresolvedBundleIds/' + self.dumpFolder, function(response){
+		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/getUnresolvedBundleFailures/' + self.dumpFolder, function(response){
 			callback(response.value);
 		});
 	};

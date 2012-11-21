@@ -25,6 +25,8 @@ import static org.junit.Assert.*;
  */
 public class JMXQuasiStateDumpTests {
 
+	private static final String TEST_DUMP = "src/test/resources/testDump";
+	
 	private final JMXQuasiStateDump quasiStateDumpMBean;
 	
 	public JMXQuasiStateDumpTests() {
@@ -32,6 +34,7 @@ public class JMXQuasiStateDumpTests {
 			
 			@Override
 			public QuasiFramework create(File stateDump) throws ZipException, IOException {
+				assertEquals(TEST_DUMP, stateDump.getPath());
 				return new StubQuasiFramework();
 			}
 			
@@ -43,18 +46,26 @@ public class JMXQuasiStateDumpTests {
 	}
 	
 	@Test
-	public void testGetUnresolvedBundleIds(){
-
+	public void testGetUnresolvedBundleFailures(){
+		JMXQuasiResolutionFailure[] unresolvedBundleFailures = this.quasiStateDumpMBean.getUnresolvedBundleFailures(TEST_DUMP);
+		assertEquals(1, unresolvedBundleFailures.length);
+		assertEquals("Description", unresolvedBundleFailures[0].getDescription());
+		assertEquals(StubQuasiFramework.TEST_BUNDLE_NAME, unresolvedBundleFailures[0].getSymbolicName());
 	}
 	
 	@Test
 	public void testListBundles(){
+		JMXQuasiMinimalBundle[] listBundles = this.quasiStateDumpMBean.listBundles(TEST_DUMP);
+		assertEquals(1, listBundles.length);
+		assertEquals(StubQuasiFramework.TEST_BUNDLE_NAME, listBundles[0].getSymbolicName());
 
 	}
 	
 	@Test
 	public void testGetBundle(){
-
+		JMXQuasiBundle bundle = this.quasiStateDumpMBean.getBundle(TEST_DUMP, 5l);
+		assertEquals(StubQuasiFramework.TEST_BUNDLE_NAME, bundle.getSymbolicName());
+		assertEquals(5l, bundle.getIdentifier());
 	}
 	
 }
