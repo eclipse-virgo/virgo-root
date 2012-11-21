@@ -527,8 +527,8 @@ var Relationship = function(paper, type, fromBundle, toBundle) {
 		var infoBox = $('<ul></ul>');
 		infoBox.append($('<li>Service [' + service.Identifier + '] ' + service.objectClass[0] + (service.objectClass.length > 1 ? '...' : '') + '</li>').addClass('section-title'));
 		infoBox.append($('<li>Published by Bundle ' + service.BundleIdentifier + '</li>'));
-		infoBox.append($('<li>Used by bundle ' + consumerId + '</li>'));
-		infoBox.append($('<li>Also used by</li>'));
+		infoBox.append($('<li>Used by Bundle ' + consumerId + '</li>'));
+		infoBox.append($('<li>Also used by Bundles</li>'));
 		$.each(service.UsingBundles, function(index, item){
 			if(item != consumerId){
 				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
