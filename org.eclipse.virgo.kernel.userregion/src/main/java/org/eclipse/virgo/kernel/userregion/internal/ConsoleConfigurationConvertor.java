@@ -137,7 +137,8 @@ public class ConsoleConfigurationConvertor {
     }
 	
 	class ConsoleConfigurator implements ManagedService {
-	    private Dictionary properties;
+	    private Dictionary<String, String> properties;
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public void updated(Dictionary props) throws ConfigurationException {
 			if (props != null) {

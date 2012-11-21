@@ -21,7 +21,6 @@ import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
-import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.osgi.framework.Version;
 
 /**

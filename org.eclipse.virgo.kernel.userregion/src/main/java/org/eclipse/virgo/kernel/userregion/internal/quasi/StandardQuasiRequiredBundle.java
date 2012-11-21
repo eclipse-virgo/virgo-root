@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
-import org.eclipse.osgi.service.resolver.StateHelper;
 
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
