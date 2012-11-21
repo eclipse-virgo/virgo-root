@@ -12,14 +12,13 @@
 package org.eclipse.virgo.kernel.model.internal.configurationadmin;
 
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.equinox.region.Region;
+import org.eclipse.virgo.kernel.model.Artifact;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.AbstractArtifact;
-import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -69,17 +68,19 @@ final class ConfigurationArtifact extends AbstractArtifact {
         Map<String, String> properties = new HashMap<String, String>(super.getProperties());
         try {
             Configuration configuration = this.configurationAdmin.getConfiguration(this.pid, null);
-            Dictionary<String, Object> dictionary = configuration.getProperties();
-            Enumeration<String> keys = dictionary.keys();
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement();
-                Object value = dictionary.get(key);
-                if (value instanceof String) {
-                	properties.put(key, (String)value);
-                }
+            properties.put("Pid", configuration.getPid());
+            String factoryPid = configuration.getFactoryPid();
+            if(factoryPid != null){
+            	properties.put("Factory Pid", factoryPid);
+            }
+            String bundleLocation = configuration.getBundleLocation();
+            if(bundleLocation != null){
+            	properties.put("Bound to Bundle", bundleLocation);
             }
         } catch (IOException _) {
             // Default to superclass behaviour
+        } catch (IllegalStateException e){
+        	properties.put("ERROR", "Configuration has been deleted");
         }
         return properties;
     }
