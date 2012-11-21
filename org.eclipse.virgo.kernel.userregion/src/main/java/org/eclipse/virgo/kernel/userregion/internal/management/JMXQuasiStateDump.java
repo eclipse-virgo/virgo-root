@@ -63,6 +63,9 @@ public class JMXQuasiStateDump implements StateDumpMXBean {
 	 * {@inheritDoc}
 	 */
 	public JMXQuasiBundle getBundle(String dumpFile, long bundleId) {
+		if(bundleId < 0){
+			return null;
+		}
 		QuasiFramework quasiFramework = this.getQuasiFramework(dumpFile);
 		QuasiBundle quasiBundle = quasiFramework.getBundle(bundleId);
 		return new JMXQuasiBundle(quasiBundle);

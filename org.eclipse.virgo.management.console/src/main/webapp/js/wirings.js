@@ -179,8 +179,13 @@ var GeminiDataSource = function(){
 		});
 		
 		util.doBulkQuery(bundleQuery, function(response){
-			self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
-			self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
+			if(response[0].value){
+				self.bundles[bundleId].ProvidedWires = response[0].value.ProvidedWires;
+				self.bundles[bundleId].RequiredWires = response[0].value.RequiredWires;
+			} else {
+				self.bundles[bundleId].ProvidedWires = new Array();
+				self.bundles[bundleId].RequiredWires = new Array();
+			}
 			self.bundles[bundleId].RegisteredServices = response[1].value;
 			self.bundles[bundleId].ServicesInUse = response[2].value;
 

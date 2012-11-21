@@ -51,7 +51,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	};
 	
 	self.displayBundle = function(bundleId){
-		if(!isNaN(bundleId)){
+		if(!isNaN(bundleId) && bundleId > 0){
 			self.hideAll();
 			self.bundleCanvas.addClass('spinner-large');
 			self.focused = NaN;
@@ -90,6 +90,8 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 			if(self.focusListener){
 				self.focusListener(bundleId);
 			}
+		} else {
+			alert('No such Bundle ' + bundleId);
 		}
 	};
 	
@@ -130,7 +132,13 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		var renderedBundleIds = new Array();
 		$.each(bundleIds, function(bundleId, relationshipInfoData){
 			if(!self.bundles[bundleId]){
-				var bundle = new Bundle(self.paper, self.dataSource.bundles[bundleId], xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
+				var rawBundle;
+				if(bundleId >= 0){
+					rawBundle = self.dataSource.bundles[bundleId];
+				}else{
+					rawBundle = {'SymbolicName': 'unknown', 'Version': 'unknown', 'Identifier': -1, 'Region': 'unknown', 'Location': 'unknown'};
+				}
+				var bundle = new Bundle(self.paper, rawBundle, xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
 				bundle.increaseCount(relationshipInfoData);
 				renderedBundleIds.push(bundleId);
 				self.bundles[bundleId] = bundle;
