@@ -18,6 +18,10 @@
 	margin-top: 0px;
 }
 
+.grey-out {
+	color: #AAAAAA !important;
+}
+
 #dumps, #dump-items {
 	max-height: 200px;
     min-height: 100px;

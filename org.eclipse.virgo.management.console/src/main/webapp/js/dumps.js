@@ -29,6 +29,8 @@ function pageinit(){
 var DumpViewer = function(){
 	
 	var self = this;
+	
+	self.loadingDump = false;
 
 	self.selectedDump = null;
 	
@@ -193,15 +195,21 @@ var DumpViewer = function(){
 	//CREATE AND DELETE DUMPS
 	
 	self.createDump = function(){
-		$('#dumps').append($('<div />', {'class' : 'spinner-small'}));
-		$.ajax({
-			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
-			dataType: 'json',
-			cache: false,
-			success: function (response){
-				self.displayDumps();
-			}
-		});
+		if(!self.loadingDump){
+			self.loadingDump = true;
+			$('#create-dump-button').addClass('grey-out');
+			$('#dumps').append($('<div />', {'class' : 'spinner-small'}));
+			$.ajax({
+				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
+				dataType: 'json',
+				cache: false,
+				success: function (response){
+					self.loadingDump = false;
+					$('#create-dump-button').removeClass('grey-out');
+					self.displayDumps();
+				}
+			});
+		}
 	};
 
 	self.deleteDump = function(event){
