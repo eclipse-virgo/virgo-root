@@ -388,7 +388,7 @@ var InfoBox = function(properties){
 		}));
 	}
 	
-	self.dialogBox.draggable({  scroll: false, stack: '.info-box'});
+	self.dialogBox.draggable({  scroll: false, stack: '.info-box', handle: self.title});
 	
 	self.addContent = function(newContent){
 		$.each(newContent.children(), function(index, item){
