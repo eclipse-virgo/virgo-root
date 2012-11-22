@@ -419,6 +419,8 @@ var InfoBox = function(properties){
 		}
 	};
 	
+	self.dialogBox.click(self.show);
+	
 	self.getHighestZIndex = function(){
 		var zIndex = 0;
 		$.each($('.info-box'), function(index, otherInfoBox){
