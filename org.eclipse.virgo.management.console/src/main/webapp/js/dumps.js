@@ -171,7 +171,6 @@ var DumpViewer = function(){
 				layoutManager = new LayoutManager('bundle-canvas', width, height, dataSource);
 				if(bundles.length < 1){
 					controls.append($('<div />').text('There were no unresolved bundles at the time of this state dump.'));
-					layoutManager.displayBundle(5);
 				}else{
 					$.each(bundles, function(index, unresolvedBundle){
 						var displayLink = $('<div />').text('Bundle ' + unresolvedBundle.identifier + ' unresolved.').click(unresolvedBundle.identifier, layoutManager.displayBundle);
