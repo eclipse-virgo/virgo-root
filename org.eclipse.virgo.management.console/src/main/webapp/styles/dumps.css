@@ -85,6 +85,11 @@
 
 .unresolved-bundle {
 	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+.unresolved-bundle:hover {
+	background-color: #BAD9EC;
 }
 
 .unresolved-bundle-cause {
