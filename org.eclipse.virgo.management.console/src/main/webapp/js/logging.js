@@ -10,10 +10,12 @@
  *******************************************************************************/
 
 /**
- * Scripts to be loaded in to the head of the logs view
+ * Scripts to be loaded in to the head of the logging view
  */
 function pageinit(){
 	
 	util.pageReady();
+	
+	//ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator
 	
 }

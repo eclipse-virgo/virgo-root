@@ -47,6 +47,7 @@ body {
 	background: transparent url(../images/header-title-left.png) no-repeat scroll center center;
 	height: 100px;
 	width: 345px;
+	margin: auto;
 }
 
 #site-name a, #site-name a:hover {
