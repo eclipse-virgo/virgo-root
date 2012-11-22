@@ -41,12 +41,16 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 			$('#view-wires-button').addClass('button-selected');
 			$('#view-services-button').removeClass('button-selected');
 			self.relationshipType = type;
-			self.displayBundle(self.focused);
+			if(!isNaN(self.focused)){
+				self.displayBundle(self.focused);
+			}
 		} else if(type == 'services'){
 			$('#view-services-button').addClass('button-selected');
 			$('#view-wires-button').removeClass('button-selected');
 			self.relationshipType = type;
-			self.displayBundle(self.focused);
+			if(!isNaN(self.focused)){
+				self.displayBundle(self.focused);
+			}
 		}
 	};
 	
@@ -118,7 +122,9 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
-				bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
+				if(bundleId != bundle.rawBundle.Identifier){
+					bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
+				}
 			});
 		});
 		var bottomRowRenderResult = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
@@ -528,12 +534,14 @@ var Relationship = function(paper, type, fromBundle, toBundle) {
 		infoBox.append($('<li>Service [' + service.Identifier + '] ' + service.objectClass[0] + (service.objectClass.length > 1 ? '...' : '') + '</li>').addClass('section-title'));
 		infoBox.append($('<li>Published by Bundle ' + service.BundleIdentifier + '</li>'));
 		infoBox.append($('<li>Used by Bundle ' + consumerId + '</li>'));
-		infoBox.append($('<li>Also used by Bundles</li>'));
-		$.each(service.UsingBundles, function(index, item){
-			if(item != consumerId){
-				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
-			}
-		});
+		if(service.UsingBundles.length > 1){
+			infoBox.append($('<li>Also used by Bundles</li>'));
+			$.each(service.UsingBundles, function(index, item){
+				if(item != consumerId){
+					infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+				}
+			});
+		}
 		infoBox.append($('<li>ObjectClass</li>'));
 		$.each(service.objectClass, function(index, item){
 			infoBox.append($('<li>' + item + '</li>').addClass('indent1'));

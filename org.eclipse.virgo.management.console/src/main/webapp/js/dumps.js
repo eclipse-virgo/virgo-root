@@ -173,7 +173,7 @@ var DumpViewer = function(){
 					controls.append($('<div />').text('There were no unresolved bundles at the time of this state dump.'));
 				}else{
 					$.each(bundles, function(index, unresolvedBundle){
-						var displayLink = $('<div />').text('Bundle [' + unresolvedBundle.identifier + '] ' + unresolvedBundle.symbolicName + ': ' + unresolvedBundle.version + ' unresolved.');
+						var displayLink = $('<div />').text('Bundle [' + unresolvedBundle.identifier + '] ' + unresolvedBundle.symbolicName + ': ' + unresolvedBundle.version + ' is unresolved.');
 						displayLink.click(unresolvedBundle.identifier, function(eventData){
 							layoutManager.displayBundle(eventData.data);
 						});
