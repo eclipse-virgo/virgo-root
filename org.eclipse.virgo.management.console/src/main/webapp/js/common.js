@@ -383,7 +383,8 @@ var InfoBox = function(properties){
 	self.dialogBox.append(self.content);
 
 	if(properties.closeable){
-		self.title.append($('<div />', {'class': 'box-title-close'}).append('x').click(function(){
+		self.title.append($('<div />', {'class': 'box-title-close'}).append('x').click(function(event){
+			event.stopPropagation();
 			self.hide();
 		}));
 	}
