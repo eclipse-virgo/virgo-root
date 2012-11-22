@@ -95,19 +95,21 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 				self.focusListener(bundleId);
 			}
 		} else {
-			alert('No such Bundle ' + bundleId);
+			alert('No such Bundle: ' + bundleId);
 		}
 	};
 	
 	self.renderWires = function(bundle){
 		var topRowBundleIds = {};
 		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
-			topRowBundleIds[wire.ProviderBundleId] = wire;
+			//topRowBundleIds[wire.ProviderBundleId] = wire;
+			self.addRelationshipToMap(topRowBundleIds, wire.ProviderBundleId, wire);
 		});
 		var topRowRenderResult = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
-			bottomRowBundleIds[wire.RequirerBundleId] = wire;
+			//bottomRowBundleIds[wire.RequirerBundleId] = wire;
+			self.addRelationshipToMap(bottomRowBundleIds, wire.RequirerBundleId, wire); 
 		});
 		var bottomRowRenderResult = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
 		self.centerBundles(topRowRenderResult, bottomRowRenderResult);
@@ -116,14 +118,16 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	self.renderServices = function(bundle){
 		var topRowBundleIds = {};
 		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
-			topRowBundleIds[service.BundleIdentifier] = {'service': service, 'consumerId': bundle.rawBundle.Identifier};
+			//topRowBundleIds[service.BundleIdentifier] = {'service': service, 'consumerId': bundle.rawBundle.Identifier};
+			self.addRelationshipToMap(topRowBundleIds, service.BundleIdentifier, {'service': service, 'consumerId': bundle.rawBundle.Identifier});
 		});
 		var topRowRenderResult = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
 				if(bundleId != bundle.rawBundle.Identifier){
-					bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
+					//bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
+					self.addRelationshipToMap(bottomRowBundleIds, bundleId, {'service': service, 'consumerId': bundleId});
 				}
 			});
 		});
@@ -131,41 +135,50 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		self.centerBundles(topRowRenderResult, bottomRowRenderResult);
 	};
 	
+	self.addRelationshipToMap = function(map, bundleId, relationship){
+		if(!map[bundleId]){
+			map[bundleId] = new Array();
+		}
+		map[bundleId].push(relationship);
+	};
+	
 	self.renderBundleRow = function(bundleIds, offset, position, focusedBundle){
 		var yPos = (self.paper.height/2) + offset;
 		var xPos = this.bundleSpacing;
 		var focusedBundleId = focusedBundle.rawBundle.Identifier;
 		var renderedBundleIds = new Array();
-		$.each(bundleIds, function(bundleId, relationshipInfoData){
-			if(!self.bundles[bundleId]){
-				var rawBundle;
-				if(bundleId >= 0){
-					rawBundle = self.dataSource.bundles[bundleId];
-				}else{
-					rawBundle = {'SymbolicName': 'unknown', 'Version': 'unknown', 'Identifier': -1, 'Region': 'unknown', 'Location': 'unknown'};
-				}
-				var bundle = new Bundle(self.paper, rawBundle, xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
-				bundle.increaseCount(relationshipInfoData);
-				renderedBundleIds.push(bundleId);
-				self.bundles[bundleId] = bundle;
-				xPos = xPos + bundle.boxWidth + self.bundleSpacing;
-			}else if(focusedBundleId == bundleId){
-				focusedBundle.increaseCount(relationshipInfoData);
-			}else {
-				var bundle = self.bundles[bundleId];
-				if(bundle.state == 'waiting'){
-					if(position != bundle.position){
-						bundle.increaseBackCount(relationshipInfoData);
+		$.each(bundleIds, function(bundleId, relationshipInfoDatas){
+			$.each(relationshipInfoDatas, function(index, relationshipInfoData){
+				if(!self.bundles[bundleId]){
+					var rawBundle;
+					if(bundleId >= 0){
+						rawBundle = self.dataSource.bundles[bundleId];
 					}else{
-						bundle.increaseCount(relationshipInfoData);
+						rawBundle = {'SymbolicName': 'unknown', 'Version': 'unknown', 'Identifier': -1, 'Region': 'unknown', 'Location': 'unknown'};
 					}
-				}else{//bundle.state == 'hidden'
-					bundle.reset(xPos, yPos, position, self.relationshipType, focusedBundle);
+					var bundle = new Bundle(self.paper, rawBundle, xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
 					bundle.increaseCount(relationshipInfoData);
 					renderedBundleIds.push(bundleId);
+					self.bundles[bundleId] = bundle;
 					xPos = xPos + bundle.boxWidth + self.bundleSpacing;
+				}else if(focusedBundleId == bundleId){
+					focusedBundle.increaseCount(relationshipInfoData);
+				}else {
+					var bundle = self.bundles[bundleId];
+					if(bundle.state == 'waiting'){
+						if(position != bundle.position){
+							bundle.increaseBackCount(relationshipInfoData);
+						}else{
+							bundle.increaseCount(relationshipInfoData);
+						}
+					}else{//bundle.state == 'hidden'
+						bundle.reset(xPos, yPos, position, self.relationshipType, focusedBundle);
+						bundle.increaseCount(relationshipInfoData);
+						renderedBundleIds.push(bundleId);
+						xPos = xPos + bundle.boxWidth + self.bundleSpacing;
+					}
 				}
-			}
+			});
 		});
 		return {bundleIds: renderedBundleIds, width: xPos};
 	};
