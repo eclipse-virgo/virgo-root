@@ -476,6 +476,10 @@ td {
     position:absolute;
 }
 
+.error-info-box {
+	border-color: #FF0000;
+}
+
 .info-box .box-title-close {
 	float: right;
 	cursor: pointer;

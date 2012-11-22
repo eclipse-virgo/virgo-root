@@ -175,12 +175,13 @@ var DumpViewer = function(){
 					controls.append($('<div />').text('There were no unresolved bundles at the time of this state dump.'));
 				}else{
 					$.each(bundles, function(index, unresolvedBundle){
-						var displayLink = $('<div />').text('Bundle [' + unresolvedBundle.identifier + '] ' + unresolvedBundle.symbolicName + ': ' + unresolvedBundle.version + ' is unresolved.');
-						displayLink.click(unresolvedBundle.identifier, function(eventData){
+						var bundleTitle = $('<div />').text('Bundle [' + unresolvedBundle.identifier + '] ' + unresolvedBundle.symbolicName + ': ' + unresolvedBundle.version + ' is unresolved.');
+						var cause = $('<div />', {'class': 'unresolved-bundle-cause'}).text(unresolvedBundle.description);
+						var unresolvedBundleElement = $('<div />', {'class': 'unresolved-bundle'}).append(bundleTitle).append(cause);
+						unresolvedBundleElement.click(unresolvedBundle.identifier, function(eventData){
 							layoutManager.displayBundle(eventData.data);
 						});
-						var cause = $('<div />', {'class': 'unresolved-bundle-cause'}).text(unresolvedBundle.description);
-						controls.append($('<div />', {'class': 'unresolved-bundle'}).append(displayLink).append(cause));
+						controls.append(unresolvedBundleElement);
 					});
 					layoutManager.displayBundle(bundles[0].identifier);
 				}

@@ -154,7 +154,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 					if(bundleId >= 0){
 						rawBundle = self.dataSource.bundles[bundleId];
 					}else{
-						rawBundle = {'SymbolicName': 'unknown', 'Version': 'unknown', 'Identifier': -1, 'Region': 'unknown', 'Location': 'unknown'};
+						rawBundle = {'SymbolicName': 'unknown', 'Version': 'unknown', 'Identifier': -1};
 					}
 					var bundle = new Bundle(self.paper, rawBundle, xPos, yPos, self.displayBundle, position, self.relationshipType, focusedBundle);
 					bundle.increaseCount(relationshipInfoData);
@@ -238,6 +238,11 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 	self.x = Math.round(x); //Left edge of the box
 	self.y = Math.round(y); //Middle of the box
 	
+	self.stroke = '#002F5E';
+	if(self.rawBundle.Identifier == -1){
+		self.stroke = '#FF0000';
+	}
+	
 	self.summary = '[' + self.rawBundle.Identifier + '] ' + self.rawBundle.SymbolicName + '\n' + self.rawBundle.Version;
 	
 	self.text = self.paper.text(self.x + self.bundleMargin, self.y, self.summary).attr({
@@ -250,7 +255,7 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 	
 	self.box = self.paper.rect(self.x, self.y - (self.boxHeight/2), self.boxWidth, self.boxHeight, self.bundleMargin).attr({
 		'fill' : '#E8F6FF', 
-		'stroke' : '#002F5E'
+		'stroke' : self.stroke
 	}).hide();
 	
 	self.info = self.paper.text(self.x + (self.boxWidth - 1.5*self.bundleMargin), self.y, 'i').attr({
@@ -259,7 +264,7 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 		'font-family' : 'serif',
 		'font-weight' : 'bold',
 		'font-style' : 'italic',
-		'fill' : '#002F5E',
+		'fill' : self.stroke,
 		'cursor' : 'pointer'
 	}).hide();
 	
@@ -355,34 +360,40 @@ var Bundle = function(paper, rawBundle, x, y, dblClickCallback, position, type, 
 		var name = 'bundle' + rawBundle.Identifier;
 		var title = 'Bundle [' + rawBundle.Identifier + '] ' + rawBundle.SymbolicName + ': ' + rawBundle.Version;
 		var infoBox = $('<ul></ul>');
-		infoBox.append($('<li>Region - ' + rawBundle.Region + '</li>'));
-		infoBox.append($('<li>Location - ' + rawBundle.Location + '</li>'));
-
-		self.appendIfPresent(infoBox, 'State', rawBundle.State);
-		self.appendIfPresent(infoBox, 'LastModified', rawBundle.LastModified);
-		self.appendIfPresent(infoBox, 'Fragment', rawBundle.Fragment);
-		self.appendIfPresent(infoBox, 'StartLevel', rawBundle.StartLevel);
-		self.appendIfPresent(infoBox, 'PersistentlyStarted', rawBundle.PersistentlyStarted);
-		self.appendIfPresent(infoBox, 'ActivationPolicyUsed', rawBundle.ActivationPolicyUsed);
-		self.appendIfPresent(infoBox, 'Required', rawBundle.Required);
-
-		if(!rawBundle.ExportedPackages || rawBundle.ExportedPackages.length == 0){
-			infoBox.append($('<li>No exported packages</li>'));
+		var error = false;
+		if(rawBundle.Identifier >= 0){
+			infoBox.append($('<li>Region - ' + rawBundle.Region + '</li>'));
+			infoBox.append($('<li>Location - ' + rawBundle.Location + '</li>'));
+	
+			self.appendIfPresent(infoBox, 'State', rawBundle.State);
+			self.appendIfPresent(infoBox, 'LastModified', rawBundle.LastModified);
+			self.appendIfPresent(infoBox, 'Fragment', rawBundle.Fragment);
+			self.appendIfPresent(infoBox, 'StartLevel', rawBundle.StartLevel);
+			self.appendIfPresent(infoBox, 'PersistentlyStarted', rawBundle.PersistentlyStarted);
+			self.appendIfPresent(infoBox, 'ActivationPolicyUsed', rawBundle.ActivationPolicyUsed);
+			self.appendIfPresent(infoBox, 'Required', rawBundle.Required);
+	
+			if(!rawBundle.ExportedPackages || rawBundle.ExportedPackages.length == 0){
+				infoBox.append($('<li>No exported packages</li>'));
+			} else {
+				infoBox.append($('<li>Exported packages</li>'));
+				$.each(rawBundle.ExportedPackages, function(index, item){
+					infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+				});
+			}
+			if(!rawBundle.ImportedPackages || rawBundle.ImportedPackages.length == 0){
+				infoBox.append($('<li>No imported packages</li>'));
+			} else {
+				infoBox.append($('<li>Imported packages</li>'));
+				$.each(rawBundle.ImportedPackages, function(index, item){
+					infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
+				});
+			}
 		} else {
-			infoBox.append($('<li>Exported packages</li>'));
-			$.each(rawBundle.ExportedPackages, function(index, item){
-				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
-			});
+			error = true;
+			infoBox.append($('<li>This is a placeholder for the provider of missing Wires or Services that another Bundle want.</li>'));
 		}
-		if(!rawBundle.ImportedPackages || rawBundle.ImportedPackages.length == 0){
-			infoBox.append($('<li>No imported packages</li>'));
-		} else {
-			infoBox.append($('<li>Imported packages</li>'));
-			$.each(rawBundle.ImportedPackages, function(index, item){
-				infoBox.append($('<li>' + item + '</li>').addClass('indent1'));
-			});
-		}
-		return new InfoBox({name: name, title: title, content: infoBox, closeable: true});
+		return new InfoBox({name: name, title: title, content: infoBox, closeable: true, error: error});
 	};
 	
 	self.appendIfPresent = function(element, name, field){

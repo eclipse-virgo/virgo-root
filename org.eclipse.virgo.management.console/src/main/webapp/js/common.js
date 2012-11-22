@@ -388,6 +388,10 @@ var InfoBox = function(properties){
 			self.hide();
 		}));
 	}
+
+	if(properties.error){
+		self.dialogBox.addClass('error-info-box');
+	}
 	
 	self.dialogBox.draggable({  scroll: false, stack: '.info-box', handle: self.title});
 	
