@@ -21,22 +21,25 @@ $(document).ready(function() {
 	pageinit();
 });
 
-function loadMenu(menuName, viewName){
-	var menuNameCaps = menuName.slice(0,1).toUpperCase() + menuName.slice(1);
-	var menuItem = $('<li />');
-	var link = $('<a href=\'' + contextPath + '/content/' + menuName + '\' />');
-	if(menuName == viewName){
-		menuItem.addClass('selected-navigation');
-	}
-	link.append($('<div />', {'class': 'button-cap-left-white'}));
-	link.append($('<div />', {'class': 'navigation-text'}).text(menuNameCaps));
-	link.append($('<div />', {'class': 'button-cap-right-white'}));
-	menuItem.append(link);
-	$('ul', $('#navigation-left')).append(menuItem);
-};
 
-function loadExtraMenus(menuNames, viewName){
-	$.each(menus.split(', '), function(index, menuItem){
+function loadMenus(menuNames, viewName){
+
+	var loadMenu = function(menuName, viewName){
+		var menuNameCaps = menuName.slice(0,1).toUpperCase() + menuName.slice(1);
+		var menuItem = $('<li />');
+		var link = $('<a href=\'' + contextPath + '/content/' + menuName + '\' />');
+		if(menuName == viewName){
+			menuItem.addClass('selected-navigation');
+		}
+		link.append($('<div />', {'class': 'button-cap-left-white'}));
+		link.append($('<div />', {'class': 'navigation-text'}).text(menuNameCaps));
+		link.append($('<div />', {'class': 'button-cap-right-white'}));
+		menuItem.append(link);
+		$('ul', $('#navigation-left')).append(menuItem);
+	};
+
+	loadMenu('overview', viewName);
+	$.each(menuNames.split(', '), function(index, menuItem){
 		loadMenu(menuItem, viewName);
 	});
 };
@@ -360,7 +363,12 @@ var Util = function(){
 		}
 		if(properties.selectable){
 			newTable.addClass('table-selectable');
+			newTable.addClass('table-hoverable');
 		}
+		if(properties.hoverable){
+			newTable.addClass('table-hoverable');
+		}
+		
 		var tBody = $('<tbody />', {'class': 'table-body'});
 		if(properties.rows){
 			$.each(properties.rows, function(i, row){
@@ -442,6 +450,7 @@ var InfoBox = function(properties){
 		}else{
 			self.dialogBox.css({'z-index': self.getHighestZIndex() + 1});
 		}
+		return self;
 	};
 	
 	self.dialogBox.click(self.show);

@@ -84,6 +84,7 @@ Repositories = {
 			clazz: 'repository-table',
 			headers: [{title: 'Type', type: 'alpha'}, {title: 'Name', type: 'alpha'}, {title: 'Version', type: 'version'}],
 			rows: rows,
+			hoverable: true,
 			sortable: true,
 			sortIndex: 1
 		});

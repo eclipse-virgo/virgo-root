@@ -66,7 +66,7 @@ var DumpViewer = function(){
 				var dumpListItem = $('<li />', {'class' : 'dump'});
 				dumpListItem.attr("id", item);
 				dumpListItem.append($('<div />', {'class' : 'label'}).text(item).click(dumpListItem, self.displayDumpEntries));
-				dumpListItem.append($('<div />', {'class' : 'delete'}).text("Delete").click(dumpListItem, self.deleteDump));
+				dumpListItem.append($('<div />', {'class' : 'delete'}).text('Delete').click(dumpListItem, self.deleteDump));
 				$('#dumps').append(dumpListItem);
 			});
 		} else {

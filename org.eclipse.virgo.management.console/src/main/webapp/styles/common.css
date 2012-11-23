@@ -313,8 +313,12 @@ td {
 	background: #E8F6FF;
 }
 
-.table-selectable .table-tr-hovered {
+.table-hoverable .table-tr-hovered {
 	background: #BAD9EC;
+}
+
+
+.table-selectable .table-tr-hovered {
 	cursor: pointer;
 }
 
