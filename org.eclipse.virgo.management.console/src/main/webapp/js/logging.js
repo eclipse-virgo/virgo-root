@@ -81,8 +81,8 @@ var LoggerList = function(loggerList){
 		
 		var infoBox = new InfoBox({name: name, title: title, content: content, closeable: true}).show();
 		
-		link.click(function(){
-			console.log('foo');
+		link.click(function(event){
+			event.stopPropagation();
 			infoBox.hide();
 		});
 		
