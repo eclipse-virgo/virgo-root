@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 SAP AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   SAP AG - initial contribution
+ *******************************************************************************/
 
 package org.eclipse.virgo.web.war.deployer;
 
@@ -5,7 +15,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +40,7 @@ import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.nano.deployer.util.BundleLocationUtil;
+import org.eclipse.virgo.nano.deployer.util.StatusFileModificator;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.io.JarUtils;
@@ -47,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
 public class WARDeployer implements SimpleDeployer {
-    
+
     private static final boolean NOT_A_FRAGMENT = false;
 
     private static final String KERNEL_HOME_PROP = "org.eclipse.virgo.kernel.home";
@@ -59,41 +69,25 @@ public class WARDeployer implements SimpleDeployer {
     private static final boolean STATUS_ERROR = false;
 
     private static final String PICKUP_DIR = "pickup";
-    
+
     private static final String SLASH = "/";
-    
+
     private static final char SLASH_CHAR = '/';
 
     private static final char DOT = '.';
 
-    private static final char NEW_LINE = '\n';
-
-    private static final String SUCCESS_MARK = "ok";
-
-    private static final String ERROR_MARK = "error";
-
-    private static final String OP_DEPLOY = "deploy";
-
-    private static final String OP_UNDEPLOY = "undeploy";
-
-    private static final String FEEDBACK_FILE_NAME = ".state";
-
-    private static final String BUNDLE_ID_RECORD = "bundle-id";
-
     static final String LAST_MODIFIED = "last-modified";
-
-    private static final String DELIMITER = "=";
 
     static final String EMPTY_STRING = "";
 
     private static final String WEBAPPS_DIR = "webapps";
 
     private static final String HEADER_WEB_CONTEXT_PATH = "Web-ContextPath";
-    
+
     private static final String DEFAULT_CONTEXT_PATH = "/";
 
     private static final String ROOT_WAR_NAME = "ROOT";
-    
+
     private static final char HASH_SIGN = '#';
 
     private static final String PROPERTY_WAB_HEADERS = "WABHeaders";
@@ -125,7 +119,7 @@ public class WARDeployer implements SimpleDeployer {
     private File webAppsDir;
 
     private KernelConfig kernelConfig;
-    
+
     private File kernelHomeFile;
 
     public WARDeployer() {
@@ -151,15 +145,14 @@ public class WARDeployer implements SimpleDeployer {
         final String warName = extractDecodedWarNameFromString(path.toString());
         final File deployedFile = new File(path);
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
-
-        deleteStatusFile(warName, this.pickupDir);
+        StatusFileModificator.deleteStatusFile(warName, this.pickupDir);
 
         long bundleId = -1L;
         final long lastModified = deployedFile.lastModified();
 
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING_ERROR, path);
             return STATUS_ERROR;
         }
@@ -174,7 +167,7 @@ public class WARDeployer implements SimpleDeployer {
             installed = this.bundleContext.installBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             return STATUS_ERROR;
         }
 
@@ -184,7 +177,7 @@ public class WARDeployer implements SimpleDeployer {
             installed.start();
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             return STATUS_ERROR;
         }
 
@@ -202,11 +195,11 @@ public class WARDeployer implements SimpleDeployer {
             }
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             return STATUS_ERROR;
         }
 
-        createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
+        StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_OK, bundleId, lastModified);
         return STATUS_OK;
     }
 
@@ -229,7 +222,7 @@ public class WARDeployer implements SimpleDeployer {
         }
         return true;
     }
-    
+
     private String extractDecodedWarNameFromString(String path) {
         final String warName = path.substring(path.lastIndexOf(SLASH) + 1, path.length() - 4);
         return URLDecoder.decode(warName);
@@ -243,8 +236,8 @@ public class WARDeployer implements SimpleDeployer {
         String warName = extractWarNameFromBundleLocation(warPath);
 
         String statusFilePrefix = calculateStatusFilePrefix(bundle, warName);
-        deleteStatusFile(statusFilePrefix, this.pickupDir);
-        
+        StatusFileModificator.deleteStatusFile(statusFilePrefix, this.pickupDir);
+
         if (bundle != null) {
             try {
                 if (this.logger.isInfoEnabled()) {
@@ -269,6 +262,7 @@ public class WARDeployer implements SimpleDeployer {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (BundleException e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+                StatusFileModificator.createStatusFile(statusFilePrefix, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_ERROR, -1, -1);
                 return STATUS_ERROR;
             } catch (IOException e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
@@ -277,15 +271,14 @@ public class WARDeployer implements SimpleDeployer {
             }
         }
 
-        createStatusFile(statusFilePrefix, OP_UNDEPLOY, STATUS_OK, bundle.getBundleId(), bundle.getLastModified());
+        StatusFileModificator.createStatusFile(statusFilePrefix, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_OK, -1, -1);
         return STATUS_OK;
     }
-    
+
     private String calculateStatusFilePrefix(Bundle bundle, String warName) {
         if (warName.contains(String.valueOf(DOT))) {
             String webContextPath = bundle.getHeaders().get(HEADER_WEB_CONTEXT_PATH);
-            if ((warName.charAt(0) == DOT && webContextPath.indexOf(DOT) == 1) || 
-                (warName.charAt(0) != DOT && webContextPath.indexOf(DOT) != 1)) {
+            if ((warName.charAt(0) == DOT && webContextPath.indexOf(DOT) == 1) || (warName.charAt(0) != DOT && webContextPath.indexOf(DOT) != 1)) {
                 webContextPath = webContextPath.substring(1);
             }
             if (webContextPath.contains(SLASH) && webContextPath.replace(SLASH_CHAR, DOT).equals(warName)) {
@@ -304,7 +297,7 @@ public class WARDeployer implements SimpleDeployer {
             return "";
         }
     }
-    
+
     private String extractWarPath(String bundleLocation) {
         String warPath;
         if (bundleLocation.startsWith(BundleLocationUtil.REFERENCE_FILE_PREFIX)) {
@@ -332,14 +325,14 @@ public class WARDeployer implements SimpleDeployer {
             this.logger.info("Can't update artifact for path '" + path + "'. It is not deployed.");
         }
 
-        deleteStatusFile(warName, this.pickupDir);
+        StatusFileModificator.deleteStatusFile(warName, this.pickupDir);
 
         final long bundleId = -1L;
         final long lastModified = updatedFile.lastModified();
 
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file [" + path + "] for writing. Timeout is [" + this.largeFileCopyTimeout + "].");
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
             this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATING_ERROR, path);
             return STATUS_ERROR;
         }
@@ -360,11 +353,10 @@ public class WARDeployer implements SimpleDeployer {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
-                createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+                StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
                 return STATUS_ERROR;
             }
-
-            createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundleId, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_OK, bundleId, lastModified);
         } else {
             deploy(path);
         }
@@ -376,50 +368,6 @@ public class WARDeployer implements SimpleDeployer {
             this.logger.info("setLargeFileCopyTimeout(" + timeout + ")");
         }
         this.largeFileCopyTimeout = timeout;
-    }
-
-    private void createStatusFile(String warName, String operation, boolean status, long bundleId, long lastModified) {
-        final File stateDir = new File(this.pickupDir, FEEDBACK_FILE_NAME);
-        if (!stateDir.exists() && !stateDir.mkdirs()) {
-            this.logger.error("Cannot create directory [" + stateDir.getAbsolutePath() + "]. Status file for the operation cannot be created.");
-            return;
-        }
-        final File statusFile = new File(stateDir, warName + DOT + operation + DOT + (status ? SUCCESS_MARK : ERROR_MARK));
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(statusFile, true);
-            fw.write(BUNDLE_ID_RECORD + DELIMITER + bundleId);
-            fw.write(NEW_LINE);
-            fw.write(LAST_MODIFIED + DELIMITER + lastModified);
-            fw.write(NEW_LINE);
-            fw.flush();
-        } catch (IOException e) {
-            this.logger.error("Cannot update the status of operation.", e);
-        } finally {
-            IOUtils.closeQuietly(fw);
-        }
-    }
-
-    private void deleteStatusFile(String warName, File pickupDir) {
-        final File stateDir = new File(pickupDir, FEEDBACK_FILE_NAME);
-        if (stateDir.exists()) {
-            File statusFile = new File(stateDir, warName + DOT + OP_DEPLOY + DOT + SUCCESS_MARK);
-            if (statusFile.exists() && !statusFile.delete()) {
-                this.logger.error("Cannot delete file [" + statusFile.getAbsolutePath() + "].");
-            }
-            statusFile = new File(stateDir, warName + DOT + OP_DEPLOY + DOT + ERROR_MARK);
-            if (statusFile.exists() && !statusFile.delete()) {
-                this.logger.error("Cannot delete file [" + statusFile.getAbsolutePath() + "].");
-            }
-            statusFile = new File(stateDir, warName + DOT + OP_UNDEPLOY + DOT + SUCCESS_MARK);
-            if (statusFile.exists() && !statusFile.delete()) {
-                this.logger.error("Cannot delete file [" + statusFile.getAbsolutePath() + "].");
-            }
-            statusFile = new File(stateDir, warName + DOT + OP_UNDEPLOY + DOT + ERROR_MARK);
-            if (statusFile.exists() && !statusFile.delete()) {
-                this.logger.error("Cannot delete file [" + statusFile.getAbsolutePath() + "].");
-            }
-        }
     }
 
     private boolean canWrite(URI path) {
@@ -544,6 +492,17 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     @Override
+    public boolean isOfflineUpdated(URI path) {
+        final String warName = extractDecodedWarNameFromString(path.toString());
+        final File deployFile = new File(path);
+        long deployFileLastModified = deployFile.lastModified();
+        if (deployFileLastModified == StatusFileModificator.getLastModifiedFromStatusFile(warName, this.pickupDir)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public DeploymentIdentity getDeploymentIdentity(URI path) {
         final String warName = extractDecodedWarNameFromString(path.toString());
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
@@ -575,7 +534,8 @@ public class WARDeployer implements SimpleDeployer {
                 this.bundleContext = bundleContext;
                 this.bundleInfosUpdaterUtil = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
             } else {
-                throw new IllegalStateException("Required location '" + this.kernelHomeFile.getAbsolutePath() + "' does not exist. Check the value of the '"+ KERNEL_HOME_PROP +"' propery");
+                throw new IllegalStateException("Required location '" + this.kernelHomeFile.getAbsolutePath()
+                    + "' does not exist. Check the value of the '" + KERNEL_HOME_PROP + "' propery");
             }
         } else {
             throw new IllegalStateException("Missing value for required property '" + KERNEL_HOME_PROP + "'");
@@ -638,12 +598,12 @@ public class WARDeployer implements SimpleDeployer {
         final String warName = extractDecodedWarNameFromString(uri.toString());
         final File deployedFile = new File(uri);
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
-        deleteStatusFile(warName, this.pickupDir);
+        StatusFileModificator.deleteStatusFile(warName, this.pickupDir);
         final long lastModified = deployedFile.lastModified();
 
         if (!canWrite(uri)) {
             this.logger.error("Cannot open the file " + uri + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING_ERROR, uri);
             return false;
         }
@@ -658,7 +618,7 @@ public class WARDeployer implements SimpleDeployer {
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_INSTALLING_ERROR, e, uri);
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1L, lastModified);
             return false;
         }
         return true;
@@ -667,30 +627,33 @@ public class WARDeployer implements SimpleDeployer {
     @Override
     public boolean start(URI uri) {
         Bundle bundle = getInstalledBundle(uri);
-        if (bundle == null){
-			this.eventLogger.log(WARDeployerLogEvents.NANO_STARTING_ERROR, uri);
-			logger.error("Cannot start deployable with URI + ["+ uri +"]. There is no bundle installed with this URI.");
-			return false;
-		}
+        if (bundle == null) {
+            this.eventLogger.log(WARDeployerLogEvents.NANO_STARTING_ERROR, uri);
+            logger.error("Cannot start deployable with URI + [" + uri + "]. There is no bundle installed with this URI.");
+            return false;
+        }
         final String warName = extractDecodedWarNameFromString(uri.toString());
-        deleteStatusFile(warName, this.pickupDir);
+        StatusFileModificator.deleteStatusFile(warName, this.pickupDir);
         final long lastModified = new File(uri).lastModified();
         this.eventLogger.log(WARDeployerLogEvents.NANO_WEB_STARTING, bundle.getSymbolicName(), bundle.getVersion());
         try {
             bundle.start();
         } catch (Exception e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_STARTING_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(),
+                lastModified);
             return STATUS_ERROR;
         }
         this.eventLogger.log(WARDeployerLogEvents.NANO_WEB_STARTED, bundle.getSymbolicName(), bundle.getVersion());
 
         // now update bundle's info
         if (!updateBundlesInfo(bundle, getLocationForBundlesInfo(uri))) {
-            createStatusFile(warName, OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(), lastModified);
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundle.getBundleId(),
+                lastModified);
             return STATUS_ERROR;
         }
-        createStatusFile(warName, OP_DEPLOY, STATUS_OK, bundle.getBundleId(), lastModified);
+        StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_OK, bundle.getBundleId(),
+            lastModified);
         return STATUS_OK;
     }
 
@@ -714,26 +677,26 @@ public class WARDeployer implements SimpleDeployer {
 
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
-        	logger.warn("Directory with name [" + warName+ "] cannot be found in web applications directory." +
-			" See logs for previous failures during install.");
+            logger.warn("Directory with name [" + warName + "] cannot be found in web applications directory."
+                + " See logs for previous failures during install.");
             return null;
         }
         return this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
     }
-    
+
     private String getLocationForBundlesInfo(URI path) {
         final String warName = extractDecodedWarNameFromString(path.toString());
         final File warDir = new File(this.webAppsDir, replaceHashSigns(warName, DOT));
         if (!warDir.exists()) {
-            logger.warn("Directory with name [" + warName+ "] cannot be found in web applications directory." +
-            " See logs for previous failures during install.");
+            logger.warn("Directory with name [" + warName + "] cannot be found in web applications directory."
+                + " See logs for previous failures during install.");
             return null;
         }
         return BundleLocationUtil.getRelativisedURI(kernelHomeFile, warDir).toString();
     }
-    
-    private String replaceHashSigns(String str, char newChar){
+
+    private String replaceHashSigns(String str, char newChar) {
         return str.replace(HASH_SIGN, newChar);
     }
-    
+
 }
