@@ -37,7 +37,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
-import org.springframework.web.context.ConfigurableWebEnvironment;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.AbstractRefreshableWebApplicationContext;
@@ -360,19 +359,6 @@ public class ServerOsgiBundleXmlWebApplicationContext extends OsgiBundleXmlAppli
      */
     public Theme getTheme(String themeName) {
         return this.themeSource.getTheme(themeName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ConfigurableWebEnvironment getEnvironment() {
-        ConfigurableEnvironment env = super.getEnvironment();
-        if (env instanceof ConfigurableWebEnvironment) {
-            return (ConfigurableWebEnvironment) env;
-        } else {
-            throw new IllegalStateException("Environment is not a ConfigurableWebEnvironment");
-        }
     }
 
     /** 
