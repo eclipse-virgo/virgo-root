@@ -229,5 +229,14 @@ public interface ApplicationDeployer {
      * @return <code>true</code> if and only if the given artifact at its file's last modified time is already deployed
      */
     boolean isDeployed(URI uri);
-
+    
+    /**
+     * Determine whether or not the given artifact has been updated during the application server was stopped. The method is 
+     * convenient to track offline updates of deployable files.
+     * 
+     * @param uri location of the artifact
+     * @return <code>true</code> if the given artifact has been updated during application server was stopped
+     */
+    boolean isOfflineUpdated(URI uri);
+    
 }

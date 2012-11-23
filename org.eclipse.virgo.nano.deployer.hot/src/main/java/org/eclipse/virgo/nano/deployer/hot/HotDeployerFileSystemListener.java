@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 SAP AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   SAP AG - initial contribution
+ *******************************************************************************/
 
 package org.eclipse.virgo.nano.deployer.hot;
 
@@ -88,6 +98,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
      * 
      * Reacts to initial event in the pickup directory and calls the bulk deploy method in {@link ApplicationDeployer}.
      */
+    @Override
     public void onInitialEvent(List<String> paths) {
         this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_PROCESSING_FILE, FileSystemEvent.INITIAL, getConcatenatedPaths(paths));
         try {
@@ -107,20 +118,19 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
     }
 
     /**
-     * Collects only the source artifacts that are not yet deployed and transforms the given paths to URIs.
-     * 
+     * Returns only the source artifacts' URIs that need to be deployed or updated.
      */
-    private List<URI> getNotDeployedUris(List<String> sourceArtefacts) {
-        List<URI> notDeployedFileUris = new ArrayList<URI>();
+    private List<URI> getUrisToDeploy(List<String> sourceArtefacts) {
+        List<URI> resultUris = new ArrayList<URI>();
         for (String sourceArtefact : sourceArtefacts) {
-            if (!isDeployed(sourceArtefact)) {
-                notDeployedFileUris.add(getDefinitiveUri(sourceArtefact));
+            if (!isDeployed(sourceArtefact) || isOfflineUpdated(sourceArtefact)) {
+                resultUris.add(getDefinitiveUri(sourceArtefact));
                 this.logger.info("ApplicationConditionallyDeploying path '{}'.", sourceArtefact);
             } else {
                 this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, sourceArtefact);
             }
         }
-        return notDeployedFileUris;
+        return resultUris;
     }
 
     /**
@@ -130,7 +140,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
      * @throws DeploymentException
      */
     private void bulkDeployIfNotDeployed(List<String> sourceArtefacts) throws DeploymentException {
-        this.deployer.bulkDeploy(getNotDeployedUris(sourceArtefacts), new DeploymentOptions(true, true, false));
+        this.deployer.bulkDeploy(getUrisToDeploy(sourceArtefacts), new DeploymentOptions(true, true, false));
     }
 
     /**
@@ -187,6 +197,15 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
     }
 
     /**
+     * Determine whether there has been offline update of the given artefact.
+     * 
+     * @param sourceArtefact the source artefact URI string
+     */
+    private boolean isOfflineUpdated(String sourceArtefact) {
+        return this.deployer.isOfflineUpdated(getDefinitiveUri(sourceArtefact));
+    }
+
+    /**
      * Converts a string URI to a URI with a predictable format, particularly in the case where the string URI ends in a
      * file separator.
      * 
@@ -223,7 +242,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
      * @throws DeploymentException
      */
     private void deployIfNotDeployed(String sourceArtefact, String fileName) throws DeploymentException {
-        if (!isDeployed(sourceArtefact)) {
+        if (!isDeployed(sourceArtefact) || isOfflineUpdated(sourceArtefact)) {
             deploy(sourceArtefact);
         } else {
             this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, fileName);

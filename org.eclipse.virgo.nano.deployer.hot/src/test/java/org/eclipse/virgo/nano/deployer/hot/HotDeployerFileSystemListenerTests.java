@@ -68,6 +68,7 @@ public class HotDeployerFileSystemListenerTests {
     public void existingAppDuringStartup() throws Exception {
         File app = new File("path/to/app");
         expect(deployer.isDeployed(app.toURI())).andReturn(true);
+        expect(deployer.isOfflineUpdated(app.toURI())).andReturn(false);
         replay(deployer);
         listener.onChange("path/to/app", FileSystemEvent.INITIAL);
         verify(deployer);

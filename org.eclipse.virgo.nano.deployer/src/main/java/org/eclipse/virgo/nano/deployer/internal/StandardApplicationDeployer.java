@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 SAP AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   SAP AG - initial contribution
+ *******************************************************************************/
 
 package org.eclipse.virgo.nano.deployer.internal;
 
@@ -30,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private static final String TOPIC_RECOVERY_COMPLETED = "org/eclipse/virgo/kernel/deployer/recovery/COMPLETED";
-    
+
     private EventLogger eventLogger;
 
     private PackageAdmin packageAdmin;
@@ -53,7 +63,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         this.bundleContext = context.getBundleContext();
         this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
         this.simpleDeployers.add(this.defaultDeployer);
-        
+
         recoveryComplete();
         initialiseHotDeployer();
 
@@ -171,6 +181,16 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         return false;
     }
 
+    @Override
+    public boolean isOfflineUpdated(URI uri) {
+        for (SimpleDeployer deployer : this.simpleDeployers) {
+            if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
+                return deployer.isOfflineUpdated(uri);
+            }
+        }
+        return false;
+    }
+
     private String getFileTypeFromUri(URI uri) {
         String path = uri.toString();
         return path.substring(path.lastIndexOf(".") + 1);
@@ -238,7 +258,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     public void unbindEventLogger(EventLogger logger) {
         this.eventLogger = null;
     }
-    
+
     public void bindEventAdmin(EventAdmin admin) {
         this.eventAdmin = admin;
     }
@@ -322,7 +342,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     private void recoveryComplete() {
-        eventAdmin.postEvent(new Event(TOPIC_RECOVERY_COMPLETED, (Map<String, ?>)null));
+        this.eventAdmin.postEvent(new Event(TOPIC_RECOVERY_COMPLETED, (Map<String, ?>) null));
     }
-    
+
 }

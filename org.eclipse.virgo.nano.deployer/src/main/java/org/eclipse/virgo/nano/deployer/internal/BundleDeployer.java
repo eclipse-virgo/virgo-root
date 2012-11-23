@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 SAP AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   SAP AG - initial contribution
+ *******************************************************************************/
 
 package org.eclipse.virgo.nano.deployer.internal;
 
@@ -7,7 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -20,6 +30,7 @@ import org.eclipse.virgo.nano.deployer.StandardDeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.nano.deployer.util.BundleLocationUtil;
+import org.eclipse.virgo.nano.deployer.util.StatusFileModificator;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -45,6 +56,8 @@ public class BundleDeployer implements SimpleDeployer {
 
     private static final char SLASH = '/';
 
+    private static final String PICKUP_DIR = "pickup";
+
     private static final String FRAGMEN_HOST_HEADER = "Fragment-Host";
 
     private final EventLogger eventLogger;
@@ -60,8 +73,10 @@ public class BundleDeployer implements SimpleDeployer {
     private final PackageAdmin packageAdmin;
 
     private final File workBundleInstallLocation;
-    
+
     private final File kernelHomeFile;
+
+    private final File pickupDir;
 
     public BundleDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, EventLogger eventLogger) {
         this.eventLogger = eventLogger;
@@ -71,13 +86,15 @@ public class BundleDeployer implements SimpleDeployer {
         if (kernelHome != null) {
             this.kernelHomeFile = new File(kernelHome);
             if (this.kernelHomeFile.exists()) {
-                File bundlesInfoFile = new File(kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
-                this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, kernelHomeFile);
+                File bundlesInfoFile = new File(this.kernelHomeFile, "configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
+                this.bundleInfosUpdater = new BundleInfosUpdater(bundlesInfoFile, this.kernelHomeFile);
+                this.pickupDir = new File(this.kernelHomeFile, PICKUP_DIR);
                 String thisBundleName = this.bundleContext.getBundle().getSymbolicName();
                 String staging = "staging";
-                this.workBundleInstallLocation = new File(kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging);
+                this.workBundleInstallLocation = new File(this.kernelHomeFile, "work" + File.separator + thisBundleName + File.separator + staging);
             } else {
-                throw new IllegalStateException("Required location '" + this.kernelHomeFile.getAbsolutePath() + "' does not exist. Check the value of the '"+ KERNEL_HOME_PROP +"' propery");
+                throw new IllegalStateException("Required location '" + this.kernelHomeFile.getAbsolutePath()
+                    + "' does not exist. Check the value of the '" + KERNEL_HOME_PROP + "' propery");
             }
         } else {
             throw new IllegalStateException("Missing value for required property '" + KERNEL_HOME_PROP + "'");
@@ -145,9 +162,14 @@ public class BundleDeployer implements SimpleDeployer {
     @Override
     public boolean install(URI uri) {
         this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(uri).toString());
+        String jarName = extractDecodedJarNameFromString(uri.toString());
+        final long lastModified = new File(uri).lastModified();
+        StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
+
         try {
             if (!validateUri(uri) || !createInstallationFolder()) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, uri);
+                StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
                 return STATUS_ERROR;
             }
             File stagedFile = getStagedFile(uri);
@@ -163,8 +185,11 @@ public class BundleDeployer implements SimpleDeployer {
                 refreshHosts(hostHolder, installed);
                 updateBundleInfo(installed, stagedFile, true);
             }
+            StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, installed.getBundleId(),
+                lastModified);
         } catch (Exception e) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, uri);
+            StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
             return STATUS_ERROR;
         }
         return STATUS_OK;
@@ -173,6 +198,10 @@ public class BundleDeployer implements SimpleDeployer {
     @Override
     public boolean start(URI uri) {
         Bundle installedBundle = getInstalledBundle(uri);
+        String jarName = extractDecodedJarNameFromString(uri.toString());
+        final long lastModified = new File(uri).lastModified();
+        StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
+
         File stagedFile = getStagedFile(uri);
         if (installedBundle != null) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installedBundle.getSymbolicName(), installedBundle.getVersion());
@@ -180,17 +209,21 @@ public class BundleDeployer implements SimpleDeployer {
                 if (!isFragment(installedBundle)) {
                     installedBundle.start();
                     updateBundleInfo(installedBundle, stagedFile, false);
+                    this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installedBundle.getSymbolicName(), installedBundle.getVersion());
                 } else {
-                    this.logger.warn("The installed bundle for the given url [" + uri
-                        + "] is a fragment bundle. Start operation for this url failed. ");
-                    return STATUS_ERROR;
+                    if (this.logger.isWarnEnabled()) {
+                        this.logger.warn("The installed bundle for the given url [" + uri
+                            + "] is a fragment bundle. Start operation for this url will not be executed.");
+                    }
                 }
             } catch (Exception e) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING_ERROR, e, installedBundle.getSymbolicName(), installedBundle.getVersion());
+                StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
                 return STATUS_ERROR;
             }
-            this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installedBundle.getSymbolicName(), installedBundle.getVersion());
         }
+        StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_OK, installedBundle.getBundleId(),
+            lastModified);
         return STATUS_OK;
     }
 
@@ -198,10 +231,14 @@ public class BundleDeployer implements SimpleDeployer {
     public boolean deploy(URI path) {
         this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING, new File(path).toString());
         final File deployedFile = new File(path);
+        String jarName = extractDecodedJarNameFromString(path.toString());
+        long lastModified = deployedFile.lastModified();
+        StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
 
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
+            StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
             return STATUS_ERROR;
         }
         final Bundle installed;
@@ -214,6 +251,7 @@ public class BundleDeployer implements SimpleDeployer {
                     this.logger.error("Failed to create staging directory '" + this.workBundleInstallLocation.getAbsolutePath()
                         + "' for bundle deployment.");
                     this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
+                    StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
                     return STATUS_ERROR;
                 }
             }
@@ -224,6 +262,7 @@ public class BundleDeployer implements SimpleDeployer {
             hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagedFile);
         } catch (Exception e) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, e, path);
+            StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
             return STATUS_ERROR;
         }
         this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLED, installed.getSymbolicName(), installed.getVersion());
@@ -245,19 +284,23 @@ public class BundleDeployer implements SimpleDeployer {
                 installed.start();
             } catch (Exception e) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING_ERROR, e, installed.getSymbolicName(), installed.getVersion());
+                StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
                 return STATUS_ERROR;
             }
             this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installed.getSymbolicName(), installed.getVersion());
         }
         try {
             if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
-                String bundlesInfoLocation = BundleLocationUtil.getRelativisedURI(kernelHomeFile, stagedFile).toString();
-                BundleInfosUpdater.registerToBundlesInfo(installed, bundlesInfoLocation, hostHolder != null && hostHolder.getBundleSymbolicName() != null);
+                String bundlesInfoLocation = BundleLocationUtil.getRelativisedURI(this.kernelHomeFile, stagedFile).toString();
+                BundleInfosUpdater.registerToBundlesInfo(installed, bundlesInfoLocation, hostHolder != null
+                    && hostHolder.getBundleSymbolicName() != null);
             }
         } catch (Exception e) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_PERSIST_ERROR, e, installed.getSymbolicName(), installed.getVersion());
         }
 
+        StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_OK, installed.getBundleId(),
+            lastModified);
         return STATUS_OK;
     }
 
@@ -278,11 +321,15 @@ public class BundleDeployer implements SimpleDeployer {
     @Override
     public boolean update(URI path) {
         final File updatedFile = new File(path);
+        final String jarName = extractDecodedJarNameFromString(path.toString());
+        long lastModified = updatedFile.lastModified();
         final File matchingStagedFile = new File(this.workBundleInstallLocation, extractJarFileNameFromString(path.toString()));
+        StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
 
         if (!canWrite(path)) {
             this.logger.error("Cannot open the file [" + path + "] for writing. Timeout is [" + this.largeFileCopyTimeout + "].");
             this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATING_ERROR, path);
+            StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
             return STATUS_ERROR;
         }
 
@@ -301,25 +348,34 @@ public class BundleDeployer implements SimpleDeployer {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+                StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
+                return STATUS_ERROR;
             }
         } else {
             deploy(path);
         }
+        StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_OK, bundle.getBundleId(),
+            lastModified);
         return STATUS_OK;
     }
 
     @Override
     public boolean undeploy(Bundle bundle) {
         if (bundle != null) {
-            File stagingFileToDelete = new File(bundle.getLocation().substring(BundleLocationUtil.REFERENCE_FILE_PREFIX.length()));
+            String bundleLocation = bundle.getLocation();
+            File stagingFileToDelete = new File(bundleLocation.substring(BundleLocationUtil.REFERENCE_FILE_PREFIX.length()));
+            String jarName = extractDecodedJarNameFromString(bundleLocation);
+            StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
+
             final FragmentHost hostHolder = getFragmentHostFromDeployedBundleIfExsiting(stagingFileToDelete);
             try {
                 if (this.logger.isInfoEnabled()) {
                     this.logger.info("Removing bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "' from bundles.info.");
                 }
                 if (this.bundleInfosUpdater != null && this.bundleInfosUpdater.isAvailable()) {
-                    String bundlesInfoLocation = BundleLocationUtil.getRelativisedURI(kernelHomeFile, stagingFileToDelete).toString();
-                    BundleInfosUpdater.unregisterToBundlesInfo(bundle, bundlesInfoLocation, hostHolder != null && hostHolder.getBundleSymbolicName() != null);
+                    String bundlesInfoLocation = BundleLocationUtil.getRelativisedURI(this.kernelHomeFile, stagingFileToDelete).toString();
+                    BundleInfosUpdater.unregisterToBundlesInfo(bundle, bundlesInfoLocation, hostHolder != null
+                        && hostHolder.getBundleSymbolicName() != null);
                     this.logger.info("Successfully removed bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion()
                         + "' from bundles.info.");
                 } else {
@@ -344,8 +400,11 @@ public class BundleDeployer implements SimpleDeployer {
                 }
             } catch (BundleException e) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+                StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_ERROR, -1, -1);
                 return STATUS_ERROR;
             }
+
+            StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_OK, -1, -1);
         }
         return STATUS_OK;
     }
@@ -370,6 +429,22 @@ public class BundleDeployer implements SimpleDeployer {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean isOfflineUpdated(URI path) {
+        final String jarName = extractDecodedJarNameFromString(path.toString());
+        final File deployFile = new File(path);
+        long deployFileLastModified = deployFile.lastModified();
+        if (deployFileLastModified == StatusFileModificator.getLastModifiedFromStatusFile(jarName, this.pickupDir)) {
+            return false;
+        }
+        return true;
+    }
+
+    private String extractDecodedJarNameFromString(String path) {
+        final String jarName = path.substring(path.lastIndexOf(SLASH) + 1, path.length() - 4);
+        return URLDecoder.decode(jarName);
     }
 
     @Override
