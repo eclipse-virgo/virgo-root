@@ -669,5 +669,10 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
     public DeploymentIdentity[] bulkDeploy(List<URI> arg0, DeploymentOptions arg1) throws DeploymentException {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean isOfflineUpdated(URI arg0) {
+        throw new UnsupportedOperationException();
+    }
     
 }
