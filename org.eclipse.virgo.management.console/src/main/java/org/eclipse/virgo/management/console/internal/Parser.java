@@ -35,10 +35,6 @@ public class Parser {
 	private static final char LOOKUP = '<'; // Replace the declaration with a lookup from the page context.
 
 	private static final char EVALUATE = '?'; // Replace the declaration with a the result of an evaluation.
-	
-	private static final char START_LOOP = '['; //Start a loop and keep looping while the given value is true.
-	
-	private static final char END_LOOP = ']'; //End of a loop.
 
 	private final Map<String, String> pageContext;
 
@@ -93,12 +89,6 @@ public class Parser {
 				case EVALUATE:
 					newValue = doEvaluate(arg);
 					break;
-				case START_LOOP:
-					newValue = doStartLoop(arg);
-					break;
-				case END_LOOP:
-					newValue = doEndLoop(arg);
-					break;
 				default:
 					//Unknown command, do nothing
 					break;
@@ -148,14 +138,13 @@ public class Parser {
 		int elseOffset = arg.indexOf(':', thenOffset + 1);
 		
 		boolean result;
-		if(equalsOffset >= 0){
+		if(equalsOffset >= 0  && equalsOffset < thenOffset){
 			String query = resolveField(arg.substring(0, equalsOffset));
 			String comparator = resolveField(arg.substring(equalsOffset + 1, thenOffset));
 			result = query.equals(comparator);
 		} else {
 			String query = resolveField(arg.substring(0, thenOffset));
 			result = Boolean.valueOf(query);
-
 		}
 		if(result){
 			return resolveField(arg.substring(thenOffset + 1, elseOffset));
@@ -163,18 +152,12 @@ public class Parser {
 			return ((elseOffset + 1) == arg.length()) ? "" : resolveField(arg.substring(elseOffset + 1));
 		}
 	}
-
-	private String doStartLoop(String arg) {
-		return "";
-	}
-
-	private String doEndLoop(String arg) {
-		return "";
-	}
 	
 	private String resolveField(String field){
 		if(field.charAt(0) == LOOKUP){
-			field = doLookup(field.substring(1));
+			field = this.doLookup(field.substring(1));
+		} else if (field.charAt(0) == SET){
+			field = this.doSet(field).substring(1);
 		}
 		return field;
 	}

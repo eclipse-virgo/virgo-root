@@ -18,14 +18,20 @@ package org.eclipse.virgo.management.console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -60,7 +66,9 @@ public class ContentServlet extends HttpServlet {
 	protected static final String CONTENT_SERVLET_PREFIX = "prefix";
 
 	protected static final String CONTENT_SERVLET_SUFFIX = "suffix";
-		
+	
+    private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+	
 	private boolean gzipEnabled = true;
 
 	private int cacheTimeout = 60; //The number of seconds content should be cached by the client. Zero disables caching, 31556926 is one year.
@@ -173,7 +181,20 @@ public class ContentServlet extends HttpServlet {
 		if('/' == viewName.charAt(0)){
 			viewName = viewName.substring(1);
 		}
+		
+		List<String> menuItems = new ArrayList<String>();
+
+		this.addIfMbeanPresent(menuItems, "artifacts", "org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=*,*");
+		this.addIfMbeanPresent(menuItems, "repositories", "org.eclipse.virgo.kernel:type=Repository,name=*");
+		this.addIfMbeanPresent(menuItems, "wirings", "osgi.core:version=1.0,type=wiringState,region=*");
+		this.addIfMbeanPresent(menuItems, "dumps", "org.eclipse.virgo.kernel:type=Medic,name=DumpInspector");
+		this.addIfMbeanPresent(menuItems, "configurations", "osgi.compendium:service=cm,version=1.3,region=*");
+		this.addIfMbeanPresent(menuItems, "logging", "ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator");
+		
+		String stringArray = Arrays.toString(menuItems.toArray(new String[menuItems.size()]));
+		pageContext.put("menuNames", stringArray.substring(1, stringArray.length() - 1));
 		pageContext.put("viewName", viewName);
+		
 		ServletContext servletContext = getServletContext();
 		try {
 			pageContext.put("contextPath", servletContext.getContextPath());
@@ -182,9 +203,29 @@ public class ContentServlet extends HttpServlet {
 			pageContext.put("contextPath", Activator.contextPath);
 			pageContext.put("servletContextName", Activator.APPLICATION_NAME);
 		}
-		pageContext.put("serverInfo", servletContext.getServerInfo());
+		pageContext.put("servletContainer", servletContext.getServerInfo());
+		pageContext.put("virtualMachine", String.format("%s - %s %s (%s)", System.getProperty("java.version"), System.getProperty("java.vm.name"), System.getProperty("java.vm.version"), System.getProperty("java.vm.vendor"), System.getProperty("java.version")));
+		pageContext.put("operatingSystem", String.format("%s %s (%s)", System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")));
 	}
 
+	private void addIfMbeanPresent(List<String> menuItems, String viewName, String objectName){
+		try {
+			ObjectName objectNameImpl = new ObjectName(objectName);
+			if(objectNameImpl.isPattern()){
+				Set<ObjectName> queryNames = this.server.queryNames(objectNameImpl, null);
+				if(queryNames.size() > 0){
+					menuItems.add(viewName);
+				}
+			}else{
+				if(this.server.isRegistered(objectNameImpl)){
+					menuItems.add(viewName);
+				}
+			}
+		} catch (Exception e) {
+			this.log("Error checking for MBean required for Admin Console Page" + objectName, e);
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

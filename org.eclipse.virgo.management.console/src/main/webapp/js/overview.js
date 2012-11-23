@@ -14,14 +14,14 @@
  */
 function pageinit() {
 	
-	var renderOverviewTable = function(rows) {
-		$('#server-overview').replaceWith(util.makeTable({
-			headers: [{title: 'Name'}, {title: 'Value'}],
-			rows: rows
-		}));
-		util.pageReady();
-	};
-	
-	new Server().getServerOverview(renderOverviewTable);
-	
+	$.ajax({
+		url: util.getCurrentHost() + '/jolokia/version', 
+		dataType: 'json',
+		success: function (response) {
+			var text = $('#osgi-runtime').text(); 
+			$('#osgi-runtime').text(response.value.info.vendor + ' ' + response.value.info.product + ' ' + response.value.info.version + ' (' + text + ')');
+			util.pageReady();
+		}
+	});		
+		
 };

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.virgo.management.console;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -18,20 +17,17 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
-import org.eclipse.virgo.management.console.stubs.types.Element;
-import org.eclipse.virgo.management.console.stubs.types.Server;
+import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.junit.Test;
 
+import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
+import sun.org.mozilla.javascript.internal.Scriptable;
 
 /**
  * Unit test of overview.js.
  */
 public class OverviewJSTests extends AbstractJSTests {
-    
-    private static String[] EXPECTED_HEADERS = {"Name", "Value"};
-    
-    private static String[] TEST_ROW = {"TestName", "TestValue"};
 	
 	@Test
 	public void testPageinit() throws ScriptException, NoSuchMethodException, IOException{
@@ -40,15 +36,20 @@ public class OverviewJSTests extends AbstractJSTests {
 
 		invokePageInit();
 		
-		Function callback = Server.getCallbackFunction();
-		callback.call(context, scope, scope, new Object[]{TEST_ROW});
-
-		assertTrue("Replaced DOM node not looked up", Element.getConstructorArgumentTrace().contains("#server-overview"));
-		assertEquals("Wrong replacement DOM node", commonUtil.getLastMakeTableTable(), Element.getLastReplacement());
-		assertArrayEquals("Wrong table headers", EXPECTED_HEADERS, commonUtil.getLastMakeTableHeaders());
-		assertArrayEquals("Wrong table rows", TEST_ROW, commonUtil.getLastMakeTableRows());
+		assertEquals("hostPrefix/jolokia/version", Dollar.getAjaxUrl());
+		
+		Dollar.getAjaxSuccess().call(context, scope, scope, new Object[] { getTestVersion() });
 		
 		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
-	
+
+    private Scriptable getTestVersion() throws IOException {
+
+        readString("var Data = function() {" + 
+            "   this.value = {info: {vendor: 'a', product: 'b', version: '1'}};" +
+            "};");
+
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
+    }	
 }

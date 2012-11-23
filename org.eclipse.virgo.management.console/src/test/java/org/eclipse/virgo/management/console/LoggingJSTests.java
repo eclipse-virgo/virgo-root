@@ -22,12 +22,12 @@ import org.junit.Test;
  *
  *
  */
-public class LogsJSTests extends AbstractJSTests {
+public class LoggingJSTests extends AbstractJSTests {
 	
 	@Test
 	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
-		readFile("src/main/webapp/js/logs.js");
+		readFile("src/main/webapp/js/logging.js");
 		
 		invokePageInit();
 		

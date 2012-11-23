@@ -21,6 +21,26 @@ $(document).ready(function() {
 	pageinit();
 });
 
+function loadMenu(menuName, viewName){
+	var menuNameCaps = menuName.slice(0,1).toUpperCase() + menuName.slice(1);
+	var menuItem = $('<li />');
+	var link = $('<a href=\'' + contextPath + '/content/' + menuName + '\' />');
+	if(menuName == viewName){
+		menuItem.addClass('selected-navigation');
+	}
+	link.append($('<div />', {'class': 'button-cap-left-white'}));
+	link.append($('<div />', {'class': 'navigation-text'}).text(menuNameCaps));
+	link.append($('<div />', {'class': 'button-cap-right-white'}));
+	menuItem.append(link);
+	$('ul', $('#navigation-left')).append(menuItem);
+};
+
+function loadExtraMenus(menuNames, viewName){
+	$.each(menus.split(', '), function(index, menuItem){
+		loadMenu(menuItem, viewName);
+	});
+};
+
 // UTILITY FUNCTIONS
 
 var Util = function(){
