@@ -56,6 +56,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.3.0.v20120307-2102/org.eclipse.osgi.services-3.3.0.v20120307-2102.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20121123133216/org.eclipse.virgo.nano.core-3.6.0.D-20121123133216.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer.api/3.6.0.D-20121123133216/org.eclipse.virgo.nano.deployer.api-3.6.0.D-20121123133216.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer.api/3.6.0.D-20121123133216/org.eclipse.virgo.nano.deployer.api-sources-3.6.0.D-20121123133216.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.core/2.2.0.BUILD-20121031194216/org.eclipse.gemini.web.core-2.2.0.BUILD-20121031194216.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.core/2.2.0.M02/org.eclipse.gemini.web.core-2.2.0.M02.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
