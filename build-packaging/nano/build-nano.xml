@@ -13,10 +13,12 @@
     <target name="package-nano" depends="ivy.init">
         <property name="common.resources.location" value="${nano.target.dir}/common_resources_zipped"/>
         <property name="specific.resources.location" value="${nano.target.dir}/specific_resources_zipped"/>
+        <property name="enterprise.resources.location" value="${nano.target.dir}/enterprise_resources_zipped"/>
         <property name="scripts.location" value="${nano.target.dir}/scripts_zipped"/>
 
         <antcall target="prepare-common-resources"/>
         <antcall target="prepare-specific-resources"/>
+        <antcall target="prepare-enterprise-resources"/>
         <antcall target="prepare-scripts"/>
 		<antcall target="prepare-bundles-and-features"/>
         <antcall target="publish-p2-repo"/>
@@ -247,6 +249,12 @@
         </antcall>
         <echo message="Published the scripts to ${p2.repository.dir}."/>
         
+         <antcall target="p2.publish-binary">
+             <param name="repository" value="${p2.repository.dir}"/>
+             <param name="source" value="${enterprise.resources.location}"/>
+         </antcall>
+         <echo message="Published the nano enterprise resources to ${p2.repository.dir}."/>
+         
         <antcall target="p2.publish-binary">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${specific.resources.location}"/>
@@ -323,6 +331,22 @@
         <delete dir="${common.resources}" quiet="true"/>
     </target>
     
+    <target name="prepare-enterprise-resources">
+        <property name="enterprise.resources" value="${nano.target.dir}/enterprise_resources"/>
+		
+		<mkdir dir="${enterprise.resources}/configuration"/>
+		
+		<copy todir="${enterprise.resources}/configuration" failonerror="false">
+			<fileset dir="${nano.basedir}/enterprise_resources"/>
+		</copy>
+		
+        <mkdir dir="${enterprise.resources.location}/binary"/>
+        <zip destfile="${enterprise.resources.location}/binary/nano_enterprise_resources">
+			<zipfileset dir="${enterprise.resources}"/>
+		</zip>
+        <delete dir="${enterprise.resources}" quiet="true"/>
+    </target>
+    
     <target name="prepare-specific-resources">
         <property name="specific.resources" value="${nano.target.dir}/specific_resources"/>
         <mkdir dir="${specific.resources}/lib"/>
@@ -368,6 +392,7 @@
 		<mkdir dir="${package.output.dir}"/>
         <property name="common.resources.location" value="${nano.target.dir}/common_resources_zipped"/>
         <property name="specific.resources.location" value="${nano.target.dir}/specific_resources_zipped"/>
+        <property name="enterprise.resources.location" value="${nano.target.dir}/enterprise_resources_zipped"/>
         <property name="scripts.location" value="${nano.target.dir}/scripts_zipped"/>
         
         <antcall target="simrel-common-resources"/>
