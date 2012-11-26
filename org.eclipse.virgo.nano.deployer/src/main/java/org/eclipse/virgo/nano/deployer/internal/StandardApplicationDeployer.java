@@ -173,19 +173,9 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     @Override
     public boolean isDeployed(URI uri) {
-        for (SimpleDeployer deployer : this.simpleDeployers) {
-            if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
-                return deployer.isDeployed(uri);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isOfflineUpdated(URI uri) {
-        for (SimpleDeployer deployer : this.simpleDeployers) {
-            if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
-                return deployer.isOfflineUpdated(uri);
+        for (SimpleDeployer simpleDeployer : this.simpleDeployers) {
+            if (simpleDeployer.canServeFileType(getFileTypeFromUri(uri))) {
+                return simpleDeployer.isDeployed(uri) ^ simpleDeployer.isOfflineUpdated(uri);
             }
         }
         return false;

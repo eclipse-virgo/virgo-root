@@ -123,7 +123,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
     private List<URI> getUrisToDeploy(List<String> sourceArtefacts) {
         List<URI> resultUris = new ArrayList<URI>();
         for (String sourceArtefact : sourceArtefacts) {
-            if (!isDeployed(sourceArtefact) || isOfflineUpdated(sourceArtefact)) {
+            if (!isDeployed(sourceArtefact)) {
                 resultUris.add(getDefinitiveUri(sourceArtefact));
                 this.logger.info("ApplicationConditionallyDeploying path '{}'.", sourceArtefact);
             } else {
@@ -197,15 +197,6 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
     }
 
     /**
-     * Determine whether there has been offline update of the given artefact.
-     * 
-     * @param sourceArtefact the source artefact URI string
-     */
-    private boolean isOfflineUpdated(String sourceArtefact) {
-        return this.deployer.isOfflineUpdated(getDefinitiveUri(sourceArtefact));
-    }
-
-    /**
      * Converts a string URI to a URI with a predictable format, particularly in the case where the string URI ends in a
      * file separator.
      * 
@@ -242,7 +233,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
      * @throws DeploymentException
      */
     private void deployIfNotDeployed(String sourceArtefact, String fileName) throws DeploymentException {
-        if (!isDeployed(sourceArtefact) || isOfflineUpdated(sourceArtefact)) {
+        if (!isDeployed(sourceArtefact)) {
             deploy(sourceArtefact);
         } else {
             this.eventLogger.log(HotDeployerLogEvents.HOT_DEPLOY_SKIPPED, fileName);
