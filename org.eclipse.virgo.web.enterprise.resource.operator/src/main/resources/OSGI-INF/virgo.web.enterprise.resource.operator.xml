@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="virgo.web.enterprise.resource.operator" immediate="true" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
+	<implementation class="org.eclipse.virgo.web.enterprise.resource.operator.StandardResourceOperator"/>
+ 	<service>
+    	<provide interface="org.eclipse.virgo.web.enterprise.openejb.deployer.ResourceOperator"/>
+ 	</service>
+</component>
+
