@@ -23,11 +23,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.deployer"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-sources-3.7.1.R37x_v20110808-1106.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.6.0.D-20121123132242/org.eclipse.virgo.util.osgi.manifest-3.6.0.D-20121123132242.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.5.0.D-20120615065828/org.eclipse.virgo.util.osgi.manifest-sources-3.5.0.D-20120615065828.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/3.6.0.D-20121123132242/org.eclipse.virgo.util.common-3.6.0.D-20121123132242.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/3.5.0.D-20120615065828/org.eclipse.virgo.util.common-sources-3.5.0.D-20120615065828.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.6.0.D-20121126074956/org.eclipse.virgo.util.osgi.manifest-3.6.0.D-20121126074956.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi.manifest/3.5.0.D-20120615065828/org.eclipse.virgo.util.osgi.manifest-sources-3.5.0.D-20120615065828.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/3.6.0.D-20121126074956/org.eclipse.virgo.util.common-3.6.0.D-20121126074956.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.common/3.5.0.D-20120615065828/org.eclipse.virgo.util.common-sources-3.5.0.D-20120615065828.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.artifact"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20121123133216/org.eclipse.virgo.nano.core-3.6.0.D-20121123133216.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer.api/3.6.0.D-20121123133216/org.eclipse.virgo.nano.deployer.api-3.6.0.D-20121123133216.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20121126075801/org.eclipse.virgo.nano.core-3.6.0.D-20121126075801.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer.api/3.6.0.D-20121126075801/org.eclipse.virgo.nano.deployer.api-3.6.0.D-20121126075801.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
