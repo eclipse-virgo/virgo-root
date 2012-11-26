@@ -67,7 +67,7 @@ org.apache.juli.extras=7.0.32.v201211081135
 org.apache.log4j=1.2.15
 org.apache.mina.core=2.0.2.v201108120515
 org.apache.openejb.api=4.0.0.beta-2_v201205041047
-org.apache.openejb.core=4.0.0.beta-2_v201205260545
+org.apache.openejb.core=4.0.0.beta-2_v201205260545-virgo-1
 org.apache.openejb.javaagent=4.0.0.beta-2_v201205041047
 org.apache.openejb.jee=4.0.0.beta-2_v201205041336
 org.apache.openejb.loader=4.0.0.beta-2_v201205041336
@@ -156,7 +156,7 @@ org.eclipse.virgo.repository=3.6.0.D-20121123133636
 org.eclipse.virgo.test=3.6.0.D-20121123132728
 org.eclipse.virgo.util=3.6.0.D-20121123132242
 org.eclipse.virgo.web=3.6.0.D-20121123140827
-org.glassfish.com.sun.faces=2.1.6.v201205171319
+org.glassfish.com.sun.faces=2.1.6.v201205171319-virgo-1
 org.glassfish.javax.faces=2.1.6.v201210041257
 org.hsqldb=1.8.0.9
 org.jolokia.osgi=1.0.2
@@ -182,7 +182,7 @@ scannotation=1.0.2.v201205170710
 
 # Feature requerements - workaround for bug390091
 org.apache.openejb.api.feature=4.0.0.beta-2_v201205041047
-org.apache.openejb.core.feature=4.0.0.beta-2_v201205260545
+org.apache.openejb.core.feature=4.0.0.beta-2_v201205260545-virgo-1
 org.apache.openejb.javaagent.feature=4.0.0.beta-2_v201205041047
 org.apache.openejb.jee.feature=4.0.0.beta-2_v201205041336
 org.apache.openejb.loader.feature=4.0.0.beta-2_v201205041336
