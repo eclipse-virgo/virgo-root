@@ -20,12 +20,12 @@ org.slf4j.jul=1.6.4.v20120130-2120
 org.slf4j.spi=1.6.1
 
 # Enterprise Compile
-org.apache.openejb.core=4.0.0.beta-2_v201205260545
+org.apache.openejb.core=4.0.0.beta-2_v201205260545-virgo-1
 org.apache.openejb.loader=4.0.0.beta-2_v201205041336
 org.apache.openejb.jee=4.0.0.beta-2_v201205041336
 javax.validation=1.0.0.GA_v201205091237
 javax.transaction=1.1.1.v201105210645
-org.glassfish.com.sun.faces=2.1.6.v201205171319
+org.glassfish.com.sun.faces=2.1.6.v201205171319-virgo-1
 org.ow2.jotm.jotm-core=2.1.9.v201204271116
 javax.ejb=3.1.1.v201204261316
 org.apache.tomcat.api=7.0.32.v201211081135
