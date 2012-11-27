@@ -189,7 +189,7 @@ public class ContentServlet extends HttpServlet {
 		this.addIfMbeanPresent(menuItems, "wirings", "osgi.core:version=1.0,type=wiringState,region=*");
 		this.addIfMbeanPresent(menuItems, "dumps", "org.eclipse.virgo.kernel:type=Medic,name=DumpInspector");
 		this.addIfMbeanPresent(menuItems, "configurations", "osgi.compendium:service=cm,version=1.3,region=*");
-		this.addIfMbeanPresent(menuItems, "logging", "ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator");
+		//this.addIfMbeanPresent(menuItems, "logging", "ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator");
 		
 		String stringArray = Arrays.toString(menuItems.toArray(new String[menuItems.size()]));
 		pageContext.put("menuNames", stringArray.substring(1, stringArray.length() - 1));
