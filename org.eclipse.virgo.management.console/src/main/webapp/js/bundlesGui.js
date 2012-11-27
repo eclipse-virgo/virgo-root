@@ -55,7 +55,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	};
 	
 	self.displayBundle = function(bundleId){
-		if(!isNaN(bundleId) && bundleId > 0){
+		if(!isNaN(bundleId) && bundleId >= 0){
 			self.hideAll();
 			self.bundleCanvas.addClass('spinner-large');
 			self.focused = NaN;
