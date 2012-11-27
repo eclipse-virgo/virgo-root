@@ -222,9 +222,10 @@ public interface ApplicationDeployer {
 
     /**
      * Determine whether or not the given artifact is already deployed. Return <code>true</code> if the given artefact
-     * at its file's last modified time is already deployed. Returns <code>false</false> in case there was an offline 
-     * update of the deployed artefact. The last modified time is only taken into account if the
-     * file was deployed on a previous run of the Server.
+     * at its file's last modified time is already deployed. Returns <code>false</false> in case 
+     * 1. The artefact is not deployed at all. 
+     * 2. There was an offline update of the deployed artefact.
+     * The last modified time is only taken into account if the file was deployed on a previous run of the Server.
      * 
      * @param uri location of the artifact
      * @return <code>true</code> if and only if the given artifact at its file's last modified time is already deployed
