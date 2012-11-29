@@ -19,7 +19,7 @@ function pageinit() {
 		dataType: 'json',
 		success: function (response) {
 			var text = $('#osgi-runtime').text(); 
-			$('#osgi-runtime').text(response.value.info.vendor + ' ' + response.value.info.product + ' ' + response.value.info.version + ' (' + text + ')');
+			$('#osgi-runtime').text(text + ' on ' + response.value.info.vendor + ' ' + response.value.info.product + ' ' + response.value.info.version);
 			util.pageReady();
 		}
 	});		
