@@ -33,6 +33,8 @@ import java.util.jar.Manifest;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
+import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
+import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.core.KernelConfig;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
@@ -340,6 +342,11 @@ public class WARDeployer implements SimpleDeployer {
         final Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         if (bundle != null) {
             try {
+            	bundle.stop();
+            	if (bundle instanceof BundleHost) {
+            		BundleClassLoader loader = (BundleClassLoader)((BundleHost) bundle).getClassLoader(); 
+            		loader.close();
+            	}
                 // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
                 JarUtils.unpackToDestructive(new PathReference(updatedFile), new PathReference(warDir));
                 // make the manifest transformation in the unpacked location
@@ -350,6 +357,7 @@ public class WARDeployer implements SimpleDeployer {
                     this.packageAdmin.refreshPackages(new Bundle[] { bundle });
                     this.logger.info("Update of file with path [" + path + "] is successful.");
                 }
+                bundle.start();
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
