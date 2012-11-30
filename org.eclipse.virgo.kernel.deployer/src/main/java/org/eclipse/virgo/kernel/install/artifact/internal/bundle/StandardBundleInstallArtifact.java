@@ -190,7 +190,9 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     public State getState() {
         // Before returning the state, ensure any bundle is set into the bundle state monitor.
         monitorBundle();
-        return super.getState();
+        State state = super.getState();
+        // avoid exposing inappropriate states for fragments
+        return (isFragment() && (state == State.STARTING || state == State.ACTIVE || state == State.STOPPING)) ? State.RESOLVED : state;
     }
 
     /**
@@ -241,6 +243,10 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
             throw new DeploymentException("Deploying fragments of the system bundle is not supported");
         }
         super.beginInstall();
+    }
+    
+    private boolean isFragment() {
+        return this.bundleManifest.getFragmentHost().getBundleSymbolicName() != null;
     }
 
     private boolean isFragmentOnSystemBundle() {

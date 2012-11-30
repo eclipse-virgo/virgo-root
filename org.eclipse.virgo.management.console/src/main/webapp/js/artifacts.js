@@ -139,20 +139,45 @@ var Tree = function() {
 	};
 	
 	this.renderOperationResult = function(responseJSON, objectName){
-		var artifact = new Artifact(objectName);
-		if(responseJSON.status == 404){
-			$('.' + artifact.key).remove();
-		} else if(responseJSON.value){
-			$.each($('.' + artifact.key), function(index, nodeToUpdate){
-				var fxContainer = $(nodeToUpdate).children('.fx-container');
-				if(fxContainer){
-					fxContainer.remove();
-					self.renderArtifactRequest(responseJSON, objectName, $(nodeToUpdate));
-				}
+		
+		$.each($('#artifacts-tree').children('.artifact-container'), function(index, node){
+			$(node).children('.fx-container').slideToggle(util.fxTime, function(){
+				$(this).remove();
 			});
-		} else {
-			alert('Unable to retrieve information about the modified Artifact, please refresh the page.');
-		}
+			self.setIconElement($(node).children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
+		});
+		
+		
+//		var artifact = new Artifact(objectName);
+//		$.each($('.' + artifact.key), function(index, nodeToUpdate){
+//			var fxContainer = $(nodeToUpdate).children('.fx-container');
+//			if(fxContainer){
+//				$.each(fxContainer.children('.artifact-container'), function(index, childNodeToUpdate){	
+//					
+//					var classes = $(childNodeToUpdate).prop('class').split(' ');
+//					$.each(classes, function(index, seperateClass){
+//						if(seperateClass != 'artifact-container'){
+//							$.each($('.' + seperateClass), function(index, otherChildNodeToUpdate){
+//
+//								if(responseJSON.value){//Just close the otherChildNode
+//									self.setIconElement($(otherChildNodeToUpdate).children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
+//									var otherChildFxContaienr = $(otherChildNodeToUpdate).children('.fxContainer');
+//									if(otherChildFxContaienr){
+//										otherChildFxContaienr.remove();
+//									}
+//								}else{//Close the otherChildNodes parent as the state of the child is unknown.
+//									$(otherChildNodeToUpdate).parent().remove();
+//								}
+//								
+//							});
+//						}
+//					});
+//
+//				});
+//				fxContainer.remove();
+//				self.renderArtifactRequest(responseJSON, objectName, $(nodeToUpdate));
+//			}
+//		});
 	};
 	
 	/* **************** START PRIVATE METHODS **************** */
@@ -187,58 +212,62 @@ var Tree = function() {
 	 */
 	this.renderArtifactRequest = function(json, objectName, parent){
 		var fxContainer = $('<div />', {'class': 'fx-container'});
-		var fullArtifact = new FullArtifact(json.value, objectName);
-		
-		var artifactControlBar = self.getArtifactControlBar(fullArtifact);
-		if(fullArtifact.type == 'configuration'){
-			var configControl = $('<a />', {'class': 'artifact-control'});
-			configControl.attr('href', util.getCurrentHost() + '/content/configurations#' + fullArtifact.name);
-			configControl.text('VIEW');
-			artifactControlBar.append(configControl);
-		}
-
-		fxContainer.append(artifactControlBar);
-		fxContainer.append(self.getArtifactAttribute('SymbolicName: ' + fullArtifact.name));
-		fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
-		fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
-		fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
-		fxContainer.append(self.getArtifactAttribute(fullArtifact.state, 'state-' + fullArtifact.state));
-		
-		var spring = false;
-		$.each(fullArtifact.properties, function(key, value){
-			if(value == 'true' || value == true){
-				if(key == 'Spring'){
-					spring = true;
-					fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
-				} else if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
-					fxContainer.append(self.getArtifactAttribute(key, key));
-				} else {
-					fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
-				}
-			} else {
-				if(key == 'Bundle Id'){
-					fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getCurrentHost() + '/content/wirings#' + value));
-				} else {
-					fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
-				}
+		if(json.value == undefined){
+			parent.remove();
+		}else{
+			var fullArtifact = new FullArtifact(json.value, objectName);
+			
+			var artifactControlBar = self.getArtifactControlBar(fullArtifact);
+			if(fullArtifact.type == 'configuration'){
+				var configControl = $('<a />', {'class': 'artifact-control'});
+				configControl.attr('href', util.getCurrentHost() + '/content/configurations#' + fullArtifact.name);
+				configControl.text('VIEW');
+				artifactControlBar.append(configControl);
 			}
-		});
-		
-		if(spring == false && fullArtifact.type == 'bundle'){
-			fxContainer.append(self.getArtifactAttribute('No Spring', 'Spring'));
+	
+			fxContainer.append(artifactControlBar);
+			fxContainer.append(self.getArtifactAttribute('SymbolicName: ' + fullArtifact.name));
+			fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
+			fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
+			fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
+			fxContainer.append(self.getArtifactAttribute(fullArtifact.state, 'state-' + fullArtifact.state));
+			
+			var spring = false;
+			$.each(fullArtifact.properties, function(key, value){
+				if(value == 'true' || value == true){
+					if(key == 'Spring'){
+						spring = true;
+						fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
+					} else if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
+						fxContainer.append(self.getArtifactAttribute(key, key));
+					} else {
+						fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
+					}
+				} else {
+					if(key == 'Bundle Id'){
+						fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getCurrentHost() + '/content/wirings#' + value));
+					} else {
+						fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
+					}
+				}
+			});
+			
+			if(spring == false && fullArtifact.type == 'bundle'){
+				fxContainer.append(self.getArtifactAttribute('No Spring', 'Spring'));
+			}
+			
+			var dependents = fullArtifact.dependents.sort(function(a, b){
+				return a.compare(b);
+			});
+			
+			$.each(dependents, function(index, objectName){
+				var dependentArtifact = new Artifact(objectName);
+				fxContainer.append(self.getArtifactLabel(dependentArtifact, parent.attr('id')));
+			});
+	
+			parent.append(fxContainer);
+			fxContainer.slideToggle(util.fxTime);
 		}
-		
-		var dependents = fullArtifact.dependents.sort(function(a, b){
-			return a.compare(b);
-		});
-		
-		$.each(dependents, function(index, objectName){
-			var dependentArtifact = new Artifact(objectName);
-			fxContainer.append(self.getArtifactLabel(dependentArtifact, parent.attr('id')));
-		});
-
-		parent.append(fxContainer);
-		fxContainer.slideToggle(util.fxTime);
 	};
 	
 	/**
