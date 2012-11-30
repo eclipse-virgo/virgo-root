@@ -190,6 +190,8 @@ var DumpViewer = function(){
 				new TopBar(tableHolder, layoutManager, dataSource).init();
 				$('#side-bar').height($('#dump-item-content').height() - 32);
 			});
+		}, function(){
+			controls.append($('<div />').text('Unable to retrieve Bundle data for the state dump, this requires the Virgo Kernel or above.'));
 		});
 	};
 	
@@ -255,21 +257,25 @@ var QuasiDataSource = function(dumpFolder){
 		});
 	};
 	
-	self.updateData = function(callback){
+	self.updateData = function(callback, failCallback){
 		util.doQuery('exec/org.eclipse.virgo.kernel:type=Medic,name=StateDumpInspector/listBundles/' + self.dumpFolder, function(response){
-			self.bundles = {};
-			$.each(response.value, function(index, item){
-				self.bundles[item.identifier] = {	'SymbolicName': item.symbolicName,
-													'Version': item.version,
-													'Identifier': item.identifier,
-													'State': item.state,
-													'Region': item.region,
-													'Location': item.location,
-													'Fragment': item.fragment,
-													'ExportedPackages': item.exportedPackages,
-													'ImportedPackages': item.importedPackages};
-			});
-			callback();
+			if(response.value){
+				self.bundles = {};
+				$.each(response.value, function(index, item){
+					self.bundles[item.identifier] = {	'SymbolicName': item.symbolicName,
+														'Version': item.version,
+														'Identifier': item.identifier,
+														'State': item.state,
+														'Region': item.region,
+														'Location': item.location,
+														'Fragment': item.fragment,
+														'ExportedPackages': item.exportedPackages,
+														'ImportedPackages': item.importedPackages};
+				});
+				callback();
+			}else{
+				failCallback();
+			}
 		});
 	};
 	
