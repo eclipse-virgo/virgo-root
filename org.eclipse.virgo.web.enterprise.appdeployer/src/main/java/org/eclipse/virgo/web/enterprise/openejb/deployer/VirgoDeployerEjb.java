@@ -28,6 +28,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
 import javax.naming.Context;
 import javax.naming.LinkRef;
+import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
 
@@ -205,7 +206,12 @@ public class VirgoDeployerEjb extends DeployerEjb {
 				continue;
 			this.logger.debug("Binding " + jndiName + " with value " + value);
 			ContextUtil.mkdirs(jndiContext, jndiName);
-			jndiContext.rebind(jndiName, value);
+			try {
+				// Note: This will not rebind the DataSources also
+				jndiContext.bind(jndiName, value);
+			} catch (NameAlreadyBoundException e) {
+				// ignore
+			}
 		}
 	}
 
