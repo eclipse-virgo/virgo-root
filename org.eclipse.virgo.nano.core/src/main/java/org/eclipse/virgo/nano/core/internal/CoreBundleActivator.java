@@ -211,8 +211,8 @@ public class CoreBundleActivator {
 
     protected Shutdown createShutdown(BundleContext context, EventLogger eventLogger) {
         Framework framework = (Framework) context.getBundle(0);
-
-        ShutdownManager manager = new ShutdownManager(eventLogger, framework);
+        Runtime runtime = Runtime.getRuntime();
+        ShutdownManager manager = new ShutdownManager(eventLogger, framework, runtime);
         return manager;
     }
 
