@@ -436,7 +436,8 @@ public class BundleDeployer implements SimpleDeployer {
         final String jarName = extractDecodedJarNameFromString(path.toString());
         final File deployFile = new File(path);
         long deployFileLastModified = deployFile.lastModified();
-        if (deployFileLastModified == StatusFileModificator.getLastModifiedFromStatusFile(jarName, this.pickupDir)) {
+        long lastModifiedStatus = StatusFileModificator.getLastModifiedFromStatusFile(jarName, this.pickupDir);
+        if (lastModifiedStatus == -1 || deployFileLastModified == lastModifiedStatus) {
             return false;
         }
         return true;
