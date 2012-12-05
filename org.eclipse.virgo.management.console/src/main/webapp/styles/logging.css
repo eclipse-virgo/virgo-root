@@ -7,3 +7,13 @@
  *
  * Christopher Frost - 2011
  */
+ 
+ 
+.logger-table .logger-update {
+	color: transparent;
+}
+
+.table-tr-hovered .logger-update {
+	color: #666666;
+	cursor: pointer;
+}

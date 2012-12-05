@@ -16,7 +16,12 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
+import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.junit.Test;
+
+import sun.org.mozilla.javascript.internal.Context;
+import sun.org.mozilla.javascript.internal.Function;
+import sun.org.mozilla.javascript.internal.Scriptable;
 
 /**
  *
@@ -31,7 +36,20 @@ public class LoggingJSTests extends AbstractJSTests {
 		
 		invokePageInit();
 		
+		assertTrue(Dollar.getAjaxUrl().contains("LoggerList"));
+		
+		Dollar.getAjaxSuccess().call(context, scope, scope, new Object[] { getTestLoggers() });
+		
 		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
-	
+
+    private Scriptable getTestLoggers() throws IOException {
+
+        readString("var Data = function() {" + 
+            "   this.value = ['logger1','logger2'];" +
+            "};");
+
+        Function testData = (Function) scope.get("Data", scope);
+        return testData.construct(context, scope, Context.emptyArgs);
+    }
 }

@@ -20,6 +20,7 @@ function pageinit(){
 			ConfigurationInit.addConfigurationSection(regionName, response.value);
 			});
 		});
+		util.pageReady();
 	});
 }
 
@@ -40,7 +41,6 @@ ConfigurationInit = {
 				event.data.toggle();
 			});
 		});
-		util.pageReady();
 	},
 	
 	getConfigurationLabel : function(labelText){
