@@ -27,7 +27,6 @@
    
    <configurations>
 		<plugin id="org.eclipse.virgo.web.enterprise.openejb.initialiser" autoStart="true" startLevel="3" />
-		<plugin id="org.eclipse.virgo.web.enterprise.resource.operator" autoStart="true" startLevel="3" />
 		<plugin id="org.eclipse.virgo.web.enterprise.appdeployer" autoStart="true" startLevel="3" />
 		<plugin id="org.eclipse.virgo.web.enterprise.services.accessor" autoStart="true" startLevel="3" />
 		<plugin id="osgi.enterprise" autoStart="true"/>

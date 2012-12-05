@@ -24,14 +24,7 @@
     install-size="0"
     version="@WEB.VERSION@"
     unpack="false"/>
-    
-    <plugin
-    id="org.eclipse.virgo.web.enterprise.resource.operator"
-    download-size="0"
-    install-size="0"
-    version="@WEB.VERSION@"
-    unpack="false"/>
-    
+        
     <plugin
     id="org.eclipse.virgo.web.enterprise.applistener"
     download-size="0"
