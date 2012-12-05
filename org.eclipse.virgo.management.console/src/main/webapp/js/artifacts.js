@@ -57,7 +57,9 @@ var Tree = function() {
 			} else {
 				node = self.getNodeContainer(filterMatch, 'default', filterMatch, filter);
 			}
-			$('.artifact-label', node).click({'node': node, 'filter': filter}, tree.renderTopLevel);
+			node.addClass('top-level');
+			node.data('queryData', filter);
+			$('.artifact-label', node).click({'node': node, 'queryData': filter}, tree.nodeTwistyClicked);
 			$('#artifacts-tree').append(node);
 		});
 	};
@@ -81,49 +83,47 @@ var Tree = function() {
 		}
 		
 	};
-	
-	/**
-	 * Called when one of the top level node is clicked
-	 * 
-	 * @param filter - the artifact property to sort by
-	 * @param parent - the unique key of the parent node
-	 */
-	this.renderTopLevel = function(eventData){
-		var node = eventData.data.node;
-		self.setIconElement(node.children('.artifact-label').children('.twisty'), 'loader-small.gif');
-		if(node.children().length == 1){//It's closed
-			util.doQuery('search/org.eclipse.virgo.kernel:type=ArtifactModel,*', function (response){
-				self.renderTopLevelRequest(response, node, eventData.data.filter);
-				self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/minus.png');
-			});
-		} else {//It's open
-			node.children('.fx-container').slideToggle(util.fxTime, function(){
-				$(this).remove();
-			});
-			self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
-		}
-	};
 
 	/**
-	 * Called when any artifact in the tree is expanded
+	 * Called when any node in the tree is expanded
 	 * 
 	 * @param objectName - the unique key of the artifact to render
-	 * @param parent - id of the element to render the artifact under
+	 * @param filter - sort by
 	 */
-	this.renderArtifact = function (eventData){
+	this.nodeTwistyClicked = function (eventData, openCallBack, openCallBackArg){
 		var node = eventData.data.node;
 		self.setIconElement(node.children('.artifact-label').children('.twisty'), 'loader-small.gif');
-		if(node.children().length == 1){//It's closed
-			util.doQuery('read/' + eventData.data.objectName.toString, function(response){
-				self.renderArtifactRequest(response, eventData.data.objectName, node);
+		if(node.hasClass('open-container')){
+			self.closeNode(node);
+		} else {
+			var query;
+			if(node.hasClass('top-level')){
+				query = 'search/org.eclipse.virgo.kernel:type=ArtifactModel,*';
+			} else {
+				query = 'read/' + eventData.data.queryData.toString;
+			}
+			util.doQuery(query, function (response){
+				self.renderNodeExpansion(response, node, eventData.data.queryData);
 				self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/minus.png');
+				if(openCallBack){
+					openCallBack(openCallBackArg);
+				}
 			});
-		} else {//It's open
-			node.children('.fx-container').slideToggle(util.fxTime, function(){
+		}
+	};
+	
+	this.closeNode = function(rawNode, now){
+		var node = $(rawNode);
+		var container = node.children('.fx-container');
+		if(now){
+			container.remove();
+		}else{
+			container.slideToggle(util.fxTime, function(){
 				$(this).remove();
 			});
-			self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
 		}
+		node.removeClass('open-container');
+		self.setIconElement(node.children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
 	};
 	
 	/**
@@ -132,142 +132,125 @@ var Tree = function() {
 	 */
 	this.doArtifactOperation = function(event){
 		util.doQuery('exec/' + event.data.objectName.toString + '/' + event.data.action, function(response){
-			util.doQuery('read/' + event.data.objectName.toString, function(response){
-				self.renderOperationResult(response, event.data.objectName);
-			});
+			self.reloadTree();
 		});
 	};
 	
-	this.renderOperationResult = function(responseJSON, objectName){
-		
+	this.reloadTree = function(){
+		//Record the open nodes and unmark
+		var openNodes = new Array();
+		$.each($('.open-container'), function(index, openNode){
+			openNodes.push($(openNode).prop('id'));
+		});
+
+		//Close the entire tree down
 		$.each($('#artifacts-tree').children('.artifact-container'), function(index, node){
-			$(node).children('.fx-container').slideToggle(util.fxTime, function(){
-				$(this).remove();
-			});
-			self.setIconElement($(node).children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
+			self.closeNode(node, true);
 		});
 		
-		
-//		var artifact = new Artifact(objectName);
-//		$.each($('.' + artifact.key), function(index, nodeToUpdate){
-//			var fxContainer = $(nodeToUpdate).children('.fx-container');
-//			if(fxContainer){
-//				$.each(fxContainer.children('.artifact-container'), function(index, childNodeToUpdate){	
-//					
-//					var classes = $(childNodeToUpdate).prop('class').split(' ');
-//					$.each(classes, function(index, seperateClass){
-//						if(seperateClass != 'artifact-container'){
-//							$.each($('.' + seperateClass), function(index, otherChildNodeToUpdate){
-//
-//								if(responseJSON.value){//Just close the otherChildNode
-//									self.setIconElement($(otherChildNodeToUpdate).children('.artifact-label').children('.twisty'), 'tree-icons/plus.png');
-//									var otherChildFxContaienr = $(otherChildNodeToUpdate).children('.fxContainer');
-//									if(otherChildFxContaienr){
-//										otherChildFxContaienr.remove();
-//									}
-//								}else{//Close the otherChildNodes parent as the state of the child is unknown.
-//									$(otherChildNodeToUpdate).parent().remove();
-//								}
-//								
-//							});
-//						}
-//					});
-//
-//				});
-//				fxContainer.remove();
-//				self.renderArtifactRequest(responseJSON, objectName, $(nodeToUpdate));
-//			}
-//		});
+		//Re-open the tree
+		var nodeOpener = function(nodesToOpen){
+			var breakOut = false;
+			$.each($('.artifact-container'), function(index, rawNode){
+				if(breakOut){
+					return false;
+				}
+				var node = $(rawNode);
+				if(!node.hasClass('open-container')){
+					$.each(nodesToOpen, function(index, nodeToOpen){
+						if(nodeToOpen == node.prop('id')){
+							var remainingNodesToOpen = $.grep(nodesToOpen, function(value) {
+								return value != nodeToOpen;
+							});
+							self.nodeTwistyClicked({data: {node: node, queryData: node.data('queryData')}}, nodeOpener, remainingNodesToOpen);
+							breakOut = true;
+							return false;
+						}
+					});
+				}
+			});
+		};
+		nodeOpener(openNodes);
 	};
-	
+
 	/* **************** START PRIVATE METHODS **************** */
 	
 	/**
-	 * When the server responds to an artifact type request this method
-	 * takes care of rendering the top level results
+	 * When the server responds to an node request this method takes care 
+	 * of rendering the artifact/tree and all its attributes and dependents
 	 * 
 	 * @param json - the raw json returned form the server
 	 * @param parent - element to put the artifact under
+	 * @param nodeData - of the artifact
 	 */
-	this.renderTopLevelRequest = function(json, parent, filter){
+	this.renderNodeExpansion = function(json, parent, nodeData){		
 		var fxContainer = $('<div />', {'class': 'fx-container'});
-		var mbeans = json.value.sort();
-		$.each(mbeans, function(index, mbean){
-			var artifact = new Artifact(util.readObjectName(mbean));
-			if(artifact[filter] == parent.attr('id')){
-				fxContainer.append(self.getArtifactLabel(artifact, parent.attr('id')));
-			}
-		});
-		parent.append(fxContainer);
-		fxContainer.slideToggle(util.fxTime);
-	};
-	
-	/**
-	 * When the server responds to an artifact request this method takes care 
-	 * of rendering the artifact and all its attributes and dependents
-	 * 
-	 * @param json - the raw json returned form the server
-	 * @param objectName - of the artifact
-	 * @param parent - element to put the artifact under
-	 */
-	this.renderArtifactRequest = function(json, objectName, parent){
-		var fxContainer = $('<div />', {'class': 'fx-container'});
-		if(json.value == undefined){
-			parent.remove();
-		}else{
-			var fullArtifact = new FullArtifact(json.value, objectName);
-			
-			var artifactControlBar = self.getArtifactControlBar(fullArtifact);
-			if(fullArtifact.type == 'configuration'){
-				var configControl = $('<a />', {'class': 'artifact-control'});
-				configControl.attr('href', util.getCurrentHost() + '/content/configurations#' + fullArtifact.name);
-				configControl.text('VIEW');
-				artifactControlBar.append(configControl);
-			}
-	
-			fxContainer.append(artifactControlBar);
-			fxContainer.append(self.getArtifactAttribute('SymbolicName: ' + fullArtifact.name));
-			fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
-			fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
-			fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
-			fxContainer.append(self.getArtifactAttribute(fullArtifact.state, 'state-' + fullArtifact.state));
-			
-			var spring = false;
-			$.each(fullArtifact.properties, function(key, value){
-				if(value == 'true' || value == true){
-					if(key == 'Spring'){
-						spring = true;
-						fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
-					} else if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
-						fxContainer.append(self.getArtifactAttribute(key, key));
-					} else {
-						fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
-					}
-				} else {
-					if(key == 'Bundle Id'){
-						fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getCurrentHost() + '/content/wirings#' + value));
-					} else {
-						fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
-					}
+		if(parent.hasClass('top-level')){
+			var mbeans = json.value.sort();
+			$.each(mbeans, function(index, mbean){
+				var artifact = new Artifact(util.readObjectName(mbean));
+				if(artifact[nodeData] == parent.prop('id')){
+					fxContainer.append(self.getArtifactLabel(artifact, parent.prop('id')));
 				}
 			});
-			
-			if(spring == false && fullArtifact.type == 'bundle'){
-				fxContainer.append(self.getArtifactAttribute('No Spring', 'Spring'));
+		} else {
+			if(json.value == undefined){
+				parent.remove();
+			} else {
+				var fullArtifact = new FullArtifact(json.value, nodeData);
+				
+				var artifactControlBar = self.getArtifactControlBar(fullArtifact);
+				if(fullArtifact.type == 'configuration'){
+					var configControl = $('<a />', {'class': 'artifact-control'});
+					configControl.attr('href', util.getCurrentHost() + '/content/configurations#' + fullArtifact.name);
+					configControl.text('VIEW');
+					artifactControlBar.append(configControl);
+				}
+		
+				fxContainer.append(artifactControlBar);
+				fxContainer.append(self.getArtifactAttribute('SymbolicName: ' + fullArtifact.name));
+				fxContainer.append(self.getArtifactAttribute('Version: ' + fullArtifact.version));
+				fxContainer.append(self.getArtifactAttribute('Region: ' + fullArtifact.region));
+				fxContainer.append(self.getArtifactAttribute('Type: ' + fullArtifact.type));
+				fxContainer.append(self.getArtifactAttribute(fullArtifact.state, 'state-' + fullArtifact.state));
+				
+				var spring = false;
+				$.each(fullArtifact.properties, function(key, value){
+					if(value == 'true' || value == true){
+						if(key == 'Spring'){
+							spring = true;
+							fxContainer.append(self.getArtifactAttribute('Spring Powered', key));
+						} else if(key == 'Scoped' || key == 'Atomic' || key == 'Scoped-Atomic'){
+							fxContainer.append(self.getArtifactAttribute(key, key));
+						} else {
+							fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
+						}
+					} else {
+						if(key == 'Bundle Id'){
+							fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getCurrentHost() + '/content/wirings#' + value));
+						} else {
+							fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
+						}
+					}
+				});
+				
+				if(spring == false && fullArtifact.type == 'bundle'){
+					fxContainer.append(self.getArtifactAttribute('No Spring', 'Spring'));
+				}
+				
+				var dependents = fullArtifact.dependents.sort(function(a, b){
+					return a.compare(b);
+				});
+				
+				$.each(dependents, function(index, objectName){
+					var dependentArtifact = new Artifact(objectName);
+					fxContainer.append(self.getArtifactLabel(dependentArtifact, parent.attr('id')));
+				});
 			}
-			
-			var dependents = fullArtifact.dependents.sort(function(a, b){
-				return a.compare(b);
-			});
-			
-			$.each(dependents, function(index, objectName){
-				var dependentArtifact = new Artifact(objectName);
-				fxContainer.append(self.getArtifactLabel(dependentArtifact, parent.attr('id')));
-			});
-	
-			parent.append(fxContainer);
-			fxContainer.slideToggle(util.fxTime);
 		}
+		parent.append(fxContainer);
+		parent.addClass('open-container');
+		fxContainer.slideToggle(util.fxTime);
 	};
 	
 	/**
@@ -278,7 +261,8 @@ var Tree = function() {
 	 */
 	this.getArtifactLabel = function(artifact, parent){
 		var node = self.getNodeContainer(artifact.name + ': ' + artifact.version, artifact.type, parent + artifact.key, artifact.key);
-		$('.artifact-label', node).click({'objectName': artifact.objectName, 'node': node}, tree.renderArtifact);
+		$('.artifact-label', node).click({'queryData': artifact.objectName, 'node': node}, tree.nodeTwistyClicked);
+		node.data('queryData', artifact.objectName);
 		return node;
 	};
 	
