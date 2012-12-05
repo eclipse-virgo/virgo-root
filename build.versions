@@ -1,7 +1,7 @@
 # Compile
-org.eclipse.virgo.nano=3.6.0.M04
-org.eclipse.virgo.kernel=3.6.0.M04
-org.eclipse.virgo.repository=3.6.0.M04
+org.eclipse.virgo.nano=3.6.0.D-20121205122042
+org.eclipse.virgo.kernel=3.6.0.D-20121205122545
+org.eclipse.virgo.repository=3.6.0.D-20121205122436
 org.eclipse.virgo.util=3.6.0.M04
 org.eclipse.virgo.medic=3.6.0.M04
 org.apache.felix.gogo.runtime=0.10.0.v201209301036
