@@ -41,8 +41,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.stubs"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-3.1.0.RELEASE.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-sources-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.equinox.region/1.1.0.v20120319-1602/org.eclipse.equinox.region-1.1.0.v20120319-1602.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.M04/org.eclipse.virgo.nano.core-3.6.0.M04.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer.api/3.6.0.M04/org.eclipse.virgo.nano.deployer.api-3.6.0.M04.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20121205122042/org.eclipse.virgo.nano.core-3.6.0.D-20121205122042.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer.api/3.6.0.D-20121205122042/org.eclipse.virgo.nano.deployer.api-3.6.0.D-20121205122042.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.3.0.v20120307-2102/org.eclipse.osgi.services-3.3.0.v20120307-2102.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110513/org.eclipse.osgi.services-sources-3.3.0.v20110513.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
