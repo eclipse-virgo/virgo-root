@@ -18,7 +18,6 @@ public class OpenEjbDeployerDSComponent {
 
     static EventLogger eventLogger = null;
     static DynamicDeployer dynamicDeployer = null;
-    static ResourceOperator resourceOperator = null;
 
     static EventLogger getEventLogger() {
         return eventLogger;
@@ -26,10 +25,6 @@ public class OpenEjbDeployerDSComponent {
 
     static DynamicDeployer getDynamicDeployer() {
         return dynamicDeployer;
-    }
-    
-    static ResourceOperator getResourceOperator() {
-        return resourceOperator;
     }
 
     public void bindEventLogger(EventLogger logger) {
@@ -47,12 +42,5 @@ public class OpenEjbDeployerDSComponent {
     public void unbindDynamicDeployer(DynamicDeployer deployer) {
         dynamicDeployer = null;
     }
-    
-    public void bindResourceOperator(ResourceOperator operator) {
-        resourceOperator = operator;
-    }
 
-    public void unbindResourceOperator(ResourceOperator operator) {
-        resourceOperator = null;
-    }
 }

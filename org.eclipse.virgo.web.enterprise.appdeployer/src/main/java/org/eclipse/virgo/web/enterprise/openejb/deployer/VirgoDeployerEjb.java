@@ -18,6 +18,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -33,6 +38,9 @@ import javax.naming.NamingException;
 import javax.naming.RefAddr;
 
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.deploy.ContextResource;
+import org.apache.catalina.deploy.NamingResources;
+import org.apache.catalina.deploy.ResourceBase;
 import org.apache.naming.ContextAccessController;
 import org.apache.openejb.AppContext;
 import org.apache.openejb.ClassLoaderUtil;
@@ -46,10 +54,14 @@ import org.apache.openejb.assembler.classic.Assembler;
 import org.apache.openejb.assembler.classic.JndiEncBuilder;
 import org.apache.openejb.assembler.classic.WebAppInfo;
 import org.apache.openejb.config.AppModule;
+import org.apache.openejb.config.AutoConfig;
 import org.apache.openejb.config.ConfigurationFactory;
 import org.apache.openejb.config.DeploymentLoader;
 import org.apache.openejb.config.DeploymentModule;
 import org.apache.openejb.config.DynamicDeployer;
+import org.apache.openejb.config.ServiceUtils;
+import org.apache.openejb.config.sys.Resource;
+import org.apache.openejb.config.sys.ServiceProvider;
 import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.util.ContextUtil;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
@@ -68,14 +80,24 @@ public class VirgoDeployerEjb extends DeployerEjb {
 	private static final String META_INF = "META-INF";
 	private static final String DISABLED_SUFFIX = ".disabled";
 	private static final String RESOURCES_XML = "resources.xml";
+	private static final String PROVIDER = "provider";
+	private static final String TRANSACTION_TYPE_PROP = "transactionType";
+	private static final String STANDARD_CONTEXT_PROPERTY = "CatalinaStandardContext";
+	private static final String DATA_SOURCE = "DataSource";
+	private static final String OPENEJB_JDBC_DRIVER = "JdbcDriver";
+	private static final String TOMCAT_DRIVER_CLASS_NAME = "driverClassName";
+	private static final String OPENEJB_JDBC_URL = "JdbcUrl";
+	private static final String TOMCAT_JDBC_URL = "url";
+	private static final String OPENEJB_USERNAME = "UserName";
+	private static final String TOMCAT_USERNAME = "username";
 	private final DeploymentLoader deploymentLoader;
 	private final ConfigurationFactory configurationFactory;
 	private final Assembler assembler;
 
+	private List<ServiceProvider> resourceProviders;
 	private final String webContextPath;
 	private final ClassLoader servletClassLoader;
 	private DynamicDeployer dynamicDeployer = null;
-	private ResourceOperator resourceOperator = null;
 	
 	private Logger logger = LoggerFactory.getLogger(VirgoDeployerEjb.class);
 
@@ -93,6 +115,12 @@ public class VirgoDeployerEjb extends DeployerEjb {
 
 		this.webContextPath = webContextPath;
 		this.servletClassLoader = servletClassLoader;
+		try {
+			resourceProviders = ServiceUtils
+					.getServiceProvidersByServiceType("Resource");
+		} catch (OpenEJBException e) {
+			resourceProviders = new ArrayList<ServiceProvider>(0);
+		}
 	}
 	
 	public AppInfo deploy(String loc, StandardContext standardContext) throws OpenEJBException {
@@ -119,14 +147,7 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			disableResourcesDescriptors(appModule);
 
 			// set resources
-			resourceOperator = OpenEjbDeployerDSComponent.getResourceOperator();
-			if (resourceOperator == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Unable to discover mandatory resource operator, check the framework's services and DS components.");
-                }
-                throw new OpenEJBException("Unable to discover mandatory resource operator");
-			}
-			resourceOperator.processResources(appModule, standardContext);
+			processResources(appModule, standardContext);
 
 			final AppInfo appInfo = configurationFactory.configureApplication(appModule);
 			if (p != null && p.containsKey(OPENEJB_DEPLOYER_FORCED_APP_ID_PROP)) {
@@ -336,5 +357,138 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		} else {
 			OpenEjbDeployerDSComponent.getEventLogger().log(event, this.webContextPath);
 		}
+	}
+
+	public void processResources(AppModule appModule,
+			StandardContext standardContext) {
+		ContextResource[] contextResources = standardContext
+				.getNamingResources().findResources();
+
+		if (contextResources == null) {
+			return;
+		}
+
+		for (ContextResource contextResource : contextResources) {
+			if (isResourceTypeSupported(contextResource)) {
+				Resource resource = createResource(contextResource,
+						standardContext, appModule.getModuleId());
+				appModule.getResources().add(resource);
+			}
+		}
+
+		final Collection<String> tomcatResources = getResourcesNames(standardContext
+				.getNamingResources());
+		AutoConfig.PROVIDED_RESOURCES.set(tomcatResources);
+		AutoConfig.PROVIDED_RESOURCES_PREFIX.set("java:/comp/env/");
+	}
+
+	private Collection<String> getResourcesNames(
+			final NamingResources namingResources) {
+		final Collection<String> names = new ArrayList<String>();
+		final Collection<ResourceBase> tomcatResources = new ArrayList<ResourceBase>();
+		tomcatResources.addAll(Arrays.asList(namingResources.findResources()));
+		tomcatResources
+				.addAll(Arrays.asList(namingResources.findEnvironments()));
+		tomcatResources.addAll(Arrays.asList(namingResources
+				.findResourceLinks()));
+		tomcatResources.addAll(Arrays.asList(namingResources.findServices()));
+		tomcatResources.addAll(Arrays.asList(namingResources
+				.findResourceEnvRefs()));
+
+		for (ResourceBase resource : tomcatResources) {
+			String processedResourceName = getResourceNameFromTomcatResource(
+					names, resource);
+			if (processedResourceName != null) {
+				names.add(processedResourceName);
+			}
+		}
+		return names;
+	}
+
+	private String getResourceNameFromTomcatResource(
+			final Collection<String> names, ResourceBase resource) {
+		final String name = resource.getName();
+		final String mappedName = (String) resource.getProperty("mappedName");
+		String processedResourceName = name;
+		if (mappedName != null) {
+			processedResourceName = mappedName;
+		}
+		return processedResourceName;
+	}
+
+	private Resource createResource(final ContextResource contextResource,
+			StandardContext standardContext, final String appModuleId) {
+		final String id = appModuleId + '/' + contextResource.getName();
+		final String type = contextResource.getType();
+		String provider = (String) contextResource.getProperty(PROVIDER);
+		Resource resource = new Resource(id, type, provider);
+		populateResourceProperties(contextResource, resource, standardContext);
+		return resource;
+	}
+
+	private void populateResourceProperties(ContextResource contextResource,
+			Resource resource, StandardContext standardContext) {
+		Properties resProperties = resource.getProperties();
+		Iterator<String> ctxResPropertiesItr = contextResource.listProperties();
+		boolean isDataSource = contextResource.getType().contains(DATA_SOURCE);
+		while (ctxResPropertiesItr.hasNext()) {
+			String key = ctxResPropertiesItr.next();
+			if (PROVIDER.equals(key) || key.length() == 0) {
+				continue;
+			}
+			final Object value = contextResource.getProperty(key);
+			if (isDataSource) {
+				key = transformKey(key);
+			}
+			resProperties.put(key, value);
+		}
+		if (isDataSource) {
+			resProperties.put(STANDARD_CONTEXT_PROPERTY, standardContext);
+		}
+	}
+
+	private String transformKey(String key) {
+		String transformedKey;
+		if (TOMCAT_USERNAME.equals(key)) {
+			transformedKey = OPENEJB_USERNAME;
+		} else if (TOMCAT_JDBC_URL.equals(key)) {
+			transformedKey = OPENEJB_JDBC_URL;
+		} else if (TOMCAT_DRIVER_CLASS_NAME.equals(key)) {
+			transformedKey = OPENEJB_JDBC_DRIVER;
+		} else if (TRANSACTION_TYPE_PROP.equals(key)) {
+			transformedKey = TRANSACTION_TYPE_PROP;
+		} else {
+			StringBuffer buffer = new StringBuffer(key);
+			buffer.setCharAt(0, Character.toUpperCase(buffer.charAt(0)));
+			transformedKey = buffer.toString();
+		}
+
+		return transformedKey;
+	}
+
+	private boolean isResourceTypeSupported(ContextResource contextResource) {
+		String resourceType = contextResource.getType();
+		for (ServiceProvider serviceProvider : resourceProviders) {
+			if (serviceProvider.getTypes().contains(resourceType)) {
+				return true;
+			}
+		}
+
+		String provider = (String) contextResource.getProperty(PROVIDER);
+		if (provider == null) {
+			return false;
+		}
+
+		try {
+			ServiceProvider serviceProvider = ServiceUtils
+					.getServiceProvider(provider);
+			if (serviceProvider.getTypes().contains(resourceType)) {
+				return true;
+			}
+		} catch (OpenEJBException e) {
+			return false;
+		}
+
+		return false;
 	}
 }
