@@ -64,7 +64,8 @@ import org.slf4j.LoggerFactory;
  * termination to continue.</li>
  * <li>Solicited immediate shutdown, which exits the JVM.</li>
  * <li>Solicited halt if an attempt by this class to stop the OSGi framework fails or times out.</li>
- * <li>Unsolicited halt, which does not involve this class.</li>
+ * <li>Unsolicited halt or other abrupt termination (such as "kill -9" or a power failure), which does not involve this
+ * class.</li>
  * </ol>
  * <p />
  * <strong>Concurrent Semantics</strong><br />
