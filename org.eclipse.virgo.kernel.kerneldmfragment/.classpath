@@ -34,7 +34,7 @@
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api.source-1.6.4.v20120130-2120.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.agent.dm"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

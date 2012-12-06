@@ -56,7 +56,7 @@
 		
 		<!--  the following conf should be test->runtime but for some reason that does not pull down the dependency -->
 		<dependency org="org.aspectj" name="com.springsource.org.aspectj.runtime" rev="${org.aspectj}" conf="test->runtime"/>
-		<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.nop" rev="${org.slf4j.nop}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
 

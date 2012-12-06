@@ -34,7 +34,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/3.6.0.M04/org.eclipse.virgo.medic.test-3.6.0.M04.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.core/1.0.0.CI-B20/org.eclipse.virgo.medic.core-sources-1.0.0.CI-B20.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-1.6.1.jar" sourcepath="/IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api.source-1.6.4.v20120130-2120.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.stubs/3.6.0.M04/org.eclipse.virgo.test.stubs-3.6.0.M04.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.stubs/3.6.0.M04/org.eclipse.virgo.test.stubs-sources-3.6.0.M04.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-3.1.0.RELEASE.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.context/3.1.0.RELEASE/org.springframework.context-sources-3.1.0.RELEASE.jar"/>
