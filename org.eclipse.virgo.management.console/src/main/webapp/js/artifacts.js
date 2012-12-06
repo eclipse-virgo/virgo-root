@@ -55,7 +55,7 @@ var Tree = function() {
 			if(filter == 'type'){
 				node = self.getNodeContainer(filterMatch, filterMatch, filterMatch, filter);
 			} else {
-				node = self.getNodeContainer(filterMatch, 'default', filterMatch, filter);
+				node = self.getNodeContainer(filterMatch, 'region', filterMatch, filter);
 			}
 			node.addClass('top-level');
 			node.data('queryData', filter);
