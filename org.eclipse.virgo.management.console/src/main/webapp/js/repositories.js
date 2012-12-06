@@ -18,6 +18,8 @@ function pageinit() {
 	$.ajax({
 		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Repository,*',
 		dataType: 'json',
+		contentType: 'application/json',
+		cache: false,
 		success: function (response) {
 			Repositories.renderRepositoryMBeans(response.value);
 			util.pageReady();
@@ -59,6 +61,8 @@ Repositories = {
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/read/' + button.mbeanName,
 			dataType: 'json',
+			contentType: 'application/json',
+			cache: false,
 			success: function (response) {
 				Repositories.renderArtifactDescriptorSummaries(response.value.AllArtifactDescriptorSummaries);
 			}

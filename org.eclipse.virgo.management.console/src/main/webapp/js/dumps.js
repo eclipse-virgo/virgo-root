@@ -19,6 +19,8 @@ function pageinit(){
 	$.ajax({
 		url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
 		dataType: 'json',
+		contentType: 'application/json',
+		cache: false,
 		success: function (response) {
 			$('#dumpLocation').text("Location: " + response.value);
 			dumpViewer.setDumpLocation(response.value);
@@ -43,6 +45,7 @@ var DumpViewer = function(){
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
 			dataType: 'json',
+			contentType: 'application/json',
 			cache: false,
 			success: function (response){
 				self.displayDumpsResponse(response.value);
@@ -95,6 +98,7 @@ var DumpViewer = function(){
 			$.ajax({
 				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
 				dataType: 'json',
+				contentType: 'application/json',
 				cache: false,
 				success: function (response){
 					self.displaySelectedDumpResponse(response.value, self.selectedDump);

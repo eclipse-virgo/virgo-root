@@ -17,6 +17,8 @@ function pageinit() {
 	$.ajax({
 		url: util.getCurrentHost() + '/jolokia/version', 
 		dataType: 'json',
+		contentType: 'application/json',
+		cache: false,
 		success: function (response) {
 			var text = $('#osgi-runtime').text(); 
 			$('#osgi-runtime').text(text + ' on ' + response.value.info.vendor + ' ' + response.value.info.product + ' ' + response.value.info.version);

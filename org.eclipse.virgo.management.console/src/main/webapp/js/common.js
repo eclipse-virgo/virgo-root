@@ -134,6 +134,8 @@ var Util = function(){
 		$.ajax({
 			url: util.getCurrentHost() + '/jolokia/' + query,
 			dataType: 'json',
+			contentType: 'application/json',
+			cache: false,
 			success: function (response) {
 				successCallback(response);
 			},
@@ -156,6 +158,7 @@ var Util = function(){
 			url: self.getCurrentHost() + '/jolokia',
 			dataType: 'json',
 			contentType: 'application/json',
+			cache: false,
 			data: JSON.stringify(query),
 			success: function (response) {
 				successCallback(response);
