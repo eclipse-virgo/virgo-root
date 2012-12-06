@@ -36,7 +36,6 @@ var LoggerList = function(loggerList){
 	
 	$.each(loggerList, function(index, loggerName){
 		var row = new Array(loggerName, '', '');
-		
 		var td = $('<td />', {'class' : 'logger-update','onClick': 'loggingHandler.update("' + loggerName + '")'});
 		row.push(td.text('update'));
 		self.rows.push(row);

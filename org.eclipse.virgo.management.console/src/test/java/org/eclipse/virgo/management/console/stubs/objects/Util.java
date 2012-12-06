@@ -62,7 +62,11 @@ public class Util {
 		this.pageReady = true;
 	}
 	
-	public Object getCurrentHost(){
+	public Object getHost(){
+		return Context.javaToJS("hostPrefix", SCOPE);
+	}
+	
+	public Object getHostAndAdminPath(){
 		return Context.javaToJS("hostPrefix", SCOPE);
 	}
 	
