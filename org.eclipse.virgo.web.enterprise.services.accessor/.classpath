@@ -8,7 +8,7 @@
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi/3.8.1.v20120830-144521/org.eclipse.osgi-3.8.1.v20120830-144521.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api.source-1.6.4.v20120130-2120.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.tomcat.api/7.0.32.v201211081135/org.apache.tomcat.api-7.0.32.v201211081135.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.openejb.core/4.0.0.beta-2_v201205260545-virgo-2/org.apache.openejb.core-4.0.0.beta-2_v201205260545-virgo-2.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.openejb.loader/4.0.0.beta-2_v201205041336/org.apache.openejb.loader-4.0.0.beta-2_v201205041336.jar"/>

@@ -12,12 +12,11 @@ org.springframework=3.1.0.RELEASE
 org.eclipse.gemini.blueprint=1.0.2.RELEASE
 org.eclipse.gemini.web=2.2.0.M02
 org.aspectj=1.6.12.RELEASE
-org.slf4j=1.6.1
+org.slf4j.nop=1.7.2.v201212060727
 org.slf4j.api=1.6.4.v20120130-2120
 org.slf4j.jcl=1.6.4.v20120130-2120
 org.slf4j.log4j=1.6.4.v20120130-2120
 org.slf4j.jul=1.6.4.v20120130-2120
-org.slf4j.spi=1.6.1
 
 # Enterprise Compile
 org.apache.openejb.core=4.0.0.beta-2_v201205260545-virgo-3
