@@ -70,6 +70,7 @@
         <!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
 		<ivy:resolve resolveId="copy.path" file="${nano.basedir}/nano-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
+        <ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="wab"/>
 
 		<ivy:resolve resolveId="copy.path" file="${nano.basedir}/p2runtime-ivy.xml" transitive="true"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="p2-runtime" type="jar"/>
@@ -224,6 +225,13 @@
                 <filter token="OSGI.ENTERPRISE" value="${osgi.enterprise}"/>
                 <filter token="SCANNOTATION" value="${scannotation}"/>
                 <filter token="JAVAX.EJB" value="${javax.ejb}"/>
+                <filter token="HTTPSERVICE.VERSION" value="${org.eclipse.equinox.http}"/>
+                <filter token="MNGMNT.CONSOLE.VERSION" value="${org.eclipse.virgo.kernel}"/>
+                <filter token="GMNGMNT.VERSION" value="${org.eclipse.gemini.management}"/>
+                <filter token="VIRGO.MNGMNT.FR.VERSION" value="${org.eclipse.virgo.kernel}"/>
+                <filter token="C.FILEUPLOAD.VERSION" value="${org.apache.commons.fileupload}"/>
+                <filter token="C.IO.VERSION" value="${org.apache.commons.io}"/>
+                <filter token="JOLOKIA.VERSION" value="${org.jolokia.osgi}"/>    
 			</filterset>
 		</copy>
      </target>

@@ -23,9 +23,13 @@
 	  <feature id="org.eclipse.virgo.enterprise.xbean" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.enterprise.jsf" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.enterprise.derby" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.webconsole" version="0.0.0"/>
    </features>
    
    <configurations>
+   		<plugin id="org.eclipse.virgo.management.console" autoStart="true" />
+   	  	<plugin id="org.jolokia.osgi" autoStart="true" />
+   	  	<plugin id="org.eclipse.gemini.management" autoStart="true" />
 		<plugin id="org.eclipse.virgo.web.enterprise.openejb.initialiser" autoStart="true" startLevel="3" />
 		<plugin id="org.eclipse.virgo.web.enterprise.appdeployer" autoStart="true" startLevel="3" />
 		<plugin id="org.eclipse.virgo.web.enterprise.services.accessor" autoStart="true" startLevel="3" />
