@@ -42,6 +42,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.dmfragment"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.M04/org.eclipse.virgo.nano.core-3.6.0.M04.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20121205122042/org.eclipse.virgo.nano.core-3.6.0.D-20121205122042.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

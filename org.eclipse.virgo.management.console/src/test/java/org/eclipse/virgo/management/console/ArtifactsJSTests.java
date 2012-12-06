@@ -82,7 +82,7 @@ public class ArtifactsJSTests extends AbstractJSTests {
 	public void testTreeTopLevelTwisty() throws IOException {
 		commonUtil.clean();
 		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
-		ScriptableObject.callMethod(tree, "renderTopLevel", new Object[]{getTestEventData()});
+		ScriptableObject.callMethod(tree, "nodeTwistyClicked", new Object[]{getTestTopLevelEventData()});
 		assertEquals("<li />", Dollar.getDollarLookup());
 		assertEquals("search/org.eclipse.virgo.kernel:type=ArtifactModel,*", commonUtil.getLastQuery());
 	}
@@ -91,7 +91,7 @@ public class ArtifactsJSTests extends AbstractJSTests {
 	public void testTreeTwisty() throws IOException {
 		commonUtil.clean();
 		ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
-		ScriptableObject.callMethod(tree, "renderArtifact", new Object[]{getTestEventData()});
+		ScriptableObject.callMethod(tree, "nodeTwistyClicked", new Object[]{getTestOtherLevelEventData()});
 		assertEquals("<li />", Dollar.getDollarLookup());
 		assertEquals("read/objectName", commonUtil.getLastQuery());
 	}
@@ -104,14 +104,23 @@ public class ArtifactsJSTests extends AbstractJSTests {
 		return testData.construct(context, scope, Context.emptyArgs);
 	}
 	
-	private Scriptable getTestEventData() throws IOException{
+	private Scriptable getTestTopLevelEventData() throws IOException{
 		readString( "var TestEventData = function() {" +
 					"	this.data = {};" +
 					"	this.data.node = new Element('node');" +
-					"	this.data.filter = {};" +
-					"	this.data.objectName = {};" +
-					"	this.data.objectName.toString = 'objectName';" +
-					"	this.data.node.length = 1" +
+					"   this.data.node.addClass('top-level');" +
+					"	this.data.queryData = {};" +
+					"};");
+		Function testData = (Function) scope.get("TestEventData", scope);
+		return testData.construct(context, scope, Context.emptyArgs);
+	}
+	
+	private Scriptable getTestOtherLevelEventData() throws IOException{
+		readString( "var TestEventData = function() {" +
+					"	this.data = {};" +
+					"	this.data.node = new Element('node');" +
+					"	this.data.queryData = {};" +
+					"	this.data.queryData.toString = 'objectName';" +
 					"};");
 		Function testData = (Function) scope.get("TestEventData", scope);
 		return testData.construct(context, scope, Context.emptyArgs);

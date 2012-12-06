@@ -105,6 +105,9 @@ public class Element extends ParentStub {
     
     public void jsFunction_prop(String prop){
     }
+    
+    public void jsFunction_data(String name, String value){
+    }
 
     public void jsFunction_click() {
     	CLICK_COUNT++;
