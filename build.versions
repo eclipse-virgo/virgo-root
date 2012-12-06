@@ -182,7 +182,7 @@ scannotation=1.0.2.v201205170710
 
 # Feature requerements - workaround for bug390091
 org.apache.openejb.api.feature=4.0.0.beta-2_v201205041047
-org.apache.openejb.core.feature=4.0.0.beta-2_v201205260545-virgo-2
+org.apache.openejb.core.feature=4.0.0.beta-2_v201205260545-virgo-3
 org.apache.openejb.javaagent.feature=4.0.0.beta-2_v201205041047
 org.apache.openejb.jee.feature=4.0.0.beta-2_v201205041336
 org.apache.openejb.loader.feature=4.0.0.beta-2_v201205041336
