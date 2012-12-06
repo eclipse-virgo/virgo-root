@@ -202,7 +202,7 @@ var Tree = function() {
 				var artifactControlBar = self.getArtifactControlBar(fullArtifact);
 				if(fullArtifact.type == 'configuration'){
 					var configControl = $('<a />', {'class': 'artifact-control'});
-					configControl.attr('href', util.getCurrentHost() + '/content/configurations#' + fullArtifact.name);
+					configControl.attr('href', util.getHostAndAdminPath() + '/content/configurations#' + fullArtifact.name);
 					configControl.text('VIEW');
 					artifactControlBar.append(configControl);
 				}
@@ -227,7 +227,9 @@ var Tree = function() {
 						}
 					} else {
 						if(key == 'Bundle Id'){
-							fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getCurrentHost() + '/content/wirings#' + value));
+							fxContainer.append(self.getArtifactAttribute(key + ': ' + value, undefined, util.getHostAndAdminPath() + '/content/wirings#' + value));
+						} else if(key == 'org.eclipse.virgo.web.contextPath') {
+							fxContainer.append(self.getArtifactAttribute('Context Path: ' + value, undefined, util.getHost() + value));
 						} else {
 							fxContainer.append(self.getArtifactAttribute(key + ': ' + value));
 						}
@@ -353,7 +355,7 @@ var Tree = function() {
 	 * @param iconName - for the image
 	 */
 	this.setIconElement = function(element, iconName){
-		element.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center');
+		element.css('background', 'url("' + util.getHostAndAdminPath() + '/resources/images/' + iconName.toLowerCase()  + '") no-repeat center center');
 		return element;
 	};
 	

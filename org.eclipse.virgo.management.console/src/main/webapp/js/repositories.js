@@ -16,7 +16,7 @@
 function pageinit() {
 	
 	$.ajax({
-		url: util.getCurrentHost() + '/jolokia/search/org.eclipse.virgo.kernel:type=Repository,*',
+		url: util.getHostAndAdminPath() + '/jolokia/search/org.eclipse.virgo.kernel:type=Repository,*',
 		dataType: 'json',
 		contentType: 'application/json',
 		cache: false,
@@ -59,7 +59,7 @@ Repositories = {
 		button.addClass('button-selected');
 		
 		$.ajax({
-			url: util.getCurrentHost() + '/jolokia/read/' + button.mbeanName,
+			url: util.getHostAndAdminPath() + '/jolokia/read/' + button.mbeanName,
 			dataType: 'json',
 			contentType: 'application/json',
 			cache: false,

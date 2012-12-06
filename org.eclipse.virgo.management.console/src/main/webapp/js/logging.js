@@ -15,7 +15,7 @@
 function pageinit(){
 
 	$.ajax({
-		url: util.getCurrentHost() + '/jolokia/read/ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator/LoggerList',
+		url: util.getHostAndAdminPath() + '/jolokia/read/ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator/LoggerList',
 		dataType: 'json',
 		success: function (response) {
 			loggingHandler = new LoggerList(response.value);

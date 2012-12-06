@@ -15,7 +15,7 @@
 function pageinit() {
 	
 	$.ajax({
-		url: util.getCurrentHost() + '/jolokia/version', 
+		url: util.getHostAndAdminPath() + '/jolokia/version', 
 		dataType: 'json',
 		contentType: 'application/json',
 		cache: false,

@@ -17,7 +17,7 @@ function pageinit(){
 	util.loadScript('raphael', function(){});
 	dumpViewer = new DumpViewer().displayDumps();
 	$.ajax({
-		url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
+		url: util.getHostAndAdminPath() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/ConfiguredDumpDirectory', 
 		dataType: 'json',
 		contentType: 'application/json',
 		cache: false,
@@ -43,7 +43,7 @@ var DumpViewer = function(){
 	self.displayDumps = function(){
 		$('#dumps').empty();
 		$.ajax({
-			url: util.getCurrentHost() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
+			url: util.getHostAndAdminPath() + '/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps', 
 			dataType: 'json',
 			contentType: 'application/json',
 			cache: false,
@@ -96,7 +96,7 @@ var DumpViewer = function(){
 		if(self.selectedDump){
 			var dumpId = self.selectedDump.attr("id");
 			$.ajax({
-				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
+				url: util.getHostAndAdminPath() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/getDumpEntries/' + dumpId, 
 				dataType: 'json',
 				contentType: 'application/json',
 				cache: false,
@@ -141,7 +141,7 @@ var DumpViewer = function(){
 			self.displayOSGiStateDumpEntry(event.data.dumpId);
 		} else {
 			$.ajax({
-				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + event.data.queryString, 
+				url: util.getHostAndAdminPath() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=' + event.data.queryString, 
 				dataType: 'json',
 				success: function (response){
 					self.displayDumpEntryResponse(response.value);
@@ -207,7 +207,7 @@ var DumpViewer = function(){
 			$('#create-dump-button').addClass('grey-out');
 			$('#dumps').append($('<div />', {'class' : 'spinner-small'}));
 			$.ajax({
-				url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
+				url: util.getHostAndAdminPath() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/createDump', 
 				dataType: 'json',
 				cache: false,
 				success: function (response){
@@ -223,7 +223,7 @@ var DumpViewer = function(){
 		var dumpListItem = event.data;
 		var dumpId = dumpListItem.attr("id");
 		$.ajax({
-			url: util.getCurrentHost() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' +  dumpId, 
+			url: util.getHostAndAdminPath() + '/jolokia/exec/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/deleteDump/' +  dumpId, 
 			dataType: 'json',
 			cache: false,
 			success: function (response){

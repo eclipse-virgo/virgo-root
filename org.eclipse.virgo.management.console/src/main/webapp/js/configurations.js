@@ -46,7 +46,7 @@ ConfigurationInit = {
 	getConfigurationLabel : function(labelText){
 		var configContainer = $('<div />', {'class': 'config-container'});
 		var configLabel = $('<div />', {'class': 'config-label'});
-		configLabel.append($('<div />', {'class': 'tree-icon plus'}).css('background', 'url("' + util.getCurrentHost() + '/resources/images/tree-icons/plus.png") no-repeat center center'));
+		configLabel.append($('<div />', {'class': 'tree-icon plus'}).css('background', 'url("' + util.getHostAndAdminPath() + '/resources/images/tree-icons/plus.png") no-repeat center center'));
 		configLabel.append($('<span />').text(labelText));
 		configContainer.append(configLabel);
 		$('#config-list').append(configContainer);
@@ -89,7 +89,7 @@ var Configuration = function(pid, location, regionName, label){
 	};
 	
 	self.setPlusMinusIcon = function (icon, className){
-		self.icon.css('background', 'url("' + util.getCurrentHost() + '/resources/images/' + icon + '") no-repeat center center');
+		self.icon.css('background', 'url("' + util.getHostAndAdminPath() + '/resources/images/' + icon + '") no-repeat center center');
 		self.icon.removeClass('plus').removeClass('minus').removeClass('spinnerIcon').addClass(className);
 	};
 	

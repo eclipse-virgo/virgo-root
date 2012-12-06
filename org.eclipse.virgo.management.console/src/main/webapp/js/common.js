@@ -101,12 +101,17 @@ var Util = function(){
 		}
 	};
 
+	
+	self.getHost = function(){
+		return location.protocol + '//' + location.host;
+	};
+	
 	/**
 	 * 
 	 * @returns {String}
 	 */
-	self.getCurrentHost = function(){
-		return location.protocol + '//' + location.host + contextPath;
+	self.getHostAndAdminPath = function(){
+		return self.getHost() + contextPath;
 	};
 	
 	/**
@@ -132,7 +137,7 @@ var Util = function(){
 	 */
 	self.doQuery = function(query, successCallback, errorCallback){
 		$.ajax({
-			url: util.getCurrentHost() + '/jolokia/' + query,
+			url: util.getHostAndAdminPath() + '/jolokia/' + query,
 			dataType: 'json',
 			contentType: 'application/json',
 			cache: false,
@@ -155,7 +160,7 @@ var Util = function(){
 	self.doBulkQuery = function(query, successCallback, errorCallback){
 		$.ajax({
 			type: 'POST',
-			url: self.getCurrentHost() + '/jolokia',
+			url: self.getHostAndAdminPath() + '/jolokia',
 			dataType: 'json',
 			contentType: 'application/json',
 			cache: false,
@@ -177,7 +182,7 @@ var Util = function(){
 	 * @param name - the name of the script file to load, .js is not required on the end
 	 */
 	self.loadScript = function(name, callback){
-		$.getScript(self.getCurrentHost() + '/resources/js/' + name + '.js', callback);
+		$.getScript(self.getHostAndAdminPath() + '/resources/js/' + name + '.js', callback);
 	};
 	
 	/**
@@ -519,11 +524,11 @@ var Servers = function(){
 		var rows;
 		if(util.queryHash.s){
 			rows = util.queryHash.s.split(',');
-			if(!rows.contains(util.getCurrentHost())){
-				rows.push(util.getCurrentHost());
+			if(!rows.contains(util.getHostAndAdminPath())){
+				rows.push(util.getHostAndAdminPath());
 			}
 		} else {
-			rows = [util.getCurrentHost()];
+			rows = [util.getHostAndAdminPath()];
 		}
 		
 		var serversTable = util.makeTable({
