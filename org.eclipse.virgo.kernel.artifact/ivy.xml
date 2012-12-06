@@ -20,7 +20,7 @@
 
     	<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
     	<dependency org="org.easymock" name="com.springsource.org.easymock" rev="${org.easymock}" conf="test->runtime"/>
-    	<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
+    	<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.nop" rev="${org.slf4j.nop}" conf="test->runtime"/>
 
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.apache.commons.dbcp" rev="${org.apache.commons.dbcp}" conf="test->runtime" />

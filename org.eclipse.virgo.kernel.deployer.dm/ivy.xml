@@ -17,7 +17,7 @@
 		<dependency name='com.springsource.org.easymock' rev='${org.easymock}' org='org.easymock' conf='test->runtime'/>
 		
 		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.stubs" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
-		<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.nop" rev="${org.slf4j.nop}" conf="test->runtime"/>
 		
 		<dependency org="org.springframework" name="org.springframework.beans" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.blueprint.core" rev="${org.eclipse.gemini.blueprint}" conf="compile->runtime"/>

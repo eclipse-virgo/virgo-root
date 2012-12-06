@@ -25,7 +25,7 @@
         <dependency org="org.eclipse.osgi" name="org.eclipse.equinox.http" rev="${org.eclipse.equinox.http}" conf="provided->runtime"/>
         <!-- === TEST ====================================================== -->
         <dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
-		<dependency org="org.slf4j" name="com.springsource.slf4j.nop" rev="${org.slf4j}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.nop" rev="${org.slf4j.nop}" conf="test->runtime"/>
     </dependencies>
 
 </ivy-module>

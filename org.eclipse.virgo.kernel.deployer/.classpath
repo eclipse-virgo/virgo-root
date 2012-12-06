@@ -43,8 +43,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.core/3.6.0.M04/org.eclipse.virgo.medic.core-3.6.0.M04.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.core/3.5.0.D-20120615070622/org.eclipse.virgo.medic.core-sources-3.5.0.D-20120615070622.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.slf4j/com.springsource.slf4j.nop/1.6.1/com.springsource.slf4j.nop-1.6.1.jar" sourcepath="/IVY_CACHE/org.slf4j/com.springsource.slf4j.nop/1.6.1/com.springsource.slf4j.nop-sources-1.6.1.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api.source-1.6.4.v20120130-2120.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.nop/1.7.2.v201212060727/org.slf4j.nop-1.7.2.v201212060727.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.nop/1.7.2.v201212060727/org.slf4j.nop.source-1.7.2.v201212060727.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.test/org.eclipse.virgo.test.stubs/3.6.0.M04/org.eclipse.virgo.test.stubs-3.6.0.M04.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.test.stubs/org.eclipse.virgo.test.stubs/1.0.0.CI-B39/org.eclipse.virgo.test.stubs-sources-1.0.0.CI-B39.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
