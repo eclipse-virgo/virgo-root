@@ -35,8 +35,8 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.D-20121205122042/org.eclipse.virgo.nano.core-3.6.0.D-20121205122042.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer/3.6.0.D-20121205122545/org.eclipse.virgo.kernel.deployer-3.6.0.D-20121205122545.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer.dm/3.6.0.D-20121205122545/org.eclipse.virgo.kernel.deployer.dm-3.6.0.D-20121205122545.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer/3.6.0.D-20121206120233/org.eclipse.virgo.kernel.deployer-3.6.0.D-20121206120233.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.deployer.dm/3.6.0.D-20121206120233/org.eclipse.virgo.kernel.deployer.dm-3.6.0.D-20121206120233.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.6.4.v20120130-2120/org.slf4j.api-1.6.4.v20120130-2120.jar" sourcepath="/IVY_CACHE/org.slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-sources-1.6.1.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.aop/3.1.0.RELEASE/org.springframework.aop-3.1.0.RELEASE.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.aop/3.1.0.RELEASE/org.springframework.aop-sources-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
