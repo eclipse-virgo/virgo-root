@@ -504,7 +504,8 @@ public class WARDeployer implements SimpleDeployer {
         final String warName = extractDecodedWarNameFromString(path.toString());
         final File deployFile = new File(path);
         long deployFileLastModified = deployFile.lastModified();
-        if (deployFileLastModified == StatusFileModificator.getLastModifiedFromStatusFile(warName, this.pickupDir)) {
+        long lastModifiedStatus = StatusFileModificator.getLastModifiedFromStatusFile(warName, this.pickupDir);
+        if (lastModifiedStatus == -1 || deployFileLastModified == lastModifiedStatus) {
             return false;
         }
         return true;
