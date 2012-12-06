@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.virgo.webconsole"
+      id="org.eclipse.virgo.webconsole.deps"
       label="%featureName"
       version="@MNGMNT.CONSOLE.VERSION@"
       provider-name="%providerName"
@@ -18,12 +18,12 @@
       %license
    </license>
     
-    <plugin
+    <!--plugin
     id="org.eclipse.virgo.management.console"
     download-size="0"
     install-size="0"
     version="@MNGMNT.CONSOLE.VERSION@"
-    unpack="false"/>
+    unpack="false"/-->
     
     <plugin
     id="org.eclipse.gemini.management"

@@ -342,6 +342,9 @@
     <target name="prepare-enterprise-resources">
         <property name="enterprise.resources" value="${nano.target.dir}/enterprise_resources"/>
 		
+        <ivy:resolve resolveId="copy.path" file="${nano.basedir}/pickup-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${enterprise.resources}/pickup/[artifact]_[revision].[ext]" type="jar, war, wab" conf="pickup"/>
+        
 		<mkdir dir="${enterprise.resources}/configuration"/>
 		
 		<copy todir="${enterprise.resources}/configuration" failonerror="false">
