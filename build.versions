@@ -3,7 +3,7 @@ org.aspectj=1.6.12.RELEASE
 org.eclipse.virgo.medic=3.6.0.M04
 org.eclipse.virgo.util=3.6.0.M04
 org.eclipse.gemini.blueprint=1.0.2.RELEASE
-org.slf4j=1.6.1
+org.slf4j.nop=1.7.2.v201212060727
 
 # third parties
 org.eclipse.osgi=3.8.1.v20120830-144521

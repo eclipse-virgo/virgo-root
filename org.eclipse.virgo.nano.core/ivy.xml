@@ -27,7 +27,7 @@
         <dependency name='org.eclipse.virgo.util.jmx' rev='${org.eclipse.virgo.util}' org='org.eclipse.virgo.util' conf='aspects->runtime'/>
         <dependency name='org.eclipse.virgo.util.osgi' rev='${org.eclipse.virgo.util}' org='org.eclipse.virgo.util' conf='compile->compile'/>
         <dependency name='org.slf4j.api' rev='${org.slf4j.api}' org='org.eclipse.virgo.mirrored' conf='compile->runtime'/>
-        <dependency name='com.springsource.slf4j.nop' rev='${org.slf4j}' org='org.slf4j' conf='test->runtime'/>
+        <dependency name='org.slf4j.nop' rev='${org.slf4j.nop}' org='org.eclipse.virgo.mirrored' conf='test->runtime'/>
         <dependency name='org.eclipse.virgo.medic' rev='${org.eclipse.virgo.medic}' org='org.eclipse.virgo.medic' conf='aspects, compile->runtime'/>
         <dependency name='org.eclipse.virgo.medic.core' rev='${org.eclipse.virgo.medic}' org='org.eclipse.virgo.medic' conf='compile->runtime'/>
         <dependency name='org.eclipse.virgo.medic.test' rev='${org.eclipse.virgo.medic}' org='org.eclipse.virgo.medic' conf='test->runtime'/>
