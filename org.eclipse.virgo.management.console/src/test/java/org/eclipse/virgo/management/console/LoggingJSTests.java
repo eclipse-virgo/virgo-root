@@ -16,7 +16,6 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
-import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.junit.Test;
 
 import sun.org.mozilla.javascript.internal.Context;
@@ -36,9 +35,9 @@ public class LoggingJSTests extends AbstractJSTests {
 		
 		invokePageInit();
 		
-		assertTrue(Dollar.getAjaxUrl().contains("LoggerList"));
+		Function callback = commonUtil.getLastQueryCallBack();
 		
-		Dollar.getAjaxSuccess().call(context, scope, scope, new Object[] { getTestLoggers() });
+		callback.call(context, scope, scope, new Object[] { getTestLoggers() });
 		
 		assertTrue("Page ready has not been called", commonUtil.isPageReady());
 	}
