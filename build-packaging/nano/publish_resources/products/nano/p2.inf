@@ -13,6 +13,6 @@
 # Contributors:
 #   Borislav Kapukaranov - initial contribution
 ###############################################################################
-requires.0.name = base.product
+requires.0.name = nano-base.product
 requires.0.namespace = org.eclipse.equinox.p2.iu
 requires.0.range = 0.0.0

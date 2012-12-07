@@ -280,6 +280,12 @@
             <param name="product.file.location" value="${p2.products.location}/base/base.product"/>
         </antcall>
         <echo message="Published base product to ${p2.repository.dir}."/>
+         
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/nano-base/nano-base.product"/>
+        </antcall>
+        <echo message="Published nano-base product to ${p2.repository.dir}."/>
         
 		<antcall target="p2.publish-product">
             <param name="repository" value="${p2.repository.dir}"/>
@@ -341,10 +347,7 @@
     
     <target name="prepare-enterprise-resources">
         <property name="enterprise.resources" value="${nano.target.dir}/enterprise_resources"/>
-		
-        <ivy:resolve resolveId="copy.path" file="${nano.basedir}/pickup-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${enterprise.resources}/pickup/[artifact]_[revision].[ext]" type="jar, war, wab" conf="pickup"/>
-        
+
 		<mkdir dir="${enterprise.resources}/configuration"/>
 		
 		<copy todir="${enterprise.resources}/configuration" failonerror="false">
@@ -368,6 +371,10 @@
 				<include name="serviceability.xml"/>
 			</fileset>
 		</copy>
+        
+        <!-- Package the Web Admin Console in both Nano's -->
+        <ivy:resolve resolveId="copy.path" file="${nano.basedir}/pickup-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${specific.resources}/pickup/[artifact]_[revision].[ext]" type="jar, war, wab" conf="pickup"/>
         
         <mkdir dir="${specific.resources.location}/binary"/>
         <zip destfile="${specific.resources.location}/binary/nano_specific_resources">
