@@ -7,6 +7,6 @@ Bundle-ClassPath: WEB-INF/classes
 Web-ContextPath: /
 Import-Template: 
  javax.servlet.*;version="${javax.servlet:[2.5.0,+1)}",
- org.slf4j;version="${org.slf4j:[=.=.=,+1)}"
+ org.slf4j;version="${org.slf4j.api:[=.=.=,+1)}"
 Excluded-Exports: *
 
