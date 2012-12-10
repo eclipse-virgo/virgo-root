@@ -7,7 +7,8 @@
 	<property file="${basedir}/../build.versions"/>
 	
     <property name="javaprofile.location" value="${basedir}/nano/configuration/java6-server.profile"/>
-        
+     
+    <import file="${basedir}/sign.xml"/>
     <import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <import file="${basedir}/nano/build-nano.xml"/>
     <import file="${basedir}/kernel/build-kernel.xml"/>
@@ -19,16 +20,92 @@
     <property name="tomcat-server.target.dir" value="${target.dir}/tomcat-server"/>
     <property name="jetty-server.target.dir" value="${target.dir}/jetty-server"/>
 	
-	<target name="package" depends="ivy.init,fetch-unzipped-virgo-build-tools">	
-        <delete dir="${package.output.dir}" quiet="true"/>
-		<mkdir dir="${package.output.dir}"/>
-        <antcall target="package-nano"/>
-        <antcall target="package-kernel"/>
-        <antcall target="package-tomcat-server"/>
-        <antcall target="package-jetty-server"/>
+    <target name="package-signed" depends="ivy.init, fetch-unzipped-virgo-build-tools">
+        <antcall target="package-updatesite"/>
+        <antcall target="sign-updatesite"/>
+        <antcall target="package-distros"/>
         
         <delete dir="${tools.dir}" quiet="true"/>
+    </target>
+    
+    <target name="package" depends="ivy.init, fetch-unzipped-virgo-build-tools">
+        <antcall target="package-updatesite"/>
+        <antcall target="package-distros"/>
+        
+        <delete dir="${tools.dir}" quiet="true"/>
+    </target>
+    
+	<target name="package-updatesite">	
+        <delete dir="${package.output.dir}" quiet="true"/>
+		<mkdir dir="${package.output.dir}"/>
+        <antcall target="package-nano-updatesite"/>
+        <antcall target="package-kernel-updatesite"/>
+        <antcall target="package-tomcat-server-updatesite"/>
+        <antcall target="package-jetty-server-updatesite"/>
+        
+        <zip destfile="${updatesite.output.file}">
+			<zipfileset dir="${p2.repository.dir}"/>
+		</zip>
+    </target>
+    
+    <target name="sign-updatesite">	
+        <property name="stagingDirectory" value="/opt/public/download-staging.priv/rt/virgo"/>
+        <property name="stagingDirectoryOutput" value="${stagingDirectory}/signed" />
+        <property name="archiveName" value="${updatesite.file.name}"/>
+        
+        <!-- upload zipped p2 repo to sign machine -->
+        <scp localFile="${updatesite.output.file}"
+        todir="${eclipse.committerId}@build.eclipse.org:${stagingDirectory}" 
+        keyfile="${key.file}"
+        passphrase="${passphrase}" />
+        
+        <!-- execute sign -->
+        <sshexec host="build.eclipse.org" 
+        username="${eclipse.committerId}" 
+        keyfile="${key.file}" 
+        passphrase="${passphrase}"
+        command="/usr/bin/sign ${stagingDirectory}/${archiveName} nomail ${stagingDirectoryOutput}"/>
+        
+        <!-- wait for sign to complete -->
+        <antcall target="waitForSign">
+            <param name="stagingDirectory" value="${stagingDirectory}"/>
+            <param name="archiveName" value="${archiveName}"/>
+        </antcall>
+        <sleep seconds="30"/>
+        
+        <!-- pull signed p2 repo -->
+        <scp remoteFile="${eclipse.committerId}@build.eclipse.org:${stagingDirectoryOutput}/${archiveName}"
+        localTodir="${target.dir}"
+        keyfile="${key.file}"
+        passphrase="${passphrase}" />
+        
+        <!-- backup and replace original p2 repo -->
+        <exec executable="mv">
+            <arg value="${p2.repository.dir}"/>
+            <arg value="${p2.repository.dir}.backup"/>
+        </exec>
+        <unzip src="${target.dir}/${archiveName}" dest="${p2.repository.dir}"/>
+        
+        <!-- clean up sign machine -->
+        <sshexec host="build.eclipse.org" 
+        username="${eclipse.committerId}" 
+        keyfile="${key.file}" 
+        passphrase="${passphrase}"
+        command="rm -r ${stagingDirectoryOutput}"/>
+        
+        <sshexec host="build.eclipse.org" 
+        username="${eclipse.committerId}" 
+        keyfile="${key.file}" 
+        passphrase="${passphrase}"
+        command="rm ${stagingDirectory}/${archiveName}"/>
     </target> 
+    
+    <target name="package-distros">
+        <antcall target="package-nano-distros"/>
+        <antcall target="package-kernel-distro"/>
+        <antcall target="package-tomcat-server-distro"/>
+        <antcall target="package-jetty-server-distro"/>
+    </target>
     
     <target name="smoke-test">
         <antcall target="smoke-test-nano"/>

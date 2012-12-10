@@ -10,7 +10,7 @@
     <property name="nano-package" value="virgo-nano"/>
     <property name="nano.basedir" value="${basedir}/nano"/> 
      
-    <target name="package-nano" depends="ivy.init">
+    <target name="package-nano-updatesite" depends="ivy.init">
         <property name="common.resources.location" value="${nano.target.dir}/common_resources_zipped"/>
         <property name="specific.resources.location" value="${nano.target.dir}/specific_resources_zipped"/>
         <property name="enterprise.resources.location" value="${nano.target.dir}/enterprise_resources_zipped"/>
@@ -22,9 +22,12 @@
         <antcall target="prepare-scripts"/>
 		<antcall target="prepare-bundles-and-features"/>
         <antcall target="publish-p2-repo"/>
+        <antcall target="clean-up"/>
+    </target>
+    
+    <target name="package-nano-distros" depends="ivy.init">
         <antcall target="install-packages"/>
         <antcall target="assemble-zips"/>
-        <antcall target="clean-up"/>
     </target>
      
     <target name="clean-up">
@@ -60,9 +63,6 @@
 				<exclude name="${nano-full-package}-${bundle.version}/bin/*.sh"/>
 				<exclude name="${nano-full-package}-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
-		</zip>
-        <zip destfile="${updatesite.output.file}">
-			<zipfileset dir="${p2.repository.dir}"/>
 		</zip>
      </target>
      

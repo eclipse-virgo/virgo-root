@@ -12,10 +12,10 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     
-	<target name="precommit" depends="clean, clean-integration, package-jetty-server, smoke-test-jetty-server"
+	<target name="precommit" depends="clean, clean-integration, package-jetty-server-updatesite, package-jetty-server-distro, smoke-test-jetty-server"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
     
-	<target name="package-jetty-server" depends="ivy.init">
+	<target name="package-jetty-server-updatesite" depends="ivy.init">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
 
@@ -43,6 +43,10 @@
         <antcall target="package.jetty.scripts"/>
         <antcall target="jetty.package.publish"/>
         
+    </target>
+    
+    <target name="package-jetty-server-distro" depends="ivy.init">
+        <antcall target="jetty.package.install"/>
     </target>
 
     <target name="jetty.package.publish">
@@ -89,9 +93,16 @@
             <param name="product.file.location" value="${p2.products.location}/jetty-server/jetty-server.product"/>
         </antcall>
         <echo message="Published jetty server product to ${p2.repository.dir}."/>
-
+        
+        <delete dir="${jetty.server.resources.location}" quiet="true"/>
+        <delete dir="${jetty.server.scripts.location}" quiet="true"/>
+        <delete dir="${jetty-server.target.dir}/assembly" quiet="true"/>
+        <delete dir="${jetty-server.target.dir}" quiet="true"/>
+    </target>
+    
+    <target name="jetty.package.install">
         <property name="vjs.package.dir" value="${package.dir}/VJS"/>
-
+        
         <antcall target="p2.install-virgo-product">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="destination" value="${vjs.package.dir}/virgo-jetty-server-${bundle.version}"/>
@@ -111,14 +122,6 @@
 				<exclude name="virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
-        <zip destfile="${updatesite.output.file}">
-			<zipfileset dir="${p2.repository.dir}"/>
-		</zip>
-        
-        <delete dir="${jetty.server.resources.location}" quiet="true"/>
-        <delete dir="${jetty.server.scripts.location}" quiet="true"/>
-        <delete dir="${jetty-server.target.dir}/assembly" quiet="true"/>
-        <delete dir="${jetty-server.target.dir}" quiet="true"/>
     </target>
     
 	<target name="jetty.package.config">

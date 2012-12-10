@@ -9,10 +9,10 @@
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <property name="kernel.basedir" value="${basedir}/kernel"/>
     
-	<target name="precommit" depends="clean, clean-integration, test, findbugs, package, smoke-test"
+	<target name="precommit" depends="clean, clean-integration, test, findbugs, package-kernel-updatesite, package-kernel-distro, smoke-test"
 		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
 
-	<target name="package-kernel" depends="ivy.init">
+	<target name="package-kernel-updatesite" depends="ivy.init">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
         
@@ -177,17 +177,24 @@
 		</antcall>
 		<echo message="Published kernel product to ${p2.repository.dir}."/>
 
-        <property name="vk.package.dir" value="${package.dir}/VK"/>
+		<delete dir="${kernel.resources.location}" quiet="true"/>
+		<delete dir="${specific.resources.location}" quiet="true"/>
+		<delete dir="${kernel.target.dir}/assembly" quiet="true"/>
+        <delete dir="${kernel.target.dir}" quiet="true"/>
+	</target>
     
+    <target name="package-kernel-distro" depends="ivy.init">
+        <property name="vk.package.dir" value="${package.dir}/VK"/>
+        
 		<antcall target="p2.install-virgo-product">
 			<param name="repository" value="${p2.repository.dir}"/>
 			<param name="destination" value="${vk.package.dir}/virgo-kernel-${bundle.version}"/>
 			<param name="product.iu" value="kernel.product"/>
 		</antcall>
 		<echo message="Installed Virgo Kernel for distribution purposes."/>
-
+        
 		<delete dir="${vk.package.dir}/virgo-kernel-${bundle.version}/Eclipse.app" quiet="true"/>
-
+        
 		<zip destfile="${artifacts.dir}/virgo-kernel-${bundle.version}.zip">
 			<zipfileset dir="${vk.package.dir}" includes="virgo-kernel-${bundle.version}/bin/*.sh" filemode="755"/>
 			<zipfileset dir="${vk.package.dir}" includes="virgo-kernel-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
@@ -196,14 +203,6 @@
 				<exclude name="virgo-kernel-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
-		<zip destfile="${updatesite.output.file}">
-			<zipfileset dir="${p2.repository.dir}"/>
-		</zip>
-
-		<delete dir="${kernel.resources.location}" quiet="true"/>
-		<delete dir="${specific.resources.location}" quiet="true"/>
-		<delete dir="${kernel.target.dir}/assembly" quiet="true"/>
-        <delete dir="${kernel.target.dir}" quiet="true"/>
 	</target>
 	
 	<target name="smoke-test-kernel" description="Runs a smoke test on the kernel packaged build">
