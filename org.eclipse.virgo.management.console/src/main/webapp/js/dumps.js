@@ -338,7 +338,7 @@ var TopBar = function(container, layoutManager, dataSource){
 	
 	self.setFocused = function(bundleId){
 		self.focused = bundleId;
-		var rowIds = $('td:first-child', self.bundlesTable);
+		var rowIds = $('tbody td:first-child', self.bundlesTable);
 		$.each(rowIds, function(index, rowId){
 			if($(rowId).text() == bundleId){
 				self.container.scrollTop(self.bundlesTable.getElementOffset($(rowId)));				
