@@ -341,7 +341,7 @@ var TopBar = function(container, layoutManager, dataSource){
 		var rowIds = $('td:first-child', self.bundlesTable);
 		$.each(rowIds, function(index, rowId){
 			if($(rowId).text() == bundleId){
-				self.container.scrollTop($(rowId).position().top);				
+				self.container.scrollTop(self.bundlesTable.getElementOffset($(rowId)));				
 				$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
 				$(rowId).parent().addClass('table-tr-selected');
 			}
