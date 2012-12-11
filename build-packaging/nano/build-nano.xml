@@ -10,7 +10,7 @@
     <property name="nano-package" value="virgo-nano"/>
     <property name="nano.basedir" value="${basedir}/nano"/> 
      
-    <target name="package-nano-updatesite" depends="ivy.init">
+    <target name="nano.package-resources-and-products" depends="ivy.init">
         <property name="common.resources.location" value="${nano.target.dir}/common_resources_zipped"/>
         <property name="specific.resources.location" value="${nano.target.dir}/specific_resources_zipped"/>
         <property name="enterprise.resources.location" value="${nano.target.dir}/enterprise_resources_zipped"/>
@@ -20,17 +20,15 @@
         <antcall target="prepare-specific-resources"/>
         <antcall target="prepare-enterprise-resources"/>
         <antcall target="prepare-scripts"/>
-		<antcall target="prepare-bundles-and-features"/>
-        <antcall target="publish-p2-repo"/>
-        <antcall target="clean-up"/>
+        <antcall target="publish-resources-and-products"/>
     </target>
     
-    <target name="package-nano-distros" depends="ivy.init">
+    <target name="nano.package-distros" depends="ivy.init">
         <antcall target="install-packages"/>
         <antcall target="assemble-zips"/>
     </target>
      
-    <target name="clean-up">
+    <target name="nano.clean-up">
         <delete dir="${nano.target.dir}/assembly" quiet="true"/>
         <delete dir="${common.resources.location}" quiet="true"/>
         <delete dir="${specific.resources.location}" quiet="true"/>
@@ -66,7 +64,7 @@
 		</zip>
      </target>
      
-     <target name="prepare-bundles-and-features">
+     <target name="nano.prepare-bundles-and-features">
         <!-- Copy the nano kernel artifacts to a prepared for publishing location - a p2 repo will be built around them -->
 		<ivy:resolve resolveId="copy.path" file="${nano.basedir}/nano-ivy.xml" transitive="false"/>
 		<ivy:retrieve resolveId="copy.path" pattern="${nano.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="nano-runtime" type="jar"/>
@@ -236,11 +234,7 @@
 		</copy>
      </target>
      
-     <target name="publish-p2-repo">
-        <antcall target="p2.generate-inf">
-            <param name="source" value="${nano.target.dir}/assembly/features"/>
-        </antcall>
-        
+     <target name="publish-resources-and-products">        
         <property name="p2.products.location" value="${nano.basedir}/publish_resources/products"/>
         
         <antcall target="p2.publish-binary-chmod">
@@ -269,12 +263,6 @@
         </antcall>
         <echo message="Published the specific resources to ${p2.repository.dir}."/>
         
-        <antcall target="p2.publish-bundles-features">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="source" value="${nano.target.dir}/assembly"/>
-        </antcall>
-        <echo message="Published bundles and features to ${p2.repository.dir}."/>
-        
         <antcall target="p2.publish-product">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="product.file.location" value="${p2.products.location}/base/base.product"/>
@@ -299,6 +287,18 @@
         </antcall>
         <echo message="Published nano-full product to ${p2.repository.dir}."/>
      </target>
+    
+    <target name="nano.publish-bundles-and-features">
+        <antcall target="p2.generate-inf">
+            <param name="source" value="${nano.target.dir}/assembly/features"/>
+        </antcall>
+        
+        <antcall target="p2.publish-bundles-features">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${nano.target.dir}/assembly"/>
+        </antcall>
+        <echo message="Published bundles and features to ${p2.repository.dir}."/>
+    </target>
      
      <target name="install-packages">
         <antcall target="p2.install-virgo-product">

@@ -8,32 +8,8 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <property name="kernel.basedir" value="${basedir}/kernel"/>
-    
-	<target name="precommit" depends="clean, clean-integration, test, findbugs, package-kernel-updatesite, package-kernel-distro, smoke-test"
-		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
 
-	<target name="package-kernel-updatesite" depends="ivy.init">
-		<delete dir="${package.output.dir}" quiet="true"/>
-		<mkdir dir="${package.output.dir}"/>
-        
-		<!-- Assemble the kernel bundles for publishing -->
-		<ivy:resolve resolveId="copy.path" file="${kernel.basedir}/plugins-ivy.xml" transitive="true"/>
-		<ivy:retrieve resolveId="copy.path" pattern="${kernel.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="plugins" type="jar"/>
-		<!-- Prepare the features for publishing -->
-		<copy todir="${kernel.target.dir}/assembly/features" failonerror="false">
-			<fileset dir="${kernel.basedir}/publish_resources/features" excludes="keystore"/>
-			<filterset>
-				<filter token="REGION.VERSION" value="${org.eclipse.equinox.region}"/>
-				<filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
-				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
-				<filter token="SPRING.VERSION" value="${org.springframework}"/>
-				<filter token="JAVAX.SERVLET.VERSION" value="${javax.servlet}"/>
-				<filter token="EQUINOX.HTTP.VERSION" value="${org.eclipse.equinox.http}"/>
-				<filter token="OSGI.ENTERPRISE.VERSION" value="${org.osgi.enterprise}"/>
-				<filter token="GEMINI.MANAGEMENT.VERSION" value="${org.eclipse.gemini.management}"/>
-			</filterset>
-		</copy>
-
+	<target name="kernel.package-resources-and-products" depends="ivy.init">
 		<!-- prepare Kernel's resources - configurations and bundles that are not installed initially -->
 		<property name="kernel.resources" value="${kernel.target.dir}/kernel_resources"/>
 
@@ -140,11 +116,6 @@
 
 		<!-- Publish -->
 		<mkdir dir="${artifacts.dir}"/>
-
-		<antcall target="p2.generate-inf">
-			<param name="source" value="${kernel.target.dir}/assembly/features"/>
-		</antcall>
-
 		<property name="p2.products.location" value="${kernel.basedir}/publish_resources/products"/>
 
 		<antcall target="p2.publish-binary">
@@ -159,12 +130,6 @@
 		</antcall>
 		<echo message="Published the kernel specific resources to ${p2.repository.dir}."/>
 
-		<antcall target="p2.publish-bundles-features">
-			<param name="repository" value="${p2.repository.dir}"/>
-			<param name="source" value="${kernel.target.dir}/assembly"/>
-		</antcall>
-		<echo message="Published bundles and features to ${p2.repository.dir}."/>
-
 		<antcall target="p2.publish-product">
 			<param name="repository" value="${p2.repository.dir}"/>
 			<param name="product.file.location" value="${p2.products.location}/kernel-base/kernel-base.product"/>
@@ -176,14 +141,52 @@
 			<param name="product.file.location" value="${p2.products.location}/kernel/kernel.product"/>
 		</antcall>
 		<echo message="Published kernel product to ${p2.repository.dir}."/>
-
-		<delete dir="${kernel.resources.location}" quiet="true"/>
+	</target>
+    
+    <target name="kernel.prepare-bundles-and-features" depends="ivy.init">
+		<!-- Assemble the kernel bundles for publishing -->
+		<ivy:resolve resolveId="copy.path" file="${kernel.basedir}/plugins-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${kernel.target.dir}/assembly/plugins/[artifact]_[revision].[ext]" conf="plugins" type="jar"/>
+		<!-- Prepare the features for publishing -->
+		<copy todir="${kernel.target.dir}/assembly/features" failonerror="false">
+			<fileset dir="${kernel.basedir}/publish_resources/features" excludes="keystore"/>
+			<filterset>
+				<filter token="REGION.VERSION" value="${org.eclipse.equinox.region}"/>
+				<filter token="KERNEL.VERSION" value="${org.eclipse.virgo.kernel}"/>
+				<filter token="REPOSITORY.VERSION" value="${org.eclipse.virgo.repository}"/>
+				<filter token="SPRING.VERSION" value="${org.springframework}"/>
+				<filter token="JAVAX.SERVLET.VERSION" value="${javax.servlet}"/>
+				<filter token="EQUINOX.HTTP.VERSION" value="${org.eclipse.equinox.http}"/>
+				<filter token="OSGI.ENTERPRISE.VERSION" value="${org.osgi.enterprise}"/>
+				<filter token="GEMINI.MANAGEMENT.VERSION" value="${org.eclipse.gemini.management}"/>
+			</filterset>
+		</copy>
+    </target>
+    
+    <target name="kernel.publish-bundles-and-features" depends="ivy.init">
+        <antcall target="p2.generate-inf">
+			<param name="source" value="${kernel.target.dir}/assembly/features"/>
+		</antcall>
+        
+        <!-- Publish -->
+		<mkdir dir="${artifacts.dir}"/>
+		<antcall target="p2.publish-bundles-features">
+			<param name="repository" value="${p2.repository.dir}"/>
+			<param name="source" value="${kernel.target.dir}/assembly"/>
+		</antcall>
+		<echo message="Published bundles and features to ${p2.repository.dir}."/>
+	</target>
+    
+    <target name="kernel.clean-up" depends="ivy.init">
+        <delete dir="${kernel.resources.location}" quiet="true"/>
 		<delete dir="${specific.resources.location}" quiet="true"/>
 		<delete dir="${kernel.target.dir}/assembly" quiet="true"/>
         <delete dir="${kernel.target.dir}" quiet="true"/>
 	</target>
     
-    <target name="package-kernel-distro" depends="ivy.init">
+    <target name="kernel.package-distro" depends="ivy.init">
+        <delete dir="${package.output.dir}" quiet="true"/>
+		<mkdir dir="${package.output.dir}"/>
         <property name="vk.package.dir" value="${package.dir}/VK"/>
         
 		<antcall target="p2.install-virgo-product">

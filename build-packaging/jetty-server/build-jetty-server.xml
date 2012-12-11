@@ -12,10 +12,7 @@
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     
-	<target name="precommit" depends="clean, clean-integration, package-jetty-server-updatesite, package-jetty-server-distro, smoke-test-jetty-server"
-		description="Performs a CI server-like build, should be run prior to performing a Git push"/>
-    
-	<target name="package-jetty-server-updatesite" depends="ivy.init">
+	<target name="vjs.package-resources-and-products" depends="ivy.init">
 		<delete dir="${package.output.dir}" quiet="true"/>
 		<mkdir dir="${package.output.dir}"/>
 
@@ -45,62 +42,29 @@
         
     </target>
     
-    <target name="package-jetty-server-distro" depends="ivy.init">
-        <antcall target="jetty.package.install"/>
-    </target>
-
-    <target name="jetty.package.publish">
-        <property name="jetty.server.resources.location" value="${jetty-server.target.dir}/jetty_server_resources_zipped"/>
-		<zip destfile="${jetty.server.resources.location}/binary/jetty_server_resources">
-			<zipfileset dir="${jetty.server.resources}"/>
-		</zip>
-        <delete dir="${jetty.server.resources}" quiet="true"/>
-        
-        <property name="jetty.server.scripts.location" value="${jetty-server.target.dir}/jetty_server_scripts_zipped"/>
-		<zip destfile="${jetty.server.scripts.location}/binary/jetty_server_scripts">
-			<zipfileset dir="${jetty.server.scripts}"/>
-		</zip>
-        <delete dir="${jetty.server.scripts}" quiet="true"/>
-        
+    <target name="vjs.prepare-bundles-and-features" depends="ivy.init">
         <!--prepare jetty server features for publishing -->
         <copy todir="${jetty-server.target.dir}/assembly/features" failonerror="false">
-			<fileset dir="${jetty-server.basedir}/publish_resources/features"/>
-		</copy>
-        
-        <!-- proceed with publish -->
-        <property name="p2.products.location" value="${jetty-server.basedir}/publish_resources/products"/>
-        <antcall target="p2.publish-binary">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="source" value="${jetty.server.resources.location}"/>
-        </antcall>
-        <echo message="Published the jetty server resources to ${p2.repository.dir}."/>
-        
-        <antcall target="p2.publish-binary-chmod">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="source" value="${jetty.server.scripts.location}"/>
-            <param name="chmod.args" value="startup.sh@/bin#755,dmk.sh@/bin#755,checkJava.sh@/bin#755,jconsole.sh@/bin#755,setupClasspath.sh@/bin#755,shutdown.sh@/bin#755"/>
-        </antcall>
-        <echo message="Published the jetty server scripts to ${p2.repository.dir}."/>
-        
+            <fileset dir="${jetty-server.basedir}/publish_resources/features"/>
+        </copy>
+    </target>
+    
+    <target name="vjs.publish-bundles-and-features" depends="ivy.init">
         <antcall target="p2.publish-bundles-features">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${jetty-server.target.dir}/assembly"/>
         </antcall>
         <echo message="Published bundles and features to ${p2.repository.dir}."/>
-        
-        <antcall target="p2.publish-product">
-            <param name="repository" value="${p2.repository.dir}"/>
-            <param name="product.file.location" value="${p2.products.location}/jetty-server/jetty-server.product"/>
-        </antcall>
-        <echo message="Published jetty server product to ${p2.repository.dir}."/>
-        
+    </target>
+    
+    <target name="vjs.clean-up" depends="ivy.init">
         <delete dir="${jetty.server.resources.location}" quiet="true"/>
         <delete dir="${jetty.server.scripts.location}" quiet="true"/>
         <delete dir="${jetty-server.target.dir}/assembly" quiet="true"/>
         <delete dir="${jetty-server.target.dir}" quiet="true"/>
     </target>
     
-    <target name="jetty.package.install">
+    <target name="vjs.package-distro">
         <property name="vjs.package.dir" value="${package.dir}/VJS"/>
         
         <antcall target="p2.install-virgo-product">
@@ -122,6 +86,41 @@
 				<exclude name="virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
+    </target>
+
+    <target name="jetty.package.publish">
+        <property name="jetty.server.resources.location" value="${jetty-server.target.dir}/jetty_server_resources_zipped"/>
+		<zip destfile="${jetty.server.resources.location}/binary/jetty_server_resources">
+			<zipfileset dir="${jetty.server.resources}"/>
+		</zip>
+        <delete dir="${jetty.server.resources}" quiet="true"/>
+        
+        <property name="jetty.server.scripts.location" value="${jetty-server.target.dir}/jetty_server_scripts_zipped"/>
+		<zip destfile="${jetty.server.scripts.location}/binary/jetty_server_scripts">
+			<zipfileset dir="${jetty.server.scripts}"/>
+		</zip>
+        <delete dir="${jetty.server.scripts}" quiet="true"/>
+        
+        <!-- proceed with publish -->
+        <property name="p2.products.location" value="${jetty-server.basedir}/publish_resources/products"/>
+        <antcall target="p2.publish-binary">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${jetty.server.resources.location}"/>
+        </antcall>
+        <echo message="Published the jetty server resources to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-binary-chmod">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${jetty.server.scripts.location}"/>
+            <param name="chmod.args" value="startup.sh@/bin#755,dmk.sh@/bin#755,checkJava.sh@/bin#755,jconsole.sh@/bin#755,setupClasspath.sh@/bin#755,shutdown.sh@/bin#755"/>
+        </antcall>
+        <echo message="Published the jetty server scripts to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/jetty-server/jetty-server.product"/>
+        </antcall>
+        <echo message="Published jetty server product to ${p2.repository.dir}."/>
     </target>
     
 	<target name="jetty.package.config">
