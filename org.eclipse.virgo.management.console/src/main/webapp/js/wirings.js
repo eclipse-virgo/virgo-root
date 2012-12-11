@@ -50,10 +50,10 @@ var SideBar = function(layoutManager, dataSource){
 	
 	self.setFocused = function(bundleId){
 		self.focused = bundleId;
-		var rowIds = $('td:first-child', self.bundlesTable);
+		var rowIds = $('tbody td:first-child', self.bundlesTable);
 		$.each(rowIds, function(index, rowId){
-			if($(rowId).text() == bundleId){
-				$('#side-bar').scrollTop($(rowId).position().top);				
+			if($(rowId).text() == bundleId){							
+				$('#side-bar').scrollTop(self.bundlesTable.getElementOffset($(rowId)));		
 				$('.table-tr-selected', self.bundlesTable).removeClass('table-tr-selected');
 				$(rowId).parent().addClass('table-tr-selected');
 			}

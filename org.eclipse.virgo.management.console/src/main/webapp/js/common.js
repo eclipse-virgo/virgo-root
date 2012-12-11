@@ -398,6 +398,10 @@ var Util = function(){
 		};
 		decorate(newTable);
 		
+		newTable.getElementOffset = function(elementInTable){
+			return elementInTable.position().top - $('thead', this).position().top - 25;
+		};
+		
 		return newTable;
 	};
 	
