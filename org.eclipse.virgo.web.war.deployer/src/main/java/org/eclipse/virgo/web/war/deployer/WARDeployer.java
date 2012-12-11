@@ -35,6 +35,7 @@ import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
 import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
+import org.eclipse.osgi.framework.internal.core.PackageAdminImpl;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.core.KernelConfig;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
@@ -354,7 +355,7 @@ public class WARDeployer implements SimpleDeployer {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
                 if (this.packageAdmin != null) {
-                    this.packageAdmin.refreshPackages(new Bundle[] { bundle });
+                    ((PackageAdminImpl)this.packageAdmin).refreshPackages(new Bundle[] { bundle }, true, null);
                     this.logger.info("Update of file with path [" + path + "] is successful.");
                 }
                 bundle.start();
