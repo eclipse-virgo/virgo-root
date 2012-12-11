@@ -57,6 +57,11 @@ final class ConfigCommands extends AbstractInstallArtifactBasedCommands<Manageab
         return examine(name, EMPTY_VERSION_STRING, GLOBAL_REGION_NAME);
     }
 
+    @Command("examine")
+    public List<String> examine(String name, String version) {
+        return examine(name, version, GLOBAL_REGION_NAME);
+    }
+
     @Override
     public List<String> examine(String name, String versionString, String regionName) {
         ManageableArtifact artifact;
@@ -80,9 +85,19 @@ final class ConfigCommands extends AbstractInstallArtifactBasedCommands<Manageab
         return start(name, EMPTY_VERSION_STRING, GLOBAL_REGION_NAME);
     }
 
+    @Command("start")
+    public List<String> start(String name, String version) {
+        return start(name, version, GLOBAL_REGION_NAME);
+    }
+
     @Command("stop")
     public List<String> stop(String name) {
         return stop(name, EMPTY_VERSION_STRING, GLOBAL_REGION_NAME);
+    }
+
+    @Command("stop")
+    public List<String> stop(String name, String version) {
+        return stop(name, version, GLOBAL_REGION_NAME);
     }
 
     @Command("refresh")
@@ -90,8 +105,19 @@ final class ConfigCommands extends AbstractInstallArtifactBasedCommands<Manageab
         return refresh(name, EMPTY_VERSION_STRING, GLOBAL_REGION_NAME);
     }
 
+    @Command("refresh")
+    public List<String> refresh(String name, String version) {
+        return refresh(name, version, GLOBAL_REGION_NAME);
+    }
+
     @Command("uninstall")
     public List<String> uninstall(String name) {
         return uninstall(name, EMPTY_VERSION_STRING, GLOBAL_REGION_NAME);
     }
+    
+    @Command("uninstall")
+    public List<String> uninstall(String name, String version) {
+        return uninstall(name, version, GLOBAL_REGION_NAME);
+    }
+    
 }

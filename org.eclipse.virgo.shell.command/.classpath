@@ -53,6 +53,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.jcl/1.7.2.v20121108-1250/org.slf4j.jcl-1.7.2.v20121108-1250.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.services"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/3.6.0.D-20121206235702/org.eclipse.virgo.util.osgi-3.6.0.D-20121206235702.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.osgi/3.1.0.M01/org.eclipse.virgo.util.osgi-sources-3.1.0.M01.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.felix.gogo.runtime/0.8.0.v201108120515/org.apache.felix.gogo.runtime-0.8.0.v201108120515.jar" sourcepath="/IVY_CACHE/org.apache.felix/org.apache.felix.gogo.runtime/0.8.0.v201107131313/org.apache.felix.gogo.runtime-sources-0.8.0.v201107131313.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.felix.gogo.runtime/0.10.0.v201209301036/org.apache.felix.gogo.runtime-0.10.0.v201209301036.jar" sourcepath="/IVY_CACHE/org.apache.felix/org.apache.felix.gogo.runtime/0.8.0.v201107131313/org.apache.felix.gogo.runtime-sources-0.8.0.v201107131313.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
