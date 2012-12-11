@@ -60,4 +60,11 @@
     version="@JOLOKIA.VERSION@"
     unpack="false"/>
     
+    <plugin
+    id="javax.servlet"
+    download-size="0"
+    install-size="0"
+    version="@JAVAX.SERVLET@"
+    unpack="false"/>
+    
 </feature>
