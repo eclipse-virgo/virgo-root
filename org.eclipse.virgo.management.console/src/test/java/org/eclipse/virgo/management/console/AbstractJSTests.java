@@ -60,6 +60,7 @@ public abstract class AbstractJSTests {
 		FunctionObject dollarFunction = new FunctionObject("$", Dollar.class.getDeclaredMethod("dollar", ScriptableObject.class), scope);
 		ScriptableObject.putProperty(scope, "$", dollarFunction);
 		ScriptableObject.putProperty(dollarFunction, "ajax", new FunctionObject("ajax", Dollar.class.getDeclaredMethod("ajax", Scriptable.class), dollarFunction));
+		ScriptableObject.putProperty(dollarFunction, "browser", Context.javaToJS(new Object(), scope));
 		ScriptableObject.putProperty(dollarFunction, "each", new FunctionObject("each", Dollar.class.getDeclaredMethod("each", Scriptable.class, Function.class), dollarFunction));
 		
 		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), scope);

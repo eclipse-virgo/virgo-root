@@ -29,9 +29,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	self.bundleCanvas = $('#' + bundleCanvas);
 	
 	self.paper = Raphael(bundleCanvas, width, height);
-	
-	self.minimumWidth = width;
-	
+		
 	self.setFocusListener = function(listener) {
 		self.focusListener = listener;
 	};
@@ -81,7 +79,7 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 				var selfInfoBoxData = bundle.relationship.infoBoxData;
 				bundle.reset(middleX - (bundle.boxWidth/2), middleY, 'middle', self.relationshipType);
 				bundle.relationship.infoBoxData = selfInfoBoxData;
-				self.bundleCanvas.scrollLeft(middleX - (self.minimumWidth/2));
+				self.bundleCanvas.scrollLeft(middleX - (self.bundleCanvas.width()/2));
 				
 				$.each(self.bundles, function(key, localBundle){
 					if(localBundle.state == 'waiting'){
@@ -102,13 +100,11 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	self.renderWires = function(bundle){
 		var topRowBundleIds = {};
 		$.each(bundle.rawBundle.RequiredWires, function(index, wire){
-			//topRowBundleIds[wire.ProviderBundleId] = wire;
 			self.addRelationshipToMap(topRowBundleIds, wire.ProviderBundleId, wire);
 		});
 		var topRowRenderResult = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
 		var bottomRowBundleIds = {};
 		$.each(bundle.rawBundle.ProvidedWires, function(index, wire){
-			//bottomRowBundleIds[wire.RequirerBundleId] = wire;
 			self.addRelationshipToMap(bottomRowBundleIds, wire.RequirerBundleId, wire); 
 		});
 		var bottomRowRenderResult = self.renderBundleRow(bottomRowBundleIds, 239, 'bottom', bundle);
@@ -118,7 +114,6 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	self.renderServices = function(bundle){
 		var topRowBundleIds = {};
 		$.each(bundle.rawBundle.ServicesInUse, function(index, service){
-			//topRowBundleIds[service.BundleIdentifier] = {'service': service, 'consumerId': bundle.rawBundle.Identifier};
 			self.addRelationshipToMap(topRowBundleIds, service.BundleIdentifier, {'service': service, 'consumerId': bundle.rawBundle.Identifier});
 		});
 		var topRowRenderResult = self.renderBundleRow(topRowBundleIds, -239, 'top', bundle);
@@ -126,7 +121,6 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 		$.each(bundle.rawBundle.RegisteredServices, function(index, service){
 			$.each(service.UsingBundles, function(index, bundleId){
 				if(bundleId != bundle.rawBundle.Identifier){
-					//bottomRowBundleIds[bundleId] = {'service': service, 'consumerId': bundleId};
 					self.addRelationshipToMap(bottomRowBundleIds, bundleId, {'service': service, 'consumerId': bundleId});
 				}
 			});
@@ -185,9 +179,9 @@ var LayoutManager = function(bundleCanvas, width, height, dataSource){
 	
 	self.centerBundles = function(topRowRenderResult, bottomRowRenderResult){
 		var newWidth = topRowRenderResult.width < bottomRowRenderResult.width ? bottomRowRenderResult.width : topRowRenderResult.width;
-		if(newWidth < self.minimumWidth){
-			self.paper.setSize(self.minimumWidth, self.paper.height);
-			newWidth = self.minimumWidth;
+		if(newWidth < self.bundleCanvas.width()){
+			self.paper.setSize(self.bundleCanvas.width(), self.paper.height);
+			newWidth = self.bundleCanvas.width();
 		}else{
 			self.paper.setSize(newWidth, self.paper.height);
 		}
@@ -421,37 +415,37 @@ var Relationship = function(paper, type, fromBundle, toBundle) {
 		var endPoint;
 		var startPointControl;
 		var endPointControl;
-		if(self.fromBundle.rawBundle.Identifier == self.toBundle.rawBundle.Identifier){
-			var xOffSet = self.fromBundle.x + self.toBundle.boxWidth;
-			startPoint = {'x' : xOffSet - 20, 'y' : self.fromBundle.y - (self.fromBundle.boxHeight/2)};
-			endPoint = {'x' : xOffSet - 20, 'y' : Math.round(self.toBundle.y + (self.toBundle.boxHeight/2))};
-			startPointControl = {'x' : startPoint.x + self.controlPointOffset, 'y' : startPoint.y - self.controlPointOffset}; 
-			endPointControl = {'x' : endPoint.x + self.controlPointOffset, 'y' : endPoint.y + self.controlPointOffset};
-			self.midPoint = {'x' : xOffSet + 47, 'y' : self.fromBundle.y};
-		}else{
-			startPoint = {'x' : Math.round(self.fromBundle.x + self.fromBundle.boxWidth/2), 'y' : self.fromBundle.y + (self.fromBundle.boxHeight/2)};
-			endPoint = {'x' : Math.round(self.toBundle.x + self.toBundle.boxWidth/2), 'y' : self.toBundle.y - (self.fromBundle.boxHeight/2)};
-			startPointControl = {'x' : startPoint.x, 'y' : startPoint.y + self.controlPointOffset}; 
-			endPointControl = {'x' : endPoint.x, 'y' : endPoint.y - self.controlPointOffset};
-			self.midPoint = self.calculateMidpoint(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-		}
-		self.pathString = 'M' + startPoint.x + ',' + startPoint.y + 
-			'C' + startPointControl.x + ',' + startPointControl.y + 
-			',' + endPointControl.x + ',' + endPointControl.y + 
-			',' + endPoint.x + ',' + endPoint.y;
+			if(self.fromBundle.rawBundle.Identifier == self.toBundle.rawBundle.Identifier){
+				var xOffSet = self.fromBundle.x + self.toBundle.boxWidth;
+				startPoint = {'x' : xOffSet - 20, 'y' : self.fromBundle.y - (self.fromBundle.boxHeight/2)};
+				endPoint = {'x' : xOffSet - 20, 'y' : Math.round(self.toBundle.y + (self.toBundle.boxHeight/2))};
+				startPointControl = {'x' : startPoint.x + self.controlPointOffset, 'y' : startPoint.y - self.controlPointOffset}; 
+				endPointControl = {'x' : endPoint.x + self.controlPointOffset, 'y' : endPoint.y + self.controlPointOffset};
+				self.midPoint = {'x' : xOffSet + 47, 'y' : self.fromBundle.y};
+			}else{
+				startPoint = {'x' : Math.round(self.fromBundle.x + self.fromBundle.boxWidth/2), 'y' : self.fromBundle.y + (self.fromBundle.boxHeight/2)};
+				endPoint = {'x' : Math.round(self.toBundle.x + self.toBundle.boxWidth/2), 'y' : self.toBundle.y - (self.fromBundle.boxHeight/2)};
+				startPointControl = {'x' : startPoint.x, 'y' : startPoint.y + self.controlPointOffset}; 
+				endPointControl = {'x' : endPoint.x, 'y' : endPoint.y - self.controlPointOffset};
+				self.midPoint = self.calculateMidpoint(startPoint, endPoint);
+			}
+			self.pathString = 'M' + startPoint.x + ',' + startPoint.y + 
+				'C' + startPointControl.x + ',' + startPointControl.y + 
+				',' + endPointControl.x + ',' + endPointControl.y + 
+				',' + endPoint.x + ',' + endPoint.y;
 	};
 	
-	self.calculateMidpoint = function(startX, startY, endX, endY){
+	self.calculateMidpoint = function(startPoint, endPoint){
 		var midX, midY;
-		if(startX < endX){
-			midX = startX + (endX - startX)/2;
+		if(startPoint.x < endPoint.x){
+			midX = startPoint.x + (endPoint.x - startPoint.x)/2;
 		} else {
-			midX = endX + (startX - endX)/2;
+			midX = endPoint.x + (startPoint.x - endPoint.x)/2;
 		}
-		if(startY < endY){
-			midY = startY + (endY - startY)/2;
+		if(startPoint.y < endPoint.y){
+			midY = startPoint.y + (endPoint.y - startPoint.y)/2;
 		} else {
-			midY = endY + (startY - endY)/2;
+			midY = endPoint.y + (startPoint.y - endPoint.y)/2;
 		}
 		return {'x' : midX, 'y' : midY};
 	};

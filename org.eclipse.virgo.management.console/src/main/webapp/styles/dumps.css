@@ -78,7 +78,7 @@
 }
 
 #gui-controls {
-	margin: 15px 0;
+	margin: 15px 0 5px;
 }
 
 #table-holder {
@@ -101,9 +101,10 @@
 }
 
 #bundle-canvas {
-	border: 1px solid #BAD9EC;
+	margin-top: 0px;
 	margin-left: auto;
 	margin-right: auto;
+	margin-bottom: 0px;
 	overflow-x: auto;
 }
  

@@ -167,14 +167,16 @@ var DumpViewer = function(){
 		var bundleCanvas = $('<div />', {id: 'bundle-canvas'});
 		$('#dump-item-content').append(controls);
 		$('#dump-item-content').append(bundleCanvas);
-		var width = 1000;
-		var height = 562;
-		bundleCanvas.css({'width' : width, 'height' : height + 18});
 		
 		var dataSource = new QuasiDataSource(self.dumpLocation + '!/' + dumpId);
 		dataSource.updateData(function(){
 			dataSource.getUnresolvedBundleIds(function(bundles){
-				layoutManager = new LayoutManager('bundle-canvas', width, height, dataSource);
+				
+				if($.browser.msie){
+					$('#bundle-canvas').css({'height': '574px', 'width': '1000px'});
+				}
+				
+				layoutManager = new LayoutManager('bundle-canvas', 1000, 553, dataSource);
 				if(bundles.length < 1){
 					controls.append($('<div />').text('There were no unresolved bundles at the time of this state dump.'));
 				}else{
@@ -192,7 +194,7 @@ var DumpViewer = function(){
 				var tableHolder = $('<div />', {id: 'table-holder'});
 				controls.append(tableHolder);
 				new TopBar(tableHolder, layoutManager, dataSource).init();
-				$('#side-bar').height($('#dump-item-content').height() - 32);
+				$('#side-bar').height($('#dump-item-content').height() - 17);
 			});
 		}, function(){
 			controls.append($('<div />').text('Unable to retrieve Bundle data for the state dump, this requires the Virgo Kernel or above.'));

@@ -14,14 +14,14 @@
 function pageinit() {
 	util.loadScript('bundlesGui', function(){
 		util.loadScript('raphael', function(){
-	
-			var width = 900;
-			var height = 551;
-			$('#bundle-canvas').css({'width' : width, 'height' : height + 18});
-			
 			var dataSource = new GeminiDataSource();
 			dataSource.updateData(function(){
-				layoutManager = new LayoutManager('bundle-canvas', width, height, dataSource);
+				
+				if($.browser.msie){
+					$('#bundle-canvas').css({'height': '574px', 'width': '900px'});
+				}
+				
+				layoutManager = new LayoutManager('bundle-canvas', 900, 553, dataSource);
 				new SideBar(layoutManager, dataSource).init();
 				if(util.pageLocation && util.pageLocation.length > 0){
 					layoutManager.displayBundle(util.pageLocation);
