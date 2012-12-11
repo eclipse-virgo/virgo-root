@@ -18,20 +18,20 @@ done
 KERNEL_HOME=`dirname "$SCRIPT"`/..
 
 # make KERNEL_HOME absolute
-KERNEL_HOME=`cd $KERNEL_HOME; pwd`
+KERNEL_HOME=`cd "$KERNEL_HOME"; pwd`
 
 # setup classpath and java environment
-. $KERNEL_HOME/bin/setupClasspath.sh
+. "$KERNEL_HOME/bin/setupClasspath.sh"
 
 # execute user setenv script if needed
-if [ -r $KERNEL_HOME/bin/setenv.sh ]
+if [ -r "$KERNEL_HOME/bin/setenv.sh" ]
 then
 	. $KERNEL_HOME/bin/setenv.sh
 fi
 
 
 # Run java version check with the discovered java jvm.
-. $KERNEL_HOME/bin/checkJava.sh
+. "$KERNEL_HOME/bin/checkJava.sh"
 
 shopt -s extglob
 	
