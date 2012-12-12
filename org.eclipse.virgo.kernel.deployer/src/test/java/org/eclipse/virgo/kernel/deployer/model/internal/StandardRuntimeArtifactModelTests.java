@@ -18,6 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -103,6 +105,25 @@ public class StandardRuntimeArtifactModelTests {
         assertTrue(iterator.hasNext());
         assertEquals(this.stubInstallArtifact, iterator.next());
         assertFalse(iterator.hasNext());
+    }
+    
+    @Test
+    public void testDirectoryDeletion() throws DeploymentException, IOException, DuplicateFileNameException, DuplicateLocationException, DuplicateDeploymentIdentityException {
+        // Reset state first.
+        this.standardRuntimeArtifactModel.delete(this.deploymentIdentity);
+        assertNull(this.standardRuntimeArtifactModel.get(this.deploymentIdentity));
+        
+        // Now deploy a file, delete it, and then get the deployed artifact.
+        File dir = new File("target/StandardRuntimeArtifactModelTest.dir/");
+        dir.mkdir();
+        URI uri = dir.toURI();
+        this.standardRuntimeArtifactModel.add(uri, this.stubInstallArtifact);
+        assertEquals(this.stubInstallArtifact, this.standardRuntimeArtifactModel.get(uri));
+        
+        assertTrue(dir.delete());
+        
+        assertEquals(this.stubInstallArtifact, this.standardRuntimeArtifactModel.get(uri));
+
     }
     
     private static class StubInstallArtifact implements InstallArtifact {

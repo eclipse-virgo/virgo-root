@@ -69,9 +69,9 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
      */
     public DeploymentIdentity add(@NonNull URI location, @NonNull InstallArtifact installArtifact) throws DuplicateFileNameException,
         DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
-        
+
         URI canonicalLocation = getCanonicalFileLocation(location);
-       
+
         synchronized (this.monitor) {
 
             // Check the precondition and throw an exception if it is violated.
@@ -213,7 +213,15 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
         if (SCHEME_FILE.equals(uri.getScheme())) {
             File file = new File(uri);
             try {
-                return file.getCanonicalFile().toURI();
+                String canonicalPath = file.getCanonicalPath();
+                // Remove trailing slashes as these are added or not, for a directory, depending on the existence of the
+                // directory.
+                if (canonicalPath.endsWith(File.separator)) {
+                    canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
+                }
+                // Can't use File.toURI as its results for a directory depends on the existence of the directory
+                // return new File(canonicalPath).toURI();
+                return new URI("file", canonicalPath, null);
             } catch (Exception e) {
                 return uri;
             }
@@ -231,7 +239,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public Iterator<InstallArtifact> iterator() {
