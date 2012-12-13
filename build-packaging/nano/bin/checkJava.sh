@@ -4,7 +4,7 @@
 # make adjustment when running under cygwin
 #
 if $cygwin; then
-    CLASSPATH=$(cygpath -wp $CLASSPATH)
+    CLASSPATH=$(cygpath -wp "$CLASSPATH")
 fi
 
 if [ -z "$JAVA_HOME" ]
@@ -16,7 +16,7 @@ fi
 
 # Run java version check with the discovered java jvm.
 $JAVA_EXECUTABLE \
-	-classpath $CLASSPATH \
+	-classpath "$CLASSPATH" \
 	org.eclipse.virgo.util.env.JavaVersionChecker
 
 # If non-zero exit then either we cannot find the check or the java version is incorrect.

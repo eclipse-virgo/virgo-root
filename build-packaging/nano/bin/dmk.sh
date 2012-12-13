@@ -160,7 +160,7 @@ then
     fi
 	
 	# Set the required permissions on the JMX configuration files
-	chmod 600 $ACCESS_PROPERTIES
+	chmod 600 "$ACCESS_PROPERTIES"
 
 	JMX_OPTS=" \
 		$JMX_OPTS \
