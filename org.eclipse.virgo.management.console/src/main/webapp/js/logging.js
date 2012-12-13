@@ -35,14 +35,13 @@ var LoggerList = function(loggerList){
 		var rows = new Array();
 		$.each(loggerList, function(index, loggerName){
 			var row = new Array(loggerName);
-			var td = $('<td />', {'class' : 'logger-update','onClick': 'loggingHandler.displayLoggerInfo("' + loggerName + '")'});
+			var td = $('<td />', {'id': 'click-' + loggerName.replace(new RegExp('\\.', 'g'), '_'), 'class': 'logger-update','onClick': 'loggingHandler.displayLoggerInfo("' + loggerName + '")'});
 			row.push(td.text('view/edit'));
 			rows.push(row);
 		});
 		
 		self.loggerTable = util.makeTable({
 			clazz: 'logger-table',
-			//{title: 'Level', type: 'alpha'}, {title: 'Effective Level', type: 'alpha'},
 			headers: [{title: 'Logger Name', type: 'alpha'}, {title: '', type: 'alpha'}],
 			rows: rows,
 			hoverable: true,
@@ -69,7 +68,7 @@ var LoggerList = function(loggerList){
 		var cssLoggerName = loggerName.replace(new RegExp('\\.', 'g'), '_');
 		
 		util.doBulkQuery(request, function(response) {
-			var name = 'updatelevel-' + cssLoggerName;
+			var name = 'updatelevel-' + cssLoggerName;			
 			var title = 'Update a Logging level';
 			var content = $('<div />');
 			
@@ -103,7 +102,7 @@ var LoggerList = function(loggerList){
 			link.append(linkButton);
 			content.append(link);
 			
-			var infoBox = new InfoBox({name: name, title: title, content: content, closeable: true}).show();
+			var infoBox = new InfoBox({name: name, title: title, content: content, closeable: true}).show($('#click-' + cssLoggerName).parent());
 			
 			link.click({loggerName: loggerName, cssLoggerName: cssLoggerName}, function(event){
 				event.stopPropagation();

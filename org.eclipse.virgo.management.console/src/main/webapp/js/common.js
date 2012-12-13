@@ -441,21 +441,29 @@ var InfoBox = function(properties){
 		});
 	};
 	
-	self.show = function(){
+	self.show = function(relativeTo){
 		if(!self.isVisible){
 			$("li", self.dialogBox).removeClass('li-odd');
 			$("li:odd", self.dialogBox).addClass('li-odd');
 			
-			var position = $('#content').position();
-			var infoBoxCount = $('.info-box').length;
-			var floorCount = Math.floor(infoBoxCount/10);
-			var xOffSet = floorCount * 250;
-			infoBoxCount = infoBoxCount - (floorCount * 10);
-			var zIndex = self.getHighestZIndex() + 1;
+			var displayPosition = {};
+			if(relativeTo){
+				var position = relativeTo.position();
+				displayPosition.x = position.left + 15;
+				displayPosition.y = position.top + 25;
+			} else {
+				var position = $('#content').position();
+				var infoBoxCount = $('.info-box').length;
+				var floorCount = Math.floor(infoBoxCount/10);
+				var xOffSet = floorCount * 250;
+				infoBoxCount = infoBoxCount - (floorCount * 10);
+				displayPosition.x = position.left + 40 + xOffSet + (infoBoxCount*25);
+				displayPosition.y = position.top + 50 + (infoBoxCount*25);
+			}
 			self.dialogBox.css({position: 'absolute', 
-								left: position.left + 40 + xOffSet + (infoBoxCount*25), 
-								top: position.top + 50 + (infoBoxCount*25), 
-								'z-index': zIndex});
+								left: displayPosition.x, 
+								top: displayPosition.y, 
+								'z-index': self.getHighestZIndex() + 1});
 			self.dialogBox.show();	
 			$('body').append(self.dialogBox);
 			self.isVisible = true;

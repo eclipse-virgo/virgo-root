@@ -8,6 +8,9 @@
  * Christopher Frost - 2011
  */
  
+#logging-display {
+	margin-bottom: 30px;
+}
  
 .logger-table .logger-update {
 	color: transparent;
