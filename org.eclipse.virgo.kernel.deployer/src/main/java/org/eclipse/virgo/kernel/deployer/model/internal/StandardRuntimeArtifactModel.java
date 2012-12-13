@@ -219,9 +219,9 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
                 if (canonicalPath.endsWith(File.separator)) {
                     canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
                 }
-                // Can't use File.toURI as its results for a directory depends on the existence of the directory
-                // return new File(canonicalPath).toURI();
-                return new URI("file", canonicalPath, null);
+                // Construct a file scheme URI with the given path. Note that we can't use File.toURI as its results for
+                // a directory depends on the existence of the directory.
+                return new URI("file", null, canonicalPath, null);
             } catch (Exception e) {
                 return uri;
             }
