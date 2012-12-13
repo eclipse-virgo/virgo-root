@@ -82,7 +82,10 @@ public class StandardRuntimeArtifactModelTests {
     
     @Test
     public void testGetLocationByDeploymentIdentity() {
-        assertEquals(this.testURI, this.standardRuntimeArtifactModel.getLocation(this.deploymentIdentity));
+        URI location = this.standardRuntimeArtifactModel.getLocation(this.deploymentIdentity);
+        assertEquals(this.testURI, location);
+        assertEquals("file", location.getScheme());
+        assertEquals("/foo/test.bar", location.getPath());
     }
     
     @Test
