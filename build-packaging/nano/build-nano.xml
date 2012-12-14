@@ -353,6 +353,8 @@
 		<copy todir="${enterprise.resources}/configuration" failonerror="false">
 			<fileset dir="${nano.basedir}/enterprise_resources"/>
 		</copy>
+        
+        <copy file="${nano.basedir}/abouts/AboutNanoWeb.html" todir="${enterprise.resources}" failonerror="false"/>
 		
         <mkdir dir="${enterprise.resources.location}/binary"/>
         <zip destfile="${enterprise.resources.location}/binary/nano_enterprise_resources">
