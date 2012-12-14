@@ -410,7 +410,7 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		final String name = resource.getName();
 		final String mappedName = (String) resource.getProperty("mappedName");
 		String processedResourceName = name;
-		if (mappedName != null) {
+		if (mappedName != null && !mappedName.isEmpty()) {
 			processedResourceName = mappedName;
 		}
 		return processedResourceName;
