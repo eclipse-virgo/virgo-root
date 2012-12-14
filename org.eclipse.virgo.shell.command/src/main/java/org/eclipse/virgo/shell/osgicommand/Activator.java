@@ -16,13 +16,14 @@ package org.eclipse.virgo.shell.osgicommand;
 import java.lang.management.ManagementFactory;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.TimeoutException;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
+import org.eclipse.virgo.kernel.osgi.framework.ServiceUtils;
+
 import org.eclipse.virgo.shell.CommandExecutor;
 import org.eclipse.virgo.shell.osgicommand.internal.GogoClassLoadingCommand;
 import org.eclipse.virgo.shell.osgicommand.internal.GogoKernelShellCommand;
@@ -42,14 +43,9 @@ public class Activator implements BundleActivator {
 
     private static final String KERNEL_SHELL_COMMAND = "vsh";
 
-    private static final String[] KERNEL_SHELL_SUBCOMMANDS = new String[] { "bundle", "config", "install", "packages", "par", "plan", "service",
-        "shutdown" };
+    private static final String[] KERNEL_SHELL_SUBCOMMANDS = new String[] { "bundle", "config", "install", "packages", "par", "plan", "service", "shutdown" };
 
     private static final String[] CLASS_LOADING_SUBCOMMANDS = new String[] { "clhas", "clload", "clexport" };
-
-    private static final int COMMAND_EXECUTOR_SERVICE_WAIT = 20 * 1000; // 20 seconds
-
-    private static final int SERVICE_WAIT_PAUSE = 100; // 100 milliseconds
 
     private final ServiceRegistrationTracker registrationTracker = new ServiceRegistrationTracker();
 
@@ -93,40 +89,6 @@ public class Activator implements BundleActivator {
         this.server.unregisterMBean(this.classLoadingObjectName);
     }
 
-    /**
-     * Get a service which might not be immediately available
-     * 
-     * @param <T> type of service to get
-     * @param context in which to search for service
-     * @param serviceClass of service to locate
-     * @param millis maximum time to delay in milliseconds
-     * @return null if timeout before getting service, otherwise service
-     */
-    private static <T> T getPotentiallyDelayedService(BundleContext context, Class<T> serviceClass, long millis) {
-        T service = null;
-
-        while (service == null) {
-            try {
-                OsgiServiceHolder<T> serviceHolder = OsgiFrameworkUtils.getService(context, serviceClass);
-                if (serviceHolder != null) {
-                    service = serviceHolder.getService();
-                }
-            } catch (IllegalStateException e) {
-                try {
-                    millis -= SERVICE_WAIT_PAUSE;
-                    if (millis > 0) {
-                        Thread.sleep(SERVICE_WAIT_PAUSE);
-                    } else {
-                        return null;
-                    }
-                } catch (InterruptedException ie) {
-                }
-            }
-        }
-
-        return service;
-    }
-
     private static final class PostStartInitialisationRunnable implements Runnable {
 
         private final BundleContext context;
@@ -143,7 +105,14 @@ public class Activator implements BundleActivator {
          */
         @Override
         public void run() {
-            CommandExecutor commandExecutor = getPotentiallyDelayedService(this.context, CommandExecutor.class, COMMAND_EXECUTOR_SERVICE_WAIT);
+            CommandExecutor commandExecutor = null;
+			try {
+				commandExecutor = ServiceUtils.getPotentiallyDelayedService(this.context, CommandExecutor.class);
+			} catch (TimeoutException e) {
+				// no-op
+			} catch (InterruptedException e) {
+				// no-op
+			}
             if (commandExecutor == null) {
                 return; // TODO: report this failure -- but where?
             }
@@ -152,8 +121,7 @@ public class Activator implements BundleActivator {
             Dictionary<String, Object> properties = new Hashtable<String, Object>();
             properties.put(org.apache.felix.service.command.CommandProcessor.COMMAND_SCOPE, KERNEL_SHELL_COMMAND);
             properties.put(org.apache.felix.service.command.CommandProcessor.COMMAND_FUNCTION, KERNEL_SHELL_SUBCOMMANDS);
-            this.registrationTracker.track(context.registerService(GogoKernelShellCommand.class, new GogoKernelShellCommand(commandExecutor),
-                properties));
+            this.registrationTracker.track(context.registerService(GogoKernelShellCommand.class, new GogoKernelShellCommand(commandExecutor), properties));
         }
     }
 }
