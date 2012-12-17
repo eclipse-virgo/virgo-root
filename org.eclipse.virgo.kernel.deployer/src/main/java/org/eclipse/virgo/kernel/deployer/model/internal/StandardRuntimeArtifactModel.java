@@ -219,11 +219,15 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
                 if (canonicalPath.endsWith(File.separator)) {
                     canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
                 }
+                // Add leading forward slash if this is not already present, for example "C:\xxx"
+                if (!canonicalPath.startsWith(URI_PATH_SEPARATOR)) {
+                    canonicalPath = URI_PATH_SEPARATOR + canonicalPath;
+                }
                 // Construct a file scheme URI with the given path. Note that we can't use File.toURI as its results for
                 // a directory depends on the existence of the directory.
                 return new URI("file", null, canonicalPath, null);
             } catch (Exception e) {
-                return uri;
+                throw new RuntimeException("Failed to calculate canonical file URI for '" + uri + "'", e);
             }
         } else {
             return uri;
