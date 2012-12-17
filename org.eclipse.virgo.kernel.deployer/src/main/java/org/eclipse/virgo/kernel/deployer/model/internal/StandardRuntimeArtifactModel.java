@@ -69,28 +69,31 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
      */
     public DeploymentIdentity add(@NonNull URI location, @NonNull InstallArtifact installArtifact) throws DuplicateFileNameException,
         DuplicateLocationException, DuplicateDeploymentIdentityException, DeploymentException {
+
+        URI canonicalLocation = getCanonicalFileLocation(location);
+
         synchronized (this.monitor) {
 
             // Check the precondition and throw an exception if it is violated.
-            checkLocation(location, installArtifact);
+            checkLocation(canonicalLocation, installArtifact);
 
-            String fileName = getFileName(location);
-            checkFileName(location, installArtifact, fileName);
+            String fileName = getFileName(canonicalLocation);
+            checkFileName(canonicalLocation, installArtifact, fileName);
 
             DeploymentIdentity deploymentIdentity = getDeploymentIdentity(installArtifact);
-            checkDeploymentIdentity(location, installArtifact, deploymentIdentity);
+            checkDeploymentIdentity(canonicalLocation, installArtifact, deploymentIdentity);
 
             // The precondition is true, so update the state. The invariants are preserved.
-            updateState(location, installArtifact, fileName, deploymentIdentity);
+            updateState(canonicalLocation, installArtifact, fileName, deploymentIdentity);
 
             return deploymentIdentity;
         }
     }
 
-    private void checkLocation(URI location, InstallArtifact installArtifact) throws DuplicateLocationException {
-        if (this.artifactByUri.containsKey(getCanonicalFileLocation(location))) {
-            InstallArtifact clashingArtifact = getArtifactByUri(location);
-            throw new DuplicateLocationException(getClashMessage(location, installArtifact, clashingArtifact));
+    private void checkLocation(URI canonicalLocation, InstallArtifact installArtifact) throws DuplicateLocationException {
+        if (this.artifactByUri.containsKey(canonicalLocation)) {
+            InstallArtifact clashingArtifact = getArtifactByUri(canonicalLocation);
+            throw new DuplicateLocationException(getClashMessage(canonicalLocation, installArtifact, clashingArtifact));
         }
     }
 
@@ -210,9 +213,21 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
         if (SCHEME_FILE.equals(uri.getScheme())) {
             File file = new File(uri);
             try {
-                return new URI(file.getCanonicalPath());
+                String canonicalPath = file.getCanonicalPath();
+                // Remove trailing slashes as these are added or not, for a directory, depending on the existence of the
+                // directory.
+                if (canonicalPath.endsWith(File.separator)) {
+                    canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
+                }
+                // Add leading forward slash if this is not already present, for example "C:\xxx"
+                if (!canonicalPath.startsWith(URI_PATH_SEPARATOR)) {
+                    canonicalPath = URI_PATH_SEPARATOR + canonicalPath;
+                }
+                // Construct a file scheme URI with the given path. Note that we can't use File.toURI as its results for
+                // a directory depends on the existence of the directory.
+                return new URI("file", null, canonicalPath, null);
             } catch (Exception e) {
-                return uri;
+                throw new RuntimeException("Failed to calculate canonical file URI for '" + uri + "'", e);
             }
         } else {
             return uri;
@@ -228,7 +243,7 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public Iterator<InstallArtifact> iterator() {
