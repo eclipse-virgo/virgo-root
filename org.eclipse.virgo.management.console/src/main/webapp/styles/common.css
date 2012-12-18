@@ -32,13 +32,11 @@ body {
 #header {
 	background: #fff url(../images/header-right.png) no-repeat scroll right top;
 	width: 100%;
-	height: 100px;
 }
 
 #name-and-company {
 	background: transparent url(../images/header-left.png) no-repeat top left;
 	width: 100%;
-	height: 100px;
 	top: 0px;
 	left: 0px;
 }

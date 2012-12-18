@@ -18,6 +18,14 @@ $(document).ready(function() {
 	util.start();
 	v_servers = new Servers();
 	v_servers.loadServers();
+	
+	var today = new Date();
+	if(today.getMonth() == 11 || (today.getMonth() == 0 && today.getDate() <= 5)){
+		$('#site-name').css({'background': 'url("' + util.getHostAndAdminPath() + '/resources/images/logo-hat-holly.png") no-repeat scroll center center transparent'});
+		$('#site-name').css({'height': '150px'});
+		$('#site-name').css({'width': '361px'});
+	}
+	
 	pageinit();
 });
 
