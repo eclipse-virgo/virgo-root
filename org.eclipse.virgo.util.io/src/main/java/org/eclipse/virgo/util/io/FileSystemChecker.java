@@ -170,10 +170,14 @@ public final class FileSystemChecker {
      * @param initialFiles
      */
     private void handleInitialFiles(List<File> initialFiles) {
+    	Map<File, Long> initialLastModified = new HashMap<File, Long>();
+    	for (File file : initialFiles) {
+    		initialLastModified.put(file, Long.valueOf(file.lastModified()));
+    	}
         notifyListenersOnInitialEvent(initialFiles);
         for (File file : initialFiles) {
             this.monitorRecords.remove(this.key(file));
-            setKnownFileState(file);
+            setKnownFileState(file, initialLastModified.get(file));
         }
     }
 
@@ -196,7 +200,7 @@ public final class FileSystemChecker {
      * 
      * @param initialFiles
      */
-    private void notifyListenersOnInitialEvent(List<File> initialFiles) {
+    private void notifyListenersOnInitialEvent(List<File> initialFiles) {	
         List<String> initialFilesPaths = getPaths(initialFiles);
         for (FileSystemListener listener : this.listeners) {
             try {
@@ -274,6 +278,9 @@ public final class FileSystemChecker {
                         // we are monitoring this file
                         MonitorRecord monitorRecord = this.monitorRecords.get(keyFile);
                         long size = file.length();
+                        // save file timestamp before notifying listeners, because otherwise it is possible during 
+                        // the notification the file to be updated and the newer timestamp to be saved - bug 396422
+                        long lastModified = file.lastModified();
                         if (size > monitorRecord.getSize()) {
                             // still being written? continue to track it
                             monitorRecord.setSize(size);
@@ -283,7 +290,7 @@ public final class FileSystemChecker {
                             // do not monitor it anymore
                             this.monitorRecords.remove(keyFile);
                         }
-                        setKnownFileState(file);
+                        setKnownFileState(file, lastModified);
                     } else if (file.lastModified() > knownLastModified(file)) {
                         // we know about this file, we are not monitoring it, but it has changed
                         // start monitoring it until it stabilises
@@ -419,6 +426,17 @@ public final class FileSystemChecker {
     private void setKnownFileState(File file) {
         String key = key(file);
         long lastModified = file.lastModified();
+        this.fileState.put(key, lastModified);
+    }
+    
+    /**
+     * Sets the state of the supplied {@link File} into our known files map (<code>fileState</code>) to the supplied state.
+     * 
+     * @param the <code>File</code> to record state for.
+     * @param the new state
+     */
+    private void setKnownFileState(File file, long lastModified) {
+    	String key = key(file);
         this.fileState.put(key, lastModified);
     }
 

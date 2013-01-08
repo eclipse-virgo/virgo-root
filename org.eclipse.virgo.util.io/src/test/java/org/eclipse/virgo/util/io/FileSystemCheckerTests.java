@@ -16,6 +16,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -451,5 +453,65 @@ public class FileSystemCheckerTests {
         } finally {
             System.setProperty("org.eclipse.virgo.fschecker.initialEventMode", "singular");
         }
+    }
+    
+    class RecursiveTestFileSystemListener implements FileSystemListener {
+    	private int callCounter = 0;
+    	private String filename;
+    	
+    	public RecursiveTestFileSystemListener(String filename) {
+			this.filename = filename;
+		}
+
+		@Override
+		public void onChange(String path, FileSystemEvent event) {
+			if (path.endsWith(filename)) {
+				if (FileSystemEvent.INITIAL == event || FileSystemEvent.CREATED == event) {				
+					try {
+						PrintWriter writer = new PrintWriter(new File(path));
+						writer.println("some text");
+						writer.flush();
+						writer.close();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				callCounter++;
+			}
+		}
+
+		@Override
+		public void onInitialEvent(List<String> paths) {	
+		}
+    	
+    	public int getCallCounter() {
+    		return callCounter;
+    	}
+    }
+    
+    @Test
+    public void updateFileDuringHandling() throws Exception {
+    	FileSystemChecker checker = new FileSystemChecker(this.checkDir);
+        final String updFileName = "fileToUpdate.txt";
+        
+        RecursiveTestFileSystemListener listener = new RecursiveTestFileSystemListener(updFileName);
+        
+        checker.addListener(listener);
+
+        File updateFile = new File(this.checkDir, updFileName);
+        updateFile.createNewFile();
+        
+        checker.check();
+        assertEquals("Expected 0 call to the listener", 0, listener.getCallCounter());
+        
+        checker.check();
+        assertEquals("Expected 1 call to the listener", 1, listener.getCallCounter());
+        
+        checker.check();
+        assertEquals("Expected 1 call to the listener", 1, listener.getCallCounter());
+        
+        checker.check();
+        assertEquals("Expected 2 calls to the listener", 2, listener.getCallCounter());
     }
 }
