@@ -27,9 +27,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.Hashtable;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
@@ -54,6 +56,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +107,24 @@ public class WARDeployer implements SimpleDeployer {
     private static final String HEADER_DEFAULT_WAB_HEADERS = "org-eclipse-gemini-web-DefaultWABHeaders";
 
     private static final String WEB_BUNDLE_MODULE_TYPE = "web-bundle";
+    
+    private static final String EVENT_TOPIC_DEPLOYED = "org/osgi/service/web/DEPLOYED";
+    
+    private static final String EVENT_TOPIC_DEPLOYING = "org/osgi/service/web/DEPLOYING";
+    
+    private static final String EVENT_TOPIC_UNDEPLOYED = "org/osgi/service/web/UNDEPLOYED";
+    
+    private static final String EVENT_TOPIC_UNDEPLOYING = "org/osgi/service/web/UNDEPLOYING";
+    
+    private static final String EVENT_TOPIC_FAILED = "org/osgi/service/web/FAILED";
+    
+    private static final String UPDATE_TIMEOUT_PROP = "org.eclipse.virgo.update.timeout";
+
+	private static final long DEFAULT_TIMEOUT = 120000;
+	
+	private static long TIMEOUT;
+	
+	private static final long CHECK_INTERVAL = 1000;
 
     private EventLogger eventLogger;
 
@@ -124,7 +147,9 @@ public class WARDeployer implements SimpleDeployer {
     private KernelConfig kernelConfig;
 
     private File kernelHomeFile;
-
+    
+    private Map<String, String> wabStates = new ConcurrentHashMap<String, String>();
+    
     public WARDeployer() {
         warDeployerInternalInit(null);
     }
@@ -263,6 +288,7 @@ public class WARDeployer implements SimpleDeployer {
                 // we need to decode the path before delete or a /webapps entry might leak
                 FileSystemUtils.deleteRecursively(new File(URLDecoder.decode(warDir.getAbsolutePath())));
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
+                wabStates.remove((String)bundle.getSymbolicName());
             } catch (BundleException e) {
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
                 StatusFileModificator.createStatusFile(statusFilePrefix, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_ERROR, -1, -1);
@@ -327,7 +353,9 @@ public class WARDeployer implements SimpleDeployer {
         if (!warDir.exists()) {
             this.logger.info("Can't update artifact for path '" + path + "'. It is not deployed.");
         }
-
+        
+        final boolean isOfflineUpdated = isOfflineUpdated(path);
+        
         StatusFileModificator.deleteStatusFile(warName, this.pickupDir);
 
         final long bundleId = -1L;
@@ -343,6 +371,13 @@ public class WARDeployer implements SimpleDeployer {
         final Bundle bundle = this.bundleContext.getBundle(BundleLocationUtil.createInstallLocation(this.kernelHomeFile, warDir));
         if (bundle != null) {
             try {
+            	boolean isLegalState = checkWabState(bundle, isOfflineUpdated);
+            	if (isLegalState == false) {
+            		this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATE_STATE_ERROR, bundle.getSymbolicName(), bundle.getVersion());
+            		StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
+                    return STATUS_ERROR;
+            	}
+            	wabStates.put(bundle.getSymbolicName(), "");
             	bundle.stop();
             	if (bundle instanceof BundleHost) {
             		BundleClassLoader loader = (BundleClassLoader)((BundleHost) bundle).getClassLoader(); 
@@ -372,7 +407,41 @@ public class WARDeployer implements SimpleDeployer {
         return STATUS_OK;
     }
 
-    public void setLargeFileCopyTimeout(long timeout) {
+    private synchronized boolean checkWabState(Bundle bundle, boolean isOfflineUpdated) {
+		String bundleSymbolicName = bundle.getSymbolicName();
+		String wabState = wabStates.get(bundleSymbolicName);
+		if ("".equals(wabState)) {
+			return waitForState(bundle);
+		}
+		
+		if ("DEPLOYED".equals(wabState) || "UNDEPLOYED".equals(wabState) || "FAILED".equals(wabState)) {
+			return true;
+		}
+		
+		if (wabState == null && isOfflineUpdated) {
+			return waitForState(bundle);
+		}
+		
+		return false;
+	}
+
+    private boolean waitForState(Bundle bundle) {
+    	long start = System.currentTimeMillis();
+    	while (System.currentTimeMillis() - start < TIMEOUT) {
+    		String wabState = wabStates.get(bundle.getSymbolicName());
+    		if ("DEPLOYED".equals(wabState) || "UNDEPLOYED".equals(wabState) || "FAILED".equals(wabState)) {
+    			return true;
+    		}
+    		try {
+    			Thread.sleep(CHECK_INTERVAL);
+    		} catch (InterruptedException e) {
+    			// do nothing
+    		}
+    	}
+    	return false;
+    }
+
+	public void setLargeFileCopyTimeout(long timeout) {
         if (this.logger.isInfoEnabled()) {
             this.logger.info("setLargeFileCopyTimeout(" + timeout + ")");
         }
@@ -550,6 +619,30 @@ public class WARDeployer implements SimpleDeployer {
         } else {
             throw new IllegalStateException("Missing value for required property '" + KERNEL_HOME_PROP + "'");
         }
+        
+        if (bundleContext == null) {
+        	TIMEOUT = DEFAULT_TIMEOUT;
+        	return;
+        }
+        
+        String timeout = bundleContext.getProperty(UPDATE_TIMEOUT_PROP);
+        if (timeout == null) {
+        	TIMEOUT = DEFAULT_TIMEOUT;
+        } else {
+        	try {
+        		TIMEOUT = Long.parseLong(timeout);
+        	} catch (NumberFormatException e) {
+        		TIMEOUT = DEFAULT_TIMEOUT;
+        	}
+        }
+        
+        registerWebContainerEventsHandler(bundleContext);   
+    }
+    
+    private void registerWebContainerEventsHandler(BundleContext bundleContext) {
+    	Dictionary<String, Object> props = new Hashtable<String, Object>();
+    	props.put(EventConstants.EVENT_TOPIC, new String[] {EVENT_TOPIC_DEPLOYING, EVENT_TOPIC_DEPLOYED, EVENT_TOPIC_UNDEPLOYING, EVENT_TOPIC_UNDEPLOYED, EVENT_TOPIC_FAILED});
+    	bundleContext.registerService(EventHandler.class, new WebContainerEventsHandler(), props);
     }
 
     private boolean getStrictWABHeadersValue() {
@@ -707,6 +800,24 @@ public class WARDeployer implements SimpleDeployer {
 
     private String replaceHashSigns(String str, char newChar) {
         return str.replace(HASH_SIGN, newChar);
+    }
+        
+    class WebContainerEventsHandler implements EventHandler {
+
+		@Override
+		public void handleEvent(Event event) {
+			String topic = event.getTopic();
+			if (EVENT_TOPIC_DEPLOYING.equals(topic) || EVENT_TOPIC_UNDEPLOYING.equals(topic)) {
+				wabStates.put((String)event.getProperty("bundle.symbolicName"), "");
+			} else if (EVENT_TOPIC_DEPLOYED.equals(topic)) {
+				wabStates.put((String)event.getProperty("bundle.symbolicName"), "DEPLOYED");
+			}else if (EVENT_TOPIC_UNDEPLOYED.equals(topic)) {
+				wabStates.put((String)event.getProperty("bundle.symbolicName"), "UNDEPLOYED");
+			} else if (EVENT_TOPIC_FAILED.equals(topic)) {
+				wabStates.put((String)event.getProperty("bundle.symbolicName"), "FAILED");
+			}
+		}
+    	
     }
 
 }

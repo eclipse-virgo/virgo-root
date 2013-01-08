@@ -21,7 +21,8 @@ public enum WARDeployerLogEvents implements LogEvent {
     NANO_UPDATING(15, Level.INFO), //
     NANO_UPDATED(16, Level.INFO), //
     NANO_UPDATE_ERROR(17, Level.ERROR), //
-    NANO_UNDEPLOY_ERROR(18, Level.ERROR); //
+    NANO_UNDEPLOY_ERROR(18, Level.ERROR), //
+    NANO_UPDATE_STATE_ERROR(19, Level.ERROR); //
     
     private static final String PREFIX = "DE";
 
