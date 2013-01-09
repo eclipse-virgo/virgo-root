@@ -468,11 +468,9 @@ public class FileSystemCheckerTests {
 			if (path.endsWith(filename)) {
 				if (FileSystemEvent.INITIAL == event || FileSystemEvent.CREATED == event) {				
 					try {
-						PrintWriter writer = new PrintWriter(new File(path));
-						writer.println("some text");
-						writer.flush();
-						writer.close();
-					} catch (FileNotFoundException e) {
+						File file = new File(path);
+						file.setLastModified(System.currentTimeMillis() + 1000);
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
