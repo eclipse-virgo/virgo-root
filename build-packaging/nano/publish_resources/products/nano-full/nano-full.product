@@ -43,6 +43,7 @@
 		<property name="com.sun.faces.InjectionProvider" value="org.eclipse.virgo.web.enterprise.jsf.support.VirgoJsfInjectionProvider"/>
 		<property name="javax.persistence.provider" value="org.eclipse.persistence.jpa.PersistenceProvider"/>
 		<property name="org.eclipse.gemini.web.tomcat.config.path" value="configuration/tomcat-server.xml"/>
+		<property name="org.eclipse.virgo.update.timeout" value="60000"/>
    </configurations>
 
 </product>
