@@ -35,6 +35,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.M05/org.eclipse.virgo.util.io-3.6.0.M05.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.6.0.M05/org.eclipse.virgo.util.io-sources-3.6.0.M05.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.6.0.M05/org.eclipse.virgo.medic-3.6.0.M05.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.M01/org.eclipse.virgo.medic-sources-3.1.0.M01.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.6.0.M05/org.eclipse.virgo.nano.core-3.6.0.M05.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.nano.core/3.6.0.M05/org.eclipse.virgo.nano.core-sources-3.6.0.M05.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.tomcat/2.2.0.M03/org.eclipse.gemini.web.tomcat-2.2.0.M03.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.tomcat/2.2.0.RELEASE/org.eclipse.gemini.web.tomcat-2.2.0.RELEASE.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
