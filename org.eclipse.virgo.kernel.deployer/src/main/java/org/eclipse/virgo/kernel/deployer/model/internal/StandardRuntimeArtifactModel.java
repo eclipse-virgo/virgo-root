@@ -123,10 +123,16 @@ final class StandardRuntimeArtifactModel implements RuntimeArtifactModel, GCRoot
     private String getFileName(@NonNull URI location) throws DeploymentException {
         URI normalisedLocation = this.uriNormaliser.normalise(location);
         String path = normalisedLocation.getPath();
-        if (path.endsWith(URI_PATH_SEPARATOR)) {
+        
+        String pathSeparator = URI_PATH_SEPARATOR;
+        if (SCHEME_FILE.equals(normalisedLocation.getScheme())) {
+            pathSeparator = File.separator;
+        }
+        
+        if (path.endsWith(pathSeparator)) {
             path = path.substring(0, path.length() - 1);
         }
-        int separatorIndex = path.lastIndexOf(URI_PATH_SEPARATOR);
+        int separatorIndex = path.lastIndexOf(pathSeparator);
         return separatorIndex != -1 ? path.substring(separatorIndex + 1) : path;
     }
 
