@@ -90,21 +90,36 @@ public class UploadServlet extends HttpServlet {
 			List<FileItem> items = (List<FileItem>) upload.parseRequest(request);
 			List<File> uploadedFiles = new ArrayList<File>();
 			for (FileItem fileItem : items) {
-				if (!fileItem.isFormField()) {
-					String name = fileItem.getName();
-					if(name != null && name.length() > 0){
-						File uploadedFile = new File(stagingDir, name);
-						fileItem.write(uploadedFile);
-						log.info(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
-						uploadedFiles.add(uploadedFile);
-					}
+				File uploadedFile = this.doUpload(fileItem, stagingDir);
+				if(uploadedFile != null){
+					uploadedFiles.add(uploadedFile);
 				}
 			}
 			doDeployment(uploadedFiles, response);
+		} catch (IllegalArgumentException ea){
+		    PrintWriter writer = response.getWriter();
+	        writer.append("<ol id=\"uploadResults\"><li>File name contains '/', '\\' or '..', this is not allowed.</ol>");
+			writer.close();
 		} catch (Exception e) {
 		    log.error(e.toString());
-			response.sendError(HTTP_RESPONSE_INTERNAL_SERVER_ERROR);
+			response.sendError(HTTP_RESPONSE_INTERNAL_SERVER_ERROR, e.toString());
 		}
+	}
+	
+	File doUpload(FileItem fileItem, File stagingDir) throws Exception{
+		if (!fileItem.isFormField()) {
+			String name = fileItem.getName();
+			if(name != null && name.length() > 0){
+				if(name.contains("..") || name.contains("\\") || name.contains("/")){
+					throw new IllegalArgumentException("Security violation, file name contains '/', '\\' or '..'");
+				}
+				File uploadedFile = new File(stagingDir, name);
+				fileItem.write(uploadedFile);
+				log.info(String.format("Uploaded artifact of size (%db) to %s", fileItem.getSize(), uploadedFile.getPath()));
+				return uploadedFile;
+			}
+		}
+		return null;
 	}
 	
 	private void doDeployment(List<File> uploadedFiles, HttpServletResponse response) throws MalformedObjectNameException, NullPointerException, IOException{
@@ -119,6 +134,7 @@ public class UploadServlet extends HttpServlet {
 			} catch (Exception e) {
 				writer.append("<li>" + file.getName() + " failed to deploy '" + e.getMessage() + "'</li>");
 			}
+			writer.append("<li />");
 		}
         writer.append("</ol>");
 		writer.close();
