@@ -34,7 +34,11 @@ public class JMXQuasiStateDumpTests {
 			
 			@Override
 			public QuasiFramework create(File stateDump) throws ZipException, IOException {
-				assertEquals(TEST_DUMP, stateDump.getPath());
+			    if (File.separator.equals("/")) {
+			        assertEquals(TEST_DUMP, stateDump.getPath());
+			    } else {
+			        assertEquals(TEST_DUMP, stateDump.getPath().replace('\\',  '/'));
+			    }
 				return new StubQuasiFramework();
 			}
 			
