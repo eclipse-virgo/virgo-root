@@ -55,6 +55,7 @@
 		<property name="eclipse.enableStateSaver" value="false"/>
 		<property name="osgi.hook.configurators.include" value="org.eclipse.virgo.kernel.equinox.extensions.hooks.ExtensionsHookConfigurator"/>
 		<property name="org.eclipse.virgo.kernel.startup.wait.limit" value="180"/>
+		<property name="gosh.home" value="configuration"/>
 	</configurations>
 
 </product>
