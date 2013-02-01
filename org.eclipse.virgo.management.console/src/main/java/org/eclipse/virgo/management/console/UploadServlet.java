@@ -98,7 +98,7 @@ public class UploadServlet extends HttpServlet {
 			doDeployment(uploadedFiles, response);
 		} catch (IllegalArgumentException ea){
 		    PrintWriter writer = response.getWriter();
-	        writer.append("<ol id=\"uploadResults\"><li>File name contains '/', '\\' or '..', this is not allowed.</ol>");
+	        writer.append("<ol id=\"uploadResults\"><li>File name contains '/' or '\\', this is not allowed.</ol>");
 			writer.close();
 		} catch (Exception e) {
 		    log.error(e.toString());
@@ -110,8 +110,8 @@ public class UploadServlet extends HttpServlet {
 		if (!fileItem.isFormField()) {
 			String name = fileItem.getName();
 			if(name != null && name.length() > 0){
-				if(name.contains("..") || name.contains("\\") || name.contains("/")){
-					throw new IllegalArgumentException("Security violation, file name contains '/', '\\' or '..'");
+				if(name.contains("\\") || name.contains("/")){
+					throw new IllegalArgumentException("Security violation, file name contains '/' or '\\'");
 				}
 				File uploadedFile = new File(stagingDir, name);
 				fileItem.write(uploadedFile);
