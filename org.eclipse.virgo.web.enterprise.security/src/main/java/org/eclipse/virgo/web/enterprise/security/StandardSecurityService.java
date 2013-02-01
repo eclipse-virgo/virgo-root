@@ -134,7 +134,8 @@ public class StandardSecurityService extends AbstractSecurityService {
 	    	final Set<TomcatUserWrapper> users = ((Subject)field.get(securityContext)).getPrincipals(TomcatUserWrapper.class);
 	    	boolean inRole = false;
 	    	for(TomcatUserWrapper user : users) {
-	    		inRole = wrapper.getRealm().hasRole(wrapper, user, role);
+				inRole = wrapper.getRealm().hasRole(wrapper,
+						user.getTomcatPrincipal(), role);
 	    		if(inRole)
 	    			return true;
 	    	}	  
