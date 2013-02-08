@@ -21,6 +21,6 @@
 	<property file="${basedir}/../build.properties"/>
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
 
-	<target name="precommit" depends="clean, clean-integration, test, findbugs" description="Performs a CI server-like build, should be run prior to performing a Git push"/>
+	<target name="precommit" depends="clean, clean-integration, test, findbugs" description="Performs a full build, should be run prior to performing a Git push"/>
 
 </project>
