@@ -5,5 +5,4 @@ Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.openejb.fragment.jpa
 Bundle-Version: 3.6.0.enterprise
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: org.apache.openejb.core
-Import-Package: org.eclipse.persistence.jpa,org.apache.derby.jdbc;resolution:=optional
-Require-Bundle: org.eclipse.persistence.core
+Import-Package: org.apache.derby.jdbc;resolution:=optional
