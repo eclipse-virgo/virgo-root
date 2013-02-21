@@ -16,6 +16,8 @@
         <pathelement location="../org.eclipse.virgo.web.enterprise.security.valve"/>
         <pathelement location="../org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook"/>
         <pathelement location="../org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook"/>
+        <pathelement location="../org.eclipse.virgo.web.enterprise.javax.persistence.extension"/>
+        <pathelement location="../org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer"/>
 	</path>
 
 	<path id="bundles">
