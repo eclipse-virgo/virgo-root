@@ -10,6 +10,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.openejb.core/4.0.0.beta-2_v201205260545-virgo-2/org.apache.openejb.core-4.0.0.beta-2_v201205260545-virgo-2.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.openejb.loader/4.0.0.beta-2_v201205041336/org.apache.openejb.loader-4.0.0.beta-2_v201205041336.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/javax.transaction/1.1.1.v201105210645/javax.transaction-1.1.1.v201105210645.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.32.v201211201336/org.apache.catalina-7.0.32.v201211201336.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.32.v201211201336/org.apache.catalina.source-7.0.32.v201211201336.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.35.v201302131125/org.apache.catalina-7.0.35.v201302131125.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.35.v201302131125/org.apache.catalina.source-7.0.35.v201302131125.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
