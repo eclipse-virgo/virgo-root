@@ -158,25 +158,26 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
 
         private URL getLocalURLForEntry(BundleEntry entry) {
             URL url = entry.getLocalURL();
+            URLConnection connection = null;
             try {
-                url.openConnection().setDefaultUseCaches(false);
-                url.openConnection().setUseCaches(false);
+                connection = url.openConnection();
+                connection.setDefaultUseCaches(false);
+                connection.setUseCaches(false);
             } catch (Exception e) {
                 
             }
-            if (!"jar".equals(url.getProtocol()) || doesJarEntryReallyExist(url)) {
+            if (!"jar".equals(url.getProtocol()) || doesJarEntryReallyExist(connection)) {
                 return url;
             } else {
                 return null;
             }
         }
 
-        private boolean doesJarEntryReallyExist(URL url) {
+        private boolean doesJarEntryReallyExist(URLConnection connection) {
             boolean entryExists = false;
             JarFile jarFile = null;
             try {
-                URLConnection connection = url.openConnection();
-                if (connection instanceof JarURLConnection) {
+                if (connection != null && connection instanceof JarURLConnection) {
                     JarURLConnection jarURLConnection = (JarURLConnection) connection;
                     jarFile = jarURLConnection.getJarFile();
                     String entryName = jarURLConnection.getEntryName();
