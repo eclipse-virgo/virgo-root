@@ -39,6 +39,7 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 	private static final String FILE_SCHEME = "file:";
 	private static final String CONFIG_AREA = "osgi.configuration.area";
 	private static final String LIB_DIR = "lib";
+	private static final String PERSISTENCE_DIR = "persistence";
 	private static final String WEB_CONTEXTPATH_HEADER = "Web-ContextPath";
 	private static final String PERSISTENCE_INTEGRATION_JAR1 = "org.apache.openejb.jpa.integration.jar_v1.1";
 	
@@ -83,7 +84,8 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 		data.setManifest(manifest);
 		ClasspathManager classpathmanager = new ClasspathManagerStub(data, new String[]{}, classloader);
 		File libDir = new File(new File("."), LIB_DIR);
-		String classpath = new File(libDir, PERSISTENCE_INTEGRATION_JAR).getAbsolutePath();
+		File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
+		String classpath = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR).getAbsolutePath();
 		ClasspathEntry entry = new ClasspathEntry(new BundleFileStub(classpath), null);
 		cpEntries.add(entry);
 		AppLoaderClasspathExtenderClassLoadingHook hook = new AppLoaderClasspathExtenderClassLoadingHook();
@@ -110,7 +112,9 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 		configDir.mkdir();
 		File libDir = new File(new File("."), LIB_DIR);
 		libDir.mkdir();
-		File jpaIntegrationFile = new File(libDir, PERSISTENCE_INTEGRATION_JAR);
+		File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
+		libPersistenceDir.mkdir();
+		File jpaIntegrationFile = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR);
 		jpaIntegrationFile.createNewFile();
 		String configurationFilePath = FILE_SCHEME + configDir.getAbsolutePath();
 		System.setProperty(CONFIG_AREA, configurationFilePath);
@@ -129,7 +133,8 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 		}
 		
 		File libDir = new File(new File("."), LIB_DIR);
-		File jpaIntegrationFile = new File(libDir, PERSISTENCE_INTEGRATION_JAR);
+		File libPersistenceDir = new File(libDir, PERSISTENCE_DIR); 
+		File jpaIntegrationFile = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR);
 		
 		if (jpaIntegrationFile.exists()) {
 			jpaIntegrationFile.delete();
@@ -138,6 +143,10 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 		File jpaIntegrationFile1 = new File(libDir, PERSISTENCE_INTEGRATION_JAR1);
 		if (jpaIntegrationFile1.exists()) {
 			jpaIntegrationFile1.delete();
+		}
+		
+		if (libPersistenceDir.exists()) {
+			libPersistenceDir.delete();
 		}
 		
 		if (libDir.exists()) {
@@ -160,7 +169,8 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 	private boolean checkForFile(String filename) {
 		ArrayList<ClasspathEntry> cpEntries = new ArrayList<ClasspathEntry>();
 		File libDir = new File(new File("."), LIB_DIR);
-		String classpath = new File(libDir, filename).getAbsolutePath();
+		File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
+		String classpath = new File(libPersistenceDir, filename).getAbsolutePath();
 		ClasspathEntry entry = new ClasspathEntry(new BundleFileStub(classpath), null);
 		cpEntries.add(entry);
 		AppLoaderClasspathExtenderClassLoadingHook hook = new AppLoaderClasspathExtenderClassLoadingHook();
@@ -245,16 +255,19 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
 		configDir.mkdir();
 		File libDir = new File(new File("."), LIB_DIR);
 		libDir.mkdir();
+		File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
+		libPersistenceDir.mkdir();
 		String configurationFilePath = FILE_SCHEME + configDir.getAbsolutePath();
 		System.setProperty(CONFIG_AREA, configurationFilePath);
-		checkForException("No file with name starting with [" + PERSISTENCE_INTEGRATION_JAR_NAME + "] was found in lib folder");
+		checkForException("No file with name starting with [" + PERSISTENCE_INTEGRATION_JAR_NAME + "] was found in lib/persistence folder");
 	}
 	
 	@Test
 	public void testFindPersistenceIntegrationJarMultipleIntegrationJars() throws IOException {
 		File jpaIntegrationFile = prepare();
 		File libDir = new File(new File("."), LIB_DIR);
-		File jpaIntegrationFile1 = new File(libDir, PERSISTENCE_INTEGRATION_JAR1);
+		File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
+		File jpaIntegrationFile1 = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR1);
 		AppLoaderClasspathExtenderClassLoadingHook hook = new AppLoaderClasspathExtenderClassLoadingHook();
 		try {
 			hook.findPersistenceIntegrationJar();

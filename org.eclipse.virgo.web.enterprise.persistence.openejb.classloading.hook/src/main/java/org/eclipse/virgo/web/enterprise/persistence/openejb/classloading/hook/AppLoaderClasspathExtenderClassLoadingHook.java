@@ -42,6 +42,7 @@ public class AppLoaderClasspathExtenderClassLoadingHook implements ClassLoadingH
 	private static final String PERSISTENCE_INTEGRATION_JAR = System.getProperty(PERSISTENCE_INTEGRATION_JAR_PROP_NAME);
 	private static final String CONFIG_AREA = "osgi.configuration.area";
 	private static final String LIB_DIR = "lib";
+	private static final String PERSISTENCE_DIR = "persistence";
 	
 	@Override
 	public void addHooks(HookRegistry registry) {
@@ -94,12 +95,17 @@ public class AppLoaderClasspathExtenderClassLoadingHook implements ClassLoadingH
 			throw new ClasspathExtenderClassLoadingHookException("Property [" + CONFIG_AREA + "] is missing");
 		}
 		File configurationFile = new File(normalize(configurationPath));
-		File libDir = new File(configurationFile.getParentFile(), LIB_DIR);		
-		if (!libDir.exists()) {
+		File lib = new File(configurationFile.getParentFile(), LIB_DIR);
+		if (!lib.exists()) {
 			throw new ClasspathExtenderClassLoadingHookException("lib folder is missing");
 		}
 		
-		String[] libs = libDir.list(new FilenameFilter() {	
+		File persistenceLibDir = new File(lib, PERSISTENCE_DIR);
+		if (!persistenceLibDir.exists()) {
+			throw new ClasspathExtenderClassLoadingHookException("lib/persistence folder is missing");
+		}
+		
+		String[] libs = persistenceLibDir.list(new FilenameFilter() {	
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.startsWith(PERSISTENCE_INTEGRATION_JAR)) {
@@ -110,14 +116,14 @@ public class AppLoaderClasspathExtenderClassLoadingHook implements ClassLoadingH
 		});
 		
 		if (libs.length == 0) {
-			throw new ClasspathExtenderClassLoadingHookException("No file with name starting with [" + PERSISTENCE_INTEGRATION_JAR + "] was found in lib folder");
+			throw new ClasspathExtenderClassLoadingHookException("No file with name starting with [" + PERSISTENCE_INTEGRATION_JAR + "] was found in lib/persistence folder");
 		}
 		
 		if (libs.length > 1) {
-			logger.log(Level.SEVERE, "Found " + libs.length + " files with name starting with [" + PERSISTENCE_INTEGRATION_JAR + "] was found in lib folder (one expected); choosing [" + libs[0] + "]");
+			logger.log(Level.SEVERE, "Found " + libs.length + " files with name starting with [" + PERSISTENCE_INTEGRATION_JAR + "] was found in lib/persistence folder (one expected); choosing [" + libs[0] + "]");
 		}
 		
-		persistenceIntegrationJar = new File(libDir, libs[0]);
+		persistenceIntegrationJar = new File(persistenceLibDir, libs[0]);
 		
 	}
 
