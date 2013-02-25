@@ -7,5 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: javax.persistence;bundle-version="[2.0.4, 2.1.0)"
 Import-Template: org.osgi.framework;version="0"
 Export-Template: org.eclipse.virgo.web.enterprise.javax.persistence.extension
-Excluded-Exports:
- *
+Excluded-Imports:
+ javax.persistence;version="0",
+ javax.persistence.spi;version="0",
+ org.eclipse.persistence.javax.persistence.osgi;version="0"
