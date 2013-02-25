@@ -81,6 +81,9 @@
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.openwebbeans.initialiser" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.javax.persistence.extension" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
 	</dependencies>
     
 </ivy-module>

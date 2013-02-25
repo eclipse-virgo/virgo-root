@@ -324,6 +324,10 @@
         <property name="common.resources" value="${nano.target.dir}/common_resources"/>
         <ivy:resolve resolveId="copy.path" file="${nano.basedir}/endorsed-ivy.xml" transitive="false"/>
         <ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/endorsed/[artifact]_[revision].[ext]" conf="endorsed" type="jar"/>
+        
+    <property name="common.resources" value="${nano.target.dir}/common_resources"/>
+    <ivy:resolve resolveId="copy.path" file="${nano.basedir}/lib-ivy.xml" transitive="false"/>
+    <ivy:retrieve resolveId="copy.path" pattern="${common.resources}/lib/persistence/[artifact]_[revision].[ext]" conf="persistence" type="jar"/>
 		
 		<mkdir dir="${common.resources}/configuration"/>
 		<mkdir dir="${common.resources}/pickup"/>
