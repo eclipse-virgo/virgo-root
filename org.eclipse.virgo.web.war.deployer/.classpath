@@ -34,6 +34,5 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.deployer/3.7.0.D-20130226164727/org.eclipse.virgo.nano.deployer-3.7.0.D-20130226164727.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.7.0.D-20130226164727/org.eclipse.virgo.nano.core-3.7.0.D-20130226164727.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.nano.core/3.7.0.D-20130226164727/org.eclipse.virgo.nano.core-sources-3.7.0.D-20130226164727.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.web.core/2.2.1.RELEASE/org.eclipse.gemini.web.core-2.2.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

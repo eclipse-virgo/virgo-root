@@ -19,42 +19,6 @@ public class WebBundleUtils {
         return specifiesBundleSymbolicName(manifest) || specifiesBundleVersion(manifest) || specifiesBundleManifestVersion(manifest)
             || specifiesImportPackage(manifest) || specifiesWebContextPath(manifest);
     }
-	
-	/**
-	 * Transforms the input string into a string with valid characters for a
-	 * bundle symbolic name (valid characters are all alphanumerics plus '.',
-	 * '_', '-'). All forbidden characters are replaced with '.'.
-	 */
-	public static String calculateCorrectSymbolicName(String originalName) {
-		if (originalName != null) {
-			return replaceForbiddenChars(originalName, '.');
-		} else {
-			return "";
-		}
-	}
-
-	private static String replaceForbiddenChars(String st, char newChar) {
-		char[] inpuStringChars = st.toCharArray();
-		StringBuilder sb = new StringBuilder();
-		for (char currentChar : inpuStringChars) {
-			if (isCharAllowedInSymbolicNames(currentChar)) {
-				sb.append(currentChar);
-			} else {
-				sb.append(newChar);
-			}
-		}
-		return sb.toString();
-	}
-
-	private static boolean isCharAllowedInSymbolicNames(char ch) {
-		if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
-				|| (ch >= '0' && ch <= '9') || ch == '_' || ch == '-'
-				|| ch == '.') {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
     private static boolean specifiesBundleSymbolicName(BundleManifest manifest) {
         return manifest.getBundleSymbolicName().getSymbolicName() != null;

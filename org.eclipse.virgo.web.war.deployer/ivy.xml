@@ -20,7 +20,6 @@
 		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.osgi.manifest" rev="${org.eclipse.virgo.util}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.gemini" name="org.eclipse.gemini.web.core" rev="${org.eclipse.gemini.web}" conf="compile->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="compile->runtime"/>
-		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		
 		<override org="org.eclipse.virgo.util" rev="${org.eclipse.virgo.util}"/>
 		<!-- Allow Equinox to be upgraded point-wise before rippling -->
