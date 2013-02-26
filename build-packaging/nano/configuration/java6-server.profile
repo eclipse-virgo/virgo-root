@@ -148,9 +148,9 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.wsaddressing;version="2.1.1",\
  javax.xml.xpath,\
  org.eclipse.virgo.kernel.equinox.extensions,\
- org.eclipse.virgo.kernel.equinox.extensions;version="3.6.0",\
+ org.eclipse.virgo.kernel.equinox.extensions;version="3.7.0",\
  org.eclipse.virgo.kernel.equinox.extensions.hooks,\
- org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.6.0",\
+ org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.7.0",\
  org.ietf.jgss,\
  org.omg.CORBA,\
  org.omg.CORBA_2_3,\
