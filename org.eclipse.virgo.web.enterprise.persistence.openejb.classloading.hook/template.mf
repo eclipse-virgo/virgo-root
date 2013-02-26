@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.persistence.openejb.classl
 Bundle-Version: ${version}
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: system.bundle;extension:="framework"
-Import-Template: org.eclipse.osgi.baseadaptor;version="0",
+Excluded-Imports: org.eclipse.osgi.baseadaptor;version="0",
  org.eclipse.osgi.baseadaptor.bundlefile;version="0",
  org.eclipse.osgi.baseadaptor.hooks;version="0",
  org.eclipse.osgi.baseadaptor.loader;version="0",
