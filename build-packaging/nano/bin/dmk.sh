@@ -204,6 +204,7 @@ then
 			-Djava.io.tmpdir=$TMP_DIR \
 			-Dorg.eclipse.virgo.kernel.home=$KERNEL_HOME \
 			-Dorg.eclipse.virgo.kernel.config=$CONFIG_DIR \
+			-Dosgi.sharedConfiguration.area=$CONFIG_DIR \
 			-Dosgi.java.profile="file:$JAVA_PROFILE" \
             -Declipse.ignoreApp=true \
             -Dosgi.install.area=$KERNEL_HOME \
