@@ -46,6 +46,7 @@
 		<property name="org.eclipse.gemini.web.tomcat.config.path" value="configuration/tomcat-server.xml"/>
 		<property name="org.eclipse.virgo.update.timeout" value="60000"/>
 		<property name="openejb.jpa.force.javax.persistence.provider" value="false"/>
+		<property name="persistence.integration.jar.name" value="org.eclipse.virgo.openejb.jpa.integration"/>
    </configurations>
 
 </product>
