@@ -67,7 +67,7 @@ org.apache.juli.extras=7.0.35.v201302120746
 org.apache.log4j=1.2.15
 org.apache.mina.core=2.0.2.v201108120515
 org.apache.openejb.api=4.0.0.beta-2_v201205041047
-org.apache.openejb.core=4.0.0.beta-2_v201205260545-virgo-4
+org.apache.openejb.core=4.0.0.beta-2_v201205260545-virgo-5
 org.apache.openejb.javaagent=4.0.0.beta-2_v201205041047
 org.apache.openejb.jee=4.0.0.beta-2_v201205041336
 org.apache.openejb.loader=4.0.0.beta-2_v201205041336
@@ -183,7 +183,7 @@ org.eclipse.virgo.openejb.jpa.integration=4.0.0.beta-2_v201205260545
 
 # Feature requerements - workaround for bug390091
 org.apache.openejb.api.feature=4.0.0.beta-2_v201205041047
-org.apache.openejb.core.feature=4.0.0.beta-2_v201205260545-virgo-4
+org.apache.openejb.core.feature=4.0.0.beta-2_v201205260545-virgo-5
 org.apache.openejb.javaagent.feature=4.0.0.beta-2_v201205041047
 org.apache.openejb.jee.feature=4.0.0.beta-2_v201205041336
 org.apache.openejb.loader.feature=4.0.0.beta-2_v201205041336
