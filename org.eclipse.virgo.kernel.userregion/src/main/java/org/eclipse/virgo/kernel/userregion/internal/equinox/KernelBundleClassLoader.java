@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -59,6 +60,16 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
  * 
  */
 public final class KernelBundleClassLoader extends DefaultClassLoader implements InstrumentableClassLoader {
+
+    static {
+        try {
+            Method parallelCapableMethod = ClassLoader.class.getDeclaredMethod("registerAsParallelCapable", (Class[]) null);
+            parallelCapableMethod.setAccessible(true);
+            parallelCapableMethod.invoke(null, new Object[0]);
+        } catch (Throwable e) {
+            // must avoid failing in clinit
+        }
+    }
 
     private static final String[] EXCLUDED_PACKAGES = new String[] { "java.", "javax.", "sun.", "oracle." };
 
