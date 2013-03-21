@@ -120,7 +120,7 @@ public class DeployerLogMessageTests extends AbstractParTests {
             deploy(new File("src/test/resources/deployer-log-message-tests/ClassNotFoundException.jar"));
         } finally {
             List<String> logMessages = findLogMessages("<AG0000E>");
-            assertTrue(logMessages.size() == 1);
+            assertTrue(logMessages.size() >= 1);
             assertTrue(logMessages.get(0).contains("com.does.not.exist.NothingToSeeHere"));
         }
     }
