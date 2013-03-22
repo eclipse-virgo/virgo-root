@@ -153,8 +153,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         Set<ArtifactLifecycleEvent> expectedEventSet = new HashSet<ArtifactLifecycleEvent>();
         // events expected due to explicit refresh;
         expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.RESOLVING, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
-        // Following no longer expected. Spring DM to Gemini Blueprint upgrade affects lazy bundle behaviour.
-        //expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.RESOLVED, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
+        expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.RESOLVED, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
         expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.INSTALLING, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
         expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.INSTALLED, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
         expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.STARTING, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
