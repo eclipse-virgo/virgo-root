@@ -33,6 +33,7 @@ public class ImportPromotionTests extends AbstractParTests {
         deploy(par);
         assertNotNull(ApplicationContextUtils.getApplicationContext(this.context, BUNDLE_SYMBOLIC_NAME));
         this.deployer.refresh(par.toURI(), "ImporterA");
+        Thread.sleep(100);
         assertNotNull(ApplicationContextUtils.getApplicationContext(this.context, BUNDLE_SYMBOLIC_NAME));
     }
 
