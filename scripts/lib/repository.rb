@@ -86,7 +86,9 @@ class Repository
   def create_tag
     puts '    Creating tag ' + @bundle_version
     Dir.chdir(@path)
-    execute('git tag -a -m "[RELEASELOR] ' + @bundle_version +'" ' + @bundle_version)
+
+    puts "hello"+"world"
+    execute('git tag -a -m "[RELEASELOR] ' + @bundle_version + '" ' + @bundle_version)
   end
 
   def update_master_branch(new_version, versions)
