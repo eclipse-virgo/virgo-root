@@ -37,13 +37,13 @@ public class WebAppBundleTrackerCustomizerTest {
 
         Bundle bundle1 = createMock(Bundle.class);
         expect(bundle1.getHeaders()).andReturn(dictionary1).anyTimes();
-        expect(bundle1.getSymbolicName()).andReturn("test").times(7);
+        expect(bundle1.getSymbolicName()).andReturn("test").times(9);
         expect(bundle1.getVersion()).andReturn(new Version("1.1.1"));
         replay(bundle1);
         
         Bundle bundle2 = createMock(Bundle.class);
         expect(bundle2.getHeaders()).andReturn(dictionary2).anyTimes();
-        expect(bundle2.getSymbolicName()).andReturn("test4").times(9);
+        expect(bundle2.getSymbolicName()).andReturn("test4").times(11);
         expect(bundle2.getVersion()).andReturn(new Version("1.0"));
         replay(bundle2);
 
