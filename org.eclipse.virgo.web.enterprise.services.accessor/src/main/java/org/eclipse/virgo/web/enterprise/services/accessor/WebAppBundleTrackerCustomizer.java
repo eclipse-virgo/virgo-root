@@ -34,6 +34,10 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
     static final String API_BUNDLES = "api.bundles";
 
     static final String IMPL_BUNDLES = "impl.bundles";
+    
+    static final String POST_API_BUNDLES = "post.api.bundles";
+    
+    static final String POST_API_PACKAGES = "post.api.packages";
 
     private static final String COMMA_SEPARATOR = ",";
 
@@ -79,6 +83,12 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
      */
     @Deprecated
     private final Map<String, VersionRange> implBundles;
+    
+    /**
+     * @deprecated Not supported
+     */
+    @Deprecated
+    private final Map<String, VersionRange> postApiBundles;
 
     public WebAppBundleTrackerCustomizer(WebAppBundleClassLoaderDelegateHook wabClassLoaderDelegateHook) {
         String bundlesForJarScanner = System.getProperty("org.eclipse.virgo.jarscanner.bundles");
@@ -90,6 +100,8 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
         this.wabClassLoaderDelegateHook = wabClassLoaderDelegateHook;
         this.apiBundles = Collections.unmodifiableMap(getBundles(System.getProperty(API_BUNDLES)));
         this.implBundles = Collections.unmodifiableMap(getBundles(System.getProperty(IMPL_BUNDLES)));
+        this.postApiBundles = Collections.unmodifiableMap(getBundles(System.getProperty(POST_API_BUNDLES)));
+        
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Predefined api bundles added to the tracker " + this.apiBundles);
             LOGGER.debug("Predefined impl bundles added to the tracker " + this.implBundles);
@@ -108,6 +120,10 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
 
         if (isImplBundle(bundle)) {
             this.wabClassLoaderDelegateHook.addImplBundle(bundle);
+        }
+        
+        if(postApiBundles.containsKey(bundle.getSymbolicName())) {
+        	this.wabClassLoaderDelegateHook.addPostApiBundle(bundle);
         }
 
         processExposeAdditionalAPIHeader(bundle);

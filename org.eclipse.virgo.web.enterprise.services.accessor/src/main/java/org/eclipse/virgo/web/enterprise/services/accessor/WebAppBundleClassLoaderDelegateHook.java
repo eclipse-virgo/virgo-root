@@ -54,6 +54,8 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     private final Map<Bundle, ClassLoader> implBundlesClassloaders = new ConcurrentHashMap<Bundle, ClassLoader>();
 
     private final Map<Bundle, Set<String>> webAppBundles = new ConcurrentHashMap<Bundle, Set<String>>();
+    
+    private final Set<Bundle> postFindApiBundles = new CopyOnWriteArraySet<Bundle>();
 
     @Override
     public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
@@ -62,8 +64,8 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 enter();
 
                 Bundle bundle = bd.getBundle();
-
-                if (this.implBundles.contains(bundle)) {
+                	
+				if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
                     if (tccl != null) {
                         try {
@@ -80,10 +82,42 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                             }
                         }
                     }
-                }
+                }  
             } finally {
                 exit();
             }
+        }
+        
+        if (shouldEnter(MAX_API_SEARCH_DEPTH)) {
+        	try {
+        		enter();
+        		Bundle bundle = bd.getBundle();
+
+        		if (this.webAppBundles.containsKey(bundle)) {
+        			for (Bundle postFindApiProvider : postFindApiBundles) {
+        				try {
+        					if (LOGGER.isDebugEnabled()) {
+        						LOGGER.debug("Post find api for class " + name
+        								+ " from bundle "
+        								+ bundle.getSymbolicName()
+        								+ ". Trying to load it with bundle "
+        								+ postFindApiProvider.getSymbolicName());
+        					}
+        					return postFindApiProvider.loadClass(name);
+        				} catch (ClassNotFoundException e) {
+        					// keep moving through the bundles
+        					if (LOGGER.isDebugEnabled()) {
+        						LOGGER.debug("Exception occurred while trying to find (post api) class ["
+        								+ name
+        								+ "]. Exception message: "
+        								+ e.getMessage());
+        					}
+        				}
+        			}
+        		}
+        	} finally {
+        		exit();
+        	}
         }
         return null;
     }
@@ -241,7 +275,14 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
             LOGGER.debug(bundle + "was added to API bundles.");
         }
     }
-
+    
+    void addPostApiBundle(Bundle bundle) {
+        this.postFindApiBundles.add(bundle);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(bundle + "was added to post API bundles.");
+        }
+    }
+    
     void addImplBundle(Bundle bundle) {
         this.implBundles.add(bundle);
         if (LOGGER.isDebugEnabled()) {
@@ -268,7 +309,14 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
             LOGGER.debug(bundle + "was removed from Impl bundles.");
         }
     }
-
+    
+    void removePostApiBundle(Bundle bundle) {
+        this.postFindApiBundles.remove(bundle);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(bundle + "was added to post API bundles.");
+        }
+    }
+    
     void addWebAppBundle(Bundle bundle) {
         this.webAppBundles.put(bundle, cacheRequiredCapabilities(bundle));
     }
@@ -374,6 +422,14 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     Set<Bundle> getImplBundles() {
         return this.implBundles;
+    }
+    
+    private String getClassPackage(String className) {
+    	int packageNameEndsIndex = className.lastIndexOf(".");
+    	if(packageNameEndsIndex != -1 && packageNameEndsIndex != className.length() -1) {
+    		return className.substring(0, packageNameEndsIndex);
+    	}
+    	return "";
     }
 
 }
