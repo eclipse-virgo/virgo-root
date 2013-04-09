@@ -33,7 +33,7 @@
 		<plugin id="org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer" autoStart="true"/>
 		
 		<property name="equinox.use.ds" value="true"/>
-		<property name="api.bundles" value="javassist;bundle-version=3.13.0.GA_v201209210905,org.eclipse.persistence.core;bundle-version=2.4.1.v20121003-ad44345,org.apache.openwebbeans.impl;bundle-version=1.1.3.v201205171449,org.apache.openwebbeans.web;bundle-version=1.1.3.v201205171703,org.apache.el;bundle-version=7.0.32.v201211081135"/>
+		<property name="api.bundles" value="javassist;bundle-version=3.13.0.GA_v201209210905,org.apache.el;bundle-version=7.0.32.v201211081135"/>
 		<property name="impl.bundles" value="org.eclipse.persistence.jpa;bundle-version=2.4.1.v20121003-ad44345,org.eclipse.persistence.core;bundle-version=2.4.1.v20121003-ad44345,org.apache.openwebbeans.impl;bundle-version=1.1.3.v201205171449,org.apache.openwebbeans.web;bundle-version=1.1.3.v201205171703,org.apache.openwebbeans.jsf;bundle-version=1.1.3.v201210311100"/>
 		<property name="openejb.deployments.classpath.exclude" value=".*"/>
 		<property name="openejb.deployments.classpath.include" value=""/>
