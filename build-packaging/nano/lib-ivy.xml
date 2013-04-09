@@ -17,7 +17,7 @@
         <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.authentication" rev="${org.eclipse.virgo.nano}" conf="lib->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.launcher" rev="${org.eclipse.equinox.launcher}" conf="lib->runtime"/>
         <dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.equinox.extensions" rev="${org.eclipse.virgo.kernel}" conf="lib->runtime"/>
-        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.virgo.openejb.jpa.integration" rev="${org.eclipse.virgo.openejb.jpa.integration}" conf="persistence->runtime"/>
+        <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.openejb.jpa.integration" rev="${org.eclipse.virgo.web}" conf="persistence->runtime"/>
         
 		<exclude org="org.eclipse.osgi" module="org.eclipse.osgi"/>
         <exclude org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi"/>
