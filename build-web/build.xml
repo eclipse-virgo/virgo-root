@@ -31,6 +31,7 @@
         <pathelement location="../org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans"/>
         <pathelement location="../org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans"/>
         <pathelement location="../org.eclipse.virgo.web.tomcat"/>
+        <pathelement location="../org.eclipse.virgo.web.enterprise.openejb.jpa.integration"/>
 	</path>
 
 	<property file="${basedir}/../build.properties"/>
