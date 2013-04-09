@@ -36,6 +36,7 @@ import javax.naming.LinkRef;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
+import javax.servlet.ServletContext;
 
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.ContextResource;
@@ -52,6 +53,7 @@ import org.apache.openejb.assembler.DeployerEjb;
 import org.apache.openejb.assembler.classic.AppInfo;
 import org.apache.openejb.assembler.classic.Assembler;
 import org.apache.openejb.assembler.classic.JndiEncBuilder;
+import org.apache.openejb.assembler.classic.PersistenceUnitInfo;
 import org.apache.openejb.assembler.classic.WebAppInfo;
 import org.apache.openejb.config.AppModule;
 import org.apache.openejb.config.AutoConfig;
@@ -66,6 +68,8 @@ import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.util.ContextUtil;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.web.enterprise.openejb.deployer.log.OpenEjbDeployerLogEvents;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +78,18 @@ import org.slf4j.LoggerFactory;
 @TransactionManagement(BEAN)
 public class VirgoDeployerEjb extends DeployerEjb {
 
+	private static final String HIBERNATE_FACTORY_CLASS = "org/hibernate/transaction/TransactionManagerLookup.class";
+	private static final String ECLIPSELINK_FACTORY_CLASS = "org/eclipse/persistence/transaction/JTATransactionController.class";
+	private static final String OSGI_BUNDLECONTEXT = "osgi-bundlecontext";
+	private static final String VIRGO_ECLIPSELINK_FACTORY = "org.eclipse.virgo.web.enterprise.openejb.eclipselink.JTATransactionController";
+	private static final String OPENEJB_ECLIPSELINK_FACTORY = "org.apache.openejb.eclipselink.JTATransactionController";
+	private static final String ECLIPSELINK_TARGET_SERVER = "eclipselink.target-server";
+	private static final String VIRGO_HIBERNATE_TRANSACTION_MANAGER_LOOKUP = "org.eclipse.virgo.web.enterprise.openejb.hibernate.TransactionManagerLookup";
+	private static final String HIBERNATE_TRANSACTION_MANAGER_LOOKUP = "org.apache.openejb.hibernate.TransactionManagerLookup";
+	private static final String HIBERNATE_TRANSACTION_MANAGER_LOOKUP_CLASS = "hibernate.transaction.manager_lookup_class";
+	private static final String HIBERNATE_VIRGO_JTA_PLATFORM = "org.eclipse.virgo.web.enterprise.openejb.hibernate.OpenEJBJtaPlatform";
+	private static final String HIBERNATE_OPEN_EJB_JTA_PLATFORM = "org.apache.openejb.hibernate.OpenEJBJtaPlatform";
+	private static final String HIBERNATE_JTA_PLATFORM = "hibernate.transaction.jta.platform";
 	private static final String OPENEJB_SCHEME = "openejb:";
     private static final String JAVA_SCHEME = "java:";
     private static final String TRANSACTION_TYPE_BEAN = "Bean";
@@ -153,6 +169,11 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			if (p != null && p.containsKey(OPENEJB_DEPLOYER_FORCED_APP_ID_PROP)) {
 				appInfo.appId = p.getProperty(OPENEJB_DEPLOYER_FORCED_APP_ID_PROP);
 			}
+
+			if (isAppBringingOwnPersistence(standardContext)) {
+				overwritePersistenceIntegrationClassNames(appInfo);
+			}
+
 			AppContext appContext = assembler.createApplication(appInfo);
 
 			bindOpenEjbRefsInTomcat(appInfo, appContext, standardContext);
@@ -181,6 +202,40 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			throw new OpenEJBException("Error while deploying application with real path '" + loc + "' and web context path '" + this.webContextPath + "'.", e);
 		}
 
+	}
+
+	private boolean isAppBringingOwnPersistence(StandardContext standardContext) {
+		ServletContext servletContext = standardContext.getServletContext();
+		BundleContext bundleContext = (BundleContext) servletContext
+				.getAttribute(OSGI_BUNDLECONTEXT);
+		Bundle appBundle = bundleContext.getBundle();
+		URL resourceURL = appBundle.getResource(ECLIPSELINK_FACTORY_CLASS);
+		if (resourceURL == null) {
+			resourceURL = appBundle.getResource(HIBERNATE_FACTORY_CLASS);
+		}
+
+		if (resourceURL != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private void overwritePersistenceIntegrationClassNames(final AppInfo appInfo) {
+		for (PersistenceUnitInfo persistenceUnit : appInfo.persistenceUnits) {
+			Properties props = persistenceUnit.properties;
+			if (OPENEJB_ECLIPSELINK_FACTORY.equals(props
+					.get(ECLIPSELINK_TARGET_SERVER))) {
+				props.put(ECLIPSELINK_TARGET_SERVER, VIRGO_ECLIPSELINK_FACTORY);
+			} else if (HIBERNATE_OPEN_EJB_JTA_PLATFORM.equals(props
+					.get(HIBERNATE_JTA_PLATFORM))) {
+				props.put(HIBERNATE_JTA_PLATFORM, HIBERNATE_VIRGO_JTA_PLATFORM);
+			} else if (HIBERNATE_TRANSACTION_MANAGER_LOOKUP.equals(props
+					.get(HIBERNATE_TRANSACTION_MANAGER_LOOKUP_CLASS))) {
+				props.put(HIBERNATE_TRANSACTION_MANAGER_LOOKUP_CLASS,
+						VIRGO_HIBERNATE_TRANSACTION_MANAGER_LOOKUP);
+			}
+		}
 	}
 
 	private String normalize(String rootContext) {

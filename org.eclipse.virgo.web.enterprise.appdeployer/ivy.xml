@@ -14,11 +14,13 @@
 
 	<dependencies>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.ejb" rev="${javax.ejb}" conf="compile->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="compile->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.validation" rev="${javax.validation}" conf="compile->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina" rev="${org.apache.catalina}" conf="compile->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.core" rev="${org.apache.openejb.core}" conf="compile->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.loader" rev="${org.apache.openejb.loader}" conf="compile->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.jee" rev="${org.apache.openejb.jee}" conf="compile->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="compile->runtime"/>
  		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.api" rev="${org.slf4j.api}" conf="compile->runtime"/>
         
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic" rev="${org.eclipse.virgo.medic}" conf="compile->runtime"/>
