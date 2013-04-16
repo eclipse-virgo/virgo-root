@@ -23,8 +23,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.3.0.v20120307-2102/org.eclipse.osgi.services-3.3.0.v20120307-2102.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi.services/3.3.0.v20110513/org.eclipse.osgi.services-sources-3.3.0.v20110513.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.equinox.ds/1.4.0.v20120112-1400/org.eclipse.equinox.ds-1.4.0.v20120112-1400.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.7.0.D-20130226164418/org.eclipse.virgo.medic-3.7.0.D-20130226164418.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-sources-3.1.0.D-20111205152504.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/3.7.0.D-20130226163512/org.eclipse.virgo.util.math-3.7.0.D-20130226163512.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.7.0.M01/org.eclipse.virgo.medic-3.7.0.M01.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.1.0.D-20111205152504/org.eclipse.virgo.medic-sources-3.1.0.D-20111205152504.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/3.7.0.M01/org.eclipse.virgo.util.math-3.7.0.M01.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

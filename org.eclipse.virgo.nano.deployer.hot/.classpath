@@ -5,10 +5,10 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.7.0.D-20130226163512/org.eclipse.virgo.util.io-3.7.0.D-20130226163512.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.D-20111205151812/org.eclipse.virgo.util.io-sources-3.1.0.D-20111205151812.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.7.0.M01/org.eclipse.virgo.util.io-3.7.0.M01.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.io/3.1.0.D-20111205151812/org.eclipse.virgo.util.io-sources-3.1.0.D-20111205151812.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar" sourcepath="/IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-sources-2.3.0.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.7.0.D-20130226164418/org.eclipse.virgo.medic-3.7.0.D-20130226164418.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/3.7.0.D-20130226164418/org.eclipse.virgo.medic.test-3.7.0.D-20130226164418.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.7.0.M01/org.eclipse.virgo.medic-3.7.0.M01.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic.test/3.7.0.M01/org.eclipse.virgo.medic.test-3.7.0.M01.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi/3.8.1.v20120830-144521/org.eclipse.osgi-3.8.1.v20120830-144521.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.7.2.v20121108-1250/org.slf4j.api-1.7.2.v20121108-1250.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.nano.core"/>
