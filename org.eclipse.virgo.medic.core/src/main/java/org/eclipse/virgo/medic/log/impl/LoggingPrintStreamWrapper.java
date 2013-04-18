@@ -42,7 +42,7 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
 
 	private final ThreadLocal<StringBuilder> entryBuilders;
     
-    private final Logger logger;
+    private Logger logger;
     
     private final ExecutionStackAccessor executionStackAccessor;
     
@@ -53,7 +53,9 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
     private final PrintStream originalPrintStream;
     
     private final LoggingLevel loggingLevel;
-    
+
+    private final String loggerName;
+
     private static final String NULL_STRING = "null";
     
     /**
@@ -71,7 +73,7 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
     public LoggingPrintStreamWrapper(PrintStream printStream, String loggerName, LoggingLevel loggingLevel, ExecutionStackAccessor executionStackAccessor, ConfigurationProvider configurationProvider, String configurationProperty) {
         super(printStream);
         
-        this.logger = LoggerFactory.getLogger(loggerName);
+        this.loggerName = loggerName;
         this.loggingLevel = loggingLevel;
         
         this.executionStackAccessor = executionStackAccessor;
@@ -149,7 +151,7 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
     		super.append(csq);
     	} else {
 	        if(csq == null){
-	        	throw new NullPointerException("Character Sequence to be added to the printStream from source '" + this.logger.getName() + "' is null");
+	        	throw new NullPointerException("Character Sequence to be added to the printStream from source '" + this.loggerName + "' is null");
 	        }
 	        this.internalAppend(csq, 0, csq.length());
     	}
@@ -472,10 +474,10 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
     private void createEntryAndLog(final StringBuilder stringBuilder) {
         final String string = stringBuilder.toString();
         switch (this.loggingLevel) {
-            case DEBUG:     this.logger.debug(string); break;
-            case ERROR:     this.logger.error(string); break;
-            case INFO:      this.logger.info(string);  break;
-            case WARNING:   this.logger.warn(string);  break;
+            case DEBUG:     getLogger().debug(string); break;
+            case ERROR:     getLogger().error(string); break;
+            case INFO:      getLogger().info(string);  break;
+            case WARNING:   getLogger().warn(string);  break;
         }
         entryBuilders.remove();
     }
@@ -507,4 +509,11 @@ public final class LoggingPrintStreamWrapper extends PrintStream {
 	public PrintStream getOriginalPrintStream() {
 	    return this.originalPrintStream;
 	}
+
+    private Logger getLogger() {
+        if (this.logger == null) {
+            this.logger = LoggerFactory.getLogger(this.loggerName);
+        }
+        return this.logger;
+    }
 }
