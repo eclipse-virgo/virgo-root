@@ -14,11 +14,13 @@ package org.eclipse.virgo.web.enterprise.services.accessor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,6 +30,7 @@ import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWire;
@@ -36,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
+
+    private static final String GEMINI_WEB_TOMCAT_SYMBOLIC_NAME = "org.eclipse.gemini.web.tomcat";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebAppBundleClassLoaderDelegateHook.class);
 
@@ -51,14 +56,47 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     private final Set<Bundle> implBundles = new CopyOnWriteArraySet<Bundle>();
 
-    private final Map<Bundle, ClassLoader> implBundlesClassloaders = new ConcurrentHashMap<Bundle, ClassLoader>();
+    private final Map<Bundle, ClassLoader> implBundlesClassloaders = Collections.synchronizedMap(new TreeMap<Bundle, ClassLoader>(new VirgoEEBundleComparable()));
 
     private final Map<Bundle, Set<String>> webAppBundles = new ConcurrentHashMap<Bundle, Set<String>>();
     
     private final Set<Bundle> postFindApiBundles = new CopyOnWriteArraySet<Bundle>();
+    private Set<String> negativeCacheClassPrefixes = new HashSet<String>();
+	
+    WebAppBundleClassLoaderDelegateHook() {
+    	negativeCacheClassPrefixes.add("openwebbeans/Messages");
+    	negativeCacheClassPrefixes.add("com.sun.faces.LogStrings");
+    	negativeCacheClassPrefixes.add("javax.faces.LogStrings");
+    	negativeCacheClassPrefixes.add("org.apache.catalina.loader.LocalStrings");
+    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.file.LocalStrings");
+    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.scan.LocalStrings");
+    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.http.mapper.LocalStrings");
+    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.net.res.LocalStrings");
+    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.threads.res.LocalStrings");
+    	negativeCacheClassPrefixes.add("ValidationMessages");
+    	negativeCacheClassPrefixes.add("org.apache.bval.jsr303.ValidationMessages");
+    	negativeCacheClassPrefixes.add("com.sun.xml.internal.messaging.saaj.soap.LocalStrings");
+    	negativeCacheClassPrefixes.add("org.apache.openejb.package-info");
+    	negativeCacheClassPrefixes.add("org.apache.openejb.monitoring.package-info");
+    	negativeCacheClassPrefixes.add("org.apache.geronimo.openejb.cdi.GeronimoWebBeansPlugin");
+    	negativeCacheClassPrefixes.add("org.apache.openejb.server.rest.RsRegistry");
+    	negativeCacheClassPrefixes.add("javax.faces.application.ConfigurableNavigationHandlerBeanInfo");
+    	negativeCacheClassPrefixes.add("javax.faces.application.NavigationHandlerBeanInfo");
+    	negativeCacheClassPrefixes.add("org.apache.webbeans.jsf.ConversationAwareViewHandlerBeanInfo");
+    	negativeCacheClassPrefixes.add("javax.faces.application.ViewHandlerWrapperBeanInfo");
+    	negativeCacheClassPrefixes.add("javax.faces.application.ViewHandlerBeanInfo");
+    	negativeCacheClassPrefixes.add("javax.faces.component.UIViewRootBeanInfo");
+    	negativeCacheClassPrefixes.add("javax.faces.component.UIComponentBaseBeanInfo");
+    	negativeCacheClassPrefixes.add("javax.faces.component.UIComponentBeanInfo");  
+    	negativeCacheClassPrefixes.add("javax.management.MBean");    
+    	// keep javax.management.MBean out of the list:
+    }
 
     @Override
     public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
+    	if(matchesNegativeCache(name)) {
+    		return null;
+    	}
         if (shouldEnter(MAX_IMPL_SEARCH_DEPTH)) {
             try {
                 enter();
@@ -67,7 +105,8 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 	
 				if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    if (tccl != null) {
+                    //TODO: check why openejb tries to load app classes from itself
+                    if (tccl != null/* && isBundleWebAppCL(tccl)*/) {
                         try {
                             return tccl.loadClass(name);
                         } catch (ClassNotFoundException e) {
@@ -142,7 +181,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
                 if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    if (tccl != null) {
+                    if (tccl != null/* && isBundleWebAppCL(tccl)*/) {
                         return tccl.getResource(name);
                     }
                 }
@@ -215,6 +254,9 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     @Override
     public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
+    	if(matchesNegativeCache(name)) {
+    		return null;
+    	}
         if (shouldEnter(MAX_API_SEARCH_DEPTH)) {
             try {
                 enter();
@@ -424,6 +466,14 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         return this.implBundles;
     }
     
+    private boolean isBundleWebAppCL(ClassLoader tccl) {
+		Bundle bundle = FrameworkUtil.getBundle(tccl.getClass());
+		if(bundle!= null && bundle.getSymbolicName().equals(GEMINI_WEB_TOMCAT_SYMBOLIC_NAME)) {
+			return true;
+		}
+		return false;
+	}
+    
     private String getClassPackage(String className) {
     	int packageNameEndsIndex = className.lastIndexOf(".");
     	if(packageNameEndsIndex != -1 && packageNameEndsIndex != className.length() -1) {
@@ -431,5 +481,14 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     	}
     	return "";
     }
+
+    private boolean matchesNegativeCache(String className) {
+  		for(String prefix : negativeCacheClassPrefixes) {
+  			if(className.startsWith(prefix)) {
+  				return true;
+  			}
+  		}
+  		return false;
+  	}
 
 }

@@ -54,10 +54,10 @@ public class VirgoUndeployerEjb {
 		ContainerSystem containerSystem = SystemInstance.get().getComponent(ContainerSystem.class);
 		Context context = containerSystem.getJNDIContext();
 		if (appForUndeploy != null) {
-			Set<ResourceInfo> resources = appForUndeploy.resourceInfos;
-			for (ResourceInfo resource : resources) {
+			Set<String> resources = appForUndeploy.resourceIds;
+			for (String resourceId : resources) {
 				try {
-					context.unbind(resource.id);
+					context.unbind(resourceId);
 				} catch (NamingException e) {
 					// do nothing
 				}

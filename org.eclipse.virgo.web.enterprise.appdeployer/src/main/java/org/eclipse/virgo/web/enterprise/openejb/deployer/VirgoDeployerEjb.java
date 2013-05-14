@@ -65,7 +65,7 @@ import org.apache.openejb.config.ServiceUtils;
 import org.apache.openejb.config.sys.Resource;
 import org.apache.openejb.config.sys.ServiceProvider;
 import org.apache.openejb.loader.SystemInstance;
-import org.apache.openejb.util.ContextUtil;
+import org.apache.openejb.util.Contexts;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.web.enterprise.openejb.deployer.log.OpenEjbDeployerLogEvents;
 import org.osgi.framework.Bundle;
@@ -117,10 +117,12 @@ public class VirgoDeployerEjb extends DeployerEjb {
 	
 	private Logger logger = LoggerFactory.getLogger(VirgoDeployerEjb.class);
 
-	public VirgoDeployerEjb(String webContextPath, ClassLoader servletClassLoader) {
+	public VirgoDeployerEjb(ServletContext context) {
 		// this custom deployment loader fixes deployment of archived web apps
 		// and sets the webcontextPath as moduleId
-		deploymentLoader = new VirgoDeploymentLoader(webContextPath);
+		webContextPath = context.getContextPath();
+		servletClassLoader = context.getClassLoader();
+		deploymentLoader = new VirgoDeploymentLoader(context);
 		dynamicDeployer = OpenEjbDeployerDSComponent.getDynamicDeployer();
 		if (dynamicDeployer != null) {
 			configurationFactory = new ConfigurationFactory(false, dynamicDeployer);
@@ -129,8 +131,6 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		}
 		assembler = (Assembler) SystemInstance.get().getComponent(org.apache.openejb.spi.Assembler.class);
 
-		this.webContextPath = webContextPath;
-		this.servletClassLoader = servletClassLoader;
 		try {
 			resourceProviders = ServiceUtils
 					.getServiceProvidersByServiceType("Resource");
@@ -153,6 +153,8 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		Properties p = new Properties();
 
 		AppModule appModule = null;
+		ClassLoader webAppClassLoader = null;
+		
 		try {
 			File file = new File(loc);
 			appModule = deploymentLoader.load(file);
@@ -165,7 +167,10 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			// set resources
 			processResources(appModule, standardContext);
 
+//			ClassLoader old = Thread.currentThread().getContextClassLoader();
+//			Thread.currentThread().setContextClassLoader(Assembler.class.getClassLoader());
 			final AppInfo appInfo = configurationFactory.configureApplication(appModule);
+//			Thread.currentThread().setContextClassLoader(old);
 			if (p != null && p.containsKey(OPENEJB_DEPLOYER_FORCED_APP_ID_PROP)) {
 				appInfo.appId = p.getProperty(OPENEJB_DEPLOYER_FORCED_APP_ID_PROP);
 			}
@@ -200,6 +205,10 @@ public class VirgoDeployerEjb extends DeployerEjb {
 				throw (OpenEJBException) e;
 			}
 			throw new OpenEJBException("Error while deploying application with real path '" + loc + "' and web context path '" + this.webContextPath + "'.", e);
+		} finally {
+			if(webAppClassLoader != null) {
+				Thread.currentThread().setContextClassLoader(webAppClassLoader);
+			}
 		}
 
 	}
@@ -281,7 +290,7 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			if(jndiName.contains("comp/BeanManager"))
 				continue;
 			this.logger.debug("Binding " + jndiName + " with value " + value);
-			ContextUtil.mkdirs(jndiContext, jndiName);
+			Contexts.createSubcontexts(jndiContext, jndiName);
 			try {
 				// Note: This will not rebind the DataSources also
 				jndiContext.bind(jndiName, value);

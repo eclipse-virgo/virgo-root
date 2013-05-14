@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -272,8 +273,8 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
      * @param property
      * @return
      */
-    private Map<String, VersionRange> getBundles(String property) {
-        Map<String, VersionRange> bundles = new HashMap<String, VersionRange>();
+    static LinkedHashMap<String, VersionRange> getBundles(String property) {
+    	LinkedHashMap<String, VersionRange> bundles = new LinkedHashMap<String, VersionRange>();
 
         if (property != null) {
             final List<String> bundleNames = parse(property);
@@ -302,7 +303,7 @@ class WebAppBundleTrackerCustomizer implements BundleTrackerCustomizer<String> {
         return bundles;
     }
 
-    private List<String> parse(String property) {
+    private static List<String> parse(String property) {
         List<String> result = new ArrayList<String>();
         int ind = property.indexOf(COMMA_SEPARATOR);
         if (ind >= 0) {

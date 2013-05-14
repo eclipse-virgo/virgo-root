@@ -31,6 +31,8 @@ import javax.persistence.PersistenceUnit;
 import com.sun.faces.spi.InjectionProvider;
 import com.sun.faces.spi.InjectionProviderException;
 
+import org.apache.webbeans.config.WebBeansContext;
+import org.apache.webbeans.inject.OWBInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,13 +57,14 @@ public class VirgoJsfInjectionProvider implements InjectionProvider {
 	public void inject(Object managedBean) throws InjectionProviderException {
 	    // try injecting everything with OWB's injector instance
 	    try {
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            if (tccl != null) {
-                Class<?> injector = tccl.loadClass("org.apache.webbeans.inject.OWBInjector");
-                Object injectorInstance = injector.newInstance();
-                Method method = injector.getDeclaredMethod("inject", new Class<?>[] { Object.class });
-                injectorInstance = method.invoke(injectorInstance, new Object[] { managedBean });
-            }
+	    	OWBInjector.inject(WebBeansContext.currentInstance().getBeanManagerImpl(), managedBean, null);
+//            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+//            if (tccl != null) {
+//                Class<?> injector = tccl.loadClass("org.apache.webbeans.inject.OWBInjector");
+//                Object injectorInstance = injector.newInstance();
+//                Method method = injector.getDeclaredMethod("inject", new Class<?>[] { Object.class });
+//                injectorInstance = method.invoke(injectorInstance, new Object[] { managedBean });
+//            }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to invoke OWBInjector for managedBean '"+ managedBean.toString() +"', will fallback to manual processing", e);

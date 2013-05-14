@@ -19,22 +19,30 @@ org.slf4j.log4j=1.7.2.v20130115-1340
 org.slf4j.jul=1.7.2.v20121108-1250
 
 # Enterprise Compile
-org.apache.openejb.core=4.0.0.beta-2_v201205260545-virgo-7
-org.apache.openejb.loader=4.0.0.beta-2_v201205041336
-org.apache.openejb.jee=4.0.0.beta-2_v201205041336
+org.apache.openejb.core=4.5.2.virgo-1
+org.apache.openejb.loader=4.5.2
+org.apache.openejb.jee=4.5.2
 javax.validation=1.0.0.GA_v201205091237
 javax.transaction=1.1.1.v201105210645
-org.glassfish.com.sun.faces=2.1.6.v201205171319-virgo-3
+org.glassfish.com.sun.faces=2.1.18.v201304210537-virgo-1
 org.ow2.jotm.jotm-core=2.1.9.v201204271116
 javax.ejb=3.1.1.v201204261316
 org.apache.tomcat.api=7.0.35.v201302120746
 javax.persistence=2.0.4.v201112161009
 javax.annotation=1.1.0.v201108011116
-org.apache.bval=0.3.0.v201205161050
+org.apache.bval=0.5.0
 org.apache.derby=10.8.2.2_v201211210650
 org.eclipse.persistence.core=2.4.1.v20121003-ad44345
 org.eclipse.persistence.jpa=2.4.1.v20121003-ad44345
-org.apache.openwebbeans.tomcat7=1.1.3.v201210311100
+javassist=3.17.1.GA
+org.apache.xbean.finder=3.12.0.v201304201405
+org.apache.openwebbeans.ee=1.1.7.v201304200545
+org.apache.openwebbeans.ee.common=1.1.7.v201304201405
+org.apache.openwebbeans.impl=1.1.7.v201304201405
+org.apache.openwebbeans.spi=1.1.7.v201304201405
+org.apache.openwebbeans.jsf=1.1.7.v201304201405
+org.apache.openwebbeans.tomcat7=1.1.7.v201304201405
+cdi.api=1.0.0.v201105160744
 
 # Test
 ch.qos.logback.classic=1.0.7.v20121108-1250

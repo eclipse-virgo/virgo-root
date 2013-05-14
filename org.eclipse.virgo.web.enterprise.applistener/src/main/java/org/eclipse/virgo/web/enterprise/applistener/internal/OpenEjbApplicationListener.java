@@ -33,8 +33,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
     
     public void deploy(StandardContext standardContext) throws Exception {
         ServletContext context = standardContext.getServletContext();
-        String contextPath = context.getContextPath();
-        VirgoDeployerEjb deployer = new VirgoDeployerEjb(contextPath, context.getClassLoader());
+        VirgoDeployerEjb deployer = new VirgoDeployerEjb(context);
         try {
             String realPath = context.getRealPath("");
             synchronized (monitor) {
@@ -46,7 +45,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to initialise enterprise container for application with context path '" + contextPath + "'", e);
+                logger.error("Failed to initialise enterprise container for application with context path '" + context.getContextPath() + "'", e);
             }
             throw e;
         }
@@ -55,8 +54,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
     // no need to synchronize the undeploy operation as it is stateless
     public void undeploy(StandardContext standardContext) throws Exception {
         ServletContext context = standardContext.getServletContext();
-        String contextPath = context.getContextPath();
-        VirgoDeployerEjb deployer = new VirgoDeployerEjb(contextPath, context.getClassLoader());
+        VirgoDeployerEjb deployer = new VirgoDeployerEjb(context);
         try {
             String realPath = context.getRealPath("");
             if (realPath != null) {
@@ -66,7 +64,7 @@ public class OpenEjbApplicationListener implements LifecycleListener {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to destroy enterprise container for application with context path '" + contextPath + "'", e);
+                logger.error("Failed to destroy enterprise container for application with context path '" + context.getContextPath() + "'", e);
             }
             throw e;
         }
