@@ -45,5 +45,12 @@
     install-size="0"
     version="@OE.LOADER@"
     unpack="false"/>
+    
+    <plugin
+    id="org.apache.openejb.jpa-integration"
+    download-size="0"
+    install-size="0"
+    version="@OE.JPA.INTEGRATION@"
+    unpack="false"/>
 
 </feature>

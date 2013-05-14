@@ -201,6 +201,7 @@
                 <filter token="OE.JAVAAGENT" value="${org.apache.openejb.javaagent.feature}"/>
                 <filter token="OE.JEE" value="${org.apache.openejb.jee.feature}"/>
                 <filter token="OE.LOADER" value="${org.apache.openejb.loader.feature}"/>
+                <filter token="OE.JPA.INTEGRATION" value="${org.apache.openejb.jpa-integration.feature}"/>
                 <filter token="JAVAX.WSDL" value="${javax.wsdl}"/>
                 <filter token="XB.ASM" value="${org.apache.xbean.asm}"/>
                 <filter token="XB.BUNDLEUTILS" value="${org.apache.xbean.bundleutils}"/>
@@ -230,6 +231,7 @@
                 <filter token="C.FILEUPLOAD.VERSION" value="${org.apache.commons.fileupload}"/>
                 <filter token="C.IO.VERSION" value="${org.apache.commons.io}"/>
                 <filter token="JOLOKIA.VERSION" value="${org.jolokia.osgi}"/>    
+                <filter token="OBJECTWEB.ASM" value="${org.objectweb.asm}"/>
 			</filterset>
 		</copy>
      </target>

@@ -46,6 +46,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.javaagent" rev="${org.apache.openejb.javaagent}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.jee" rev="${org.apache.openejb.jee}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.loader" rev="${org.apache.openejb.loader}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.jpa-integration" rev="${org.apache.openejb.jpa-integration}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.wsdl" rev="${javax.wsdl}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.xbean.asm" rev="${org.apache.xbean.asm}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.xbean.bundleutils" rev="${org.apache.xbean.bundleutils}" conf="enterprise->runtime"/>
@@ -67,6 +68,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="osgi.enterprise" rev="${osgi.enterprise}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="scannotation" rev="${scannotation}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.ejb" rev="${javax.ejb}" conf="enterprise->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.objectweb.asm" rev="${org.objectweb.asm}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.appdeployer" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.applistener" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
         <dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.enterprise.jsf.support" rev="${org.eclipse.virgo.web}" conf="enterprise->runtime"/>
