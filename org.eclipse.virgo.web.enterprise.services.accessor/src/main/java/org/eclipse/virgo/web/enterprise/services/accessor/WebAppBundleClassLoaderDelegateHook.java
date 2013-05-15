@@ -105,8 +105,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 	
 				if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    //TODO: check why openejb tries to load app classes from itself
-                    if (tccl != null/* && isBundleWebAppCL(tccl)*/) {
+                    if (tccl != null && isBundleWebAppCL(tccl)) {
                         try {
                             return tccl.loadClass(name);
                         } catch (ClassNotFoundException e) {
@@ -181,7 +180,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
                 if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    if (tccl != null/* && isBundleWebAppCL(tccl)*/) {
+                    if (tccl != null && isBundleWebAppCL(tccl)) {
                         return tccl.getResource(name);
                     }
                 }
