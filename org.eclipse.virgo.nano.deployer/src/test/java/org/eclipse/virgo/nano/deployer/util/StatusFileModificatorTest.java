@@ -30,6 +30,9 @@ public class StatusFileModificatorTest {
         "src/test/resources/test/testapp1.deploy.error", "src/test/resources/test/testapp1.undeploy.error",
         "src/test/resources/test/testapp2.deploy.ok" };
 
+    private static final String[] strangeStatusFiles = { "src/test/resources/test/test#strangesymbols.undeploy.ok", 
+    	"src/test/resources/test/test#strangesymbols.deploy.ok", "src/test/resources/test/teststrangesymbols.undeploy.ok"};
+    
     @Before
     public void setUp() {
         PICKUP_DIR.createDirectory();
@@ -52,6 +55,34 @@ public class StatusFileModificatorTest {
         assertTrue("Only 'testapp2.deploy.ok' file should be in .state folder : ", stateFolder.list()[0].equals("testapp2.deploy.ok"));
         StatusFileModificator.deleteStatusFile("testapp2", pickupFolder);
         assertTrue(stateFolder.list().length == 0);
+    }
+    
+    @Test
+    public void deleteStatusFileByPatternTest() throws Exception {
+        STATE_DIR.createDirectory();
+        copyDummyStatusFiles();
+        File stateFolder = STATE_DIR.toFile();
+        File pickupFolder = PICKUP_DIR.toFile();
+        assertTrue(stateFolder.list().length == 5);
+        String deleted = StatusFileModificator.deleteStatusFileByNamePattern("testapp2", pickupFolder);
+        assertTrue(stateFolder.list().length == 4);
+        assertTrue("Only 'testapp2' file should be deleted : ", deleted.equals("testapp2"));
+        StatusFileModificator.deleteStatusFile("testapp1", pickupFolder);
+        assertTrue(stateFolder.list().length == 0);
+    }
+
+    @Test
+    public void deleteStatusFileByPatternStrangeSymbolsTest() throws Exception {
+        STATE_DIR.createDirectory();
+        copyStrangeStatusFiles();
+        File stateFolder = STATE_DIR.toFile();
+        File pickupFolder = PICKUP_DIR.toFile();
+        assertTrue(stateFolder.list().length == 3);
+        String deleted = StatusFileModificator.deleteStatusFileByNamePattern("test[^a-zA-Z0-9_-]strangesymbols", pickupFolder);
+        assertTrue(stateFolder.list().length == 2);
+        assertTrue("Only 'test#strangesymbols' file should be deleted: ", deleted.equals("test#strangesymbols"));
+        assertTrue("Both undeploy status files should not be deleted: ",
+            stateFolder.list()[0].contains(".undeploy.") && stateFolder.list()[1].contains(".undeploy."));
     }
 
     @Test
@@ -91,8 +122,16 @@ public class StatusFileModificatorTest {
     }
 
     private void copyDummyStatusFiles() {
-        for (String dummyStatusFile : dummyStatusFiles) {
-            PathReference sourceFile = new PathReference(dummyStatusFile);
+    	copyStatusFiles(dummyStatusFiles);
+    }
+    
+    private void copyStrangeStatusFiles() {
+    	copyStatusFiles(strangeStatusFiles);
+    }
+    
+    private void copyStatusFiles(String[] files) {
+    	for (String statusFile : files) {
+            PathReference sourceFile = new PathReference(statusFile);
             assertTrue(sourceFile.exists());
             PathReference copy = sourceFile.copy(STATE_DIR);
             assertTrue(copy.exists());

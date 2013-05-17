@@ -63,6 +63,10 @@ public class StatusFileModificator {
     private static final String[] STATUS_FILENAMES_SUFFEXES = { DOT + OP_DEPLOY + DOT + SUCCESS_MARK, DOT + OP_DEPLOY + DOT + ERROR_MARK,
         DOT + OP_UNDEPLOY + DOT + SUCCESS_MARK, DOT + OP_UNDEPLOY + DOT + ERROR_MARK };
 
+    //pattern that matches the deploy status files - ".deploy.(ok|error)"
+    private static final String STATUS_FILENAMES_DEPLOY_PATTERN =  DOT + OP_DEPLOY + DOT + '(' + SUCCESS_MARK + '|' + ERROR_MARK + ')';
+    
+    
     /**
      * Deletes the current status file (if any) for the given deployable archive
      */
@@ -77,6 +81,33 @@ public class StatusFileModificator {
                 logger.info("State directory [" + stateDir.getAbsolutePath() + "] does not exist. Therefore, there is no status file to delete.");
             }
         }
+    }
+    
+    /**
+     * Deletes the first occurrence of a status file from deploy operation that matches the given war name pattern (if
+     * any). There should be one match only.
+     * 
+     * @return the war name prefix of the deleted status file or empty string, if there's no match found
+     */
+    public static String deleteStatusFileByNamePattern(String warNamePattern, File pickupDir) {
+        final File stateDir = new File(pickupDir, STATE_DIR_NAME);
+        if (stateDir.exists()) {
+            String[] statusFileNames = stateDir.list();
+            for (String stateFileName : statusFileNames) {
+                if (stateFileName.matches(warNamePattern + STATUS_FILENAMES_DEPLOY_PATTERN)) {
+                    deleteFile(new File(stateDir, stateFileName));
+                    return stateFileName.substring(0, stateFileName.lastIndexOf(OP_DEPLOY) - 1);
+                }
+            }
+        } else {
+            if (logger.isInfoEnabled()) {
+                logger.info("State directory [" + stateDir.getAbsolutePath() + "] does not exist. Therefore, there is no status file to delete.");
+            }
+        }
+        if (logger.isWarnEnabled()) {
+            logger.warn("Cannot delete any status file, as no status file matches the given warNamePattern [" + warNamePattern + "].");
+        }
+        return EMPTY_STRING;
     }
 
     /**
