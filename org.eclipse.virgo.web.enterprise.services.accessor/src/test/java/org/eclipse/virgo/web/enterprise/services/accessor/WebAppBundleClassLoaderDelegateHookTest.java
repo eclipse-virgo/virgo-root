@@ -92,16 +92,16 @@ public class WebAppBundleClassLoaderDelegateHookTest {
             Thread.currentThread().setContextClassLoader(tccl);
         }
 
-        tccl = Thread.currentThread().getContextClassLoader();
-        List<URL> resources = new ArrayList<URL>();
-        resources.add(new URL("file:foo.txt"));
-        final Enumeration<URL> enumeration = Collections.enumeration(resources);
-        try {
-            Thread.currentThread().setContextClassLoader(new ClassLoaderExt1(enumeration));
-            checkExpectations(webAppBundleClassLoaderDelegateHook, "", bcl, bd, new Object[] { String.class, new URL("file:foo.txt"), enumeration });
-        } finally {
-            Thread.currentThread().setContextClassLoader(tccl);
-        }
+//        tccl = Thread.currentThread().getContextClassLoader();
+//        List<URL> resources = new ArrayList<URL>();
+//        resources.add(new URL("file:foo.txt"));
+//        final Enumeration<URL> enumeration = Collections.enumeration(resources);
+//        try {
+//            Thread.currentThread().setContextClassLoader(new ClassLoaderExt1(enumeration));
+//            checkExpectations(webAppBundleClassLoaderDelegateHook, "", bcl, bd, new Object[] { String.class, new URL("file:foo.txt"), enumeration });
+//        } finally {
+//            Thread.currentThread().setContextClassLoader(tccl);
+//        }
 
         tccl = Thread.currentThread().getContextClassLoader();
         try {
