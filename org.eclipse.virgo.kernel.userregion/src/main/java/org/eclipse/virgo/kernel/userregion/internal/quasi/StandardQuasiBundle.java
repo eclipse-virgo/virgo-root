@@ -155,7 +155,7 @@ final class StandardQuasiBundle implements QuasiBundle {
 		if(bundle == null){
 			return this.bundleDescription.getLocation();
 		}
-		return this.bundle.getLocation();
+		return bundle.getLocation();
 	}
 	
     /**
