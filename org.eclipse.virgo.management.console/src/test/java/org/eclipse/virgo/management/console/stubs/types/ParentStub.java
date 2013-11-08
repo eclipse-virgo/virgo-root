@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.virgo.management.console.stubs.types;
 
-import sun.org.mozilla.javascript.internal.ScriptableObject;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * 

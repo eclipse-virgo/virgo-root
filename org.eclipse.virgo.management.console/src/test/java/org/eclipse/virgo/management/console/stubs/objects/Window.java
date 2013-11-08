@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.virgo.management.console.stubs.objects;
 
-import sun.org.mozilla.javascript.internal.Function;
+import org.mozilla.javascript.Function;
 
 /**
  * 

@@ -28,7 +28,7 @@ function pageinit() {
 	
 };
 
-Repositories = {
+var Repositories = {
 	
 	renderRepositoryMBeans: function(mbeanNames){
 		var getNameAttribute = function(mbeanName){

@@ -23,9 +23,9 @@ import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.eclipse.virgo.management.console.stubs.types.Element;
 import org.junit.Test;
 
-import sun.org.mozilla.javascript.internal.Context;
-import sun.org.mozilla.javascript.internal.Function;
-import sun.org.mozilla.javascript.internal.Scriptable;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
 
 /**
  * All the methods in this test class should be run in the defined order. In particular, testPageInit must be run first

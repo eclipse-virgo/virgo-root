@@ -32,7 +32,7 @@ function pageinit() {
 	});
 }
 
-var SideBar = function(layoutManager, dataSource){
+function SideBar(layoutManager, dataSource){
 
 	var self = this;
 	

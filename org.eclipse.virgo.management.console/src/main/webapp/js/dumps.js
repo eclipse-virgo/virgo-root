@@ -28,7 +28,7 @@ function pageinit(){
 	});
 }
 
-var DumpViewer = function(){
+function DumpViewer(){
 	
 	var self = this;
 	

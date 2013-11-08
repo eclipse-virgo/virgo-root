@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.eclipse.virgo.management.console.stubs.objects.Util;
 
-import sun.org.mozilla.javascript.internal.Context;
-import sun.org.mozilla.javascript.internal.Function;
-import sun.org.mozilla.javascript.internal.ScriptableObject;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  */

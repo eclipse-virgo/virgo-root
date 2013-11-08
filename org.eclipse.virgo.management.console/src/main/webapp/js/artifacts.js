@@ -9,11 +9,14 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
+
+var uploadManager = new UploadManager();
+
 /**
  * Script to be loaded in to the head of the artifacts view
  */
+
 function pageinit(){
-	uploadManager = new UploadManager();
 	$('#upload-target-id').load(uploadManager.deployComplete);
 	$('#add-upload-box').click(uploadManager.addUploadBox);
 	$('#minus-upload-box').click(uploadManager.minusUploadBox);
@@ -423,7 +426,7 @@ var FullArtifact = function(metaData, objectName) {
 };
 	
 
-var UploadManager = function() {
+function UploadManager() {
 
 	var self = this;
 	

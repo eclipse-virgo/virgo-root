@@ -17,5 +17,14 @@ Import-Template:
  org.osgi.service.*;version="0",
  org.osgi.util.tracker.*;version="0",
  javax.management.*;version="0",
- javax.security.*;version="0"
+ javax.security.*;version="0",
+ com.sun.javadoc.*;version="0",
+ com.sun.tools.javadoc.*;version="0",
+ javax.swing.*;version="0",
+ javax.xml.parsers.*;version="0",
+ javax.xml.stream.*;version="0",
+ javax.xml.transform.*;version="0",
+ org.apache.tools.ant.*;version="0",
+ org.w3c.dom.*;version="0",
+ org.xml.sax.*;version="0"
 Excluded-Exports: *

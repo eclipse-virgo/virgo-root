@@ -27,5 +27,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.springframework/org.springframework.core/3.1.0.RELEASE/org.springframework.core-3.1.0.RELEASE.jar" sourcepath="/IVY_CACHE/org.springframework/org.springframework.core/3.1.0.RELEASE/org.springframework.core-sources-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.io/1.4.0/com.springsource.org.apache.commons.io-1.4.0.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.mozilla.javascript/1.7.4.v201209142200/org.mozilla.javascript-1.7.4.v201209142200.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

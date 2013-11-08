@@ -28,6 +28,7 @@
 		<dependency org="org.springframework" name="org.springframework.test" rev="${org.springframework}" conf="test->runtime"/>
         <dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.nop" rev="${org.slf4j.nop}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.mozilla.javascript" rev="${org.mozilla.javascript}" conf="test->runtime"/>
     </dependencies>
 
 </ivy-module>
