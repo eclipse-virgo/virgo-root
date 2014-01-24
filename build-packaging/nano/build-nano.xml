@@ -8,6 +8,7 @@
 	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
     <property name="nano-full-package" value="virgo-nano-full"/>   
     <property name="nano-package" value="virgo-nano"/>
+    <property name="nano-rap-package" value="virgo-nano-rap"/>
     <property name="nano.basedir" value="${basedir}/nano"/> 
      
     <target name="nano.package-resources-and-products" depends="ivy.init">
@@ -62,6 +63,18 @@
 				<exclude name="${nano-full-package}-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
 			</zipfileset>
 		</zip>
+
+        <property name="nano.rap.package.dir" value="${package.dir}/VNR"/>
+        <delete dir="${nano.rap.package.dir}/${nano-rap-package}-${bundle.version}/Eclipse.app" quiet="true"/>
+        
+        <zip destfile="${artifacts.dir}/${nano-rap-package}-${bundle.version}.zip">
+            <zipfileset dir="${nano.rap.package.dir}" includes="${nano-rap-package}-${bundle.version}/bin/*.sh" filemode="755"/>
+            <zipfileset dir="${nano.rap.package.dir}" includes="${nano-rap-package}-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+            <zipfileset dir="${nano.rap.package.dir}">
+                <exclude name="${nano-rap-package}-${bundle.version}/bin/*.sh"/>
+                <exclude name="${nano-rap-package}-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+             </zipfileset>
+        </zip>
      </target>
      
      <target name="nano.prepare-bundles-and-features">
@@ -288,6 +301,12 @@
             <param name="product.file.location" value="${p2.products.location}/nano-full/nano-full.product"/>
         </antcall>
         <echo message="Published nano-full product to ${p2.repository.dir}."/>
+
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/nano-rap/nano-rap.product"/>
+        </antcall>
+        <echo message="Published nano-rap product to ${p2.repository.dir}."/>
      </target>
     
     <target name="nano.publish-bundles-and-features">
@@ -316,6 +335,13 @@
             <param name="product.iu" value="nano-full.product"/>
         </antcall>
         <echo message="Installed Virgo Nano Full for distribution purposes."/>
+
+        <antcall target="p2.install-virgo-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="destination" value="${package.dir}/VNR/${nano-rap-package}-${bundle.version}"/>
+            <param name="product.iu" value="nano-rap.product"/>
+        </antcall>
+        <echo message="Installed Virgo Nano RAP for distribution purposes."/>
      </target>
      
      <target name="prepare-common-resources">
@@ -411,6 +437,9 @@
         <antcall target="publish-package-build">
             <param name="package.output.file" value="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip"/>
         </antcall>
+        <antcall target="publish-package-build">
+            <param name="package.output.file" value="${artifacts.dir}/${nano-rap-package}-${bundle.version}.zip"/>
+        </antcall>
      </target>
     
     <target name="simrel-package" depends="ivy.init">		
@@ -502,6 +531,9 @@
         </antcall>
         <antcall target="publish-package-download">
             <param name="package.output.file" value="${artifacts.dir}/${nano-full-package}-${bundle.version}.zip"/>
+        </antcall>
+        <antcall target="publish-package-download">
+            <param name="package.output.file" value="${artifacts.dir}/${nano-rap-package}-${bundle.version}.zip"/>
         </antcall>
      </target>
     
