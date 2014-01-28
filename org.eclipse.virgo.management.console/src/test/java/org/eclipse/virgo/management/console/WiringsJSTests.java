@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import javax.script.ScriptException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mozilla.javascript.Context;
@@ -30,15 +31,18 @@ import org.mozilla.javascript.Scriptable;
  */
 public class WiringsJSTests extends AbstractJSTests {
 	
-	@Test
-	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
+	@Before
+	public void setUpWirings() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
 		readFile("src/main/webapp/js/wirings.js");
 		createTestLayoutManager();
 		createRaphael();
 		
 		invokePageInit();
-		
+	}
+
+    @Test
+    public void testPageInit() throws IOException {
 		assertEquals("bundlesGui", commonUtil.getLastScriptLoaded());
 		assertNotNull(commonUtil.getLoadScriptAsync());
 		commonUtil.getLoadScriptAsync().call(context, scope, scope, new Object[]{});

@@ -20,6 +20,7 @@ import java.io.IOException;
 import javax.script.ScriptException;
 
 import org.eclipse.virgo.management.console.stubs.objects.Dollar;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mozilla.javascript.Context;
@@ -33,8 +34,8 @@ import org.mozilla.javascript.ScriptableObject;
  */
 public class RepositoriesJSTests extends AbstractJSTests {
 
-    @Test
-    public void testPageinit() throws ScriptException, IOException, NoSuchMethodException {
+    @Before
+    public void setUpRepositoriesJS() throws ScriptException, IOException, NoSuchMethodException {
 
         // Common setup that will be used by other test methods.
         readFile("src/main/webapp/js/repositories.js");
@@ -42,7 +43,10 @@ public class RepositoriesJSTests extends AbstractJSTests {
         addCommonObjects();
 
         invokePageInit();
+    }
 
+    @Test
+    public void testPageInit() throws IOException {
         assertNotNull(Dollar.getAjaxSuccess());
         Dollar.getAjaxSuccess().call(context, scope, scope, new Object[] { getTestData() });
 

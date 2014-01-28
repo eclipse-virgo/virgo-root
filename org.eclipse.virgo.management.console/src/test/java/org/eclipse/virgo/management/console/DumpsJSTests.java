@@ -21,6 +21,7 @@ import javax.script.ScriptException;
 
 import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.eclipse.virgo.management.console.stubs.types.Element;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mozilla.javascript.Context;
@@ -37,8 +38,8 @@ public class DumpsJSTests extends AbstractJSTests {
     
     private static final String DUMPS_URL = "hostPrefix/jolokia/read/org.eclipse.virgo.kernel:type=Medic,name=DumpInspector/Dumps";
 	
-    @Test
-    public void testPageinit() throws ScriptException, IOException, NoSuchMethodException {
+    @Before
+    public void setUpDumpsJS() throws ScriptException, IOException, NoSuchMethodException {
 
         // Common setup that will be used by other test methods.
         readFile("src/main/webapp/js/dumps.js");
@@ -46,7 +47,10 @@ public class DumpsJSTests extends AbstractJSTests {
         addCommonObjects();
 
         invokePageInit();
-        
+    }
+
+    @Test
+    public void testPageInit() throws IOException {
         Map<String, Function> successByUrl = Dollar.getAndClearAjaxSuccessByUrl();
         
         assertTrue(successByUrl.containsKey(DUMPDIR_URL));

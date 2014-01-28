@@ -21,6 +21,7 @@ import javax.script.ScriptException;
 
 import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.eclipse.virgo.management.console.stubs.types.Element;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mozilla.javascript.Context;
@@ -34,8 +35,8 @@ import org.mozilla.javascript.ScriptableObject;
  */
 public class ArtifactsJSTests extends AbstractJSTests {
 
-    @Test
-    public void testPageinit() throws ScriptException, IOException, NoSuchMethodException {
+    @Before
+    public void setUpArtifactsJS() throws ScriptException, IOException, NoSuchMethodException {
         addCommonObjects();
         readFile("src/main/webapp/js/artifacts.js");
 
@@ -80,19 +81,15 @@ public class ArtifactsJSTests extends AbstractJSTests {
 
     @Test
     public void testTreeTopLevelTwisty() throws IOException {
-        commonUtil.clean();
         ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
         ScriptableObject.callMethod(tree, "nodeTwistyClicked", new Object[] { getTestTopLevelEventData() });
-        assertEquals("<li />", Dollar.getDollarLookup());
         assertEquals("search/org.eclipse.virgo.kernel:type=ArtifactModel,*", commonUtil.getLastQuery());
     }
 
     @Test
     public void testTreeTwisty() throws IOException {
-        commonUtil.clean();
         ScriptableObject tree = (ScriptableObject) scope.get("tree", scope);
         ScriptableObject.callMethod(tree, "nodeTwistyClicked", new Object[] { getTestOtherLevelEventData() });
-        assertEquals("<li />", Dollar.getDollarLookup());
         assertEquals("read/objectName", commonUtil.getLastQuery());
     }
 

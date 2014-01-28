@@ -21,6 +21,7 @@ import javax.script.ScriptException;
 
 import org.eclipse.virgo.management.console.stubs.objects.ObjectName;
 import org.eclipse.virgo.management.console.stubs.types.Element;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mozilla.javascript.Context;
@@ -40,8 +41,8 @@ public class ConfigurationsJSTests extends AbstractJSTests {
 	 * @throws IOException
 	 * @throws NoSuchMethodException
 	 */
-	@Test
-	public void testPageinit() throws ScriptException, IOException, NoSuchMethodException{
+	@Before
+	public void setUpConfigurationsJS() throws ScriptException, IOException, NoSuchMethodException{
 		addCommonObjects();
 		readFile("src/main/webapp/js/configurations.js");
 

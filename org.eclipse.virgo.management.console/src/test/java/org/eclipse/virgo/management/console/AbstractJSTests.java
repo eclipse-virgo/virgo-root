@@ -23,9 +23,8 @@ import org.eclipse.virgo.management.console.stubs.objects.Util;
 import org.eclipse.virgo.management.console.stubs.objects.Window;
 import org.eclipse.virgo.management.console.stubs.types.Element;
 import org.eclipse.virgo.management.console.stubs.types.Server;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
+import org.junit.After;
+import org.junit.Before;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
@@ -38,16 +37,16 @@ import org.mozilla.javascript.ScriptableObject;
  */
 public abstract class AbstractJSTests {
 	
-	protected static Context context; 
+	protected Context context; 
 	
-	protected static ScriptableObject scope;
+	protected ScriptableObject scope;
 
 	protected static String alertMsg;
 	
-	protected static Util commonUtil = null;
+	protected Util commonUtil = null;
 	
-	@BeforeClass
-	public static void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
+	@Before
+	public void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
 		context = Context.enter();
 		scope = context.initStandardObjects();
 
@@ -66,12 +65,13 @@ public abstract class AbstractJSTests {
 		FunctionObject alertFunction = new FunctionObject("alert", AbstractJSTests.class.getDeclaredMethod("alert", String.class), scope);
 		ScriptableObject.putProperty(scope, alertFunction.getFunctionName(), alertFunction);
 	}
-	
-	@AfterClass
-	public static void closeDown(){
+
+	@After
+	public void closeDown(){
 		Context.exit();
 	}
 	
+	// callback from JS function doesn't work with non static field
 	public static void alert(String msg){
 		System.out.println(msg);
 		alertMsg = msg;
