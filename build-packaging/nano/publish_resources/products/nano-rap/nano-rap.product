@@ -20,12 +20,15 @@
 	  <feature id="org.eclipse.virgo.nano.specific.resources" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.nano.mbeans.controller" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.webconsole.deps" version="0.0.0"/>
+	  <feature id="org.eclipse.jetty" version="0.0.0"/>
+	  <feature id="org.eclipse.rap" version="0.0.0"/>
    </features>
-   
+
    <configurations>
       <plugin id="org.jolokia.osgi" autoStart="true" />
    	  <plugin id="org.eclipse.gemini.management" autoStart="true" />
-   	  
+	  <property name="org.osgi.service.http.port" value="8080"/>
+
 	  <plugin id="org.eclipse.virgo.nano.deployer" autoStart="true" startLevel="5"/>
 	  <property name="org.eclipse.virgo.fschecker.initialEventMode" value="bulk"/>
    </configurations>	

@@ -193,3 +193,10 @@ org.apache.openejb.jpa-integration.feature=4.5.2
 javax.validation.feature=1.0.0.GA_v201205091237
 javassist.feature=3.17.1.GA
 org.apache.derby.feature=10.8.2.2_v201211210650
+
+# RAP
+org.eclipse.jetty.rap=8.1.12.v20130726
+org.eclipse.rap.jface=2.3.0.20131210-1030
+org.eclipse.rap.jface.databinding=2.3.0.20131210-1030
+org.eclipse.rap.rwt=2.3.0.20140127-1357
+org.eclipse.rap.rwt.osgi=2.3.0.20140124-1321

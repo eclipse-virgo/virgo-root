@@ -39,7 +39,6 @@
 		<antcall target="package.jetty"/>
         <antcall target="package.jetty.scripts"/>
         <antcall target="jetty.package.publish"/>
-        
     </target>
     
     <target name="vjs.prepare-bundles-and-features" depends="ivy.init">
@@ -48,13 +47,13 @@
             <fileset dir="${jetty-server.basedir}/publish_resources/features"/>
         </copy>
     </target>
-    
+
     <target name="vjs.publish-bundles-and-features" depends="ivy.init">
         <antcall target="p2.publish-bundles-features">
             <param name="repository" value="${p2.repository.dir}"/>
             <param name="source" value="${jetty-server.target.dir}/assembly"/>
         </antcall>
-        <echo message="Published bundles and features to ${p2.repository.dir}."/>
+        <echo message="Published Virgo Jetty Server bundles and features to ${p2.repository.dir}."/>
     </target>
     
     <target name="vjs.clean-up" depends="ivy.init">
