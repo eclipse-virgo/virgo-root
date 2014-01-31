@@ -197,8 +197,14 @@ public class ContentServlet extends HttpServlet {
 		
 		ServletContext servletContext = getServletContext();
 		try {
-			pageContext.put("contextPath", servletContext.getContextPath());
-			pageContext.put("servletContextName", servletContext.getServletContextName());
+			if (servletContext.getContextPath().isEmpty()) {
+				// running with plain Jetty HttpService
+				pageContext.put("contextPath", Activator.contextPath);
+				pageContext.put("servletContextName", Activator.APPLICATION_NAME);
+			} else {
+				pageContext.put("contextPath", servletContext.getContextPath());
+				pageContext.put("servletContextName", servletContext.getServletContextName());
+			}
 		} catch(UnsupportedOperationException e){
 			pageContext.put("contextPath", Activator.contextPath);
 			pageContext.put("servletContextName", Activator.APPLICATION_NAME);
