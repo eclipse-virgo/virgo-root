@@ -26,7 +26,7 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-3.7.1.R37x_v20110808-1106.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.7.1.R37x_v20110808-1106/org.eclipse.osgi-sources-3.7.1.R37x_v20110808-1106.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.web.core"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.util/org.eclipse.virgo.util.math/3.7.0.D-20130521040431/org.eclipse.virgo.util.math-3.7.0.D-20130521040431.jar"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.7.0.D-20130521042331/org.eclipse.virgo.kernel.osgi-3.7.0.D-20130521042331.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.7.0.D-20130521042331/org.eclipse.virgo.kernel.osgi-sources-3.7.0.D-20130521042331.jar">
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.7.0.D-20140203134455/org.eclipse.virgo.kernel.osgi-3.7.0.D-20140203134455.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.kernel/org.eclipse.virgo.kernel.osgi/3.7.0.D-20140203134455/org.eclipse.virgo.kernel.osgi-sources-3.7.0.D-20140203134455.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
