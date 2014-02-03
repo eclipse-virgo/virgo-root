@@ -1,10 +1,10 @@
 # Compile
-org.eclipse.virgo.kernel=3.7.0.D-20130521042331
+org.eclipse.virgo.kernel=3.7.0.D-20140203134455
 org.eclipse.virgo.nano=3.7.0.D-20130521041633
 org.eclipse.virgo.medic=3.7.0.D-20130521041335
 org.eclipse.virgo.repository=3.7.0.D-20130521042107
 org.eclipse.virgo.util=3.7.0.D-20130521040431
-org.eclipse.virgo.web=3.7.0.D-20130521045731
+org.eclipse.virgo.web=3.7.0.D-20140203141626
 org.eclipse.gemini.web=2.2.2.RELEASE
 javax.jms=1.1.0.v201205091237
 javax.servlet.jsp.jstl=1.2.0.v20110728
