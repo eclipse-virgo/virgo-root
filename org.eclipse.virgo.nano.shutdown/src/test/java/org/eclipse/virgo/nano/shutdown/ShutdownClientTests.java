@@ -66,19 +66,13 @@ public class ShutdownClientTests {
         UnitTestShutdownClient client = new UnitTestShutdownClient();
 
         ShutdownCommand command = new ShutdownCommand();
-        command.setPort(9999);
+        command.setPort(14); // privileged unassigned port - should never be open
 
-        JMXConnectorServer server = bootstrapMBeanServer(9875);
+        client.doShutdown(command);
 
-        try {
-            client.doShutdown(command);
-
-            assertTrue(client.serverUnreachable);
-            assertFalse(client.exited);
-            assertFalse(client.shutdownFailureReported);
-        } finally {
-            server.stop();
-        }
+        assertTrue(client.serverUnreachable);
+        assertFalse(client.exited);
+        assertFalse(client.shutdownFailureReported);
     }
 
     @Test
