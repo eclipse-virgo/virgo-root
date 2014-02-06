@@ -24,6 +24,7 @@ import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
 import org.eclipse.osgi.baseadaptor.loader.ClasspathManager;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class AppLoaderClasspathExtenderClassLoadingHookTests {
@@ -51,6 +52,43 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
     private static final String WEB_CONTEXTPATH_HEADER = "Web-ContextPath";
 
     private static final String PERSISTENCE_INTEGRATION_JAR1 = "org.apache.openejb.jpa.integration.jar_v1.1";
+
+    @Before
+    public void setUp() {
+        System.setProperty(PERSISTENCE_INTEGRATION_JAR_PROP_NAME, PERSISTENCE_INTEGRATION_JAR_NAME);
+    }
+
+    @After
+    public void cleanUp() {
+        if (System.getProperty(CONFIG_AREA) != null) {
+            System.getProperties().remove(CONFIG_AREA);
+        }
+        File configDir = new File(new File("."), CONFIGURATION_DIR);
+        if (configDir.exists()) {
+            configDir.delete();
+        }
+
+        File libDir = new File(new File("."), LIB_DIR);
+        File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
+        File jpaIntegrationFile = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR);
+
+        if (jpaIntegrationFile.exists()) {
+            jpaIntegrationFile.delete();
+        }
+
+        File jpaIntegrationFile1 = new File(libDir, PERSISTENCE_INTEGRATION_JAR1);
+        if (jpaIntegrationFile1.exists()) {
+            jpaIntegrationFile1.delete();
+        }
+
+        if (libPersistenceDir.exists()) {
+            libPersistenceDir.delete();
+        }
+
+        if (libDir.exists()) {
+            libDir.delete();
+        }
+    }
 
     @Test
     public void testAddClassPathEntryPositive() throws IOException {
@@ -127,40 +165,7 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
         jpaIntegrationFile.createNewFile();
         String configurationFilePath = FILE_SCHEME + configDir.getAbsolutePath();
         System.setProperty(CONFIG_AREA, configurationFilePath);
-        System.setProperty(PERSISTENCE_INTEGRATION_JAR_PROP_NAME, PERSISTENCE_INTEGRATION_JAR_NAME);
         return jpaIntegrationFile;
-    }
-
-    @After
-    public void cleanUp() {
-        if (System.getProperty(CONFIG_AREA) != null) {
-            System.getProperties().remove(CONFIG_AREA);
-        }
-        File configDir = new File(new File("."), CONFIGURATION_DIR);
-        if (configDir.exists()) {
-            configDir.delete();
-        }
-
-        File libDir = new File(new File("."), LIB_DIR);
-        File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
-        File jpaIntegrationFile = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR);
-
-        if (jpaIntegrationFile.exists()) {
-            jpaIntegrationFile.delete();
-        }
-
-        File jpaIntegrationFile1 = new File(libDir, PERSISTENCE_INTEGRATION_JAR1);
-        if (jpaIntegrationFile1.exists()) {
-            jpaIntegrationFile1.delete();
-        }
-
-        if (libPersistenceDir.exists()) {
-            libPersistenceDir.delete();
-        }
-
-        if (libDir.exists()) {
-            libDir.delete();
-        }
     }
 
     @Test
