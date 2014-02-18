@@ -71,7 +71,7 @@ public class AbstractKernelTests {
 
 			}
 		}
-		String[] creds = { "admin", "springsource" };
+		String[] creds = { "admin", "admin" };
 		env.put(JMXConnector.CREDENTIALS, creds);
 
 		System.setProperty("javax.net.ssl.trustStore", severDir
