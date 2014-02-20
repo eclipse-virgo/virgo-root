@@ -83,7 +83,7 @@ public class AbstractNanoTests {
                 break;
             }
         }
-        String[] creds = { "admin", "springsource" };
+        String[] creds = { "admin", "admin" };
         env.put(JMXConnector.CREDENTIALS, creds);
         
         System.setProperty("javax.net.ssl.trustStore", serverDir + "/configuration/keystore");
