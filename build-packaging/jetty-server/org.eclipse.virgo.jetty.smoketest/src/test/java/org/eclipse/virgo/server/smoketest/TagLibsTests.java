@@ -12,12 +12,10 @@
 package org.eclipse.virgo.server.smoketest;
 
 import org.junit.Test;
-import org.junit.Ignore;
 
 public class TagLibsTests {
 
 	@Test
-    @Ignore
 	public void testTagLibsScreen() {
 		UrlWaitLatch.waitFor("http://localhost:8080/taglibs/app/sample.htm");
 	}

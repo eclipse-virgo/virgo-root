@@ -9,14 +9,22 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.server.smoketest;
+package org.eclipse.virgo.tomcat.smoketest;
 
 import org.junit.Test;
 
-public class SplashScreenTests {
-
+public class FormTagsTests {
+    
+	private static final String BASE_URL = "http://localhost:8080/formtags-par/";
+    
 	@Test
-	public void connectToSplashScreen() throws Exception {
-		UrlWaitLatch.waitFor("http://localhost:8080/");
+	public void testFormTagsListScreen() {
+		UrlWaitLatch.waitFor(BASE_URL + "list.htm");
 	}
+    
+	@Test
+	public void testFormTagsFormScreen() {
+		UrlWaitLatch.waitFor(BASE_URL + "form.htm?id=1");
+	}
+    
 }

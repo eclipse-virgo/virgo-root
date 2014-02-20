@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.server.smoketest;
+package org.eclipse.virgo.tomcat.smoketest;
 
 import static org.junit.Assert.fail;
 

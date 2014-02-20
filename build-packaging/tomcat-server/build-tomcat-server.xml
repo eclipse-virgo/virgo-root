@@ -185,7 +185,7 @@
 
 	<target name="smoke-test-tomcat-server" description="Runs a smoke test on the packaged build">
 		<path id="smoke.test.bundles">
-			<pathelement location="${tomcat-server.basedir}/org.eclipse.virgo.server.smoketest" />
+			<pathelement location="${tomcat-server.basedir}/org.eclipse.virgo.tomcat.smoketest" />
 		</path>
 		<antcall target="test.pre"/>
 		<all-bundles target="test-package" buildpathRef="smoke.test.bundles">

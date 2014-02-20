@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.server.smoketest;
+package org.eclipse.virgo.tomcat.smoketest;
 
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class AdminScreenTests {
 
 	@Test
 	public void testAdminScreen() {
-		//UrlWaitLatch.waitFor("http://localhost:8080/admin", "admin", "springsource");
+		UrlWaitLatch.waitFor("http://localhost:8080/admin", "admin", "admin");
 	}
 
 }
