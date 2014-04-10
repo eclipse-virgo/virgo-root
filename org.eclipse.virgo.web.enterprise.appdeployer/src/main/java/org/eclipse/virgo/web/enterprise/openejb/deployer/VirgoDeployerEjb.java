@@ -14,6 +14,8 @@ package org.eclipse.virgo.web.enterprise.openejb.deployer;
 import static javax.ejb.TransactionManagementType.BEAN;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.jar.JarFile;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -61,11 +64,20 @@ import org.apache.openejb.config.ConfigurationFactory;
 import org.apache.openejb.config.DeploymentLoader;
 import org.apache.openejb.config.DeploymentModule;
 import org.apache.openejb.config.DynamicDeployer;
+import org.apache.openejb.config.FinderFactory;
 import org.apache.openejb.config.ServiceUtils;
+import org.apache.openejb.config.WebModule;
+import org.apache.openejb.config.WebappAggregatedArchive;
 import org.apache.openejb.config.sys.Resource;
 import org.apache.openejb.config.sys.ServiceProvider;
 import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.util.Contexts;
+import org.apache.xbean.finder.AnnotationFinder;
+import org.apache.xbean.finder.IAnnotationFinder;
+import org.apache.xbean.finder.archive.Archive;
+import org.apache.xbean.finder.archive.CompositeArchive;
+import org.apache.xbean.finder.archive.FilteredArchive;
+import org.apache.xbean.finder.archive.JarArchive;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.web.enterprise.openejb.deployer.log.OpenEjbDeployerLogEvents;
 import org.osgi.framework.Bundle;
@@ -206,11 +218,96 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			}
 			throw new OpenEJBException("Error while deploying application with real path '" + loc + "' and web context path '" + this.webContextPath + "'.", e);
 		} finally {
+			if (appModule != null) {
+				try {
+					closeOpenJars(appModule);
+				} catch (Exception e) {
+					logger.warn("Could not close open application jars");
+				}
+			}
+
 			if(webAppClassLoader != null) {
 				Thread.currentThread().setContextClassLoader(webAppClassLoader);
 			}
 		}
 
+	}
+	
+	private void closeOpenJars(AppModule appModule) throws Exception {
+		List<WebModule> webModules = appModule.getWebModules();
+		for (WebModule webModule : webModules) {
+			closeWebModuleOpenJars(webModule);
+		}
+	}
+	
+	private void closeWebModuleOpenJars(WebModule webModule) throws Exception {
+		IAnnotationFinder finder = webModule.getFinder();
+		if (finder == null) {
+			logger.debug("The IAnnotationFinder in WebModule [" + webModule + "] is null; no jar closing will be performed");
+			return;
+		}
+		AnnotationFinder annotationFinder = null;
+		if (finder instanceof FinderFactory.ModuleLimitedFinder) {
+			annotationFinder = (AnnotationFinder)((FinderFactory.ModuleLimitedFinder)finder).getDelegate();
+		} else if (finder instanceof AnnotationFinder) {
+			annotationFinder = (AnnotationFinder) finder;
+		}
+		
+		if (annotationFinder != null) {
+			WebappAggregatedArchive aggregateArchive = (WebappAggregatedArchive) annotationFinder.getArchive();
+			
+			// get internal CompositeArchive
+			Field archive = WebappAggregatedArchive.class.getDeclaredField("archive");
+			archive.setAccessible(true);
+			CompositeArchive compositeArchive = (CompositeArchive)archive.get(aggregateArchive);
+			archive.setAccessible(false);
+			
+			// get internal list of FilteredArchives
+			handleCompositeArchive(compositeArchive);
+		}
+	}
+	
+	private void handleArchivesList(List<Archive> archives) throws Exception {
+		for (Archive arch : archives) {
+			handleArchive(arch);
+		}
+	}
+	
+	private void handleCompositeArchive(CompositeArchive compositeArchive) throws Exception {
+		Field archives = CompositeArchive.class.getDeclaredField("archives");
+		archives.setAccessible(true);
+		List<Archive> internalArchives = (List<Archive>)archives.get(compositeArchive);
+		archives.setAccessible(false);
+		handleArchivesList(internalArchives);
+	}
+	
+	private void handleFilteredArchive(FilteredArchive filteredArchive) throws Exception {
+		Field internalArchiveField = FilteredArchive.class.getDeclaredField("archive");
+		internalArchiveField.setAccessible(true);
+		Archive internalArchive = (Archive)internalArchiveField.get(filteredArchive);
+		internalArchiveField.setAccessible(false);
+		handleArchive(internalArchive);
+	}
+	
+	private void handleArchive(Archive arch) throws Exception {
+		if (arch instanceof FilteredArchive) {
+			FilteredArchive filteredArchive = (FilteredArchive) arch;
+			handleFilteredArchive(filteredArchive);
+		} else if (arch instanceof CompositeArchive) {
+			CompositeArchive compositeArchive = (CompositeArchive) arch;
+			handleCompositeArchive(compositeArchive);
+		} else if (arch instanceof JarArchive) {
+			JarArchive jarArchive = (JarArchive) arch;
+			Field jarField = JarArchive.class.getDeclaredField("jar");
+			jarField.setAccessible(true);
+			JarFile jar = (JarFile)jarField.get(jarArchive);
+			jarField.setAccessible(false);
+			try {
+				jar.close();
+			} catch(IOException e) {
+				// do nothing
+			}
+		}
 	}
 
 	private boolean isAppBringingOwnPersistence(StandardContext standardContext) {

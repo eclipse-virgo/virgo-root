@@ -295,6 +295,8 @@ public class VirgoDeploymentLoader extends DeploymentLoader {
         } catch (IOException e) {
 
             return;
+        } finally {
+        	ClassLoaderUtil.destroyClassLoader(loader);
         }
 
         Beans complete = null;
