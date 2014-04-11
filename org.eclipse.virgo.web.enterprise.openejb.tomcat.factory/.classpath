@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.35.v201302131125/org.apache.catalina-7.0.35.v201302131125.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.catalina/7.0.35.v201302131125/org.apache.catalina.source-7.0.35.v201302131125.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.openejb.core/4.5.2.virgo-1/org.apache.openejb.core-4.5.2.virgo-1.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.apache.openejb.core/4.0.0.beta-2_v201205260545-virgo-2/org.apache.openejb.core.source-4.0.0.beta-2_v201205260545-virgo-2.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar" sourcepath="/IVY_CACHE/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-sources-4.7.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

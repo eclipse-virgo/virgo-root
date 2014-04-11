@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 SAP AG
+ * Copyright (c) 2012 - 2014 SAP AG
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +40,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.ContextResource;
-import org.apache.catalina.deploy.NamingResources;
+import org.apache.catalina.deploy.ContextResourceEnvRef;
 import org.apache.catalina.deploy.ResourceBase;
 import org.apache.naming.ContextAccessController;
 import org.apache.openejb.AppContext;
@@ -59,17 +56,14 @@ import org.apache.openejb.assembler.classic.JndiEncBuilder;
 import org.apache.openejb.assembler.classic.PersistenceUnitInfo;
 import org.apache.openejb.assembler.classic.WebAppInfo;
 import org.apache.openejb.config.AppModule;
-import org.apache.openejb.config.AutoConfig;
 import org.apache.openejb.config.ConfigurationFactory;
 import org.apache.openejb.config.DeploymentLoader;
 import org.apache.openejb.config.DeploymentModule;
 import org.apache.openejb.config.DynamicDeployer;
 import org.apache.openejb.config.FinderFactory;
-import org.apache.openejb.config.ServiceUtils;
 import org.apache.openejb.config.WebModule;
 import org.apache.openejb.config.WebappAggregatedArchive;
 import org.apache.openejb.config.sys.Resource;
-import org.apache.openejb.config.sys.ServiceProvider;
 import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.util.Contexts;
 import org.apache.xbean.finder.AnnotationFinder;
@@ -108,9 +102,8 @@ public class VirgoDeployerEjb extends DeployerEjb {
 	private static final String META_INF = "META-INF";
 	private static final String DISABLED_SUFFIX = ".disabled";
 	private static final String RESOURCES_XML = "resources.xml";
-	private static final String PROVIDER = "provider";
 	private static final String TRANSACTION_TYPE_PROP = "transactionType";
-	private static final String STANDARD_CONTEXT_PROPERTY = "CatalinaStandardContext";
+	private static final String STANDARD_CONTEXT_PROPERTY = "standardContext";
 	private static final String DATA_SOURCE = "DataSource";
 	private static final String OPENEJB_JDBC_DRIVER = "JdbcDriver";
 	private static final String TOMCAT_DRIVER_CLASS_NAME = "driverClassName";
@@ -118,11 +111,11 @@ public class VirgoDeployerEjb extends DeployerEjb {
 	private static final String TOMCAT_JDBC_URL = "url";
 	private static final String OPENEJB_USERNAME = "UserName";
 	private static final String TOMCAT_USERNAME = "username";
+	private static final String TOMCAT_PROVIDER_FACTORY = "org.eclipse.virgo.tomcat:ProvidedByTomcat";
 	private final DeploymentLoader deploymentLoader;
 	private final ConfigurationFactory configurationFactory;
 	private final Assembler assembler;
 
-	private List<ServiceProvider> resourceProviders;
 	private final String webContextPath;
 	private final ClassLoader servletClassLoader;
 	private DynamicDeployer dynamicDeployer = null;
@@ -142,13 +135,6 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			configurationFactory = new ConfigurationFactory();
 		}
 		assembler = (Assembler) SystemInstance.get().getComponent(org.apache.openejb.spi.Assembler.class);
-
-		try {
-			resourceProviders = ServiceUtils
-					.getServiceProvidersByServiceType("Resource");
-		} catch (OpenEJBException e) {
-			resourceProviders = new ArrayList<ServiceProvider>(0);
-		}
 	}
 	
 	public AppInfo deploy(String loc, StandardContext standardContext) throws OpenEJBException {
@@ -524,87 +510,59 @@ public class VirgoDeployerEjb extends DeployerEjb {
 			StandardContext standardContext) {
 		ContextResource[] contextResources = standardContext
 				.getNamingResources().findResources();
+        ContextResourceEnvRef[] contextEnvResources = standardContext
+                .getNamingResources().findResourceEnvRefs();
 
-		if (contextResources == null) {
-			return;
+		if (contextResources != null) {
+    		for (ContextResource contextResource : contextResources) {
+    			if (!"UserTransaction".equals(contextResource.getName())) {
+    				Resource resource = createResource(contextResource,
+    						standardContext, appModule.getModuleId());
+    				appModule.getResources().add(resource);
+    			}
+    		}
 		}
 
-		for (ContextResource contextResource : contextResources) {
-			if (isResourceTypeSupported(contextResource)) {
-				Resource resource = createResource(contextResource,
-						standardContext, appModule.getModuleId());
-				appModule.getResources().add(resource);
-			}
-		}
-
-		final Collection<String> tomcatResources = getResourcesNames(standardContext
-				.getNamingResources());
-		AutoConfig.PROVIDED_RESOURCES.set(tomcatResources);
-		AutoConfig.PROVIDED_RESOURCES_PREFIX.set("java:/comp/env/");
+		if (contextEnvResources != null) {
+            for (ContextResourceEnvRef contextEnvResource : contextEnvResources) {
+                if (!"UserTransaction".equals(contextEnvResource.getName())) {
+                    Resource resource = createResource(contextEnvResource,
+                            standardContext, appModule.getModuleId());
+                    appModule.getResources().add(resource);
+                }
+            }
+        }
 	}
 
-	private Collection<String> getResourcesNames(
-			final NamingResources namingResources) {
-		final Collection<String> names = new ArrayList<String>();
-		final Collection<ResourceBase> tomcatResources = new ArrayList<ResourceBase>();
-		tomcatResources.addAll(Arrays.asList(namingResources.findResources()));
-		tomcatResources
-				.addAll(Arrays.asList(namingResources.findEnvironments()));
-		tomcatResources.addAll(Arrays.asList(namingResources
-				.findResourceLinks()));
-		tomcatResources.addAll(Arrays.asList(namingResources.findServices()));
-		tomcatResources.addAll(Arrays.asList(namingResources
-				.findResourceEnvRefs()));
-
-		for (ResourceBase resource : tomcatResources) {
-			String processedResourceName = getResourceNameFromTomcatResource(
-					names, resource);
-			if (processedResourceName != null) {
-				names.add(processedResourceName);
-			}
-		}
-		return names;
-	}
-
-	private String getResourceNameFromTomcatResource(
-			final Collection<String> names, ResourceBase resource) {
-		final String name = resource.getName();
-		final String mappedName = (String) resource.getProperty("mappedName");
-		String processedResourceName = name;
-		if (mappedName != null && !mappedName.isEmpty()) {
-			processedResourceName = mappedName;
-		}
-		return processedResourceName;
-	}
-
-	private Resource createResource(final ContextResource contextResource,
+	private Resource createResource(final ResourceBase resourceBase,
 			StandardContext standardContext, final String appModuleId) {
-		final String id = appModuleId + '/' + contextResource.getName();
-		final String type = contextResource.getType();
-		String provider = (String) contextResource.getProperty(PROVIDER);
-		Resource resource = new Resource(id, type, provider);
-		populateResourceProperties(contextResource, resource, standardContext);
+	    final String mappedName = (String) resourceBase.getProperty("mappedName");
+		final String id;
+        if (mappedName == null) {
+            id = appModuleId + '/' + resourceBase.getName();
+        } else {
+            id = appModuleId + '/' + mappedName;
+        }
+	    final String type = resourceBase.getType();
+		Resource resource = new Resource(id, type, TOMCAT_PROVIDER_FACTORY);
+		populateResourceProperties(resourceBase, resource, standardContext);
 		return resource;
 	}
 
-	private void populateResourceProperties(ContextResource contextResource,
+	private void populateResourceProperties(ResourceBase resourceBase,
 			Resource resource, StandardContext standardContext) {
 		Properties resProperties = resource.getProperties();
-		Iterator<String> ctxResPropertiesItr = contextResource.listProperties();
-		boolean isDataSource = contextResource.getType().contains(DATA_SOURCE);
+		resProperties.setProperty("jndiName", resourceBase.getName());
+		resProperties.put(STANDARD_CONTEXT_PROPERTY, standardContext);
+		Iterator<String> ctxResPropertiesItr = resourceBase.listProperties();
+		boolean isDataSource = resourceBase.getType().contains(DATA_SOURCE);
 		while (ctxResPropertiesItr.hasNext()) {
 			String key = ctxResPropertiesItr.next();
-			if (PROVIDER.equals(key) || key.length() == 0) {
-				continue;
-			}
-			final Object value = contextResource.getProperty(key);
+			final Object value = resourceBase.getProperty(key);
 			if (isDataSource) {
 				key = transformKey(key);
 			}
 			resProperties.put(key, value);
-		}
-		if (isDataSource) {
-			resProperties.put(STANDARD_CONTEXT_PROPERTY, standardContext);
 		}
 	}
 
@@ -625,31 +583,5 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		}
 
 		return transformedKey;
-	}
-
-	private boolean isResourceTypeSupported(ContextResource contextResource) {
-		String resourceType = contextResource.getType();
-		for (ServiceProvider serviceProvider : resourceProviders) {
-			if (serviceProvider.getTypes().contains(resourceType)) {
-				return true;
-			}
-		}
-
-		String provider = (String) contextResource.getProperty(PROVIDER);
-		if (provider == null) {
-			return false;
-		}
-
-		try {
-			ServiceProvider serviceProvider = ServiceUtils
-					.getServiceProvider(provider);
-			if (serviceProvider.getTypes().contains(resourceType)) {
-				return true;
-			}
-		} catch (OpenEJBException e) {
-			return false;
-		}
-
-		return false;
 	}
 }
