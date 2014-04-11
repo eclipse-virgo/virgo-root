@@ -50,6 +50,7 @@ import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.io.JarUtils;
 import org.eclipse.virgo.util.io.PathReference;
+import org.eclipse.virgo.util.io.FatalIOException;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.osgi.framework.Bundle;
@@ -126,6 +127,9 @@ public class WARDeployer implements SimpleDeployer {
 	
 	private static final long CHECK_INTERVAL = 1000;
 
+    private static final boolean UNPACK_TO_DESTRUCTIVE = 
+        Boolean.parseBoolean(System.getProperty("org.eclipse.virgo.web.war.deployer.unpackToDestructive", "true"));
+
     private EventLogger eventLogger;
 
     private BundleInfosUpdater bundleInfosUpdaterUtil;
@@ -188,7 +192,16 @@ public class WARDeployer implements SimpleDeployer {
         final Bundle installed;
         try {
             // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
-            JarUtils.unpackToDestructive(new PathReference(deployedFile), new PathReference(warDir));
+            try {
+                JarUtils.unpackToDestructive(new PathReference(deployedFile), new PathReference(warDir));
+            } catch (FatalIOException e) {
+                if (UNPACK_TO_DESTRUCTIVE) {
+                    throw e;
+                } else {
+                    this.logger.warn("Cannot delete directory '" + warDir + "'.", e);
+                    org.eclipse.virgo.web.war.deployer.IOUtils.extractJar(deployedFile, warDir);
+                }
+            }
             // make the manifest transformation in the unpacked location
             transformUnpackedManifest(warDir, warName);
 
@@ -388,7 +401,16 @@ public class WARDeployer implements SimpleDeployer {
             		loader.close();
             	}
                 // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
-                JarUtils.unpackToDestructive(new PathReference(updatedFile), new PathReference(warDir));
+                try {
+                    JarUtils.unpackToDestructive(new PathReference(updatedFile), new PathReference(warDir));
+                } catch (FatalIOException e) {
+                    if (UNPACK_TO_DESTRUCTIVE) {
+                        throw e;
+                    } else {
+                        this.logger.warn("Cannot delete directory '" + warDir + "'.", e);
+                        org.eclipse.virgo.web.war.deployer.IOUtils.extractJar(updatedFile, warDir);
+                    }
+                }
                 // make the manifest transformation in the unpacked location
                 transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
@@ -718,7 +740,16 @@ public class WARDeployer implements SimpleDeployer {
         final Bundle installed;
         try {
             // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
-            JarUtils.unpackToDestructive(new PathReference(deployedFile), new PathReference(warDir));
+            try {
+                JarUtils.unpackToDestructive(new PathReference(deployedFile), new PathReference(warDir));
+            } catch (FatalIOException e) {
+                if (UNPACK_TO_DESTRUCTIVE) {
+                    throw e;
+                } else {
+                    this.logger.warn("Cannot delete directory '" + warDir + "'.", e);
+                    org.eclipse.virgo.web.war.deployer.IOUtils.extractJar(deployedFile, warDir);
+                }
+            }
             // make the manifest transformation in the unpacked location
             transformUnpackedManifest(warDir, warName);
             // install the bundle
