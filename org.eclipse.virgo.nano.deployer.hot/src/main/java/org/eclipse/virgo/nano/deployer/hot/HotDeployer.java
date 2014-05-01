@@ -53,7 +53,7 @@ public final class HotDeployer {
     public HotDeployer(@NonNull DeployerConfiguration deployerConfiguration, @NonNull ApplicationDeployer deployer, EventLogger eventLogger) {
         this.pickupDir = createHotDeployDir(deployerConfiguration.getDeploymentPickupDirectory());
         FileSystemChecker checker = createFileSystemChecker(deployer, eventLogger);
-        this.thread = new Thread(new WatchTask(checker, this.pickupDir), "fs-watcher");
+        this.thread = new Thread(new WatchTask(checker, this.pickupDir, deployerConfiguration.getScanIntervalMillis()), "fs-watcher");
     }
 
 	private FileSystemChecker createFileSystemChecker(ApplicationDeployer deployer, EventLogger eventLogger) {

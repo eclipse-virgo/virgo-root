@@ -1,3 +1,4 @@
+
 package org.eclipse.virgo.nano.deployer.internal;
 
 /*******************************************************************************
@@ -26,21 +27,26 @@ import org.eclipse.virgo.util.io.PathReference;
  * This class is thread safe.
  * 
  */
-public final class StandardDeployerConfiguration implements DeployerConfiguration {    
+public final class StandardDeployerConfiguration implements DeployerConfiguration {
 
     private final int deploymentTimeoutSeconds;
+
     private final PathReference deploymentPickupDirectory;
-    
+
+    private final int scanIntervalMillis;
+
     /**
-     * Construct a deployment configuration using the given <code>deploymentTimeout</code>,
-     * and <code>pickupDirectory</code>.
+     * Construct a deployment configuration using the given <code>deploymentTimeout</code>, and
+     * <code>pickupDirectory</code>.
      * 
      * @param deploymentTimeout The timeout period, in seconds
      * @param pickupDirectory The deployer's pickup directory
+     * @param scanIntervalMillis The deployer's scan interval in milliseconds
      */
-    public StandardDeployerConfiguration(int deploymentTimeout, File pickupDirectory) {        
+    public StandardDeployerConfiguration(int deploymentTimeout, File pickupDirectory, int scanIntervalMillis) {
         this.deploymentTimeoutSeconds = deploymentTimeout;
         this.deploymentPickupDirectory = new PathReference(pickupDirectory);
+        this.scanIntervalMillis = scanIntervalMillis;
     }
 
     /**
@@ -49,18 +55,27 @@ public final class StandardDeployerConfiguration implements DeployerConfiguratio
     public int getDeploymentTimeoutSeconds() {
         return this.deploymentTimeoutSeconds;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public PathReference getDeploymentPickupDirectory() {
         return this.deploymentPickupDirectory;
     }
-    
-    /** 
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getScanIntervalMillis() {
+        return this.scanIntervalMillis;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public String toString() {
-        return String.format("Timeout: '%s', Pickup directory: '%s'", this.deploymentTimeoutSeconds, this.deploymentPickupDirectory);
+        return String.format("Timeout: '%s', Pickup directory: '%s', Scan interval in millis", this.deploymentTimeoutSeconds,
+            this.deploymentPickupDirectory, this.scanIntervalMillis);
     }
+
 }

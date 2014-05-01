@@ -21,15 +21,16 @@ final class WatchTask implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final int scanIntervalMillis = 1000;
+    private final int scanIntervalMillis;
 
     private final FileSystemChecker checker;
 
     private final File watchDir;
 
-    WatchTask(FileSystemChecker checker, File watchDir) {
+    WatchTask(FileSystemChecker checker, File watchDir, int scanIntervalMillis) {
         this.checker = checker;
         this.watchDir = watchDir;
+        this.scanIntervalMillis = scanIntervalMillis;
     }
 
     /**

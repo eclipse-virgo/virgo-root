@@ -28,7 +28,7 @@ public interface DeployerConfiguration {
     /**
      * Get the configured deployment timeout.
      * 
-     * @return the timeout in seconds
+     * @return the timeout in seconds.
      */
     int getDeploymentTimeoutSeconds();
 
@@ -38,4 +38,11 @@ public interface DeployerConfiguration {
      * @return the pickup directory as a {@link PathReference}.
      */
     PathReference getDeploymentPickupDirectory();
+
+    /**
+     * Get the configured scan interval.
+     *
+     * @return the scan interval in milliseconds.
+     */
+    int getScanIntervalMillis();
 }

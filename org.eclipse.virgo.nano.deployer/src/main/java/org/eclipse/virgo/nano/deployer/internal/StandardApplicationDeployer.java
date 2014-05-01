@@ -80,7 +80,8 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     private void initialiseHotDeployer() {
         int deployerTimeout = Integer.valueOf(this.kernelConfig.getProperty("deployer.timeout"));
         String pickupDirectory = this.kernelConfig.getProperty("deployer.pickupDirectory");
-        DeployerConfiguration deployerConfiguration = new StandardDeployerConfiguration(deployerTimeout, new File(pickupDirectory));
+        int scanInterval = Integer.valueOf(this.kernelConfig.getProperty("deployer.scanIntervalMillis"));
+        DeployerConfiguration deployerConfiguration = new StandardDeployerConfiguration(deployerTimeout, new File(pickupDirectory), scanInterval);
         this.hotDeployerEnabler = new HotDeployerEnabler(this, deployerConfiguration, this.eventLogger);
         this.hotDeployerEnabler.startHotDeployer();
     }
