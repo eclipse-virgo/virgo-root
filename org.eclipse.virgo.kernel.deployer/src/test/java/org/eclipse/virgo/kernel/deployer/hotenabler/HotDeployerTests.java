@@ -80,7 +80,7 @@ public class HotDeployerTests {
 
         DeployerConfiguration deployerConfiguration = createMock(DeployerConfiguration.class);
         expect(deployerConfiguration.getDeploymentPickupDirectory()).andReturn(new PathReference("target/pickup"));
-        expect(deployerConfiguration.getDeploymentTimeoutSeconds()).andReturn(1000);
+        expect(deployerConfiguration.getScanIntervalMillis()).andReturn(1000);
 
         replay(deployerConfiguration);
 
