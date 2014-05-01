@@ -56,11 +56,11 @@ import org.slf4j.LoggerFactory;
 /**
  * {@link StandardBundleInstallArtifact} is the default implementation of {@link BundleInstallArtifact}.
  * <p />
- * 
+ *
  * <strong>Concurrent Semantics</strong><br />
- * 
+ *
  * This class is thread safe.
- * 
+ *
  */
 final class StandardBundleInstallArtifact extends AbstractInstallArtifact implements BundleInstallArtifact {
 
@@ -90,10 +90,14 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
 
     private QuasiBundle quasiBundle;
 
+    private Bundle cachedBundle;
+
+    private File cachedBundleFile;
+
     /**
      * Construct a {@link StandardBundleInstallArtifact} with the given type and {@link ArtifactStorage}, none of which
      * may be <code>null</code>.
-     * 
+     *
      * @param artifactIdentifier
      * @param bundleManifest
      * @param artifactStorage the bundle artifact storage
@@ -179,7 +183,13 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
      */
     public Bundle getBundle() {
         synchronized (this.monitor) {
-            return this.quasiBundle == null ? null : this.quasiBundle.getBundle();
+            return this.quasiBundle == null ? this.cachedBundle : this.quasiBundle.getBundle();
+        }
+    }
+
+    private File getBundleFile() {
+        synchronized (this.monitor) {
+            return this.quasiBundle == null ? this.cachedBundleFile : this.quasiBundle.getBundleFile();
         }
     }
 
@@ -202,6 +212,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     public void endInstall() throws DeploymentException {
         monitorBundle();
         super.endInstall();
+        cacheAndDelete();
     }
 
     private void monitorBundle() {
@@ -210,6 +221,21 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
             if (bundle != null) {
                 this.bundleDriver.setBundle(bundle);
             }
+        }
+    }
+
+    /**
+     * Cache the <code>Bundle</code> contained within the <code>quasiBundle</code> and set the <code>quasiBundle</code>
+     * instance to <code>null</code>.  This is a fix for this PR: https://bugs.eclipse.org/bugs/show_bug.cgi?id=424872
+     */
+    private void cacheAndDelete() {
+        synchronized (this.monitor) {
+            if (this.quasiBundle == null) {
+                return;
+            }
+            this.cachedBundle = this.quasiBundle.getBundle();
+            this.cachedBundleFile = this.quasiBundle.getBundleFile();
+            this.quasiBundle = null;
         }
     }
 
@@ -244,7 +270,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
         }
         super.beginInstall();
     }
-    
+
     private boolean isFragment() {
         return this.bundleManifest.getFragmentHost().getBundleSymbolicName() != null;
     }
@@ -501,7 +527,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     }
 
     public void deleteEntry(String targetPath) {
-        deleteEntry(getQuasiBundle().getBundleFile(), targetPath);
+        deleteEntry(getBundleFile(), targetPath);
         getArtifactFS().getEntry(targetPath).delete();
     }
 
@@ -517,7 +543,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     }
 
     public void updateEntry(URI inputPath, String targetPath) {
-        updateEntry(getQuasiBundle().getBundleFile(), inputPath, targetPath);
+        updateEntry(getBundleFile(), inputPath, targetPath);
         updateEntry(getArtifactFS().getEntry(targetPath), inputPath);
     }
 

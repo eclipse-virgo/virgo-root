@@ -17,7 +17,9 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -137,5 +139,40 @@ public class StandardBundleInstallArtifactTests {
 
         installArtifact.getDeploymentProperties().put("foo", "bar");
         assertEquals("bar", installArtifact.getDeploymentProperties().get("foo"));
+    }
+
+    @Test
+    public void endInstallShouldNullQuasiBundleReference() throws IOException, DeploymentException {
+
+       StandardBundleInstallArtifact uut = (StandardBundleInstallArtifact) createInstallArtifact(createArtifactStorage(), artifactStateMonitor);
+       QuasiBundle quasiBundle = createMock(QuasiBundle.class);
+       expect(quasiBundle.getBundle()).andReturn(null).anyTimes();
+       expect(quasiBundle.getBundleFile()).andReturn(null);
+
+       uut.setQuasiBundle(quasiBundle);
+
+       replay(quasiBundle);
+       uut.endInstall();
+       verify(quasiBundle);
+
+       assertNull(uut.getQuasiBundle());
+    }
+
+    @Test
+    public void endInstallShouldStoreBundleReference() throws IOException, DeploymentException {
+
+       StandardBundleInstallArtifact uut = (StandardBundleInstallArtifact) createInstallArtifact(createArtifactStorage(), artifactStateMonitor);
+       QuasiBundle quasiBundle = createMock(QuasiBundle.class);
+       StubBundle stubBundle = new StubBundle();
+       expect(quasiBundle.getBundle()).andReturn(stubBundle).anyTimes();
+       expect(quasiBundle.getBundleFile()).andReturn(null);
+
+       uut.setQuasiBundle(quasiBundle);
+
+       replay(quasiBundle);
+       uut.endInstall();
+       verify(quasiBundle);
+
+       assertEquals(stubBundle, uut.getBundle());
     }
 }
