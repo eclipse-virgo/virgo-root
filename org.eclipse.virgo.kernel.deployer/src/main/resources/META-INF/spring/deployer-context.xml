@@ -191,6 +191,7 @@
 		class="org.eclipse.virgo.kernel.deployer.core.internal.StandardDeployerConfiguration">
 		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.timeout')}" />
 		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.pickupDirectory')}" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.scanIntervalMillis')}" />
 	</beans:bean>
 
 	<service ref="deployerConfig"

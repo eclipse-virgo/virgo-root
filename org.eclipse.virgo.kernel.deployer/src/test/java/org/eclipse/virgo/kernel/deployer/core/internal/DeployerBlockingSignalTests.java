@@ -32,11 +32,11 @@ public class DeployerBlockingSignalTests {
     @Test
     public void testAwaitCompletionBlock() throws DeploymentException {
         BlockingSignal blockingSignal = new BlockingSignal(true);
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         boolean awaitCompletion = blockingSignal.awaitCompletion(TEST_PERIOD);
-        long finish = System.currentTimeMillis();
+        long finish = System.nanoTime();
         assertFalse(awaitCompletion);
-        assertTrue(finish - start > TEST_PERIOD * 1000);
+        assertTrue(finish - start > TEST_PERIOD * 1000 * 1000);
     }
     
     /**
