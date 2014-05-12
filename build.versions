@@ -198,5 +198,5 @@ org.apache.derby.feature=10.8.2.2_v201211210650
 org.eclipse.jetty.rap=8.1.14.v20131031
 org.eclipse.rap.jface=2.3.0.20140306-1341
 org.eclipse.rap.jface.databinding=2.3.0.20131210-1030
-org.eclipse.rap.rwt=2.3.0.20140311-0943
+org.eclipse.rap.rwt=2.3.0.20140506-1410
 org.eclipse.rap.rwt.osgi=2.3.0.20140124-1321
