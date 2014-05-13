@@ -39,8 +39,6 @@ import org.eclipse.virgo.util.io.JarTransformer;
 import org.eclipse.virgo.util.io.JarTransformer.JarTransformerCallback;
 import org.junit.Test;
 
-
-
 public class JarTransformerTests {
 
     @Test
@@ -96,21 +94,22 @@ public class JarTransformerTests {
         String value = transformed.getManifest().getMainAttributes().getValue("My-Header");
         assertEquals("test.value", value);
     }
-    
+
     @Test
     public void ensurePresenceOfManifest() throws Exception {
         String inPath = "src/test/resources/jars/no-manifest.jar";
         String outPath = "target/ensurePresenceOfManifest.jar";
-        
+
         final List<String> transformedEntries = new ArrayList<String>();
 
         JarTransformer jt = new JarTransformer(new JarTransformerCallback() {
-			public boolean transformEntry(String entryName, InputStream is, JarOutputStream os) throws IOException {
-				transformedEntries.add(entryName);
-				return false;
-			}
-		});
-        
+
+            public boolean transformEntry(String entryName, InputStream is, JarOutputStream os) throws IOException {
+                transformedEntries.add(entryName);
+                return false;
+            }
+        });
+
         jt.transform(new FileInputStream(inPath), new FileOutputStream(outPath), false);
 
         JarFile transformed = new JarFile(outPath);
@@ -118,18 +117,17 @@ public class JarTransformerTests {
         assertEquals(1, transformedEntries.size());
         assertFalse(transformedEntries.contains(JarFile.MANIFEST_NAME));
         transformed.close();
-        
+
         transformedEntries.clear();
-        
+
         jt.transform(new FileInputStream(inPath), new FileOutputStream(outPath), true);
-        
+
         transformed = new JarFile(outPath);
         assertNotNull(transformed.getManifest());
         assertEquals(2, transformedEntries.size());
         assertTrue(transformedEntries.contains(JarFile.MANIFEST_NAME));
-        transformed.close();        
+        transformed.close();
     }
-
 
     private void assertJarsSame(JarFile a, JarFile b, boolean checkContent) throws IOException {
         List<JarEntry> aEntries = getEntries(a);
