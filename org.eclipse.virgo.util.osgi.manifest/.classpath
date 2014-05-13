@@ -26,5 +26,6 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi/3.8.1.v20120830-144521/org.eclipse.osgi-3.8.1.v20120830-144521.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.0.v20081201-1815/org.eclipse.osgi-sources-3.5.0.v20081201-1815.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.easymock/com.springsource.org.easymock/2.3.0/com.springsource.org.easymock-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.util.parser.manifest"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.util.io"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
