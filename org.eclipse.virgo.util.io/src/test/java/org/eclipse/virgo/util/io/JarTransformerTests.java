@@ -47,13 +47,21 @@ public class JarTransformerTests {
         String outPath = "target/testNoOpTransform.jar";
 
         JarTransformer jt = new JarTransformer(new NoOpJarTransformerCallback());
-        jt.transform(new FileInputStream(inPath), new FileOutputStream(outPath));
+        FileInputStream inStream = null;
+        FileOutputStream outStream = null;
+        try {
+            inStream = new FileInputStream(inPath);
+            outStream = new FileOutputStream(outPath);
+            jt.transform(inStream, outStream);
 
-        JarFile jarFile = new JarFile(inPath);
-        JarFile transformed = new JarFile(outPath);
+            JarFile jarFile = new JarFile(inPath);
+            JarFile transformed = new JarFile(outPath);
 
-        assertJarsSame(jarFile, transformed, true);
-
+            assertJarsSame(jarFile, transformed, true);
+        } finally {
+            IOUtils.closeQuietly(inStream);
+            IOUtils.closeQuietly(outStream);
+        }
     }
 
     @Test
@@ -85,14 +93,23 @@ public class JarTransformerTests {
             }
 
         });
-        jt.transform(new FileInputStream(inPath), new FileOutputStream(outPath));
+        FileInputStream inStream = null;
+        FileOutputStream outStream = null;
+        try {
+            inStream = new FileInputStream(inPath);
+            outStream = new FileOutputStream(outPath);
+            jt.transform(inStream, outStream);
 
-        JarFile jarFile = new JarFile(inPath);
-        JarFile transformed = new JarFile(outPath);
+            JarFile jarFile = new JarFile(inPath);
+            JarFile transformed = new JarFile(outPath);
 
-        assertJarsSame(jarFile, transformed, true);
-        String value = transformed.getManifest().getMainAttributes().getValue("My-Header");
-        assertEquals("test.value", value);
+            assertJarsSame(jarFile, transformed, true);
+            String value = transformed.getManifest().getMainAttributes().getValue("My-Header");
+            assertEquals("test.value", value);
+        } finally {
+            IOUtils.closeQuietly(inStream);
+            IOUtils.closeQuietly(outStream);
+        }
     }
 
     @Test
@@ -110,23 +127,38 @@ public class JarTransformerTests {
             }
         });
 
-        jt.transform(new FileInputStream(inPath), new FileOutputStream(outPath), false);
+        FileInputStream inStream = null;
+        FileOutputStream outStream = null;
+        FileInputStream inStream2 = null;
+        FileOutputStream outStream2 = null;
+        try {
+            inStream = new FileInputStream(inPath);
+            outStream = new FileOutputStream(outPath);
+            jt.transform(inStream, outStream, false);
 
-        JarFile transformed = new JarFile(outPath);
-        assertNull(transformed.getManifest());
-        assertEquals(1, transformedEntries.size());
-        assertFalse(transformedEntries.contains(JarFile.MANIFEST_NAME));
-        transformed.close();
+            JarFile transformed = new JarFile(outPath);
+            assertNull(transformed.getManifest());
+            assertEquals(1, transformedEntries.size());
+            assertFalse(transformedEntries.contains(JarFile.MANIFEST_NAME));
+            transformed.close();
 
-        transformedEntries.clear();
+            transformedEntries.clear();
 
-        jt.transform(new FileInputStream(inPath), new FileOutputStream(outPath), true);
+            inStream2 = new FileInputStream(inPath);
+            outStream2 = new FileOutputStream(outPath);
+            jt.transform(inStream2, outStream2, true);
 
-        transformed = new JarFile(outPath);
-        assertNotNull(transformed.getManifest());
-        assertEquals(2, transformedEntries.size());
-        assertTrue(transformedEntries.contains(JarFile.MANIFEST_NAME));
-        transformed.close();
+            transformed = new JarFile(outPath);
+            assertNotNull(transformed.getManifest());
+            assertEquals(2, transformedEntries.size());
+            assertTrue(transformedEntries.contains(JarFile.MANIFEST_NAME));
+            transformed.close();
+        } finally {
+            IOUtils.closeQuietly(inStream);
+            IOUtils.closeQuietly(outStream);
+            IOUtils.closeQuietly(inStream2);
+            IOUtils.closeQuietly(outStream2);
+        }
     }
 
     private void assertJarsSame(JarFile a, JarFile b, boolean checkContent) throws IOException {
