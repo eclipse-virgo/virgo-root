@@ -57,6 +57,7 @@
 		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.region" rev="${org.eclipse.equinox.region}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="test->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.ejb" rev="${javax.ejb}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.websocket" rev="${javax.websocket}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
 		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>

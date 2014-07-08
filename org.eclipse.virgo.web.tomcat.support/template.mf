@@ -26,6 +26,7 @@ Import-Package:
  org.apache.catalina.tribes.membership;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
  org.apache.catalina.tribes.transport.nio;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
  org.apache.catalina.tribes.transport;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
- org.apache.catalina.tribes.group.interceptors;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional
+ org.apache.catalina.tribes.group.interceptors;version="${org.apache.catalina.tribes:[=.=.=, =.+1)}";resolution:=optional,
+ javax.websocket;version="${javax.websocket:[=.=.=, =.+1)}";resolution:=optional
 Excluded-Exports: 
  *
