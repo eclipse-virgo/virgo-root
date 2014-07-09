@@ -19,7 +19,7 @@ org.slf4j.log4j=1.7.2.v20130115-1340
 org.slf4j.jul=1.7.2.v20121108-1250
 
 # Enterprise Compile
-org.apache.openejb.core=4.5.2.virgo-1
+org.apache.openejb.core=4.5.2.virgo-2
 org.apache.openejb.loader=4.5.2
 org.apache.openejb.jee=4.5.2
 javax.validation=1.0.0.GA_v201205091237
@@ -78,6 +78,7 @@ org.eclipse.equinox.cm=1.0.400.v20120319-2029
 org.eclipse.equinox.util=1.0.300.v20111010-1614
 org.eclipse.equinox.ds=1.4.0.v20120112-1400
 org.eclipse.equinox.region=1.1.0.v20120319-1602
+javax.security.jacc=1.4.0.v201205031350
 
 # Eclipse classpath references
 org.apache.coyote=7.0.53.v201406070630

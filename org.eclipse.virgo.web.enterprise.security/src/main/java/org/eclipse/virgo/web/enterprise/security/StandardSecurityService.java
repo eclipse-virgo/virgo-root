@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 SAP AG
+ * Copyright (c) 2012 - 2014 SAP AG
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.apache.openejb.core.security.AbstractSecurityService;
 import org.apache.openejb.spi.CallerPrincipal;
 
 public class StandardSecurityService extends AbstractSecurityService {
-	private Wrapper wrapper;
+	static protected final ThreadLocal<Wrapper> wrapper = new ThreadLocal<Wrapper>();
 
 	static protected final ThreadLocal<LinkedList<Subject>> runAsStack = new ThreadLocal<LinkedList<Subject>>() {
 		protected LinkedList<Subject> initialValue() {
@@ -37,11 +37,11 @@ public class StandardSecurityService extends AbstractSecurityService {
 		}
 	};
 
-	public Object enterWebApp(Wrapper wrapper, Principal principal, String runAs) {
-		this.wrapper = wrapper;
+	public Object enterWebApp(Wrapper localWrapper, Principal principal, String runAs) {
+		wrapper.set(localWrapper);
 		Identity newIdentity = null;
 		if (principal != null) {
-			Subject newSubject = createSubject(wrapper.getRealm(), principal);
+			Subject newSubject = createSubject(localWrapper.getRealm(), principal);
 			newIdentity = new Identity(newSubject, null);
 		}
 
@@ -64,7 +64,7 @@ public class StandardSecurityService extends AbstractSecurityService {
 				runAsStack.get().removeFirst();
 			}
 		}
-		wrapper = null;
+		wrapper.remove();
 	}
 
 	protected Subject createSubject(Realm realm, Principal principal) {
@@ -98,10 +98,12 @@ public class StandardSecurityService extends AbstractSecurityService {
 				logicalRoles.size());
 		for (Object role : logicalRoles) {
 			String logicalRole = (String) role;
+			Wrapper localWrapper = wrapper.get();
 			for (Principal principal : principals) {
 				if (principal instanceof TomcatUserWrapper) {
 					TomcatUserWrapper user = (TomcatUserWrapper) principal;
-					if (user.getRealm().hasRole(wrapper,
+					
+					if (user.getRealm().hasRole(localWrapper,
 							user.getTomcatPrincipal(), logicalRole)) {
 						roles.add(logicalRole);
 						break;
@@ -134,7 +136,8 @@ public class StandardSecurityService extends AbstractSecurityService {
 	    	final Set<TomcatUserWrapper> users = ((Subject)field.get(securityContext)).getPrincipals(TomcatUserWrapper.class);
 	    	boolean inRole = false;
 	    	for(TomcatUserWrapper user : users) {
-				inRole = wrapper.getRealm().hasRole(wrapper,
+				Wrapper localWrapper = wrapper.get();
+				inRole = localWrapper.getRealm().hasRole(localWrapper,
 						user.getTomcatPrincipal(), role);
 	    		if(inRole)
 	    			return true;
