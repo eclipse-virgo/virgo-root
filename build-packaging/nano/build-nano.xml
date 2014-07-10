@@ -43,6 +43,7 @@
 				<filter token="JAVAX.SERVLET" value="${javax.servlet}" />
 				<filter token="JAVAX.SERVLET.JSP" value="${javax.servlet.jsp}" />
 				<filter token="JAVAX.XML.RPC" value="${javax.xml.rpc}" />
+				<filter token="JAVAX.WEBSOCKET" value="${javax.websocket}" />
 				<filter token="CATALINA" value="${org.apache.catalina}" />
 				<filter token="CATALINA.HA" value="${org.apache.catalina.ha}" />
 				<filter token="JASPER.VERSION" value="${org.apache.jasper}" />

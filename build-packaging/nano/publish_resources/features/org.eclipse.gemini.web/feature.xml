@@ -62,5 +62,12 @@
         install-size="0"
         version="@TRIBES.VERSION@"
         unpack="false"/>
+    
+    <plugin
+        id="javax.websocket"
+        download-size="0"
+        install-size="0"
+        version="@JAVAX.WEBSOCKET@"
+        unpack="false"/>
 
 </feature>
