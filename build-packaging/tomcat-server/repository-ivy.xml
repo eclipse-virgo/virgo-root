@@ -23,6 +23,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="ext->runtime"/>
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jsp.jstl}" conf="ext->runtime"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.xml.rpc" rev="${javax.xml.rpc}" conf="ext->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.websocket" rev="${javax.websocket}" conf="ext->runtime"/>
 		<dependency org="org.aopalliance" name="com.springsource.org.aopalliance" rev="${org.aopalliance}" conf="ext->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.codec" rev="${org.apache.commons.codec}" conf="ext->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.fileupload" rev="${org.apache.commons.fileupload}" conf="ext->runtime"/>
