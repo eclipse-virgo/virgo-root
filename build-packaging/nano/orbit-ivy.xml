@@ -18,6 +18,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.persistence" rev="${javax.persistence}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="javax.xml.rpc" rev="${javax.xml.rpc}" conf="orbit-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.websocket" rev="${javax.websocket}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina" rev="${org.apache.catalina}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina.ha" rev="${org.apache.catalina.ha}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina.tribes" rev="${org.apache.catalina.tribes}" conf="orbit-runtime->runtime"/>
@@ -29,6 +30,7 @@
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.sshd.core" rev="${org.apache.sshd.core}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.tomcat.api" rev="${org.apache.tomcat.api}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.tomcat.util" rev="${org.apache.tomcat.util}" conf="orbit-runtime->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.apache.tomcat.websocket" rev="${org.apache.tomcat.websocket}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.api" rev="${org.slf4j.api}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="orbit-runtime->runtime"/>
         <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jul}" conf="orbit-runtime->runtime"/>
