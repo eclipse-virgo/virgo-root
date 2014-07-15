@@ -172,7 +172,6 @@ public class FileSystemDumpInspector implements DumpInspector {
 	private String escapeAngleBrackets(String unfriendlyMarkup) {
 		String processed = unfriendlyMarkup.replace("<", "&#60;");
 		processed = processed.replace(">", "&#62;");
-		processed = processed.replace("¡", "&#8734;");
 		return processed;
 	}
 	
