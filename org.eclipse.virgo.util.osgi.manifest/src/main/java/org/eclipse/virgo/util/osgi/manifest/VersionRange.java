@@ -98,7 +98,7 @@ public final class VersionRange {
     }
 
     /**
-     * Creates a <code>VersionRange</code> encompassing all the natural numbers: <code>[0.0.0, °)</code>.
+     * Creates a <code>VersionRange</code> encompassing all the natural numbers: <code>[0.0.0, infinity)</code>.
      * 
      * @return a <code>VersionRange</code> encompassing all the natural numbers.
      */
