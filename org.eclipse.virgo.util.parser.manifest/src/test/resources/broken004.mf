@@ -4,4 +4,4 @@ Bundle-Name: toys
 Bundle-SymbolicName: toys
 Bundle-Version: 1.0.0
 Export-Package: .,
- pðyuck, aæf
+ p!yuck, a^f

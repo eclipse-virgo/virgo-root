@@ -526,7 +526,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
 		String myway = v.getMainAttributes().get("Export-Package");
 
-		assertEquals(".,pðyuck, aæf", myway);
+		assertEquals(".,p!yuck, a^f", myway);
 
 		assertFalse(mp.foundProblems());
 
