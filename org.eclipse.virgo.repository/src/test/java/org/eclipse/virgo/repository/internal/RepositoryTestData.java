@@ -32,8 +32,6 @@ public final class RepositoryTestData {
 
     public final static String TEST_REPO_TWO = "foo_two";
 
-    public final static String[] TEST_BAD_REPO_NAMES = new String[] { "", "A B", "A\\B", "a123É1" };
-
     public static final String TEST_ARTEFACT_BRIDGE_NAME_A = "BundleA";
 
     public static final String TEST_ARTEFACT_BRIDGE_NAME_B = "BundleB";
