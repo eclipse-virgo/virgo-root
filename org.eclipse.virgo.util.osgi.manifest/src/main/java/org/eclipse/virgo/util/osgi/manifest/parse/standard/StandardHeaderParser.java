@@ -384,9 +384,9 @@ public class StandardHeaderParser implements HeaderParser {
 
 
 
-	// Bundle-ActivationPolicy ::= policy ( ’;’ directive )*
+	// Bundle-ActivationPolicy ::= policy ( ';' directive )*
 
-	// policy ::= ’lazy’
+	// policy ::= 'lazy'
 
 	public HeaderDeclaration internalParseBundleActivationPolicy(String header) {
 
@@ -675,7 +675,7 @@ public class StandardHeaderParser implements HeaderParser {
 
 
 
-	// header ::= clause ( ’,’ clause ) *
+	// header ::= clause ( ',' clause ) *
 
 	private void parseHeader() {
 
@@ -721,17 +721,17 @@ public class StandardHeaderParser implements HeaderParser {
 
 //	 *
 
-//	 * path ::= path-unquoted | (’"’ path-unquoted ’"’)
+//	 * path ::= path-unquoted | ('"' path-unquoted '"')
 
 //	 * path-unquoted ::= path-sep | path-sep? path-element (path-sep path-element)*
 
 //	 * path-element ::= [^/"\#x0D#x0A#x00]+
 
-//	 * path-sep ::= ’/’
+//	 * path-sep ::= '/'
 
-	// header ::= clause ( ’,’ clause ) *
+	// header ::= clause ( ',' clause ) *
 
-	// clause ::= path ( ’;’ path ) * ( ’;’ parameter ) *
+	// clause ::= path ( ';' path ) * ( ';' parameter ) *
 
 	private List<HeaderDeclaration> internalParseHeader(String header) {
 
@@ -795,7 +795,7 @@ public class StandardHeaderParser implements HeaderParser {
 
 
 
-	// clause ::= path ( ’;’ path ) * ( ’;’ parameter ) *
+	// clause ::= path ( ';' path ) * ( ';' parameter ) *
 
 	private void eatClause() {
 
@@ -947,15 +947,15 @@ public class StandardHeaderParser implements HeaderParser {
 
 	
 
-	// paths ::= path ( ’;’ path ) *
+	// paths ::= path ( ';' path ) *
 
-	// path ::= path-unquoted | (’"’ path-unquoted ’"’)
+	// path ::= path-unquoted | ('"' path-unquoted '"')
 
 	// path-unquoted ::= path-sep | path-sep? path-element (path-sep path-element)*
 
 	// path-element ::= [^/"\#x0D#x0A#x00]+
 
-	// path-sep ::= ’/’
+	// path-sep ::= '/'
 
 	private void eatPaths() {
 
@@ -1279,7 +1279,7 @@ public class StandardHeaderParser implements HeaderParser {
 
 
 
-	// unique-name ::= identifier ( ’.’ identifier )*
+	// unique-name ::= identifier ( '.' identifier )*
 
 	private boolean eatUniqueName() {
 
