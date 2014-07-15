@@ -14,7 +14,7 @@ package org.eclipse.virgo.util.osgi.manifest;
 import org.osgi.framework.Version;
 
 /**
- * Parses the <code>String</code> specification a range of {@link Version Versions} as defined in ¤3.2.5 of the OSGi
+ * Parses the <code>String</code> specification a range of {@link Version Versions} as defined in 3.2.5 of the OSGi
  * Service Server Core Specification.
  * <p/>
  * 
