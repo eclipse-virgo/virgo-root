@@ -29,7 +29,7 @@ package org.eclipse.virgo.util.osgi.manifest.parse.standard;
  * 
  * <li>alphanum ::= alpha | digit
  * 
- * <li>token ::= ( alphanum | ’_’ | ’-’ | ’.’)+
+ * <li>token ::= ( alphanum | '_' | '-' | '.')+
  * 
  * <li>number ::= digit+
  * 
@@ -43,7 +43,7 @@ package org.eclipse.virgo.util.osgi.manifest.parse.standard;
  * 
  * <li>identifier ::= jletter jletterordigit *
  * 
- * <li>quoted-string ::= ’"’ ( [^"\#x0D#x0A#x00] | ’\"’|’\\’)* ’"’
+ * <li>quoted-string ::= '"' ( [^"\#x0D#x0A#x00] | '\"'|'\\')* '"'
  * 
  * <li>DOT ::= .
  * 
@@ -57,19 +57,19 @@ package org.eclipse.virgo.util.osgi.manifest.parse.standard;
  * 
  * 
  * 
- * header ::= clause ( ’,’ clause ) *
+ * header ::= clause ( ',' clause ) *
  * 
- * clause ::= path ( ’;’ path ) * ( ’;’ parameter ) *
+ * clause ::= path ( ';' path ) * ( ';' parameter ) *
  * 
  * 
  * 
- * path ::= path-unquoted | (’"’ path-unquoted ’"’)
+ * path ::= path-unquoted | ('"' path-unquoted '"')
  * 
  * path-unquoted ::= path-sep | path-sep? path-element (path-sep path-element)*
  * 
  * path-element ::= [^/"\#x0D#x0A#x00]+
  * 
- * path-sep ::= ’/’
+ * path-sep ::= '/'
  * 
  * 
  * 
