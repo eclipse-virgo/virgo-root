@@ -587,14 +587,14 @@ public class StandardHeaderParserTests extends TestCase {
 
     /**
      * Hyphens need a little bit of special treatment in order for tokens containing them to be recognized as path
-     * elements.  See HeaderTokenKind.canBeTreatedAsPathElement() for the fix that allows this test to pass. <br>
-     * In general hyphens are not quite handled correctly throughout by the parser right now.  They are currently
-     * allowed in package headers although strictly by the spec they shouldn't be allowed.  I believe they are being let
-     * through because some users want to Export-Package META-INF.  With strict checking according to the spec this
-     * wouldn't be allowed.  It appears to be one of those things where the spec implementors have decided to allow it
+     * elements. See HeaderTokenKind.canBeTreatedAsPathElement() for the fix that allows this test to pass. <br>
+     * In general hyphens are not quite handled correctly throughout by the parser right now. They are currently
+     * allowed in package headers although strictly by the spec they shouldn't be allowed. I believe they are being let
+     * through because some users want to Export-Package META-INF. With strict checking according to the spec this
+     * wouldn't be allowed. It appears to be one of those things where the spec implementors have decided to allow it
      * but the spec doesn't allow it. <br>
      * If more problems surface here then it may be time to have a new token kind for a pathelement, rather than trying
-     * to reuse TOKEN for this.     
+     * to reuse TOKEN for this.
      */
     public void testParseHyphens() {
         List<HeaderDeclaration> decls = getParser().parseHeader("Alpha-*,*-Bravo,Charlie-*-Delta,*-Echo-*");
