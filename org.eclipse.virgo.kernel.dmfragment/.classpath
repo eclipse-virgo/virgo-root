@@ -30,7 +30,7 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.blueprint.io/2.0.0.M02/org.eclipse.gemini.blueprint.io-2.0.0.M02.jar" sourcepath="/IVY_CACHE/org.eclipse.gemini/org.eclipse.gemini.blueprint.io/2.0.0.M02/org.eclipse.gemini.blueprint.io-sources-2.0.0.M02.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.eclipse.osgi/3.8.1.v20120830-144521/org.eclipse.osgi-3.8.1.v20120830-144521.jar" sourcepath="/IVY_CACHE/org.eclipse.osgi/org.eclipse.osgi/3.5.0.200809221524/org.eclipse.osgi-3.5.0.200809221524.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.7.0.D-20130521041335/org.eclipse.virgo.medic-3.7.0.D-20130521041335.jar">
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.medic/org.eclipse.virgo.medic/3.7.0.D-20140718084542/org.eclipse.virgo.medic-3.7.0.D-20140718084542.jar">
 		<attributes>
 			<attribute name="org.eclipse.ajdt.aspectpath" value="org.eclipse.ajdt.aspectpath"/>
 		</attributes>
@@ -38,7 +38,7 @@
 	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.7.2.v20121108-1250/org.slf4j.api-1.7.2.v20121108-1250.jar" sourcepath="/IVY_CACHE/org.eclipse.virgo.mirrored/org.slf4j.api/1.7.2.v20121108-1250/org.slf4j.api.source-1.7.2.v20121108-1250.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.osgi"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.virgo.kernel.agent.dm"/>
-	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.7.0.D-20130521041633/org.eclipse.virgo.nano.core-3.7.0.D-20130521041633.jar"/>
+	<classpathentry kind="var" path="IVY_CACHE/org.eclipse.virgo.nano/org.eclipse.virgo.nano.core/3.7.0.D-20140718084813/org.eclipse.virgo.nano.core-3.7.0.D-20140718084813.jar"/>
 	<classpathentry kind="var" path="IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
