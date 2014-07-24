@@ -41,7 +41,7 @@ org.apache.openwebbeans.ee.common=1.1.7.v201304201405
 org.apache.openwebbeans.impl=1.1.7.v201304201405
 org.apache.openwebbeans.spi=1.1.7.v201304201405
 org.apache.openwebbeans.jsf=1.1.7.v201304201405
-org.apache.openwebbeans.tomcat7=1.1.7.v201304201405
+org.apache.openwebbeans.tomcat7=1.1.7.v201304201405-virgo-1
 cdi.api=1.0.0.v201105160744
 
 # Test
