@@ -12,7 +12,7 @@
 package org.eclipse.virgo.util.env;
 
 /**
- * JavaVersionChecker is specifically designed to check for the version of Java being used for dm Server 2.0.
+ * JavaVersionChecker is specifically designed to check for the version of Java being used for Virgo.
  * It is run as part of the startup protocol before the server is launched.
  * <p />
  * If the Java version is correct this call is silent, and returns zero <code>System.exit(0)</code>.<br/>
@@ -22,12 +22,12 @@ package org.eclipse.virgo.util.env;
  * <strong>Concurrent Semantics</strong><br />
  * Main thread run synchronously.
  *
- * @see "http://java.sun.com/j2se/versioning_naming.html"
+ * @see "http://www.oracle.com/technetwork/java/javase/versioning-naming-139433.html"
  */
 public class JavaVersionChecker {
 
     /**
-     * No parameters are expected; this version check is specific for dm Server 2.0.
+     * No parameters are expected; this version check is specific for Virgo.
      * @param args non expected
      */
     public static void main(String[] args) {
@@ -37,8 +37,8 @@ public class JavaVersionChecker {
             System.exit(-1);
         } 
 
-        if (!javaVersion.startsWith("1.6.") && !javaVersion.startsWith("1.7.")) {
-            System.out.println("JavaVersionChecker: Java version must be at 1.6 (detected version "+javaVersion+").");
+        if (!javaVersion.startsWith("1.6.") && !javaVersion.startsWith("1.7.") && !javaVersion.startsWith("1.8.")) {
+            System.out.println("JavaVersionChecker: Java version must be at 1.6+ (detected version "+javaVersion+").");
             System.exit(-1);
         }
         System.exit(0);
