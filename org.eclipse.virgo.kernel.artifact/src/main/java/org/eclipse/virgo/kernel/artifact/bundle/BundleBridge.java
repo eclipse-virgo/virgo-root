@@ -14,12 +14,8 @@ package org.eclipse.virgo.kernel.artifact.bundle;
 import java.io.File;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-
-import org.osgi.framework.Constants;
-import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.artifact.internal.BundleManifestUtils;
 import org.eclipse.virgo.repository.ArtifactBridge;
@@ -35,8 +31,10 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleSymbolicName;
 import org.eclipse.virgo.util.osgi.manifest.ExportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.FragmentHost;
-import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.FragmentHost.Extension;
+import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 /**
  * Implementation of {@link ArtifactBridge} that creates an {@link ArtifactDescriptor} from an OSGi bundle packaged

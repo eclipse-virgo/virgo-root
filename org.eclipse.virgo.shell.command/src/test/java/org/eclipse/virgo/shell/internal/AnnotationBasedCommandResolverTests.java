@@ -64,13 +64,11 @@ public class AnnotationBasedCommandResolverTests {
     @Command("test")
     private static class TestCommands {
 
-        @SuppressWarnings("unused")
         @Command("one")
         public void foo() {
 
         }
 
-        @SuppressWarnings("unused")
         @Command("two")
         public void bar() {
 
@@ -80,13 +78,11 @@ public class AnnotationBasedCommandResolverTests {
     @Command("test-sub")
     private static final class SubTestCommands extends TestCommands {
 
-        @SuppressWarnings("unused")
         @Command("three")
         public void alpha() {
 
         }
 
-        @SuppressWarnings("unused")
         @Command("four")
         public void bravo() {
 

@@ -59,7 +59,6 @@ public class FileMovingArtifactStoreTests {
         PathReference c = this.artifactHistory.getCurrentPath();
         checkPath(c);
         assertTrue(original.equals(c));
-
     }
     
     @Test

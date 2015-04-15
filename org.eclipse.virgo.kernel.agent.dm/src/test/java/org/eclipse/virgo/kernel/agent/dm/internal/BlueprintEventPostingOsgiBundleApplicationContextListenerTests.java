@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.agent.internal;
+package org.eclipse.virgo.kernel.agent.dm.internal;
 
 import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertTrue;

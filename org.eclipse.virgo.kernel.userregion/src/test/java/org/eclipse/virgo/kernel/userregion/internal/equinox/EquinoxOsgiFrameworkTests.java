@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-
 import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
 import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
