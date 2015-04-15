@@ -22,9 +22,6 @@ import java.util.Properties;
 
 import org.eclipse.virgo.medic.impl.config.ConfigurationChangeListener;
 import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
-import org.eclipse.virgo.medic.log.impl.ExecutionStackAccessor;
-import org.eclipse.virgo.medic.log.impl.TeeLoggingPrintStreamWrapper;
-import org.eclipse.virgo.medic.log.impl.SecurityManagerExecutionStackAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +32,7 @@ public class TeeLoggingPrintStreamWrapperTests {
 
     private PrintStream teeWrapper;
 
-	@Test
+    @Test
     public void test() {
         produceOutput(this.teeWrapper);
 
@@ -64,26 +61,26 @@ public class TeeLoggingPrintStreamWrapperTests {
         assertEquals("toString", loggingEvents.get(19).getMessage());
         assertEquals("A string with a", loggingEvents.get(20).getMessage());
         assertEquals("new line in it.", loggingEvents.get(21).getMessage());
-	}
+    }
 
-	@Test
-	public void testOutputWithinLoggingCode() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    @Test
+    public void testOutputWithinLoggingCode() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos);
-		PrintStream decorator = new TeeLoggingPrintStreamWrapper(printStream, getClass().getName(), new ExecutionStackAccessor() {
+        PrintStream decorator = new TeeLoggingPrintStreamWrapper(printStream, getClass().getName(), new ExecutionStackAccessor() {
 
-			public Class<?>[] getExecutionStack() {
-				return new Class[] {Logger.class};
-			}
-		}, new StubConfigurationProvider(), "theProperty");
+            public Class<?>[] getExecutionStack() {
+                return new Class[] { Logger.class };
+            }
+        }, new StubConfigurationProvider(), "theProperty");
 
-		produceOutput(decorator);
+        produceOutput(decorator);
 
-		List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
-		assertEquals(0, loggingEvents.size());
-	}
+        List<LoggingEvent> loggingEvents = CapturingAppender.getAndResetLoggingEvents();
+        assertEquals(0, loggingEvents.size());
+    }
 
-	private void produceOutput(PrintStream printStream) {
+    private void produceOutput(PrintStream printStream) {
         printStream.append('a');
         printStream.append("bcd");
         printStream.append("abcdefghij", 4, 10);
@@ -92,12 +89,18 @@ public class TeeLoggingPrintStreamWrapperTests {
         printStream.format(Locale.FRANCE, "%.4f%n", Math.PI);
         printStream.print(true);
         printStream.print('k');
-        printStream.print(new char[] {'l', 'm', '\r', 'a'});
+        printStream.print(new char[] { 'l', 'm', '\r', 'a' });
         printStream.print(123d);
         printStream.print(456f);
         printStream.print(7);
         printStream.print(8910l);
-        printStream.print(new Object() {@Override public String toString() { return "toString";}});
+        printStream.print(new Object() {
+
+            @Override
+            public String toString() {
+                return "toString";
+            }
+        });
         printStream.append('\n');
         printStream.print("abcd");
         printStream.printf("%s %s%n%s%n", "Three", "strings", "last one on a new line.");
@@ -105,14 +108,20 @@ public class TeeLoggingPrintStreamWrapperTests {
         printStream.println(false);
         printStream.println('b');
         printStream.println('\n');
-        printStream.println(new char[] {'a', 'b', 'c', '\n', 'd', 'e'});
+        printStream.println(new char[] { 'a', 'b', 'c', '\n', 'd', 'e' });
         printStream.println(123d);
         printStream.println(456f);
         printStream.println(789);
         printStream.println(101112l);
-        printStream.println(new Object() {@Override public String toString() { return "toString";}});
+        printStream.println(new Object() {
+
+            @Override
+            public String toString() {
+                return "toString";
+            }
+        });
         printStream.println("A string with a\nnew line in it.");
-	}
+    }
 
     @Test
     public void testByteArrayHandling() {
@@ -133,7 +142,7 @@ public class TeeLoggingPrintStreamWrapperTests {
         String string = "Some text to be turned into bytes.";
         byte[] stringBytes = string.getBytes();
 
-        for (byte b: stringBytes) {
+        for (byte b : stringBytes) {
             teeWrapper.write(b);
         }
         teeWrapper.println();
@@ -145,7 +154,7 @@ public class TeeLoggingPrintStreamWrapperTests {
     }
 
     @Test
-    public void testPrintNullString(){
+    public void testPrintNullString() {
 
         String imNull = null;
 
@@ -160,26 +169,27 @@ public class TeeLoggingPrintStreamWrapperTests {
         assertEquals("null", loggingEvents.get(1).getMessage());
     }
 
-	@Before
+    @Before
     public void createDecorator() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos);
-        this.teeWrapper = new TeeLoggingPrintStreamWrapper(printStream, getClass().getName(), new SecurityManagerExecutionStackAccessor(), new StubConfigurationProvider(), "theProperty");
-	}
+        this.teeWrapper = new TeeLoggingPrintStreamWrapper(printStream, getClass().getName(), new SecurityManagerExecutionStackAccessor(),
+            new StubConfigurationProvider(), "theProperty");
+    }
 
-	private final class StubConfigurationProvider implements ConfigurationProvider {
+    private final class StubConfigurationProvider implements ConfigurationProvider {
 
-		private final Properties configuration;
+        private final Properties configuration;
 
-		private StubConfigurationProvider() {
-			this.configuration = new Properties();
-			this.configuration.setProperty("theProperty", "tee");
-		}
+        private StubConfigurationProvider() {
+            this.configuration = new Properties();
+            this.configuration.setProperty("theProperty", "tee");
+        }
 
-		@SuppressWarnings("unchecked")
-		public Dictionary getConfiguration() {
-			return this.configuration;
-		}
+        @SuppressWarnings("unchecked")
+        public Dictionary getConfiguration() {
+            return this.configuration;
+        }
 
         public void addChangeListener(ConfigurationChangeListener listener) {
             throw new UnsupportedOperationException();
@@ -189,5 +199,5 @@ public class TeeLoggingPrintStreamWrapperTests {
             throw new UnsupportedOperationException();
         }
 
-	}
+    }
 }

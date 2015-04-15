@@ -62,7 +62,6 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
             try {
 				Configuration configuration = configurationAdmin.getConfiguration(CONFIG_ADMIN_PID, null);
                 
-                @SuppressWarnings("unchecked")
 				Dictionary<String, Object> properties = configuration.getProperties();
                 
                 if (properties == null) {
