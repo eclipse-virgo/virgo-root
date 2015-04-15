@@ -221,8 +221,7 @@ public class ShutdownClientTests {
     private void createRegistry(int port) {
         try {
             LocateRegistry.createRegistry(port);
-        } catch (RemoteException _) {
-
+        } catch (RemoteException ignored) {
         }
     }
 

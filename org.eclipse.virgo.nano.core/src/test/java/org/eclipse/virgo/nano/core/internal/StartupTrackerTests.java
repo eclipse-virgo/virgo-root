@@ -115,7 +115,7 @@ public class StartupTrackerTests {
     private void waitForABit(long milliSeconds) {
         try {
             Thread.sleep(milliSeconds);
-        } catch (InterruptedException _) {
+        } catch (InterruptedException ignored) {
         }
     }
     

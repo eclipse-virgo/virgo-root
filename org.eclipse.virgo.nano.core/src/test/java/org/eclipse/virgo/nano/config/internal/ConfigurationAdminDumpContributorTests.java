@@ -121,8 +121,7 @@ public class ConfigurationAdminDumpContributorTests {
 	    try {
 	        writer.flush();
 	        fail("Writer not already flushed, therefore not already closed.");
-	    } catch (IOException _) {
-	        // expected and ignored
+	    } catch (IOException expectedAndIgnored) {
 	    }
 	}
 }
