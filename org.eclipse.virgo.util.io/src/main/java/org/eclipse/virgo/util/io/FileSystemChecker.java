@@ -313,7 +313,7 @@ public final class FileSystemChecker {
                     this.fileState.remove(deletedFile);
                     this.monitorRecords.remove(deletedFile);
                 }
-            } catch (Exception _) {
+            } catch (Exception ignored) {
                 // FatalIOException can arise from listCurrentDirFiles() which means that we cannot determine the list.
                 // In this case we have already retried the list, and we can ignore this check().
                 // The check() then becomes a no-op which is better than assuming the directory is empty.
