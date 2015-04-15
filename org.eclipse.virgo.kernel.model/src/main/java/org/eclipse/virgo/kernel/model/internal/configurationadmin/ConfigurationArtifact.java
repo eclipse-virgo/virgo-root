@@ -77,7 +77,7 @@ final class ConfigurationArtifact extends AbstractArtifact {
             if(bundleLocation != null){
             	properties.put("Bound to Bundle", bundleLocation);
             }
-        } catch (IOException _) {
+        } catch (IOException ignored) {
             // Default to superclass behaviour
         } catch (IllegalStateException e){
         	properties.put("ERROR", "Configuration has been deleted");

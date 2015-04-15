@@ -241,7 +241,7 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
             InputStream is = null;
             try {
                 is = new BufferedInputStream(new FileInputStream(file));
-            } catch (FileNotFoundException _) {
+            } catch (FileNotFoundException ignored) {
             }
             this.zipInputStream = is == null ? null : new ZipInputStream(is);
         }
@@ -250,7 +250,7 @@ final class JarFileArtifactFSEntry implements ArtifactFSEntry {
             if (this.zipInputStream != null) {
                 try {
                     return this.zipInputStream.getNextEntry();
-                } catch (IOException _) {
+                } catch (IOException ignored) {
                 }
             }
             return null;

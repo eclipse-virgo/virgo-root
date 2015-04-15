@@ -301,7 +301,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
                 readDriversField.setAccessible(true);
                 readDriversField.set(null, readDrivers);
                 LOGGER.debug("Cleared JDBC drivers for " + this + " using Java 6 strategy");
-            } catch (Exception _) {
+            } catch (Exception javaSixWayFailed) {
                 try { // Java 7
                     Field registeredDriversField = DriverManager.class.getDeclaredField("registeredDrivers");
                     registeredDriversField.setAccessible(true);

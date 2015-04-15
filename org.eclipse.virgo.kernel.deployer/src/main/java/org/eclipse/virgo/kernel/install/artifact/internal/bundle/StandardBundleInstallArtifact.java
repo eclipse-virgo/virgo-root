@@ -384,7 +384,7 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
                 }
             }
             return refreshed;
-        } catch (Exception _) {
+        } catch (Exception e) {
             return false;
         }
     }

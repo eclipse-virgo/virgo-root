@@ -119,7 +119,7 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
         Bundle a = install("transitiveconstraint/tmA.jar");
         try {
             a.start();
-        } catch (BundleException _) {
+        } catch (BundleException ignored) {
         }
 
         State systemState = ((StateManager) this.platformAdmin).getSystemState();

@@ -50,9 +50,9 @@ final class StandardInstallArtifactRefreshHandler implements InstallArtifactRefr
         InstallEnvironment installEnvironment = this.installEnvironmentFactory.createInstallEnvironment(installArtifact);
         try {
             this.refreshPipeline.process(graph, installEnvironment);
-        } catch (UnableToSatisfyBundleDependenciesException _) {
+        } catch (UnableToSatisfyBundleDependenciesException utsbde) {
             refreshed = false;
-        } catch (DeploymentException _) {
+        } catch (DeploymentException de) {
             refreshed = false;
         } finally {
             installEnvironment.destroy();

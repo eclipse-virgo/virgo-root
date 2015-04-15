@@ -65,7 +65,7 @@ public final class BundleFileClosingBundleFileWrapperFactoryHook implements Bund
         for (BundleFile bundleFile : localBundleFiles) {
             try {
                 bundleFile.close();
-            } catch (IOException _) {
+            } catch (IOException ignored) {
             }
         }
     }

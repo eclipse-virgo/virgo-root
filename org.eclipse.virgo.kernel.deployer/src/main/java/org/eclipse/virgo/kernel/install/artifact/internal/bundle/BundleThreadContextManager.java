@@ -117,7 +117,7 @@ final class BundleThreadContextManager {
             ClassLoader newContextClassLoader = null;
             try {
                 newContextClassLoader = this.osgi.getBundleClassLoader(this.threadContextBundle);
-            } catch (BundleClassLoaderUnavailableException _) {
+            } catch (BundleClassLoaderUnavailableException bclue) {
                 this.logger.info("Bundle class loader not available, it may not be resolved");
             }
             if (newContextClassLoader != null) {

@@ -63,7 +63,7 @@ final class GenerationalArtifactStore extends AbstractArtifactStore implements A
                     if (childGeneration > lastGeneration) {
                         lastGeneration = childGeneration;
                     }
-                } catch (NumberFormatException _) {
+                } catch (NumberFormatException ignored) {
                 }
             }
         }

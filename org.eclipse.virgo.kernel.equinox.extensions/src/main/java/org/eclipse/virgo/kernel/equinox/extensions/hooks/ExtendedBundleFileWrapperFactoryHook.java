@@ -191,7 +191,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
             	if (jarFile != null) {
             		try {
             			jarFile.close();
-            		} catch (IOException _) {
+            		} catch (IOException ignored) {
             		}
             	}
             }

@@ -121,7 +121,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
                         } else {
                             removeDependency(classLoader.getBundle(), dependency);
                         }   
-                    } catch (IllegalStateException _) {
+                    } catch (IllegalStateException ise) {
                         // Dependency now UNINSTALLED
                         removeDependency(classLoader.getBundle(), dependency);
                     }
@@ -152,8 +152,8 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
                         } else {
                             removeDependency(classLoader.getBundle(), dependency);
                         }
-                    } catch (IOException _) {
-                    } catch (IllegalStateException _) {
+                    } catch (IOException ignored) {
+                    } catch (IllegalStateException ise) {
                         // Dependency now UNINSTALLED
                         removeDependency(classLoader.getBundle(), dependency);
                     }

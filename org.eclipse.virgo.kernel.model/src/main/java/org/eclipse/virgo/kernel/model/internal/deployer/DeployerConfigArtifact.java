@@ -57,7 +57,7 @@ final class DeployerConfigArtifact extends DeployerArtifact {
                     }
                 }
             }
-        } catch (IOException _) {
+        } catch (IOException ignored) {
             // Default to superclass behaviour
         }
         return properties;
