@@ -45,8 +45,8 @@ import static org.junit.Assert.assertNotNull;
 public class LazyExportableXMLArtifactDescriptorPersisterTests {
 
     
-    private File solePoolFile = new File("target/lazypersistertest/file001");
-    private File nextPoolFile = new File("target/lazypersistertest/file002");
+    private File solePoolFile = new File("build/lazypersistertest/file001");
+    private File nextPoolFile = new File("build/lazypersistertest/file002");
     
     @Test
     public void persistAndLoadArtifacts() throws Exception {
@@ -72,8 +72,8 @@ public class LazyExportableXMLArtifactDescriptorPersisterTests {
     
     private Set<RepositoryAwareArtifactDescriptor> generateDescriptorSet() {
         Set<RepositoryAwareArtifactDescriptor> setDescriptors = new HashSet<RepositoryAwareArtifactDescriptor>();
-        RepositoryAwareArtifactDescriptor raad1 = new StubRepositoryAwareArtifactDescriptor("repo-name", new File("target/testlazypersister/raad1").toURI(), "bundle", "bundle.raad1", new Version("1.1"), "raad1", new HashSet<Attribute>());
-        RepositoryAwareArtifactDescriptor raad2 = new StubRepositoryAwareArtifactDescriptor("repo-name", new File("target/testlazypersister/raad2").toURI(), "bundle", "bundle.raad2", new Version("1.2"), "raad2", new HashSet<Attribute>());
+        RepositoryAwareArtifactDescriptor raad1 = new StubRepositoryAwareArtifactDescriptor("repo-name", new File("build/testlazypersister/raad1").toURI(), "bundle", "bundle.raad1", new Version("1.1"), "raad1", new HashSet<Attribute>());
+        RepositoryAwareArtifactDescriptor raad2 = new StubRepositoryAwareArtifactDescriptor("repo-name", new File("build/testlazypersister/raad2").toURI(), "bundle", "bundle.raad2", new Version("1.2"), "raad2", new HashSet<Attribute>());
         
         setDescriptors.add(raad1);
         setDescriptors.add(raad2);

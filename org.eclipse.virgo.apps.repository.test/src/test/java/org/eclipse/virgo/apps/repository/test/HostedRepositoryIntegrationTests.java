@@ -43,9 +43,9 @@ import org.osgi.service.event.EventHandler;
 @Ignore("[DMS-2878]")
 public class HostedRepositoryIntegrationTests {
 
-    private final static File INDEX_LOCATION = new File("target/work/org.eclipse.virgo.apps.repository.core_2.0.0/integration-test.index");
+    private final static File INDEX_LOCATION = new File("build/work/org.eclipse.virgo.apps.repository.core_2.0.0/integration-test.index");
 
-    private final static File W_INDEX_LOCATION = new File("target/work/org.eclipse.virgo.apps.repository.core_2.0.0/watched-integration-test.index");
+    private final static File W_INDEX_LOCATION = new File("build/work/org.eclipse.virgo.apps.repository.core_2.0.0/watched-integration-test.index");
 
     private static boolean appDeployed = false;
     
@@ -102,7 +102,7 @@ public class HostedRepositoryIntegrationTests {
 	}
 
     private static PathReference packageWebModule() throws IOException {
-        PathReference packagedModule = new PathReference("target/org.eclipse.virgo.apps.repository.web.war");
+        PathReference packagedModule = new PathReference("build/org.eclipse.virgo.apps.repository.web.war");
         if (packagedModule.exists()) {
             assertTrue(packagedModule.delete());
         }

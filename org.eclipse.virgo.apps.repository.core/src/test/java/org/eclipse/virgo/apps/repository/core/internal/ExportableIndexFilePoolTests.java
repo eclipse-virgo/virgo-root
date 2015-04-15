@@ -34,7 +34,7 @@ import org.eclipse.virgo.util.io.PathReference;
 public class ExportableIndexFilePoolTests {
 
     private FilePool filePool;
-    private File dirFile = new File("target/testfilepooldir");
+    private File dirFile = new File("build/testfilepooldir");
     
     @Before
     public void setupFilePools() throws Exception {

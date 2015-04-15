@@ -7,4 +7,3 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.apps.splash
 Web-ContextPath: /
 Import-Package: org.eclipse.virgo.apps.splash
-

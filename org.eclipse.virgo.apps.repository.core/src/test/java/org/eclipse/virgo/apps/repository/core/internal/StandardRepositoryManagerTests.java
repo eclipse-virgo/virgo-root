@@ -60,7 +60,7 @@ public class StandardRepositoryManagerTests {
     private final Map<String, RepositoryConfiguration> configurationMap = new HashMap<String, RepositoryConfiguration>();
     {
         final RepositoryConfiguration repositoryConfiguration 
-        = new ExternalStorageRepositoryConfiguration("testRepoName", new File("target/indexDir"), new HashSet<ArtifactBridge>(), "testDirToWatch", "testHostRepoDomain");
+        = new ExternalStorageRepositoryConfiguration("testRepoName", new File("build/indexDir"), new HashSet<ArtifactBridge>(), "testDirToWatch", "testHostRepoDomain");
         this.configurationMap.put("testRepoName", repositoryConfiguration);
     }
     

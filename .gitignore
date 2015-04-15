@@ -1,12 +1,13 @@
 */src/main/resources/META-INF/MANIFEST.MF
-*/src/main/webapp/META-INF/MANIFEST.MF
 */src/test/resources/META-INF/TEST.MF
 target
-deploy.sh
 integration-repo
 ivy-cache
-spring-build/lib/findbugs
-*.graffle
+.ant-targets-build.xml
 user-ivy.properties
-
+bin/
+build/
+.settings/
+.project
+.classpath
 
