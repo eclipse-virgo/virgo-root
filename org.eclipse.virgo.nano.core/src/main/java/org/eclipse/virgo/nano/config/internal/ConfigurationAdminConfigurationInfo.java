@@ -46,7 +46,6 @@ public class ConfigurationAdminConfigurationInfo implements ConfigurationInfo {
             Configuration configuration = configurationAdmin.getConfiguration(this.pid, null);
             Map<String, String> properties = new HashMap<String, String>();
 
-            @SuppressWarnings("unchecked")
             Dictionary<String, Object> dictionary = configuration.getProperties();
 
             if (dictionary != null) {
