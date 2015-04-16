@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="con" path="com.springsource.server.ide.jdt.core.MANIFEST_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="var" path="IVY_CACHE/javax.servlet/javax.servlet.jsp/2.2.0.v201103241009/javax.servlet.jsp-2.2.0.v201103241009.jar" sourcepath="/IVY_CACHE/javax.servlet/javax.servlet.jsp/2.2.0.v201103241009/javax.servlet.jsp-sources-2.2.0.v201103241009.jar"/>
-	<classpathentry kind="output" path="target/classes"/>
-</classpath>
