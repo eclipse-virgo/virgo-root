@@ -28,7 +28,7 @@ public class KernelConfigurationPropertiesSourceTests {
     @Test
     public void testGetProperties() {
         StubBundleContext context = new StubBundleContext();
-        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "target/home");
+        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "build/home");
         
         KernelConfiguration configuration = new KernelConfiguration(context);
         

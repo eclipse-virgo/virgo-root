@@ -3,10 +3,11 @@
 target
 integration-repo
 ivy-cache
-derby.log
 .ant-targets-build.xml
-com.cenqua.clover.core.prefs
-*.class
-build-nano/p2/*
-*/bin/*
 user-ivy.properties
+bin/
+build/
+.settings/
+.project
+.classpath
+

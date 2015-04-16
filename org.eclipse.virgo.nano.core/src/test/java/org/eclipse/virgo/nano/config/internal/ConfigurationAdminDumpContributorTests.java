@@ -49,14 +49,14 @@ public class ConfigurationAdminDumpContributorTests {
 	private static final String NORMAL_OUTPUT_FILE_NAME = "configurationAdmin.properties";
 	private static final String DC_NAME = "configurationAdmin";
 
-	private final File testDumpOutputDir = new File(new File("target"), "ConfigurationAdminDumpTests");
+	private final File testDumpOutputDir = new File(new File("build"), "ConfigurationAdminDumpTests");
     private File testDumpOutputFile;
 
     @Before
     public void setupTestDir() {
         deleteRecursively(this.testDumpOutputDir);
         this.testDumpOutputDir.mkdir();
-        this.testDumpOutputFile = new File(new File("target"), TEST_OUTPUT_FILE_NAME);
+        this.testDumpOutputFile = new File(new File("build"), TEST_OUTPUT_FILE_NAME);
     }
 
     @After

@@ -43,7 +43,7 @@ public class ResolutionStateDumperTests {
         
         ResolutionStateDumper dumper = new ResolutionStateDumper(new StubSystemStateAccessor(state), writer);
         
-        File outputFile = new File("./target/dump.zip");
+        File outputFile = new File("./build/dump.zip");
         if (outputFile.exists()) {
             assertTrue(outputFile.delete());
         }                
@@ -52,13 +52,13 @@ public class ResolutionStateDumperTests {
 
         assertTrue(outputFile.exists());
         
-        PathReference unzipLocation = new PathReference("target/dump");
+        PathReference unzipLocation = new PathReference("build/dump");
         if (unzipLocation.exists()) {
             assertTrue(unzipLocation.delete(true));
         }
         
         ZipUtils.unzipTo(new PathReference(outputFile), unzipLocation);        
-        File stateFile = new File("target/dump/state/state");
+        File stateFile = new File("build/dump/state/state");
         
         assertTrue(stateFile.exists());        
         assertEquals(10, stateFile.length());

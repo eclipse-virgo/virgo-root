@@ -54,7 +54,7 @@ public class StartupTrackerTests {
     public void setup() {               
         this.bundleContext.addInstalledBundle(bundle);
 
-        this.bundleContext.addProperty("org.eclipse.virgo.kernel.home", "target");
+        this.bundleContext.addProperty("org.eclipse.virgo.kernel.home", "build");
         this.bundleContext.addProperty("org.eclipse.virgo.kernel.domain", "the-domain");
         this.bundleContext.addFilter(new ObjectClassFilter("org.springframework.context.ApplicationContext"));
         this.bundleContext.registerService(EventAdmin.class.getName(), this.eventAdmin, null);

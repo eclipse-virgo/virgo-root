@@ -22,9 +22,9 @@ import org.junit.Test;
 
 public class StatusFileModificatorTest {
 
-    private static final PathReference PICKUP_DIR = new PathReference("target/pickup");
+    private static final PathReference PICKUP_DIR = new PathReference("build/pickup");
 
-    private static final PathReference STATE_DIR = new PathReference("target/pickup/.state");
+    private static final PathReference STATE_DIR = new PathReference("build/pickup/.state");
 
     private static final String[] dummyStatusFiles = { "src/test/resources/test/testapp1.deploy.ok", "src/test/resources/test/testapp1.undeploy.ok",
         "src/test/resources/test/testapp1.deploy.error", "src/test/resources/test/testapp1.undeploy.error",

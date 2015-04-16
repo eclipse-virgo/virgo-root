@@ -28,10 +28,10 @@ public class KernelConfigurationTests {
     @Test
     public void testCreateMinimalKernelConfiguration() {
         StubBundleContext context = new StubBundleContext();
-        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "target");
+        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "build");
         
         KernelConfiguration configuration = new KernelConfiguration(context);
-        assertEquals(new File("target"), configuration.getHomeDirectory());
+        assertEquals(new File("build"), configuration.getHomeDirectory());
         assertNotNull(configuration.getWorkDirectory());
         assertNotNull(configuration.getConfigDirectories());
         assertEquals(1, configuration.getConfigDirectories().length);
@@ -42,13 +42,13 @@ public class KernelConfigurationTests {
     @Test
     public void testCustomConfiguration() {
         StubBundleContext context = new StubBundleContext();
-        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "target");
+        context.addProperty(KernelConfiguration.PROPERTY_KERNEL_HOME, "build");
         context.addProperty(KernelConfiguration.PROPERTY_KERNEL_DOMAIN, "my.domain");
         context.addProperty(KernelConfiguration.PROPERTY_KERNEL_CONFIG, "foo,bar");
         context.addProperty(KernelConfiguration.PROPERTY_KERNEL_STARTUP_WAIT_LIMIT, "60");
         
         KernelConfiguration configuration = new KernelConfiguration(context);
-        assertEquals(new File("target"), configuration.getHomeDirectory());
+        assertEquals(new File("build"), configuration.getHomeDirectory());
         assertNotNull(configuration.getWorkDirectory());
         assertNotNull(configuration.getConfigDirectories());
         assertEquals(2, configuration.getConfigDirectories().length);

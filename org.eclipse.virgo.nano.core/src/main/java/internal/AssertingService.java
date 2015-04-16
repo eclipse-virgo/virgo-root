@@ -9,39 +9,31 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package test;
+package internal;
 
 import org.eclipse.virgo.nano.serviceability.NonNull;
 
-
-/**
- */
+// FIXME Bug 463462 - Move back to test source folder when we know how to weave test classes
 public class AssertingService {
-    
+
     public AssertingService() {
-        
     }
     
     public AssertingService( @NonNull String a) {
-        
     }
     
     public AssertingService(String a, @NonNull Integer b) {
-        
     }
     
     public AssertingService(String a, Integer b, @NonNull Double c) {
-        
     }
     
     public void test(@NonNull String a) {
     }
 
     public void test(@NonNull String a, @NonNull Integer b) {
-
     }
     
     public void test(String a, Integer b, @NonNull Double d) {
-
     }
 }

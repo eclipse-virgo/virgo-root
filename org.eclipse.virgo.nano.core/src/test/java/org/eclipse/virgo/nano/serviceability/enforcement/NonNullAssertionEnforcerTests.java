@@ -11,17 +11,15 @@
 
 package org.eclipse.virgo.nano.serviceability.enforcement;
 
+import internal.AssertingService;
+
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-
-
 import org.eclipse.virgo.nano.serviceability.Assert;
 import org.eclipse.virgo.nano.serviceability.dump.DumpCoordinator;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
-
-import test.AssertingService;
 
 public class NonNullAssertionEnforcerTests {
 
