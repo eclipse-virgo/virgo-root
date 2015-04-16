@@ -48,7 +48,7 @@ final class FindResourceDelegatingClassLoader extends ClassLoader {
                 if (resource != null) {
                     return resource;
                 }
-            } catch (IllegalStateException _) {
+            } catch (IllegalStateException ignored) {
             }
         }
         return null;
@@ -66,7 +66,7 @@ final class FindResourceDelegatingClassLoader extends ClassLoader {
                         resources.add(urls.nextElement());
                     }
                 }                
-            } catch (IllegalStateException _) {
+            } catch (IllegalStateException ignored) {
             }
         }
         

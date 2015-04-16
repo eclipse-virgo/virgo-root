@@ -53,7 +53,7 @@ final class WebArtifactIdentityDeterminer implements ArtifactIdentityDeterminer 
             ArtifactDescriptor artifactDescriptor = null;
             try {
                 artifactDescriptor = this.bundleBridge.generateArtifactDescriptor(file);
-            } catch (ArtifactGenerationException _) {
+            } catch (ArtifactGenerationException ignored) {
             }
             
             if (artifactDescriptor == null) {

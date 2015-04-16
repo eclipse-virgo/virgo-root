@@ -100,8 +100,7 @@ final class WebBundleTransformer implements Transformer {
                     }
                 }
             }
-        } catch (IOException _) {
-            // ignore
+        } catch (IOException ignored) {
         }
 
         return strictWABHeaders;

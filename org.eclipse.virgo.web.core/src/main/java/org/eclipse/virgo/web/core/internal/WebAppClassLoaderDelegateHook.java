@@ -62,7 +62,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 if (webAppClassLoader != null) {
                     try {
                         return webAppClassLoader.loadClass(name);
-                    } catch (Throwable _) {       
+                    } catch (Throwable ignored) {       
                     }
                 }
             } finally {
@@ -91,7 +91,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 if (webAppClassLoader != null) {
                     try {
                         return webAppClassLoader.getResource(name);
-                    } catch (Throwable _) {       
+                    } catch (Throwable ignored) {       
                     }
                 }                
             } finally {
@@ -116,7 +116,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                         if (resources.hasMoreElements()) {
                             return resources;
                         }
-                    } catch (Throwable _) {       
+                    } catch (Throwable ignored) {       
                     }
                 }
             } finally {

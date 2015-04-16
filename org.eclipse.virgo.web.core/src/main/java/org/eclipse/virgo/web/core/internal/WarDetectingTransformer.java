@@ -57,8 +57,7 @@ final class WarDetectingTransformer implements Transformer {
                     if (!WebContainerUtils.isWebApplicationBundle(bundleManifest)) {
                         bundleManifest.setHeader(WAR_HEADER, "true");
                     }
-                } catch (IOException _) {
-                    // ignore
+                } catch (IOException ignored) {
                 }
             }
         }
