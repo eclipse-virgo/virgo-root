@@ -1,0 +1,34 @@
+ext.virgoBuildToolsBaseName="virgo-build-tools-${virgoBuildToolsVersion}"
+ext.virgoBuildToolsDir = new File(project.buildDir, virgoBuildToolsBaseName)
+
+// TODO move task to packaging:build.gradle or buildSrc?
+task ('fetchUnzippedVirgoBuildTools') {
+    if (!project.ext.has('virgoBuildToolsVersion')) {
+        throw new GradleException("The 'virgoBuildToolsVersion' extra property must be set on this task.")
+    } else {
+        println "Using Virgo Tools ${virgoBuildToolsVersion}"
+    }
+
+    // TODO use Gradle inFile / outDir?! so Gradle can determine whether a download is necessary or not
+    // TODO put inside a doLast?
+    // TODO add dependency to build/assemble once input/output files are defined
+    doLast {
+        // TODO replace test once the input/output files are defined
+        if (!virgoBuildToolsDir.exists()) {
+            virgoBuildToolsDir.mkdirs()
+            println "Created Virgo Tools directory '${virgoBuildToolsDir}'."
+
+            def destinationFile = file("${buildDir}/${virgoBuildToolsBaseName}.zip")
+            println "Fetching the Virgo Build Tools zip into '${destinationFile}'..."
+            def downloadUrl = "http://build.eclipse.org/rt/virgo/zips/release/VB/${virgoBuildToolsVersion}/virgo-build-tools-${virgoBuildToolsVersion}.zip"
+            ant.get(src: downloadUrl, dest: destinationFile, usetimestamp: true)
+
+            println "Fetched the Virgo Build Tools zip to '${destinationFile}'."
+            copy { from zipTree(destinationFile) into virgoBuildToolsDir }
+            println "Unzipped the Virgo Build Tools zip to ${destinationFile}."
+        } else {
+            println "The Virgo Tools are already present in '${virgoBuildToolsDir}'."
+            println "Skipping download of Virgo Tools."
+        }
+    }
+}
