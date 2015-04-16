@@ -27,7 +27,7 @@ public class InstallCompleterTests {
 
     private static final String FILE_PREFIX = "file:";
 
-    private static final File base = new File("target" + File.separatorChar + "install-completer" + File.separatorChar);
+    private static final File base = new File("build" + File.separatorChar + "install-completer" + File.separatorChar);
 
     private static final String ALPHA = FILE_PREFIX + new File(base, "alpha ").getPath();
 

@@ -73,8 +73,8 @@ public class ImportExpansionHandlerTests {
         BundleBridge bundleBridge = new BundleBridge(new StubHashGenerator());
         LibraryBridge libraryBridge = new LibraryBridge(new StubHashGenerator());
 
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.springframework/org.springframework.core/2.5.6.SEC01/org.springframework.core-2.5.6.SEC01.jar")));
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.springframework/org.springframework.beans/2.5.6.SEC01/org.springframework.beans-2.5.6.SEC01.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.springframework/org.springframework.core/3.1.0.RELEASE/3a18c725dd321e457cfb48547d40c2862216bb3b/org.springframework.core-3.1.0.RELEASE.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.springframework/org.springframework.beans/3.1.0.RELEASE/d12bb11cc2469cca2d8ba33d86d188733544d7e0/org.springframework.beans-3.1.0.RELEASE.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
@@ -94,7 +94,7 @@ public class ImportExpansionHandlerTests {
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
-        expect(bundleImport.getVersion()).andReturn(new VersionRange("[2.5,3.0)")).atLeastOnce();
+        expect(bundleImport.getVersion()).andReturn(new VersionRange("[3.1,4)")).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
 
@@ -108,13 +108,13 @@ public class ImportExpansionHandlerTests {
 
         verifyMocks(mocks);
 
-        assertEquals(19, bundleManifest.getImportPackage().getImportedPackages().size());
+        assertEquals(20, bundleManifest.getImportPackage().getImportedPackages().size());
 
         List<ImportedPackage> packageImports = bundleManifest.getImportPackage().getImportedPackages();
         for (ImportedPackage packageImport : packageImports) {
             Map<String, String> attributes = packageImport.getAttributes();
             assertTrue("org.springframework.core".equals(attributes.get("bundle-symbolic-name")));
-            assertEquals(new VersionRange("[2.5.6.SEC01,2.5.6.SEC01]"), new VersionRange(attributes.get("bundle-version")));
+            assertEquals(new VersionRange("[3.1.0.RELEASE,3.1.0.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
     }
 
@@ -126,7 +126,7 @@ public class ImportExpansionHandlerTests {
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
 
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
-        expect(libraryImport.getVersion()).andReturn(new VersionRange("[2.5,3.0)")).atLeastOnce();
+        expect(libraryImport.getVersion()).andReturn(new VersionRange("[3.1,4)")).atLeastOnce();
         expect(libraryImport.getResolution()).andReturn(Resolution.MANDATORY).anyTimes();
 
         ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());
@@ -149,7 +149,7 @@ public class ImportExpansionHandlerTests {
             } else {
                 assertTrue("org.springframework.core".equals(attributes.get("bundle-symbolic-name")));
             }
-            assertEquals(new VersionRange("[2.5.6.SEC01,2.5.6.SEC01]"), new VersionRange(attributes.get("bundle-version")));
+            assertEquals(new VersionRange("[3.1.0.RELEASE,3.1.0.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
 
     }
@@ -447,7 +447,7 @@ public class ImportExpansionHandlerTests {
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
-        expect(bundleImport.getVersion()).andReturn(new VersionRange("[2.5,3.0)")).atLeastOnce();
+        expect(bundleImport.getVersion()).andReturn(new VersionRange("[3.1,4)")).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false);
 
@@ -461,7 +461,7 @@ public class ImportExpansionHandlerTests {
 
         verifyMocks(mocks);
 
-        assertEquals(19, bundleManifest.getImportPackage().getImportedPackages().size());
+        assertEquals(20, bundleManifest.getImportPackage().getImportedPackages().size());
     }
 
     @Test
@@ -470,7 +470,7 @@ public class ImportExpansionHandlerTests {
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
-        expect(libraryImport.getVersion()).andReturn(new VersionRange("[2.5,3.0)")).atLeastOnce();
+        expect(libraryImport.getVersion()).andReturn(new VersionRange("[3.1,4)")).atLeastOnce();
 
         ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());
 
@@ -521,13 +521,13 @@ public class ImportExpansionHandlerTests {
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
-        expect(bundleImport.getVersion()).andReturn(new VersionRange("[2.5,3.0)")).atLeastOnce();
+        expect(bundleImport.getVersion()).andReturn(new VersionRange("[3.1,4)")).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
-        expect(libraryImport.getVersion()).andReturn(new VersionRange("[2.5,3.0)")).atLeastOnce();
+        expect(libraryImport.getVersion()).andReturn(new VersionRange("[3.1,4)")).atLeastOnce();
         expect(libraryImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
 
         ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());

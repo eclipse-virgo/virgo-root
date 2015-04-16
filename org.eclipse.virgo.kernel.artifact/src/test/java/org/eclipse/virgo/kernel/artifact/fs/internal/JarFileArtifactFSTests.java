@@ -32,7 +32,7 @@ public class JarFileArtifactFSTests {
     
     @Test(expected = IllegalArgumentException.class)
     public void constructorDirectory() {
-        new JarFileArtifactFS(new File("target"));
+        new JarFileArtifactFS(new File("build"));
     }
 
     /**

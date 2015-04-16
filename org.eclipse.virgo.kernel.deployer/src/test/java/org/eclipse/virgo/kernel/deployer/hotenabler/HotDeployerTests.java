@@ -37,7 +37,7 @@ import org.osgi.service.event.Event;
  */
 public class HotDeployerTests {
 
-    private static final PathReference PICKUP_DIR = new PathReference("target/pickup");
+    private static final PathReference PICKUP_DIR = new PathReference("build/pickup");
 
     private ApplicationDeployer deployer;
 
@@ -79,7 +79,7 @@ public class HotDeployerTests {
         replay(this.deployer);
 
         DeployerConfiguration deployerConfiguration = createMock(DeployerConfiguration.class);
-        expect(deployerConfiguration.getDeploymentPickupDirectory()).andReturn(new PathReference("target/pickup"));
+        expect(deployerConfiguration.getDeploymentPickupDirectory()).andReturn(new PathReference("build/pickup"));
         expect(deployerConfiguration.getScanIntervalMillis()).andReturn(1000);
 
         replay(deployerConfiguration);

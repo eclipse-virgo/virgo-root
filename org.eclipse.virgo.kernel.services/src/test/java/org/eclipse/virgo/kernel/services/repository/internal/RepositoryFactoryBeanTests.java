@@ -46,7 +46,7 @@ public class RepositoryFactoryBeanTests {
         mockEventLogger.reinitialise();
         Properties properties = new Properties();
         RepositoryFactory factory = createMock(RepositoryFactory.class);
-        File work = new File("target");
+        File work = new File("build");
         
         RepositoryFactoryBean bean = new RepositoryFactoryBean(properties, mockEventLogger, factory, work, Collections.<ArtifactBridge>emptySet(), null);
         Repository r = bean.getObject();
@@ -57,12 +57,12 @@ public class RepositoryFactoryBeanTests {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreate() throws Exception {
-        File work = new File("target");
+        File work = new File("build");
         mockEventLogger.reinitialise();
         
         Properties properties = new Properties();
         properties.put("bundles.type", "external");
-        properties.put("bundles.searchPattern", "target/*.jar");
+        properties.put("bundles.searchPattern", "build/*.jar");
         properties.put("chain", "bundles");
         
         RepositoryFactory factory = createMock(RepositoryFactory.class);
@@ -81,7 +81,7 @@ public class RepositoryFactoryBeanTests {
         mockEventLogger.reinitialise();
         Properties properties = new Properties();
         RepositoryFactory factory = createMock(RepositoryFactory.class);
-        File work = new File("target");
+        File work = new File("build");
         
         RepositoryFactoryBean bean = new RepositoryFactoryBean(properties, mockEventLogger, factory, work, Collections.<ArtifactBridge>emptySet(), null);
         assertTrue(bean.isSingleton());

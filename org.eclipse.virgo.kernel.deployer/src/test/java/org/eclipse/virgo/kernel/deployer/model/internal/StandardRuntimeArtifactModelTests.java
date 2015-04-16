@@ -121,7 +121,7 @@ public class StandardRuntimeArtifactModelTests {
         assertNull(this.standardRuntimeArtifactModel.get(this.deploymentIdentity));
         
         // Now deploy a file, delete it, and then get the deployed artifact.
-        File dir = new File("target/StandardRuntimeArtifactModelTest.dir/");
+        File dir = new File("build/StandardRuntimeArtifactModelTest.dir/");
         dir.mkdir();
         URI uri = dir.toURI();
         this.standardRuntimeArtifactModel.add(uri, this.stubInstallArtifact);

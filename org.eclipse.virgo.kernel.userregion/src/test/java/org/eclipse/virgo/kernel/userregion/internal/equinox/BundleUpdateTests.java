@@ -51,14 +51,14 @@ public class BundleUpdateTests extends AbstractOsgiFrameworkLaunchingTests {
     @Ignore("See DMS-2886")
     public void testUpdate() throws Exception {
         PathReference bBeforeSrc = new PathReference("src/test/resources/but/but.B.before.jar");
-        PathReference b = new PathReference("target/but.B.jar");
+        PathReference b = new PathReference("build/but.B.jar");
         b.delete();
         bBeforeSrc.copy(b);
         Bundle bBundle = this.framework.getBundleContext().installBundle(b.toFile().toURI().toString());
         assertNotNull(bBundle);
         
         PathReference cSrc = new PathReference("src/test/resources/but/but.C.jar");
-        PathReference c = new PathReference("target/but.C.jar");
+        PathReference c = new PathReference("build/but.C.jar");
         c.delete();
         cSrc.copy(c);
         Bundle cBundle = this.framework.getBundleContext().installBundle(c.toFile().toURI().toString());

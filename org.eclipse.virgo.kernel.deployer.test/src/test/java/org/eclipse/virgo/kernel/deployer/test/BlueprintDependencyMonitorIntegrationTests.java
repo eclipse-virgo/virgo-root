@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 public class BlueprintDependencyMonitorIntegrationTests extends AbstractDeployerIntegrationTest {
     
-    private static final File LOG_FILE = new File("target/serviceability/eventlog/eventlog.log");
+    private static final File LOG_FILE = new File("build/serviceability/eventlog/eventlog.log");
 
     private int existingLines;
 

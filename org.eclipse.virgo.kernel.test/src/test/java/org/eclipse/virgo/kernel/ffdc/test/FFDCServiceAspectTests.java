@@ -39,7 +39,7 @@ public class FFDCServiceAspectTests extends AbstractKernelIntegrationTest {
     }
 
     private int dumpFileCount() {
-        File dumpDir = new File("target/dumpfiles");
+        File dumpDir = new File("build/dumpfiles");
         String[] list = dumpDir.list();
         return (list == null ? 0 : list.length);
     }

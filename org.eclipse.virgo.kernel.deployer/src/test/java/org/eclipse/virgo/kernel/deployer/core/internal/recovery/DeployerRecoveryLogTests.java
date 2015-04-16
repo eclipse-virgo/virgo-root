@@ -29,7 +29,7 @@ import org.eclipse.virgo.util.io.PathReference;
 
 public class DeployerRecoveryLogTests {
 
-    private PathReference deployArea = new PathReference("target/deployArea");
+    private PathReference deployArea = new PathReference("build/deployArea");
 
     @Before
     public void cleanup() {

@@ -26,7 +26,7 @@ public class FileArtifactFSTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorDirectory() {
-        new FileArtifactFS(new File("target"));
+        new FileArtifactFS(new File("build"));
     }
 
     @Test(expected = IllegalArgumentException.class)

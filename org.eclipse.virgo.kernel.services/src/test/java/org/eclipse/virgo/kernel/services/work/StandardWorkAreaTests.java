@@ -37,8 +37,8 @@ public class StandardWorkAreaTests {
 
     @Before
     public void before() {
-        FileSystemUtils.deleteRecursively(new File("./target/work", WORK_DIR_NAME));
-        FileSystemUtils.deleteRecursively(new File("./target/work", KERNEL_WORK_DIR_NAME));
+        FileSystemUtils.deleteRecursively(new File("./build/work", WORK_DIR_NAME));
+        FileSystemUtils.deleteRecursively(new File("./build/work", KERNEL_WORK_DIR_NAME));
     }
 
     @Test
@@ -46,27 +46,27 @@ public class StandardWorkAreaTests {
 
         StubBundle bundle = new StubBundle(WORK_DIR_NAME, Version.emptyVersion);
 
-        StandardWorkArea manager = new StandardWorkArea(new File("./target/work"), bundle);
+        StandardWorkArea manager = new StandardWorkArea(new File("./build/work"), bundle);
         PathReference workDir = manager.getWorkDirectory();
 
         assertNotNull(workDir);
         assertTrue("work dir does not exist", workDir.exists());
         assertTrue(workDir.isDirectory());
 
-        assertTrue(new File("./target/work", WORK_DIR_NAME + "_" + Version.emptyVersion).exists());
+        assertTrue(new File("./build/work", WORK_DIR_NAME + "_" + Version.emptyVersion).exists());
     }
 
     @Test
     public void kernelWorkDirectory() {
         StubBundle bundle = new StubBundle(KERNEL_BSN, Version.emptyVersion);
 
-        StandardWorkArea manager = new StandardWorkArea(new File("./target/work"), bundle);
+        StandardWorkArea manager = new StandardWorkArea(new File("./build/work"), bundle);
         PathReference workDir = manager.getWorkDirectory();
 
         assertNotNull(workDir);
         assertTrue("work dir does not exist", workDir.exists());
         assertTrue(workDir.isDirectory());
 
-        assertTrue(new File("./target/work", KERNEL_WORK_DIR_NAME).exists());
+        assertTrue(new File("./build/work", KERNEL_WORK_DIR_NAME).exists());
     }
 }

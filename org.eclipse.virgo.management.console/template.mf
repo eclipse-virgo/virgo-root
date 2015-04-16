@@ -7,10 +7,10 @@ Bundle-ClassPath: WEB-INF/classes
 Web-ContextPath: /admin
 Bundle-Activator: org.eclipse.virgo.management.console.Activator
 Import-Template: 
- javax.servlet.*;version="${javax.servlet:[-1.6.=,=.+1)}",
- org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
- org.jolokia.osgi.servlet;version="${org.jolokia.osgi:[=.=,+1.=)}",
- org.slf4j;version="${org.slf4j.api:[=.=.=,+1)}",
+ javax.servlet.*;version="${javaxServletVersion:[-1.6.=,=.+1)}",
+ org.eclipse.virgo.util.*;version="${version:[=.=.=, +1)}",
+ org.jolokia.osgi.servlet;version="${jolokiaVersion:[=.=,+1.=)}",
+ org.slf4j;version="${slf4jVersion:[=.=.=,+1)}",
  org.apache.commons.fileupload.*;version="0",
  org.eclipse.osgi.internal.signedcontent;version="0",
  org.osgi.framework.*;version="0",

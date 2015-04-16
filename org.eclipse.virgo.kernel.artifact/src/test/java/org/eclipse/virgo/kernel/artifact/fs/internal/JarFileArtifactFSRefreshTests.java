@@ -35,7 +35,7 @@ public class JarFileArtifactFSRefreshTests {
 
     @Before
     public void setUp() throws Exception {
-        this.pr = new PathReference("./target/redeploy-refresh");
+        this.pr = new PathReference("./build/redeploy-refresh");
         this.pr.delete(true);
         this.pr.createDirectory();
         this.testModule = this.pr.newChild("simple.module.jar");
@@ -46,7 +46,7 @@ public class JarFileArtifactFSRefreshTests {
         PathReference simpleModule = new PathReference("src/test/resources/refresh/simple.module.jar");
         simpleModule.copy(this.testModule);
 
-        ArtifactFS artifactFS = new JarFileArtifactFS(new PathReference("./target/redeploy-refresh/simple.module.jar").toFile());
+        ArtifactFS artifactFS = new JarFileArtifactFS(new PathReference("./build/redeploy-refresh/simple.module.jar").toFile());
 
         checkBsn(artifactFS, "simple.module");
         
@@ -54,7 +54,7 @@ public class JarFileArtifactFSRefreshTests {
         this.testModule.moveTo(old);
         new PathReference("src/test/resources/refresh/simple2.module.jar").copy(this.testModule);
 
-        JarFileArtifactFS fs = new JarFileArtifactFS(new PathReference("./target/redeploy-refresh/simple.module.jar").toFile());
+        JarFileArtifactFS fs = new JarFileArtifactFS(new PathReference("./build/redeploy-refresh/simple.module.jar").toFile());
 
         checkBsn(fs, "simple2.module");
     }
@@ -62,7 +62,10 @@ public class JarFileArtifactFSRefreshTests {
     public void checkBsn(ArtifactFS artifactFS, String bsn) throws IOException {
         ArtifactFSEntry entry = artifactFS.getEntry("META-INF/MANIFEST.MF");
         InputStream inputStream = entry.getInputStream();
-        String manifest = new Scanner(inputStream).useDelimiter("\\A").next();
+        String manifest;
+		try (Scanner scanner = new Scanner(inputStream)) {
+			manifest = scanner.useDelimiter("\\A").next();
+		}
         assertTrue(manifest.contains(bsn));
         inputStream.close();
     }

@@ -29,7 +29,7 @@ public class WorkAreaServiceFactoryTests {
 
     @Test
     public void testCreate() {
-        File work = new File("target");
+        File work = new File("build");
         WorkAreaServiceFactory factory = new WorkAreaServiceFactory(work);
         
         StubBundle bundle = new StubBundle("foo", new Version("1.0.0"));

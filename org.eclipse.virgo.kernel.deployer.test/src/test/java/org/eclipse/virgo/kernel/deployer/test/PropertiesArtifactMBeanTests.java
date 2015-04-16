@@ -54,7 +54,7 @@ public class PropertiesArtifactMBeanTests extends AbstractDeployerIntegrationTes
     
     @Test
     public void lifecycle() throws DeploymentException, IOException, InvalidSyntaxException, JMException {
-        File artifactFile = new File("target/test.properties");
+        File artifactFile = new File("build/test.properties");
         
         FileCopyUtils.copy(new File("src/test/resources/test.properties"), artifactFile);
         

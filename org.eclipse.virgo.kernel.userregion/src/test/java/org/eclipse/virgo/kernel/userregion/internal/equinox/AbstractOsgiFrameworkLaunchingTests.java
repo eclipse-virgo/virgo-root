@@ -88,10 +88,10 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
     @Before
     public void setUp() throws Exception {
 
-        final File workDir = new File("target/work");
+        final File workDir = new File("build/work");
 
         if (workDir.exists()) {
-            assertTrue(FileSystemUtils.deleteRecursively(new File("target/work")));
+            assertTrue(FileSystemUtils.deleteRecursively(new File("build/work")));
         }
 
         // Uncomment this line to enable Equinox debugging
@@ -101,7 +101,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         // FrameworkProperties.setProperty("osgi.console", "2401");
         EquinoxLauncherConfiguration launcherConfiguration = new EquinoxLauncherConfiguration();
         launcherConfiguration.setClean(true);
-        URI targetURI = new File("./target").toURI();
+        URI targetURI = new File("./build").toURI();
         launcherConfiguration.setConfigPath(targetURI);
         launcherConfiguration.setInstallPath(targetURI);
 
@@ -144,7 +144,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         artifactBridges.add(new BundleBridge(new StubHashGenerator()));
         artifactBridges.add(new LibraryBridge(new StubHashGenerator()));
 
-        RepositoryFactoryBean bean = new RepositoryFactoryBean(repositoryProperties, mockEventLogger, repositoryFactory, new File("target/work"),
+        RepositoryFactoryBean bean = new RepositoryFactoryBean(repositoryProperties, mockEventLogger, repositoryFactory, new File("build/work"),
             artifactBridges, null);
         repository = bean.getObject();
 
@@ -172,7 +172,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
             @Override
             public PathReference getWorkDirectory() {
-                return new PathReference(new File("target/work"));
+                return new PathReference(new File("build/work"));
             }
         };
         DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);

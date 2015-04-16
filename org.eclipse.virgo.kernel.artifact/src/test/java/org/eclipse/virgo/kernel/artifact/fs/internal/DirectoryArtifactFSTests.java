@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public class DirectoryArtifactFSTests {
 
-    private final DirectoryArtifactFS artifactFS = new DirectoryArtifactFS(new File("target"));
+    private final DirectoryArtifactFS artifactFS = new DirectoryArtifactFS(new File("build"));
 
     @Test
     public void getEntry() {

@@ -22,8 +22,11 @@ import java.util.Set;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.util.common.DirectedAcyclicGraph;
+import org.eclipse.virgo.util.common.ThreadSafeDirectedAcyclicGraph;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
+import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.junit.After;
@@ -48,7 +51,9 @@ public class AbstractInstallArtifactTests {
     @Before
     public void setUp() throws Exception {
         this.artifactStateMonitor = new StubArtifactStateMonitor();
+        DirectedAcyclicGraph<InstallArtifact> dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
         this.installArtifact = new StubInstallArtifact(artifactStateMonitor);
+        this.installArtifact.setGraph(dag.createRootNode(installArtifact));
     }
 
     @After

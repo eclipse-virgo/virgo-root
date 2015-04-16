@@ -259,7 +259,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
     @Test(expected = DeploymentException.class)
     public void testNonBundleDirectory() throws Exception {
-        URI dirURI = new File("target").toURI();
+        URI dirURI = new File("build").toURI();
         this.appDeployer.deploy(dirURI);
     }
 

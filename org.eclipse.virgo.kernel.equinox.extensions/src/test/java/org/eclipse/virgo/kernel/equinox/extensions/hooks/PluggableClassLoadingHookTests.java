@@ -47,8 +47,8 @@ public class PluggableClassLoadingHookTests {
     @Before
     public void setUp() throws BundleException {
         EquinoxLauncherConfiguration config = new EquinoxLauncherConfiguration();
-        config.setConfigPath(new File("target/config").toURI());
-        config.setInstallPath(new File("target/install").toURI());
+        config.setConfigPath(new File("build/config").toURI());
+        config.setInstallPath(new File("build/install").toURI());
 
         this.osgi = ExtendedEquinoxLauncher.launch(config);
         this.context = osgi.getBundleContext();

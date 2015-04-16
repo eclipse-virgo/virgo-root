@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class FileMovingArtifactStoreTests {
     
-    private static final String TEST_PATH = "target/fileMovingArtifactStoreTests/";
+    private static final String TEST_PATH = "build/fileMovingArtifactStoreTests/";
     
     private static final String TEST_FILENAME = "some.jar";
     

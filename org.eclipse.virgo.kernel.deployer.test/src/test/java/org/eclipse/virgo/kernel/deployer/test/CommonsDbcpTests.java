@@ -26,9 +26,9 @@ public class CommonsDbcpTests extends AbstractDeployerIntegrationTest {
 
     @BeforeClass
     public static void setupDatabase() {
-        FileSystemUtils.deleteRecursively(new File("target/db"));
+        FileSystemUtils.deleteRecursively(new File("build/db"));
         server = new Server();
-        server.setDatabasePath(0, "target/db/commons-dbcp-test-db");
+        server.setDatabasePath(0, "build/db/commons-dbcp-test-db");
         server.setDatabaseName(0, "");
         server.setSilent(true);
         server.start();

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class GenerationalArtifactStoreTests {
     
-    private static final String TEST_PATH = "target/generationalArtifactStoreTests/";
+    private static final String TEST_PATH = "build/generationalArtifactStoreTests/";
     
     private static final String TEST_FILENAME = "some.jar";
     

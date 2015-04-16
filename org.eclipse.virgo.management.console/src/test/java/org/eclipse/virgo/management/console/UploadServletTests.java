@@ -34,7 +34,7 @@ public class UploadServletTests {
 	public void testDoUploadFail() throws Exception {
 		UploadServlet uploadServlet = new UploadServlet();
 		FileItem fileItem = new DiskFileItem("foo", "json/application", false, "src/test/resources/test.upload", 500, new File("/target"));
-		File stagingDir = new File("target");
+		File stagingDir = new File("build");
 		fileItem.getOutputStream();
 		uploadServlet.doUpload(fileItem, stagingDir);
 	}
