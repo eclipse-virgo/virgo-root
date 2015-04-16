@@ -37,6 +37,7 @@ import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.servlet.ServletContext;
+import javax.validation.ValidationException;
 
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.ContextResource;
@@ -192,13 +193,13 @@ public class VirgoDeployerEjb extends DeployerEjb {
 
 			logger.error("Error while deploying application with real path '" + loc + "' and web context path '" + this.webContextPath + "'", e);
 
-			if (e instanceof javax.validation.ValidationException) {
-				throw (javax.validation.ValidationException) e;
+			if (e instanceof ValidationException) {
+				throw (ValidationException) e;
 			}
 
 			if (e instanceof OpenEJBException) {
-				if (e.getCause() instanceof javax.validation.ValidationException) {
-					throw (javax.validation.ValidationException) e.getCause();
+				if (e.getCause() instanceof ValidationException) {
+					throw (ValidationException) e.getCause();
 				}
 				throw (OpenEJBException) e;
 			}

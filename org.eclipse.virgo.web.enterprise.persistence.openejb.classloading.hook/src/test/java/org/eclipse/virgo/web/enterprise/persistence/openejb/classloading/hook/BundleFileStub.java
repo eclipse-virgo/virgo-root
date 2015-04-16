@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
 
