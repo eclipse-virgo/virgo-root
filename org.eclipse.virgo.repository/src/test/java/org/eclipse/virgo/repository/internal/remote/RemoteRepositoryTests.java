@@ -39,10 +39,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
-
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-
 import org.eclipse.virgo.repository.ArtifactBridge;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.ArtifactGenerationException;
@@ -58,7 +56,9 @@ import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
 import org.eclipse.virgo.repository.internal.remote.RemoteRepository;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
 import org.eclipse.virgo.util.io.FileCopyUtils;
+import org.eclipse.virgo.util.io.NetUtils;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -76,17 +76,19 @@ public class RemoteRepositoryTests {
     private int repositoryId = 0;
 
     private HttpServer httpServer;
+    private int port;
 
-    private final File indexLocation = new File("target/index");
+    private final File indexLocation = new File("build/index");
 
-    private final File proxyIndexLocation = new File("target/proxy.index");
+    private final File proxyIndexLocation = new File("build/proxy.index");
 
-    private final File cacheDirectory = new File("target");
+    private final File cacheDirectory = new File("build");
 
     @Before
     public void deleteIndex() {
         this.indexLocation.delete();
         this.proxyIndexLocation.delete();
+        this.port = NetUtils.getFreePort();
     }
 
     private void createRepository(ArtifactBridge artefactBridge, EventLogger eventLogger) throws Exception {
@@ -103,7 +105,7 @@ public class RemoteRepositoryTests {
     }
 
     private void bootstrapHttpServer(HttpHandler handler) throws IOException {
-        this.httpServer = HttpServer.create(new InetSocketAddress("localhost", 8080), 30);
+        this.httpServer = HttpServer.create(new InetSocketAddress("localhost", port), 30);
         this.httpServer.start();
 
         this.httpServer.createContext("/repository", handler);
@@ -163,7 +165,7 @@ public class RemoteRepositoryTests {
         createRepository(bridge, this.mockEventLogger);
         bootstrapHttpServer(new StandardHttpHandler());
 
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = createRemoteRepository(configuration, this.mockEventLogger);
@@ -220,8 +222,7 @@ public class RemoteRepositoryTests {
 
         bootstrapHttpServer(new StandardHttpHandler());
 
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
-
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());
@@ -240,7 +241,7 @@ public class RemoteRepositoryTests {
         createRepository(bridge, new MockEventLogger());
         bootstrapHttpServer(new StandardHttpHandler());
 
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = createRemoteRepository(configuration, this.mockEventLogger);
@@ -254,7 +255,7 @@ public class RemoteRepositoryTests {
 
     @Test
     public void indexlessRepository() throws Exception {
-        URI repositoryUri = URI.create("http://localhost:8080/does-not-exist");
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/does-not-exist");
 
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
@@ -270,7 +271,7 @@ public class RemoteRepositoryTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void badScheme() throws Exception {
-        URI repositoryUri = URI.create("hotp://localhost:8080/repository");
+        URI repositoryUri = URI.create("hotp://localhost:" + this .port + "/repository");
 
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
@@ -297,8 +298,7 @@ public class RemoteRepositoryTests {
             }
         });
 
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
-
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());
@@ -338,8 +338,7 @@ public class RemoteRepositoryTests {
             }
         });
 
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
-
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());
@@ -376,7 +375,7 @@ public class RemoteRepositoryTests {
             }
         });
 
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());
@@ -399,7 +398,7 @@ public class RemoteRepositoryTests {
 
     @Test
     public void mBeanPublication() throws Exception {
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             MBEAN_DOMAIN_VIRGO_WEB_SERVER, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());
@@ -431,7 +430,7 @@ public class RemoteRepositoryTests {
 
     @Test
     public void mBeanNonPublication() throws Exception {
-        URI repositoryUri = URI.create("http://localhost:8080/repository");
+        URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());

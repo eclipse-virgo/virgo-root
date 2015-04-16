@@ -51,44 +51,44 @@ public class WatchedStorageRepositoryConfigurationTests {
                 return null;
             }
         });
-        this.watchedDirectory = new File("target/dir-to-watch");
+        this.watchedDirectory = new File("build/dir-to-watch");
         this.watchedDirectory.delete();
     }
 
     @Test
     public void name() {
-        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("target/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
+        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("build/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
         assertEquals(name, this.configuration.getName());
     }
 
     @Test
     public void watchedDirectory() {
         this.watchedDirectory.mkdir();
-        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("target/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
+        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("build/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
         assertEquals(this.watchedDirectory.getAbsoluteFile(), this.configuration.getDirectoryToWatch().getAbsoluteFile());
     }
 
     @Test
     public void artefactBridges() {
-        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("target/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
+        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("build/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
         assertEquals(this.artefactBridges, this.configuration.getArtefactBridges());
     }
 
     @Test
     public void watchInterval() {
-        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("target/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
+        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("build/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), watchInterval, null);
         assertEquals(watchInterval, this.configuration.getWatchInterval());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void badWatchIntervalZero() {
-        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("target/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), BAD_WATCH_INTERVAL_ZERO,
+        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("build/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), BAD_WATCH_INTERVAL_ZERO,
             null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void badWatchIntervalNeg() {
-        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("target/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), BAD_WATCH_INTERVAL_NEG,
+        this.configuration = new WatchedStorageRepositoryConfiguration(name, new File("build/watchedIndex"), this.artefactBridges, this.watchedDirectory.getAbsolutePath(), BAD_WATCH_INTERVAL_NEG,
             null);
     }
 

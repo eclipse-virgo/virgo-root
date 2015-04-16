@@ -83,7 +83,7 @@ public class WatchedStorageRepositoryTests {
 
     private WatchedStorageRepository wsRepository;
 
-    private final File watchDir = new File("target/watchedDir");
+    private final File watchDir = new File("build/watchedDir");
 
     private Set<ArtifactBridge> artefactBridgeDefinitions;
 
@@ -98,7 +98,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void testConstructor() throws RepositoryCreationException, IndexFormatException {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             WATCH_INTERVAL, null);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, new MockEventLogger());
@@ -107,7 +107,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void testConstructLongWaiter() throws RepositoryCreationException, IndexFormatException {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             LONG_WATCH_INTERVAL, null);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, mockEventLogger);
@@ -117,7 +117,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorBadWaiter() throws RepositoryCreationException, IndexFormatException {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             BAD_WATCH_INTERVAL, null);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, mockEventLogger);
@@ -127,7 +127,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void testGetArtifactLocations() throws Exception {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             WATCH_INTERVAL, null);
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, mockEventLogger);
         assertFalse("Didn't create a repository!", null == this.wsRepository);
@@ -141,7 +141,7 @@ public class WatchedStorageRepositoryTests {
     
     @Test
     public void testGetOnEmptyRepository() throws RepositoryCreationException, IOException {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             WATCH_INTERVAL, null);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, mockEventLogger);
@@ -159,7 +159,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void testGetInitialArtefact() throws RepositoryCreationException, IOException {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             MIN_WATCH_INTERVAL, null);
 
         putArtifactFile(testArtefactFile1);
@@ -179,7 +179,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void testGetInitialArtefactWithCheck() throws Exception {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             MIN_WATCH_INTERVAL, null);
 
         putArtifactFile(testArtefactFile1);
@@ -211,7 +211,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void testGetAddAndDeleteArtefact() throws RepositoryCreationException, IOException {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             MIN_WATCH_INTERVAL, null);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, new MockEventLogger());
@@ -242,7 +242,7 @@ public class WatchedStorageRepositoryTests {
     
     @Test
     public void testGetAddAndDeleteArtefactWithCheck() throws RepositoryCreationException, IOException, ArtifactGenerationException, Exception {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             MIN_WATCH_INTERVAL, null);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, new MockEventLogger());
@@ -273,7 +273,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void mBeanPublication() throws Exception {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             WATCH_INTERVAL, MBEAN_DOMAIN_VIRGO_WEB_SERVER);
 
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, mockEventLogger);
@@ -304,7 +304,7 @@ public class WatchedStorageRepositoryTests {
 
     @Test
     public void mBeanNonPublication() throws Exception {
-        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("target/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
+        this.wsrConfiguration = new WatchedStorageRepositoryConfiguration(WATCHED_REPO_NAME, new File("build/watchedIndex"), this.artefactBridgeDefinitions, this.watchDir.getAbsolutePath(),
             WATCH_INTERVAL, null);
         this.wsRepository = new WatchedStorageRepository(this.wsrConfiguration, mockEventLogger);
         ObjectName objectName = new ObjectName(MBEAN_DOMAIN_VIRGO_WEB_SERVER + ":type=Repository,name=" + WATCHED_REPO_NAME);

@@ -44,7 +44,7 @@ import org.eclipse.virgo.util.io.PathReference;
 
 public class RepositoryDumpContributorTests {
 
-    private static final String DUMP_TARGET = "target/dump";
+    private static final String DUMP_TARGET = "build/dump";
 
     private PathReference target = new PathReference(DUMP_TARGET);
 

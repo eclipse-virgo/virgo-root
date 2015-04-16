@@ -49,11 +49,11 @@ public class StandardRepositoryCacheIntegrationTests {
 
     private static final String REPO_NAME = "repo";
 
-    private static final File REPOSITORY_CACHE_DIRECTORY = new File("target/repocache");
+    private static final File REPOSITORY_CACHE_DIRECTORY = new File("build/repocache");
 
-    private static final File BUNDLE_DIRECTORY = new File("target/cacheing");
+    private static final File BUNDLE_DIRECTORY = new File("build/cacheing");
 
-    private static final File BUNDLE_FILE = new File("target/cacheing/b.jar");
+    private static final File BUNDLE_FILE = new File("build/cacheing/b.jar");
 
     private static final String ARTIFACT_TYPE = "bundle";
 

@@ -33,7 +33,7 @@ public class DownloaderTests {
 
     @Before
     public void setUp() throws Exception {
-        this.destinationDirectory = new PathReference("target/downloaderTests");
+        this.destinationDirectory = new PathReference("build/downloaderTests");
         this.destinationDirectory.delete(true);
         this.destinationDirectory.createDirectory();
     }

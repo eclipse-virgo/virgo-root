@@ -68,7 +68,7 @@ public class XmlArtifactDescriptorPersisterTests {
 
     private static final String DUMMY_REPOSITORY_NAME = "dummyRepositoryName";
 
-    private final File repositories = new File("target/repositories");
+    private final File repositories = new File("build/repositories");
 
     @Before
     public void setUp() throws Exception {

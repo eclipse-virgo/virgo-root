@@ -110,7 +110,7 @@ public class StandardRepositoryCacheTests {
     }
 
     private void setUpRepositoryCache() {
-        this.repositoryCache = new StandardRepositoryCache(REPO_NAME, new File("target"), this.mockArtifactCacheFactory,
+        this.repositoryCache = new StandardRepositoryCache(REPO_NAME, new File("build"), this.mockArtifactCacheFactory,
             this.mockArtifactDescriptorHashFactory);
     }
 

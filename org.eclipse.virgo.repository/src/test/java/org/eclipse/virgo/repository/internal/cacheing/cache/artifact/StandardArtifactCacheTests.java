@@ -42,11 +42,11 @@ import org.eclipse.virgo.util.io.PathReference;
  */
 public class StandardArtifactCacheTests {
 
-    private static final File REPOSITORY_CACHE_DIRECTORY = new File("target/cache");
+    private static final File REPOSITORY_CACHE_DIRECTORY = new File("build/cache");
 
-    private static final File BUNDLE_DIRECTORY = new File("target/cacheing");
+    private static final File BUNDLE_DIRECTORY = new File("build/cacheing");
 
-    private static final File BUNDLE_FILE = new File("target/cacheing/b.jar");
+    private static final File BUNDLE_FILE = new File("build/cacheing/b.jar");
 
     private static final String ARTIFACT_TYPE = "bundle";
 

@@ -57,7 +57,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
         
         properties.setProperty("b.type", "watched");
         properties.setProperty("b.watchInterval", "5");
-        properties.setProperty("b.watchDirectory", "target/watched");
+        properties.setProperty("b.watchDirectory", "build/watched");
         
         properties.setProperty("c.type", "remote");
         properties.setProperty("c.indexRefreshInterval", "5");
@@ -89,7 +89,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
         
         properties.setProperty("b.type", "watched");
         properties.setProperty("b.watchInterval", "5");
-        properties.setProperty("b.watchDirectory", "target/watched");
+        properties.setProperty("b.watchDirectory", "build/watched");
         
         Map<String, RepositoryConfiguration> configuration = configurationReader.readConfiguration(properties).getFirst();
         RepositoryConfiguration repositoryConfiguration = configuration.get("b");
@@ -98,7 +98,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
         assertTrue(repositoryConfiguration instanceof WatchedStorageRepositoryConfiguration);
         
         File directoryToWatch = ((WatchedStorageRepositoryConfiguration)repositoryConfiguration).getDirectoryToWatch();
-        assertEquals(new File("foo/bar/target/watched").getCanonicalFile(), directoryToWatch.getCanonicalFile());
+        assertEquals(new File("foo/bar/build/watched").getCanonicalFile(), directoryToWatch.getCanonicalFile());
     }
     
     @Test
@@ -109,7 +109,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
         properties.setProperty("a.searchPattern", "/**/*.jar");
         
         properties.setProperty("b.watchInterval", "5");
-        properties.setProperty("b.watchDirectory", "target/watched");
+        properties.setProperty("b.watchDirectory", "build/watched");
         
         Map<String,RepositoryConfiguration> configurationMap = configurationReader.readConfiguration(properties).getFirst();
         
@@ -165,7 +165,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
     public void defaultingOfIndexRefreshIntervalAndWatchInterval() throws RepositoryConfigurationException {
         Properties properties = new Properties();
         properties.setProperty("watched-repo.type", "watched");
-        properties.setProperty("watched-repo.watchDirectory", "target/repository/watched");
+        properties.setProperty("watched-repo.watchDirectory", "build/repository/watched");
         properties.setProperty("remote-repo.type", "remote");
         properties.setProperty("remote-repo.uri", "http://localhost:8080/org.eclipse.virgo.repository/foo");
         properties.setProperty("chain", "watched-repo,remote-repo");
@@ -192,7 +192,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
     public void defaultingOfIndexRefreshIntervalAndWatchIntervalWhenMalformed() throws RepositoryConfigurationException {
         Properties properties = new Properties();
         properties.setProperty("watched-repo.type", "watched");
-        properties.setProperty("watched-repo.watchDirectory", "target/repository/watched");
+        properties.setProperty("watched-repo.watchDirectory", "build/repository/watched");
         properties.setProperty("watched-repo.watchInterval", "alpha");
         properties.setProperty("remote-repo.type", "remote");
         properties.setProperty("remote-repo.uri", "http://localhost:8080/org.eclipse.virgo.repository/foo");
@@ -229,7 +229,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
             properties.setProperty("bundles-ext.searchPattern", "repository/${org.eclipse.virgo.repository.internal.test.string}/ext/*.jar");
 
             properties.setProperty("watched-repo.type", "watched");
-            properties.setProperty("watched-repo.watchDirectory", "target/repository/${org.eclipse.virgo.repository.internal.test.string}");
+            properties.setProperty("watched-repo.watchDirectory", "build/repository/${org.eclipse.virgo.repository.internal.test.string}");
             properties.setProperty("watched-repo.watchInterval", "${org.eclipse.virgo.repository.internal.test.int}");
 
             properties.setProperty("remote-repo.type", "remote");
@@ -249,7 +249,7 @@ public class PropertiesRepositoryConfigurationReaderTests {
             assertEquals(new File(".").getAbsolutePath() + File.separator + "repository" + File.separator + "a" + File.separator + "ext" + File.separatorChar + "*.jar", externalConfiguration.getSearchPattern());
             
             WatchedStorageRepositoryConfiguration watchedConfiguration = (WatchedStorageRepositoryConfiguration)configurationMap.get(chainList.get(1));
-            assertEquals(new File("target/repository", "a").getCanonicalFile(), watchedConfiguration.getDirectoryToWatch().getCanonicalFile());
+            assertEquals(new File("build/repository", "a").getCanonicalFile(), watchedConfiguration.getDirectoryToWatch().getCanonicalFile());
             assertEquals(1, watchedConfiguration.getWatchInterval());
             
             RemoteRepositoryConfiguration remoteConfiguration = (RemoteRepositoryConfiguration)configurationMap.get(chainList.get(2));

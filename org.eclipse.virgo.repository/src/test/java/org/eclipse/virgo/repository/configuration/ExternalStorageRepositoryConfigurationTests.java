@@ -40,7 +40,7 @@ public class ExternalStorageRepositoryConfigurationTests {
     @Before
     public void createConfiguration() {
         name = "repo-name";
-        indexLocation = new File("target/index");
+        indexLocation = new File("build/index");
         artefactBridges = new HashSet<ArtifactBridge>();
         artefactBridges.add(new ArtifactBridge() {
 

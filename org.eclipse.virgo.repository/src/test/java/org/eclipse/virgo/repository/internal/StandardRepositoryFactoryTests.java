@@ -49,7 +49,7 @@ public class StandardRepositoryFactoryTests {
 
     @Test
     public void chainedRepository() throws RepositoryCreationException {
-        RepositoryConfiguration config = new ExternalStorageRepositoryConfiguration("test", new File("target/externalIndex"),
+        RepositoryConfiguration config = new ExternalStorageRepositoryConfiguration("test", new File("build/externalIndex"),
             Collections.<ArtifactBridge> emptySet(), System.getProperty("user.dir") + "/target/external", null);
         Repository repository = factory.createRepository(Arrays.asList(config, config));
         assertTrue(repository instanceof ChainedRepository);
@@ -59,10 +59,10 @@ public class StandardRepositoryFactoryTests {
 
     @Test
     public void chainedRepositoryWithBadRepositoryInChain() throws RepositoryCreationException {
-        RepositoryConfiguration config = new ExternalStorageRepositoryConfiguration("test", new File("target/externalIndex"),
+        RepositoryConfiguration config = new ExternalStorageRepositoryConfiguration("test", new File("build/externalIndex"),
             Collections.<ArtifactBridge> emptySet(), System.getProperty("user.dir") + "/target/external", null);
-        RepositoryConfiguration badConfig = new ManagedStorageRepositoryConfiguration("test", new File("target/managedIndex"),
-            Collections.<ArtifactBridge> emptySet(), new File("target/managedStorage"), null);
+        RepositoryConfiguration badConfig = new ManagedStorageRepositoryConfiguration("test", new File("build/managedIndex"),
+            Collections.<ArtifactBridge> emptySet(), new File("build/managedStorage"), null);
         Repository repository = factory.createRepository(Arrays.asList(config, badConfig, config));
         assertTrue(repository instanceof ChainedRepository);
         assertEquals("test-test", repository.getName());
@@ -71,7 +71,7 @@ public class StandardRepositoryFactoryTests {
 
     @Test
     public void externalStorageRepository() throws RepositoryCreationException {
-        Repository repository = factory.createRepository(new ExternalStorageRepositoryConfiguration("test", new File("target/externalIndex"),
+        Repository repository = factory.createRepository(new ExternalStorageRepositoryConfiguration("test", new File("build/externalIndex"),
             Collections.<ArtifactBridge> emptySet(), System.getProperty("user.dir") + "/target/external", null));
         assertTrue(repository instanceof ExternalStorageRepository);
         assertFalse("log events were issued", mockEventLogger.getCalled());
@@ -79,9 +79,9 @@ public class StandardRepositoryFactoryTests {
 
     @Test
     public void watchedStorageRepository() throws RepositoryCreationException {
-        File watchDir = new File("target/watch");
+        File watchDir = new File("build/watch");
         watchDir.mkdirs();
-        Repository repository = factory.createRepository(new WatchedStorageRepositoryConfiguration("test", new File("target/watchedIndex"), Collections.<ArtifactBridge> emptySet(),
+        Repository repository = factory.createRepository(new WatchedStorageRepositoryConfiguration("test", new File("build/watchedIndex"), Collections.<ArtifactBridge> emptySet(),
             watchDir.getAbsolutePath(), 1000, null));
         assertTrue(repository instanceof WatchedStorageRepository);
         assertFalse("log events were issued", mockEventLogger.getCalled());
@@ -89,16 +89,16 @@ public class StandardRepositoryFactoryTests {
 
     @Test
     public void remoteRepository() throws RepositoryCreationException {
-        Repository repository = factory.createRepository(new RemoteRepositoryConfiguration("test", new File("target/remoteIndex"),
-            URI.create("http://localhost"), 1000, null, new File("target")));
+        Repository repository = factory.createRepository(new RemoteRepositoryConfiguration("test", new File("build/remoteIndex"),
+            URI.create("http://localhost"), 1000, null, new File("build")));
         assertTrue(repository instanceof RemoteRepository);
         assertFalse("log events were issued", mockEventLogger.getCalled());
     }
 
     @Test(expected = RepositoryCreationException.class)
     public void managedStorageRepository() throws RepositoryCreationException {
-        factory.createRepository(new ManagedStorageRepositoryConfiguration("test", new File("target/managedIndex"),
-            Collections.<ArtifactBridge> emptySet(), new File("target/managedStorage"), null));
+        factory.createRepository(new ManagedStorageRepositoryConfiguration("test", new File("build/managedIndex"),
+            Collections.<ArtifactBridge> emptySet(), new File("build/managedStorage"), null));
     }
 
     @Test(expected = RepositoryCreationException.class)

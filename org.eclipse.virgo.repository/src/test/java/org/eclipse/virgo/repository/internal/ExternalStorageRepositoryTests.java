@@ -61,7 +61,7 @@ public class ExternalStorageRepositoryTests {
     
     @Test
     public void mBeanPublication() throws Exception {
-        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("target","index"),
+        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("build","index"),
             Collections.<ArtifactBridge> emptySet(), new File(".").getAbsolutePath(), MBEAN_DOMAIN_VIRGO_WEB_SERVER);
         
         mockEventLogger.reinitialise();
@@ -99,7 +99,7 @@ public class ExternalStorageRepositoryTests {
     
     @Test
     public void mBeanNonPublication() throws Exception {
-        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("target","index"),
+        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("build","index"),
             Collections.<ArtifactBridge> emptySet(), new File(".").getAbsolutePath(), null);
         
         mockEventLogger.reinitialise();
@@ -139,10 +139,10 @@ public class ExternalStorageRepositoryTests {
     @Test
     public void publishAndRetract() throws Exception {
         
-        String searchPattern = (new File("target", "nosuchdir").getAbsolutePath() + File.separator + "*");
+        String searchPattern = (new File("build", "nosuchdir").getAbsolutePath() + File.separator + "*");
         
         ArtifactBridge artifactBridge = createMock(ArtifactBridge.class);
-        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("target","index"),
+        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("build","index"),
             new HashSet<ArtifactBridge>(Arrays.asList(artifactBridge)), searchPattern, null);
 
         mockEventLogger.reinitialise();
@@ -180,7 +180,7 @@ public class ExternalStorageRepositoryTests {
 
     @Test(expected=IllegalArgumentException.class)
     public void publishBadArtifact() throws Exception {
-        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("target","index"),
+        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("build","index"),
             new HashSet<ArtifactBridge>(), new File(".").getAbsolutePath(), null);
 
         mockEventLogger.reinitialise();
@@ -202,7 +202,7 @@ public class ExternalStorageRepositoryTests {
     @Test
     public void testGetArtifactLocations() throws Exception {
         ArtifactBridge artifactBridge = createMock(ArtifactBridge.class);
-        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("target","index"),
+        ExternalStorageRepositoryConfiguration configuration = new ExternalStorageRepositoryConfiguration("external-repo", new File("build","index"),
             new HashSet<ArtifactBridge>(Arrays.asList(artifactBridge)), LOCATIONS_SEARCH_PATTERN, null);
 
         mockEventLogger.reinitialise();

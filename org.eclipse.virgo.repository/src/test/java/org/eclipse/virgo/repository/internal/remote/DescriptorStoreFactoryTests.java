@@ -40,7 +40,7 @@ public class DescriptorStoreFactoryTests {
 
     private static final String REPOSITORY_NAME = "reponame";
 
-    private static final File DESCRIPTOR_STORE_DIRECTORY = new File("target/descriptorStore");
+    private static final File DESCRIPTOR_STORE_DIRECTORY = new File("build/descriptorStore");
 
     private DescriptorStoreFactory descriptorStoreFactory;
 

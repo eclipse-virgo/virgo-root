@@ -5,3 +5,9 @@ integration-repo
 ivy-cache
 .ant-targets-build.xml
 user-ivy.properties
+bin/
+build/
+.settings/
+.project
+.classpath
+

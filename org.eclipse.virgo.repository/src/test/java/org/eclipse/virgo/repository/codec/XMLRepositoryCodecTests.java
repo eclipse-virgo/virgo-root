@@ -38,11 +38,11 @@ public class XMLRepositoryCodecTests {
 
     @Test
     public void codec() throws FileNotFoundException, IndexFormatException {
-        FileOutputStream out = new FileOutputStream("target/repository.xml");
+        FileOutputStream out = new FileOutputStream("build/repository.xml");
         serializer.write(createArtifacts(), out);
         
 
-        Set<ArtifactDescriptor> artifacts = serializer.read(new FileInputStream("target/repository.xml"));
+        Set<ArtifactDescriptor> artifacts = serializer.read(new FileInputStream("build/repository.xml"));
         assertEquals(createArtifacts(), artifacts);
     }
 
