@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.shell"
+      label="%featureName"
+      version="1.0.0"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.apache.mina.core"
+         download-size="0"
+         install-size="0"
+         version="@MINA.CORE.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.apache.sshd.core"
+         download-size="0"
+         install-size="0"
+         version="@SSHD.CORE.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.apache.felix.gogo.command"
+         download-size="0"
+         install-size="0"
+         version="@FELIX.GOGO.COMMAND.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.apache.felix.gogo.runtime"
+         download-size="0"
+         install-size="0"
+         version="@FELIX.GOGO.RUNTIME.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.apache.felix.gogo.shell"
+         download-size="0"
+         install-size="0"
+         version="@FELIX.GOGO.SHELL.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.equinox.console"
+         download-size="0"
+         install-size="0"
+         version="@EQUINOX.CONSOLE.VERSION@"
+         unpack="false"
+         autostart="true"/>
+         
+   <plugin
+         id="org.eclipse.equinox.console.ssh"
+         download-size="0"
+         install-size="0"
+         version="@EQUINOX.CONSOLE.SSH.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.shell.command"
+         download-size="0"
+         install-size="0"
+         version="@KERNEL.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+</feature>
