@@ -28,7 +28,7 @@ public class LauncherTests {
     
     private static final String SYSTEM_PROPERTY_TMPDIR = "java.io.tmpdir";
     
-    private static final File TMP_DIR = new File("target/tmp");
+    private static final File TMP_DIR = new File("build/tmp");
     
     @Before
     public void deleteTmpDir() {
@@ -39,7 +39,7 @@ public class LauncherTests {
     
     @Test
     public void creationOfTmpDir() throws IOException {
-        System.setProperty(SYSTEM_PROPERTY_TMPDIR, "target/tmp");
+        System.setProperty(SYSTEM_PROPERTY_TMPDIR, "build/tmp");
         
         assertFalse(TMP_DIR.exists());
         Launcher.ensureTmpDirExists();
@@ -48,7 +48,7 @@ public class LauncherTests {
     
     @Test
     public void noFailureIfTmpDirAlreadyExists() throws IOException {
-        System.setProperty(SYSTEM_PROPERTY_TMPDIR, "target/tmp");
+        System.setProperty(SYSTEM_PROPERTY_TMPDIR, "build/tmp");
         TMP_DIR.mkdirs();
         
         assertTrue(TMP_DIR.exists());
@@ -58,7 +58,7 @@ public class LauncherTests {
     
     @Test(expected=IOException.class)
     public void failureIfTmpDirCannotBeCreated() throws IOException {
-        System.setProperty(SYSTEM_PROPERTY_TMPDIR, "target/tmp");
+        System.setProperty(SYSTEM_PROPERTY_TMPDIR, "build/tmp");
         assertTrue(TMP_DIR.createNewFile());
         
         Launcher.ensureTmpDirExists();       

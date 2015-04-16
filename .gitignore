@@ -1,5 +1,13 @@
+*/src/main/resources/META-INF/MANIFEST.MF
+*/src/test/resources/META-INF/TEST.MF
 target
-ivy-cache
 integration-repo
-springsource-dm-server
+ivy-cache
+.ant-targets-build.xml
 user-ivy.properties
+bin/
+build/
+.settings/
+.project
+.classpath
+

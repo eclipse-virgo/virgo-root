@@ -223,7 +223,7 @@ public class FrameworkBuilderTests {
     
     private static Properties basicFrameworkProperties() {
         Properties fp = new Properties();
-        fp.put("osgi.configuration.area", "target");
+        fp.put("osgi.configuration.area", "build");
         return fp;
     }
 }
