@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build-jetty-server" default="precommit" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property name="jetty-server.basedir" value="${basedir}/jetty-server"/>
+    
+	<path id="bundles">
+		<pathelement location="${jetty-server.basedir}/org.eclipse.virgo.jetty.sample.tags"/>
+		<pathelement location="${jetty-server.basedir}/org.eclipse.virgo.jetty.web"/>
+	</path>
+
+	<target name="precommit" />
+	<target name="ivy.init" />
+
+	<property file="${basedir}/../build.properties"/>
+	<property file="${basedir}/../build.versions"/>
+	<property file="${basedir}/../build/virgo.properties" />
+	<import file="${basedir}/../virgo-build/multi-bundle/default.xml"/>
+    
+	<target name="vjs.package-resources-and-products" depends="ivy.init">
+		<delete dir="${package.output.dir}" quiet="true"/>
+		<mkdir dir="${package.output.dir}"/>
+
+		<property name="jetty.server.resources" value="${jetty-server.target.dir}/jetty_server_resources"/>
+        <property name="jetty.server.scripts" value="${jetty-server.target.dir}/jetty_server_scripts"/>
+        <property name="repository.ext" value="${jetty.server.resources}/repository/ext"/>
+        <property name="repository.usr" value="${jetty.server.resources}/repository/usr"/>
+        
+        <unzip src="${p2.repository.dir}/binary/kernel_specific_resources_1.0.0" dest="${jetty.server.resources}">
+			<globmapper from="kernel_specific_resources_1.0.0/*" to="*"/>
+		</unzip>
+        <unzip src="${p2.repository.dir}/binary/scripts_1.0.0" dest="${jetty.server.scripts}">
+			<globmapper from="scripts_1.0.0/*" to="*"/>
+		</unzip>
+        
+		<mkdir dir="${repository.usr}"/>
+		
+		<antcall target="jetty.package.config"/>
+		<antcall target="jetty.package.docs"/>
+		<antcall target="jetty.package.lib"/>
+		<antcall target="jetty.package.pickup"/>
+		<antcall target="jetty.package.repository"/>
+		<antcall target="jetty.package.resources"/>
+		<antcall target="package.jetty"/>
+        <antcall target="package.jetty.scripts"/>
+        <antcall target="jetty.package.publish"/>
+    </target>
+    
+    <target name="vjs.prepare-bundles-and-features" depends="ivy.init">
+        <!--prepare jetty server features for publishing -->
+        <copy todir="${jetty-server.target.dir}/assembly/features" failonerror="true">
+            <fileset dir="${jetty-server.basedir}/publish_resources/features"/>
+        </copy>
+    </target>
+
+    <target name="vjs.publish-bundles-and-features" depends="ivy.init">
+        <antcall target="p2.publish-bundles-features">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${jetty-server.target.dir}/assembly"/>
+        </antcall>
+        <echo message="Published Virgo Jetty Server bundles and features to ${p2.repository.dir}."/>
+    </target>
+    
+    <target name="vjs.clean-up" depends="ivy.init">
+        <delete dir="${jetty.server.resources.location}" quiet="true"/>
+        <delete dir="${jetty.server.scripts.location}" quiet="true"/>
+        <delete dir="${jetty-server.target.dir}/assembly" quiet="true"/>
+        <delete dir="${jetty-server.target.dir}" quiet="true"/>
+    </target>
+    
+    <target name="vjs.package-distro">
+        <property name="vjs.package.dir" value="${package.dir}/VJS"/>
+        
+        <antcall target="p2.install-virgo-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="destination" value="${vjs.package.dir}/virgo-jetty-server-${bundle.version}"/>
+            <param name="product.iu" value="jetty-server.product"/>
+        </antcall>
+        <echo message="Installed Virgo Jetty Server for distribution purposes."/>
+        
+        <mkdir dir="${artifacts.dir}"/>
+        
+        <delete dir="${vjs.package.dir}/virgo-jetty-server-${bundle.version}/Eclipse.app" quiet="true"/>
+        
+		<zip destfile="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip">
+			<zipfileset dir="${vjs.package.dir}" includes="virgo-jetty-server-${bundle.version}/bin/*.sh" filemode="755"/>
+			<zipfileset dir="${vjs.package.dir}" includes="virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties" filemode="600"/>
+			<zipfileset dir="${vjs.package.dir}">
+				<exclude name="virgo-jetty-server-${bundle.version}/bin/*.sh"/>
+				<exclude name="virgo-jetty-server-${bundle.version}/configuration/org.eclipse.virgo.kernel.jmxremote.access.properties"/>
+			</zipfileset>
+		</zip>
+    </target>
+
+    <target name="jetty.package.publish">
+        <property name="jetty.server.resources.location" value="${jetty-server.target.dir}/jetty_server_resources_zipped"/>
+		<zip destfile="${jetty.server.resources.location}/binary/jetty_server_resources">
+			<zipfileset dir="${jetty.server.resources}"/>
+		</zip>
+        <delete dir="${jetty.server.resources}" quiet="true"/>
+        
+        <property name="jetty.server.scripts.location" value="${jetty-server.target.dir}/jetty_server_scripts_zipped"/>
+		<zip destfile="${jetty.server.scripts.location}/binary/jetty_server_scripts">
+			<zipfileset dir="${jetty.server.scripts}"/>
+		</zip>
+        <delete dir="${jetty.server.scripts}" quiet="true"/>
+        
+        <!-- proceed with publish -->
+        <property name="p2.products.location" value="${jetty-server.basedir}/publish_resources/products"/>
+        <antcall target="p2.publish-binary">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${jetty.server.resources.location}"/>
+        </antcall>
+        <echo message="Published the jetty server resources to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-binary-chmod">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="source" value="${jetty.server.scripts.location}"/>
+            <param name="chmod.args" value="startup.sh@/bin#755,dmk.sh@/bin#755,checkJava.sh@/bin#755,jconsole.sh@/bin#755,setupClasspath.sh@/bin#755,shutdown.sh@/bin#755"/>
+        </antcall>
+        <echo message="Published the jetty server scripts to ${p2.repository.dir}."/>
+        
+        <antcall target="p2.publish-product">
+            <param name="repository" value="${p2.repository.dir}"/>
+            <param name="product.file.location" value="${p2.products.location}/jetty-server/jetty-server.product"/>
+        </antcall>
+        <echo message="Published jetty server product to ${p2.repository.dir}."/>
+    </target>
+    
+	<target name="jetty.package.config">
+		<copy todir="${jetty.server.resources}/configuration" failonerror="true" overwrite="true">
+			<fileset dir="${jetty-server.basedir}/configuration"/>
+		</copy>
+
+		<replaceregexp match="# osgi\.console=2401"
+			replace="osgi.console=2401" flags="s"
+			file="${jetty.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>
+
+		<replaceregexp match="initialArtifacts =.*\.blueprint"
+			replace="initialArtifacts=repository:plan/org.eclipse.virgo.kernel.userregion.blueprint, repository:plan/org.eclipse.virgo.jetty.web" flags="s"
+			file="${jetty.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>
+
+		<replaceregexp match=" javax\.servlet\.\*;.*?,\\.*? "
+			replace=" " flags="s"
+			file="${jetty.server.resources}/configuration/org.eclipse.virgo.kernel.userregion.properties"/>			                
+
+		<replaceregexp match="virgo-kernel" replace="virgo-jetty-server" flags="g"
+				file="${jetty.server.resources}/configuration/serviceability.xml"/>
+	</target>
+
+	<target name="jetty.package.docs" depends="ivy.init">
+		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/docs-ivy.xml" transitive="false" conf="docs"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${jetty-server.target.dir}/docs/[artifact]-[revision].[ext]" conf="docs" type="zip, pdf"/>
+
+		<copy todir="${jetty.server.resources}/docs/user-guide/pdf" flatten="true">
+			<fileset dir="${jetty-server.target.dir}/docs">
+				<include name="**/virgo-user-guide*.pdf"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${jetty.server.resources}/docs/programmer-guide/pdf" flatten="true">
+			<fileset dir="${jetty-server.target.dir}/docs">
+				<include name="**/virgo-programmer-guide*.pdf"/>
+			</fileset>
+		</copy>
+
+		<unzip dest="${jetty.server.resources}/docs/user-guide">
+			<fileset dir="${jetty-server.target.dir}/docs">
+		        <include name="**/virgo-user-guide*.zip"/>
+		    </fileset>
+		</unzip>
+
+		<unzip dest="${jetty.server.resources}/docs/programmer-guide">
+			<fileset dir="${jetty-server.target.dir}/docs">
+		        <include name="**/virgo-programmer-guide*.zip"/>
+		    </fileset>
+		</unzip>
+
+	</target>
+
+	<target name="jetty.package.lib">
+		<echo file="${jetty.server.resources}/lib/.version" append="true"
+				message="virgo.server.version=${bundle.version}&#xa;"/>
+	</target>
+
+	<target name="jetty.package.pickup" depends="ivy.init">
+		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/pickup-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${jetty.server.resources}/pickup/[artifact]-[revision].[ext]" type="jar, war, wab" conf="pickup"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${jetty.server.resources}/pickup/[artifact]-[revision].[ext]" type="plan" conf="pickup-plan"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${repository.ext}/[artifact]-[revision].[ext]" type="jar, war, wab" conf="pickup-plan"/>
+	</target>
+
+	<target name="jetty.package.repository" depends="ivy.init">
+		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/repository-ivy.xml" transitive="false"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${repository.ext}/[artifact]-[revision].[ext]" conf="ext" type="library,jar,plan"/>
+
+		<ivy:resolve resolveId="copy.path" file="${jetty-server.basedir}/repository-ivy.xml" transitive="true"/>
+		<ivy:retrieve resolveId="copy.path" pattern="${repository.ext}/[artifact]-[revision].[ext]" conf="transitive" type="library,jar,plan" />
+		
+		<copy todir="${repository.ext}" failonerror="true">
+			<fileset dir="${jetty-server.basedir}/jettybundles"/>
+		</copy>
+	</target>
+
+	<target name="jetty.package.resources">
+		<copy todir="${jetty.server.resources}" failonerror="true">
+			<fileset dir="${jetty-server.basedir}/resources"/>
+		</copy>
+	</target>
+	
+	<target name="package.jetty">
+		<mkdir dir="${jetty.server.resources}/jetty"/>
+		
+		<copy todir="${jetty.server.resources}/jetty" failonerror="true">
+			<fileset dir="${jetty-server.basedir}/jetty"/>
+		</copy>		
+	</target>
+    
+    <target name="package.jetty.scripts">
+    
+        <!-- \ must be double escaped \\\\ and new lines must be given with the ascii code thus the strange chars-->
+		
+		<replaceregexp match="# parse the standard arguments"
+			replace="# parse the standard arguments &#10;    JETTY_HOME=$KERNEL_HOME/jetty" flags="m"
+			file="${jetty.server.scripts}/bin/dmk.sh" />
+
+		<replaceregexp match="-Djava.io.tmpdir"
+			replace="-Djetty.home=$JETTY_HOME \\\\&#10;       -Djava.io.tmpdir" flags="m"
+			file="${jetty.server.scripts}/bin/dmk.sh" />
+		
+		<replaceregexp match='set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djava.io.tmpdir="%TMP_DIR%"'
+			replace='set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djetty.home="%KERNEL_HOME%\\\\jetty"&#10;      set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djava.io.tmpdir="%TMP_DIR%"' flags="m"
+			file="${jetty.server.scripts}/bin/dmk.bat" />
+    </target>
+    
+    <target name="publish-updatesite-download">
+        <fail message="The 'project.name' property must be set on this project.">
+            <condition>
+                <not>
+                    <isset property="project.name"/>
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${updatesite.output.file}" algorithm="sha1"/>
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}"/>
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="mkdir -pv /home/data/httpd/download.eclipse.org/virgo/updatesite/${bundle.version}"/>
+        <scp localFile="${updatesite.output.file}"
+                todir="${eclipse.committerId}@build.eclipse.org:/home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+        <scp localFile="${updatesite.output.file}.sha1"
+                todir="${eclipse.committerId}@build.eclipse.org:/home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}" 
+                keyfile="${key.file}"
+                passphrase="${passphrase}" />
+        <sshexec host="build.eclipse.org" 
+                username="${eclipse.committerId}" 
+                keyfile="${key.file}" 
+                passphrase="${passphrase}"
+                command="unzip /home/data/httpd/download.eclipse.org/virgo/updatesite-zipped/${bundle.version}/${updatesite.file.name} -d /home/data/httpd/download.eclipse.org/virgo/updatesite/${bundle.version}"/>
+    </target>
+
+	<target name="smoke-test-jetty-server" description="Runs a smoke test on the packaged build">
+		<path id="smoke.test.bundles">
+			<pathelement location="${jetty-server.basedir}/org.eclipse.virgo.jetty.smoketest" />
+		</path>
+		<antcall target="test.pre"/>
+		<all-bundles target="test-package" buildpathRef="smoke.test.bundles">
+			<property name="package.output.file" value="${artifacts.dir}/virgo-jetty-server-${bundle.version}.zip"/>
+			<property name="package.basename" value="virgo-jetty-server-${bundle.version}"/>
+			<property name="test-results.output.dir" value="${test-results.output.dir}"/>
+		</all-bundles>
+		<antcall target="test.post"/>
+	</target>
+
+</project>

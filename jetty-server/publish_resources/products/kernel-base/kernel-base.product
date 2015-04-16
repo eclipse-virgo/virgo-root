@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Eclipse Virgo Kernel Base Product" uid="kernel-base.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+   
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.virgo.kernel" version="0.0.0"/>
+   	  <!--
+      <feature id="org.eclipse.virgo.kernel.resources" version="0.0.0"/>
+      -->
+      <feature id="org.eclipse.virgo.kernel.springintegration" version="0.0.0"/>
+      <!-- TODO - check if this this feature is really needed. Seems Gemini Blueprint is already picked up from another source. -->
+      <feature id="org.eclipse.virgo.springdm" version="0.0.0"/>
+      <feature id="org.eclipse.virgo.management" version="0.0.0" />
+   </features>
+
+   <configurations>
+		<plugin id="com.springsource.org.apache.commons.codec" autoStart="true"/>
+		<plugin id="com.springsource.org.apache.commons.httpclient" autoStart="true"/>
+ 
+		<property name="org.osgi.framework.bsnversion" value="multiple"/>
+		<property name="osgi.clean" value="true"/>
+		<property name="org.osgi.service.http.port" value="8080"/>
+		<property name="org.jolokia.listenForHttpService" value="false"/>
+		<property name="org.jolokia.useRestrictorService" value="true"/>
+	</configurations>
+
+</product>

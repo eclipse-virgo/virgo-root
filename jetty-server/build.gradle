@@ -1,0 +1,200 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'distribution'
+
+distributions {
+    main {
+        baseName = 'virgo-jetty-server'
+        contents {
+            from { "${buildDir}/common_resources/" }
+            from ( 'src/main/dist' ) {
+                include ( '**/*.properties' )
+                include ( '**/.version' )
+                filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
+            }
+            from ( 'src/main/dist' ) {
+                include ( 'bin/*.sh' )
+                fileMode 0755
+            }
+            from ( 'src/main/dist' ) {
+                exclude ( '**/*.properties' )
+                exclude ( '**/.version' )
+                exclude ( 'bin/*.sh' )
+            }
+            from ( "${buildDir}/VJS/jetty-server/" ) { exclude ( 'Eclipse.app' ) }
+            from ( "${buildDir}/" ) {
+                include ( 'repository/ext/' )
+                include ( 'plugins/' )
+            }
+        }
+    }
+}
+
+task ('assembleJettyServer', dependsOn: ['groupInstall',]) { distZip.dependsOn('groupInstall') }
+
+task ('prepareBundlesAndFeatures') {
+    def assemblyPluginsDir = file("${buildDir}/assembly/plugins/")
+    def repositoryExtDir = file("${buildDir}/repository/ext")
+    def pluginsDir = file("${buildDir}/plugins")
+    def srcFeatureDir = file("${projectDir}/publish_resources/features/")
+    def assemblyFeatureDir = file("${buildDir}/assembly/features/")
+    doLast {
+        packageConfiguration('virgoCoreRuntime', configurations.virgoCoreRuntime, assemblyPluginsDir)
+        packageConfiguration('kernelBaseRuntime', configurations.kernelBaseRuntime, assemblyPluginsDir)
+        packageConfiguration('kernelRuntime', configurations.kernelRuntime, assemblyPluginsDir)
+        packageConfiguration('repositoryExt', configurations.repositoryExt, repositoryExtDir)
+        packageConfiguration('pluginsExtras', configurations.kernelPluginsExtras, pluginsDir)
+        println "Copy features from '${srcFeatureDir}' into '${assemblyFeatureDir}'."
+        copy {
+            from srcFeatureDir
+            into assemblyFeatureDir
+            include "**/*"
+            filter(ReplaceTokens, tokens: tokenMap)
+        }
+    }
+}
+
+// start in debug mode with gradle generateP2Inf --debug-jvm
+task ('generateP2Inf', type:JavaExec, dependsOn: ':packaging:fetchUnzippedVirgoBuildTools') {
+    description = "Generates p2.inf-s for all feature directories inside a wrapping 'features' directory."
+    def assemblyFeatureDir = file("${buildDir}/assembly/features/")
+
+    main = 'org.eclipse.equinox.launcher.Main'
+    classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+    args = [
+        '-application',
+        'org.eclipse.virgo.build.p2tools.instructions.P2InstructionGeneratorApplication',
+        '-source',
+        assemblyFeatureDir
+    ]
+}
+
+// start in debug mode with gradle publishBundlesAndFeatures --debug-jvm
+task ('publishBundlesAndFeatures', type:JavaExec) {
+    description = "Publishes Virgo Server bundles and features to '${buildDir}/repository'."
+    def sourceDir = file("${buildDir}/assembly/")
+    def repositoryDir = file("${buildDir}/repository/")
+
+    main = 'org.eclipse.equinox.launcher.Main'
+    classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+    args = [
+        '-application',
+        'org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher',
+        '-metadataRepository',
+        "file:${repositoryDir}",
+        '-artifactRepository',
+        "file:${repositoryDir}",
+        '-source',
+        "${sourceDir}",
+        '-append',
+        '-compress',
+        '-publishArtifacts',
+    ]
+    doLast() { println "Published Virgo Server bundles and features to '${buildDir}/repository'." }
+}
+
+task ('packageResourcesAndProducts') {
+    doLast {
+        packageConfiguration('lib', configurations.nanoLib, file("${buildDir}/common_resources/lib/"))
+        packageConfiguration('libPersistence', configurations.nanoLibPersistence, file("${buildDir}/common_resources/lib/persistence/"))
+        packageConfiguration('libEndorsed', configurations.nanoLibEndorsed, file("${buildDir}/common_resources/lib/endorsed/"))
+        packageConfiguration('pickup', configurations.nanoPickup, file("${buildDir}/common_resources/pickup/"))
+    }
+}
+
+// start in debug mode with gradle publish<ID>
+tasks.addRule("Pattern: publish<ID>") { String taskName ->
+    if (taskName.startsWith("publish")) {
+        task (taskName, type:JavaExec, dependsOn: [
+            'prepareBundlesAndFeatures',
+            'generateP2Inf',
+            'publishBundlesAndFeatures',
+            'packageResourcesAndProducts',
+        ]) {
+            def product = 'undefined'
+            switch (taskName.toString() - 'publish') {
+                case 'Base': product = 'base'; break
+                case 'KernelBase': product = 'kernel-base'; break
+                case 'JettyServer': product = 'jetty-server'; break
+            }
+            println "Publishing: " + product
+
+            description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
+            def repositoryDir = file("${buildDir}/repository/")
+            def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
+            def javaprofileLocation = file("${projectDir}/src/main/dist/configuration/java6-server.profile")
+
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+            args = [
+                '-application',
+                'org.eclipse.equinox.p2.publisher.ProductPublisher',
+                '-metadataRepository',
+                "file:${repositoryDir}",
+                '-artifactRepository',
+                "file:${repositoryDir}",
+                '-append',
+                '-compress',
+                '-publishArtifacts',
+                '-productFile',
+                "${productFileLocation}",
+                '-jreLocation',
+                "${javaprofileLocation}",
+                '-configs',
+                'ANY.ANY.ANY',
+                '-flavor',
+                'tooling'
+            ]
+            doLast() { println "Published Virgo ${productFileLocation} to '${buildDir}/repository'." }
+        }
+    }
+}
+
+task ('groupPublish', dependsOn: [
+    'publishBase',
+    'publishKernelBase',
+    'publishJettyServer',
+]){ }
+
+// start in debug mode with gradle publish<ID>
+tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
+    if (taskName.startsWith("installProduct")) {
+        // start in debug mode with gradle publishNanoBase --debug-jvm
+        task (taskName, type:JavaExec, dependsOn: ['groupPublish',]) {
+            description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+            def product = 'undefined'
+            def shortProduct = 'undefined'
+            switch (taskName.toString() - 'installProduct') {
+                case 'JettyServer': product = 'jetty-server'; shortProduct = "VJS"; break;
+            }
+            println "Installing: " + product
+
+            def repositoryDir = file("${buildDir}/repository/")
+            def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+            def productIu = "${product}.product"
+
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+            args = [
+                '-application',
+                'org.eclipse.equinox.p2.director',
+                '-repository',
+                "file:${repositoryDir}",
+                '-installIU',
+                "${productIu}",
+                '-tag',
+                'InitialState',
+                '-destination',
+                "${destinationDir}",
+                '-profile',
+                'VIRGOProfile',
+                '-roaming'
+            ]
+            doLast() { println "Installed Virgo '${productIu}' to '${destinationDir}'." }
+        }
+    }
+}
+
+task ('groupInstall', dependsOn: [
+    'installProductJettyServer',
+]){ }

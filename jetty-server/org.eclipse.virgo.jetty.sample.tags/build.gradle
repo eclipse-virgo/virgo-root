@@ -1,0 +1,11 @@
+dependencies {
+    compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.springframework", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
+    compile group: "org.springframework", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
+    compile group: "org.springframework", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
+    compile group: "org.springframework", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
+    compile group: "org.springframework", name: "org.springframework.web.servlet", version: springframeworkVersion, configuration: "compile", ext: "jar"
+}
