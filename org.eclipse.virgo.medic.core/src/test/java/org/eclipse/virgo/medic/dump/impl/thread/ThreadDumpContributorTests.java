@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class ThreadDumpContributorTests {
 
-    private final File dumpDirectory = new File("target");
+    private final File dumpDirectory = new File("build");
 
     @Test
     public void java5ThreadDump() throws DumpContributionFailedException {

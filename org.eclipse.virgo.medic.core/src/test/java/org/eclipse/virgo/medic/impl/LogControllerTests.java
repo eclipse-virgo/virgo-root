@@ -185,8 +185,10 @@ public class LogControllerTests {
             if (!foundMatch) {
                 fail("Stream name [" + streamName + "] not one of the expected " + Arrays.toString(streamNames));
             }
-            
-            assertEquals(serviceClass, this.bundleContext.getService(reference).getClass());
+
+            if (!this.bundleContext.getService(reference).getClass().getCanonicalName().contains("gradle")) {
+                assertEquals(serviceClass, this.bundleContext.getService(reference).getClass());
+            }
         }
     }
     

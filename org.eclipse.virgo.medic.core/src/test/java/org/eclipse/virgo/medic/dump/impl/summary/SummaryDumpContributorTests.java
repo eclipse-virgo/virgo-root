@@ -37,7 +37,7 @@ public class SummaryDumpContributorTests {
 
     private final DumpContributor dumpContributor = new SummaryDumpContributor();
 
-    private final File dumpDirectory = new File("target");
+    private final File dumpDirectory = new File("build");
 
     private final DateFormat dateFormat = DateFormat.getDateInstance();
 

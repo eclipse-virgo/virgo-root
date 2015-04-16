@@ -70,7 +70,7 @@ public class StandardDumpGeneratorTests {
         
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
         Dictionary<String, Object> configuration = new Hashtable<String, Object>();
-        configuration.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
+        configuration.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "build");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();
         
         replay(accessor, dumpContributor1, dumpContributor2, dumpContributor3, configurationProvider);
@@ -94,7 +94,7 @@ public class StandardDumpGeneratorTests {
         
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
         Dictionary<String, Object> configuration = new Hashtable<String, Object>();
-        configuration.put("dump.root.directory", "target");
+        configuration.put("dump.root.directory", "build");
         configuration.put("dump.exclusions.foo", "dc1");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();
         
@@ -122,7 +122,7 @@ public class StandardDumpGeneratorTests {
         
         ConfigurationProvider configurationProvider = createMock(ConfigurationProvider.class);
         Dictionary<String, Object> configuration = new Hashtable<String, Object>();
-        configuration.put("dump.root.directory", "target");
+        configuration.put("dump.root.directory", "build");
         configuration.put("dump.exclusions.foo", "dc1, dc2");
         expect(configurationProvider.getConfiguration()).andReturn(configuration).anyTimes();
         

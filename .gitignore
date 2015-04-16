@@ -1,7 +1,13 @@
 */src/main/resources/META-INF/MANIFEST.MF
 */src/test/resources/META-INF/TEST.MF
+target
 integration-repo
 ivy-cache
-target
-.DS_Store
+.ant-targets-build.xml
 user-ivy.properties
+bin/
+build/
+.settings/
+.project
+.classpath
+

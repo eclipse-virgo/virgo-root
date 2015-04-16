@@ -67,14 +67,14 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         Configuration configuration = createMock(Configuration.class);
         
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
+        properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "build");
         properties.put("a.b.c", "d.e.f");
         createConfigurationMocks(configurationAdmin, configuration, properties, 1);
         
         ConfigurationProvider configurationProvider = new ConfigurationAdminConfigurationProvider(bundleContext);
         Dictionary<String, Object> configDictionary = configurationProvider.getConfiguration();
         assertNotNull(configDictionary);
-        assertEquals("target", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
+        assertEquals("build", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
         assertEquals("d.e.f", configDictionary.get("a.b.c"));
         
         verify(configurationAdmin, configuration);
@@ -86,7 +86,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         Configuration configuration = createMock(Configuration.class);
         
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
+        properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "build");
         properties.put("a.b.c", "d.e.f");
         ServiceRegistration<ConfigurationAdmin> serviceRegistration = createConfigurationMocks(configurationAdmin, configuration, properties, 5);
         
@@ -114,7 +114,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         Configuration configuration = createMock(Configuration.class);
         
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "target");
+        properties.put(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY, "build");
         properties.put("a.b.c", "d.e.f");
         ServiceRegistration<ConfigurationAdmin> serviceRegistration = createConfigurationMocks(configurationAdmin, configuration, properties, 2);
         
@@ -144,7 +144,7 @@ public class ConfigurationAdminConfigurationProviderTests implements Configurati
         
         Dictionary<String, Object> configDictionary = configurationProvider.getConfiguration();
         assertNotNull(configDictionary);
-        assertEquals("target", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
+        assertEquals("build", configDictionary.get(ConfigurationProvider.KEY_DUMP_ROOT_DIRECTORY));
         assertEquals("d.e.f", configDictionary.get("a.b.c"));
         assertEquals("4.5.6", configDictionary.get("1.2.3"));
         

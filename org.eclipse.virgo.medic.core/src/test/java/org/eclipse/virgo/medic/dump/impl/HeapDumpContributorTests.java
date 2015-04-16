@@ -35,12 +35,12 @@ public class HeapDumpContributorTests {
 
     private static final String HOTSPOT_DIAGNOSTIC_MBEAN_NAME = "com.sun.management:type=HotSpotDiagnostic";
 
-    private final File dumpDirectory = new File("target");
+    private final File dumpDirectory = new File("build");
 
     @Before
     @After
     public void cleanupHeadDumps() {
-        File heapDumpFile = new File("target", "heap.out");
+        File heapDumpFile = new File("build", "heap.out");
         if (heapDumpFile.exists()) {
             assertTrue(heapDumpFile.delete());
         }

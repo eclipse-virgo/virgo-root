@@ -44,7 +44,7 @@ public class DumpIntegrationTests {
 	
 	@Before
 	public void deleteDumps() {
-		File dumpsDir = new File("target", "dumps");
+		File dumpsDir = new File("build", "dumps");
 		if (dumpsDir.exists()) {
 			deleteRecursively(dumpsDir);
 		}
@@ -75,7 +75,7 @@ public class DumpIntegrationTests {
 		assertNotNull(configuration);
 		
 		Dictionary<String, String> properties = new Hashtable<String, String>();		
-		properties.put("dump.root.directory", "target/dumps/1");
+		properties.put("dump.root.directory", "build/dumps/1");
 		
 		configuration.update(properties);
 		
@@ -85,7 +85,7 @@ public class DumpIntegrationTests {
 		DumpGenerator dumpGenerator = (DumpGenerator)this.bundleContext.getService(serviceReference);
 		dumpGenerator.generateDump("bleurgh");
 		
-		File file = new File("target/dumps/1");
+		File file = new File("build/dumps/1");
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
@@ -95,14 +95,14 @@ public class DumpIntegrationTests {
         assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
 
 		
-		properties.put("dump.root.directory", "target/dumps/2");
+		properties.put("dump.root.directory", "build/dumps/2");
 		configuration.update(properties);
 		
 		Thread.sleep(2000);
 		
 		dumpGenerator.generateDump("bleurgh");
 		
-		file = new File("target/dumps/2");
+		file = new File("build/dumps/2");
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
@@ -119,7 +119,7 @@ public class DumpIntegrationTests {
 		assertNotNull(configuration);
 		
 		Dictionary<String, String> properties = new Hashtable<String, String>();		
-		properties.put("dump.root.directory", "target/dumps/1");
+		properties.put("dump.root.directory", "build/dumps/1");
 		properties.put("dump.exclusions.bleurgh", "heap");
 		
 		configuration.update(properties);
@@ -130,7 +130,7 @@ public class DumpIntegrationTests {
 		DumpGenerator dumpGenerator = (DumpGenerator)this.bundleContext.getService(serviceReference);
 		dumpGenerator.generateDump("bleurgh");
 		
-		File file = new File("target/dumps/1");
+		File file = new File("build/dumps/1");
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
@@ -147,7 +147,7 @@ public class DumpIntegrationTests {
 		assertNotNull(configuration);
 				
 		Dictionary<String, String> properties = new Hashtable<String, String>();				
-		properties.put("dump.root.directory", "target/dumps/1");
+		properties.put("dump.root.directory", "build/dumps/1");
 		properties.put("log.dump.level", "ERROR");
 		
 		configuration.update(properties);
@@ -160,7 +160,7 @@ public class DumpIntegrationTests {
 		DumpGenerator dumpGenerator = (DumpGenerator)this.bundleContext.getService(serviceReference);
 		dumpGenerator.generateDump("bleurgh");
 		
-		File file = new File("target/dumps/1");
+		File file = new File("build/dumps/1");
 		assertTrue(file.exists());
 		assertNotNull(file.list());
 		assertEquals(1, file.list().length);
