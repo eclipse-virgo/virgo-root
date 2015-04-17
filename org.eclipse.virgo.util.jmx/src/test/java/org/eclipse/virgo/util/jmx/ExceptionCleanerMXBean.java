@@ -1,4 +1,4 @@
-package org.eclipse.virgo.util.jmx.internal;
+package org.eclipse.virgo.util.jmx;
 
 //FIXME Bug 463462 - Move back to test source folder when we know how to weave test classes
 public class ExceptionCleanerMXBean implements JmxExceptionCleanerExtensionTestInterface {

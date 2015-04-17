@@ -9,23 +9,19 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.util.jmx.internal;
+package org.eclipse.virgo.util.jmx;
 
 import javax.management.MXBean;
 
 import org.eclipse.virgo.util.jmx.ExceptionCleaner;
 
 /**
- * This is an annotated @{@link MXBean} interface for testing the {@link ExceptionCleaner} aspect.
+ * This is an interface that extends a @{@link MXBean} annotated interface for testing the {@link ExceptionCleaner} aspect.
  * <p />
  *
  */
-@MXBean
 //FIXME Bug 463462 - Move back to test source folder when we know how to weave test classes
-public interface JmxExceptionCleanerTestInterface {
-    
-    public void caughtMethod() throws Exception;
-    
-    public void anotherCaughtMethod();
+public interface JmxExceptionCleanerExtensionTestInterface extends JmxExceptionCleanerTestInterface {
 
+    public void unCaughtMethod() throws Exception;
 }
