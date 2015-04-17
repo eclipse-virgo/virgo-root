@@ -44,7 +44,7 @@ public class JarTransformerTests {
     @Test
     public void testNoOpTransform() throws Exception {
         String inPath = "src/test/resources/simple-manifest-only.jar";
-        String outPath = "target/testNoOpTransform.jar";
+        String outPath = "build/testNoOpTransform.jar";
 
         JarTransformer jt = new JarTransformer(new NoOpJarTransformerCallback());
         FileInputStream inStream = null;
@@ -67,7 +67,7 @@ public class JarTransformerTests {
     @Test
     public void testSimpleManifestTweak() throws Exception {
         String inPath = "src/test/resources/simple-manifest-only.jar";
-        String outPath = "target/testSimpleManifestTweak.jar";
+        String outPath = "build/testSimpleManifestTweak.jar";
 
         JarTransformer jt = new JarTransformer(new JarTransformer.JarTransformerCallback() {
 
@@ -115,7 +115,7 @@ public class JarTransformerTests {
     @Test
     public void ensurePresenceOfManifest() throws Exception {
         String inPath = "src/test/resources/jars/no-manifest.jar";
-        String outPath = "target/ensurePresenceOfManifest.jar";
+        String outPath = "build/ensurePresenceOfManifest.jar";
 
         final List<String> transformedEntries = new ArrayList<String>();
 

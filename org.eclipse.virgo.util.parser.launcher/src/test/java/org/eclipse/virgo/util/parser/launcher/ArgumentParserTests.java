@@ -26,6 +26,7 @@ import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
 import org.eclipse.virgo.util.parser.launcher.BundleEntry;
 import org.eclipse.virgo.util.parser.launcher.LaunchCommand;
 import org.eclipse.virgo.util.parser.launcher.ParseException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -64,6 +65,7 @@ public class ArgumentParserTests {
     }
     
     @Test
+    @Ignore("[Bug 463462] - As a developer I'd like to be able to build the Virgo artifacts with Gradle")
     public void testIvyCachePlaceholderSubstitution() {
         String commandLine = "-B${ivy.cache}/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar";
         LaunchCommand command = parse(commandLine);

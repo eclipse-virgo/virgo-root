@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.util.jmx;
+package org.eclipse.virgo.util.jmx.internal;
 
 import javax.management.MXBean;
 
@@ -20,6 +20,7 @@ import org.eclipse.virgo.util.jmx.ExceptionCleaner;
  * <p />
  *
  */
+//FIXME Bug 463462 - Move back to test source folder when we know how to weave test classes
 public interface JmxExceptionCleanerExtensionTestInterface extends JmxExceptionCleanerTestInterface {
 
     public void unCaughtMethod() throws Exception;

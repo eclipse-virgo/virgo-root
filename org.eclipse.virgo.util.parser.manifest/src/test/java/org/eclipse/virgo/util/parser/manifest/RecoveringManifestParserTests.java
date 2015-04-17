@@ -64,7 +64,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
 		ManifestParser mParser = new RecoveringManifestParser();
 
-		ManifestContents contents = mParser.parse(new InputStreamReader(new FileInputStream("target/test-classes/broken001.mf")));
+		ManifestContents contents = mParser.parse(new InputStreamReader(new FileInputStream("build/resources/test/broken001.mf")));
 
 		// has errors but recoverable
 
@@ -364,11 +364,8 @@ public class RecoveringManifestParserTests extends TestCase {
 
 	private Reader readFromJar(String manifestName) {
 
-		ZipFile manifestTestDataZip;
-
 		try {
-
-			manifestTestDataZip = new ZipFile("target/test-classes/manifests.zip");
+			ZipFile manifestTestDataZip = new ZipFile("build/resources/test/manifests.zip");
 
 			ZipEntry manifestZipEntry = manifestTestDataZip.getEntry(manifestName);
 
@@ -450,7 +447,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
 	public void testBrokenManifests001() throws Exception {
 
-		parse(new File("target/test-classes/broken001.mf"));
+		parse(new File("build/resources/test/broken001.mf"));
 
 		assertTrue(mp.foundProblems());
 
@@ -552,7 +549,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
 	public void runPerformanceTest(boolean measure) throws Exception {
 
-		ZipFile manifestTestDataZip = new ZipFile("target/test-classes/manifests.zip");
+		ZipFile manifestTestDataZip = new ZipFile("build/resources/test/manifests.zip");
 
 		try {
 
@@ -836,7 +833,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
 	private File getTestFile(String name) {
 
-		return new File("target/test-classes/" + name);
+		return new File("build/resources/test/" + name);
 
 	}
 

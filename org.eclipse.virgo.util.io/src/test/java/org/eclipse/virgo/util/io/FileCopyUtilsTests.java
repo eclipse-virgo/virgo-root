@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class FileCopyUtilsTests {
     
-    private final static File testDir = new File(new File("target"), "testFileCopyUtils");
+    private final static File testDir = new File(new File("build"), "testFileCopyUtils");
     
     @Before
     @After

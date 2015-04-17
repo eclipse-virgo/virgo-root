@@ -27,23 +27,23 @@ public class ZipUtilsTests {
 
     private static final String A_LONG_FILE_PATH_DIRECTORY = "ALongFilePathDirectoryNameWhichGoesOnForeverAndEverNot";
 
-    private final PathReference expectedZip = new PathReference("target/to-zip.zip");
+    private final PathReference expectedZip = new PathReference("build/to-zip.zip");
     
-    private final PathReference expectedDefaultUnzipped = new PathReference("target/to-zip");
+    private final PathReference expectedDefaultUnzipped = new PathReference("build/to-zip");
     
-    private final PathReference expectedSpecifiedUnzipped = new PathReference("target/zipped-to-here");
+    private final PathReference expectedSpecifiedUnzipped = new PathReference("build/zipped-to-here");
     
-    private final PathReference expectedDefaultUnzippedFoo = new PathReference("target/to-zip/a/foo");
+    private final PathReference expectedDefaultUnzippedFoo = new PathReference("build/to-zip/a/foo");
     
-    private final PathReference expectedDefaultUnzippedBar = new PathReference("target/to-zip/a/b/bar");
+    private final PathReference expectedDefaultUnzippedBar = new PathReference("build/to-zip/a/b/bar");
     
-    private final PathReference expectedDefaultPrefixedUnzippedFoo = new PathReference("target/to-zip/prefix/a/foo");
+    private final PathReference expectedDefaultPrefixedUnzippedFoo = new PathReference("build/to-zip/prefix/a/foo");
     
-    private final PathReference expectedDefaultPrefixedUnzippedBar = new PathReference("target/to-zip/prefix/a/b/bar");
+    private final PathReference expectedDefaultPrefixedUnzippedBar = new PathReference("build/to-zip/prefix/a/b/bar");
     
-    private final PathReference expectedSpecifiedUnzippedFoo = new PathReference("target/zipped-to-here/a/foo");
+    private final PathReference expectedSpecifiedUnzippedFoo = new PathReference("build/zipped-to-here/a/foo");
     
-    private final PathReference expectedSpecifiedUnzippedBar = new PathReference("target/zipped-to-here/a/b/bar");
+    private final PathReference expectedSpecifiedUnzippedBar = new PathReference("build/zipped-to-here/a/b/bar");
     
     @Before
     public void before() {
@@ -55,7 +55,7 @@ public class ZipUtilsTests {
     @Test
     public void zipToDirectory() throws IOException {
         PathReference toZip = new PathReference("src/test/resources/to-zip");
-        PathReference destination = new PathReference("target");
+        PathReference destination = new PathReference("build");
         
         ZipUtils.zipTo(toZip, destination);
         
@@ -70,7 +70,7 @@ public class ZipUtilsTests {
     @Test
     public void zipWithPrefix() throws IOException {
         PathReference toZip = new PathReference("src/test/resources/to-zip");
-        PathReference destination = new PathReference("target");
+        PathReference destination = new PathReference("build");
         
         ZipUtils.zipTo(toZip, destination, "prefix");
         
@@ -85,14 +85,14 @@ public class ZipUtilsTests {
     @Test
     public void zipToFile() throws IOException {
         PathReference toZip = new PathReference("src/test/resources/to-zip");
-        PathReference destination = new PathReference("target/zipped-to-here.zip");
+        PathReference destination = new PathReference("build/zipped-to-here.zip");
         destination.delete();
         
         ZipUtils.zipTo(toZip, destination);
         
         Assert.assertTrue(destination.exists());
         
-        ZipUtils.unzipTo(destination, new PathReference("target"));
+        ZipUtils.unzipTo(destination, new PathReference("build"));
         
         assertExistsAndContains(expectedSpecifiedUnzippedFoo, "Foo");
         assertExistsAndContains(expectedSpecifiedUnzippedBar, "Bar");
@@ -101,14 +101,14 @@ public class ZipUtilsTests {
     @Test
     public void unzipToLongFilePath() throws Exception {
         PathReference toZip = new PathReference("src/test/resources/to-zip");
-        PathReference destination = new PathReference("target/zipped-to-here.zip");
+        PathReference destination = new PathReference("build/zipped-to-here.zip");
         destination.delete();
         
         ZipUtils.zipTo(toZip, destination);
         
         Assert.assertTrue(destination.exists());
         
-        PathReference longFileNameDir = new PathReference("target/longFilePathDir");
+        PathReference longFileNameDir = new PathReference("build/longFilePathDir");
         longFileNameDir.delete(true);
         
         PathReference longFileNameTarget = longPathReference(longFileNameDir, LONG_FILE_PATH_DEPTH);
@@ -130,24 +130,24 @@ public class ZipUtilsTests {
     public void zipAndUnzipLongFilePath() throws Exception {
         PathReference filesToZip = new PathReference("src/test/resources/to-zip");
 
-        PathReference deepDirsToZip = new PathReference("target/deepDirsToZip");
+        PathReference deepDirsToZip = new PathReference("build/deepDirsToZip");
         deepDirsToZip.delete(true);
         
         //Create deep dirs to zip
         PathReference deepPath = longPathReference(deepDirsToZip, LONG_FILE_PATH_DEPTH);
         filesToZip.copy(deepPath.newChild("zipped-to-here"),true);
         
-        PathReference destination = new PathReference("target/zipAndUnzipLongFilePath.zip");
+        PathReference destination = new PathReference("build/zipAndUnzipLongFilePath.zip");
         destination.delete();
         
         ZipUtils.zipTo(deepDirsToZip, destination);
         
         Assert.assertTrue(destination.exists());
         
-        PathReference targetDir = new PathReference("target/zipAndUnzipLongFilePath");
+        PathReference targetDir = new PathReference("build/zipAndUnzipLongFilePath");
         targetDir.delete(true);
         
-        ZipUtils.unzipTo(destination, new PathReference("target"));
+        ZipUtils.unzipTo(destination, new PathReference("build"));
 
         PathReference longFileNameTarget = longPathReference(targetDir, LONG_FILE_PATH_DEPTH);
         PathReference unzipFooPlace = longFileNameTarget.newChild("zipped-to-here").newChild("a").newChild("foo");
@@ -160,18 +160,19 @@ public class ZipUtilsTests {
     @Test
     public void unzipToDestructive() throws Exception {
     	PathReference archiveToUnzip = new PathReference("src/test/resources/jars/test.jar");
-    	PathReference unzipDestination = new PathReference("target/unzipDestructive");
-    	PathReference archivedFile = new PathReference("target/unzipDestructive/test.txt");
-    	PathReference archivedFileInMetaInf = new PathReference("target/unzipDestructive/META-INF/test.txt");
-    	
+    	PathReference unzipDestination = new PathReference("build/unzipDestructive");
+    	PathReference archivedFile = new PathReference("build/unzipDestructive/test.txt");
+    	PathReference archivedFileInMetaInf = new PathReference("build/unzipDestructive/META-INF/test.txt");
+
+    	unzipDestination.delete(true);
     	ZipUtils.unzipTo(archiveToUnzip, unzipDestination);
     	
     	Assert.assertTrue(archivedFile.exists());
     	Assert.assertTrue(archivedFileInMetaInf.exists());
     	
     	archiveToUnzip = new PathReference("src/test/resources/jars/test_updated.jar");
-    	PathReference updatedArchivedFile = new PathReference("target/unzipDestructive/test_updated.txt");
-    	PathReference updatedArchivedFileInMetaInf = new PathReference("target/unzipDestructive/META-INF/test_updated.txt");
+    	PathReference updatedArchivedFile = new PathReference("build/unzipDestructive/test_updated.txt");
+    	PathReference updatedArchivedFileInMetaInf = new PathReference("build/unzipDestructive/META-INF/test_updated.txt");
     	
     	ZipUtils.unzipToDestructive(archiveToUnzip, unzipDestination);
     	
@@ -184,8 +185,10 @@ public class ZipUtilsTests {
     @Test
     public void unzipToDestructiveLongFilePaths() throws Exception {
     	PathReference archiveToUnzip = new PathReference("src/test/resources/jars/test.jar");
-    	PathReference unzipDestination = new PathReference("target/unzipDestructiveLongFilePaths");
+    	PathReference unzipDestination = new PathReference("build/unzipDestructiveLongFilePaths");
     	PathReference longFileNameDestination = longPathReference(unzipDestination, LONG_FILE_PATH_DEPTH);
+
+        unzipDestination.delete(true);
     	ZipUtils.unzipTo(archiveToUnzip, longFileNameDestination);
     	
     	PathReference archivedFile = longFileNameDestination.newChild("test.txt");

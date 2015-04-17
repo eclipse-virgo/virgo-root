@@ -30,7 +30,7 @@ public class FileSystemUtilsTests {
 
     @Test
     public void testDeleteRecursively() throws IOException {
-        File f = new File("target/work");
+        File f = new File("build/work");
         f.mkdir();
         assertTrue(f.exists());
         
@@ -45,18 +45,18 @@ public class FileSystemUtilsTests {
         assertTrue(FileSystemUtils.deleteRecursively(f));
         assertFalse(f.exists());
         
-        assertTrue(FileSystemUtils.deleteRecursively("target/work"));
+        assertTrue(FileSystemUtils.deleteRecursively("build/work"));
         assertFalse(f.exists());
     }
     
     @Test
     public void testCreateDirectoryIfNecessary() {
-    	String path = FileSystemUtils.createDirectoryIfNecessary("target/work/test");
+    	String path = FileSystemUtils.createDirectoryIfNecessary("build/work/test");
 
     	File f = new File(path);
 
     	assertTrue(f.exists());
-        String path2 = FileSystemUtils.createDirectoryIfNecessary("target/work/test");
+        String path2 = FileSystemUtils.createDirectoryIfNecessary("build/work/test");
         assertEquals("Shouldn't have a different path if recreated unnecessarily", path, path2);
         
         assertTrue("File doesn't exist when created 'twice'.", f.exists());
@@ -66,7 +66,7 @@ public class FileSystemUtilsTests {
     
     @Test
     public void testListFilesEmpty() {
-        String path = FileSystemUtils.createDirectoryIfNecessary("target/work/testList");
+        String path = FileSystemUtils.createDirectoryIfNecessary("build/work/testList");
         File f = new File(path);
         assertTrue(f.exists());
         
@@ -81,7 +81,7 @@ public class FileSystemUtilsTests {
 
     @Test
     public void testListFilesNonEmpty() throws IOException {
-        String path = FileSystemUtils.createDirectoryIfNecessary("target/work/testList2");
+        String path = FileSystemUtils.createDirectoryIfNecessary("build/work/testList2");
         File f = new File(path);
         assertTrue(f.exists());
         
@@ -157,7 +157,7 @@ public class FileSystemUtilsTests {
 
     @Test
     public void testListFilesFiltered() throws IOException {
-        String path = FileSystemUtils.createDirectoryIfNecessary("target/work/testList3");
+        String path = FileSystemUtils.createDirectoryIfNecessary("build/work/testList3");
         File f = new File(path);
         assertTrue(f.exists());
         
@@ -176,7 +176,7 @@ public class FileSystemUtilsTests {
 
     @Test
     public void testListFilesNonExists() {
-        String path = "target/work/testListNoDir";
+        String path = "build/work/testListNoDir";
         File f = new File(path);
         assertFalse(f.exists());
         

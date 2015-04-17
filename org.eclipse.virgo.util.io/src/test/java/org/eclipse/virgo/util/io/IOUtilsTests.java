@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public class IOUtilsTests {
     
-    private static final File testDir = new File("target/testio");
+    private static final File testDir = new File("build/testio");
     
     @Before
     @After

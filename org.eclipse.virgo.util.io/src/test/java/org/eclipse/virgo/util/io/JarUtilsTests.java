@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 public class JarUtilsTests {
 
-    private final PathReference expected = new PathReference("target/dummy");
+    private final PathReference expected = new PathReference("build/dummy");
     
     @Before
     public void before()  {
@@ -37,7 +37,7 @@ public class JarUtilsTests {
     @Test
     public void testUnpackIntoDir() throws Exception{
         PathReference jar = new PathReference("src/test/resources/jars/dummy.jar");
-        PathReference target = new PathReference("./target");
+        PathReference target = new PathReference("./build");
         JarUtils.unpackTo(jar, target);
         assertTrue(this.expected.exists());
         PathReference file = expected.newChild("com/foo/bar/dummyDoc.txt");

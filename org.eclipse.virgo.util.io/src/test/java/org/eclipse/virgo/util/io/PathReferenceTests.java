@@ -32,9 +32,9 @@ import org.junit.Test;
  */
 public class PathReferenceTests {
 
-    private static final String WORK_AREA_PATH = "target/work";
+    private static final String WORK_AREA_PATH = "build/work";
     
-    private static final String WORK_AREA2_PATH = "target/work2";
+    private static final String WORK_AREA2_PATH = "build/work2";
 
     private static final String TEST_FILE = "src/test/resources/test.txt";
 

@@ -16,8 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,7 +29,7 @@ import org.junit.Test;
  */
 public class FileSystemCheckerTests {
 
-    private final File checkDir = new File("target", "work");
+    private final File checkDir = new File("build", "work");
 
     @Before
     public void createDir() {
