@@ -14,7 +14,7 @@ package org.eclipse.virgo.kernel.install.pipeline;
 import org.eclipse.virgo.kernel.install.pipeline.stage.PipelineStage;
 
 /**
- * {@link Pipeline} is a series of pipeline stages used by he kernel to transform artifacts during installation and
+ * {@link Pipeline} is a series of pipeline stages used by the kernel to transform artifacts during installation and
  * update.
  * <p />
  * 
