@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise Security Integration Classloading Hook
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: system.bundle;extension:="framework"

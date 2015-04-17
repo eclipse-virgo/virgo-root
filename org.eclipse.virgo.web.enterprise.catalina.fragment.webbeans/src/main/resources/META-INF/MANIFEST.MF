@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Fragment-host: org.apache.catalina
-Bundle-Version: 3.6.0.enterprise
-Bundle-Name: Catalina Integration With OpenWebBeans
-Bundle-ManifestVersion: 2
-Import-Package: org.apache.webbeans.web.tomcat,org.apache.webbeans.servlet
-Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-

@@ -29,7 +29,7 @@ public class WarDirectoryDeploymentTests extends AbstractWebIntegrationTests {
 
     @Before
     public void clean() {
-        PathReference pickup = new PathReference("target/pickup");
+        PathReference pickup = new PathReference("build/pickup");
         pickup.delete(true);
         pickup.createDirectory();
     }

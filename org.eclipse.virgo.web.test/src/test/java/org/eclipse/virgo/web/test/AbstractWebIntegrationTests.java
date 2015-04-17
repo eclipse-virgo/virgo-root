@@ -380,7 +380,7 @@ public abstract class AbstractWebIntegrationTests {
     }
 
     protected PathReference hotDeploy(PathReference toDeploy, String name, String version) throws InterruptedException {
-        PathReference deployed = toDeploy.copy(new PathReference("target/pickup"), true);
+        PathReference deployed = toDeploy.copy(new PathReference("build/pickup"), true);
 
         awaitDeployment(toDeploy, deployed);
         awaitWebAppStart(name, version);

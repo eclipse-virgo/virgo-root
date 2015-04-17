@@ -34,14 +34,14 @@ public class PerAppTraceRoutingTests extends AbstractWebIntegrationTests {
 
     @Before
     public void deleteTraceFiles() {
-        FileSystemUtils.deleteRecursively("target/per-app-logging.war-0");
+        FileSystemUtils.deleteRecursively("build/per-app-logging.war-0");
     }
 
     @Test
     public void perAppTraceRouting() throws Exception {
         assertDeployAndUndeployBehavior("per-app-logging", new File("src/test/apps-static/per-app-logging.war"), "");
 
-        File traceFile = new File("target/per-app-logging.war-0/trace.log");
+        File traceFile = new File("build/per-app-logging.war-0/trace.log");
         assertTrue(traceFile.exists());
         List<String> expectedText = new ArrayList<String>();
 

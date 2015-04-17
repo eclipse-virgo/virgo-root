@@ -6,13 +6,13 @@ Bundle-Version: ${version}
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.apache.openejb.core
 Import-Template: org.osgi.framework;version="0",
- org.apache.openejb.assembler.classic;version="${org.apache.openejb.core:[=.=.=, +1)}",
- org.apache.openejb.spi;version="${org.apache.openejb.core:[=.=.=, +1)}",
- org.apache.openejb.core;version="${org.apache.openejb.core:[=.=.=, +1)}",
- org.apache.openejb.util;version="${org.apache.openejb.core:[=.=.=, +1)}",
- org.apache.openejb.loader;version="${org.apache.openejb.loader:[=.=.=, +1)}",
+ org.apache.openejb.assembler.classic;version="${apacheOpenejbCoreVersion:[=.=.=, +1)}",
+ org.apache.openejb.spi;version="${apacheOpenejbCoreVersion:[=.=.=, +1)}",
+ org.apache.openejb.core;version="${apacheOpenejbCoreVersion:[=.=.=, +1)}",
+ org.apache.openejb.util;version="${apacheOpenejbCoreVersion:[=.=.=, +1)}",
+ org.apache.openejb.loader;version="${apacheOpenejbVersion:[=.=.=, +1)}",
  org.apache.openejb;version="0",
- org.apache.naming;version="${org.apache.catalina:[=.=.=, +1)}",
+ org.apache.naming;version="${apacheCatalinaVersion:[=.=.=, +1)}",
  javax.naming;version="0"
 Excluded-Exports:
  *

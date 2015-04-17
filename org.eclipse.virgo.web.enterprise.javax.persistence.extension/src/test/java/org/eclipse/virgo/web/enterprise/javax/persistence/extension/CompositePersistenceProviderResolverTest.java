@@ -56,11 +56,11 @@ public class CompositePersistenceProviderResolverTest {
 	}
 	
 	private void prepareServicesFile() throws Exception {
-		new File("./target/test-classes/META-INF").mkdir();
-		File servicesDir = new File("./target/test-classes/META-INF/services");
+		new File("./build/classes/test/META-INF").mkdir();
+		File servicesDir = new File("./build/classes/test/META-INF/services");
 		servicesDir.mkdir();
 		
-		File persistenceProviderFile = new File("./target/test-classes/META-INF/services/javax.persistence.spi.PersistenceProvider");
+		File persistenceProviderFile = new File("./build/classes/test/META-INF/services/javax.persistence.spi.PersistenceProvider");
 		
 		PrintWriter writer = null; 
 		try {
@@ -81,17 +81,17 @@ public class CompositePersistenceProviderResolverTest {
 	
 	@After
 	public void clean() {
-		File persistenceProviderFile = new File("./target/test-classes/META-INF/services/javax.persistence.spi.PersistenceProvider");
+		File persistenceProviderFile = new File("./build/classes/test/META-INF/services/javax.persistence.spi.PersistenceProvider");
 		if (persistenceProviderFile.exists()) {
 			persistenceProviderFile.delete();
 		}
 		
-		File servicesDir = new File("./target/test-classes/META-INF/services");
+		File servicesDir = new File("./build/classes/test/META-INF/services");
 		if (servicesDir.exists()) {
 			servicesDir.delete();
 		}
 		
-		File metaInfDir = new File("./target/test-classes/META-INF");
+		File metaInfDir = new File("./build/classes/test/META-INF");
 		if (metaInfDir.exists()) {
 			metaInfDir.delete();
 		}

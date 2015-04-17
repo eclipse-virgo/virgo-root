@@ -5,16 +5,16 @@ Bundle-SymbolicName: org.eclipse.virgo.web.test
 Bundle-Version: ${version}
 Import-Template: 
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
- org.eclipse.virgo.util.*;version="${org.eclipse.virgo.util:[=.=.=, +1)}",
+ org.eclipse.virgo.util.*;version="${version:[=.=.=, +1)}",
  org.eclipse.virgo.kernel.equinox.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
  javax.management.*;version="0",
  org.junit.*;version="${org.junit:[=.=.=, +1)}",
  javax.servlet.*;version="${javax.servlet:[-1.6.=, +1)}",
  org.apache.commons.logging.*;version="${org.apache.commons.logging:[=.=.=, +1)}",
  org.apache.commons.httpclient.*;version="${org.apache.commons.httpclient:[=.=.=, +1)}",
- org.aspectj.*;version="${org.aspectj:[=.=.=, +1)}",
+ org.aspectj.*;version="${orgAspectjVersion:[=.=.=, +1)}",
  org.osgi.framework.*;version="0",
- org.springframework.*;version="${org.springframework:[2.5.6, +1)}",
+ org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
  org.osgi.service.cm.*;version="0",
  org.osgi.service.component.*;version="0",
  org.osgi.service.log.*;version="0",
@@ -24,7 +24,7 @@ Import-Template:
  org.eclipse.osgi.service.environment.*;version="0",
  org.eclipse.osgi.util.*;version="0",
  org.osgi.util.tracker.*;version="0",
- org.eclipse.gemini.blueprint.*;version="${org.eclipse.gemini.blueprint:[=.=.=, +1)}"
+ org.eclipse.gemini.blueprint.*;version="${geminiBlueprintVersion:[=.=.=, +1)}"
 Excluded-Imports: 
  org.eclipse.virgo,
  org.eclipse.virgo.test.*,

@@ -1,0 +1,296 @@
+project(':web:org.eclipse.virgo.web.core') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile group: "org.apache.commons", name: "com.springsource.org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.springframework", name: "org.springframework.test", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        testCompile project(':test:org.eclipse.virgo.test.stubs')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.stubs')
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+        compile project(':util:org.eclipse.virgo.util.common')
+        compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+        compile project(':medic:org.eclipse.virgo.medic')
+        compile project(':nano:org.eclipse.virgo.nano.core')
+        compile project(':nano:org.eclipse.virgo.nano.deployer.api')
+        compile project(':repository:org.eclipse.virgo.repository')
+        compile project(':kernel:org.eclipse.virgo.kernel.artifact')
+        compile project(':kernel:org.eclipse.virgo.kernel.deployer')
+        compile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+
+        if (System.properties['weaving.enabled'] == 'true') {
+            aspectpath project(':medic:org.eclipse.virgo.medic')
+            aspectpath project(':nano:org.eclipse.virgo.nano.core')
+        }
+    }
+}
+
+project(':web:org.eclipse.virgo.web.dm') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile group: "org.apache.commons", name: "com.springsource.org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.springframework", name: "org.springframework.aop", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.springframework", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.springframework", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.springframework", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.springframework", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.io", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.core", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.extender", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+
+        compile project(':medic:org.eclipse.virgo.medic')
+        compile project(':nano:org.eclipse.virgo.nano.core')
+
+        if (System.properties['weaving.enabled'] == 'true') {
+            aspectpath project(':medic:org.eclipse.virgo.medic')
+            aspectpath project(':nano:org.eclipse.virgo.nano.core')
+        }
+    }
+}
+
+project(':web:org.eclipse.virgo.web.tomcat.support') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+        compile project(':kernel:org.eclipse.virgo.kernel.osgi')
+        compile project(':medic:org.eclipse.virgo.medic')
+        compile project(':nano:org.eclipse.virgo.nano.core')
+        compile project(':util:org.eclipse.virgo.util.io')
+        compile project(':util:org.eclipse.virgo.util.math')
+        compile project(':web:org.eclipse.virgo.web.core')
+
+        if (System.properties['weaving.enabled'] == 'true') {
+            aspectpath project(':medic:org.eclipse.virgo.medic')
+            aspectpath project(':nano:org.eclipse.virgo.nano.core')
+        }
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.transaction", version: javaxTransactionVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+        compile group: "org.hibernate", name: "com.springsource.org.hibernate", version: hibernateVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.appdeployer') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.finder", version: apacheXBeanFinderVersion, configuration: "compile", ext: "jar"
+
+        compile project(':medic:org.eclipse.virgo.medic')
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.applistener') {
+    dependencies {
+        compile project(':medic:org.eclipse.virgo.medic')
+        compile project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+
+        compile project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.jsf.support') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "cdi.api", version: cdiApiVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval') { dependencies { // <dependency org="org.eclipse.virgo.mirrored" name="org.apache.bval" rev="${org.apache.bval}" conf="compile->runtime"/>
+    } }
+
+project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.transaction", version: javaxTransactionVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa') { dependencies { } }
+
+// TODO - check oev.web.enterprise.openejb.fragment.webbeans
+project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans') { dependencies { } }
+
+project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.transaction", version: javaxTransactionVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory') {
+    dependencies {
+        testCompile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.tomcat7", version: apacheOpenwebbeansTomcat7Version, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.security') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        testRuntime group: "org.apache.commons", name: "com.springsource.org.apache.commons.fileupload", version: commonsFileuploadVersion, configuration: "compile", ext: "jar"
+
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.security.valve') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+        compile project(':web:org.eclipse.virgo.web.enterprise.security')
+    }
+}
+
+project(':web:org.eclipse.virgo.web.enterprise.services.accessor') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
+
+        compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+        compile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+
+        /*
+         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.core" rev="${org.apache.openejb.core}" conf="compile->runtime"/>
+         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.openejb.loader" rev="${org.apache.openejb.loader}" conf="compile->runtime"/>
+         <dependency org="org.eclipse.virgo.mirrored" name="org.apache.catalina" rev="${org.apache.catalina}" conf="compile->runtime"/>
+         */
+    }
+}
+
+project(':web:org.eclipse.virgo.web.war.deployer') {
+    dependencies {
+        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+        compile project(':medic:org.eclipse.virgo.medic')
+        compile project(':nano:org.eclipse.virgo.nano.deployer')
+        compile project(':nano:org.eclipse.virgo.nano.deployer.api')
+        compile project(':util:org.eclipse.virgo.util.io')
+        compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+    }
+}

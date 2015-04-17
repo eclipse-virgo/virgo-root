@@ -1,8 +1,13 @@
+*/src/main/resources/META-INF/MANIFEST.MF
 */src/test/resources/META-INF/TEST.MF
 target
 integration-repo
 ivy-cache
-derby.log
-*/work
+.ant-targets-build.xml
 user-ivy.properties
-*/bin/*
+bin/
+build/
+.settings/
+.project
+.classpath
+
