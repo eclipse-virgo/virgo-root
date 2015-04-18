@@ -11,10 +11,10 @@
 
 package org.eclipse.virgo.shell.internal.formatting;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -70,7 +70,7 @@ public class StubManageableCompositeArtifact implements ManageableCompositeArtif
     public ObjectName[] getDependents() {
         this.dependentsCalled = true;
 
-        Set<ObjectName> objectNames = new HashSet<ObjectName>();
+        List<ObjectName> objectNames = new ArrayList<ObjectName>();
         try {
             objectNames.add(new ObjectName("test:artifact-type=test,name=com.springsource.test2,version=0.0.0"));
             objectNames.add(new ObjectName("test:artifact-type=test,name=com.springsource.test3,version=0.0.0"));
