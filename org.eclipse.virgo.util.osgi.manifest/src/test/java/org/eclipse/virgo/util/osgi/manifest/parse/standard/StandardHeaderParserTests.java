@@ -11,6 +11,13 @@
 
 package org.eclipse.virgo.util.osgi.manifest.parse.standard;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -24,24 +31,13 @@ import org.eclipse.virgo.util.osgi.manifest.parse.BundleManifestParseException;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderDeclaration;
 import org.eclipse.virgo.util.osgi.manifest.parse.HeaderParser;
 import org.eclipse.virgo.util.osgi.manifest.parse.ParserLogger;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.DebugVisitor;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.HeaderProblem;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.HeaderProblemKind;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.HeaderVisitor;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.MultiplexingVisitor;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.Severity;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.StandardHeaderParser;
-import org.eclipse.virgo.util.osgi.manifest.parse.standard.StandardHeaderVisitor;
-import org.junit.Ignore;
-
-import junit.framework.TestCase;
-
+import org.junit.Test;
 
 /**
  * Test header parsing - normal and error scenarios.
  * 
  */
-public class StandardHeaderParserTests extends TestCase {
+public class StandardHeaderParserTests {
 
     private static ParserLogger tlogger = new TestLogger();
 
@@ -49,6 +45,7 @@ public class StandardHeaderParserTests extends TestCase {
 
     private static final char aeDipthong = '\u00c6';
 
+    @Test
     public void testPackageAttributeNameNastySplit() throws Exception {
         String test = "a.split.pkg;nasty.split=\"split\"";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
@@ -60,6 +57,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals("split", decl.getAttributes().get("nasty.split"));
 	}
 
+    @Test
     public void testPackageAttributeNameWithDotsAndUnderscores() throws Exception {
         String test = "a.long.package.name;test.split_mixed_with.underscore=split";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
@@ -71,6 +69,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals("split", decl.getAttributes().get("test.split_mixed_with.underscore"));
 	}
 
+    @Test
     public void testPackageAttributeNameWithUnderscore() throws Exception {
         String test = "package;test_split=split";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
@@ -82,6 +81,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals("split", decl.getAttributes().get("test_split"));
 	}
 
+    @Test
     public void testPackageAttributeNameWithDot() throws Exception {
         String test = "package;test.split=split";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
@@ -93,6 +93,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals("split", decl.getAttributes().get("test.split"));
 	}
 
+    @Test
     public void testParseGeneralHeaderError() {
         checkGeneralHeaderFailure("a\"wibble\"", HeaderProblemKind.EXPECTED_SEMICOLON_OR_COMMA);
         checkGeneralHeaderFailure("a\"wibble\"/", HeaderProblemKind.EXPECTED_SEMICOLON_OR_COMMA);
@@ -112,6 +113,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkGeneralHeaderFailure("com.goo.*;a:=1;b=3,com.*.wibble;f;a:= foo;com.foo.bar.;a==5", HeaderProblemKind.INVALID_ARGUMENT_VALUE);
     }
 
+    @Test
     public void testBasicVisitors() {
         StandardHeaderVisitor visitor = new StandardHeaderVisitor();
         visitor.initialize();
@@ -127,6 +129,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertNull(mv.getFirstHeaderDeclaration());
     }
 
+    @Test
     public void testPossibleGeneralHeaders() {
         checkGeneralHeader("a", "names=[a]");
         checkGeneralHeader("a.b", "names=[a.b]");
@@ -157,6 +160,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkGeneralHeader("a/b", "names=[a/b]");
     }
 
+    @Test
     public void testInfraDebugVisitor() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DebugVisitor dv = new DebugVisitor(); // check default ctor
@@ -170,6 +174,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals(0, dv.getHeaderDeclarations().size());
     }
 
+    @Test
     public void testInfraDebugVisitor2() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DebugVisitor dv = new DebugVisitor(new PrintStream(baos));
@@ -177,6 +182,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkVisited(baos, "visitWildcardName(a.b.*) visitWildcardName(*) clauseEnded() endVisit()");
     }
 
+    @Test
     public void testInfraDebugVisitor3() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DebugVisitor dv = new DebugVisitor(new PrintStream(baos));
@@ -185,6 +191,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertNotNull(decls.get(0).toString());
     }
 
+    @Test
     public void testInfraVisitorReset() {
         StandardHeaderParser shp = new StandardHeaderParser(tlogger);
         List<HeaderDeclaration> lhd = shp.parsePackageHeader("com.foo.goo;a=b", "MyHeaderName");
@@ -199,7 +206,7 @@ public class StandardHeaderParserTests extends TestCase {
 
     // Bundle-SymbolicName ::= symbolic-name ( ';' parameter )*
 
-
+    @Test
     public void testBundleSymbolicName() {
         checkDecl(getParser().parseBundleSymbolicName("com.b.goo.foo"), "names=[com.b.goo.foo]");
         checkDecl(getParser().parseBundleSymbolicName("c.b.goo.foo;a:=1"), "names=[c.b.goo.foo] directives=[a:=1]");
@@ -211,6 +218,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkDecl(getParser().parseBundleSymbolicName("a  "), "names=[a]");
     }
 
+    @Test
     public void testBundleSymbolicNameErrors() {
         checkBundleSymbolicNameFailure("com .foo", HeaderProblemKind.ILLEGAL_SPACE);
         checkBundleSymbolicNameFailure("1;uses:=c" + oUmlaut + "m.wibble", HeaderProblemKind.INVALID_ARGUMENT_VALUE);
@@ -218,6 +226,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkBundleSymbolicNameFailure("1;uses:=wibble.c" + oUmlaut + "m.tribble", HeaderProblemKind.EXTRANEOUS_DATA_AFTER_PARAMETER);
     }
 
+    @Test
     public void testLibrarySymbolicName() {
         checkDecl(getParser().parseLibrarySymbolicName("com.b.goo.foo"), "names=[com.b.goo.foo]");
         checkDecl(getParser().parseLibrarySymbolicName("c.b.goo.foo;a:=1"), "names=[c.b.goo.foo] directives=[a:=1]");
@@ -234,6 +243,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkLibrarySymbolicNameFailure("1;uses:=wibble.c" + oUmlaut + "m.tribble", HeaderProblemKind.EXTRANEOUS_DATA_AFTER_PARAMETER);
     }
 
+    @Test
     public void testBundleSymbolicNameNastyErrors() {
         checkBundleSymbolicNameFailure(";", HeaderProblemKind.EXPECTED_TOKEN);
         checkBundleSymbolicNameFailure(".", HeaderProblemKind.EXPECTED_TOKEN);
@@ -247,6 +257,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkBundleSymbolicNameFailure("a:=b;d", HeaderProblemKind.EXPECTED_ATTRIBUTE_OR_DIRECTIVE);
     }
 
+    @Test
     public void testFragmentHostHeader() {
         checkDecl(getParser().parseFragmentHostHeader("com.b.goo.foo"), "names=[com.b.goo.foo]");
         checkDecl(getParser().parseFragmentHostHeader("c.b.goo.foo;a:=1"), "names=[c.b.goo.foo] directives=[a:=1]");
@@ -258,13 +269,13 @@ public class StandardHeaderParserTests extends TestCase {
         checkDecl(getParser().parseFragmentHostHeader("a  "), "names=[a]");
     }
 
-    // TODO Bug 463462 - As a developer I'd like to be able to build the Virgo artifacts with Gradle
-    @Ignore("Deactivated with Bug 463462 - As a developer I'd like to be able to build the Virgo artifacts with Gradle")
+    @Test
     public void testDirectivesAttributes() {
         checkFragmentHostHeaderFailure("a;x:=a/b", HeaderProblemKind.UNEXPECTED_CHARACTER);
         checkDecl(getParser().parseFragmentHostHeader("a;x:=y"), "names=[a] directives=[x:=y]");
     }
 
+    @Test
     public void testFragmentHostHeaderErrors() {
         checkFragmentHostHeaderFailure("com .foo", HeaderProblemKind.ILLEGAL_SPACE);
         checkFragmentHostHeaderFailure("1;uses:=c" + oUmlaut + "m.wibble", HeaderProblemKind.INVALID_ARGUMENT_VALUE);
@@ -272,6 +283,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkFragmentHostHeaderFailure("1;uses:=wibble.c" + oUmlaut + "m.tribble", HeaderProblemKind.EXTRANEOUS_DATA_AFTER_PARAMETER);
     }
 
+    @Test
     public void testHeaderProblemContext() {
         StandardHeaderParser parser = checkFragmentHostHeaderFailure("1;uses:=c" + oUmlaut + "m.wibble", HeaderProblemKind.INVALID_ARGUMENT_VALUE);
         HeaderProblem hProblem = parser.getProblems().get(0);
@@ -280,6 +292,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertNotSame(-1, s.indexOf("        ^  ^"));
     }
 
+    @Test
     public void testHeaderProblemContext2() {
         StandardHeaderParser parser = checkFragmentHostHeaderFailure("com .foo", HeaderProblemKind.ILLEGAL_SPACE);
         HeaderProblem hProblem = parser.getProblems().get(0);
@@ -289,6 +302,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertNotSame(-1, s.indexOf("   ^"));
     }
 
+    @Test
     public void testVersioning() {
         checkDecl(getParser().parseBundleSymbolicName("a;version=1.2.3.qualifier"), "names=[a] attrs=[version=1.2.3.qualifier]");
         checkDecl(getParser().parseBundleSymbolicName("a;version=1.2.3"), "names=[a] attrs=[version=1.2.3]");
@@ -296,6 +310,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkDecl(getParser().parseBundleSymbolicName("a;version=1"), "names=[a] attrs=[version=1]");
     }
 
+    @Test
     public void testRequireBundle() {
         checkDecls(checkRequireBundle("a.b.c;f=5"), "names=[a.b.c] attrs=[f=5]");
         checkDecls(checkRequireBundle("a.b.c,f"), "names=[a.b.c]", "names=[f]");
@@ -308,6 +323,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkDecls(checkRequireBundle("a.b.c;f:=\"c�m\",a.d,a.e"), "names=[a.b.c] directives=[f:=c�m]", "names=[a.d]", "names=[a.e]");
     }
 
+    @Test
     public void testRequireBundleFailures() {
         checkRequireBundleFailure("com .foo", HeaderProblemKind.ILLEGAL_SPACE);
         checkRequireBundleFailure("1;uses:=c" + oUmlaut + "m.wibble", HeaderProblemKind.INVALID_ARGUMENT_VALUE);
@@ -346,6 +362,7 @@ public class StandardHeaderParserTests extends TestCase {
 
     // All these variants are legal
 
+    @Test
     public void testPackageHeader() {
         checkDecls(getParser().parsePackageHeader("com.foo", "Export-Package"), "names=[com.foo]");
         checkDecls(getParser().parsePackageHeader("com.foo.goo.boo,com.bib.bob.bub", "Export-Package"), "names=[com.foo.goo.boo]",
@@ -367,6 +384,7 @@ public class StandardHeaderParserTests extends TestCase {
     /**
      * Try a few things with an extended character set - some valid, some not
      */
+    @Test
     public void testPackageHeaderVarietyOfIdentifierChars() {
         checkPackageHeaderFailure("a:=,foo", HeaderProblemKind.EXPECTED_SEMICOLON_OR_COMMA);
         checkDecls(getParser().parsePackageHeader("c" + aeDipthong + "m.foo", "Export-Package"), "names=[c" + aeDipthong + "m.foo]");
@@ -391,6 +409,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkPackageHeaderFailure("a.   b", HeaderProblemKind.ILLEGAL_SPACE);
     }
 
+    @Test
     public void testPackageHeaderNastyErrors() {
         checkPackageHeaderFailure(";", HeaderProblemKind.EXPECTED_IDENTIFIER);
         checkPackageHeaderFailure(".", HeaderProblemKind.EXPECTED_IDENTIFIER);
@@ -402,6 +421,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkPackageHeaderFailure("a:=b;d", HeaderProblemKind.EXPECTED_SEMICOLON_OR_COMMA);
     }
 
+    @Test
     public void testPackageHeaderErrorMessagePositions() {
         StandardHeaderParser parser = new StandardHeaderParser(tlogger);
         parser.internalParsePackageHeader("a. b", "test");
@@ -422,11 +442,9 @@ public class StandardHeaderParserTests extends TestCase {
 
     // TODO [later] who checks activation policy is only 'lazy' if set to anything at all?
 
-
     // Section 4.3.6.1
 
-    // TODO Bug 463462 - As a developer I'd like to be able to build the Virgo artifacts with Gradle
-    @Ignore("Deactivated with Bug 463462 - As a developer I'd like to be able to build the Virgo artifacts with Gradle")
+    @Test
     public void testBundleActivationPolicy() {
         checkDecl(getParser().parseBundleActivationPolicy("lazy"), "names=[lazy]");
         checkDecl(getParser().parseBundleActivationPolicy("foobar"), "names=[foobar]");
@@ -447,6 +465,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals(11, problem.getEndOffset());
     }
 
+    @Test
     public void testDynamicImportPackageWithWildcards() {
         checkDecls(getParser().parseDynamicImportPackageHeader("a.b.*"), "names=[a.b.*]");
         checkDecls(getParser().parseDynamicImportPackageHeader("*"), "names=[*]");
@@ -457,6 +476,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkDecls(getParser().parseDynamicImportPackageHeader("*,c.d.*"), "names=[*]", "names=[c.d.*]");
     }
 
+    @Test
     public void testDynamicImportPackage() {
         checkDecls(getParser().parseDynamicImportPackageHeader("com.foo"), "names=[com.foo]");
         checkDecls(getParser().parseDynamicImportPackageHeader("com.foo.goo.boo,com.bib.bob.bub"), "names=[com.foo.goo.boo]",
@@ -474,6 +494,7 @@ public class StandardHeaderParserTests extends TestCase {
             "names=[com.springsource.server.osgi com.springsource.server.kernel] attrs=[version=1.2.3] directives=[uses:=org.springframework.core]");
     }
 
+    @Test
     public void testDynamicImportPackageErrors() {
         checkDynamicImportPackageFailure("a.b .*", HeaderProblemKind.ILLEGAL_SPACE);
         checkDynamicImportPackageFailure(".*", HeaderProblemKind.EXPECTED_IDENTIFIER);
@@ -497,6 +518,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkDecls(getParser().parseHeader(headerText), expectedHeaders);
     }
 
+    @Test
     public void testParseGeneralHeader() {
         checkDecls(getParser().parseHeader("com.foo"), "names=[com.foo]");
         checkDecls(getParser().parseHeader("com.foo.goo.boo,com.bib.bob.bub"), "names=[com.foo.goo.boo]", "names=[com.bib.bob.bub]");
@@ -517,6 +539,7 @@ public class StandardHeaderParserTests extends TestCase {
      * Go mad on testing import bundle (which effectively tests all header variants that want to consume
      * bundleDeclarations).
      */
+    @Test
     public void testImportBundle() {
         checkDecls(checkImportBundle("a.b.c;f=5"), "names=[a.b.c] attrs=[f=5]");
         checkDecls(checkImportBundle("a.b.c,f"), "names=[a.b.c]", "names=[f]");
@@ -546,6 +569,7 @@ public class StandardHeaderParserTests extends TestCase {
 
     }
 
+    @Test
     public void testWebFilterMappings() {
         checkDecls(checkWebFilterMappings("a.b.c;f=5"), "names=[a.b.c] attrs=[f=5]");
         checkDecls(checkWebFilterMappings("a.b.c,f"), "names=[a.b.c]", "names=[f]");
@@ -555,6 +579,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkWebFilterMappingsFailure("1;uses:=wibble.c" + aeDipthong + "m", HeaderProblemKind.EXTRANEOUS_DATA_AFTER_PARAMETER);
     }
 
+    @Test
     public void testImportLibrary() {
         checkDecls(checkImportLibrary("a.b.c;f=5"), "names=[a.b.c] attrs=[f=5]");
         checkDecls(checkWebFilterMappings("a.b.c,f"), "names=[a.b.c]", "names=[f]");
@@ -564,6 +589,7 @@ public class StandardHeaderParserTests extends TestCase {
         checkImportLibraryFailure("1;uses:=wibble.c" + aeDipthong + "m", HeaderProblemKind.EXTRANEOUS_DATA_AFTER_PARAMETER);
     }
 
+    @Test
     public void testQuotedParameters() {
         String test = "com.springsource.server.osgi;version=\"1.2.3\";uses:=\"org.springframework.core\"";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
@@ -573,6 +599,7 @@ public class StandardHeaderParserTests extends TestCase {
         assertEquals("org.springframework.core", decl.getDirectives().get("uses"));
     }
 
+    @Test
     public void testPackageHeader_MultiDeclarationMultiPackageWithAttributesAndDirectives() {
         String test = "com.springsource.server.osgi;version=1.2.3;uses:=org.springframework.core,com.springsource.server.osgi.framework;com.springsource.server.osgi.boggle;version=1.3.2";
         List<HeaderDeclaration> packageDeclarations = parseTestHeader(test);
@@ -601,6 +628,7 @@ public class StandardHeaderParserTests extends TestCase {
      * If more problems surface here then it may be time to have a new token kind for a pathelement, rather than trying
      * to reuse TOKEN for this.
      */
+    @Test
     public void testParseHyphens() {
         List<HeaderDeclaration> decls = getParser().parseHeader("Alpha-*,*-Bravo,Charlie-*-Delta,*-Echo-*");
         checkDecls(decls, "names=[Alpha-*]", "names=[*-Bravo]", "names=[Charlie-*-Delta]", "names=[*-Echo-*]");
