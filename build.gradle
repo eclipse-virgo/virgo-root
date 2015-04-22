@@ -233,6 +233,7 @@ project(':packaging:nano') {
         enterpriseRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         enterpriseRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         enterpriseRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+		enterpriseRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         enterpriseRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipsejdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 
         enterpriseRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.antlr", version: eclipsePersistenceAntlrVersion, configuration: "compile", ext: "jar"
