@@ -18,7 +18,7 @@
 	url = git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.artifact-repository.git
 [submodule "test"]
 	path = test
-	url = ssh://fwaibel@git.eclipse.org/gitroot/virgo/org.eclipse.virgo.test.git
+	url = git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.test.git
 [submodule "util"]
 	path = util
 	url = git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.util.git
