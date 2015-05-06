@@ -21,6 +21,7 @@ distributions {
                 exclude ( '**/.version' )
                 exclude ( 'bin/*.sh' )
             }
+            exclude ( '**/placeholder' )
             from ( "${buildDir}/VJS/jetty-server/" ) { exclude ( 'Eclipse.app' ) }
             from ( "${buildDir}/" ) {
                 include ( 'repository/ext/' )
