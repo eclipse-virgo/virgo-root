@@ -170,7 +170,7 @@ ext.smokeTestProjects = [
 	project(':packaging:tomcat-server:org.eclipse.virgo.tomcat.smoketest'),
 ]
 
-ext.javaProjects = ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects + ext.miscProjects + ext.integrationTestProjects + smokeTestProjects +
+ext.javaProjects = ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects + ext.miscProjects + ext.testUtils + ext.integrationTestProjects + smokeTestProjects +
 		[
 			project(':nano:org.eclipse.virgo.nano.authentication'),
 			project(':nano:org.eclipse.virgo.nano.shutdown'),
@@ -430,7 +430,7 @@ ext {
 	]
 }
 
-configure(javaProjects + aspectjProjects + testUtils + integrationTestProjects + smokeTestProjects) {
+configure(javaProjects + aspectjProjects) {
 
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
@@ -486,7 +486,7 @@ configure(javaProjects + aspectjProjects + testUtils + integrationTestProjects +
 	}
 }
 
-configure(javaProjects + aspectjProjects + testUtils + packagingProjects + integrationTestProjects + smokeTestProjects) {
+configure(javaProjects + aspectjProjects + packagingProjects) {
 	repositories {
 		mavenCentral()
 		ivy {
@@ -503,7 +503,22 @@ configure(javaProjects + aspectjProjects + testUtils + packagingProjects + integ
 		}
 	}
 }
-    
+
+configure(javaProjects) {
+	if (System.properties['ci.build'] == 'true' || System.properties['include.findbugs'] == 'true') {
+		apply plugin: 'findbugs'
+
+		findbugs {
+			toolVersion = "3.0.1"
+			sourceSets = [sourceSets.main]
+			ignoreFailures = true
+			effort = "max"
+			reportLevel = "high"
+			excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
+		}
+	}
+}
+
 configure(packagingProjects) {
 	configurations {
 		additional { // visibility="private"
