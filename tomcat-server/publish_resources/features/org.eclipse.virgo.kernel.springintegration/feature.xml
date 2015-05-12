@@ -18,12 +18,6 @@
       %license
    </license>
 
-   <plugin
-         id="org.springframework.asm"
-         download-size="0"
-         install-size="0"
-         version="@SPRING.VERSION@"
-         unpack="false"/>
     <plugin
          id="org.springframework.expression"
          download-size="0"

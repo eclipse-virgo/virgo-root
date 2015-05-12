@@ -385,8 +385,9 @@ configure([
 }
 
 configure([
-    project(':packaging:jetty-server'),
-]) { dependencies { } }
+	project(':packaging:jetty-server'),
+]) {
+	dependencies {  repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter') } }
 
 configure([
     project(':packaging:tomcat-server'),
