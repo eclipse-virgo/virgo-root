@@ -28,13 +28,14 @@ project(':apps:org.eclipse.virgo.apps.repository.core') {
 project(':apps:org.eclipse.virgo.apps.repository.web') {
     dependencies {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-        testCompile group: "org.springframework", name: "org.springframework.test", version: springframeworkVersion, configuration: "compile", ext: "jar"
+		// we don't provide OSGi-ified version of org.springframework.test
+        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
-        compile group: "org.springframework", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        compile group: "org.springframework", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        compile group: "org.springframework", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
 
 		compile project(':util:org.eclipse.virgo.util.io')
 		compile project(':apps:org.eclipse.virgo.apps.repository.core')
