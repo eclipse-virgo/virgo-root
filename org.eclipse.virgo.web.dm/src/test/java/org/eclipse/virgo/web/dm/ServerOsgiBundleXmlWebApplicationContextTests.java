@@ -19,11 +19,11 @@ import static org.easymock.EasyMock.verify;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext;
+import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.eclipse.gemini.blueprint.context.ConfigurableOsgiBundleApplicationContext;
+import org.springframework.mock.env.MockEnvironment;
 
 public class ServerOsgiBundleXmlWebApplicationContextTests {
     
@@ -51,6 +51,7 @@ public class ServerOsgiBundleXmlWebApplicationContextTests {
         Bundle bundle = createNiceMock(Bundle.class);
         expect(bundleContext.getBundle()).andReturn(bundle);
         expect(parent.getBundleContext()).andReturn(bundleContext);
+		expect(parent.getEnvironment()).andReturn(new MockEnvironment());
         replay(parent, bundleContext, bundle);
         ServerOsgiBundleXmlWebApplicationContext applicationContext = new ServerOsgiBundleXmlWebApplicationContext(parent);
         
