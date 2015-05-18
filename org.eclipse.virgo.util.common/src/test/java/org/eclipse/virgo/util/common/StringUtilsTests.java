@@ -396,8 +396,8 @@ public class StringUtilsTests extends TestCase {
 		assertEquals("myString1", result[1]);
 		assertEquals("myString2", result[2]);
 
-		assertEquals(input1, StringUtils.concatenateStringArrays(input1, null));
-		assertEquals(input2, StringUtils.concatenateStringArrays(null, input2));
+		assertTrue(Arrays.equals(input1, StringUtils.concatenateStringArrays(input1, null)));
+		assertTrue(Arrays.equals(input2, StringUtils.concatenateStringArrays(null, input2)));
 		assertNull(StringUtils.concatenateStringArrays(null, null));
 	}
 
@@ -409,8 +409,8 @@ public class StringUtilsTests extends TestCase {
 		assertEquals("myString2", result[0]);
 		assertEquals("myString1", result[1]);
 
-		assertEquals(input1, StringUtils.mergeStringArrays(input1, null));
-		assertEquals(input2, StringUtils.mergeStringArrays(null, input2));
+		assertTrue(Arrays.equals(input1, StringUtils.mergeStringArrays(input1, null)));
+		assertTrue(Arrays.equals(input2, StringUtils.mergeStringArrays(null, input2)));
 		assertNull(StringUtils.mergeStringArrays(null, null));
 	}
 

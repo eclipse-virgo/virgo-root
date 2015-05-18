@@ -12,6 +12,7 @@
 package org.eclipse.virgo.util.common;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.transaction.xa.XAException;
 
@@ -99,7 +100,7 @@ public final class ObjectUtilsTests extends TestCase {
 
 	public void testToObjectArrayWithNonPrimitiveArray() {
 		String[] source = new String[] {"Bingo"};
-		assertEquals(source, ObjectUtils.toObjectArray(source));
+		assertTrue(Arrays.equals(source, ObjectUtils.toObjectArray(source)));
 	}
 
 	public void testAddObjectToArraySunnyDay() {
