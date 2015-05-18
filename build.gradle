@@ -519,6 +519,14 @@ configure(javaProjects) {
 	}
 }
 
+configure(javaProjects) {
+	if (System.properties['ci.build'] == 'true' || System.properties['include.jacoco'] == 'true') {
+		apply plugin: "jacoco"
+
+		jacoco { toolVersion = "0.7.4.201502262128" }
+	}
+}
+
 configure(packagingProjects) {
 	configurations {
 		additional { // visibility="private"
