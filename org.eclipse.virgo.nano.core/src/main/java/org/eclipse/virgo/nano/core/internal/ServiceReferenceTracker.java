@@ -35,7 +35,7 @@ class ServiceReferenceTracker {
     
     private final Object monitor = new Object();
 
-    private Set<ServiceReference> references; // protected by monitor.
+    private Set<ServiceReference<?>> references; // protected by monitor.
 
     
     ServiceReferenceTracker(BundleContext context) {
@@ -49,10 +49,10 @@ class ServiceReferenceTracker {
      * @param reference the <code>ServiceReference</code> to track.
      * @return the reference itself
      */
-    public ServiceReference track(ServiceReference reference) {
+    public ServiceReference<?> track(ServiceReference<?> reference) {
         synchronized (this.monitor) {
             if (this.references == null) {
-                this.references = new HashSet<ServiceReference>();
+                this.references = new HashSet<ServiceReference<?>>();
             }
             this.references.add(reference);
         }
@@ -63,13 +63,13 @@ class ServiceReferenceTracker {
      * Safely unregisters all the tracked <code>ServiceRegistrations</code>.
      */
     public void ungetAll() {
-        Set<ServiceReference> toUnget = null;
+        Set<ServiceReference<?>> toUnget = null;
         synchronized (this.monitor) {
             toUnget = this.references;
             this.references = null;
         }
         if (toUnget != null) {
-            for (ServiceReference serviceReference : toUnget) {
+            for (ServiceReference<?> serviceReference : toUnget) {
                 try {
                     this.context.ungetService(serviceReference);
                 } catch (IllegalStateException e) {

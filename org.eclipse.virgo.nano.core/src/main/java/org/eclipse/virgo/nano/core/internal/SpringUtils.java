@@ -1,6 +1,7 @@
 
 package org.eclipse.virgo.nano.core.internal;
 
+import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
@@ -44,7 +45,7 @@ public class SpringUtils {
         // if no location is specified in the header, try the defaults
         if (isArrayEmpty(locations)) {
             // check the default locations if the manifest doesn't provide any info
-            Enumeration defaultConfig = bundle.findEntries(SPRING_DM_CONTEXT_DIR, CONTEXT_FILES, false);
+            Enumeration<URL> defaultConfig = bundle.findEntries(SPRING_DM_CONTEXT_DIR, CONTEXT_FILES, false);
             if (defaultConfig != null && defaultConfig.hasMoreElements()) {
                 return new String[] { SPRING_DM_DEFAULT_CONFIG };
             } else {
@@ -67,7 +68,7 @@ public class SpringUtils {
      * @param headers bundle headers
      * @return array of locations specified (if any)
      */
-    static String[] getSpringContextHeaderLocations(Dictionary headers) {
+    static String[] getSpringContextHeaderLocations(Dictionary<String, String> headers) {
         String header = getSpringContextHeader(headers);
         String[] ctxEntries;
         if (StringUtils.hasText(header) && !(';' == header.charAt(0))) {

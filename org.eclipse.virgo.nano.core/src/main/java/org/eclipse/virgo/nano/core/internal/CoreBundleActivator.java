@@ -142,7 +142,7 @@ public class CoreBundleActivator {
     	BundleStartTracker asynchronousStartTracker = new BundleStartTracker(executor);
     	asynchronousStartTracker.initialize(context);
     	
-    	Dictionary properties = new Hashtable();
+    	Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(EventConstants.EVENT_TOPIC, new String[] {EVENT_TOPIC_BLUEPRINT_CONTAINER, EVENT_TOPIC_REGION});        
         
         this.tracker.track(context.registerService(new String[] {EventHandler.class.getName()}, asynchronousStartTracker, properties));
@@ -154,7 +154,7 @@ public class CoreBundleActivator {
     private BundleStarter createAndRegisterBundleStarter(BundleStartTracker asynchronousStartTracker, BundleContext bundleContext) {
     	
         StandardBundleStarter bundleStarter = new StandardBundleStarter(asynchronousStartTracker);
-        Dictionary properties = new Hashtable();        
+        Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put(PROPERTY_NAME_SERVICE_SCOPE, SERVICE_SCOPE_GLOBAL);
         
         this.tracker.track(bundleContext.registerService(new String[] {BundleStarter.class.getName()}, bundleStarter, properties));
@@ -223,12 +223,11 @@ public class CoreBundleActivator {
         this.tracker.track(context.registerService(TracingService.class.getName(), tracingService, null));
     }
 
-    @SuppressWarnings("unchecked")
     private <T> T getRequiredService(BundleContext context, Class<T> clazz) {
         T result = null;
-        ServiceReference ref = context.getServiceReference(clazz.getName());
+        ServiceReference<T> ref = context.getServiceReference(clazz);
         if (ref != null) {
-            result = (T) context.getService(ref);
+            result = context.getService(ref);
         }
         if (result == null) {
             throw new IllegalStateException("Unable to access required service of type '" + clazz.getName() + "' from bundle '"

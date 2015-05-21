@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Dictionary;
-import java.util.Properties;
+import java.util.Hashtable;
 
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class SpringUtilsTests {
 
     @Test
     public void successfulGetSpringContextHeader() throws Exception {
-    	Dictionary dict = new Properties();
+        Dictionary<String, String> dict = new Hashtable<String, String>();
     	dict.put("Spring-Context", "testValue");
     	dict.put("aHeader", "aValue");
     	
@@ -38,7 +38,7 @@ public class SpringUtilsTests {
     @Test
     public void failedGetSpringContextHeader() {
     	
-    	Dictionary dict = new Properties();
+        Dictionary<String, String> dict = new Hashtable<String, String>();
 	    dict.put("aHeader", "aValue");
 	
 	    String result = SpringUtils.getSpringContextHeader(dict);
@@ -48,7 +48,7 @@ public class SpringUtilsTests {
     
     @Test
     public void successfulGetBundleBlueprintHeader() throws Exception {
-        Dictionary dict = new Properties();
+        Dictionary<String, String> dict = new Hashtable<String, String>();
         dict.put("Bundle-Blueprint", "testValue");
         dict.put("aHeader", "aValue");
         
@@ -60,7 +60,7 @@ public class SpringUtilsTests {
     @Test
     public void failedGetBundleBlueprintHeader() {
         
-        Dictionary dict = new Properties();
+        Dictionary<String, String> dict = new Hashtable<String, String>();
         dict.put("aHeader", "aValue");
     
         String result = SpringUtils.getBundleBlueprintHeader(dict);
@@ -83,7 +83,7 @@ public class SpringUtilsTests {
     @Test
     public void testGetSpringContextHeaderLocations() {
         //try single location
-        Dictionary dict = new Properties();
+        Dictionary<String, String> dict = new Hashtable<String, String>();
         dict.put("Spring-Context", "testValue");
         dict.put("aHeader", "aValue");
         
@@ -92,7 +92,7 @@ public class SpringUtilsTests {
         assertEquals("testValue", locations[0]);
         
         //try with 1+ locations
-        dict = new Properties();
+        dict = new Hashtable<String, String>();
         dict.put("Spring-Context", "testValue1,testValue2");
         dict.put("aHeader", "aValue");
         
@@ -105,16 +105,16 @@ public class SpringUtilsTests {
     @Test
     public void testGetBundleBlueprintHeaderLocations() {
         //try single location
-        Dictionary dict = new Properties();
+        Dictionary<String, String> dict = new Hashtable<String, String>();
         dict.put("Bundle-Blueprint", "testValue");
         dict.put("aHeader", "aValue");
-        
+
         String[] locations = SpringUtils.getSpringContextHeaderLocations(dict);
         assertEquals(1, locations.length);
         assertEquals("testValue", locations[0]);
         
         //try with 1+ locations
-        dict = new Properties();
+        dict = new Hashtable<String, String>();
         dict.put("Bundle-Blueprint", "testValue1,testValue2");
         dict.put("aHeader", "aValue");
         
