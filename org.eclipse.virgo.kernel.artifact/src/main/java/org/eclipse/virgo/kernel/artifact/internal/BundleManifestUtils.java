@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.artifact.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -88,7 +90,7 @@ public final class BundleManifestUtils {
         }
         StringWriter writer = new StringWriter();
         InputStream inputStream = fsEntry.getInputStream();
-		FileCopyUtils.copy(new InputStreamReader(inputStream), writer);
+		FileCopyUtils.copy(new InputStreamReader(inputStream, UTF_8), writer);
 		inputStream.close();
         return new StringReader(writer.toString());
     }
@@ -96,7 +98,7 @@ public final class BundleManifestUtils {
     private static Reader manifestReaderFromFile(File file) throws IOException {
         try {
             StringWriter writer = new StringWriter();
-            FileCopyUtils.copy(new InputStreamReader(new FileInputStream(file)), writer);
+            FileCopyUtils.copy(new InputStreamReader(new FileInputStream(file), UTF_8), writer);
             return new StringReader(writer.toString());
         } catch (IOException ioe) {
             throw new IOException("Failed to create reader for manifest file.", ioe);
