@@ -23,12 +23,10 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.eclipse.virgo.shell.internal.commands.StubRuntimeArtifactModelObjectNameCreator;
-import org.eclipse.virgo.shell.internal.completers.ConfigCompleter;
 import org.eclipse.virgo.shell.internal.formatting.StubManageableCompositeArtifact;
 import org.eclipse.virgo.test.stubs.region.StubRegionDigraph;
-
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.BundleException;
 
@@ -39,8 +37,8 @@ public class ConfigCompleterTests {
     
 	private final ConfigCompleter completer = new ConfigCompleter(new StubRuntimeArtifactModelObjectNameCreator(), REGION_DIGRAPH);
 
-    @Before
-    public void installTestBean() throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException, BundleException {
+    @BeforeClass
+    public static void installTestBean() throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException, BundleException {
     	REGION_DIGRAPH.createRegion("global");
         ManagementFactory.getPlatformMBeanServer().registerMBean(getActiveArtifact(), getObjectName("test1", "0.0.0"));
         ManagementFactory.getPlatformMBeanServer().registerMBean(getActiveArtifact(), getObjectName("test1", "1.0.0"));
@@ -50,8 +48,8 @@ public class ConfigCompleterTests {
         ManagementFactory.getPlatformMBeanServer().registerMBean(getInactiveArtifact(), getObjectName("test3", "1.0.0"));
     }
 
-    @After
-    public void uninstallTestBean() throws MBeanRegistrationException, InstanceNotFoundException {
+    @AfterClass
+    public static void uninstallTestBean() throws MBeanRegistrationException, InstanceNotFoundException {
         ManagementFactory.getPlatformMBeanServer().unregisterMBean(getObjectName("test1", "0.0.0"));
         ManagementFactory.getPlatformMBeanServer().unregisterMBean(getObjectName("test1", "1.0.0"));
         ManagementFactory.getPlatformMBeanServer().unregisterMBean(getObjectName("test2", "0.0.0"));
@@ -62,17 +60,17 @@ public class ConfigCompleterTests {
 
     @Test
     public void filterNames() {
-        assertEquals(2, this.completer.getCompletionCandidates("examine", "").size());
+    	assertEquals(2, this.completer.getCompletionCandidates("examine", "").size());
     }
-
+    
     @Test
     public void filterVersions() {
-        assertEquals(2, this.completer.getCompletionCandidates("examine", "test1", "").size());
+    	assertEquals(2, this.completer.getCompletionCandidates("examine", "test1", "").size());
         assertEquals(1, this.completer.getCompletionCandidates("examine", "test2", "").size());
         assertEquals(0, this.completer.getCompletionCandidates("examine", "test3", "").size());
     }
 
-    private final ObjectName getObjectName(String name, String version) {
+    private final static ObjectName getObjectName(String name, String version) {
         try {
             return new ObjectName("test:type=ArtifactModel,artifact-type=configuration,name=" + name + ",version=" + version + ",region=global");
         } catch (MalformedObjectNameException e) {
@@ -81,11 +79,11 @@ public class ConfigCompleterTests {
         return null;
     }
 
-    private final StubManageableCompositeArtifact getActiveArtifact() {
+    private final static StubManageableCompositeArtifact getActiveArtifact() {
         return new StubManageableCompositeArtifact().setState("ACTIVE");
     }
 
-    private final StubManageableCompositeArtifact getInactiveArtifact() {
+    private final static StubManageableCompositeArtifact getInactiveArtifact() {
         return new StubManageableCompositeArtifact().setState("RESOLVED");
     }
 }
