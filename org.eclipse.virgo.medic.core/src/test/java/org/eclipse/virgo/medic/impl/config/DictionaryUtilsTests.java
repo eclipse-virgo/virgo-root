@@ -20,14 +20,12 @@ import java.util.Hashtable;
 import org.eclipse.virgo.medic.impl.config.DictionaryUtils;
 import org.junit.Test;
 
-
-@SuppressWarnings("unchecked")
 public class DictionaryUtilsTests {
 
     @Test
     public void emptyMerge() {
-        Dictionary primary = new Hashtable();
-        Dictionary secondary = new Hashtable();
+        Dictionary<Object, Object> primary = new Hashtable<Object, Object>();
+        Dictionary<Object, Object> secondary = new Hashtable<Object, Object>();
 
         DictionaryUtils.merge(primary, secondary);
         assertTrue(primary.isEmpty());
@@ -35,9 +33,9 @@ public class DictionaryUtilsTests {
 
     @Test
     public void mergeWithoutClash() {
-        Dictionary primary = new Hashtable();
+        Dictionary<Object, Object> primary = new Hashtable<Object, Object>();
         primary.put("b", "c");
-        Dictionary secondary = new Hashtable();
+        Dictionary<Object, Object> secondary = new Hashtable<Object, Object>();
         secondary.put("a", "b");
 
         DictionaryUtils.merge(primary, secondary);
@@ -47,9 +45,9 @@ public class DictionaryUtilsTests {
 
     @Test
     public void mergeWithClash() {
-        Dictionary primary = new Hashtable();
+        Dictionary<Object, Object> primary = new Hashtable<Object, Object>();
         primary.put("b", "c");
-        Dictionary secondary = new Hashtable();
+        Dictionary<Object, Object> secondary = new Hashtable<Object, Object>();
         secondary.put("b", "b");
 
         DictionaryUtils.merge(primary, secondary);

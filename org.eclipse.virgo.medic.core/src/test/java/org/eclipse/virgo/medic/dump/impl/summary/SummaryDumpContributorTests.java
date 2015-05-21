@@ -79,16 +79,13 @@ public class SummaryDumpContributorTests {
     }
 
     private void assertDumpContents(File dumpFile, long timestamp, String cause, Throwable... throwables) throws IOException {
-        BufferedReader input = new BufferedReader(new FileReader(dumpFile));
-
-        List<String> lines = new ArrayList<String>();
-
-        String line;
-
-        while ((line = input.readLine()) != null) {
-            lines.add(line);
-        }
-
+    	List<String> lines = new ArrayList<String>();
+    	try (BufferedReader input = new BufferedReader(new FileReader(dumpFile))) {
+    		String line;
+    		while ((line = input.readLine()) != null) {
+    			lines.add(line);
+    		}
+		}
         assertDatePresent(lines, timestamp);
         assertTimePresent(lines, timestamp);
         assertCausePresent(lines, cause);
