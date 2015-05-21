@@ -28,8 +28,9 @@ public class JarFileArtifactFSTests {
 
     private final FileArtifactFS artifactFS = new JarFileArtifactFS(new File("src/test/resources/artifacts/simple.jar"));
 
-    private final FileArtifactFS artifactFSWithMissingEntries = new JarFileArtifactFS(new File("src/test/resources/artifacts/bundle-with-missing-entries.jar"));
-    
+    private final FileArtifactFS artifactFSWithMissingEntries = new JarFileArtifactFS(new File(
+        "src/test/resources/artifacts/bundle-with-missing-entries.jar"));
+
     @Test(expected = IllegalArgumentException.class)
     public void constructorDirectory() {
         new JarFileArtifactFS(new File("build"));
@@ -57,10 +58,12 @@ public class JarFileArtifactFSTests {
     public void getManifestEntry() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("META-INF/MANIFEST.MF");
         InputStream inputStream = entry.getInputStream();
-        String manifest = new Scanner(inputStream).useDelimiter("\\A").next();
-        assertEquals(
-            "Manifest-Version: 1.0\nCreated-By: 1.6.0_07 (Apple Inc.)\nBundle-Name: test\nBundle-SymbolicName: test\nBundle-Version: 0.0.0\n\n",
-            manifest);
+        try (Scanner scanner = new Scanner(inputStream)) {
+            String manifest = scanner.useDelimiter("\\A").next();
+            assertEquals(
+                "Manifest-Version: 1.0\nCreated-By: 1.6.0_07 (Apple Inc.)\nBundle-Name: test\nBundle-SymbolicName: test\nBundle-Version: 0.0.0\n\n",
+                manifest);
+        }
         assertEquals("MANIFEST.MF", entry.getName());
         assertEquals("META-INF/MANIFEST.MF", entry.getPath());
     }
@@ -69,8 +72,10 @@ public class JarFileArtifactFSTests {
     public void getNormalEntry() {
         ArtifactFSEntry entry = this.artifactFS.getEntry("test/rawfile");
         InputStream inputStream = entry.getInputStream();
-        String rawfile = new Scanner(inputStream).useDelimiter("\\A").next();
-        assertEquals("rawfile", rawfile);
+        try (Scanner scanner = new Scanner(inputStream)) {
+            String rawfile = scanner.useDelimiter("\\A").next();
+            assertEquals("rawfile", rawfile);
+        }
         assertFalse(entry.isDirectory());
         assertEquals("rawfile", entry.getName());
         assertEquals("test/rawfile", entry.getPath());
@@ -220,17 +225,19 @@ public class JarFileArtifactFSTests {
         assertEquals(1, files.length);
         ArtifactFSEntry entry = files[0];
         InputStream inputStream = entry.getInputStream();
-        String contents = new Scanner(inputStream).useDelimiter("\\A").next();
-        assertTrue(contents.startsWith("<beans xmlns=\"http://www.springframework.org/schema/beans\""));
+        try (Scanner scanner = new Scanner(inputStream)) {
+            String contents = scanner.useDelimiter("\\A").next();
+            assertTrue(contents.startsWith("<beans xmlns=\"http://www.springframework.org/schema/beans\""));
+        }
     }
-    
+
     @Test
     public void getMissingDirectoryEntry() {
         ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/spring/");
         assertTrue(entry.exists());
         assertTrue(entry.isDirectory());
     }
-    
+
     @Test
     public void getMissingDirectoryEntryName() {
         ArtifactFSEntry entry = this.artifactFSWithMissingEntries.getEntry("META-INF/spring/");
