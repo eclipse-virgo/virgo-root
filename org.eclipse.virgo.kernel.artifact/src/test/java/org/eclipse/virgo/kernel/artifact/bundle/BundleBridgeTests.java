@@ -27,7 +27,7 @@ import org.eclipse.virgo.kernel.artifact.StubHashGenerator;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.ArtifactGenerationException;
 import org.eclipse.virgo.repository.Attribute;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
@@ -61,8 +61,8 @@ public class BundleBridgeTests {
 
     private static final String BUNDLE_NAME_HEADER_NAME = "Bundle-Name";
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         BUNDLE_BRIDGE = new BundleBridge(new StubHashGenerator());
     }
 
