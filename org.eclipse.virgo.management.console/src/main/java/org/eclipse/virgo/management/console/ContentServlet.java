@@ -210,7 +210,7 @@ public class ContentServlet extends HttpServlet {
 			pageContext.put("servletContextName", Activator.APPLICATION_NAME);
 		}
 		pageContext.put("servletContainer", servletContext.getServerInfo());
-		pageContext.put("virtualMachine", String.format("%s - %s %s (%s)", System.getProperty("java.version"), System.getProperty("java.vm.name"), System.getProperty("java.vm.version"), System.getProperty("java.vm.vendor"), System.getProperty("java.version")));
+		pageContext.put("virtualMachine", String.format("%s - %s %s (%s)", System.getProperty("java.version"), System.getProperty("java.vm.name"), System.getProperty("java.vm.version"), System.getProperty("java.vm.vendor")));
 		pageContext.put("operatingSystem", String.format("%s %s (%s)", System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")));
 	}
 
