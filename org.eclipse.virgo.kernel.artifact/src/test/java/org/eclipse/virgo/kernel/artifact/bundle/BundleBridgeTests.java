@@ -189,7 +189,11 @@ public class BundleBridgeTests {
     private Set<ArtifactDescriptor> generateArtefacts(File directory) throws ArtifactGenerationException {
         Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
 
-        for (File fileInDir : directory.listFiles()) {
+        File[] fileList = directory.listFiles();
+        if (fileList == null) {
+        	throw new IllegalStateException("Failed to list files inside '" + directory + "'.");
+		}
+		for (File fileInDir : fileList) {
             if (!fileInDir.getName().endsWith(".jar") && !fileInDir.getName().contains("sources")) {
                 ArtifactDescriptor artefact = BUNDLE_BRIDGE.generateArtifactDescriptor(fileInDir);
                 if (artefact != null) {
