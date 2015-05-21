@@ -21,6 +21,9 @@ public class TestUtils {
         if (root.exists()) {
             if (root.isDirectory()) {
                 File[] children = root.listFiles();
+                if (children == null) {
+					throw new IllegalStateException("Failed to list files in '" + root + "'.");
+				}
                 for (File file : children) {
                     deleteRecursively(file);
                 }
