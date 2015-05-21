@@ -644,8 +644,6 @@ configure(wabProjects) {
 }
 
 configure(aspectjProjects) {
-	ext { aspectjVersion = '1.8.4' } // TODO - was 1.6.6.RELEASE in common.properties check CQ...?
-
 	configurations.compile.dependencies.each { dep ->
 		if(dep.hasProperty("dependencyProject")) {
 			println "dependent project: ${dep}"
