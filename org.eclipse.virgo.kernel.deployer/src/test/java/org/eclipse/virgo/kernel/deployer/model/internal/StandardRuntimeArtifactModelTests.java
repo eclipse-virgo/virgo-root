@@ -135,10 +135,8 @@ public class StandardRuntimeArtifactModelTests {
     
     private static class StubInstallArtifact implements InstallArtifact {
 
-        private volatile GraphNode<InstallArtifact> graph;
-
         public GraphNode<InstallArtifact> getGraph() {
-            return this.graph;
+            return null;
         }
 
         public void stop() throws DeploymentException {
