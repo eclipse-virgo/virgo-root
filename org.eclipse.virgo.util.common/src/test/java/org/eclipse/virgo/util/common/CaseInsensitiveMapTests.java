@@ -114,7 +114,7 @@ public class CaseInsensitiveMapTests {
             }
         }
         assertFalse(m.containsKey("one"));
-        assertFalse(e.remove(e));
+        assertFalse(e.contains(e));
         m.put("thrEE", 3);
         m.put("foUr", 4);
         assertEquals(3, m.size());
