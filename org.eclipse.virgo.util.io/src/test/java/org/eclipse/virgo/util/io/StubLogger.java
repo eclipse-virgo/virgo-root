@@ -102,7 +102,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void debug(String arg0, Object[] arg1) {
+    public void debug(String arg0, Object... arg1) {
         addDebug(arg0, arg1, null);
     }
 
@@ -142,7 +142,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void debug(Marker arg0, String arg1, Object[] arg2) {
+    public void debug(Marker arg0, String arg1, Object... arg2) {
         addDebug(arg1, arg2, null);
     }
 
@@ -178,7 +178,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void error(String arg0, Object[] arg1) {
+    public void error(String arg0, Object... arg1) {
     }
 
     /** 
@@ -208,7 +208,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void error(Marker arg0, String arg1, Object[] arg2) {
+    public void error(Marker arg0, String arg1, Object... arg2) {
     }
 
     /** 
@@ -245,7 +245,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void info(String arg0, Object[] arg1) {
+    public void info(String arg0, Object... arg1) {
     }
 
     /** 
@@ -275,7 +275,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void info(Marker arg0, String arg1, Object[] arg2) {
+    public void info(Marker arg0, String arg1, Object... arg2) {
     }
 
     /** 
@@ -375,7 +375,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void trace(String arg0, Object[] arg1) {
+    public void trace(String arg0, Object... arg1) {
     }
 
     /** 
@@ -407,7 +407,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void trace(Marker arg0, String arg1, Object[] arg2) {
+    public void trace(Marker arg0, String arg1, Object... arg2) {
     }
 
     /** 
@@ -437,7 +437,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void warn(String arg0, Object[] arg1) {
+    public void warn(String arg0, Object... arg1) {
     }
 
     /** 
@@ -467,7 +467,7 @@ public class StubLogger implements Logger {
     /** 
      * {@inheritDoc}
      */
-    public void warn(Marker arg0, String arg1, Object[] arg2) {
+    public void warn(Marker arg0, String arg1, Object... arg2) {
     }
 
     /** 
