@@ -83,7 +83,7 @@ public class JmxUtils {
                 Thread.interrupted();
             }
         }
-        // allow some more time to finish shutdown
+        // allow some more time to finish startup
         try {
             Thread.sleep(TEN_SECONDS.toMillis());
         } catch (InterruptedException e) {
