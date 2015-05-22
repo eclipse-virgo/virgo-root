@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,23 +22,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.jar.JarFile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.xml.XmlValidationModeDetector;
-
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.xml.XmlValidationModeDetector;
 
 /**
  * Generates the service model in the {@link StandardScopeServiceRepository} for a bundle in a given scope.
@@ -183,7 +183,7 @@ final class ServiceScoper {
         ArtifactFSEntry entry = compositeArtifactFS.getEntry(JarFile.MANIFEST_NAME);
         Reader reader = null;
         try {
-            reader = new InputStreamReader(entry.getInputStream());
+            reader = new InputStreamReader(entry.getInputStream(), UTF_8);
             return BundleManifestFactory.createBundleManifest(reader);
         } catch (IOException ex) {
             throw new DeploymentException("Error reading MANIFEST.MF from '" + compositeArtifactFS + "'", ex);
