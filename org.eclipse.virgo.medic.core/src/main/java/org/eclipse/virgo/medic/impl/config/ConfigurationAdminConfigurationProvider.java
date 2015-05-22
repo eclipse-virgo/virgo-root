@@ -104,7 +104,6 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
     
     private final class MedicConfigurationListener implements ConfigurationListener {
     	
-        @SuppressWarnings("unchecked")
 		public void configurationEvent(ConfigurationEvent configEvent) {
 			if (CONFIG_ADMIN_PID.equals(configEvent.getPid()) && configEvent.getType() == ConfigurationEvent.CM_UPDATED) {
 				setPropertiesFromConfigurationAdmin((ServiceReference<ConfigurationAdmin>)configEvent.getReference());
@@ -112,7 +111,6 @@ public final class ConfigurationAdminConfigurationProvider implements Configurat
 		}    	
     }
     
-	@SuppressWarnings("unchecked")
     public void configurationEvent(ConfigurationEvent event) {
 		if (event.getType() == ConfigurationEvent.CM_UPDATED && CONFIG_ADMIN_PID.equals(event.getPid())) {
 			setPropertiesFromConfigurationAdmin((ServiceReference<ConfigurationAdmin>)event.getReference());
