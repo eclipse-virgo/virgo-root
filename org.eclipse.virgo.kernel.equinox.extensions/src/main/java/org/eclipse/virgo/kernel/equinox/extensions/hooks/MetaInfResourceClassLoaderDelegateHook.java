@@ -38,8 +38,8 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * 
  * <p />
  * 
- * The list of a bundle's dependencies are cached to avoid determining the dependencies every time. A bundle's entry
- * in the cached is cleared whenever an <code>UNRESOLVED</code> event is received for the bundle. <code>UNRESOLVED</code>
+ * The list of a bundle's dependencies are cached to avoid determining the dependencies every time. A bundle's entry in
+ * the cached is cleared whenever an <code>UNRESOLVED</code> event is received for the bundle. <code>UNRESOLVED</code>
  * events are fired both during uninstall and during {@link PackageAdmin#refreshPackages(Bundle[]) refreshPackages}
  * processing.
  * 
@@ -52,17 +52,17 @@ import org.osgi.service.packageadmin.PackageAdmin;
 public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     private static final String SPRINGDM_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME = "org.springframework.osgi.context.support.DelegatedNamespaceHandlerResolver";
-    
+
     private static final String SPRINGDM_DELEGATED_ENTITY_RESOLVER_CLASS_NAME = "org.springframework.osgi.context.support.DelegatedEntityResolver";
-    
+
     private static final String BLUEPRINT_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME = "org.eclipse.gemini.blueprint.context.support.DelegatedNamespaceHandlerResolver";
-    
+
     private static final String BLUEPRINT_DELEGATED_ENTITY_RESOLVER_CLASS_NAME = "org.eclipse.gemini.blueprint.context.support.ChainedEntityResolver";
 
     private static final String EXCLUDED_RESOURCE_MANIFEST = "MANIFEST.MF";
 
     private static final String EXCLUDED_RESOURCE_SPRING_DIR = "spring";
-    
+
     private static final String EXCLUDED_RESOURCE_BLUEPRINT_DIR = "blueprint";
 
     private static final String EXCLUDED_RESOURCE_SPRING_DIR_SUFFIX = ".xml";
@@ -108,7 +108,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
         if (this.resourceSearchInProgress.get() == null && isDelegatedResource(name)) {
             try {
                 this.resourceSearchInProgress.set(SEARCH_IN_PROGRESS_MARKER);
-                
+
                 Bundle[] bundles = getDependencyBundles(classLoader.getBundle());
                 for (Bundle dependency : bundles) {
                     try {
@@ -120,7 +120,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
                             }
                         } else {
                             removeDependency(classLoader.getBundle(), dependency);
-                        }   
+                        }
                     } catch (IllegalStateException ise) {
                         // Dependency now UNINSTALLED
                         removeDependency(classLoader.getBundle(), dependency);
@@ -173,7 +173,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     private boolean isDelegatedResource(String name) {
         return isMetaInfResource(name) && !isDelegatedResolverCall();
     }
-    
+
     /**
      * Queries whether or not the supplied resource name is a META-INF resource.
      * 
@@ -187,38 +187,40 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
         if (name.contains(EXCLUDED_RESOURCE_MANIFEST)) {
             return false;
         }
-        if ((name.contains(EXCLUDED_RESOURCE_SPRING_DIR) || name.contains(EXCLUDED_RESOURCE_BLUEPRINT_DIR)) 
+        if ((name.contains(EXCLUDED_RESOURCE_SPRING_DIR) || name.contains(EXCLUDED_RESOURCE_BLUEPRINT_DIR))
             && name.endsWith(EXCLUDED_RESOURCE_SPRING_DIR_SUFFIX)) {
             return false;
         }
         return true;
     }
-    
+
     private boolean isDelegatedResolverCall() {
         Class<?>[] stackTrace = new SecurityManagerExecutionStackAccessor().getExecutionStack();
         return isSpringDmDelegatedResolverCall(stackTrace) || isBlueprintDelegatedResolverCall(stackTrace);
     }
-    
+
     private static final class SecurityManagerExecutionStackAccessor extends SecurityManager {
-        
+
         public Class<?>[] getExecutionStack() {
             Class<?>[] classes = super.getClassContext();
             Class<?>[] executionStack = new Class<?>[classes.length - 1];
-            
+
             System.arraycopy(classes, 1, executionStack, 0, executionStack.length);
-            
+
             return executionStack;
         }
     }
-    
+
     private boolean isSpringDmDelegatedResolverCall(Class<?>[] stackTrace) {
-        return isDelegatedResolverCall(stackTrace, SPRINGDM_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME, SPRINGDM_DELEGATED_ENTITY_RESOLVER_CLASS_NAME);
+        return isDelegatedResolverCall(stackTrace, SPRINGDM_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME,
+            SPRINGDM_DELEGATED_ENTITY_RESOLVER_CLASS_NAME);
     }
-    
+
     private boolean isBlueprintDelegatedResolverCall(Class<?>[] stackTrace) {
-        return isDelegatedResolverCall(stackTrace, BLUEPRINT_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME, BLUEPRINT_DELEGATED_ENTITY_RESOLVER_CLASS_NAME);
+        return isDelegatedResolverCall(stackTrace, BLUEPRINT_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME,
+            BLUEPRINT_DELEGATED_ENTITY_RESOLVER_CLASS_NAME);
     }
-    
+
     private boolean isDelegatedResolverCall(Class<?>[] stackTrace, String namespaceResolver, String entityResolver) {
         for (Class<?> clazz : stackTrace) {
             String className = clazz.getName();
@@ -249,14 +251,14 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
             return dependencies.toArray(new Bundle[dependencies.size()]);
         }
     }
-    
+
     private void removeDependency(Bundle bundle, Bundle dependency) {
-    	synchronized (this.monitor) {
-    		Set<Bundle> dependencies = this.dependenciesCache.get(bundle);
-    		if (dependencies != null) {
-    			dependencies.remove(dependency);
-    		}
-    	}
+        synchronized (this.monitor) {
+            Set<Bundle> dependencies = this.dependenciesCache.get(bundle);
+            if (dependencies != null) {
+                dependencies.remove(dependency);
+            }
+        }
     }
 
     private Set<Bundle> determineDependencies(Bundle bundle) {
