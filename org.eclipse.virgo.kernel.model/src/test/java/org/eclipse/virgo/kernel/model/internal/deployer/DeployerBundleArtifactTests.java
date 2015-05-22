@@ -9,6 +9,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -101,12 +102,7 @@ public class DeployerBundleArtifactTests {
     	expect(installArtifact.getType()).andReturn("bundle");
     	expect(installArtifact.getName()).andReturn("test-bundle");
     	expect(installArtifact.getVersion()).andReturn(new Version("1.0.0"));
-    	@SuppressWarnings("serial")
-		Set<String> names = new HashSet<String>() {{
-    		add("foo");
-    		add("bar");
-    		add("deleted");
-    	}};
+		Set<String> names = new HashSet<String>(Arrays.asList("foo", "bar", "deleted"));
     	expect(installArtifact.getPropertyNames()).andReturn(names);
     	expect(installArtifact.getProperty(eq("foo"))).andReturn("FOO");
     	expect(installArtifact.getProperty(eq("bar"))).andReturn("BAR");

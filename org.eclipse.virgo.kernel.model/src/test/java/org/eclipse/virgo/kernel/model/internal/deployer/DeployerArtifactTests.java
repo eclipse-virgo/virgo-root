@@ -21,21 +21,19 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
 import org.osgi.framework.Version;
-
 import org.easymock.IAnswer;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact.State;
 import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.internal.DependencyDeterminer;
 import org.eclipse.virgo.kernel.model.internal.deployer.DeployerArtifact;
-
-
 import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.eclipse.virgo.nano.core.KernelException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
@@ -185,12 +183,7 @@ public class DeployerArtifactTests {
     	expect(installArtifact.getType()).andReturn("bundle");
     	expect(installArtifact.getName()).andReturn("test-bundle");
     	expect(installArtifact.getVersion()).andReturn(new Version("1.0.0"));
-    	@SuppressWarnings("serial")
-		Set<String> names = new HashSet<String>() {{
-    		add("foo");
-    		add("bar");
-    		add("deleted");
-    	}};
+        Set<String> names = new HashSet<String>(Arrays.asList("foo", "bar", "deleted"));
     	expect(installArtifact.getPropertyNames()).andReturn(names);
     	expect(installArtifact.getProperty(eq("foo"))).andReturn("FOO");
     	expect(installArtifact.getProperty(eq("bar"))).andReturn("BAR");
