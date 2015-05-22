@@ -407,7 +407,9 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
             if (resolve) {
                 resolveClass(cls);
             }
-            return this.loadedClasses.putIfAbsent(name, cls);
+            // TODO review findbugs warning vs. failing tests in LoadTimeWeavingTests
+            this.loadedClasses.putIfAbsent(name, cls);
+            return cls;
         }
 
         /**
