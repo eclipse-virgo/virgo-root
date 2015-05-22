@@ -407,8 +407,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
             if (resolve) {
                 resolveClass(cls);
             }
-            this.loadedClasses.putIfAbsent(name, cls);
-            return cls;
+            return this.loadedClasses.putIfAbsent(name, cls);
         }
 
         /**
