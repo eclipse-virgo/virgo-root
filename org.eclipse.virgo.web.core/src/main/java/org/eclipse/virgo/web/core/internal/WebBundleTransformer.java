@@ -94,8 +94,8 @@ final class WebBundleTransformer implements Transformer {
                             strictWABHeaders = false;
                             eventLogger.log(WebLogEvents.DEFAULTING_WAB_HEADERS);
                         } else if (!PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
-                            logger.error("Property '%s' in configuration '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS,
-                                WEB_CONFIGURATION_PID, wabHeadersPropertyValue });
+                            logger.error("Property '%s' in configuration '%s' has invalid value '%s'", PROPERTY_WAB_HEADERS,
+                                WEB_CONFIGURATION_PID, wabHeadersPropertyValue );
                         }
                     }
                 }
