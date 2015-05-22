@@ -12,7 +12,9 @@ project(':medic:org.eclipse.virgo.medic.core') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
         testCompile project(':test:org.eclipse.virgo.test.stubs')
+
         testRuntime group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.slf4j", version: logbackVersion, configuration: "compile", ext: "jar"
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
         compile project(':medic:org.eclipse.virgo.medic')
         compile project(':util:org.eclipse.virgo.util.io')
@@ -31,5 +33,9 @@ project(':medic:org.eclipse.virgo.medic.core') {
 }
 
 project(':medic:org.eclipse.virgo.medic.test') {
-    dependencies { compile project(':medic:org.eclipse.virgo.medic') }
+    dependencies {
+        compile project(':medic:org.eclipse.virgo.medic')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+    }
 }
