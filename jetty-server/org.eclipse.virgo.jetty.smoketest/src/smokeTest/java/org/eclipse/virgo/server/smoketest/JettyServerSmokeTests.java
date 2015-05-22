@@ -16,12 +16,12 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
 import org.eclipse.virgo.test.tools.ServerUtils;
+import org.eclipse.virgo.test.tools.UrlWaitLatch;
 import org.eclipse.virgo.test.tools.VirgoServerShutdownThread;
 import org.eclipse.virgo.test.tools.VirgoServerStartupThread;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class JettyServerSmokeTests extends AbstractSmokeTests {
@@ -55,22 +55,19 @@ public class JettyServerSmokeTests extends AbstractSmokeTests {
     }
 
     @Test
-    @Ignore // wait for oev.server.svt
     public void connectToSplashScreen() throws Exception {
-//        UrlWaitLatch.waitFor("http://localhost:8080/");
+        UrlWaitLatch.waitFor("http://localhost:8080/");
     }
 
     @Test
-    @Ignore // wait for oev.server.svt
     public void testAdminScreen() {
-//        UrlWaitLatch.waitFor("http://localhost:8080/admin", "admin", "admin");
+        UrlWaitLatch.waitFor("http://localhost:8080/admin", "admin", "admin");
     }
 
     @Test
-    @Ignore // wait for oev.server.svt
     public void testTagLibsScreen() {
         deployTestBundles(VIRGO_FLAVOR, OEV_JETTY_SAMPLE_TAGS_JAR);
-//        UrlWaitLatch.waitFor("http://localhost:8080/taglibs/app/sample.htm");
+        UrlWaitLatch.waitFor("http://localhost:8080/taglibs/app/sample.htm");
         undeployTestBundles(VIRGO_FLAVOR, OEV_JETTY_SAMPLE_TAGS_JAR);
     }
 

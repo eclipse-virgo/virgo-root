@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
 import org.eclipse.virgo.test.tools.ServerUtils;
+import org.eclipse.virgo.test.tools.UrlWaitLatch;
 import org.eclipse.virgo.test.tools.VirgoServerShutdownThread;
 import org.eclipse.virgo.test.tools.VirgoServerStartupThread;
 import org.eclipse.virgo.util.io.NetUtils;
@@ -78,4 +79,15 @@ public class NanoSmokeTests extends AbstractSmokeTests {
         JmxUtils.waitForVirgoServerShutdownFully();
         fail("Virgo java profile not properly set - Nano was supposed to be killed if the test was successful.");
     }
+
+    @Test
+    public void splashScreenShouldBeAccessable() throws Exception {
+        UrlWaitLatch.waitFor("http://localhost:8080/");
+    }
+
+    @Test
+    public void adminScreenShouldBeAccessableWithDefaultCredentials() {
+        UrlWaitLatch.waitFor("http://localhost:8080/admin/content", "foo", "bar");
+    }
+
 }

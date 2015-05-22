@@ -16,12 +16,12 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
 import org.eclipse.virgo.test.tools.ServerUtils;
+import org.eclipse.virgo.test.tools.UrlWaitLatch;
 import org.eclipse.virgo.test.tools.VirgoServerShutdownThread;
 import org.eclipse.virgo.test.tools.VirgoServerStartupThread;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TomcatServerSmokeTests extends AbstractSmokeTests {
@@ -55,32 +55,28 @@ public class TomcatServerSmokeTests extends AbstractSmokeTests {
     }
 
     @Test
-    @Ignore // wait for oev.server.svt
     public void connectToSplashScreen() throws Exception {
-//        UrlWaitLatch.waitFor("http://localhost:8080/");
+        UrlWaitLatch.waitFor("http://localhost:8080/");
     }
 
     @Test
-    @Ignore // wait for oev.server.svt
     public void testAdminScreen() {
-//        UrlWaitLatch.waitFor("http://localhost:8080/admin", "admin", "admin");
+        UrlWaitLatch.waitFor("http://localhost:8080/admin", "admin", "admin");
     }
 
     private static final String BASE_URL = "http://localhost:8080/formtags-par/";
     
     @Test
-    @Ignore // wait for oev.server.svt
     public void testFormTagsListScreen() {
         deployTestBundles(VIRGO_FLAVOR, FORMTAGS_PAR);
-//        UrlWaitLatch.waitFor(BASE_URL + "list.htm");
+        UrlWaitLatch.waitFor(BASE_URL + "list.htm");
         undeployTestBundles(VIRGO_FLAVOR, FORMTAGS_PAR);
     }
     
     @Test
-    @Ignore // wait for oev.server.svt
     public void testFormTagsFormScreen() {
         deployTestBundles(VIRGO_FLAVOR, FORMTAGS_PAR);
-//        UrlWaitLatch.waitFor(BASE_URL + "form.htm?id=1");
+        UrlWaitLatch.waitFor(BASE_URL + "form.htm?id=1");
         undeployTestBundles(VIRGO_FLAVOR, FORMTAGS_PAR);
     }
 
