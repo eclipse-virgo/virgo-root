@@ -58,13 +58,14 @@ public class Parser {
 	 * @param in
 	 */
 	public final void parse(InputStream in) throws IOException {
-		Scanner scanner = new Scanner(in);
-		String parsedLine;
-		while (scanner.hasNextLine()) {
-			parsedLine = parseLine(scanner.nextLine());
-			if(parsedLine != null && !parsedLine.trim().isEmpty()){
-				out.append(parsedLine);
-				out.append('\n');
+		try (Scanner scanner = new Scanner(in)) {
+			String parsedLine;
+			while (scanner.hasNextLine()) {
+				parsedLine = parseLine(scanner.nextLine());
+				if (parsedLine != null && !parsedLine.trim().isEmpty()) {
+					out.append(parsedLine);
+					out.append('\n');
+				}
 			}
 		}
 	}
