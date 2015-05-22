@@ -180,7 +180,6 @@ public class StubConfigurationTests {
         assertEquals("test2", config1.getProperties().get(ConfigurationAdmin.SERVICE_FACTORYPID));
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected = IllegalStateException.class)
     public void updatePropertiesAfterDelete() throws IOException {
         this.config.delete();

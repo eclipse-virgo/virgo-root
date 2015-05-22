@@ -94,7 +94,6 @@ public class StubBundleTests {
         assertEquals("testLocation", b1.getLocation());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getCustomHeader() {
         this.bundle.addHeader("testKey", "testValue");
@@ -505,7 +504,6 @@ public class StubBundleTests {
 
     private static final class TestFindEntriesDelegate implements FindEntriesDelegate {
 
-        @SuppressWarnings("unchecked")
         public Enumeration findEntries(String path, String filePattern, boolean recurse) {
             return new TestEnumeration();
         }

@@ -174,7 +174,6 @@ public final class StubServiceReference<S> implements ServiceReference<S> {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public String[] getPropertyKeys() {
         List<String> properties = new ArrayList<String>();
         Enumeration keys = this.serviceRegistration.getProperties().keys();

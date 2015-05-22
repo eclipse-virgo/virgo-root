@@ -34,6 +34,5 @@ public interface FindEntriesDelegate {
      * @return An enumeration of the files found
      * @see Bundle#findEntries(String, String, boolean)
      */
-    @SuppressWarnings("unchecked")
     Enumeration findEntries(String path, String filePattern, boolean recurse);
 }

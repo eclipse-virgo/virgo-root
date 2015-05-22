@@ -50,7 +50,6 @@ public class StubServiceRegistrationTests {
         this.reg.getReference();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getCustomProperties() {
         TestServiceListener listener = new TestServiceListener();

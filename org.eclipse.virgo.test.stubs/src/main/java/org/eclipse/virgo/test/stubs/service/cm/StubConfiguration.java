@@ -42,7 +42,6 @@ public final class StubConfiguration implements Configuration {
 
     private volatile boolean deleted = false;
 
-    @SuppressWarnings("unchecked")
     private volatile Dictionary properties;
 
     private final Object propertiesMonitor = new Object();
