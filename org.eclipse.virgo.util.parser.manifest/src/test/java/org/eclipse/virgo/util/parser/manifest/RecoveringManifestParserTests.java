@@ -11,8 +11,6 @@
 
 package org.eclipse.virgo.util.parser.manifest;
 
-
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,857 +36,769 @@ import org.eclipse.virgo.util.parser.manifest.internal.TestVisitor;
 
 import junit.framework.TestCase;
 
-
-
-/**
-
-
- */
-
 public class RecoveringManifestParserTests extends TestCase {
 
-	TestVisitor v;
+    TestVisitor v;
 
-	RecoveringManifestParser mp;
+    RecoveringManifestParser mp;
 
+    /**
+     * 
+     * Example of how to basically create a parser, parse a file then check for the problems.
+     * 
+     * @throws Exception sometimes
+     */
 
+    public void testBasicParserUsage() throws Exception {
 
-	/**
+        ManifestParser mParser = new RecoveringManifestParser();
 
-	 * Example of how to basically create a parser, parse a file then check for the problems.
-	 * @throws Exception sometimes
+        ManifestContents contents = mParser.parse(new InputStreamReader(new FileInputStream("build/resources/test/broken001.mf")));
 
-	 */
+        // has errors but recoverable
 
-	public void testBasicParserUsage() throws Exception {
+        assertTrue(mParser.foundProblems());
 
-		ManifestParser mParser = new RecoveringManifestParser();
+        Map<String, String> mainAttrs = contents.getMainAttributes();
 
-		ManifestContents contents = mParser.parse(new InputStreamReader(new FileInputStream("build/resources/test/broken001.mf")));
+        assertEquals("toys", mainAttrs.get("Bundle-Name"));
 
-		// has errors but recoverable
+        assertEquals("1.0", contents.getVersion());
 
-		assertTrue(mParser.foundProblems());
+        Map<String, String> secondaryAttrs = contents.getAttributesForSection("secondSection");
 
-		Map<String, String> mainAttrs = contents.getMainAttributes();
+        assertEquals("secondSection", secondaryAttrs.get("Name"));
 
-		assertEquals("toys", mainAttrs.get("Bundle-Name"));
+        List<String> sectionNames = contents.getSectionNames();
 
-		assertEquals("1.0", contents.getVersion());
+        assertEquals("secondSection", sectionNames.get(0));
 
-		Map<String, String> secondaryAttrs = contents.getAttributesForSection("secondSection");
+    }
 
-		assertEquals("secondSection", secondaryAttrs.get("Name"));
+    public void testNameTooLong() {
 
-		List<String> sectionNames = contents.getSectionNames();
+        StringBuffer sb = new StringBuffer();
 
-		assertEquals("secondSection", sectionNames.get(0));
+        sb.append("Manifest-Version: 1.0\n");
 
-	}
+        while (sb.length() < (RecoveringManifestLexer.MAX_TOKEN_LENGTH + 10000)) {
 
+            sb.append("abcdefghijklmnopqrstuvwxyz");
 
+        }
 
-	public void testNameTooLong() {
+        sb.append("abc: value\n");
 
-		StringBuffer sb = new StringBuffer();
+        ManifestParser mParser = new RecoveringManifestParser();
 
-		sb.append("Manifest-Version: 1.0\n");
+        ManifestContents contents = mParser.parse(sb.toString());
 
-		while (sb.length() < (RecoveringManifestLexer.MAX_TOKEN_LENGTH + 10000)) {
+        contents.getMainAttributes().get("Name");
 
-			sb.append("abcdefghijklmnopqrstuvwxyz");
+        assertTrue(mParser.foundProblems());
 
-		}
+        assertEquals(ManifestProblemKind.NAME_TOO_LONG, mParser.getProblems().get(0).getKind());
 
-		sb.append("abc: value\n");
+    }
 
-		ManifestParser mParser = new RecoveringManifestParser();
+    public void testValueTooLong() throws Exception {
 
-		ManifestContents contents = mParser.parse(sb.toString());
+        StringBuffer sb = new StringBuffer();
 
-		contents.getMainAttributes().get("Name");
+        sb.append("Manifest-Version: 1.0\nName:\n");
 
-		assertTrue(mParser.foundProblems());
+        while (sb.length() < (RecoveringManifestLexer.MAX_TOKEN_LENGTH + 10000)) {
 
-		assertEquals(ManifestProblemKind.NAME_TOO_LONG, mParser.getProblems().get(0).getKind());
+            sb.append(" abcdefghijklmnopqrstuvwxyz").append("\n");
 
-	}
+        }
 
+        ManifestParser mParser = new RecoveringManifestParser();
 
+        ManifestContents contents = mParser.parse(sb.toString());
 
-	public void testValueTooLong() throws Exception {
+        contents.getMainAttributes().get("Name");
 
-		StringBuffer sb = new StringBuffer();
+        assertTrue(mParser.foundProblems());
 
-		sb.append("Manifest-Version: 1.0\nName:\n");
+        assertEquals(ManifestProblemKind.VALUE_TOO_LONG, mParser.getProblems().get(0).getKind());
 
-		while (sb.length() < (RecoveringManifestLexer.MAX_TOKEN_LENGTH + 10000)) {
+    }
 
-			sb.append(" abcdefghijklmnopqrstuvwxyz").append("\n");
+    // Checking the isXXX methods in the lexer now by passing chars with a value
 
-		}
+    // > 256 (this means the lookup tables won't be used)
 
-		ManifestParser mParser = new RecoveringManifestParser();
+    public void testFunkyChars() {
 
-		ManifestContents contents = mParser.parse(sb.toString());
+        ManifestParser mParser = new RecoveringManifestParser();
 
-		contents.getMainAttributes().get("Name");
+        mParser.parse("Manifest-Version: 1.0\nName: " + new Character((char) 257));
 
-		assertTrue(mParser.foundProblems());
+        mParser = new RecoveringManifestParser();
 
-		assertEquals(ManifestProblemKind.VALUE_TOO_LONG, mParser.getProblems().get(0).getKind());
+        mParser.parse("Manifest-Version: 1.0\n" + new Character((char) 257) + "ame: value");
 
-	}
+        mParser = new RecoveringManifestParser();
 
+        mParser.parse("Manifest-Version: 1.0\nN" + new Character((char) 257) + "ame: value");
 
+    }
 
-	// Checking the isXXX methods in the lexer now by passing chars with a value
+    public void testSkippingSections() {
 
-	// > 256 (this means the lookup tables won't be used)
+        TestVisitor tv = new TestVisitor();
 
-	public void testFunkyChars() {
+        tv.setTerminateAfterMainSection(true);
 
-		ManifestParser mParser = new RecoveringManifestParser();
+        ManifestParser mParser = new RecoveringManifestParser(tv);
 
-		mParser.parse("Manifest-Version: 1.0\nName: " + new Character((char) 257));
+        ManifestContents contents = mParser.parse("Manifest-Version: 1.0\na: b\n\nName: Second\nc: d\n");
 
-		mParser = new RecoveringManifestParser();
+        assertFalse(mParser.foundProblems());
 
-		mParser.parse("Manifest-Version: 1.0\n" + new Character((char) 257) + "ame: value");
+        // Attributes are "Manifest-Version" and "a"
 
-		mParser = new RecoveringManifestParser();
+        assertEquals(2, contents.getMainAttributes().size());
 
-		mParser.parse("Manifest-Version: 1.0\nN" + new Character((char) 257) + "ame: value");
+        assertTrue(contents.getSectionNames().isEmpty());
 
-	}
+    }
 
+    public void testSkippingSections2() {
 
+        ManifestParser mParser = new RecoveringManifestParser();
 
-	public void testSkippingSections() {
+        mParser.setTerminateAfterMainSection(true);
 
-		TestVisitor tv = new TestVisitor();
+        ManifestContents contents = mParser.parse("Manifest-Version: 1.0\na: b\n\nName: Second\nc: d\n\nName: Third\ne: f\n");
 
-		tv.setTerminateAfterMainSection(true);
+        assertFalse(mParser.foundProblems());
 
-		ManifestParser mParser = new RecoveringManifestParser(tv);
+        // Attributes are "Manifest-Version" and "a"
 
-		ManifestContents contents = mParser.parse("Manifest-Version: 1.0\na: b\n\nName: Second\nc: d\n");
+        assertEquals(2, contents.getMainAttributes().size());
 
-		assertFalse(mParser.foundProblems());
+        // Nothing there:
 
-		// Attributes are "Manifest-Version" and "a"
+        assertEquals(0, contents.getSectionNames().size());
 
-		assertEquals(2, contents.getMainAttributes().size());
+    }
 
-		assertTrue(contents.getSectionNames().isEmpty());
+    public void testTheMostBasic() throws Exception {
 
-	}
+        parse("Manifest-Version: 1.0");
 
+        assertEquals("1.0", v.getVersion());
 
+        parse("Manifest-Version:\n 1.0");
 
-	public void testSkippingSections2() {
+        assertEquals("1.0", v.getVersion());
 
-		ManifestParser mParser = new RecoveringManifestParser();
+    }
 
-		mParser.setTerminateAfterMainSection(true);
+    // public void testRogueNewlines() throws Exception {
 
-		ManifestContents contents = mParser.parse("Manifest-Version: 1.0\na: b\n\nName: Second\nc: d\n\nName: Third\ne: f\n");
+    // parse("\n\nManifest-Version: 1.0");
 
-		assertFalse(mParser.foundProblems());
+    // assertEquals("1.0", v.getVersion());
 
-		// Attributes are "Manifest-Version" and "a"
+    // assertTrue(mp.foundProblems());
 
-		assertEquals(2, contents.getMainAttributes().size());
+    // assertEquals(1, mp.getProblems().size());
 
-		// Nothing there:
+    // }
 
-		assertEquals(0, contents.getSectionNames().size());
+    public void testErrorScenarios() throws Exception {
 
-	}
+        parse("Manifest-Version\n 1.0");
 
+        assertEquals("1.0", v.getVersion());
 
+        // MP002:[line 1, col 0]: Name header ended prematurely when a newline
 
-	public void testTheMostBasic() throws Exception {
+        // was encountered. Expected form is Name: Value
 
-		parse("Manifest-Version: 1.0");
+        assertTrue(mp.foundProblems());
 
-		assertEquals("1.0", v.getVersion());
+        assertEquals(1, mp.getProblems().size());
 
-		parse("Manifest-Version:\n 1.0");
+    }
 
-		assertEquals("1.0", v.getVersion());
+    public void testErrorScenarios2() throws Exception {
 
-	}
+        // Here the manifest-version is not found, because there is no space on
 
+        // the second line ahead of 1.0 - so we assume it is a
 
+        // new header
 
-//	public void testRogueNewlines() throws Exception {
+        parse("Manifest-Version\n1.0");
 
-//		parse("\n\nManifest-Version: 1.0");
+        // assertEquals("1.0", v.getVersion());
 
-//		assertEquals("1.0", v.getVersion());
+        // Printing problems: #5
 
-//		assertTrue(mp.foundProblems());
+        // Manifest-Version
 
-//		assertEquals(1, mp.getProblems().size());
+        // ^ ^
 
-//	}
+        // MP002:[line 1, col 0]: Name header ended prematurely when a newline
 
+        // was encountered. Expected form is Name: Value
 
+        // Manifest-Version
 
-	public void testErrorScenarios() throws Exception {
+        // ^ ^
 
-		parse("Manifest-Version\n 1.0");
+        // MP004:[line 1, col 0]: The value appears to be missing for the header
 
-		assertEquals("1.0", v.getVersion());
+        // name 'Manifest-Version'
 
-		// MP002:[line 1, col 0]: Name header ended prematurely when a newline
+        // 1.0
 
-		// was encountered. Expected form is Name: Value
+        // ^
 
-		assertTrue(mp.foundProblems());
+        // MP005:[line 2, col 1]: The name of a header cannot contain the
 
-		assertEquals(1, mp.getProblems().size());
+        // character '.'
 
-	}
+        // 1.0
 
+        // ^ ^
 
+        // MP002:[line 2, col 0]: Name header ended prematurely when a newline
 
-	public void testErrorScenarios2() throws Exception {
+        // was encountered. Expected form is Name: Value
 
-		// Here the manifest-version is not found, because there is no space on
+        // 1.0
 
-		// the second line ahead of 1.0 - so we assume it is a
+        // ^ ^
 
-		// new header
+        // MP004:[line 2, col 0]: The value appears to be missing for the header
 
-		parse("Manifest-Version\n1.0");
+        // name '1.0'
 
-		// assertEquals("1.0", v.getVersion());
+        assertTrue(mp.foundProblems());
 
-		// Printing problems: #5
+        assertEquals(5, mp.getProblems().size());
 
-		// Manifest-Version
+    }
 
-		// ^ ^
+    public void testErrorScenarios3() throws Exception {
 
-		// MP002:[line 1, col 0]: Name header ended prematurely when a newline
+        // Now we work out that they have missed the colon and the value is on
 
-		// was encountered. Expected form is Name: Value
+        // the second line
 
-		// Manifest-Version
+        parse("Manifest-Version\n 1.0");
 
-		// ^ ^
+        // Manifest-Version
 
-		// MP004:[line 1, col 0]: The value appears to be missing for the header
+        // ^ ^
 
-		// name 'Manifest-Version'
+        // MP002:[line 1, col 0]: Name header ended prematurely when a newline
 
-		// 1.0
+        // was encountered. Expected form is Name: Value
 
-		// ^
+        assertEquals("1.0", v.getVersion());
 
-		// MP005:[line 2, col 1]: The name of a header cannot contain the
+        assertTrue(mp.foundProblems());
 
-		// character '.'
+        assertEquals(1, mp.getProblems().size());
 
-		// 1.0
+    }
 
-		// ^ ^
+    public void testSimpleSetOfNameValueHeaders() throws Exception {
 
-		// MP002:[line 2, col 0]: Name header ended prematurely when a newline
+        parse("Manifest-Version: 1.0\na: b\nc: d");
 
-		// was encountered. Expected form is Name: Value
+        v.assertHeaderCount(3);
 
-		// 1.0
+    }
 
-		// ^ ^
+    public void testTwoSectionManifest() throws Exception {
 
-		// MP004:[line 2, col 0]: The value appears to be missing for the header
+        parse("Manifest-Version: 1.0\na: b\nc: d\n\nfoo: bar\nWibble: wobble");
 
-		// name '1.0'
+        v.assertSecondarySectionsCount(1);
 
-		assertTrue(mp.foundProblems());
+    }
 
-		assertEquals(5, mp.getProblems().size());
+    private void readFromJar(String manifestName) {
 
-	}
+        try (ZipFile manifestTestDataZip = new ZipFile("build/resources/test/manifests.zip")) {
 
+            ZipEntry manifestZipEntry = manifestTestDataZip.getEntry(manifestName);
 
+            InputStreamReader inputStreamReader = new InputStreamReader(manifestTestDataZip.getInputStream(manifestZipEntry));
+            parse(inputStreamReader);
 
-	public void testErrorScenarios3() throws Exception {
+        } catch (IOException e) {
 
-		// Now we work out that they have missed the colon and the value is on
+            e.printStackTrace();
+            fail("Unexpected IOException " + e.getMessage());
 
-		// the second line
+        }
+    }
 
-		parse("Manifest-Version\n 1.0");
+    // --- tests involving testdata on the disk
 
-		// Manifest-Version
+    public void testBasicOsgiManifest() throws Exception {
 
-		// ^ ^
+        readFromJar("manifest0000.mf");
 
-		// MP002:[line 1, col 0]: Name header ended prematurely when a newline
+        assertFalse(mp.foundProblems());
+        assertContainsHeaderNameValuePair("Bundle-Localization", "plugin");
 
-		// was encountered. Expected form is Name: Value
+    }
 
-		assertEquals("1.0", v.getVersion());
+    // public void testBasicOsgiManifest0011() throws Exception {
+    // parse(readFromJar("manifest0011.mf"));
+    // assertTrue(mp.foundProblems());
+    // assertProblem(ManifestProblemKind.UNEXPECTED_NAME);
+    // }
 
-		assertTrue(mp.foundProblems());
+    // public void testBasicOsgiManifest0210() throws Exception {
 
-		assertEquals(1, mp.getProblems().size());
+    // parse(readFromJar("manifest0210.mf"));
 
-	}
+    // assertTrue(mp.foundProblems());
 
+    // assertProblem(ManifestProblemKind.UNEXPECTED_BLANK_LINES_AT_START_OF_MANIFEST);
 
+    // // assertProblem(ManifestProblemKind.UNEXPECTED_TOKEN_KIND);
 
-	public void testSimpleSetOfNameValueHeaders() throws Exception {
+    // // assertProblem(ManifestProblemKind.UNEXPECTED_EOM);
 
-		parse("Manifest-Version: 1.0\na: b\nc: d");
+    // }
 
-		v.assertHeaderCount(3);
+    public void testStreamParsing() throws IOException {
 
-	}
+        Reader iStream = new StringReader(
 
+        "Manifest-Version: 1.0\r\nGrobble: gribble\r\n\r\n\r\nName: wobble\r\nFlibble:\r\n Fl\r\n ob\r\n le");
 
+        mp = new RecoveringManifestParser(v = new TestVisitor());
 
-	public void testTwoSectionManifest() throws Exception {
+        mp.parse(iStream);
 
-		parse("Manifest-Version: 1.0\na: b\nc: d\n\nfoo: bar\nWibble: wobble");
+        // printProblems();
 
-		v.assertSecondarySectionsCount(1);
+        assertFalse(mp.foundProblems());
 
-	}
+    }
 
+    public void testBrokenManifests001() throws Exception {
 
+        parse(new File("build/resources/test/broken001.mf"));
 
-	private Reader readFromJar(String manifestName) {
+        assertTrue(mp.foundProblems());
 
-		try (ZipFile manifestTestDataZip = new ZipFile("build/resources/test/manifests.zip")) {
+        // printProblems();
 
-			ZipEntry manifestZipEntry = manifestTestDataZip.getEntry(manifestName);
+        assertProblem(ManifestProblemKind.NAME_ENDED_WITH_SPACE_RATHER_THAN_COLON);
 
-			return new InputStreamReader(manifestTestDataZip.getInputStream(manifestZipEntry));
+    }
 
-		} catch (IOException e) {
+    public void testMessageFormatting() {
 
-			e.printStackTrace();
+        String fmtd = ManifestProblemKind.NAME_MUST_START_WITH_ALPHANUMERIC.format(0, 0, "test");
 
-			fail("Unexpected IOException " + e.getMessage());
+        assertNotNull(fmtd);
 
-			return null;
+    }
 
-		}
+    public void testBrokenManifests002() {
 
-	}
+        parse(getTestFile("broken002.mf"));
 
+        assertTrue(mp.foundProblems());
 
+        // printProblems();
 
-	// --- tests involving testdata on the disk
+        // printHeaders();
 
-	public void testBasicOsgiManifest() throws Exception {
+        assertProblem(ManifestProblemKind.NAME_ENDED_WITH_SPACE_RATHER_THAN_COLON);
 
-		parse(readFromJar("manifest0000.mf"));
+        assertProblem(ManifestProblemKind.VALUE_MUST_START_WITH_SPACE);
 
-		assertFalse(mp.foundProblems());
+        assertProblem(ManifestProblemKind.VALUE_MUST_IMMEDIATELY_FOLLOW_NAME);
 
-		assertContainsHeaderNameValuePair("Bundle-Localization", "plugin");
+        assertProblem(ManifestProblemKind.ILLEGAL_NAME_CHAR);
 
-	}
+    }
 
+    public void testBrokenManifests003() {
 
+        parse(getTestFile("broken003.mf"));
 
-//	public void testBasicOsgiManifest0011() throws Exception {
+        assertTrue(mp.foundProblems());
 
-//		parse(readFromJar("manifest0011.mf"));
+        // Name = secondSection
 
-//		assertTrue(mp.foundProblems());
+        // intendedValueContinuationForLastLine =
 
-//		assertProblem(ManifestProblemKind.UNEXPECTED_NAME);
+        // MissingColon = abcde
 
-//	}
+        // OrdinaryName = OrdinaryValue
 
+        assertTrue(mp.getManifestContents().getAttributesForSection("secondSection").size() == 4);
 
+        assertProblem(ManifestProblemKind.NAME_ENDED_PREMATURELY_WITH_NEWLINE);
 
-//	public void testBasicOsgiManifest0210() throws Exception {
+        assertProblem(ManifestProblemKind.MISSING_VALUE);
 
-//		parse(readFromJar("manifest0210.mf"));
+    }
 
-//		assertTrue(mp.foundProblems());
+    // Funky package name char
 
-//		assertProblem(ManifestProblemKind.UNEXPECTED_BLANK_LINES_AT_START_OF_MANIFEST);
+    public void testBasicOsgiManifest004() {
 
-//		// assertProblem(ManifestProblemKind.UNEXPECTED_TOKEN_KIND);
+        parse(getTestFile("broken004.mf"));
 
-//		// assertProblem(ManifestProblemKind.UNEXPECTED_EOM);
+        String myway = v.getMainAttributes().get("Export-Package");
 
-//	}
+        assertEquals(".,p!yuck, a^f", myway);
 
+        assertFalse(mp.foundProblems());
 
+    }
 
-	public void testStreamParsing() throws IOException {
+    public void testAllManifestTestData() throws Exception {
 
-		Reader iStream = new StringReader(
+        // few warmups before the monitored run
 
-				"Manifest-Version: 1.0\r\nGrobble: gribble\r\n\r\n\r\nName: wobble\r\nFlibble:\r\n Fl\r\n ob\r\n le");
+        runPerformanceTest(false);
 
-		mp = new RecoveringManifestParser(v = new TestVisitor());
+        runPerformanceTest(false);
 
-		mp.parse(iStream);
+        runPerformanceTest(false);
 
-		// printProblems();
+        runPerformanceTest(true);
 
-		assertFalse(mp.foundProblems());
+    }
 
-	}
+    public void runPerformanceTest(boolean measure) throws Exception {
 
+        ZipFile manifestTestDataZip = new ZipFile("build/resources/test/manifests.zip");
 
+        try {
 
-	public void testBrokenManifests001() throws Exception {
+            Enumeration<? extends ZipEntry> manifestsFromZip = manifestTestDataZip.entries();
 
-		parse(new File("build/resources/test/broken001.mf"));
+            int c = 0;
 
-		assertTrue(mp.foundProblems());
+            long stime = System.currentTimeMillis();
 
-		// printProblems();
+            while (manifestsFromZip.hasMoreElements()) {
 
-		assertProblem(ManifestProblemKind.NAME_ENDED_WITH_SPACE_RATHER_THAN_COLON);
+                ZipEntry manifestEntry = manifestsFromZip.nextElement();
 
-	}
+                String manifestName = manifestEntry.getName();
 
+                if (!manifestName.endsWith(".mf") || !manifestName.startsWith("manifest")) {
 
+                    continue;
 
-	public void testMessageFormatting() {
+                }
 
-		String fmtd = ManifestProblemKind.NAME_MUST_START_WITH_ALPHANUMERIC.format(0, 0, "test");
+                InputStream fis = manifestTestDataZip.getInputStream(manifestEntry);
 
-		assertNotNull(fmtd);
+                try {
 
-	}
+                    c++;
 
+                    Manifest mf = new Manifest(fis);
 
+                    mf.getEntries();
 
-	public void testBrokenManifests002() {
+                } catch (IOException e) {
 
-		parse(getTestFile("broken002.mf"));
+                    e.printStackTrace();
 
-		assertTrue(mp.foundProblems());
+                }
 
-		// printProblems();
+                fis.close();
 
-		// printHeaders();
+            }
 
-		assertProblem(ManifestProblemKind.NAME_ENDED_WITH_SPACE_RATHER_THAN_COLON);
+            long etime = System.currentTimeMillis();
 
-		assertProblem(ManifestProblemKind.VALUE_MUST_START_WITH_SPACE);
+            if (measure) {
 
-		assertProblem(ManifestProblemKind.VALUE_MUST_IMMEDIATELY_FOLLOW_NAME);
+                System.out.println("JDK processed " + c + " manifests in " + (etime - stime) + "ms");
 
-		assertProblem(ManifestProblemKind.ILLEGAL_NAME_CHAR);
+            }
 
-	}
+            boolean pauseToAttachProfiler = false;
 
+            if (measure && pauseToAttachProfiler) {
 
+                System.in.read();
 
-	public void testBrokenManifests003() {
+            }
 
-		parse(getTestFile("broken003.mf"));
+            manifestsFromZip = manifestTestDataZip.entries();
 
-		assertTrue(mp.foundProblems());
+            stime = System.currentTimeMillis();
 
-		// Name = secondSection
+            c = 0;
 
-		// intendedValueContinuationForLastLine =
+            while (manifestsFromZip.hasMoreElements()) {
 
-		// MissingColon = abcde
+                ZipEntry manifestEntry = manifestsFromZip.nextElement();
 
-		// OrdinaryName = OrdinaryValue
+                String manifestName = manifestEntry.getName();
 
-		assertTrue(mp.getManifestContents().getAttributesForSection("secondSection").size() == 4);
+                if (!manifestName.endsWith(".mf") || !manifestName.startsWith("manifest")) {
 
-		assertProblem(ManifestProblemKind.NAME_ENDED_PREMATURELY_WITH_NEWLINE);
+                    continue;
 
-		assertProblem(ManifestProblemKind.MISSING_VALUE);
+                }
 
-	}
+                c++;
 
+                Reader r = new InputStreamReader(manifestTestDataZip.getInputStream(manifestEntry));
 
+                try {
 
-	// Funky package name char
+                    parse(r);
 
-	public void testBasicOsgiManifest004() {
+                } catch (Exception e) {
 
-		parse(getTestFile("broken004.mf"));
+                    e.printStackTrace();
 
-		String myway = v.getMainAttributes().get("Export-Package");
+                    fail("Failed on manifest " + manifestName);
 
-		assertEquals(".,p!yuck, a^f", myway);
+                }
 
-		assertFalse(mp.foundProblems());
+                r.close();
 
-	}
+            }
 
+            etime = System.currentTimeMillis();
 
+            if (measure) {
 
-	public void testAllManifestTestData() throws Exception {
+                System.out.println("RecoverableParser processed " + c + " manifests in " + (etime - stime) + "ms");
 
-		// few warmups before the monitored run
+            }
 
-		runPerformanceTest(false);
+            if (measure && pauseToAttachProfiler) {
 
-		runPerformanceTest(false);
+                try {
 
-		runPerformanceTest(false);
+                    Thread.sleep(10000);
 
-		runPerformanceTest(true);
+                } catch (Exception e) {
 
-	}
+                }
 
+            }
 
+        } finally {
 
-	public void runPerformanceTest(boolean measure) throws Exception {
+            manifestTestDataZip.close();
 
-		ZipFile manifestTestDataZip = new ZipFile("build/resources/test/manifests.zip");
+        }
 
-		try {
+    }
 
-			Enumeration<? extends ZipEntry> manifestsFromZip = manifestTestDataZip.entries();
+    // ---
 
-			int c = 0;
+    private void assertContainsHeaderNameValuePair(String name, String value) {
 
-			long stime = System.currentTimeMillis();
+        Map<String, String> headers = v.getAllHeaders();
 
-			while (manifestsFromZip.hasMoreElements()) {
+        boolean found = false;
 
-				ZipEntry manifestEntry = manifestsFromZip.nextElement();
+        for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
 
-				String manifestName = manifestEntry.getName();
+            String headerName = headerEntry.getKey();
 
-				if (!manifestName.endsWith(".mf") || !manifestName.startsWith("manifest")) {
+            String headerValue = headerEntry.getValue();
 
-					continue;
+            if (headerName.equals(name) && headerValue.equals(headerValue)) {
 
-				}
+                found = true;
 
-				InputStream fis = manifestTestDataZip.getInputStream(manifestEntry);
+                break;
 
-				try {
+            }
 
-					c++;
+        }
 
-					Manifest mf = new Manifest(fis);
+        if (!found) {
 
-					mf.getEntries();
+            fail("Failed to find header name value pair: " + name + ": " + value);
 
-				} catch (IOException e) {
+        }
 
-					e.printStackTrace();
+    }
 
-				}
+    private void parse(Reader r) {
 
-				fis.close();
+        try {
 
-			}
+            StringBuilder fileData = new StringBuilder(512);
 
-			long etime = System.currentTimeMillis();
+            char[] buf = new char[4096];
 
-			if (measure) {
+            int numRead = 0;
 
-				System.out.println("JDK processed " + c + " manifests in " + (etime - stime) + "ms");
+            while ((numRead = r.read(buf)) != -1) {
 
-			}
+                fileData.append(new String(buf, 0, numRead));
 
-			boolean pauseToAttachProfiler = false;
+            }
 
-			if (measure && pauseToAttachProfiler) {
+            r.close();
 
-				System.in.read();
+            parse(fileData.toString());
 
-			}
+        } catch (Exception e) {
 
-			manifestsFromZip = manifestTestDataZip.entries();
+            throw new RuntimeException("Problem during parsing", e);
 
-			stime = System.currentTimeMillis();
+        }
 
-			c = 0;
+    }
 
-			while (manifestsFromZip.hasMoreElements()) {
+    private void parse(File f) {
 
-				ZipEntry manifestEntry = manifestsFromZip.nextElement();
+        try {
 
-				String manifestName = manifestEntry.getName();
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
 
-				if (!manifestName.endsWith(".mf") || !manifestName.startsWith("manifest")) {
+            // try {
 
-					continue;
+            // new Manifest(bis);
 
-				}
+            // } catch (IOException ioe) {
 
-				c++;
+            // ioe.printStackTrace();
 
-				Reader r = new InputStreamReader(manifestTestDataZip.getInputStream(manifestEntry));
+            // }
 
-				try {
+            // BufferedReader reader = new BufferedReader(new FileReader(f));
 
-					parse(r);
+            StringBuilder fileData = new StringBuilder(512);
 
-				} catch (Exception e) {
+            byte[] buf = new byte[4096];
 
-					e.printStackTrace();
+            int numRead = 0;
 
-					fail("Failed on manifest " + manifestName);
+            while ((numRead = bis.read(buf)) != -1) {
 
-				}
+                fileData.append(new String(buf, 0, numRead));
 
-				r.close();
+            }
 
-			}
+            bis.close();
 
-			etime = System.currentTimeMillis();
+            parse(fileData.toString());
 
-			if (measure) {
+        } catch (Exception e) {
 
-				System.out.println("RecoverableParser processed " + c + " manifests in " + (etime - stime) + "ms");
+            throw new RuntimeException("Problem during parsing", e);
 
-			}
+        }
 
-			if (measure && pauseToAttachProfiler) {
+    }
 
-				try {
+    private void parse(String manifest) throws Exception {
 
-					Thread.sleep(10000);
+        // long stime = System.currentTimeMillis();
 
-				} catch (Exception e) {
+        try {
 
-				}
+            mp = new RecoveringManifestParser(v = new TestVisitor());
 
-			}
+            mp.parse(manifest);
 
-		} finally {
+        } catch (Exception e) {
 
-			manifestTestDataZip.close();
+            printProblems();
 
-		}
+            throw e;
 
-	}
+        }
 
+        // long etime = System.currentTimeMillis();
 
+        // System.out.println("Parsed in " + (etime - stime) + "ms");
 
-	// ---
+        // printProblems();
 
+        // printManifest();
 
+    }
 
-	private void assertContainsHeaderNameValuePair(String name, String value) {
+    private void printProblems() {
 
-		Map<String, String> headers = v.getAllHeaders();
+        List<ManifestProblem> problems = mp.getProblems();
 
-		boolean found = false;
+        System.out.println("Printing problems:  #" + problems.size());
 
-		for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
+        for (ManifestProblem manifestProblem : problems) {
 
-			String headerName = headerEntry.getKey();
+            System.out.println(manifestProblem.toStringWithContext());
 
-			String headerValue = headerEntry.getValue();
+        }
 
-			if (headerName.equals(name) && headerValue.equals(headerValue)) {
+    }
 
-				found = true;
+    private File getTestFile(String name) {
 
-				break;
+        return new File("build/resources/test/" + name);
 
-			}
+    }
 
-		}
+    private ManifestProblem assertProblem(ManifestProblemKind expectedProblem) {
 
-		if (!found) {
+        List<ManifestProblem> problems = mp.getProblems();
 
-			fail("Failed to find header name value pair: " + name + ": " + value);
+        for (ManifestProblem manifestProblem : problems) {
 
-		}
+            if (manifestProblem.getKind() == expectedProblem) {
 
-	}
+                return manifestProblem;
 
+            }
 
+        }
 
-	private void parse(Reader r) {
+        printProblems();
 
-		try {
+        fail("Did not find the expected problem " + expectedProblem);
 
-			StringBuilder fileData = new StringBuilder(512);
+        return null;
 
-			char[] buf = new char[4096];
+    }
 
-			int numRead = 0;
+    // private void printManifest() {
 
-			while ((numRead = r.read(buf)) != -1) {
+    // Map<String, String> allHeaders = v.getAllHeaders();
 
-				fileData.append(new String(buf, 0, numRead));
+    // for (Map.Entry<String, String> header : allHeaders.entrySet()) {
 
-			}
+    // System.out.println(header.getKey() + ": " + header.getValue());
 
-			r.close();
+    // }
 
-			parse(fileData.toString());
+    // }
 
-		} catch (Exception e) {
+    // private void printHeaders() {
 
-			throw new RuntimeException("Problem during parsing", e);
+    // Map<String, String> attrs = v.getAttributesForSection("secondSection");
 
-		}
+    // for (Map.Entry<String, String> attr : attrs.entrySet()) {
 
-	}
+    // System.out.println(attr.getKey() + " = " + attr.getValue());
 
+    // }
 
-
-	private void parse(File f) {
-
-		try {
-
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
-
-			// try {
-
-			// new Manifest(bis);
-
-			// } catch (IOException ioe) {
-
-			// ioe.printStackTrace();
-
-			// }
-
-			// BufferedReader reader = new BufferedReader(new FileReader(f));
-
-			StringBuilder fileData = new StringBuilder(512);
-
-			byte[] buf = new byte[4096];
-
-			int numRead = 0;
-
-			while ((numRead = bis.read(buf)) != -1) {
-
-				fileData.append(new String(buf, 0, numRead));
-
-			}
-
-			bis.close();
-
-			parse(fileData.toString());
-
-		} catch (Exception e) {
-
-			throw new RuntimeException("Problem during parsing", e);
-
-		}
-
-	}
-
-
-
-	private void parse(String manifest) throws Exception {
-
-		// long stime = System.currentTimeMillis();
-
-		try {
-
-			mp = new RecoveringManifestParser(v = new TestVisitor());
-
-			mp.parse(manifest);
-
-		} catch (Exception e) {
-
-			printProblems();
-
-			throw e;
-
-		}
-
-		// long etime = System.currentTimeMillis();
-
-		// System.out.println("Parsed in " + (etime - stime) + "ms");
-
-		// printProblems();
-
-		// printManifest();
-
-	}
-
-
-
-	private void printProblems() {
-
-		List<ManifestProblem> problems = mp.getProblems();
-
-		System.out.println("Printing problems:  #" + problems.size());
-
-		for (ManifestProblem manifestProblem : problems) {
-
-			System.out.println(manifestProblem.toStringWithContext());
-
-		}
-
-	}
-
-
-
-	private File getTestFile(String name) {
-
-		return new File("build/resources/test/" + name);
-
-	}
-
-
-
-	private ManifestProblem assertProblem(ManifestProblemKind expectedProblem) {
-
-		List<ManifestProblem> problems = mp.getProblems();
-
-		for (ManifestProblem manifestProblem : problems) {
-
-			if (manifestProblem.getKind() == expectedProblem) {
-
-				return manifestProblem;
-
-			}
-
-		}
-
-		printProblems();
-
-		fail("Did not find the expected problem " + expectedProblem);
-
-		return null;
-
-	}
-
-
-
-	// private void printManifest() {
-
-	// Map<String, String> allHeaders = v.getAllHeaders();
-
-	// for (Map.Entry<String, String> header : allHeaders.entrySet()) {
-
-	// System.out.println(header.getKey() + ": " + header.getValue());
-
-	// }
-
-	// }
-
-
-
-	// private void printHeaders() {
-
-	// Map<String, String> attrs = v.getAttributesForSection("secondSection");
-
-	// for (Map.Entry<String, String> attr : attrs.entrySet()) {
-
-	// System.out.println(attr.getKey() + " = " + attr.getValue());
-
-	// }
-
-	// }
-
-
+    // }
 
 }
-
