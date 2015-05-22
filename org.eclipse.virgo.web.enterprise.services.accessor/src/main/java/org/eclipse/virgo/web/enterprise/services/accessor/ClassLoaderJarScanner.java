@@ -32,7 +32,6 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("restriction")
 //TODO: use gemini web jar scanner plug-ability mechanism
 //Jar scanner is used for tld and annotation discovery
 public class ClassLoaderJarScanner implements JarScanner {
