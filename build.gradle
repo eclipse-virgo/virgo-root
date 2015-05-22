@@ -16,6 +16,8 @@ project(':kernel:org.eclipse.virgo.kernel.agent.dm') {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
 
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
 		compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
@@ -38,6 +40,7 @@ project(':kernel:org.eclipse.virgo.kernel.agent.dm') {
 project(':kernel:org.eclipse.virgo.kernel.artifact') {
 	dependencies {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 
@@ -58,6 +61,9 @@ project(':kernel:org.eclipse.virgo.kernel.deployer') {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':medic:org.eclipse.virgo.medic.test')
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 
@@ -97,6 +103,8 @@ project(':kernel:org.eclipse.virgo.kernel.deployer.dm') {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':medic:org.eclipse.virgo.medic.test')
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
@@ -146,9 +154,16 @@ project(':kernel:org.eclipse.virgo.kernel.dmfragment') {
 
 project(':kernel:org.eclipse.virgo.kernel.model') {
 	dependencies {
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
+
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
 		testCompile project(':kernel:org.eclipse.virgo.kernel.stubs')
+
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
@@ -161,7 +176,6 @@ project(':kernel:org.eclipse.virgo.kernel.model') {
 		compile project(':util:org.eclipse.virgo.util.jmx')
 
 		aspectpath project(':nano:org.eclipse.virgo.nano.core')
-
 		if (System.properties['weaving.enabled'] == 'true') {
 			aspectpath project(':medic:org.eclipse.virgo.medic')
 			aspectpath project(':util:org.eclipse.virgo.util.jmx')
@@ -190,6 +204,7 @@ project(':kernel:org.eclipse.virgo.kernel.equinox.extensions') {
 	dependencies {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 	}
@@ -214,6 +229,8 @@ project(':kernel:org.eclipse.virgo.kernel.services') {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
 		testCompile project(':medic:org.eclipse.virgo.medic.test')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 
@@ -297,6 +314,10 @@ project(':kernel:org.eclipse.virgo.kernel.userregion') {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
 		testCompile project(':medic:org.eclipse.virgo.medic.test')
+        testCompile project(':repository:org.eclipse.virgo.repository')
+
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 
@@ -326,6 +347,8 @@ project(':kernel:org.eclipse.virgo.kernel.userregionfactory') {
 	dependencies {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
