@@ -128,7 +128,7 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
 
     private void logEvent(String event, InstallArtifact installArtifact) {
         this.logger.info("Processing " + event + " event for {} '{}' version '{}'",
-            new String[] { installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion().toString() });
+            installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion().toString());
     }
 
     private void remove(InstallArtifact installArtifact) {
