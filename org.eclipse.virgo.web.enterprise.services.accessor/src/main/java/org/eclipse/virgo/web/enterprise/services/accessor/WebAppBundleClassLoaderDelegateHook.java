@@ -473,14 +473,6 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 		return false;
 	}
     
-    private String getClassPackage(String className) {
-    	int packageNameEndsIndex = className.lastIndexOf(".");
-    	if(packageNameEndsIndex != -1 && packageNameEndsIndex != className.length() -1) {
-    		return className.substring(0, packageNameEndsIndex);
-    	}
-    	return "";
-    }
-
     private boolean matchesNegativeCache(String className) {
   		for(String prefix : negativeCacheClassPrefixes) {
   			if(className.startsWith(prefix)) {
