@@ -80,7 +80,6 @@ public class StandardSecurityServiceTest {
 		private StandardSecurityService service;
 		private ApplicationThread coworkerThread;
 		private Wrapper wrapper;
-		private Principal principal;
 		private String runAs;
 		private boolean isReady = false;
 		private boolean isError = false;
@@ -96,7 +95,7 @@ public class StandardSecurityServiceTest {
 			if (!waitForOtherThread()){
 				return;
 			}
-			Object webAppState = service.enterWebApp(wrapper, principal, runAs);
+			Object webAppState = service.enterWebApp(wrapper, null, runAs);
 			boolean isExpectedWrapper = checkWrapper(wrapper);
 			isReady = false;
 			coworkerThread.setReady();
@@ -126,7 +125,6 @@ public class StandardSecurityServiceTest {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
