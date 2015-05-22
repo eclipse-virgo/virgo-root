@@ -25,13 +25,13 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.Hashtable;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
@@ -46,11 +46,11 @@ import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.util.BundleInfosUpdater;
 import org.eclipse.virgo.nano.deployer.util.BundleLocationUtil;
 import org.eclipse.virgo.nano.deployer.util.StatusFileModificator;
+import org.eclipse.virgo.util.io.FatalIOException;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.io.JarUtils;
 import org.eclipse.virgo.util.io.PathReference;
-import org.eclipse.virgo.util.io.FatalIOException;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.osgi.framework.Bundle;
@@ -82,8 +82,6 @@ public class WARDeployer implements SimpleDeployer {
     private static final String SLASH = "/";
 
     private static final char SLASH_CHAR = '/';
-
-    private static final char DOT = '.';
 
     static final String LAST_MODIFIED = "last-modified";
 
@@ -282,55 +280,40 @@ public class WARDeployer implements SimpleDeployer {
             warName = extractedWarNameFromBundleLocation;
         }
 
-        if (bundle != null) {
-            try {
-                if (this.logger.isInfoEnabled()) {
-                    this.logger.info("Removing bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "' from bundles.info.");
-                }
-                if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
-                    String locationForBundlesInfo = BundleLocationUtil.getRelativisedURI(kernelHomeFile, warDir).toString();
-                    BundleInfosUpdater.unregisterToBundlesInfo(bundle, locationForBundlesInfo, NOT_A_FRAGMENT);
-                    this.logger.info("Successfully removed bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion()
-                        + "' from bundles.info.");
-                } else {
-                    this.logger.error("BundleInfosUpdater not available. Failed to remove bundle '" + bundle.getSymbolicName() + "' version '"
-                        + bundle.getVersion() + "' from bundles.info.");
-                }
-                this.eventLogger.log(WARDeployerLogEvents.NANO_STOPPING, bundle.getSymbolicName(), bundle.getVersion());
-                bundle.stop();
-                this.eventLogger.log(WARDeployerLogEvents.NANO_STOPPED, bundle.getSymbolicName(), bundle.getVersion());
-                this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLING, bundle.getSymbolicName(), bundle.getVersion());
-                bundle.uninstall();
-                // we need to decode the path before delete or a /webapps entry might leak
-                FileSystemUtils.deleteRecursively(new File(warDir.getAbsolutePath()));
-                this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
-                wabStates.remove((String) bundle.getSymbolicName());
-            } catch (BundleException e) {
-                this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
-                StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_ERROR, -1, -1);
-                return STATUS_ERROR;
-            } catch (IOException e) {
-                this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
-            } catch (URISyntaxException e) {
-                this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+        try {
+            if (this.logger.isInfoEnabled()) {
+                this.logger.info("Removing bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion() + "' from bundles.info.");
             }
+            if (this.bundleInfosUpdaterUtil != null && this.bundleInfosUpdaterUtil.isAvailable()) {
+                String locationForBundlesInfo = BundleLocationUtil.getRelativisedURI(kernelHomeFile, warDir).toString();
+                BundleInfosUpdater.unregisterToBundlesInfo(bundle, locationForBundlesInfo, NOT_A_FRAGMENT);
+                this.logger.info("Successfully removed bundle '" + bundle.getSymbolicName() + "' version '" + bundle.getVersion()
+                    + "' from bundles.info.");
+            } else {
+                this.logger.error("BundleInfosUpdater not available. Failed to remove bundle '" + bundle.getSymbolicName() + "' version '"
+                    + bundle.getVersion() + "' from bundles.info.");
+            }
+            this.eventLogger.log(WARDeployerLogEvents.NANO_STOPPING, bundle.getSymbolicName(), bundle.getVersion());
+            bundle.stop();
+            this.eventLogger.log(WARDeployerLogEvents.NANO_STOPPED, bundle.getSymbolicName(), bundle.getVersion());
+            this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLING, bundle.getSymbolicName(), bundle.getVersion());
+            bundle.uninstall();
+            // we need to decode the path before delete or a /webapps entry might leak
+            FileSystemUtils.deleteRecursively(new File(warDir.getAbsolutePath()));
+            this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
+            wabStates.remove((String) bundle.getSymbolicName());
+        } catch (BundleException e) {
+            this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+            StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_ERROR, -1, -1);
+            return STATUS_ERROR;
+        } catch (IOException e) {
+            this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
+        } catch (URISyntaxException e) {
+            this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
         }
 
         StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_OK, -1, -1);
         return STATUS_OK;
-    }
-
-    private String calculateStatusFilePrefix(Bundle bundle, String warName) {
-        if (warName.contains(String.valueOf(DOT))) {
-            String webContextPath = bundle.getHeaders().get(HEADER_WEB_CONTEXT_PATH);
-            if ((warName.charAt(0) == DOT && webContextPath.indexOf(DOT) == 1) || (warName.charAt(0) != DOT && webContextPath.indexOf(DOT) != 1)) {
-                webContextPath = webContextPath.substring(1);
-            }
-            if (webContextPath.contains(SLASH) && webContextPath.replace(SLASH_CHAR, DOT).equals(warName)) {
-                return URLDecoder.decode(webContextPath.replace(SLASH_CHAR, HASH_SIGN));
-            }
-        }
-        return URLDecoder.decode(warName);
     }
 
     private String extractWarNameFromBundleLocation(String bundleLocation) {
@@ -680,9 +663,9 @@ public class WARDeployer implements SimpleDeployer {
         if (wabHeadersPropertyValue != null) {
             if (PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {
                 strictWABHeaders = false;
-                this.logger.info("Property '%s' has value [defaulted]", new String[] { PROPERTY_WAB_HEADERS });
+                this.logger.info("Property '%s' has value [defaulted]",  PROPERTY_WAB_HEADERS);
             } else if (!PROPERTY_VALUE_WAB_HEADERS_STRICT.equals(wabHeadersPropertyValue)) {
-                this.logger.error("Property '%s' has invalid value '%s'", new String[] { PROPERTY_WAB_HEADERS, wabHeadersPropertyValue });
+                this.logger.error("Property '%s' has invalid value '%s'", PROPERTY_WAB_HEADERS, wabHeadersPropertyValue );
             }
         }
 
