@@ -199,7 +199,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
         return isSpringDmDelegatedResolverCall(stackTrace) || isBlueprintDelegatedResolverCall(stackTrace);
     }
     
-    private final class SecurityManagerExecutionStackAccessor extends SecurityManager {
+    private static final class SecurityManagerExecutionStackAccessor extends SecurityManager {
         
         public Class<?>[] getExecutionStack() {
             Class<?>[] classes = super.getClassContext();
