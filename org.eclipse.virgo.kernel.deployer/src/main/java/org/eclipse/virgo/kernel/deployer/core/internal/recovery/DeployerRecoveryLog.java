@@ -11,12 +11,17 @@
 
 package org.eclipse.virgo.kernel.deployer.core.internal.recovery;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
@@ -25,12 +30,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.util.io.PathReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link DeployerRecoveryLog} maintains the deployer's recoverable state across restarts.
@@ -132,16 +136,15 @@ final class DeployerRecoveryLog {
 
     private String readRedployData() {
         StringBuffer redeployData = new StringBuffer(INITIAL_REDEPLOY_DATA_SIZE);
-        Reader redeployDataReader;
+        Reader redeployDataReader = null;
         try {
-            redeployDataReader = new BufferedReader(new FileReader(redeployDataset.toFile()));
+            redeployDataReader = new BufferedReader(new InputStreamReader(new FileInputStream(redeployDataset.toFile()), UTF_8));
             try {
                 char[] chars = new char[INITIAL_REDEPLOY_DATA_SIZE];
                 int numRead;
                 while (-1 != (numRead = redeployDataReader.read(chars))) {
                     redeployData.append(String.valueOf(chars, 0, numRead));
                 }
-
             } catch (IOException e) {
                 logger.error("Problem reading redeploy dataset", e);
             } finally {
@@ -165,9 +168,8 @@ final class DeployerRecoveryLog {
      */
     private void rewriteRedeploySet(Map<URI, DeploymentOptions> redeploySet) {
         this.redeployCompressionDataset.delete();
-        Writer redeployDataWriter;
-        try {
-            redeployDataWriter = new BufferedWriter(new FileWriter(this.redeployCompressionDataset.toFile()));
+        try (Writer redeployDataWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.redeployCompressionDataset.toFile()),
+            UTF_8))) {
             for (Entry<URI, DeploymentOptions> redeployEntry : redeploySet.entrySet()) {
                 recordUriCommand(redeployDataWriter, redeployEntry.getKey(), getCommandString(redeployEntry.getValue()));
             }
@@ -198,7 +200,7 @@ final class DeployerRecoveryLog {
      * @return the command string
      */
     private String getCommandString(DeploymentOptions deploymentOptions) {
-        //boolean recoverable, boolean deployerOwned, boolean synchronous
+        // boolean recoverable, boolean deployerOwned, boolean synchronous
         StringBuilder command = new StringBuilder().append(toCommandOption(deploymentOptions.getRecoverable())).append(
             toCommandOption(deploymentOptions.getDeployerOwned())).append(toCommandOption(deploymentOptions.getSynchronous()));
         return command.toString();
@@ -214,9 +216,7 @@ final class DeployerRecoveryLog {
     }
 
     private void recordUriCommand(URI uri, String command) {
-        Writer writer;
-        try {
-            writer = new FileWriter(this.redeployDataset.toFile(), true);
+        try (Writer writer = new FileWriter(this.redeployDataset.toFile(), true)) {
             recordUriCommand(writer, uri, command);
             writer.close();
         } catch (IOException e) {
