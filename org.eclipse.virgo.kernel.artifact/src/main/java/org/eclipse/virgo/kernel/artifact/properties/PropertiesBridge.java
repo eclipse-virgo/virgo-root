@@ -11,9 +11,13 @@
 
 package org.eclipse.virgo.kernel.artifact.properties;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Properties;
 
 import org.eclipse.virgo.repository.ArtifactBridge;
@@ -54,9 +58,9 @@ public final class PropertiesBridge implements ArtifactBridge {
 
     public ArtifactDescriptor generateArtifactDescriptor(File artifactFile) throws ArtifactGenerationException {
         if (artifactFile.getName().endsWith(PROPERTIES_SUFFIX)) {
-            FileReader reader = null;
+            Reader reader = null;
             try {
-                reader = new FileReader(artifactFile);
+                reader = new InputStreamReader(new FileInputStream(artifactFile), UTF_8);
                 Properties properties = new Properties();
                 properties.load(reader);
                 return createArtifactDescriptor(artifactFile, properties);
