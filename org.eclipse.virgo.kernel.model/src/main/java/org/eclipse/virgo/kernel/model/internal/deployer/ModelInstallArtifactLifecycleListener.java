@@ -60,10 +60,11 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     private final RegionDigraph regionDigraph;
 
     private final Region globalRegion;
-    
+
     private final SpringContextAccessor springContextAccessor;
 
-    public ModelInstallArtifactLifecycleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository, @NonNull RegionDigraph regionDigraph, @NonNull Region globalRegion, @NonNull SpringContextAccessor springContextAccessor) {
+    public ModelInstallArtifactLifecycleListener(@NonNull BundleContext bundleContext, @NonNull RuntimeArtifactRepository artifactRepository,
+        @NonNull RegionDigraph regionDigraph, @NonNull Region globalRegion, @NonNull SpringContextAccessor springContextAccessor) {
         this.bundleContext = bundleContext;
         this.artifactRepository = artifactRepository;
         this.regionDigraph = regionDigraph;
@@ -83,7 +84,7 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
             addOrReplaceBundle((BundleInstallArtifact) installArtifact);
         } else if (installArtifact instanceof ConfigInstallArtifact) {
             addConfiguration((ConfigInstallArtifact) installArtifact);
-        }else {
+        } else {
             addArtifact(installArtifact);
         }
     }
@@ -97,10 +98,12 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void addOrReplaceBundle(BundleInstallArtifact bundleInstallArtifact) {
-        Artifact existingBundleArtifact = this.artifactRepository.getArtifact(bundleInstallArtifact.getType(), bundleInstallArtifact.getName(), bundleInstallArtifact.getVersion(), getRegion(USER_REGION_NAME));
+        Artifact existingBundleArtifact = this.artifactRepository.getArtifact(bundleInstallArtifact.getType(), bundleInstallArtifact.getName(),
+            bundleInstallArtifact.getVersion(), getRegion(USER_REGION_NAME));
         if (!(existingBundleArtifact instanceof DeployerBundleArtifact)) {
             remove(bundleInstallArtifact);
-            this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact, getRegion(USER_REGION_NAME), this.springContextAccessor));
+            this.artifactRepository.add(new DeployerBundleArtifact(this.bundleContext, bundleInstallArtifact, getRegion(USER_REGION_NAME),
+                this.springContextAccessor));
         }
     }
 
@@ -127,19 +130,20 @@ class ModelInstallArtifactLifecycleListener extends InstallArtifactLifecycleList
     }
 
     private void logEvent(String event, InstallArtifact installArtifact) {
-        this.logger.info("Processing " + event + " event for {} '{}' version '{}'",
-            installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion().toString());
+        this.logger.info("Processing " + event + " event for {} '{}' version '{}'", installArtifact.getType(), installArtifact.getName(),
+            installArtifact.getVersion().toString());
     }
 
     private void remove(InstallArtifact installArtifact) {
-        if(installArtifact instanceof BundleInstallArtifact){
-            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), getRegion(USER_REGION_NAME));
+        if (installArtifact instanceof BundleInstallArtifact) {
+            this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(),
+                getRegion(USER_REGION_NAME));
         } else {
             this.artifactRepository.remove(installArtifact.getType(), installArtifact.getName(), installArtifact.getVersion(), this.globalRegion);
         }
     }
-    
-    private Region getRegion(String name){
+
+    private Region getRegion(String name) {
         return this.regionDigraph.getRegion(name);
     }
 
