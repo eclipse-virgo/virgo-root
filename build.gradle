@@ -709,9 +709,6 @@ configure(testUtils) {
 	dependencies {
 		// changing junit dependency to configuration compile - this is a test util project based on JUnit :)
 		compile group: 'junit', name: 'junit', version: junitVersion
-		// WORKAROUND - not picked up for oev.test.tools elsewhere
-		compile group: "org.apache.httpcomponents", name: "httpcomponents-core", version: httpcomponentsCoreVersion
-		compile group: "org.apache.httpcomponents", name: "httpcomponents-client", version: httpcomponentsClientVersion
 	}
 }
 
@@ -749,6 +746,9 @@ configure(smokeTestProjects) {
 	dependencies {
 		testCompile project(':test:org.eclipse.virgo.test.tools')
 		testCompile project(':util:org.eclipse.virgo.util.io')
+
+		testRuntime group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
+		testRuntime group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
 
 		smokeTestCompile sourceSets.main.output
 		smokeTestCompile configurations.testCompile
