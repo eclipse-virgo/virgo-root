@@ -19,14 +19,15 @@ import java.io.File;
 
 import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class FileMovingArtifactStoreTests {
-    
+
     private static final String TEST_PATH = "build/fileMovingArtifactStoreTests/";
-    
+
     private static final String TEST_FILENAME = "some.jar";
-    
+
     private ArtifactStore artifactHistory;
 
     @Before
@@ -60,7 +61,7 @@ public class FileMovingArtifactStoreTests {
         checkPath(c);
         assertTrue(original.equals(c));
     }
-    
+
     @Test
     public void testRepeatedStash() {
         PathReference original = this.artifactHistory.getCurrentPath();
@@ -72,7 +73,7 @@ public class FileMovingArtifactStoreTests {
         assertTrue(original.equals(next));
         assertTrue(original.equals(last));
     }
-    
+
     @Test
     public void testFileDeletionOnUnstash() {
         this.artifactHistory.save();
@@ -103,7 +104,7 @@ public class FileMovingArtifactStoreTests {
         this.artifactHistory.save();
         assertFalse(c.exists());
     }
-    
+
     @Test
     public void testDirectoryDeletionOnDoubleStash() {
         PathReference c = this.artifactHistory.getCurrentPath();
@@ -114,35 +115,37 @@ public class FileMovingArtifactStoreTests {
         this.artifactHistory.save();
         assertFalse(c.exists());
     }
-    
-    @Test(expected=IllegalStateException.class)
+
+    @Test(expected = IllegalStateException.class)
     public void testBadUnstash() {
         this.artifactHistory.restore();
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testDoubleUnstash() {
         this.artifactHistory.save();
         this.artifactHistory.save();
         this.artifactHistory.restore();
         this.artifactHistory.restore();
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testNullConstructorPath() {
         new FileMovingArtifactStore(null);
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testEmptyConstructorPath() {
         new FileMovingArtifactStore(new PathReference(""));
     }
-    
+
+    @Test
+    @Ignore("review the inactive / failing test")
+    // TODO - review the (from the beginning) inactive test
     public void testDirectorylessConstructorPath() {
         ArtifactStore ph = new FileMovingArtifactStore(new PathReference("a"));
         assertEquals("a", ph.getCurrentPath().getName());
     }
-
 
     private void checkPath(PathReference c) {
         File file = c.toFile();
@@ -155,4 +158,3 @@ public class FileMovingArtifactStoreTests {
     }
 
 }
-
