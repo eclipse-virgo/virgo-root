@@ -113,6 +113,12 @@ public class JmxUtils {
                 Thread.interrupted();
             }
         }
+        // allow some more time to finish shutdown
+        try {
+            Thread.sleep(TEN_SECONDS.toMillis());
+        } catch (InterruptedException e) {
+            Thread.interrupted();
+        }
     }
 
     public static void waitForMBean(String mBeanName) throws Exception {
@@ -135,7 +141,7 @@ public class JmxUtils {
             }
             Thread.sleep(sleepDuration.toMillis());
         }
-        fail(String.format("After %d ms, artifact %s mbean Status was", duration, mBeanName) + mbeanStatus);
+        fail(String.format("After %d s and %d ns, artifact %s mbean Status was", duration.getSeconds(), duration.getNano(), mBeanName) + mbeanStatus);
     }
 
     public static void waitForArtifactInUserRegion(String type, String name, String version, long interval, long duration) throws Exception {

@@ -6,8 +6,10 @@ project(':test:org.eclipse.virgo.test.stubs') {
 	}
 }
 
-if (System.properties['skip.smoke.tests'] != 'true') {
-	project(':test:org.eclipse.virgo.test.tools') {
-		dependencies { compile project(':util:org.eclipse.virgo.util.io') }
+project(':test:org.eclipse.virgo.test.tools') {
+	dependencies {
+		compile project(':util:org.eclipse.virgo.util.io')
+		compile group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
+		compile group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
 	}
 }
