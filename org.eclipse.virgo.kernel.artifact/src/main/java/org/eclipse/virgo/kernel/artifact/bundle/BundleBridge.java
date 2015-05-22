@@ -157,7 +157,7 @@ public final class BundleBridge implements ArtifactBridge {
     public static Dictionary<String, String> convertToDictionary(ArtifactDescriptor artifactDescriptor) {
         Map<String, String> map = convertToMap(artifactDescriptor);
         
-        return map == null ? null : new MapToDictionaryAdapter(map);
+        return map == null ? null : new MapToDictionaryAdapter<String, String>(map);
 
     }
     
