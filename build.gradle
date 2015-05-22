@@ -51,7 +51,10 @@ project(':nano:org.eclipse.virgo.nano.deployer.api') {
 project(':nano:org.eclipse.virgo.nano.deployer.hot') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+		testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         testCompile project(':medic:org.eclipse.virgo.medic.test')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
 
