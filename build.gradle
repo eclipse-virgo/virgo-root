@@ -7,6 +7,8 @@ project(':repository:org.eclipse.virgo.repository') {
         testCompile group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
 		testCompile group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.logging', version: commonsLoggingVersion, configuration: "compile", ext: "jar"
 
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
         compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
