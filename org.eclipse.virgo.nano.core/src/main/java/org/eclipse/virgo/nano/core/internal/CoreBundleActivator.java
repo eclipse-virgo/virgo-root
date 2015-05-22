@@ -150,7 +150,6 @@ public class CoreBundleActivator {
         return asynchronousStartTracker;
     }
 
-    @SuppressWarnings("unchecked")
     private BundleStarter createAndRegisterBundleStarter(BundleStartTracker asynchronousStartTracker, BundleContext bundleContext) {
     	
         StandardBundleStarter bundleStarter = new StandardBundleStarter(asynchronousStartTracker);
