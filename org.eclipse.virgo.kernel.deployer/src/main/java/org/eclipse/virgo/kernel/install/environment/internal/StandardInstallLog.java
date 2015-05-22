@@ -11,9 +11,10 @@
 
 package org.eclipse.virgo.kernel.install.environment.internal;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.kernel.install.artifact.InstallArtifact;
 import org.eclipse.virgo.kernel.install.environment.InstallLog;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -81,7 +82,7 @@ public final class StandardInstallLog implements InstallLog {
         String[] stringInserts = new String[arguments.length + 1];
         stringInserts[arguments.length] = source.toString();
         System.arraycopy(arguments, 0, stringInserts, 0, arguments.length);
-        logger.debug(message + " (source '{}')", stringInserts);
+        logger.debug(message + " (source '{}')", Arrays.toString(stringInserts));
     }
 
     private String[] stringify(Object[] inserts) {
