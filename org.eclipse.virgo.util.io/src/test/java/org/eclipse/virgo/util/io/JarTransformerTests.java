@@ -172,10 +172,9 @@ public class JarTransformerTests {
             assertEquals(ea.getName(), eb.getName());
 
             if (checkContent) {
-                InputStream ia = a.getInputStream(ea);
-                InputStream ib = a.getInputStream(eb);
-                assertTrue(Arrays.equals(readAll(ia), readAll(ib)));
-
+                try (InputStream ia = a.getInputStream(ea); InputStream ib = a.getInputStream(eb);) {
+                    assertTrue(Arrays.equals(readAll(ia), readAll(ib)));
+                }
             }
         }
     }

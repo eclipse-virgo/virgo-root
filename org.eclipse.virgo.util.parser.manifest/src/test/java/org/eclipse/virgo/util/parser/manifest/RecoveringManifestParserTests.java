@@ -53,26 +53,27 @@ public class RecoveringManifestParserTests extends TestCase {
 
         ManifestParser mParser = new RecoveringManifestParser();
 
-        ManifestContents contents = mParser.parse(new InputStreamReader(new FileInputStream("build/resources/test/broken001.mf")));
+        try (InputStream broken = new FileInputStream("build/resources/test/broken001.mf")) {
+            ManifestContents contents = mParser.parse(new InputStreamReader(broken));
 
-        // has errors but recoverable
+            // has errors but recoverable
 
-        assertTrue(mParser.foundProblems());
+            assertTrue(mParser.foundProblems());
 
-        Map<String, String> mainAttrs = contents.getMainAttributes();
+            Map<String, String> mainAttrs = contents.getMainAttributes();
 
-        assertEquals("toys", mainAttrs.get("Bundle-Name"));
+            assertEquals("toys", mainAttrs.get("Bundle-Name"));
 
-        assertEquals("1.0", contents.getVersion());
+            assertEquals("1.0", contents.getVersion());
 
-        Map<String, String> secondaryAttrs = contents.getAttributesForSection("secondSection");
+            Map<String, String> secondaryAttrs = contents.getAttributesForSection("secondSection");
 
-        assertEquals("secondSection", secondaryAttrs.get("Name"));
+            assertEquals("secondSection", secondaryAttrs.get("Name"));
 
-        List<String> sectionNames = contents.getSectionNames();
+            List<String> sectionNames = contents.getSectionNames();
 
-        assertEquals("secondSection", sectionNames.get(0));
-
+            assertEquals("secondSection", sectionNames.get(0));
+        }
     }
 
     public void testNameTooLong() {
