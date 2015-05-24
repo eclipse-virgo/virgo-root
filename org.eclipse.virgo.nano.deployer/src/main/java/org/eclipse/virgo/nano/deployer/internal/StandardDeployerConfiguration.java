@@ -74,7 +74,7 @@ public final class StandardDeployerConfiguration implements DeployerConfiguratio
      * {@inheritDoc}
      */
     public String toString() {
-        return String.format("Timeout: '%s', Pickup directory: '%s', Scan interval in millis", this.deploymentTimeoutSeconds,
+        return String.format("Timeout: '%s', Pickup directory: '%s', Scan interval in millis: '%s'", this.deploymentTimeoutSeconds,
             this.deploymentPickupDirectory, this.scanIntervalMillis);
     }
 
