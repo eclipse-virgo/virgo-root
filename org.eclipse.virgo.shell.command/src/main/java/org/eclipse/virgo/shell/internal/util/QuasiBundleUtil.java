@@ -18,7 +18,7 @@ import org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiResolutionFailure;
 
 /**
- * Util methods to help with Bundle related commands and formatting
+ * Utility methods to help with Bundle related commands and formatting
  *
  */
 public final class QuasiBundleUtil {
@@ -57,6 +57,7 @@ public final class QuasiBundleUtil {
      */
     public List<QuasiResolutionFailure> getResolverReport(long bundleId) {
         QuasiFramework framework = this.getQuasiFramework();
+        // We only care about the side-effect here
         framework.resolve();
         return framework.diagnose(bundleId);
     }
