@@ -23,13 +23,13 @@ import static org.junit.Assert.assertNull;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 
 import org.junit.Test;
-
 import org.eclipse.virgo.medic.eventlog.impl.LocaleResolver;
 import org.eclipse.virgo.medic.eventlog.impl.MessageResolver;
 import org.eclipse.virgo.medic.eventlog.impl.PropertyResourceBundleResolver;
@@ -51,22 +51,25 @@ public class StandardMessageResolverTests {
 
     @Test
     public void resolve() throws FileNotFoundException, IOException {
-
-        expect(this.localeResolver.getLocale()).andReturn(Locale.GERMAN);
-        expect(this.resourceBundleResolver.getResourceBundles(this.primaryBundle, "EventLogMessages_de.properties")).andReturn(
-            Arrays.asList(new PropertyResourceBundle(new FileInputStream("src/test/resources/messages.properties"))));
-        replay(this.localeResolver, this.resourceBundleResolver);
-        assertEquals("Bar", this.messageResolver.resolveLogEventMessage("ABC123"));
-        verify(this.localeResolver, this.resourceBundleResolver);
+        try (InputStream messageProperties = new FileInputStream("src/test/resources/messages.properties")) {
+            expect(this.localeResolver.getLocale()).andReturn(Locale.GERMAN);
+            expect(this.resourceBundleResolver.getResourceBundles(this.primaryBundle, "EventLogMessages_de.properties")).andReturn(
+                Arrays.asList(new PropertyResourceBundle(messageProperties)));
+            replay(this.localeResolver, this.resourceBundleResolver);
+            assertEquals("Bar", this.messageResolver.resolveLogEventMessage("ABC123"));
+            verify(this.localeResolver, this.resourceBundleResolver);
+        }
     }
 
     @Test
     public void resolveWithLocale() throws FileNotFoundException, IOException {
-        expect(this.resourceBundleResolver.getResourceBundles(this.primaryBundle, "EventLogMessages_it.properties")).andReturn(
-            Arrays.asList(new PropertyResourceBundle(new FileInputStream("src/test/resources/messages.properties"))));
-        replay(this.localeResolver, this.resourceBundleResolver);
-        assertEquals("Bar", this.messageResolver.resolveLogEventMessage("ABC123", Locale.ITALIAN));
-        verify(this.localeResolver, this.resourceBundleResolver);
+        try (InputStream messageProperties = new FileInputStream("src/test/resources/messages.properties")) {
+            expect(this.resourceBundleResolver.getResourceBundles(this.primaryBundle, "EventLogMessages_it.properties")).andReturn(
+                Arrays.asList(new PropertyResourceBundle(messageProperties)));
+            replay(this.localeResolver, this.resourceBundleResolver);
+            assertEquals("Bar", this.messageResolver.resolveLogEventMessage("ABC123", Locale.ITALIAN));
+            verify(this.localeResolver, this.resourceBundleResolver);
+        }
     }
 
     @Test
