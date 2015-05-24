@@ -74,8 +74,8 @@ public final class SyntheticContextBundleCreatingTransformerTests {
 
     @Before
     public void createGraph() {
-    		this.dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
-    		new PathReference("build/work/staging/plan-name-1").delete(true);
+        this.dag = new ThreadSafeDirectedAcyclicGraph<InstallArtifact>();
+        new PathReference("build/work/staging/plan-name-1").delete(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -136,8 +136,7 @@ public final class SyntheticContextBundleCreatingTransformerTests {
 
         InstallArtifact syntheticContextInstallArtifact = createMock(InstallArtifact.class);
 
-        File syntheticBundleDir = new File(
-            "build/work/s/nested-plan-1/0/0/nested-plan-1-synthetic.context.jar").getAbsoluteFile();
+        File syntheticBundleDir = new File("build/work/s/nested-plan-1/0/0/nested-plan-1-synthetic.context.jar").getAbsoluteFile();
         expect(
             this.installArtifactGraphFactory.constructInstallArtifactGraph(eq(new ArtifactIdentity("bundle", "nested-plan-1-synthetic.context",
                 new Version(1, 0, 0), ScopeNameFactory.createScopeName("nested-plan", new Version(1, 0, 0)))), isA(ArtifactStorage.class),
@@ -156,12 +155,14 @@ public final class SyntheticContextBundleCreatingTransformerTests {
     }
 
     private void assertBundlesImported(File manifestFile, String... symbolicNames) throws FileNotFoundException, IOException {
-        BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new FileReader(manifestFile));
-        List<ImportedBundle> importedBundles = bundleManifest.getImportBundle().getImportedBundles();
-        assertEquals(symbolicNames.length, importedBundles.size());
+        try (FileReader fileReader = new FileReader(manifestFile)) {
+            BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(fileReader);
+            List<ImportedBundle> importedBundles = bundleManifest.getImportBundle().getImportedBundles();
+            assertEquals(symbolicNames.length, importedBundles.size());
 
-        for (String symbolicName : symbolicNames) {
-            assertBundleImported(importedBundles, symbolicName);
+            for (String symbolicName : symbolicNames) {
+                assertBundleImported(importedBundles, symbolicName);
+            }
         }
     }
 

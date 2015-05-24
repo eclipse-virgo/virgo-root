@@ -83,9 +83,10 @@ public class JarFileArtifactFSTests {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void getOutputStream() {
+    public void getOutputStream() throws IOException {
         ArtifactFSEntry entry = this.artifactFS.getEntry("test/rawfile");
-        entry.getOutputStream();
+        try (InputStream dummy = entry.getInputStream()) {
+        }
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -157,9 +158,10 @@ public class JarFileArtifactFSTests {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void getInputStreamOfNonExistentFile() {
+    public void getInputStreamOfNonExistentFile() throws IOException {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch");
-        entry.getInputStream();
+        try (InputStream dummy = entry.getInputStream()) {
+        }
     }
 
     @Test
@@ -194,9 +196,10 @@ public class JarFileArtifactFSTests {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void getInputStreamOfNonExistentDirectory() {
+    public void getInputStreamOfNonExistentDirectory() throws IOException {
         ArtifactFSEntry entry = this.artifactFS.getEntry("x/nosuch/");
-        entry.getInputStream();
+        try (InputStream dummy = entry.getInputStream()) {
+        }
     }
 
     @Test
