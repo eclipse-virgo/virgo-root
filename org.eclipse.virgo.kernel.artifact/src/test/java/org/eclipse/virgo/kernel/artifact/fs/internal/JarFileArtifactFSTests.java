@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Scanner;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
@@ -85,7 +86,7 @@ public class JarFileArtifactFSTests {
     @Test(expected = UnsupportedOperationException.class)
     public void getOutputStream() throws IOException {
         ArtifactFSEntry entry = this.artifactFS.getEntry("test/rawfile");
-        try (InputStream dummy = entry.getInputStream()) {
+        try (OutputStream dummy = entry.getOutputStream()) {
         }
     }
 
