@@ -26,7 +26,6 @@ import org.eclipse.virgo.util.common.Tree.TreeVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  */
 public class ThreadSafeArrayListTreeTests {
@@ -96,16 +95,16 @@ public class ThreadSafeArrayListTreeTests {
             assertFalse(this.top.equals(a));
             assertFalse(a.equals(this.top));
         }
-        
+
         {
             Tree<String> a = new ThreadSafeArrayListTree<String>(null);
             a.hashCode();
             assertFalse(this.top.equals(a));
             assertFalse(a.equals(this.top));
         }
-        
+
         assertTrue(new ThreadSafeArrayListTree<String>(null).equals(new ThreadSafeArrayListTree<String>(null)));
-        
+
         Tree<String> t2 = new ThreadSafeArrayListTree<String>("b");
         assertFalse(t1.equals(t2));
         assertFalse(t2.equals(t1));
@@ -131,8 +130,8 @@ public class ThreadSafeArrayListTreeTests {
     public void testCopyOnAddChild() {
         this.top.addChild(this.top);
         assertEquals(14, this.top.size());
-        
-        //Ensure parents are correctly set up in the copy.
+
+        // Ensure parents are correctly set up in the copy.
         checkParents(this.top);
     }
 
@@ -165,7 +164,7 @@ public class ThreadSafeArrayListTreeTests {
         assertTrue(this.top.removeChild(children.get(0)));
         assertEquals(4, this.top.size());
     }
-    
+
     @Test
     public void testParent() {
         List<Tree<String>> children = this.top.getChildren();
@@ -202,7 +201,7 @@ public class ThreadSafeArrayListTreeTests {
         this.top.visit(visitor);
         assertEquals(8, visitor.getVisited().size());
     }
-    
+
     @Test
     public void testNormalExceptionVisit() throws Exception {
         TestTreeExceptionVisitor visitor = new TestTreeExceptionVisitor();
@@ -230,8 +229,8 @@ public class ThreadSafeArrayListTreeTests {
         this.top.visit(visitor);
         assertEquals(8, visitor.getVisited().size());
     }
-    
-    @Test(expected=Exception.class)
+
+    @Test(expected = Exception.class)
     public void testPartiallySkippedDueToExceptionExceptionVisit() throws Exception {
         TestTreeExceptionVisitor visitor = new TestTreeExceptionVisitor();
         Tree<String> t = new ThreadSafeArrayListTree<String>("*");
@@ -245,8 +244,7 @@ public class ThreadSafeArrayListTreeTests {
         }
     }
 
-
-    private class TestTreeVisitor implements TreeVisitor<String> {
+    private static class TestTreeVisitor implements TreeVisitor<String> {
 
         private List<String> visited = new ArrayList<String>();
 
@@ -260,7 +258,7 @@ public class ThreadSafeArrayListTreeTests {
             return this.visited;
         }
     }
-    
+
     private class TestTreeExceptionVisitor implements ExceptionThrowingTreeVisitor<String, Exception> {
 
         private List<String> visited = new ArrayList<String>();
@@ -278,6 +276,5 @@ public class ThreadSafeArrayListTreeTests {
             return this.visited;
         }
     }
-
 
 }
