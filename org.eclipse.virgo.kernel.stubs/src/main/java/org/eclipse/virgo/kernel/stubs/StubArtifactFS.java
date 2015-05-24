@@ -60,7 +60,6 @@ public class StubArtifactFS implements ArtifactFS {
     }
 
     public ArtifactFSEntry getEntry(String name) {
-        // TODO Auto-generated method stub
         return null;
     }
 }
