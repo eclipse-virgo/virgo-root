@@ -150,23 +150,21 @@ public class StubBundleContextTests {
         assertEquals(BundleEvent.INSTALLED, listener.getEvents()[0].getType());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void registerService() {
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put("testKey", "testValue");
         Object service = new Object();
-        ServiceRegistration serviceRegistration = this.bundleContext.registerService(Object.class.getName(), service, properties);
+        ServiceRegistration<?> serviceRegistration = this.bundleContext.registerService(Object.class.getName(), service, properties);
         assertNotNull(serviceRegistration);
         assertNotNull(serviceRegistration.getReference());
         assertEquals("testValue", serviceRegistration.getReference().getProperty("testKey"));
         assertSame(service, this.bundleContext.getService(serviceRegistration.getReference()));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void registerServiceTyped() {
-        Dictionary properties = new Hashtable();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put("testKey", "testValue");
         Object service = new Object();
         ServiceRegistration<Object> serviceRegistration = this.bundleContext.registerService(Object.class, service, properties);

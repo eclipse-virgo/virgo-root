@@ -100,10 +100,9 @@ public class StubBundleTests {
         assertEquals("testValue", this.bundle.getHeaders().get("testKey"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getCustomLocalizedHeaders() {
-        Dictionary testHeaders = new Hashtable();
+        Dictionary<String, String> testHeaders = new Hashtable<>();
         this.bundle.setLocalizedHeaders(testHeaders);
         assertEquals(testHeaders, this.bundle.getHeaders("testLocale"));
     }
@@ -219,18 +218,16 @@ public class StubBundleTests {
         assertNull(this.bundle.getRegisteredServices());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected = IllegalStateException.class)
     public void getRegisteredServicesUninstalled() throws BundleException {
-        this.bundle.addRegisteredService(new StubServiceReference(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
+        this.bundle.addRegisteredService(new StubServiceReference<Object>(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
         this.bundle.uninstall();
         this.bundle.getRegisteredServices();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getRegisteredServices() {
-        this.bundle.addRegisteredService(new StubServiceReference(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
+        this.bundle.addRegisteredService(new StubServiceReference<Object>(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
         assertNotNull(this.bundle.getRegisteredServices());
     }
 
@@ -239,18 +236,16 @@ public class StubBundleTests {
         assertNull(this.bundle.getServicesInUse());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected = IllegalStateException.class)
     public void getServicesInUseUninstalled() throws BundleException {
-        this.bundle.addServiceInUse(new StubServiceReference(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
+        this.bundle.addServiceInUse(new StubServiceReference<Object>(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
         this.bundle.uninstall();
         this.bundle.getServicesInUse();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getServicesInUse() {
-        this.bundle.addServiceInUse(new StubServiceReference(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
+        this.bundle.addServiceInUse(new StubServiceReference<Object>(new StubServiceRegistration<Object>(new StubBundleContext(this.bundle))));
         assertNotNull(this.bundle.getServicesInUse());
     }
 
@@ -504,8 +499,8 @@ public class StubBundleTests {
 
     private static final class TestFindEntriesDelegate implements FindEntriesDelegate {
 
-        public Enumeration findEntries(String path, String filePattern, boolean recurse) {
-            return new TestEnumeration();
+        public Enumeration<Object> findEntries(String path, String filePattern, boolean recurse) {
+            return new TestEnumeration<Object>();
         }
     }
 
@@ -516,11 +511,6 @@ public class StubBundleTests {
         public void update(StubBundle bundle) throws BundleException {
             this.updateCalled = true;
         }
-
-        public boolean getUpdateCalled() {
-            return this.updateCalled;
-        }
-
     }
 
     private static class TestEnumeration<S> implements Enumeration<S> {

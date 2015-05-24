@@ -361,15 +361,13 @@ public final class StubBundle implements Bundle {
     /**
      * Adds a {@link ServiceReference} for all subsequent calls to {@link #getRegisteredServices()}.
      * 
-     * @param serviceReferences The {@link ServiceReference}s
+     * @param serviceReference The {@link ServiceReference}
      * @return <code>this</code> instance of the {@link StubBundle}
      */
-    public StubBundle addRegisteredService(StubServiceReference<Object>... serviceReferences) {
+    public StubBundle addRegisteredService(StubServiceReference<Object> serviceReference) {
         synchronized (this.registeredServicesMonitor) {
-            for (StubServiceReference<Object> serviceReference : serviceReferences) {
-                serviceReference.setBundle(this);
-                this.registeredServices.add(serviceReference);
-            }
+            serviceReference.setBundle(this);
+            this.registeredServices.add(serviceReference);
             return this;
         }
     }
@@ -435,15 +433,13 @@ public final class StubBundle implements Bundle {
     /**
      * Adds a {@link ServiceReference} for all subsequent calls to {@link #getServicesInUse()}.
      * 
-     * @param serviceReferences The {@link ServiceReference}s
+     * @param serviceReference The {@link ServiceReference}
      * @return <code>this</code> instance of the {@link StubBundle}
      */
-    public StubBundle addServiceInUse(StubServiceReference<Object>... serviceReferences) {
+    public StubBundle addServiceInUse(StubServiceReference<Object> serviceReference) {
         synchronized (this.servicesInUseMonitor) {
-            for (StubServiceReference<Object> serviceReference : serviceReferences) {
-                serviceReference.addUsingBundles(this);
-                this.servicesInUse.add(serviceReference);
-            }
+            serviceReference.addUsingBundles(this);
+            this.servicesInUse.add(serviceReference);
             return this;
         }
     }
