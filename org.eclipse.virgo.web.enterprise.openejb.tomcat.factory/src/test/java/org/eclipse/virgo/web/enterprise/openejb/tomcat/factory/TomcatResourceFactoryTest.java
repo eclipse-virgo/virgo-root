@@ -47,7 +47,6 @@ public class TomcatResourceFactoryTest {
 		public MyNamingContext(Hashtable<String, Object> env, String name)
 				throws NamingException {
 			super(env, name);
-			// TODO Auto-generated constructor stub
 		}
 		
 		public Object lookup(String name) {

@@ -50,32 +50,26 @@ public class OpenEjbEmptyProtectionDomainClassloadingHook implements ClassLoadin
 	public boolean addClassPathEntry(ArrayList<ClasspathEntry> arg0,
 			String arg1, ClasspathManager arg2, BaseData arg3,
 			ProtectionDomain arg4) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public String findLibrary(BaseData arg0, String arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ClassLoader getBundleClassLoaderParent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void initializedClassLoader(BaseClassLoader arg0, BaseData arg1) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public byte[] processClass(String arg0, byte[] arg1, ClasspathEntry arg2,
 			BundleEntry arg3, ClasspathManager arg4) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

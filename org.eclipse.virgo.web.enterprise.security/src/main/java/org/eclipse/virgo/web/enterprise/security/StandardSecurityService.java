@@ -241,7 +241,6 @@ public class StandardSecurityService extends AbstractSecurityService {
 	@Override
 	public UUID login(String arg0, String arg1, String arg2)
 			throws LoginException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

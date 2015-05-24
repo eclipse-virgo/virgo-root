@@ -22,7 +22,6 @@ public class BaseDataStub extends BaseData {
 
 	public BaseDataStub(long id, BaseAdaptor adaptor) {
 		super(id, adaptor);
-		// TODO Auto-generated constructor stub
 	}
 
 	public Dictionary<String, String> getManifest() throws BundleException {

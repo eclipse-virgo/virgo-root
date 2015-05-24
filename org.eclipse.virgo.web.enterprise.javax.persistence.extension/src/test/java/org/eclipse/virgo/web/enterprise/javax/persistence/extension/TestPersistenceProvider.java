@@ -23,19 +23,16 @@ public class TestPersistenceProvider implements PersistenceProvider {
 	@Override
 	public EntityManagerFactory createContainerEntityManagerFactory(
 			PersistenceUnitInfo arg0, Map arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public EntityManagerFactory createEntityManagerFactory(String arg0, Map arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ProviderUtil getProviderUtil() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

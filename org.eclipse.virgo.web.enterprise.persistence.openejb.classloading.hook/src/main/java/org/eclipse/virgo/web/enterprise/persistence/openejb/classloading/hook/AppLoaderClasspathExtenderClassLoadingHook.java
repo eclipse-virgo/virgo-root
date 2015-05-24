@@ -156,20 +156,16 @@ public class AppLoaderClasspathExtenderClassLoadingHook implements ClassLoadingH
 
 	@Override
 	public String findLibrary(BaseData arg0, String arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ClassLoader getBundleClassLoaderParent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void initializedClassLoader(BaseClassLoader arg0, BaseData arg1) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

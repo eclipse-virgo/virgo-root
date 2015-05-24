@@ -35,38 +35,31 @@ public class BundleFileStub extends BundleFile {
 
 	@Override
 	public void close() throws IOException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean containsDir(String arg0) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public BundleEntry getEntry(String arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Enumeration<String> getEntryPaths(String arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public File getFile(String arg0, boolean arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void open() throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 	
 }

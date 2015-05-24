@@ -24,7 +24,6 @@ public class ClasspathManagerStub extends ClasspathManager {
 	public ClasspathManagerStub(BaseData data, String[] classpath,
 			BaseClassLoader classloader) {
 		super(data, classpath, classloader);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public ClasspathEntry getExternalClassPath(String cp, BaseData sourcedata, ProtectionDomain sourcedomain) {
