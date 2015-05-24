@@ -43,7 +43,6 @@ public class StubQuasiFramework implements QuasiFramework {
     
     private final Map<Long, StubBundle> bundles = new HashMap<Long, StubBundle>();
 
-    @SuppressWarnings("unchecked")
 	public StubQuasiFramework(StubBundle... stubBundles) {
     	for (StubBundle stubBundle : stubBundles) {
             this.bundles.put(stubBundle.getBundleId(), stubBundle);
