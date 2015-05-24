@@ -37,7 +37,7 @@ public class BundleSearchingPropertyResourceBundleResolverTests {
     public void entryNotFound() {
         StubBundle bundle = new StubBundle().setFindEntriesDelegate(new FindEntriesDelegate() {
 
-            public Enumeration<?> findEntries(String path, String pattern, boolean recurse) {
+            public Enumeration<URL> findEntries(String path, String pattern, boolean recurse) {
                 return null;
             }
         });
@@ -50,7 +50,7 @@ public class BundleSearchingPropertyResourceBundleResolverTests {
     public void nonExistentEntry() {
         StubBundle bundle = new StubBundle().setFindEntriesDelegate(new FindEntriesDelegate() {
 
-            public Enumeration<?> findEntries(String path, String pattern, boolean recurse) {
+            public Enumeration<URL> findEntries(String path, String pattern, boolean recurse) {
                 try {
                     Vector<URL> urls = new Vector<URL>();
                     urls.add(new File("does/not/exist").toURI().toURL());
@@ -70,7 +70,7 @@ public class BundleSearchingPropertyResourceBundleResolverTests {
     public void existingEntry() {
         StubBundle bundle = new StubBundle().setFindEntriesDelegate(new FindEntriesDelegate() {
 
-            public Enumeration<?> findEntries(String path, String pattern, boolean recurse) {
+            public Enumeration<URL> findEntries(String path, String pattern, boolean recurse) {
                 try {
                     Vector<URL> urls = new Vector<URL>();
                     urls.add(new File("src/test/resources/messages.properties").toURI().toURL());
