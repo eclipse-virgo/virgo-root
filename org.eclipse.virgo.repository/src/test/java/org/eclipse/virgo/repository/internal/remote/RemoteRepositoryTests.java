@@ -470,11 +470,6 @@ public class RemoteRepositoryTests {
             this.exception = null;
         }
 
-        @SuppressWarnings("unused")
-        StubArtifactBridge(RuntimeException exception) {
-            this.exception = exception;
-        }
-
         public ArtifactDescriptor generateArtifactDescriptor(File artifact) throws ArtifactGenerationException {
             if (this.exception == null) {
                 return new ArtifactDescriptorBuilder().setUri(artifact.toURI()).setType("dummy").setName("dummy").setVersion(
