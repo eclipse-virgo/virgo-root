@@ -8,6 +8,7 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
+
 package org.eclipse.virgo.management.console.stubs.types;
 
 import org.mozilla.javascript.Function;
@@ -16,25 +17,25 @@ import org.mozilla.javascript.Function;
  * 
  *
  */
-public class Server extends ParentStub{
+public class Server extends ParentStub {
 
-	private static final long serialVersionUID = 1L;
-	
-	private static Function callbackFunction;
-	
-	public Server() {
-	}
-	
-	// Stub methods
+    private static final long serialVersionUID = 1L;
 
-	public void jsFunction_getServerOverview(Function callbackFunction){
-		Server.callbackFunction = callbackFunction;
-	}
-	
-	// Test methods
+    private Function callbackFunction;
 
-	public static Function getCallbackFunction() {
-		return Server.callbackFunction;
-	}
-	
+    public Server() {
+    }
+
+    // Stub methods
+
+    public void jsFunction_getServerOverview(Function callbackFunction) {
+        this.callbackFunction = callbackFunction;
+    }
+
+    // Test methods
+
+    public Function getCallbackFunction() {
+        return this.callbackFunction;
+    }
+
 }

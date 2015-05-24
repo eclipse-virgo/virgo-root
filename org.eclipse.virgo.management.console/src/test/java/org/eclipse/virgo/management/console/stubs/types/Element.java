@@ -32,11 +32,11 @@ public class Element extends ParentStub {
 
     private static List<String> CONSTRUCTOR_ARGUMENT_TRACE = new ArrayList<String>();
 
-    private static Element LAST_REPLACEMENT;
+    private Element lastReplacement;
 
-	private static Element LAST_APPENDED;
+	private Element lastAppended;
 
-	private static Function READY;
+	private Function ready;
     
     private final String constructorArgument;
 	
@@ -69,16 +69,16 @@ public class Element extends ParentStub {
     }
 
 	public void jsFunction_ready(Function readyFunction){
-		READY = readyFunction;
+		ready = readyFunction;
 	}
     
     public ScriptableObject jsFunction_replaceWith(Element replacement){
-        LAST_REPLACEMENT = replacement;
+        lastReplacement = replacement;
         return this;
     }
     
     public ScriptableObject jsFunction_append(Element toAppend){
-        LAST_APPENDED = toAppend;
+        lastAppended = toAppend;
         return this;
     }
 
@@ -139,8 +139,8 @@ public class Element extends ParentStub {
     
     // Test helper methods
 	
-	public static Function getReadyFunction(){
-		return READY;
+	public Function getReadyFunction(){
+		return ready;
 	}
 	
 	public List<String> getClasses(){
@@ -151,12 +151,12 @@ public class Element extends ParentStub {
 		return CONSTRUCTOR_ARGUMENT_TRACE;
 	}
    
-	public static Element getLastReplacement() {
-		return LAST_REPLACEMENT;
+	public Element getLastReplacement() {
+		return lastReplacement;
 	}
    
-	public static Element getLastAppended() {
-		return LAST_APPENDED;
+	public Element getLastAppended() {
+		return lastAppended;
 	}
 
 	public String getConstructorArgument() {
