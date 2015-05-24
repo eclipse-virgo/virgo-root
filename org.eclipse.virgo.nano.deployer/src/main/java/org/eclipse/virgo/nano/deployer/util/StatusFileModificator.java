@@ -24,13 +24,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The StatusFileModificator class should be used as a utility class to manipulate with deployable status files.
  * Deployable status files are located in a '.state' folder created in the autodeployment folder (a.k.a the pickup
- * folder). 
- * Status files names are constructed as follows: <deployable_name>.<operation>.<operation_status>, where
+ * folder). Status files names are constructed as follows: <deployable_name>.<operation>.<operation_status>, where
  * deployable_name is the name of the deployable archive without the file extension (such as jar, war); operation - the
  * operation which result is reported through the status file, possible values: deploy | undeploy; operation_status -
- * status of the operation, possible values: ok | error; 
- * Status files include information about the bundleid and the lastmodified timestamp of the deployable archive. 
- * The latter can be used to check if there have been any offline updates of the deployable archive (while app server is stopped).
+ * status of the operation, possible values: ok | error; Status files include information about the bundleid and the
+ * lastmodified timestamp of the deployable archive. The latter can be used to check if there have been any offline
+ * updates of the deployable archive (while app server is stopped).
  * 
  * Not Thread-safe.
  */
@@ -63,10 +62,9 @@ public class StatusFileModificator {
     private static final String[] STATUS_FILENAMES_SUFFEXES = { DOT + OP_DEPLOY + DOT + SUCCESS_MARK, DOT + OP_DEPLOY + DOT + ERROR_MARK,
         DOT + OP_UNDEPLOY + DOT + SUCCESS_MARK, DOT + OP_UNDEPLOY + DOT + ERROR_MARK };
 
-    //pattern that matches the deploy status files - ".deploy.(ok|error)"
-    private static final String STATUS_FILENAMES_DEPLOY_PATTERN =  DOT + OP_DEPLOY + DOT + '(' + SUCCESS_MARK + '|' + ERROR_MARK + ')';
-    
-    
+    // pattern that matches the deploy status files - ".deploy.(ok|error)"
+    private static final String STATUS_FILENAMES_DEPLOY_PATTERN = DOT + OP_DEPLOY + DOT + '(' + SUCCESS_MARK + '|' + ERROR_MARK + ')';
+
     /**
      * Deletes the current status file (if any) for the given deployable archive
      */
@@ -82,7 +80,7 @@ public class StatusFileModificator {
             }
         }
     }
-    
+
     /**
      * Deletes the first occurrence of a status file from deploy operation that matches the given war name pattern (if
      * any). There should be one match only.
@@ -93,10 +91,16 @@ public class StatusFileModificator {
         final File stateDir = new File(pickupDir, STATE_DIR_NAME);
         if (stateDir.exists()) {
             String[] statusFileNames = stateDir.list();
-            for (String stateFileName : statusFileNames) {
-                if (stateFileName.matches(warNamePattern + STATUS_FILENAMES_DEPLOY_PATTERN)) {
-                    deleteFile(new File(stateDir, stateFileName));
-                    return stateFileName.substring(0, stateFileName.lastIndexOf(OP_DEPLOY) - 1);
+            if (statusFileNames != null) {
+                for (String stateFileName : statusFileNames) {
+                    if (stateFileName.matches(warNamePattern + STATUS_FILENAMES_DEPLOY_PATTERN)) {
+                        deleteFile(new File(stateDir, stateFileName));
+                        return stateFileName.substring(0, stateFileName.lastIndexOf(OP_DEPLOY) - 1);
+                    }
+                }
+            } else {
+                if (logger.isInfoEnabled()) {
+                    logger.info("State directory [" + stateDir.getAbsolutePath() + "] not listable. Therefore, there is no status file to delete.");
                 }
             }
         } else {
