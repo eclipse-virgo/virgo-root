@@ -53,8 +53,6 @@ public class OSGiAssertTests {
         this.bundleContext.addFrameworkListener(new FrameworkListener() {
 
             public void frameworkEvent(FrameworkEvent event) {
-                // TODO Auto-generated method stub
-
             }
         });
         assertFrameworkListenerCount(this.bundleContext, 1);
@@ -65,8 +63,6 @@ public class OSGiAssertTests {
         this.bundleContext.addServiceListener(new ServiceListener() {
 
             public void serviceChanged(ServiceEvent event) {
-                // TODO Auto-generated method stub
-
             }
         });
         assertServiceListenerCount(this.bundleContext, 1);
