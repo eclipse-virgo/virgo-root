@@ -14,6 +14,7 @@ package org.eclipse.virgo.nano.deployer.internal;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -146,7 +147,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
             }
             if (existingBundles.size() > 1) {
                 this.logger.warn("Multiple bundles matching the marked for uninstall symbolicName-version pair. List of all matches: "
-                    + existingBundles.toArray(new Bundle[existingBundles.size()]).toString());
+                    + Arrays.toString(existingBundles.toArray(new Bundle[existingBundles.size()])));
                 this.logger.warn("Uninstalling the last-installed matching bundle " + existingBundles.get(existingBundles.size() - 1).toString());
             }
             boolean isThereSuitableDeployer = false;
