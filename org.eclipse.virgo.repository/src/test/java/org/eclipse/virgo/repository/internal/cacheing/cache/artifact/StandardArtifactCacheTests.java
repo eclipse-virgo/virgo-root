@@ -83,12 +83,15 @@ public class StandardArtifactCacheTests {
     }
 
     private void replaceBundleFile(PathReference b) {
-        deleteBundleFile();
+        deleteBundleFileIfExistent();
         b.copy(new PathReference(BUNDLE_FILE));
     }
 
-    private void deleteBundleFile() {
-        BUNDLE_FILE.delete();
+    private void deleteBundleFileIfExistent() {
+        if (BUNDLE_FILE.exists()) {
+            boolean delete = BUNDLE_FILE.delete();
+            assertTrue("Bundle file was not deleted", delete);
+        }
     }
 
     private void setUpCacheDirectory() {
@@ -157,7 +160,7 @@ public class StandardArtifactCacheTests {
         assertFalse((hash1.equals(hash2)));
 
         // Getting from the cache again will not update the cache.
-        deleteBundleFile();
+        deleteBundleFileIfExistent();
         URI cachedUri3 = this.artifactCache.getCachedUri(this.mockArtifactDescriptorHash);
         checkUriInCache(cachedUri3);
         String hash3 = getArtifactHash(cachedUri3);
