@@ -92,7 +92,7 @@ public class UrlWaitLatch {
 
             fail(String.format("After %d ms, status code was %d", duration, statusCode));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            fail("Failed to connect to '" + url + "'.");
         } finally {
             get.releaseConnection();
         }
