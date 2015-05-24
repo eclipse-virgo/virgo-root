@@ -16,15 +16,12 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
 import org.eclipse.virgo.medic.impl.config.ConfigurationChangeListener;
 import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
-import org.eclipse.virgo.medic.log.impl.ExecutionStackAccessor;
-import org.eclipse.virgo.medic.log.impl.LoggingPrintStreamWrapper;
-import org.eclipse.virgo.medic.log.impl.SecurityManagerExecutionStackAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -167,17 +164,16 @@ public class LoggingPrintStreamWrapperTests {
         this.wrapper = new LoggingPrintStreamWrapper(printStream, getClass().getName(), new SecurityManagerExecutionStackAccessor(), new StubConfigurationProvider(), "theProperty");
 	}
 
-	private final class StubConfigurationProvider implements ConfigurationProvider {
+	private final static class StubConfigurationProvider implements ConfigurationProvider {
 
-		private final Properties configuration;
+		private final Hashtable<String, Object> configuration;
 
 		private StubConfigurationProvider() {
-			this.configuration = new Properties();
-			this.configuration.setProperty("theProperty", "true");
+			this.configuration = new Hashtable<String, Object>();
+			this.configuration.put("theProperty", "true");
 		}
 
-		@SuppressWarnings("unchecked")
-		public Dictionary getConfiguration() {
+		public Dictionary<String, Object> getConfiguration() {
 			return this.configuration;
 		}
 
