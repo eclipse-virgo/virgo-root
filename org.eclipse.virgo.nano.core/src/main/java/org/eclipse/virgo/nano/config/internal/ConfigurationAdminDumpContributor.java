@@ -78,8 +78,8 @@ public class ConfigurationAdminDumpContributor implements DumpContributor {
         sb.append("\n\n");
     }
 
-    private void appendProperties(StringBuilder sb, Dictionary properties) {
-        Enumeration keys = properties.keys();
+    private void appendProperties(StringBuilder sb, Dictionary<String, Object> properties) {
+        Enumeration<String> keys = properties.keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             appendProperty(sb, key, properties.get(key));
