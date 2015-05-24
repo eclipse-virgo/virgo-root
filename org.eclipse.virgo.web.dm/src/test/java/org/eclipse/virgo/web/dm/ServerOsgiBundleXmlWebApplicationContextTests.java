@@ -26,24 +26,25 @@ import org.osgi.framework.BundleContext;
 import org.springframework.mock.env.MockEnvironment;
 
 public class ServerOsgiBundleXmlWebApplicationContextTests {
-    
+
     @Test
     public void retrievalOfBundleContextFromServletContext() {
-        ServerOsgiBundleXmlWebApplicationContext applicationContext = new ServerOsgiBundleXmlWebApplicationContext();
-        
-        ServletContext servletContext = createMock(ServletContext.class);
-        BundleContext bundleContext = createMock(BundleContext.class);
-        Bundle bundle = createNiceMock(Bundle.class);
-        expect(bundleContext.getBundle()).andReturn(bundle);
-        expect(servletContext.getAttribute(ServerOsgiBundleXmlWebApplicationContext.BUNDLE_CONTEXT_ATTRIBUTE)).andReturn(bundleContext);
-        expect(bundle.getBundleContext()).andReturn(bundleContext);
-        replay(servletContext, bundleContext, bundle);
-        
-        applicationContext.setServletContext(servletContext);
-        
-        verify(servletContext, bundleContext, bundle);
+        try (ServerOsgiBundleXmlWebApplicationContext applicationContext = new ServerOsgiBundleXmlWebApplicationContext()) {
+
+            ServletContext servletContext = createMock(ServletContext.class);
+            BundleContext bundleContext = createMock(BundleContext.class);
+            Bundle bundle = createNiceMock(Bundle.class);
+            expect(bundleContext.getBundle()).andReturn(bundle);
+            expect(servletContext.getAttribute(ServerOsgiBundleXmlWebApplicationContext.BUNDLE_CONTEXT_ATTRIBUTE)).andReturn(bundleContext);
+            expect(bundle.getBundleContext()).andReturn(bundleContext);
+            replay(servletContext, bundleContext, bundle);
+
+            applicationContext.setServletContext(servletContext);
+
+            verify(servletContext, bundleContext, bundle);
+        }
     }
-    
+
     @Test
     public void retrievalOfBundleContextFromApplicationContext() {
         BundleContext bundleContext = createNiceMock(BundleContext.class);
@@ -51,17 +52,18 @@ public class ServerOsgiBundleXmlWebApplicationContextTests {
         Bundle bundle = createNiceMock(Bundle.class);
         expect(bundleContext.getBundle()).andReturn(bundle);
         expect(parent.getBundleContext()).andReturn(bundleContext);
-		expect(parent.getEnvironment()).andReturn(new MockEnvironment());
+        expect(parent.getEnvironment()).andReturn(new MockEnvironment());
         replay(parent, bundleContext, bundle);
-        ServerOsgiBundleXmlWebApplicationContext applicationContext = new ServerOsgiBundleXmlWebApplicationContext(parent);
-        
-        ServletContext servletContext = createMock(ServletContext.class);
-        expect(servletContext.getAttribute(ServerOsgiBundleXmlWebApplicationContext.BUNDLE_CONTEXT_ATTRIBUTE)).andReturn(null);
-        
-        replay(servletContext);
-        
-        applicationContext.setServletContext(servletContext);
-        
-        verify(servletContext, parent, bundleContext, bundle);
+        try (ServerOsgiBundleXmlWebApplicationContext applicationContext = new ServerOsgiBundleXmlWebApplicationContext(parent)) {
+
+            ServletContext servletContext = createMock(ServletContext.class);
+            expect(servletContext.getAttribute(ServerOsgiBundleXmlWebApplicationContext.BUNDLE_CONTEXT_ATTRIBUTE)).andReturn(null);
+
+            replay(servletContext);
+
+            applicationContext.setServletContext(servletContext);
+
+            verify(servletContext, parent, bundleContext, bundle);
+        }
     }
 }
