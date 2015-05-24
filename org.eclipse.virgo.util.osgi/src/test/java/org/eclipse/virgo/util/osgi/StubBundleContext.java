@@ -78,22 +78,18 @@ public class StubBundleContext implements BundleContext {
         return new Filter(){
 
             public boolean match(ServiceReference<?> arg0) {
-                // TODO Auto-generated method stub
                 return true;
             }
 
             public boolean match(Dictionary<String, ?> arg0) {
-                // TODO Auto-generated method stub
                 return true;
             }
 
             public boolean matchCase(Dictionary<String, ?> arg0) {
-                // TODO Auto-generated method stub
                 return true;
             }
 
 			public boolean matches(Map<String, ?> map) {
-				// TODO Auto-generated method stub
 				return true;
 			}
             
@@ -174,32 +170,26 @@ public class StubBundleContext implements BundleContext {
         refs[0] = new ServiceReference<ServiceObject>(){
 
             public int compareTo(Object arg0) {
-                // TODO Auto-generated method stub
                 return 0;
             }
 
             public Bundle getBundle() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public Object getProperty(String arg0) {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public String[] getPropertyKeys() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public Bundle[] getUsingBundles() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public boolean isAssignableTo(Bundle arg0, String arg1) {
-                // TODO Auto-generated method stub
                 return false;
             }
             

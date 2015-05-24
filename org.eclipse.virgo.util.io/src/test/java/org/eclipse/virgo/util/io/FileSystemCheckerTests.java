@@ -469,7 +469,6 @@ public class FileSystemCheckerTests {
 						File file = new File(path);
 						file.setLastModified(System.currentTimeMillis() + 1000);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

@@ -400,8 +400,6 @@ public class StubLogger implements Logger {
      * {@inheritDoc}
      */
     public void trace(Marker arg0, String arg1, Object arg2) {
-        // TODO Auto-generated method stub
-
     }
 
     /** 
