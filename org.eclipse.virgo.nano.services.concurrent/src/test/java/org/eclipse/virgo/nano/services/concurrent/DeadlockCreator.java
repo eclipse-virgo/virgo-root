@@ -92,7 +92,7 @@ public class DeadlockCreator implements DeadlockCreatorMBean {
                     e.printStackTrace();
                 }
                 synchronized (this.second) {
-
+                    System.out.println("Running DeadlockRunnable");
                 }
             }
         }
@@ -115,7 +115,7 @@ public class DeadlockCreator implements DeadlockCreatorMBean {
          */
         public void run() {
             synchronized (this.monitor) {
-
+                System.out.println("running ExtraeousRunnable");
             }
         }
 
