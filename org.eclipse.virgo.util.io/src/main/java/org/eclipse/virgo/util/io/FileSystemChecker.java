@@ -55,9 +55,9 @@ public final class FileSystemChecker {
      * Enables bulk handling of all initially observed file system objects (so that they are handled altogether at once
      * and not one by one)
      */
-    private final String INITIAL_EVENT_HANDLING_MODE = "org.eclipse.virgo.fschecker.initialEventMode";
+    private static final String INITIAL_EVENT_HANDLING_MODE = "org.eclipse.virgo.fschecker.initialEventMode";
 
-    private final String BULK_MODE_VALUE = "bulk";
+    private static final String BULK_MODE_VALUE = "bulk";
 
     private final AtomicBoolean isInitialEventsHandlingInitiatedOnce = new AtomicBoolean(false);
 
@@ -499,6 +499,6 @@ public final class FileSystemChecker {
     }
 
     private boolean isInitialEventsBulkHandlingEnabled() {
-        return this.BULK_MODE_VALUE.equalsIgnoreCase(System.getProperty(this.INITIAL_EVENT_HANDLING_MODE));
+        return BULK_MODE_VALUE.equalsIgnoreCase(System.getProperty(INITIAL_EVENT_HANDLING_MODE));
     }
 }
