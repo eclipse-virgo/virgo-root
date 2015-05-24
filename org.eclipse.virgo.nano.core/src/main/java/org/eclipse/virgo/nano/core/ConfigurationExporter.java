@@ -14,11 +14,11 @@ public interface ConfigurationExporter {
 	/**
 	 * Retrieve user region configuration properties
 	 */
-	Dictionary getUserRegionConfigurationProperties();
+	Dictionary<String, Object> getUserRegionConfigurationProperties();
 
 	/**
 	 * Retrieve kernel region configuration properties
 	 */
-	Dictionary getKernelRegionConfigurationProperties();
+	Dictionary<String, Object> getKernelRegionConfigurationProperties();
 
 }
