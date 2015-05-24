@@ -42,7 +42,7 @@ public final class StubConfiguration implements Configuration {
 
     private volatile boolean deleted = false;
 
-    private volatile Dictionary properties;
+    private volatile Dictionary<String, Object> properties;
 
     private final Object propertiesMonitor = new Object();
 
@@ -113,8 +113,7 @@ public final class StubConfiguration implements Configuration {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public Dictionary getProperties() {
+    public Dictionary<String, Object> getProperties() {
         synchronized (this.propertiesMonitor) {
             return this.properties == null ? null : shallowCopy(this.properties);
         }
@@ -127,11 +126,10 @@ public final class StubConfiguration implements Configuration {
      * @param value The value to map to
      * @return <code>this</code> instance of the {@link StubConfiguration}
      */
-    @SuppressWarnings("unchecked")
     public StubConfiguration addProperty(String key, Object value) {
         synchronized (this.propertiesMonitor) {
             if (this.properties == null) {
-                this.properties = new Hashtable();
+                this.properties = new Hashtable<String, Object>();
                 updateSystemProperties(this.properties);
             }
 
@@ -158,11 +156,12 @@ public final class StubConfiguration implements Configuration {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
-    public void update(Dictionary properties) throws IOException {
+    public void update(Dictionary<String, ?> properties) throws IOException {
         assertNotNull(properties, "properties");
         synchronized (this.propertiesMonitor) {
-            Dictionary copy = shallowCopy(properties);
+            Dictionary<String, Object> copy = (Dictionary<String, Object>) shallowCopy(properties);
             updateSystemProperties(copy);
             this.properties = copy;
         }
@@ -214,8 +213,7 @@ public final class StubConfiguration implements Configuration {
         return this.deleted;
     }
 
-    @SuppressWarnings("unchecked")
-    private void updateSystemProperties(Dictionary properties) {
+    private void updateSystemProperties(Dictionary<String, Object> properties) {
         properties.put(Constants.SERVICE_PID, this.pid);
         if (this.factoryPid == null) {
             properties.remove(ConfigurationAdmin.SERVICE_FACTORYPID);

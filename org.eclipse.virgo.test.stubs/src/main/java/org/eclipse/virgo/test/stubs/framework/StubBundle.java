@@ -167,7 +167,6 @@ public final class StubBundle implements Bundle {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
         synchronized (this.findEntriesMonitor) {
             if (this.findEntriesDelegate != null) {

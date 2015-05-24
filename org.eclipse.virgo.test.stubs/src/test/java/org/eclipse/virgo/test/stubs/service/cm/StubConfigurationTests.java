@@ -116,13 +116,12 @@ public class StubConfigurationTests {
         assertEquals("test2", this.config.getProperties().get("test1"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getProperties() throws IOException {
         this.config.update(new Hashtable<String, String>());
 
-        Dictionary<String, String> properties1 = this.config.getProperties();
-        Dictionary<String, String> properties2 = this.config.getProperties();
+        Dictionary<String, Object> properties1 = this.config.getProperties();
+        Dictionary<String, Object> properties2 = this.config.getProperties();
         assertNotSame(properties1, properties2);
         properties2.put("test3", "test4");
         assertFalse(properties2.equals(this.config.getProperties()));
@@ -145,27 +144,25 @@ public class StubConfigurationTests {
         this.config.update(null);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void updateAddProperties() throws IOException {
         assertNull(this.config.getProperties());
-        this.config.update(new Hashtable());
+        this.config.update(new Hashtable<String, Object>());
         assertEquals(1, this.config.getProperties().size());
         assertEquals("test", this.config.getProperties().get(Constants.SERVICE_PID));
 
         Configuration config1 = new StubConfiguration("test1", "test2");
-        config1.update(new Hashtable());
+        config1.update(new Hashtable<String, Object>());
         assertEquals(2, config1.getProperties().size());
         assertEquals("test1", config1.getProperties().get(Constants.SERVICE_PID));
         assertEquals("test2", config1.getProperties().get(ConfigurationAdmin.SERVICE_FACTORYPID));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void updateOverwriteProperties() throws IOException {
         assertNull(this.config.getProperties());
 
-        Hashtable properties = new Hashtable();
+        Hashtable<String, String> properties = new Hashtable<>();
         properties.put(Constants.SERVICE_PID, "test2");
         properties.put(ConfigurationAdmin.SERVICE_FACTORYPID, "test3");
 
@@ -183,7 +180,7 @@ public class StubConfigurationTests {
     @Test(expected = IllegalStateException.class)
     public void updatePropertiesAfterDelete() throws IOException {
         this.config.delete();
-        this.config.update(new Hashtable());
+        this.config.update(new Hashtable<String, Object>());
     }
 
     @Test

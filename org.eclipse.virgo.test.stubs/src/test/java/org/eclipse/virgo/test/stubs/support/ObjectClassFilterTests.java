@@ -28,7 +28,7 @@ import org.osgi.framework.ServiceReference;
 public class ObjectClassFilterTests {
 
     private final ObjectClassFilter classFilter = new ObjectClassFilter(Object.class);
-    
+
     private final ObjectClassFilter classNameFilter = new ObjectClassFilter(Object.class.getName());
 
     @Test
@@ -44,7 +44,7 @@ public class ObjectClassFilterTests {
             }
 
             public Object getProperty(String key) {
-                return new String[] {Object.class.getName()};
+                return new String[] { Object.class.getName() };
             }
 
             public String[] getPropertyKeys() {
@@ -59,7 +59,7 @@ public class ObjectClassFilterTests {
                 throw new UnsupportedOperationException();
             }
         };
-        
+
         assertTrue(this.classFilter.match(objectServiceReference));
         assertTrue(this.classNameFilter.match(objectServiceReference));
 
@@ -74,7 +74,7 @@ public class ObjectClassFilterTests {
             }
 
             public Object getProperty(String key) {
-                return new String[] {Exception.class.getName()};
+                return new String[] { Exception.class.getName() };
             }
 
             public String[] getPropertyKeys() {
@@ -97,7 +97,7 @@ public class ObjectClassFilterTests {
     @Test
     public void matches() {
         Map<String, String[]> classNameMap = new HashMap<String, String[]>();
-        classNameMap.put(Constants.OBJECTCLASS, new String[]{Object.class.getName(), Object.class.getName()});
+        classNameMap.put(Constants.OBJECTCLASS, new String[] { Object.class.getName(), Object.class.getName() });
 
         assertTrue(this.classFilter.matches(classNameMap));
     }
@@ -107,26 +107,24 @@ public class ObjectClassFilterTests {
         this.classFilter.matches(new HashMap<String, Object>());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void matchDictionaryTrue() {
-        Dictionary d1 = new Hashtable();
-        d1.put(Constants.OBJECTCLASS, new String[] {Object.class.getName()});
+        Dictionary<String, Object> d1 = new Hashtable<>();
+        d1.put(Constants.OBJECTCLASS, new String[] { Object.class.getName() });
         assertTrue(this.classFilter.match(d1));
         assertTrue(this.classFilter.matchCase(d1));
-        
+
         assertTrue(this.classNameFilter.match(d1));
         assertTrue(this.classNameFilter.matchCase(d1));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void matchDictionaryFalse() {
-        Dictionary d1 = new Hashtable();
-        d1.put(Constants.OBJECTCLASS, new String[] {Exception.class.getName()});
+        Dictionary<String, Object> d1 = new Hashtable<>();
+        d1.put(Constants.OBJECTCLASS, new String[] { Exception.class.getName() });
         assertFalse(this.classFilter.match(d1));
         assertFalse(this.classFilter.matchCase(d1));
-        
+
         assertFalse(this.classNameFilter.match(d1));
         assertFalse(this.classNameFilter.matchCase(d1));
     }
@@ -136,9 +134,9 @@ public class ObjectClassFilterTests {
         assertEquals("(objectClass=java.lang.Object)", this.classFilter.toString());
         assertEquals("(objectClass=java.lang.Object)", this.classNameFilter.toString());
     }
-    
+
     @Test
-    public void hashCodeEqualsToStringsHashCode() {     
+    public void hashCodeEqualsToStringsHashCode() {
         assertEquals(this.classFilter.hashCode(), this.classFilter.toString().hashCode());
         assertEquals(this.classFilter.hashCode(), this.classNameFilter.toString().hashCode());
     }

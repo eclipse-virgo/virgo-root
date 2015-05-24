@@ -44,7 +44,6 @@ public class PropertiesFilterTests {
             }
 
             public Object getProperty(String key) {
-                // TODO Auto-generated method stub
                 return null;
             }
 
@@ -157,23 +156,22 @@ public class PropertiesFilterTests {
         filter.matches(null);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void matchDictionary() {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("testKey", "testValue");
         PropertiesFilter filter = new PropertiesFilter(properties);
 
-        Dictionary d1 = new Hashtable();
+        Dictionary<String, Object> d1 = new Hashtable<>();
         assertFalse(filter.match(d1));
         assertFalse(filter.matchCase(d1));
 
-        Dictionary d2 = new Hashtable();
+        Dictionary<String, Object> d2 = new Hashtable<>();
         d2.put("testKey", "badValue");
         assertFalse(filter.match(d2));
         assertFalse(filter.matchCase(d2));
 
-        Dictionary d3 = new Hashtable();
+        Dictionary<String, Object> d3 = new Hashtable<>();
         d3.put("testKey", "testValue");
         assertTrue(filter.match(d3));
         assertTrue(filter.matchCase(d3));

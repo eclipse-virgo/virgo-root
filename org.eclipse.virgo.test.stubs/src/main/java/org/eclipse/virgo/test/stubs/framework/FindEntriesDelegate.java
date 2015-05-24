@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.test.stubs.framework;
 
+import java.net.URL;
 import java.util.Enumeration;
 
 import org.osgi.framework.Bundle;
@@ -34,5 +35,5 @@ public interface FindEntriesDelegate {
      * @return An enumeration of the files found
      * @see Bundle#findEntries(String, String, boolean)
      */
-    Enumeration findEntries(String path, String filePattern, boolean recurse);
+    Enumeration<URL> findEntries(String path, String filePattern, boolean recurse);
 }

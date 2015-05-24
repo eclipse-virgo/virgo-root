@@ -384,10 +384,9 @@ public final class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public ServiceRegistration<?> registerService(String[] clazzes, Object service, Dictionary<String, ?> properties) {
-        StubServiceRegistration serviceRegistration = createServiceRegistration(clazzes, properties);
-        StubServiceReference serviceReference = createServiceReference(clazzes, service, serviceRegistration);
+        StubServiceRegistration<Object> serviceRegistration = createServiceRegistration(clazzes, properties);
+        StubServiceReference<Object> serviceReference = createServiceReference(clazzes, service, serviceRegistration);
 
         synchronized (this.servicesMonitor) {
             this.serviceRegistrations.add(serviceRegistration);
@@ -437,7 +436,7 @@ public final class StubBundleContext implements BundleContext {
     public StubBundleContext removeRegisteredService(ServiceRegistration<?>... serviceRegistrations) {
         synchronized (this.servicesMonitor) {
             this.serviceRegistrations.removeAll(Arrays.asList(serviceRegistrations));
-            for (ServiceRegistration registration: serviceRegistrations) {
+            for (ServiceRegistration<?> registration: serviceRegistrations) {
                 this.services.remove(registration.getReference());
             }
             return this;

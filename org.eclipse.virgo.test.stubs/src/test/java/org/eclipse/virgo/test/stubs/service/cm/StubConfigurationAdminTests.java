@@ -72,11 +72,10 @@ public class StubConfigurationAdminTests {
         configAdmin.getConfiguration(null, null);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void getConfigWithLocationExists() throws IOException {
         Configuration config = configAdmin.getConfiguration("test", null);
-        config.update(new Hashtable());
+        config.update(new Hashtable<String, Object>());
 
         Configuration config1 = configAdmin.getConfiguration("test", null);
         assertNotNull(config1.getProperties());

@@ -176,7 +176,7 @@ public final class StubServiceReference<S> implements ServiceReference<S> {
      */
     public String[] getPropertyKeys() {
         List<String> properties = new ArrayList<String>();
-        Enumeration keys = this.serviceRegistration.getProperties().keys();
+        Enumeration<String> keys = this.serviceRegistration.getProperties().keys();
         while (keys.hasMoreElements()) {
             properties.add((String) keys.nextElement());
         }

@@ -499,8 +499,8 @@ public class StubBundleTests {
 
     private static final class TestFindEntriesDelegate implements FindEntriesDelegate {
 
-        public Enumeration<Object> findEntries(String path, String filePattern, boolean recurse) {
-            return new TestEnumeration<Object>();
+        public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
+            return new TestEnumeration<URL>();
         }
     }
 
