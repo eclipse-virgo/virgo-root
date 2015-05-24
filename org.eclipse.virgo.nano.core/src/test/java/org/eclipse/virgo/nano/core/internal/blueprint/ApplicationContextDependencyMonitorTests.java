@@ -248,9 +248,8 @@ public class ApplicationContextDependencyMonitorTests {
         this.dependencyMonitor.handleEvent(event);
     }
 
-    @SuppressWarnings("unchecked")
-    private Dictionary<String, ?> createProperties(String filter, String beanName, boolean mandatory) {
-        Dictionary properties = createProperties();
+    private Dictionary<String, Object> createProperties(String filter, String beanName, boolean mandatory) {
+        Dictionary<String, Object> properties = createProperties();
 
         properties.put("dependencies", new String[] { filter });
         properties.put("bean.name", new String[] { beanName });
@@ -259,9 +258,8 @@ public class ApplicationContextDependencyMonitorTests {
         return properties;
     }
 
-    @SuppressWarnings("unchecked")
-    private Dictionary<String, ?> createProperties() {
-        Dictionary properties = new Hashtable();
+    private Dictionary<String, Object> createProperties() {
+        Dictionary<String, Object> properties = new Hashtable<>();
         properties.put(EventConstants.BUNDLE, this.bundle);
         return properties;
     }
