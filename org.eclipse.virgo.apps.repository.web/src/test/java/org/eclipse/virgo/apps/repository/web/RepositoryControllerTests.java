@@ -19,6 +19,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
 import org.eclipse.virgo.apps.repository.core.RepositoryIndex;
 import org.eclipse.virgo.apps.repository.core.RepositoryManager;
 
@@ -54,20 +54,23 @@ public class RepositoryControllerTests {
         byte[] indexBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
         RepositoryIndex repositoryIndex = createMock(RepositoryIndex.class);
-        expect(repositoryIndex.getInputStream()).andReturn(new ByteArrayInputStream(indexBytes)).anyTimes();
-        expect(repositoryIndex.getETag()).andReturn("123456789").anyTimes();
-        expect(repositoryIndex.getLength()).andReturn(indexBytes.length).anyTimes();
 
-        expect(this.repositoryManager.getIndex("my-repo")).andReturn(repositoryIndex);
-
-        replay(this.repositoryManager, repositoryIndex);
-
-        repositoryController.getIndex(request, response);
-
-        verify(this.repositoryManager, repositoryIndex);
-
-        assertEquals("application/org.eclipse.virgo.repository.Index", response.getContentType());
-        assertArrayEquals(indexBytes, response.getContentAsByteArray());
+        try (InputStream indexBytesAsStream = new ByteArrayInputStream(indexBytes)) {
+            expect(repositoryIndex.getInputStream()).andReturn(indexBytesAsStream);
+            expect(repositoryIndex.getETag()).andReturn("123456789").anyTimes();
+            expect(repositoryIndex.getLength()).andReturn(indexBytes.length);
+            
+            expect(this.repositoryManager.getIndex("my-repo")).andReturn(repositoryIndex);
+            
+            replay(this.repositoryManager, repositoryIndex);
+            
+            repositoryController.getIndex(request, response);
+            
+            verify(this.repositoryManager, repositoryIndex);
+            
+            assertEquals("application/org.eclipse.virgo.repository.Index", response.getContentType());
+            assertArrayEquals(indexBytes, response.getContentAsByteArray());
+        }
     }
 
     @Test
