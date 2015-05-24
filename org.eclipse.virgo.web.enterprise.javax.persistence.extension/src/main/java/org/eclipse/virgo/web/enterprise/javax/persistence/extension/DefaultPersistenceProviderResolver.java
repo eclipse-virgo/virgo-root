@@ -88,7 +88,7 @@ class DefaultPersistenceProviderResolver implements PersistenceProviderResolver 
         }
         else {
             return  (ClassLoader) java.security.AccessController.doPrivileged(
-                    new java.security.PrivilegedAction() {
+                    new java.security.PrivilegedAction<Object>() {
                         public java.lang.Object run() {
                             return Thread.currentThread().getContextClassLoader();
                         }
