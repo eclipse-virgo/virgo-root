@@ -1,6 +1,8 @@
 
 package org.eclipse.virgo.test.tools;
 
+import static java.time.Instant.now;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -29,25 +31,24 @@ import javax.management.remote.JMXServiceURL;
 
 import org.eclipse.virgo.util.io.NetUtils;
 
-// TODO - find a better name
 // TODO - rework static usage of virgoHome
 public class JmxUtils {
 
-    public static final Duration HALF_SECOND = Duration.ofMillis(500);
+    public static File virgoHome;
 
-    public static final Duration TEN_SECONDS = Duration.ofSeconds(10);
+    private static final Duration HALF_SECOND = Duration.ofMillis(500);
 
-    public static final Duration THIRTY_SECONDS = Duration.ofSeconds(30);
+    private static final Duration THIRTY_SECONDS = Duration.ofSeconds(30);
 
-    public static final Duration TWO_MINUTES = Duration.ofMinutes(2);
+    private static final Duration TWO_MINUTES = Duration.ofMinutes(2);
 
     private static final String ARTIFACT_BUNDLE = "bundle";
 
     private static MBeanServerConnection connection = null;
 
-    public static File virgoHome;
+    private final static int JMX_DEFAULT_PORT = 9875;
 
-    private static final String JMXURL = "service:jmx:rmi:///jndi/rmi://localhost:9875/jmxrmi";
+    private static final String JMXURL = "service:jmx:rmi:///jndi/rmi://localhost:" + JMX_DEFAULT_PORT + "/jmxrmi";
 
     private static final String KEYSTORE = "/configuration/keystore";
 
@@ -57,68 +58,62 @@ public class JmxUtils {
 
     private static final String[] DEPLOYMENT_IDENTITY_FIELDS = new String[] { "type", "symbolicName", "version" };
 
-    public final static String STATUS_STARTED = "STARTED";
+    private final static String STATUS_STARTED = "STARTED";
 
-    public final static String STATUS_STARTING = "STARTING";
+    private final static String STATUS_STARTING = "STARTING";
 
-    public static void waitForVirgoServerStartFully() {
-        waitForVirgoServerStartFully(THIRTY_SECONDS, HALF_SECOND);
+    public static boolean isDefaultJmxPortAvailable() {
+        return NetUtils.isPortAvailable(JMX_DEFAULT_PORT);
     }
 
-    private static void waitForVirgoServerStartFully(Duration duration, Duration interval) {
+    public static boolean isKernelStarted() {
+        return JmxUtils.STATUS_STARTED.equals(getKernelStatus());
+    }
+
+    public static boolean waitForVirgoServerStartFully() throws Exception {
         Instant start = Instant.now();
-        while (start.plus(duration).isAfter(Instant.now())) {
+        while (start.plus(THIRTY_SECONDS).isAfter(Instant.now())) {
             try {
-                if (getKernelStatus().equals(STATUS_STARTED)) {
-                    return;
-                } else if (getKernelStatus().equals(STATUS_STARTING)) {
-                    continue;
+                String currentKernelStatus = getKernelStatus();
+                System.out.println("Current kernel status: '" + currentKernelStatus + "'");
+                switch (currentKernelStatus) {
+                    case STATUS_STARTED:
+                        // wait for startup to complete
+                        SECONDS.sleep(15);
+                        return true;
+                    case STATUS_STARTING:
+                    default:
+                        break;
                 }
-            } catch (Exception e) {
-                // ignore and try again
+            } catch (IllegalStateException e) {
+                // ignore JMX related exception and try again?
             }
-            try {
-                Thread.sleep(interval.toMillis());
-            } catch (InterruptedException e) {
-                Thread.interrupted();
-            }
+            SECONDS.sleep(1);
         }
-        // allow some more time to finish startup
-        try {
-            Thread.sleep(TEN_SECONDS.toMillis());
-        } catch (InterruptedException e) {
-            Thread.interrupted();
-        }
+        // startup failed
+        return false;
     }
 
-    public static void waitForVirgoServerShutdownFully() {
-        waitForVirgoServerShutdownFully(THIRTY_SECONDS, HALF_SECOND);
-    }
-
-    private static void waitForVirgoServerShutdownFully(Duration duration, Duration interval) {
-        Instant start = Instant.now();
-        while (start.plus(duration).isAfter(Instant.now())) {
+    public static boolean waitForVirgoServerShutdownFully() throws Exception {
+        Instant start = now();
+        while (start.plus(THIRTY_SECONDS).isAfter(now())) {
+            if (isDefaultJmxPortAvailable()) {
+                // allow some more time to finish shutdown
+                SECONDS.sleep(5);
+                return true;
+            }
             try {
+                String currentKernelStatus = getKernelStatus();
+                System.out.println("Current kernel status: '" + currentKernelStatus + "'");
                 if (!getKernelStatus().equals(STATUS_STARTED)) {
-                    if (NetUtils.isPortAvailable(9875)) {
-                        return;
-                    }
                 }
-            } catch (Exception e) {
-                // ignore and try again
+            } catch (IllegalStateException e) {
+                // ignore JMX related exception and try again?
             }
-            try {
-                Thread.sleep(interval.toMillis());
-            } catch (InterruptedException e) {
-                Thread.interrupted();
-            }
+            SECONDS.sleep(1);
         }
-        // allow some more time to finish shutdown
-        try {
-            Thread.sleep(TEN_SECONDS.toMillis());
-        } catch (InterruptedException e) {
-            Thread.interrupted();
-        }
+        // shutdown failed
+        return false;
     }
 
     public static void waitForMBean(String mBeanName) throws Exception {
@@ -137,7 +132,7 @@ public class JmxUtils {
                     return;
                 }
             } catch (IOException e) {
-                // swallow and retry
+                // swallow and retry - No JMX server available (yet)
             }
             Thread.sleep(sleepDuration.toMillis());
         }
@@ -182,7 +177,7 @@ public class JmxUtils {
         fail(String.format("After %d ms, artifact %s mbean Status was", duration, name) + mbeanStatus);
     }
 
-    public static MBeanServerConnection getMBeanServerConnection() {
+    public static MBeanServerConnection getMBeanServerConnection() throws IOException {
         String severDir = null;
 
         String[] creds = { "admin", "admin" };
@@ -202,8 +197,6 @@ public class JmxUtils {
             url = new JMXServiceURL(JMXURL);
             connection = JMXConnectorFactory.connect(url, env).getMBeanServerConnection();
         } catch (MalformedURLException e) {
-            throw new IllegalStateException("Failed to create JMX connection to '" + JMXURL + "'.", e);
-        } catch (IOException e) {
             throw new IllegalStateException("Failed to create JMX connection to '" + JMXURL + "'.", e);
         }
         return connection;

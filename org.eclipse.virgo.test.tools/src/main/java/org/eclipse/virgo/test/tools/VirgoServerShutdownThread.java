@@ -1,8 +1,8 @@
+
 package org.eclipse.virgo.test.tools;
 
 import java.io.File;
 import java.io.IOException;
-
 
 public class VirgoServerShutdownThread extends AbstractServerCommandThread {
 
@@ -12,7 +12,11 @@ public class VirgoServerShutdownThread extends AbstractServerCommandThread {
 
     private File shutdownURI = null;
 
-    public VirgoServerShutdownThread(String binDir) {
+    public static void shutdown(String binDir) {
+        new Thread(new VirgoServerShutdownThread(binDir)).start();
+    }
+
+    private VirgoServerShutdownThread(String binDir) {
         super(binDir);
     }
 

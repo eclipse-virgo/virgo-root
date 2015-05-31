@@ -11,16 +11,39 @@
 
 package org.eclipse.virgo.test.tools;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.eclipse.virgo.test.tools.JmxUtils.isDefaultJmxPortAvailable;
+import static org.eclipse.virgo.test.tools.JmxUtils.waitForVirgoServerStartFully;
+import static org.eclipse.virgo.test.tools.VirgoServerShutdownThread.shutdown;
+import static org.eclipse.virgo.test.tools.VirgoServerStartupThread.startup;
+import static org.eclipse.virgo.util.io.FileCopyUtils.copy;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
-import java.io.IOException;
 
-import org.eclipse.virgo.util.io.FileCopyUtils;
+import org.junit.After;
+import org.junit.Before;
 
-public class AbstractSmokeTests {
+public abstract class AbstractSmokeTests {
 
     private String srcDir = "src/smokeTest/resources";
 
     private File bundlesDir = null;
+
+    protected abstract String getVirgoFlavor();
+
+    @Before
+    public void startServer() throws Exception {
+        assertTrue("Default JMX port in use. Is another Virgo server still up and running?!", isDefaultJmxPortAvailable());
+        startup(ServerUtils.getBinDir(getVirgoFlavor()));
+        assertTrue("Server '" + getVirgoFlavor() + "' not started properly.", waitForVirgoServerStartFully());
+    }
+
+    @After
+    public void shutdownServer() throws Exception {
+        shutdown(ServerUtils.getBinDir(getVirgoFlavor()));
+        assertTrue("Server '" + getVirgoFlavor() + "' not shut down properly.", JmxUtils.waitForVirgoServerShutdownFully());
+    }
 
     private File setupBundleResourcesDir() {
         if (bundlesDir == null) {
@@ -30,20 +53,20 @@ public class AbstractSmokeTests {
         return bundlesDir;
     }
 
-    public void deployTestBundles(String flavor, String bundleName) {
+    public void deployTestBundles(String flavor, String bundleName) throws Exception {
         setupBundleResourcesDir();
-        try {
-            FileCopyUtils.copy(new File(bundlesDir, bundleName), new File(ServerUtils.getPickupDir(flavor), bundleName));
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to deploy '" + bundleName + "'.");
-        }
+        copy(new File(bundlesDir, bundleName), new File(ServerUtils.getPickupDir(flavor), bundleName));
+        // allow the Server to finish the deployment
+        SECONDS.sleep(5);
     }
 
-    public void undeployTestBundles(String flavor, String bundleName) {
+    public void undeployTestBundles(String flavor, String bundleName) throws Exception {
         setupBundleResourcesDir();
         File file = new File(ServerUtils.getPickupDir(flavor), bundleName);
         if (file.exists()) {
             file.delete();
+            // allow the Server to finish the undeployment
+            SECONDS.sleep(5);
         }
     }
 

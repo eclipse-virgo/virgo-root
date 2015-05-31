@@ -12,10 +12,14 @@ public class VirgoServerStartupThread extends AbstractServerCommandThread {
 
     private File startupURI = null;
 
-    public VirgoServerStartupThread(String binDir) {
+    public static void startup(String binDir) {
+        new Thread(new VirgoServerStartupThread(binDir)).start();
+    }
+
+    private VirgoServerStartupThread(String binDir) {
         super(binDir);
     }
-    
+
     @Override
     public void run() {
         try {

@@ -11,8 +11,14 @@
 
 package org.eclipse.virgo.test.tools;
 
+import static java.time.Instant.now;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.junit.Assert.fail;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,12 +26,10 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 public class UrlWaitLatch {
 
@@ -42,56 +46,53 @@ public class UrlWaitLatch {
     }
 
     public static int waitFor(String url, long interval, long duration) {
-        CloseableHttpClient client = HttpClients.createDefault();
-        return wait(url, client, null, interval, duration);
+        return waitFor(url, null, null, interval, duration);
     }
 
     public static int waitFor(String url, String username, String password, long interval, long duration) {
-        CloseableHttpClient client = HttpClients.createDefault();
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(
-            new AuthScope("localhost", AuthScope.ANY_PORT), 
-            new UsernamePasswordCredentials("admin", "admin"));
-        HttpClientContext context = HttpClientContext.create();
-        context.setCredentialsProvider(credsProvider);
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(25).build();
-		context.setRequestConfig(requestConfig);
-        return wait(url, client, context, interval, duration);
-    }
 
-    private static int wait(String url, HttpClient client, HttpClientContext context, long interval, long duration) {
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        if (username != null) {
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
+            provider.setCredentials(AuthScope.ANY, credentials);
+            httpClientBuilder.setDefaultCredentialsProvider(provider);
+        }
+        HttpClient client = httpClientBuilder.build();
+
         final HttpGet get = new HttpGet(url);
-
-        int hardTimeoutInSeconds = 75;
         TimerTask task = new TimerTask() {
+
             @Override
             public void run() {
                 if (get != null) {
-                	System.err.println("Operation timed out. Aborting request.");
+                    System.err.println("Operation timed out. Aborting request.");
                     get.abort();
                 }
             }
         };
-        new Timer(true).schedule(task, hardTimeoutInSeconds * 1000);
+        new Timer(true).schedule(task, Duration.ofSeconds(60).toMillis());
         try {
-            long startTime = System.currentTimeMillis();
-            int statusCode = 999;
-            while (System.currentTimeMillis() - startTime < duration) {
-            	if (context != null) {
-            		statusCode = client.execute(get).getStatusLine().getStatusCode();
-				} else {
-					statusCode = client.execute(get, context).getStatusLine().getStatusCode();
-				}
-                if (statusCode != 200 || statusCode != 404) {
-                	task.cancel();
-                    return statusCode;
+            int statusCode = -1;
+            Instant start = now();
+            while (start.plus(Duration.ofSeconds(30)).isAfter(now())) {
+                try {
+                    statusCode = client.execute(get).getStatusLine().getStatusCode();
+                } catch (HttpHostConnectException e) {
+                    System.out.println("Connection refused. The servlet container seems not be ready yet.");
                 }
                 System.out.println("Current status Code: " + statusCode);
-                Thread.sleep(interval);
+                if (statusCode == SC_OK || statusCode == SC_UNAUTHORIZED) {
+                    task.cancel();
+                    return statusCode;
+                }
+                System.out.println("Sleeping for " + interval + " millis.");
+                MILLISECONDS.sleep(interval);
             }
 
             fail(String.format("After %d ms, status code was %d", duration, statusCode));
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Failed to connect to '" + url + "'.");
         } finally {
             get.releaseConnection();
@@ -99,21 +100,22 @@ public class UrlWaitLatch {
         throw new RuntimeException("Failed to connect to '" + url + "'.");
     }
 
-    public static void main(String[] args) {
-		checkHttpPage("Checking splash screen...", "http://localhost:8080/");
-		checkHttpPage("Checking admin screen...", "http://localhost:8080/admin");
-		checkHttpPage("Checking admin login...", "http://localhost:8080/admin/content/overview", "admin", "admin");
-	}
+    public static void main(String[] args) throws Exception {
+         checkHttpPage("Checking splash screen...", "http://localhost:8080/");
+         checkHttpPage("Checking admin screen...", "http://localhost:8080/admin");
+         checkHttpPage("Checking admin login with (admin/admin)...", "http://localhost:8080/admin/content/overview", "admin", "admin");
+         checkHttpPage("Checking admin login with (foo/bar)...", "http://localhost:8080/admin/content/overview", "foo", "bar");
+    }
 
-	private static void checkHttpPage(String message, String url) {
-		System.out.print(message);
+    private static void checkHttpPage(String message, String url) {
+        System.out.print(message);
         int returnCode = UrlWaitLatch.waitFor(url);
         System.out.println(returnCode);
-	}
+    }
 
-	private static void checkHttpPage(String message, String url, String username, String password) {
-		System.out.print(message);
-		int returnCode = UrlWaitLatch.waitFor(url, username, password);
-		System.out.println(returnCode);
-	}
+    private static void checkHttpPage(String message, String url, String username, String password) {
+        System.out.print(message);
+        int returnCode = UrlWaitLatch.waitFor(url, username, password);
+        System.out.println(returnCode);
+    }
 }
