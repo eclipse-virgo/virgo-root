@@ -1,7 +1,9 @@
 apply from: "multi-bundle/p2tools.gradle"
 
 def packageConfiguration(configurationName, configuration, target) {
-    println "Copy the ${configurationName} artifacts to '${target}'."
+    println "Copy the ${configurationName} artifacts:"
+    configuration.each { File file -> println file.name }
+    println "to '${target}'."
     copy {
         from configuration into target
         // TODO - gradle-build remove backward compatibility? Why an underscore?
