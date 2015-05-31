@@ -11,44 +11,40 @@
 
 package org.eclipse.virgo.kernel.smoketest;
 
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.eclipse.virgo.test.tools.JmxUtils.isKernelStarted;
+import static org.eclipse.virgo.test.tools.UrlWaitLatch.waitFor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
 import org.eclipse.virgo.test.tools.ServerUtils;
-import org.eclipse.virgo.test.tools.VirgoServerShutdownThread;
-import org.eclipse.virgo.test.tools.VirgoServerStartupThread;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class KernelSmokeTests {
+public class KernelSmokeTests extends AbstractSmokeTests {
 
     private static final String VIRGO_FLAVOR = "kernel";
+
+    @Override
+    protected String getVirgoFlavor() {
+        return VIRGO_FLAVOR;
+    }
 
     @BeforeClass
     public static void initJmxConnection() {
         JmxUtils.virgoHome = ServerUtils.getHome(VIRGO_FLAVOR);
     }
 
-    @Before
-    public void startServer() throws Exception {
-        new Thread(new VirgoServerStartupThread(ServerUtils.getBinDir(VIRGO_FLAVOR))).start();
-        JmxUtils.waitForVirgoServerStartFully();
-        Thread.sleep(5000); // wait for startup to complete in case it fails
-
-        assertEquals(JmxUtils.STATUS_STARTED, JmxUtils.getKernelStatus());
+    @Test
+    public void virgoKernelShouldBeStarted() throws Exception {
+        assertTrue(isKernelStarted());
     }
 
-    @After
-    public void shutdownServer() throws Exception {
-        new Thread(new VirgoServerShutdownThread(ServerUtils.getBinDir(VIRGO_FLAVOR))).start();
-        JmxUtils.waitForVirgoServerShutdownFully();
+    @Test
+    public void adminScreenShouldBeAccessableWithDefaultCredentials() {
+        assertEquals(SC_OK, waitFor("http://localhost:8080/admin/content", "admin", "admin"));
     }
-
-	@Test
-	public void testKernelStartUpStatus() throws Exception {
-		assertEquals(JmxUtils.STATUS_STARTED, JmxUtils.getKernelStatus());
-	}
 
 }

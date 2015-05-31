@@ -12,19 +12,25 @@
 
 package org.eclipse.virgo.nano.smoketest;
 
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import static org.eclipse.virgo.test.tools.JmxUtils.isDefaultJmxPortAvailable;
+import static org.eclipse.virgo.test.tools.JmxUtils.isKernelStarted;
+import static org.eclipse.virgo.test.tools.JmxUtils.waitForVirgoServerShutdownFully;
+import static org.eclipse.virgo.test.tools.UrlWaitLatch.waitFor;
+import static org.eclipse.virgo.test.tools.VirgoServerShutdownThread.shutdown;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
 import org.eclipse.virgo.test.tools.ServerUtils;
-import org.eclipse.virgo.test.tools.UrlWaitLatch;
-import org.eclipse.virgo.test.tools.VirgoServerShutdownThread;
-import org.eclipse.virgo.test.tools.VirgoServerStartupThread;
-import org.eclipse.virgo.util.io.NetUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NanoSmokeTests extends AbstractSmokeTests {
@@ -32,6 +38,11 @@ public class NanoSmokeTests extends AbstractSmokeTests {
     private static final String VIRGO_FLAVOR = "nano";
 
     private static final String JAVA_PROFILE_TESTER_1_0_0_JAR = "java.profile.tester_1.0.0.jar";
+
+    @Override
+    protected String getVirgoFlavor() {
+        return VIRGO_FLAVOR;
+    }
 
     @BeforeClass
     public static void initJmxConnection() {
@@ -42,52 +53,48 @@ public class NanoSmokeTests extends AbstractSmokeTests {
     public void startServer() throws Exception {
         // cleanup
         undeployTestBundles(VIRGO_FLAVOR, JAVA_PROFILE_TESTER_1_0_0_JAR);
-
-        new Thread(new VirgoServerStartupThread(ServerUtils.getBinDir(VIRGO_FLAVOR))).start();
-        JmxUtils.waitForVirgoServerStartFully();
-        Thread.sleep(5000); // wait for startup to complete in case it fails
-
-        assertEquals(JmxUtils.STATUS_STARTED, JmxUtils.getKernelStatus());
-    }
-
-    @After
-    public void shutdownServer() throws Exception {
-        new Thread(new VirgoServerShutdownThread(ServerUtils.getBinDir(VIRGO_FLAVOR))).start();
-        JmxUtils.waitForVirgoServerShutdownFully();
+        super.startServer();
     }
 
     @Test
-    public void testNanoStartAndStop() throws Exception {
-        assertEquals(JmxUtils.STATUS_STARTED, JmxUtils.getKernelStatus());
+    public void virgoNanoShouldBeStarted() throws Exception {
+        assertTrue(isKernelStarted());
     }
 
     @Test
     public void testNanoJavaProfileSetCorrectly() throws Exception {
-        assertEquals(JmxUtils.STATUS_STARTED, JmxUtils.getKernelStatus());
+        assertTrue(isKernelStarted());
 
         // deploy bundle that should kill the server if the test is successful
         deployTestBundles(VIRGO_FLAVOR, JAVA_PROFILE_TESTER_1_0_0_JAR);
 
-        Thread.sleep(10000); // wait for deployment
-
-        if (NetUtils.isPortAvailable(9875)) {
+        // wait for deployment
+        TimeUnit.SECONDS.sleep(10);
+        if (isDefaultJmxPortAvailable()) {
+            // success, we expect the server to be killed with this deployment unit
             return;
         }
 
         // the server is still running - shutdown and fail
-        new Thread(new VirgoServerShutdownThread(ServerUtils.getBinDir(VIRGO_FLAVOR))).start();
-        JmxUtils.waitForVirgoServerShutdownFully();
+        shutdown(ServerUtils.getBinDir(getVirgoFlavor()));
+        assertTrue(waitForVirgoServerShutdownFully());
         fail("Virgo java profile not properly set - Nano was supposed to be killed if the test was successful.");
     }
 
     @Test
+    @Ignore
     public void splashScreenShouldBeAccessable() throws Exception {
-        UrlWaitLatch.waitFor("http://localhost:8080/");
+        assertEquals(SC_OK, waitFor("http://localhost:8080/"));
+    }
+
+    @Test
+    public void adminScreenShouldBeDeniedWithWrongCredentials() {
+        assertEquals(SC_UNAUTHORIZED, waitFor("http://localhost:8080/admin/content", "foo", "bar"));
     }
 
     @Test
     public void adminScreenShouldBeAccessableWithDefaultCredentials() {
-        UrlWaitLatch.waitFor("http://localhost:8080/admin/content", "foo", "bar");
+        assertEquals(SC_OK, waitFor("http://localhost:8080/admin/content", "admin", "admin"));
     }
 
 }
