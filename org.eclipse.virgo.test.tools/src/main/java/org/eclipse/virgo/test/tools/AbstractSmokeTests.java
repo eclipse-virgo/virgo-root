@@ -20,6 +20,7 @@ import static org.eclipse.virgo.util.io.FileCopyUtils.copy;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +35,17 @@ public abstract class AbstractSmokeTests {
 
     @Before
     public void startServer() throws Exception {
+        if (!isDefaultJmxPortAvailable()) {
+            System.out.println("Port not available. Waiting for a few seconds.");
+            TimeUnit.SECONDS.sleep(10);
+            if (!isDefaultJmxPortAvailable()) {
+                System.out.println("Port still not available. Trying to shutdown running Virgo.");
+                shutdown(ServerUtils.getBinDir(getVirgoFlavor()));
+                if (!isDefaultJmxPortAvailable()) {
+                    System.out.println("Port still not available. Giving up.");
+                }
+            }
+        }
         assertTrue("Default JMX port in use. Is another Virgo server still up and running?!", isDefaultJmxPortAvailable());
         startup(ServerUtils.getBinDir(getVirgoFlavor()));
         assertTrue("Server '" + getVirgoFlavor() + "' not started properly.", waitForVirgoServerStartFully());
