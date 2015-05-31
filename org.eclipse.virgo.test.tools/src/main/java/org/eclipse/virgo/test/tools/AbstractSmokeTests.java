@@ -69,7 +69,7 @@ public abstract class AbstractSmokeTests {
         setupBundleResourcesDir();
         copy(new File(bundlesDir, bundleName), new File(ServerUtils.getPickupDir(flavor), bundleName));
         // allow the Server to finish the deployment
-        SECONDS.sleep(5);
+        SECONDS.sleep(10);
     }
 
     public void undeployTestBundles(String flavor, String bundleName) throws Exception {
