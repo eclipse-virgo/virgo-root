@@ -146,7 +146,7 @@ public class AntPathMatchingFileSystemSearcherTests {
         }
     }
 
-    private class ResultTrackingSearchCallback implements SearchCallback {
+    private static class ResultTrackingSearchCallback implements SearchCallback {
 
         private final List<File> terminalMatches = new ArrayList<File>();
 

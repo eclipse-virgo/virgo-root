@@ -384,7 +384,7 @@ public class WatchedStorageRepositoryTests {
      * This class is Threadsafe
      * 
      */
-    private class StaticBridge implements ArtifactBridge {
+    private static class StaticBridge implements ArtifactBridge {
 
         public static final String STATIC_ARTIFACT_TYPE = "static";
 
