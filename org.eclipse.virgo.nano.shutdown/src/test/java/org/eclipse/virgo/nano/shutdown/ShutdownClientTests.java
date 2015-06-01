@@ -274,7 +274,7 @@ public class ShutdownClientTests {
         }
     }
 
-    private final class UnitTestShutdown implements Shutdown {
+    private static final class UnitTestShutdown implements Shutdown {
 
         private boolean immediateShutdown;
 
