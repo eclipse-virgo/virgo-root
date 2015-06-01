@@ -98,7 +98,6 @@ public class ThreadSafeArrayListTreeTests {
 
         {
             Tree<String> a = new ThreadSafeArrayListTree<String>(null);
-            a.hashCode();
             assertFalse(this.top.equals(a));
             assertFalse(a.equals(this.top));
         }
