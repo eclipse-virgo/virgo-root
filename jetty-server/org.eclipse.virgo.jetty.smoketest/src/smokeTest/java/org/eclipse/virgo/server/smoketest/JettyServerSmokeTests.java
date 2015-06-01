@@ -11,10 +11,13 @@
 
 package org.eclipse.virgo.server.smoketest;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.eclipse.virgo.test.tools.UrlWaitLatch.waitFor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
@@ -57,6 +60,8 @@ public class JettyServerSmokeTests extends AbstractSmokeTests {
     @Test
     public void testTagLibsScreen() throws Exception {
         deployTestBundles(VIRGO_FLAVOR, OEV_JETTY_SAMPLE_TAGS_JAR);
+        // allow some more time for this deployment - test fails on Eclipse.org Hudson only.
+        SECONDS.sleep(5);
         UrlWaitLatch.waitFor("http://localhost:8080/taglibs/app/sample.htm");
         undeployTestBundles(VIRGO_FLAVOR, OEV_JETTY_SAMPLE_TAGS_JAR);
     }
