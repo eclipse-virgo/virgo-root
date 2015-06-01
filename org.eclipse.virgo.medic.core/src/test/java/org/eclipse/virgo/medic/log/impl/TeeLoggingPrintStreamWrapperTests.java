@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
 import org.eclipse.virgo.medic.impl.config.ConfigurationChangeListener;
 import org.eclipse.virgo.medic.impl.config.ConfigurationProvider;
@@ -177,17 +177,16 @@ public class TeeLoggingPrintStreamWrapperTests {
             new StubConfigurationProvider(), "theProperty");
     }
 
-    private final class StubConfigurationProvider implements ConfigurationProvider {
+    private static final class StubConfigurationProvider implements ConfigurationProvider {
 
-        private final Properties configuration;
+        private final Hashtable<String, Object> configuration;
 
         private StubConfigurationProvider() {
-            this.configuration = new Properties();
-            this.configuration.setProperty("theProperty", "tee");
+            this.configuration = new Hashtable<String, Object>();
+            this.configuration.put("theProperty", "tee");
         }
 
-        @SuppressWarnings("unchecked")
-        public Dictionary getConfiguration() {
+        public Dictionary<String, Object> getConfiguration() {
             return this.configuration;
         }
 

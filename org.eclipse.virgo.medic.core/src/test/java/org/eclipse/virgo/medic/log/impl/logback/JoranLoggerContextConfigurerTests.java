@@ -47,7 +47,7 @@ public class JoranLoggerContextConfigurerTests {
         assertNotNull(loggerContext.getLogger("abc"));
     }
 
-    private final class StubLoggingConfiguration implements LoggingConfiguration {
+    private static final class StubLoggingConfiguration implements LoggingConfiguration {
 
         private final String configuration;
 
