@@ -12,6 +12,7 @@ package org.eclipse.virgo.nano.authentication;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.Principal;
@@ -151,7 +152,7 @@ public class UserTests {
     @Test
     public void testToStringWithNulls() {
         User refUser = new User(null, null);
-        refUser.toString();
+        assertNull(refUser.toString());
     }
     
     @Test
