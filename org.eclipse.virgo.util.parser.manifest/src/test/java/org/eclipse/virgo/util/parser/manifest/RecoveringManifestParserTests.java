@@ -86,7 +86,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
         while (sb.length() < (RecoveringManifestLexer.MAX_TOKEN_LENGTH + 10000)) {
 
-            sb.append("abcdefghijklmnopqrstuvwxyz");
+            sb.append(ABC);
 
         }
 
@@ -96,7 +96,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
         ManifestContents contents = mParser.parse(sb.toString());
 
-        contents.getMainAttributes().get("Name");
+        assertNotNull(contents);
 
         assertTrue(mParser.foundProblems());
 
