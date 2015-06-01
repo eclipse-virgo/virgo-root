@@ -98,7 +98,6 @@ public class JarFileArtifactFSTests {
 
     @Test(expected = UnsupportedOperationException.class)
     public void getEntryArtifactFS() {
-        this.artifactFS.getFile();
         ArtifactFSEntry entry = this.artifactFS.getEntry("test/rawfile");
         entry.getArtifactFS();
     }
