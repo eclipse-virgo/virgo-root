@@ -11,7 +11,6 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-
 package org.eclipse.virgo.util.io;
 
 import static org.junit.Assert.assertEquals;
@@ -19,18 +18,19 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-
 /**
  * Test {@link FatalIOException} basic minimum needs.
+ * 
  * @author Steve Powell
  */
 public class FatalIOExceptionTests {
+
     @Test
     public void testFataIOExceptionType() {
         FatalIOException fioe = new FatalIOException("test");
-        assertTrue("FatalIOException is not a RuntimeException - it must be unchecked.", fioe instanceof RuntimeException);
-    } 
-    
+        assertTrue("FatalIOException is not a RuntimeException - it must be unchecked.", RuntimeException.class.isAssignableFrom(fioe.getClass()));
+    }
+
     @Test
     public void testFataIOExceptionState() {
         Exception cause = new Exception("cause");
@@ -38,5 +38,5 @@ public class FatalIOExceptionTests {
         assertEquals("Cause not preserved.", cause, fioe.getCause());
         assertEquals("Message not preserved.", "test", fioe.getMessage());
     }
-    
+
 }
