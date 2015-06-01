@@ -38,6 +38,8 @@ import junit.framework.TestCase;
 
 public class RecoveringManifestParserTests extends TestCase {
 
+    private static final String ABC = "abcdefghijklmnopqrstuvwxyz";
+
     TestVisitor v;
 
     RecoveringManifestParser mp;
@@ -110,7 +112,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
         while (sb.length() < (RecoveringManifestLexer.MAX_TOKEN_LENGTH + 10000)) {
 
-            sb.append(" abcdefghijklmnopqrstuvwxyz").append("\n");
+            sb.append(" " + ABC).append("\n");
 
         }
 
@@ -118,7 +120,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
         ManifestContents contents = mParser.parse(sb.toString());
 
-        contents.getMainAttributes().get("Name");
+        assertNotNull(contents);
 
         assertTrue(mParser.foundProblems());
 

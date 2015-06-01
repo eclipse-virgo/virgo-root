@@ -163,7 +163,6 @@ public class ThreadSafeGraphNodeTests {
 
         {
             GraphNode<String> a = graphA.createRootNode(null);
-            a.hashCode();
             assertFalse(topA.equals(a));
             assertFalse(a.equals(topA));
         }

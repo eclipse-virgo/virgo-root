@@ -222,7 +222,6 @@ public class CaseInsensitiveMapTests {
         assertFalse((CaseInsensitiveMap.CaseInsensitiveKey.objectToKey(null)).equals(k));
         assertFalse((CaseInsensitiveMap.CaseInsensitiveKey.objectToKey(null)).equals(null));
         assertTrue((CaseInsensitiveMap.CaseInsensitiveKey.objectToKey(null)).equals(CaseInsensitiveMap.CaseInsensitiveKey.objectToKey(null)));
-        CaseInsensitiveMap.CaseInsensitiveKey.objectToKey("t");
     }
     
     @Test
