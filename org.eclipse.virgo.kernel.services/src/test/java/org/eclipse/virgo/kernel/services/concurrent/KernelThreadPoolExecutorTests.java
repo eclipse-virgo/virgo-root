@@ -94,7 +94,7 @@ public class KernelThreadPoolExecutorTests extends AbstractExecutorTests {
         assertTrue(result);
     }
 
-    private final class StubTracingService implements TracingService {
+    private static final class StubTracingService implements TracingService {
 
         private String applicationName;
 

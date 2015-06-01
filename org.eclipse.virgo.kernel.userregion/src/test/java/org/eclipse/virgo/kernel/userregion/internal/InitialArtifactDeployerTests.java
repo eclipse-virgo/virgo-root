@@ -151,7 +151,7 @@ public class InitialArtifactDeployerTests {
 		}
 	}
 	
-	private final class StubDeployUriNormaliser implements DeployUriNormaliser {
+	private static final class StubDeployUriNormaliser implements DeployUriNormaliser {
 		public URI normalise(URI uri) throws DeploymentException {
 			return uri;
 		}

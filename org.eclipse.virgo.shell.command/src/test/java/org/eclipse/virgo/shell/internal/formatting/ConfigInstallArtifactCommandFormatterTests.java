@@ -45,7 +45,7 @@ public class ConfigInstallArtifactCommandFormatterTests {
         assertOutputEquals(new File("src/test/resources/org/eclipse/virgo/kernel/shell/internal/formatting/config-examine.txt"), lines);
     }
 
-    public class StubManageableArtifact implements ManageableArtifact {
+    private static class StubManageableArtifact implements ManageableArtifact {
 
         public ObjectName[] getDependents() {
             throw new UnsupportedOperationException();

@@ -37,7 +37,7 @@ public class KernelScheduledThreadPoolExecutorTests extends AbstractExecutorTest
         return new KernelScheduledThreadPoolExecutor(1, name, new StubTracingService());
     }
 
-    private final class StubTracingService implements TracingService {
+    private static final class StubTracingService implements TracingService {
 
         public String getCurrentApplicationName() {
             return null;

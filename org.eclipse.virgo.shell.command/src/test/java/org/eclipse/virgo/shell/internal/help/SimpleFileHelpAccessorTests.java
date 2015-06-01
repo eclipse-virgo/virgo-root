@@ -35,10 +35,10 @@ import org.junit.Test;
  */
 public class SimpleFileHelpAccessorTests {
 
-    private final static String HELP_ACCESSOR_TEST_FILE_NAME = "org.eclipse.virgo.shell.internal.help.SimpleFileHelpAccessorTests.help";
+    private static final String HELP_ACCESSOR_TEST_FILE_NAME = "org.eclipse.virgo.shell.internal.help.SimpleFileHelpAccessorTests.help";
 
-    private final URL HELP_ACCESSOR_TEST_HELP_FILE_URL;
-    {
+    private static final URL HELP_ACCESSOR_TEST_HELP_FILE_URL;
+    static {
         URL url = null;
         try {
             url = new File("src/test/resources/helpAccessorTests.help").toURI().toURL();
@@ -48,7 +48,7 @@ public class SimpleFileHelpAccessorTests {
         HELP_ACCESSOR_TEST_HELP_FILE_URL = url;
     }
 
-    private class AccessorTestClass extends SimpleFileHelpAccessor {
+    private static class AccessorTestClass extends SimpleFileHelpAccessor {
 
         protected URL helpResourceUrl(Class<?> clazz, String fileResourceName) {
             assertEquals("File resource name not correctly formed from classname", HELP_ACCESSOR_TEST_FILE_NAME, fileResourceName);
@@ -56,7 +56,7 @@ public class SimpleFileHelpAccessorTests {
         }
     }
 
-    private class NoHelpAccessorTestClass extends SimpleFileHelpAccessor {
+    private static class NoHelpAccessorTestClass extends SimpleFileHelpAccessor {
 
         protected URL helpResourceUrl(Class<?> clazz, String fileResourceName) {
             return null;

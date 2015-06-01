@@ -150,7 +150,7 @@ public class AbstractInstallArtifactTests {
         assertEquals(1, this.installArtifact.doUninstallCount);
     }
     
-    private final class StubInstallArtifact extends AbstractInstallArtifact {
+    private static final class StubInstallArtifact extends AbstractInstallArtifact {
 
         public StubInstallArtifact(ArtifactStateMonitor artifactStateMonitor) {
             super(new ArtifactIdentity("type", "name", Version.emptyVersion, null), new StubArtifactStorage(), artifactStateMonitor, null, new MockEventLogger());

@@ -229,7 +229,7 @@ public class ServiceScopingStrategyTests {
      * This test uses a collection that does not support addition in order to place the
      * same constraints on the implementation as the service registry find hook.
      */
-    private final class ShrinkableSet extends HashSet<ServiceReference<?>> {
+    private static final class ShrinkableSet extends HashSet<ServiceReference<?>> {
 
         private static final long serialVersionUID = 1L;
 
