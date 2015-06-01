@@ -24,117 +24,116 @@ import java.util.Map;
 import org.eclipse.virgo.util.osgi.manifest.internal.MapUpdatingList;
 import org.junit.Test;
 
-
 public class MapUpdatingListTests {
-    
+
     private final Map<String, String> map = new HashMap<String, String>();
-    
-    private final String key = "key";
-    
-    private final List<String> list = new MapUpdatingList(this.map, this.key);
-    
+
+    private static final String KEY = "key";
+
+    private final List<String> list = new MapUpdatingList(this.map, KEY);
+
     @Test
-    public void add() {        
+    public void add() {
         list.add("foo");
-        assertEquals("foo", map.get(key));
+        assertEquals("foo", map.get(KEY));
         list.add("foo");
-        assertEquals("foo,foo", map.get(key));
+        assertEquals("foo,foo", map.get(KEY));
     }
-    
+
     @Test
-    public void addAtIndex() {        
+    public void addAtIndex() {
         list.add("foo");
-        assertEquals("foo", map.get(key));
+        assertEquals("foo", map.get(KEY));
         list.add(0, "bar");
-        assertEquals("bar,foo", map.get(key));
+        assertEquals("bar,foo", map.get(KEY));
     }
-    
+
     @Test
     public void addAll() {
         list.addAll(Arrays.asList("a"));
-        assertEquals("a", map.get(key));
+        assertEquals("a", map.get(KEY));
         list.addAll(Arrays.asList("b", "c"));
-        assertEquals("a,b,c", map.get(key));
+        assertEquals("a,b,c", map.get(KEY));
     }
-    
+
     @Test
     public void addAllAtIndex() {
         list.addAll(Arrays.asList("a"));
-        assertEquals("a", map.get(key));
+        assertEquals("a", map.get(KEY));
         list.addAll(0, Arrays.asList("b", "c"));
-        assertEquals("b,c,a", map.get(key));
+        assertEquals("b,c,a", map.get(KEY));
     }
-    
+
     @Test
     public void clear() {
         list.add("a");
         list.add("b");
-        assertEquals("a,b", map.get(key));
+        assertEquals("a,b", map.get(KEY));
         list.clear();
-        assertNull(map.get(key));
+        assertNull(map.get(KEY));
     }
-    
+
     @Test
     public void removeAtIndex() {
         list.add("a");
         list.add("b");
         list.add("c");
-        assertEquals("a,b,c", map.get(key));
+        assertEquals("a,b,c", map.get(KEY));
         assertEquals("b", list.remove(1));
-        assertEquals("a,c", map.get(key));
+        assertEquals("a,c", map.get(KEY));
         assertEquals("a", list.remove(0));
         assertEquals("c", list.remove(0));
-        assertNull(map.get(key));
+        assertNull(map.get(KEY));
     }
-    
+
     @Test
     public void remove() {
         list.add("a");
         list.add("b");
         list.add("c");
-        assertEquals("a,b,c", map.get(key));
+        assertEquals("a,b,c", map.get(KEY));
         assertTrue(list.remove("b"));
-        assertEquals("a,c", map.get(key));
+        assertEquals("a,c", map.get(KEY));
         assertTrue(list.remove("a"));
         assertTrue(list.remove("c"));
-        assertNull(map.get(key));
+        assertNull(map.get(KEY));
         assertFalse(list.remove("a"));
     }
-    
+
     @Test
     public void removeAll() {
         list.add("a");
         list.add("b");
         list.add("c");
-        assertEquals("a,b,c", map.get(key));
+        assertEquals("a,b,c", map.get(KEY));
         assertTrue(list.removeAll(Arrays.asList("b")));
-        assertEquals("a,c", map.get(key));
+        assertEquals("a,c", map.get(KEY));
         assertTrue(list.removeAll(Arrays.asList("a", "c", "d")));
-        assertNull(map.get(key));
+        assertNull(map.get(KEY));
         assertFalse(list.removeAll(Arrays.asList("a", "b")));
     }
-    
+
     @Test
     public void retainAll() {
         list.add("a");
         list.add("b");
         list.add("a");
         list.add("c");
-        assertEquals("a,b,a,c", map.get(key));
+        assertEquals("a,b,a,c", map.get(KEY));
         assertTrue(list.retainAll(Arrays.asList("a", "b")));
-        assertEquals("a,b,a", map.get(key));
+        assertEquals("a,b,a", map.get(KEY));
         assertFalse(list.retainAll(Arrays.asList("a", "b")));
         assertTrue(list.retainAll(Arrays.asList("c")));
-        assertNull(map.get(key));
+        assertNull(map.get(KEY));
     }
-    
+
     @Test
     public void set() {
         list.add("a");
         list.add("b");
         list.add("c");
-        assertEquals("a,b,c", map.get(key));
+        assertEquals("a,b,c", map.get(KEY));
         assertEquals("b", list.set(1, "d"));
-        assertEquals("a,d,c", map.get(key));
+        assertEquals("a,d,c", map.get(KEY));
     }
 }
