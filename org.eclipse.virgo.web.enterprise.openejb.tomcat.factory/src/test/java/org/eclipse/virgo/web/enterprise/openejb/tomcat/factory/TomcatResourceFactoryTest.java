@@ -8,6 +8,7 @@
  * Contributors:
  *   SAP AG - initial contribution
  *******************************************************************************/
+
 package org.eclipse.virgo.web.enterprise.openejb.tomcat.factory;
 
 import java.util.Hashtable;
@@ -22,36 +23,37 @@ import org.apache.naming.NamingContext;
 import org.junit.Test;
 
 public class TomcatResourceFactoryTest {
-	
-	private static final String name = "testName";
-	private static final String searchName = "comp/env/testName";
 
-	@Test
-	public void testCreate() throws Exception {
-		NamingContext namingContext = new MyNamingContext(null, null);
-		NamingContextListener namingContextListener = new MyNamingContextListener(namingContext);
-		StandardContext standardContext = new StandardContext();
-		standardContext.setNamingContextListener(namingContextListener);
-		
-		TomcatResourceFactory.create(name, standardContext);
-	}
-	
-	class MyNamingContextListener extends NamingContextListener {
-		public MyNamingContextListener(NamingContext context) {
-			namingContext = context;
-		}
-	}
+    private static final String name = "testName";
 
-	class MyNamingContext extends NamingContext {
+    private static final String searchName = "comp/env/testName";
 
-		public MyNamingContext(Hashtable<String, Object> env, String name)
-				throws NamingException {
-			super(env, name);
-		}
-		
-		public Object lookup(String name) {
-			Assert.assertEquals("Wrong lookup name", searchName, name);
-			return null;
-		}
-	}
+    @Test
+    public void testCreate() throws Exception {
+        NamingContext namingContext = new MyNamingContext(null, null);
+        NamingContextListener namingContextListener = new MyNamingContextListener(namingContext);
+        StandardContext standardContext = new StandardContext();
+        standardContext.setNamingContextListener(namingContextListener);
+
+        TomcatResourceFactory.create(name, standardContext);
+    }
+
+    private static class MyNamingContextListener extends NamingContextListener {
+
+        public MyNamingContextListener(NamingContext context) {
+            namingContext = context;
+        }
+    }
+
+    private static class MyNamingContext extends NamingContext {
+
+        public MyNamingContext(Hashtable<String, Object> env, String name) throws NamingException {
+            super(env, name);
+        }
+
+        public Object lookup(String name) {
+            Assert.assertEquals("Wrong lookup name", searchName, name);
+            return null;
+        }
+    }
 }

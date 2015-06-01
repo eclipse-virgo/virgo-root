@@ -76,7 +76,7 @@ public class StandardSecurityServiceTest {
 		Assert.assertFalse("ApplicationThread1 error message: " + errorMessage1 + "; ApplicationThread2 error message: " + errorMessage2, applicationThread1.isError() || applicationThread2.isError());
 	}
 	
-	class ApplicationThread extends Thread {
+	private static class ApplicationThread extends Thread {
 		private StandardSecurityService service;
 		private ApplicationThread coworkerThread;
 		private Wrapper wrapper;

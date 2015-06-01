@@ -191,7 +191,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         }
     }
 
-    private final class ClassLoaderExt3 extends ClassLoader {
+    private static final class ClassLoaderExt3 extends ClassLoader {
 
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
