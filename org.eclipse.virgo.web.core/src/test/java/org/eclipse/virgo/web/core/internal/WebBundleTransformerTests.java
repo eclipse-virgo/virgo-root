@@ -67,7 +67,7 @@ public class WebBundleTransformerTests {
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
         bundleManifest.setHeader(WAR_HEADER, "true");
 
-        File sourceFile = new File("/bar.war");
+        File sourceFile = new File("bar.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
@@ -198,7 +198,7 @@ public class WebBundleTransformerTests {
         bundleManifest.setHeader("Web-ContextPath", "/foo");
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.jar");
 
-        File sourceFile = new File("/foo.jar");
+        File sourceFile = new File("foo.jar");
         URI sourceUri = sourceFile.toURI();
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
 
@@ -239,7 +239,7 @@ public class WebBundleTransformerTests {
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
         bundleManifest.setHeader("Web-ContextPath", "blah");
 
-        File sourceFile = new File("/bar.war");
+        File sourceFile = new File("bar.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
@@ -273,7 +273,7 @@ public class WebBundleTransformerTests {
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
         bundleManifest.setHeader("Web-ContextPath", "blah");
 
-        File sourceFile = new File("/bar.war");
+        File sourceFile = new File("bar.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
@@ -309,7 +309,7 @@ public class WebBundleTransformerTests {
         bundleManifest.getBundleSymbolicName().setSymbolicName("foo.war");
         bundleManifest.setHeader("Web-ContextPath", "blah");
 
-        File sourceFile = new File("/bar.war");
+        File sourceFile = new File("bar.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
@@ -333,7 +333,7 @@ public class WebBundleTransformerTests {
     	BundleManifest bundleManifest = new StandardBundleManifest(null);
         bundleManifest.setHeader(WAR_HEADER, "true");
 
-        File sourceFile = new File("/ROOT.war");
+        File sourceFile = new File("ROOT.war");
         URI sourceUri = sourceFile.toURI();
 
         BundleInstallArtifact installArtifact = TestUtils.createBundleInstallArtifact(sourceUri, sourceFile, bundleManifest);
