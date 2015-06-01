@@ -115,7 +115,8 @@ public class JarFileArtifactFSTests {
     @Test(expected = UnsupportedOperationException.class)
     public void getDirectoryInputStream() throws IOException {
         ArtifactFSEntry entry = this.artifactFS.getEntry("test/");
-        entry.getInputStream();
+        try (InputStream dummy = entry.getInputStream()) {
+        }
     }
 
     @Test
