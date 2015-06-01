@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class BaseParameterisedTests {
     
-    private class TestParameterised extends BaseParameterised {
+    private static class TestParameterised extends BaseParameterised {
         
         private final Map<String, String> attrs;
         private final Map<String, String> dirs;

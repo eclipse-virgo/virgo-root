@@ -259,7 +259,7 @@ public class ThreadSafeArrayListTreeTests {
         }
     }
 
-    private class TestTreeExceptionVisitor implements ExceptionThrowingTreeVisitor<String, Exception> {
+    private static class TestTreeExceptionVisitor implements ExceptionThrowingTreeVisitor<String, Exception> {
 
         private List<String> visited = new ArrayList<String>();
 

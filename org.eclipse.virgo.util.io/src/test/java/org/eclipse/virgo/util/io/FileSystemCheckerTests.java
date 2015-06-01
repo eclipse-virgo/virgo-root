@@ -453,7 +453,7 @@ public class FileSystemCheckerTests {
         }
     }
     
-    class RecursiveTestFileSystemListener implements FileSystemListener {
+    private static class RecursiveTestFileSystemListener implements FileSystemListener {
     	private int callCounter = 0;
     	private String filename;
     	
