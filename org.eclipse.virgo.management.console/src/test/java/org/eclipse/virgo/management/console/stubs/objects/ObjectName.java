@@ -8,36 +8,30 @@
  * Contributors:
  *   VMware Inc. - initial contribution
  *******************************************************************************/
+
 package org.eclipse.virgo.management.console.stubs.objects;
 
 import java.util.Map;
 
-/**
- * 
- *
- */
 public class ObjectName {
-	
-	private final String domain;
 
-	private final Map<String, String> properties;
-	
-	public String toString;
-	
-	public ObjectName(String domain, String objectNameString, Map<String, String> properties) {
-		this.domain = domain;
-		this.toString = objectNameString;
-		this.properties = properties;
-	}
-	
-	// Stub methods
+    private final String domain;
 
-	public String get(String property){
-		return this.properties.get(property);
-	}
-	
-	public String domain(){
-		return domain;
-	}
-	
+    private final Map<String, String> properties;
+
+    public ObjectName(String domain, Map<String, String> properties) {
+        this.domain = domain;
+        this.properties = properties;
+    }
+
+    // Stub methods
+
+    public String get(String property) {
+        return this.properties.get(property);
+    }
+
+    public String domain() {
+        return domain;
+    }
+
 }
