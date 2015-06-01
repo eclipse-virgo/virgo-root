@@ -17,8 +17,6 @@ import static org.eclipse.virgo.test.tools.UrlWaitLatch.waitFor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.virgo.test.tools.AbstractSmokeTests;
 import org.eclipse.virgo.test.tools.JmxUtils;
 import org.eclipse.virgo.test.tools.ServerUtils;
