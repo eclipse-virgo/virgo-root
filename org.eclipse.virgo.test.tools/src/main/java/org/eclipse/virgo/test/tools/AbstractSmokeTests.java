@@ -13,6 +13,7 @@ package org.eclipse.virgo.test.tools;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.eclipse.virgo.test.tools.JmxUtils.isDefaultJmxPortAvailable;
+import static org.eclipse.virgo.test.tools.JmxUtils.waitForVirgoServerShutdownFully;
 import static org.eclipse.virgo.test.tools.JmxUtils.waitForVirgoServerStartFully;
 import static org.eclipse.virgo.test.tools.VirgoServerShutdownThread.shutdown;
 import static org.eclipse.virgo.test.tools.VirgoServerStartupThread.startup;
@@ -54,7 +55,7 @@ public abstract class AbstractSmokeTests {
     @After
     public void shutdownServer() throws Exception {
         shutdown(ServerUtils.getBinDir(getVirgoFlavor()));
-        assertTrue("Server '" + getVirgoFlavor() + "' not shut down properly.", JmxUtils.waitForVirgoServerShutdownFully());
+        assertTrue("Server '" + getVirgoFlavor() + "' not shut down properly.", waitForVirgoServerShutdownFully());
     }
 
     private File setupBundleResourcesDir() {

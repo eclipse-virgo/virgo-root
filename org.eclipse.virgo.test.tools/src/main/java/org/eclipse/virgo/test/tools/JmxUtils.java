@@ -79,7 +79,7 @@ public class JmxUtils {
                 switch (currentKernelStatus) {
                     case STATUS_STARTED:
                         // wait for startup to complete
-                        SECONDS.sleep(15);
+                        SECONDS.sleep(20);
                         return true;
                     case STATUS_STARTING:
                     default:
@@ -99,7 +99,7 @@ public class JmxUtils {
         while (start.plus(THIRTY_SECONDS).isAfter(now())) {
             if (isDefaultJmxPortAvailable()) {
                 // allow some more time to finish shutdown
-                SECONDS.sleep(5);
+                SECONDS.sleep(10);
                 return true;
             }
             try {
