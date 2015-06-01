@@ -70,7 +70,7 @@ final class ArtifactDescriptorStoreWatcher {
 
         private StoreUpdaterThread(MutableArtifactDescriptorDepository mutableDepository, RemoteRepositoryConfiguration configuration) {
             super(configuration.getName());
-            this.msUpdateInterval = configuration.getIndexUpdateInterval() * 1000;
+            this.msUpdateInterval = configuration.getIndexUpdateInterval() * 1000L;
             this.repositoryUri = configuration.getRepositoryUri().toString();
             this.mutableDepository = mutableDepository;
             this.repositoryName = configuration.getName();
