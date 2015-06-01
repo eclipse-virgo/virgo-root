@@ -25,10 +25,10 @@ import java.util.TimerTask;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 public class UrlWaitLatch {
@@ -58,7 +58,6 @@ public class UrlWaitLatch {
             provider.setCredentials(AuthScope.ANY, credentials);
             httpClientBuilder.setDefaultCredentialsProvider(provider);
         }
-        HttpClient client = httpClientBuilder.build();
 
         final HttpGet get = new HttpGet(url);
         TimerTask task = new TimerTask() {
@@ -72,7 +71,8 @@ public class UrlWaitLatch {
             }
         };
         new Timer(true).schedule(task, Duration.ofSeconds(60).toMillis());
-        try {
+
+        try (CloseableHttpClient client = httpClientBuilder.build()) {
             int statusCode = -1;
             Instant start = now();
             while (start.plus(Duration.ofSeconds(30)).isAfter(now())) {
@@ -101,10 +101,10 @@ public class UrlWaitLatch {
     }
 
     public static void main(String[] args) throws Exception {
-         checkHttpPage("Checking splash screen...", "http://localhost:8080/");
-         checkHttpPage("Checking admin screen...", "http://localhost:8080/admin");
-         checkHttpPage("Checking admin login with (admin/admin)...", "http://localhost:8080/admin/content/overview", "admin", "admin");
-         checkHttpPage("Checking admin login with (foo/bar)...", "http://localhost:8080/admin/content/overview", "foo", "bar");
+        checkHttpPage("Checking splash screen...", "http://localhost:8080/");
+        checkHttpPage("Checking admin screen...", "http://localhost:8080/admin");
+        checkHttpPage("Checking admin login with (admin/admin)...", "http://localhost:8080/admin/content/overview", "admin", "admin");
+        checkHttpPage("Checking admin login with (foo/bar)...", "http://localhost:8080/admin/content/overview", "foo", "bar");
     }
 
     private static void checkHttpPage(String message, String url) {
