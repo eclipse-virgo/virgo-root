@@ -90,7 +90,6 @@ public class WatchedStorageRepositoryConfiguration extends PersistentRepositoryC
         } else {
             try {
                 File wdFile = new File(watchDirPath);
-                wdFile.getCanonicalPath();
                 if (!wdFile.exists()) return wdFile;
                 if (wdFile.isDirectory()) return wdFile;
             } catch (Exception e) { }
