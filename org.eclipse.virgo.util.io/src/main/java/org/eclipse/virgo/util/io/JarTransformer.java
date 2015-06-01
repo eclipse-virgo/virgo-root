@@ -16,7 +16,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -77,7 +79,7 @@ public final class JarTransformer {
             if (JarFile.MANIFEST_NAME.equals(entryName)) {
                 manifestPresent = true;
             }
-            
+
             if (!entry.isDirectory()) {
                 transformEntry(zipInputStream, entry, jos);
             } else {
@@ -96,10 +98,10 @@ public final class JarTransformer {
 
     private InputStream getDefaultManifestStream() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(baos);
-        writer.println(MANIFEST_VERSION_HEADER);
-        writer.println();
-        writer.close();
+        try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8))) {
+            writer.println(MANIFEST_VERSION_HEADER);
+            writer.println();
+        }
         return new ByteArrayInputStream(baos.toByteArray());
     }
 
@@ -129,11 +131,12 @@ public final class JarTransformer {
         /**
          * Transform the entry with the supplied name.
          * <p/>
-         * Entry content can be read from the supplied {@link InputStream} and transformed contents can be written to the
-         * supplied {@link OutputStream}.
+         * Entry content can be read from the supplied {@link InputStream} and transformed contents can be written to
+         * the supplied {@link OutputStream}.
          * <p/>
-         * Implementations <strong>must</strong> return <code>true</code> if the entry was transformed or deleted. Otherwise,
-         * <code>false</code> must be returned. No content should be written when not performing a transformation.
+         * Implementations <strong>must</strong> return <code>true</code> if the entry was transformed or deleted.
+         * Otherwise, <code>false</code> must be returned. No content should be written when not performing a
+         * transformation.
          * <p/>
          * Implementations transforming an entry must add the entry to the output stream and close the added entry.
          * Implementations deleting an entry must not add the entry to the output stream.
