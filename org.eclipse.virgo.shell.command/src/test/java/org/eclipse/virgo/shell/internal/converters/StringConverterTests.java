@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class StringConverterTests {
 
-    private final String testString = "formattedString";
+    private static final String testString = "formattedString";
 
     /**
      * Test method for {@link StringConverter#getTypes()}.

@@ -30,7 +30,7 @@ import org.eclipse.virgo.shell.stubs.StubQuasiImportPackage;
  */
 public class PackageHolderTests {
 
-    private final String TEST_PACKAGE_NAME = "test.package";
+    private static final String TEST_PACKAGE_NAME = "test.package";
     
     private PackageHolder standardQuasiPackage;
     
