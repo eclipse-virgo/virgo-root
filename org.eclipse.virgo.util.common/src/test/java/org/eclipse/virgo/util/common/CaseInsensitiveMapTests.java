@@ -119,7 +119,7 @@ public class CaseInsensitiveMapTests {
         m.put("foUr", 4);
         assertEquals(3, m.size());
         Iterator<Entry<String, Integer>> iterator = e.iterator();
-        iterator.hasNext();
+        assertTrue(iterator.hasNext());
         iterator.next();
         iterator.remove();
         assertEquals(2, m.size());
