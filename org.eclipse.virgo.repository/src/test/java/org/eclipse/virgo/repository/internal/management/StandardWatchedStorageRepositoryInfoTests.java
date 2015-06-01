@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class StandardWatchedStorageRepositoryInfoTests extends AbstractRepositoryInfoTests {
     
-    private final String LOCATIONS_TEST_FILENAME = "a.jar";
+    private static final String LOCATIONS_TEST_FILENAME = "a.jar";
 
     private final ArtifactDescriptorDepository depository = createMock(ArtifactDescriptorDepository.class);
     
