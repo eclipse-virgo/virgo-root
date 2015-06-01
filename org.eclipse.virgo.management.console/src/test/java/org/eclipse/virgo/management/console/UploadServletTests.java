@@ -33,7 +33,7 @@ public class UploadServletTests {
 	@Test(expected=RuntimeException.class)
 	public void testDoUploadFail() throws Exception {
 		UploadServlet uploadServlet = new UploadServlet();
-		FileItem fileItem = new DiskFileItem("foo", "json/application", false, "src/test/resources/test.upload", 500, new File("/target"));
+		FileItem fileItem = new DiskFileItem("foo", "json/application", false, "src/test/resources/test.upload", 500, new File("build"));
 		File stagingDir = new File("build");
 		fileItem.getOutputStream();
 		uploadServlet.doUpload(fileItem, stagingDir);
@@ -42,7 +42,7 @@ public class UploadServletTests {
 	@Test
 	public void testDoUpload() throws Exception {
 		UploadServlet uploadServlet = new UploadServlet();
-		FileItem fileItem = new DiskFileItem("foo", "json/application", false, "test.upload", 500, new File("/target"));
+		FileItem fileItem = new DiskFileItem("foo", "json/application", false, "test.upload", 500, new File("build"));
 		File stagingDir = new File("src/test/resources");
 		fileItem.getOutputStream();
 		File doUpload = uploadServlet.doUpload(fileItem, stagingDir);
