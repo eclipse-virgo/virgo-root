@@ -90,7 +90,7 @@ public class PropertyPlaceholderResolverTests {
         p.setProperty("foo", "${bar}");
         p.setProperty("bar", "${foo}");
 
-        p = resolver.resolve(p);
+        resolver.resolve(p);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -98,7 +98,7 @@ public class PropertyPlaceholderResolverTests {
         Properties p = new Properties();
         p.setProperty("foo", "${foo}");
 
-        p = resolver.resolve(p);
+        resolver.resolve(p);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -108,7 +108,7 @@ public class PropertyPlaceholderResolverTests {
         p.setProperty("bar", "${baz}");
         p.setProperty("baz", "${foo}");
 
-        p = resolver.resolve(p);
+        resolver.resolve(p);
     }
 
     @Test
