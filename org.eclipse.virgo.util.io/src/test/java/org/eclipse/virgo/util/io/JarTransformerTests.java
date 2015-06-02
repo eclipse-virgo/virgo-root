@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.util.io;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -35,7 +36,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import org.eclipse.virgo.util.io.JarTransformer;
 import org.eclipse.virgo.util.io.JarTransformer.JarTransformerCallback;
 import org.junit.Test;
 
@@ -74,7 +74,7 @@ public class JarTransformerTests {
             public boolean transformEntry(String entryName, InputStream is, JarOutputStream jos) throws IOException {
                 if ("META-INF/MANIFEST.MF".equals(entryName)) {
                     jos.putNextEntry(new ZipEntry(entryName));
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
                     Writer writer = new OutputStreamWriter(jos);
                     String line;
                     while ((line = reader.readLine()) != null) {

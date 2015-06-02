@@ -11,40 +11,40 @@
 
 package org.eclipse.virgo.util.io;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
-import org.eclipse.virgo.util.io.JarUtils;
-import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
 import org.junit.Test;
 
-
-/**
- */
 public class JarUtilsTests {
 
     private final PathReference expected = new PathReference("build/dummy");
-    
+
     @Before
-    public void before()  {
+    public void before() {
         expected.delete(true);
     }
-    
+
     @Test
-    public void testUnpackIntoDir() throws Exception{
+    public void testUnpackIntoDir() throws Exception {
         PathReference jar = new PathReference("src/test/resources/jars/dummy.jar");
         PathReference target = new PathReference("./build");
         JarUtils.unpackTo(jar, target);
         assertTrue(this.expected.exists());
         PathReference file = expected.newChild("com/foo/bar/dummyDoc.txt");
         assertTrue(file.exists());
-        BufferedReader reader = new BufferedReader(new FileReader(file.toFile()));
-        String line = reader.readLine();
-        reader.close();
-        assertEquals("Hello There!", line);
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(file.toFile()), UTF_8)) {
+            try (BufferedReader reader = new BufferedReader(fileReader)) {
+                String line = reader.readLine();
+                assertEquals("Hello There!", line);
+            }
+        }
     }
 }

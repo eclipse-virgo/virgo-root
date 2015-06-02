@@ -11,15 +11,18 @@
 
 package org.eclipse.virgo.util.osgi.manifest.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -31,7 +34,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleActivationPolicy;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
@@ -41,7 +43,6 @@ import org.eclipse.virgo.util.osgi.manifest.ImportBundle;
 import org.eclipse.virgo.util.osgi.manifest.ImportLibrary;
 import org.eclipse.virgo.util.osgi.manifest.ImportPackage;
 import org.eclipse.virgo.util.osgi.manifest.RequireBundle;
-import org.eclipse.virgo.util.osgi.manifest.internal.StandardBundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.parse.DummyParserLogger;
 import org.junit.Test;
 import org.osgi.framework.Constants;
@@ -53,37 +54,25 @@ public class StandardBundleManifestTests {
 
     @Test
     public void constructionFromReader() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "basic.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "basic.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("bar", bundleManifest.toDictionary().get("Foo"));
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void constructFromManifestWithMissingVersion() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "badManifest.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "badManifest.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals(StandardBundleManifest.MANIFEST_VERSION_VALUE, bundleManifest.toDictionary().get("Manifest-Version"));
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void constructionFromManifestWithVersion() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "goodManifest.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "goodManifest.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("2.0", bundleManifest.toDictionary().get("Manifest-Version"));
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
@@ -98,21 +87,15 @@ public class StandardBundleManifestTests {
 
     @Test
     public void bundleActivationPolicy() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals(BundleActivationPolicy.Policy.LAZY, bundleManifest.getBundleActivationPolicy().getActivationPolicy());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void bundleClasspath() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             List<String> bundleClasspath = bundleManifest.getBundleClasspath();
             assertEquals(3, bundleClasspath.size());
@@ -122,8 +105,6 @@ public class StandardBundleManifestTests {
             assertEquals(4, bundleManifest.getBundleClasspath().size());
             bundleClasspath.clear();
             assertNull(bundleManifest.toDictionary().get(Constants.BUNDLE_CLASSPATH));
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
@@ -144,9 +125,7 @@ public class StandardBundleManifestTests {
 
     @Test
     public void bundleDescription() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("The description", bundleManifest.getBundleDescription());
 
@@ -159,16 +138,12 @@ public class StandardBundleManifestTests {
 
             bundleManifest.setHeader(Constants.BUNDLE_DESCRIPTION, bundleDescription);
             assertEquals(bundleDescription, bundleManifest.getBundleDescription());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void bundleManifestVersion() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             StandardBundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals(2, bundleManifest.getBundleManifestVersion());
             assertEquals("2", bundleManifest.getHeader(Constants.BUNDLE_MANIFESTVERSION));
@@ -187,16 +162,12 @@ public class StandardBundleManifestTests {
 
             StringWriter writer = new StringWriter();
             bundleManifest.write(writer);
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void bundleName() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("The name", bundleManifest.getBundleName());
             assertEquals("The name", bundleManifest.getHeader(Constants.BUNDLE_NAME));
@@ -212,28 +183,20 @@ public class StandardBundleManifestTests {
             bundleManifest.setHeader(Constants.BUNDLE_NAME, "New name");
             assertEquals("New name", bundleManifest.getBundleName());
             assertEquals("New name", bundleManifest.getHeader(Constants.BUNDLE_NAME));
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void bundleSymbolicName() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("com.foo.bar", bundleManifest.getBundleSymbolicName().getSymbolicName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void bundleUpdateLocation() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals(new URL("http://update.com"), bundleManifest.getBundleUpdateLocation());
 
@@ -246,98 +209,70 @@ public class StandardBundleManifestTests {
 
             bundleManifest.setBundleUpdateLocation(null);
             assertNull(bundleManifest.getBundleUpdateLocation());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void dynamicImportPackage() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             DynamicImportPackage dynamicImportPackage = bundleManifest.getDynamicImportPackage();
             assertEquals(1, dynamicImportPackage.getDynamicallyImportedPackages().size());
             assertEquals("com.foo.*", dynamicImportPackage.getDynamicallyImportedPackages().get(0).getPackageName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void exportPackage() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             ExportPackage exportPackage = bundleManifest.getExportPackage();
             assertEquals(1, exportPackage.getExportedPackages().size());
             assertEquals("com.bar", exportPackage.getExportedPackages().get(0).getPackageName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void fragmentHost() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("com.foo.host", bundleManifest.getFragmentHost().getBundleSymbolicName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void importBundle() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             ImportBundle importBundle = bundleManifest.getImportBundle();
             assertEquals(1, importBundle.getImportedBundles().size());
             assertEquals("com.baz", importBundle.getImportedBundles().get(0).getBundleSymbolicName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void importLibrary() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             ImportLibrary importLibrary = bundleManifest.getImportLibrary();
             assertEquals(1, importLibrary.getImportedLibraries().size());
             assertEquals("com.lib", importLibrary.getImportedLibraries().get(0).getLibrarySymbolicName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void importPackage() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             ImportPackage importPackage = bundleManifest.getImportPackage();
             assertEquals(1, importPackage.getImportedPackages().size());
             assertEquals("com.pkg", importPackage.getImportedPackages().get(0).getPackageName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void moduleScope() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("the.scope", bundleManifest.getModuleScope());
 
@@ -346,16 +281,12 @@ public class StandardBundleManifestTests {
 
             bundleManifest.setModuleScope(null);
             assertNull(bundleManifest.getModuleScope());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void moduleType() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("web", bundleManifest.getModuleType());
 
@@ -364,16 +295,12 @@ public class StandardBundleManifestTests {
 
             bundleManifest.setModuleType(null);
             assertNull(bundleManifest.getModuleType());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void requireBundle() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             RequireBundle requireBundle = bundleManifest.getRequireBundle();
             assertEquals(1, requireBundle.getRequiredBundles().size());
@@ -381,16 +308,12 @@ public class StandardBundleManifestTests {
 
             bundleManifest.setHeader(Constants.REQUIRE_BUNDLE, null);
             assertEquals(0, requireBundle.getRequiredBundles().size());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void bundleVersion() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals(new Version(1, 2, 3), bundleManifest.getBundleVersion());
             assertEquals("1.2.3", bundleManifest.getHeader(Constants.BUNDLE_VERSION));
@@ -403,16 +326,12 @@ public class StandardBundleManifestTests {
             assertEquals(Version.emptyVersion, bundleManifest.getBundleVersion());
 
             assertNull(bundleManifest.getHeader(Constants.BUNDLE_VERSION));
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
     @Test
     public void writerReaderRoundTrip() throws IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "all-headers.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "all-headers.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             StringWriter writer = new StringWriter();
             bundleManifest.write(writer);
@@ -424,8 +343,6 @@ public class StandardBundleManifestTests {
             bundleManifest.write(writer);
 
             assertEquals(one, writer.toString());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 
@@ -488,13 +405,9 @@ public class StandardBundleManifestTests {
 
     @Test
     public void extremelyLargeManifest() throws FileNotFoundException, IOException {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(new File(resources, "verylarge.mf"));
+        try (Reader fileReader = new InputStreamReader(new FileInputStream(new File(resources, "verylarge.mf")), UTF_8)) {
             BundleManifest bundleManifest = new StandardBundleManifest(new DummyParserLogger(), fileReader);
             assertEquals("very.large.manifest", bundleManifest.getBundleSymbolicName().getSymbolicName());
-        } finally {
-            IOUtils.closeQuietly(fileReader);
         }
     }
 }

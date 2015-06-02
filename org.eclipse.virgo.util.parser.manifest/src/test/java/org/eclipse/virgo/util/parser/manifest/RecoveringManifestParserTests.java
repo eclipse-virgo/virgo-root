@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.util.parser.manifest;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,15 +28,10 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.eclipse.virgo.util.parser.manifest.ManifestContents;
-import org.eclipse.virgo.util.parser.manifest.ManifestParser;
-import org.eclipse.virgo.util.parser.manifest.ManifestProblem;
-import org.eclipse.virgo.util.parser.manifest.ManifestProblemKind;
-import org.eclipse.virgo.util.parser.manifest.RecoveringManifestParser;
+import junit.framework.TestCase;
+
 import org.eclipse.virgo.util.parser.manifest.internal.RecoveringManifestLexer;
 import org.eclipse.virgo.util.parser.manifest.internal.TestVisitor;
-
-import junit.framework.TestCase;
 
 public class RecoveringManifestParserTests extends TestCase {
 
@@ -56,7 +53,7 @@ public class RecoveringManifestParserTests extends TestCase {
         ManifestParser mParser = new RecoveringManifestParser();
 
         try (InputStream broken = new FileInputStream("build/resources/test/broken001.mf")) {
-            ManifestContents contents = mParser.parse(new InputStreamReader(broken));
+            ManifestContents contents = mParser.parse(new InputStreamReader(broken, UTF_8));
 
             // has errors but recoverable
 
@@ -334,7 +331,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
             ZipEntry manifestZipEntry = manifestTestDataZip.getEntry(manifestName);
 
-            InputStreamReader inputStreamReader = new InputStreamReader(manifestTestDataZip.getInputStream(manifestZipEntry));
+            InputStreamReader inputStreamReader = new InputStreamReader(manifestTestDataZip.getInputStream(manifestZipEntry), UTF_8);
             parse(inputStreamReader);
 
         } catch (IOException e) {
