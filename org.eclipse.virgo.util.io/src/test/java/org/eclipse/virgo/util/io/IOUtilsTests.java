@@ -11,9 +11,9 @@
  *    SpringSource, a division of VMware - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-
 package org.eclipse.virgo.util.io;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -26,32 +26,32 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Test {@link IOUtils}.
+ * 
  * @author Steve Powell
  */
 public class IOUtilsTests {
-    
+
     private static final File testDir = new File("build/testio");
-    
+
     @Before
     @After
     public void setClearDir() {
         FileSystemUtils.deleteRecursively(testDir);
         testDir.mkdirs();
     }
-    
+
     @Test
     public void testCloseQuietly() throws IOException {
         File file = new File(testDir, "closeQuietly.txt");
         assertTrue("Cannot not create test file", file.createNewFile());
-        
-        FileInputStream fis = new FileInputStream(file);
-        FileChannel fc = fis.getChannel();
-        fis.read();
-        IOUtils.closeQuietly(fis);
-        
-        assertFalse("Channel should have been closed", fc.isOpen());
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            FileChannel fc = fis.getChannel();
+            assertEquals(-1, fis.read());
+            IOUtils.closeQuietly(fis);
+            assertFalse("Channel should have been closed", fc.isOpen());
+        }
     }
 }
