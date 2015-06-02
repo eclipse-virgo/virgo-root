@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.medic.log.impl;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -127,7 +128,7 @@ public class TeeLoggingPrintStreamWrapperTests {
     public void testByteArrayHandling() {
         String string = "Some text to be turned into bytes.";
         String stringWithNewLine = string + "\n";
-        byte[] stringBytes = stringWithNewLine.getBytes();
+        byte[] stringBytes = stringWithNewLine.getBytes(UTF_8);
 
         teeWrapper.write(stringBytes, 0, stringBytes.length);
 
@@ -140,7 +141,7 @@ public class TeeLoggingPrintStreamWrapperTests {
     @Test
     public void testSingleByteHandling() {
         String string = "Some text to be turned into bytes.";
-        byte[] stringBytes = string.getBytes();
+        byte[] stringBytes = string.getBytes(UTF_8);
 
         for (byte b : stringBytes) {
             teeWrapper.write(b);
