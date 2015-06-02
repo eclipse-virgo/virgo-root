@@ -420,9 +420,9 @@ public class StringUtilsTests extends TestCase {
 		assertEquals("myString2", input[0]);
 		assertEquals("myString1", input[1]);
 
-		StringUtils.sortStringArray(input);
-		assertEquals("myString1", input[0]);
-		assertEquals("myString2", input[1]);
+		String[] actual = StringUtils.sortStringArray(input);
+		assertEquals("myString1", actual[0]);
+		assertEquals("myString2", actual[1]);
 	}
 
 	public void testRemoveDuplicateStrings() {
