@@ -176,7 +176,6 @@ public class ShutdownClientTests {
 
     @Test
     public void clientUsesPortSpecifiedInCommand() throws Exception {
-        UnitTestShutdownClient client = new UnitTestShutdownClient();
 
         ShutdownCommand command = new ShutdownCommand();
         command.setPort(9999);
@@ -185,7 +184,7 @@ public class ShutdownClientTests {
 
         ObjectInstance shutdownMBean = registerShutdownMBean(shutdown, "the.domain");
 
-        client = new UnitTestShutdownClient();
+        UnitTestShutdownClient client = new UnitTestShutdownClient();
 
         JMXConnectorServer server = bootstrapMBeanServer(9999);
 
