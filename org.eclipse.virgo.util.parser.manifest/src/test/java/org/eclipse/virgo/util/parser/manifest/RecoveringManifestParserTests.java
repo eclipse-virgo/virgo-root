@@ -670,21 +670,7 @@ public class RecoveringManifestParserTests extends TestCase {
 
     private void parse(File f) {
 
-        try {
-
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
-
-            // try {
-
-            // new Manifest(bis);
-
-            // } catch (IOException ioe) {
-
-            // ioe.printStackTrace();
-
-            // }
-
-            // BufferedReader reader = new BufferedReader(new FileReader(f));
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f))) {
 
             StringBuilder fileData = new StringBuilder(512);
 
@@ -698,14 +684,10 @@ public class RecoveringManifestParserTests extends TestCase {
 
             }
 
-            bis.close();
-
             parse(fileData.toString());
 
         } catch (Exception e) {
-
             throw new RuntimeException("Problem during parsing", e);
-
         }
 
     }
