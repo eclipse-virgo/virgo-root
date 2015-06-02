@@ -68,7 +68,7 @@ public class BundleBridgeTests {
 
     @Test
     public void testFictionalURI() {
-        File file = new File("/foo/bar.jar");
+        File file = new File("foo/bar.jar");
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
             assertTrue("Should throw exception", false);
