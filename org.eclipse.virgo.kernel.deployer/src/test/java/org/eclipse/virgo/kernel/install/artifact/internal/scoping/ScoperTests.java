@@ -1,3 +1,4 @@
+
 package org.eclipse.virgo.kernel.install.artifact.internal.scoping;
 
 import java.io.File;
@@ -22,12 +23,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 public class ScoperTests {
 
     private static final String SCOPE_NAME = "test_scope";
 
     private static BundleManifest manifest = null;
+
     private static BundleManifest unscopedManifest = null;
 
     private static List<BundleManifest> bundleManifests = new ArrayList<BundleManifest>();
@@ -38,25 +39,25 @@ public class ScoperTests {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        FileReader reader = new FileReader(new File(bundleFile, "META-INF/MANIFEST.MF"));
-        manifest = BundleManifestFactory.createBundleManifest(reader);
-        reader.close();
-        unscopedManifest = BundleManifestFactory.createBundleManifest(manifest.toDictionary());
-        bundleManifests.add(manifest);
+        try (FileReader reader = new FileReader(new File(bundleFile, "META-INF/MANIFEST.MF"))) {
+            manifest = BundleManifestFactory.createBundleManifest(reader);
+            reader.close();
+            unscopedManifest = BundleManifestFactory.createBundleManifest(manifest.toDictionary());
+            bundleManifests.add(manifest);
+        }
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
     }
-    
+
     @Test
-    public void testScoping() throws UnsupportedBundleManifestVersionException, DuplicateExportException, DuplicateBundleSymbolicNameException {        
+    public void testScoping() throws UnsupportedBundleManifestVersionException, DuplicateExportException, DuplicateBundleSymbolicNameException {
         Scoper scoper = new Scoper(bundleManifests, SCOPE_NAME);
-        scoper.scope();  
+        scoper.scope();
         checkImports();
         checkDynamicImports();
         checkExports();
-//        Assert.assertEquals(bundleManifest, actual);
     }
 
     private void checkImports() {
@@ -74,7 +75,7 @@ public class ScoperTests {
             Assert.assertTrue(uipList.get(i).getAttributes().size() + 1 == ipList.get(i).getAttributes().size());
         }
     }
-    
+
     private void checkDynamicImports() {
         DynamicImportPackage dynamicImportPackage = manifest.getDynamicImportPackage();
         DynamicImportPackage unscopedDynamicImportPackage = unscopedManifest.getDynamicImportPackage();
@@ -91,7 +92,7 @@ public class ScoperTests {
         }
         Assert.assertTrue(dipList.size() == udipList.size() * 2);
     }
-    
+
     private void checkExports() {
         ExportPackage exportPackage = manifest.getExportPackage();
         ExportPackage unscopedExportPackage = unscopedManifest.getExportPackage();
@@ -107,5 +108,5 @@ public class ScoperTests {
             Assert.assertTrue(uepList.get(i).getAttributes().size() + 1 == epList.get(i).getAttributes().size());
         }
     }
-    
+
 }
