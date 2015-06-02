@@ -44,7 +44,7 @@ public class JmxExecutorServiceExporterTests {
         
         exporter.destroy();
         try {
-            instance = getInstance(server);
+            getInstance(server);
             fail("Instance should've been unregistered");
         } catch (Exception e) {
         }
