@@ -11,19 +11,21 @@
 
 package org.eclipse.virgo.repository.internal.cacheing.cache.artifact;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.eclipse.virgo.repository.internal.cacheing.cache.artifact.Downloader;
-import org.eclipse.virgo.util.io.PathReference;
 
 /**
  */
@@ -58,11 +60,8 @@ public class DownloaderTests {
     private void ensureOldContentPresent(PathReference destinationPathReference) throws IOException {
         destinationPathReference.createFile();
         File destinationFile = destinationPathReference.toFile();
-        FileWriter fileWriter = new FileWriter(destinationFile);
-        try {
+        try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(destinationFile), UTF_8)) {
             fileWriter.write("old content");
-        } finally {
-            fileWriter.close();
         }
     }
 
