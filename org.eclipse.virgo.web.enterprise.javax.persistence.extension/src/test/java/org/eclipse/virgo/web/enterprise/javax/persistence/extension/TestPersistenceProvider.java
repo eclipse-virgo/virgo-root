@@ -22,12 +22,12 @@ public class TestPersistenceProvider implements PersistenceProvider {
 
 	@Override
 	public EntityManagerFactory createContainerEntityManagerFactory(
-			PersistenceUnitInfo arg0, Map arg1) {
+			PersistenceUnitInfo arg0, @SuppressWarnings("rawtypes") Map arg1) {
 		return null;
 	}
 
 	@Override
-	public EntityManagerFactory createEntityManagerFactory(String arg0, Map arg1) {
+	public EntityManagerFactory createEntityManagerFactory(String arg0, @SuppressWarnings("rawtypes") Map arg1) {
 		return null;
 	}
 
