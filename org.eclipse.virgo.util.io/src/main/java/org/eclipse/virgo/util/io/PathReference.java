@@ -11,16 +11,21 @@
 
 package org.eclipse.virgo.util.io;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 
 /**
  * Represents a reference, by path, to a location on the file system. This location may be a file or a directory, or it
- * may point to a non-existent location.<p/>
+ * may point to a non-existent location.
+ * <p/>
  * 
  * <strong>Concurrent Semantics</strong><br/>
  * 
@@ -38,7 +43,7 @@ public final class PathReference {
      * 
      * @param path the path to reference.
      */
-    public PathReference( String path) {
+    public PathReference(String path) {
         this(new File(path));
     }
 
@@ -47,7 +52,7 @@ public final class PathReference {
      * 
      * @param uri the file URI to reference
      */
-    public PathReference( URI uri) {
+    public PathReference(URI uri) {
         this.file = new File(uri);
     }
 
@@ -56,7 +61,7 @@ public final class PathReference {
      * 
      * @param file the file to reference.
      */
-    public PathReference( File file) {
+    public PathReference(File file) {
         this.file = file;
     }
 
@@ -179,7 +184,7 @@ public final class PathReference {
     /**
      * {@inheritDoc}
      */
-    @Override 
+    @Override
     public String toString() {
         return this.file.toString();
     }
@@ -196,8 +201,8 @@ public final class PathReference {
 
     /**
      * Delete the file/directory referenced by this <code>PathReference</code>. Nested contents can optionally be
-     * deleted by passing <code>recursive = true</code>. Non-recursive deletes will fail (return <code>false</code>
-     * for non-empty directories).
+     * deleted by passing <code>recursive = true</code>. Non-recursive deletes will fail (return <code>false</code> for
+     * non-empty directories).
      * 
      * @param recursive should the delete process nested contents recursively.
      * @return <code>true</code> if the file is deleted, otherwise <code>false</code>.
@@ -209,39 +214,45 @@ public final class PathReference {
 
     /**
      * Same as calling {@link #copy(PathReference, boolean) copy(to, false)}.
+     * 
      * @param dest the destination to copy to.
-     * @return the final destination <code>PathReference</code>. 
+     * @return the final destination <code>PathReference</code>.
      */
-    public PathReference copy( PathReference dest) {
+    public PathReference copy(PathReference dest) {
         return copy(dest, false);
     }
 
     /**
      * Same as calling {@link #copy(PathReference, boolean, PathFilter) copy(to, recursive, null)};
+     * 
      * @param dest the destination to copy to.
      * @param recursive whether the copy should be recursive or not.
-     * @return the final destination <code>PathReference</code>. 
+     * @return the final destination <code>PathReference</code>.
      */
-    public PathReference copy( PathReference dest, boolean recursive) {
+    public PathReference copy(PathReference dest, boolean recursive) {
         return copy(dest, recursive, null);
     }
 
     /**
-     * Copies the contents of the file/directory to location referenced supplied <code>PathReference</code>. The
-     * exact semantics of the copy depend on the state of both the source and destination locations.<p/>
+     * Copies the contents of the file/directory to location referenced supplied <code>PathReference</code>. The exact
+     * semantics of the copy depend on the state of both the source and destination locations.
+     * <p/>
      * 
      * When copying a file, if the destination location already exists and is a file then a {@link FatalIOException} is
      * thrown. If the destination location exists and is a directory, the file is copied into this directory with the
      * same {@link #getName name} as the source location. If the destination location does not exist, then the file is
-     * copied to this location directly.<p/>
+     * copied to this location directly.
+     * <p/>
      * 
      * When copying a directory, if the destination location exists then the directory is copied into the already
      * existing directory with the same name as the source location. If the destination location does not exist, then
      * the directory is copied directly to the destination location and thus gets the name defined by the destination
-     * location.<p/>
+     * location.
+     * <p/>
      * 
      * A {@link PathFilter} can be used to specify exactly which files will be included in the copy. Passing
-     * <code>null</code> for the filter includes all files.<p/>
+     * <code>null</code> for the filter includes all files.
+     * <p/>
      * 
      * Non-recursive copies on non-empty directories will fail with {@link FatalIOException}.
      * 
@@ -250,7 +261,7 @@ public final class PathReference {
      * @param filter a <code>PathFilter</code> controlling which files are included in the copy.
      * @return the final destination <code>PathReference</code>.
      */
-    public PathReference copy( PathReference dest, boolean recursive, PathFilter filter) {
+    public PathReference copy(PathReference dest, boolean recursive, PathFilter filter) {
         if (!exists()) {
             throw new FatalIOException("Cannot copy path '" + this + "' to '" + dest + "'. Source path does not exist.");
         }
@@ -287,12 +298,16 @@ public final class PathReference {
     /**
      * Move the file (or directory) associated with this path reference to the destination path reference.
      * <p/>
-     * If the destination already exists, or if the file associated with this path reference <i>doesn't</i> exist, then a {@link FatalIOException} (unchecked) is thrown.
-     * <br/>This is otherwise functionally equivalent to the sequence <code>copy(dest,<strong>true</strong>); delete(<strong>true</strong>);</code> 
-     * returning the destination reference, except that a <i>fast move</i> is attempted first.
+     * If the destination already exists, or if the file associated with this path reference <i>doesn't</i> exist, then
+     * a {@link FatalIOException} (unchecked) is thrown. <br/>
+     * This is otherwise functionally equivalent to the sequence
+     * <code>copy(dest,<strong>true</strong>); delete(<strong>true</strong>);</code> returning the destination
+     * reference, except that a <i>fast move</i> is attempted first.
      * <p/>
-     * If the <i>fast move</i> fails (for example because of file system limitations) 
-     * the slow version is attempted, <i>viz</i>: <code>copy(dest,<strong>true</strong>); delete(<strong>true</strong>); <strong>return</strong> dest;</code>
+     * If the <i>fast move</i> fails (for example because of file system limitations) the slow version is attempted,
+     * <i>viz</i>:
+     * <code>copy(dest,<strong>true</strong>); delete(<strong>true</strong>); <strong>return</strong> dest;</code>
+     * 
      * @param dest path to move the current file to
      * @return the destination path reference
      */
@@ -302,23 +317,25 @@ public final class PathReference {
         }
         if (dest.exists()) {
             throw new FatalIOException("Cannot move path '" + this + "' to '" + dest + "'. Destination path already exists.");
-        } 
+        }
         if (!this.file.renameTo(dest.file)) {
-            copy(dest, true);   //can throw FatalIOException
-            delete(true);       //can throw FatalIOException
+            copy(dest, true); // can throw FatalIOException
+            delete(true); // can throw FatalIOException
         }
         return dest;
     }
-    
+
     /**
      * Move the file (or directory) associated with this path reference to the destination path reference.
      * <p/>
-     * If the destination already exists, or if the file associated with this path reference <i>doesn't</i> exist, then a {@link FatalIOException} (unchecked) is thrown.
-     * <br/>A <i>fast move</i> is attempted.
+     * If the destination already exists, or if the file associated with this path reference <i>doesn't</i> exist, then
+     * a {@link FatalIOException} (unchecked) is thrown. <br/>
+     * A <i>fast move</i> is attempted.
      * <p/>
      * If the <i>fast move</i> fails a {@link FataIOException} is thrown.
      * <p/>
      * This is a utility function for testing purposes, and is deliberately package private.
+     * 
      * @param dest path to move the current file to
      * @return the destination path reference
      */
@@ -328,22 +345,22 @@ public final class PathReference {
         }
         if (dest.exists()) {
             throw new FatalIOException("Cannot move path '" + this + "' to '" + dest + "'. Destination path already exists.");
-        } 
+        }
         if (!this.file.renameTo(dest.file)) {
             throw new FatalIOException("Fast move from '" + this + "' to '" + dest + "' failed.");
         }
         return dest;
     }
-    
+
     /**
-     * Creates a new <code>PathReference</code> by concatenating the path of this <code>PathReference</code> with
-     * the supplied <code>name</code>. Note that this method does <strong>not</strong> create a physical file or
-     * directory at the child location.
+     * Creates a new <code>PathReference</code> by concatenating the path of this <code>PathReference</code> with the
+     * supplied <code>name</code>. Note that this method does <strong>not</strong> create a physical file or directory
+     * at the child location.
      * 
      * @param name the name of the new child entry.
      * @return the child <code>PathReference</code>.
      */
-    public PathReference newChild( String name) {
+    public PathReference newChild(String name) {
         return PathReference.concat(this.file.getPath(), name);
     }
 
@@ -359,8 +376,8 @@ public final class PathReference {
         File parent = this.file.getParentFile();
         if (!parent.exists()) {
             boolean success = parent.mkdirs();
-            if(!success) {
-            	throw new FatalIOException("Unable to create needed directory " + parent);
+            if (!success) {
+                throw new FatalIOException("Unable to create needed directory " + parent);
             }
         }
         try {
@@ -386,8 +403,8 @@ public final class PathReference {
     }
 
     /**
-     * Creates a new <code>PathReference</code> by concatenating the supplied <code>parts</code>, treating each
-     * part as a separate path element.
+     * Creates a new <code>PathReference</code> by concatenating the supplied <code>parts</code>, treating each part as
+     * a separate path element.
      * 
      * @param parts the path elements.
      * @return the <code>PathReference</code> for the concatenated path.
@@ -395,7 +412,7 @@ public final class PathReference {
     public static PathReference concat(String... parts) {
         StringBuilder sb = new StringBuilder(256);
         for (int x = 0; x < parts.length; x++) {
-        	String part = parts[x];
+            String part = parts[x];
             sb.append(part);
             if (x < parts.length && !part.endsWith(File.separator)) {
                 sb.append(File.separatorChar);
@@ -443,7 +460,7 @@ public final class PathReference {
     /**
      * {@inheritDoc}
      */
-    @Override 
+    @Override
     public int hashCode() {
         return this.file.hashCode();
     }
@@ -451,7 +468,7 @@ public final class PathReference {
     /**
      * {@inheritDoc}
      */
-    @Override 
+    @Override
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -474,20 +491,21 @@ public final class PathReference {
             throw new FileNotFoundException("PathReference refers to a directory which has no file contents");
         }
         StringBuffer contents = new StringBuffer(100);
-        BufferedReader fileReader = new BufferedReader(new FileReader(this.file));
-        char[] chars = new char[100];
-        int charsRead = 0;
-        while ((charsRead = fileReader.read(chars)) != -1) {
-            contents.append(chars, 0, charsRead);
+        try (Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(this.file), UTF_8))) {
+            char[] chars = new char[100];
+            int charsRead = 0;
+            while ((charsRead = fileReader.read(chars)) != -1) {
+                contents.append(chars, 0, charsRead);
+            }
         }
-        fileReader.close();
         return contents.toString();
     }
-    
+
     /**
      * Set the last modified time of the {@link File} pointed to by this <code>PathReference</code> to the current time.
      * 
      * Note: the behaviour is not the same as UNIX(TM) touch as the latter also sets the file access time.
+     * 
      * @return true iff this operation succeeded, false otherwise
      */
     public boolean touch() {
@@ -495,7 +513,8 @@ public final class PathReference {
     }
 
     /**
-     * Allows filtering during {@link PathReference} operations. <p/>
+     * Allows filtering during {@link PathReference} operations.
+     * <p/>
      * 
      * <strong>Concurrent Semantics</strong><br />
      * 
@@ -508,8 +527,7 @@ public final class PathReference {
          * Match against the supplied {@link PathReference} to query whether it is included in the outer operation.
          * 
          * @param path the path to match against.
-         * @return <code>true</code> if the <code>PathReference</code> should be included, otherwise
-         *         <code>false</code>.
+         * @return <code>true</code> if the <code>PathReference</code> should be included, otherwise <code>false</code>.
          */
         boolean matches(PathReference path);
     }
