@@ -11,8 +11,11 @@
 
 package org.eclipse.virgo.nano.authentication;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 import java.util.Properties;
@@ -116,22 +119,12 @@ public final class KernelLoginModule implements LoginModule {
                 this.getClass().getCanonicalName()));
         }
 
-        Reader reader = null;
-        try {
-            reader = new FileReader(fileLocation);
+        try (Reader reader = new InputStreamReader(new FileInputStream(fileLocation), UTF_8)) {
             Properties properties = new Properties();
             properties.load(reader);
             return properties;
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Unable to load properties file from '%s'", fileLocation), e);
-        } finally {
-            if(reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // Nothing to do here
-                }
-            }
         }
     }
 }

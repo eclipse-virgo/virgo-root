@@ -11,22 +11,23 @@
 
 package org.eclipse.virgo.nano.config.internal.ovf;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.eclipse.virgo.nano.diagnostics.KernelLogEvents.OVF_CONFIGURATION_FILE_DOES_NOT_EXIST;
+import static org.eclipse.virgo.nano.diagnostics.KernelLogEvents.OVF_READ_ERROR;
+
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
-
-
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.config.internal.PropertiesSource;
-import org.eclipse.virgo.nano.diagnostics.KernelLogEvents;
-import org.eclipse.virgo.util.io.IOUtils;
+import org.osgi.framework.BundleContext;
 
 /**
  * Implementation of {@link PropertiesSource} that reads properties from an OVF document.
@@ -123,7 +124,7 @@ public final class OvfPropertiesSource implements PropertiesSource {
         File ovfFile = determineOvfFile();
         if (ovfFile != null) {
             if (!ovfFile.exists()) {
-                this.eventLogger.log(KernelLogEvents.OVF_CONFIGURATION_FILE_DOES_NOT_EXIST, ovfFile.getAbsolutePath());
+                this.eventLogger.log(OVF_CONFIGURATION_FILE_DOES_NOT_EXIST, ovfFile.getAbsolutePath());
             } else {
                 result = readOvfFile(ovfFile);
             }
@@ -145,15 +146,11 @@ public final class OvfPropertiesSource implements PropertiesSource {
 
     private Properties readOvfFile(File ovfFile) {
         Properties result = null;
-        Reader reader = null;
-        try {
-            reader = new FileReader(ovfFile);
+        try (Reader reader = new InputStreamReader(new FileInputStream(ovfFile), UTF_8)) {
             OvfEnvironmentPropertiesReader ovfReader = new OvfEnvironmentPropertiesReader();
             result = ovfReader.readProperties(reader);
         } catch (IOException ex) {
-            this.eventLogger.log(KernelLogEvents.OVF_READ_ERROR, ex, ovfFile.getAbsolutePath());
-        } finally {
-            IOUtils.closeQuietly(reader);
+            this.eventLogger.log(OVF_READ_ERROR, ex, ovfFile.getAbsolutePath());
         }
         return result;
     }

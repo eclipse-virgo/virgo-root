@@ -13,8 +13,11 @@
 
 package org.eclipse.virgo.nano.shutdown;
 
-import java.io.FileReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
@@ -81,22 +84,12 @@ final class KernelAuthenticationConfiguration {
             return null;
         }
 
-        Reader reader = null;
-        try {
-            reader = new FileReader(fileLocation);
+        try (Reader reader = new InputStreamReader(new FileInputStream(fileLocation), UTF_8)) {
             Properties properties = new Properties();
             properties.load(reader);
             return properties;
         } catch (IOException e) {
             return null;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // Nothing to do here
-                }
-            }
         }
     }
 
