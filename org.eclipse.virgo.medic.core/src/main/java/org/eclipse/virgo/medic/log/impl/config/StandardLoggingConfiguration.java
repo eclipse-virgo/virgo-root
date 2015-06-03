@@ -11,15 +11,16 @@
 
 package org.eclipse.virgo.medic.log.impl.config;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
 import org.eclipse.virgo.medic.log.LoggingConfiguration;
-
 
 class StandardLoggingConfiguration implements LoggingConfiguration {
 
@@ -49,26 +50,14 @@ class StandardLoggingConfiguration implements LoggingConfiguration {
     }
 
     private static String readConfiguration(URL configURL) throws IOException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(configURL.openStream()));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(configURL.openStream(), UTF_8))) {
             return readConfiguration(reader);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
     private static String readConfiguration(File configFile) throws IOException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(configFile));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), UTF_8))) {
             return readConfiguration(reader);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
