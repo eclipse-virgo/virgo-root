@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.nano.deployer.internal;
 
+import static java.lang.Integer.parseInt;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -79,9 +81,9 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     private void initialiseHotDeployer() {
-        int deployerTimeout = Integer.valueOf(this.kernelConfig.getProperty("deployer.timeout"));
+        int deployerTimeout = parseInt(this.kernelConfig.getProperty("deployer.timeout"));
         String pickupDirectory = this.kernelConfig.getProperty("deployer.pickupDirectory");
-        int scanInterval = Integer.valueOf(this.kernelConfig.getProperty("deployer.scanIntervalMillis"));
+        int scanInterval = parseInt(this.kernelConfig.getProperty("deployer.scanIntervalMillis"));
         DeployerConfiguration deployerConfiguration = new StandardDeployerConfiguration(deployerTimeout, new File(pickupDirectory), scanInterval);
         this.hotDeployerEnabler = new HotDeployerEnabler(this, deployerConfiguration, this.eventLogger);
         this.hotDeployerEnabler.startHotDeployer();
