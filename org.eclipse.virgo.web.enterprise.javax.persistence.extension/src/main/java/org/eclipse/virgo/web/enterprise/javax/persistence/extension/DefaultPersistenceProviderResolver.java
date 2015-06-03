@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.web.enterprise.javax.persistence.extension;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,12 +36,10 @@ import javax.persistence.spi.PersistenceProviderResolver;
 /**
  * Persistence provider resolver, which searches for persistence providers through META-INF/services mechanism.
  * 
- * @author I043832
- *
  */
 class DefaultPersistenceProviderResolver implements PersistenceProviderResolver {
 
-	private volatile WeakHashMap<ClassLoader, List<PersistenceProvider>> providers = new WeakHashMap<ClassLoader, List<PersistenceProvider>>();
+	private volatile Map<ClassLoader, List<PersistenceProvider>> providers = new WeakHashMap<>();
 
 	@Override
     public List<PersistenceProvider> getPersistenceProviders() {
@@ -141,10 +142,8 @@ class DefaultPersistenceProviderResolver implements PersistenceProviderResolver 
      * line.
      */
     private void addProviderNames(URL url, Collection<ProviderName> providerNames) {
-        InputStream in = null;
-        try {
-            in = url.openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        try (InputStream in = url.openStream()) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF_8));
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -156,14 +155,6 @@ class DefaultPersistenceProviderResolver implements PersistenceProviderResolver 
             }
         } catch (IOException ioe) {
             throw new PersistenceException("IOException caught reading: " + url, ioe);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                	// NOSONAR
-                }
-            }
         }
     }
 
