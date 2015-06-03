@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -137,7 +138,7 @@ public class ContentServlet extends HttpServlet {
         String mimeType = response.getContentType();
         if (gzipEnabled && acceptEncoding != null && acceptEncoding.indexOf("gzip") > -1 && matchesCompressedMimeTypes(mimeType)) {
             log.debug("Enabling GZIP compression for the current response.");
-            return new PrintWriter(new GZIPResponseStream(response));
+            return new PrintWriter(new OutputStreamWriter(new GZIPResponseStream(response), StandardCharsets.UTF_8));
         } else {
             return response.getWriter();
         }
