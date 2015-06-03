@@ -1,6 +1,8 @@
 
 package org.eclipse.virgo.test.tools;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,11 +27,11 @@ public abstract class AbstractServerCommandThread implements Runnable {
 
     protected void redirectProcessOutput() throws IOException {
         InputStream is = process.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
         }
     }
 
