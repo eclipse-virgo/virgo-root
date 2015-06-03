@@ -11,23 +11,26 @@
 
 package org.eclipse.virgo.repository.internal.cacheing.cache.artifact;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.virgo.repository.internal.cacheing.cache.descriptorhash.ArtifactDescriptorHash;
 import org.eclipse.virgo.repository.util.FileDigest;
 import org.eclipse.virgo.util.io.PathReference;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardSingleArtifactCache} encapsulates the cacheing of a specific artifact and its hash.
@@ -147,11 +150,11 @@ class StandardSingleArtifactCache implements SingleArtifactCache {
     }
 
     private Writer getHashFileWriter() throws IOException {
-        return new FileWriter(this.artifactHashFilePathReference.toFile());
+        return new OutputStreamWriter(new FileOutputStream(this.artifactHashFilePathReference.toFile()), UTF_8);
     }
 
     private Reader getHashFileReader() throws IOException {
-        return new FileReader(this.artifactHashFilePathReference.toFile());
+        return new InputStreamReader(new FileInputStream(this.artifactHashFilePathReference.toFile()), UTF_8);
     }
 
     private URI getURI() {
