@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,11 +29,10 @@ import java.util.jar.JarFile;
 import org.eclipse.osgi.baseadaptor.BaseData;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
-
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileWrapper;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileWrapper;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 
@@ -142,10 +143,8 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
                         BundleManifest originalManifest;
                         
                         if (entry != null) {
-                            try {
-                            	InputStreamReader manifestReader = new InputStreamReader(entry.getInputStream());
+                            try (InputStreamReader manifestReader = new InputStreamReader(entry.getInputStream(), UTF_8)) {
                                 originalManifest = BundleManifestFactory.createBundleManifest(manifestReader);
-                                manifestReader.close();
                             } catch (IOException ioe) {
                                 throw new RuntimeException(ioe);
                             }
@@ -241,7 +240,7 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
         
         private TransformedManifestBundleEntry(BundleManifest transformedManifest) throws IOException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            transformedManifest.write(new OutputStreamWriter(baos));
+            transformedManifest.write(new OutputStreamWriter(baos, UTF_8));
             
             this.manifestBytes = baos.toByteArray();
             
