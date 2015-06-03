@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.shell.internal.help;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +26,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.eclipse.virgo.util.io.IOUtils;
 
 /**
  * Implementation of {@link HelpAccessor} which searches for a simple text file resource in the bundle of the class.
@@ -53,16 +53,12 @@ public class SimpleFileHelpAccessor implements HelpAccessor {
      * {@inheritDoc}
      */
     public List<String> getDetailedHelp(Class<?> clazz) {
-        BufferedReader readFileIn = null;
-        try {
-            readFileIn = this.helpResourceReader(clazz);
+        try (BufferedReader readFileIn = this.helpResourceReader(clazz)) {
             if (readFileIn != null) {
                 return readAllButFirstHelpLines(readFileIn);
             }
         } catch (IOException ioe) {
             logger.error(String.format("Exception reading help resource for class '%s'.", clazz.getCanonicalName()), ioe);
-        } finally {
-            IOUtils.closeQuietly(readFileIn);
         }
         return Collections.emptyList();
     }
@@ -71,16 +67,12 @@ public class SimpleFileHelpAccessor implements HelpAccessor {
      * {@inheritDoc}
      */
     public String getSummaryHelp(Class<?> clazz) {
-        BufferedReader readFileIn = null;
-        try {
-            readFileIn = this.helpResourceReader(clazz);
+        try (BufferedReader readFileIn = this.helpResourceReader(clazz)) {
             if (readFileIn != null) {
                 return readFirstHelpLine(readFileIn);
             }
         } catch (IOException ioe) {
             logger.error(String.format("Exception reading help resource for class '%s'.", clazz.getCanonicalName()), ioe);
-        } finally {
-            IOUtils.closeQuietly(readFileIn);
         }
         return null;
     }
@@ -128,13 +120,10 @@ public class SimpleFileHelpAccessor implements HelpAccessor {
             String fileResourceName = new StringBuffer(className).append(HELP_ACCESSOR_RESOURCE_EXTENSION).toString();
             URL resourceUrl = this.helpResourceUrl(clazz, fileResourceName);
             if (resourceUrl != null) {
-                InputStream resourceIn = null;
-                try {
-                    resourceIn = resourceUrl.openStream();
-                    readFileIn = new BufferedReader(new InputStreamReader(resourceIn));
+                try (InputStream resourceIn = resourceUrl.openStream()) {
+                    readFileIn = new BufferedReader(new InputStreamReader(resourceIn, UTF_8));
                 } catch (IOException ioe) {
                     logger.error(String.format("Exception reading help resource '%s'.", resourceUrl), ioe);
-                    IOUtils.closeQuietly(resourceIn);
                     return null;
                 }
             }

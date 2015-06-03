@@ -12,6 +12,8 @@
 
 package org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -21,8 +23,6 @@ import java.util.jar.JarFile;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFS;
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
-import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactStorage;
@@ -34,6 +34,8 @@ import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStorageFactory
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ScopeNameFactory;
 import org.eclipse.virgo.kernel.install.environment.InstallEnvironment;
 import org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.deployer.api.core.FatalDeploymentException;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
@@ -122,7 +124,7 @@ final class SyntheticContextBundleCreatingTransformer implements Transformer, Sc
 
     private void writeSyntheticContextBundle(BundleManifest syntheticContextBundleManifest, ArtifactFS artifactFS) {                
         ArtifactFSEntry entry = artifactFS.getEntry(JarFile.MANIFEST_NAME);
-        Writer manifestWriter = new OutputStreamWriter(entry.getOutputStream());
+        Writer manifestWriter = new OutputStreamWriter(entry.getOutputStream(), UTF_8);
         try {
             syntheticContextBundleManifest.write(manifestWriter);
         } catch (IOException ioe) {
