@@ -60,9 +60,9 @@ public class BundleDeployer implements SimpleDeployer {
 
     private static final String FRAGMEN_HOST_HEADER = "Fragment-Host";
 
-    private final EventLogger eventLogger;
+    private static final long LARGE_FILE_COPY_TIMEOUT = 30000;
 
-    private final long largeFileCopyTimeout = 30000;
+    private final EventLogger eventLogger;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -114,7 +114,7 @@ public class BundleDeployer implements SimpleDeployer {
 
     private boolean validateUri(URI uri) {
         if (!canWrite(uri)) {
-            this.logger.error("Cannot open the file " + uri + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
+            this.logger.error("Cannot open the file " + uri + " for writing. The configured timeout is " + LARGE_FILE_COPY_TIMEOUT + ".");
             return false;
         }
         return true;
@@ -236,7 +236,7 @@ public class BundleDeployer implements SimpleDeployer {
         StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
 
         if (!canWrite(path)) {
-            this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + this.largeFileCopyTimeout + ".");
+            this.logger.error("Cannot open the file " + path + " for writing. The configured timeout is " + LARGE_FILE_COPY_TIMEOUT + ".");
             this.eventLogger.log(NanoDeployerLogEvents.NANO_INSTALLING_ERROR, path);
             StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
             return STATUS_ERROR;
@@ -327,7 +327,7 @@ public class BundleDeployer implements SimpleDeployer {
         StatusFileModificator.deleteStatusFile(jarName, this.pickupDir);
 
         if (!canWrite(path)) {
-            this.logger.error("Cannot open the file [" + path + "] for writing. Timeout is [" + this.largeFileCopyTimeout + "].");
+            this.logger.error("Cannot open the file [" + path + "] for writing. Timeout is [" + LARGE_FILE_COPY_TIMEOUT + "].");
             this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATING_ERROR, path);
             StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, -1, lastModified);
             return STATUS_ERROR;
@@ -464,7 +464,7 @@ public class BundleDeployer implements SimpleDeployer {
         // Some big files are copied very slowly, but the event is received
         // immediately.
         // So we will wait 0.5 x 240 i.e. 2 minutes
-        final long timeout = this.largeFileCopyTimeout / 500;
+        final long timeout = LARGE_FILE_COPY_TIMEOUT / 500;
         while (tries < timeout) {
             FileInputStream fis = null;
             try {
