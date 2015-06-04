@@ -1,6 +1,8 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.api.tasks.StopActionException
 
+apply plugin: virgobuild.VirgoToolsPlugin
+
 if (System.properties['eclipse.build'] == 'true') {
 	// https://gradle.org/docs/current/userguide/build_environment.html
 	// https://wiki.eclipse.org/Hudson#Why_use_a_Proxy.3F
@@ -675,7 +677,7 @@ configure(aspectjProjects) {
 		ajtools "org.aspectj:aspectjtools:${project.aspectjVersion}"
 	}
 
-	apply plugin: 'aspectj'
+	apply plugin: aspectj.AspectJPlugin
 
 	// Add nature and buildCommand
 	eclipse.project {
