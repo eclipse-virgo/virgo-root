@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.nano.deployer.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -305,10 +307,9 @@ public class BundleDeployer implements SimpleDeployer {
     }
 
     private FragmentHost getFragmentHostFromDeployedBundleIfExsiting(File stagedFile) {
-        try {
-            JarFile bundleJar = new JarFile(stagedFile);
+        try (JarFile bundleJar = new JarFile(stagedFile)) {
             BundleManifest manifest = BundleManifestFactory.createBundleManifest(new InputStreamReader(
-                bundleJar.getInputStream(bundleJar.getEntry(JarFile.MANIFEST_NAME))));
+                bundleJar.getInputStream(bundleJar.getEntry(JarFile.MANIFEST_NAME)), UTF_8));
             return manifest.getFragmentHost();
         } catch (IOException ioe) {
             this.logger.error("Failed to extract the fragment host header from file '" + stagedFile.getAbsolutePath() + "'.", ioe);
