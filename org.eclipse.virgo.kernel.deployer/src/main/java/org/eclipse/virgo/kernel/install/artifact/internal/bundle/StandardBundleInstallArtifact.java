@@ -12,6 +12,8 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.bundle;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,9 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.virgo.kernel.artifact.fs.ArtifactFSEntry;
-import org.eclipse.virgo.nano.core.AbortableSignal;
-import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.kernel.deployer.core.internal.BlockingAbortableSignal;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentity;
 import org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer;
@@ -40,8 +39,11 @@ import org.eclipse.virgo.kernel.install.artifact.internal.ArtifactStateMonitor;
 import org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactRefreshHandler;
 import org.eclipse.virgo.kernel.install.artifact.internal.scoping.ArtifactIdentityScoper;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
-import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.core.AbortableSignal;
+import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
+import org.eclipse.virgo.nano.serviceability.NonNull;
 import org.eclipse.virgo.util.common.GraphNode;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
@@ -149,11 +151,8 @@ final class StandardBundleInstallArtifact extends AbstractInstallArtifact implem
     private BundleManifest getManifestFromArtifactFS() throws IOException {
         ArtifactFSEntry manifestEntry = this.artifactStorage.getArtifactFS().getEntry(MANIFEST_ENTRY_NAME);
         if (manifestEntry != null && manifestEntry.exists()) {
-            Reader manifestReader = new InputStreamReader(manifestEntry.getInputStream());
-            try {
+            try (Reader manifestReader = new InputStreamReader(manifestEntry.getInputStream(), UTF_8)) {
                 return BundleManifestFactory.createBundleManifest(manifestReader);
-            } finally {
-                manifestReader.close();
             }
         } else {
             return BundleManifestFactory.createBundleManifest();
