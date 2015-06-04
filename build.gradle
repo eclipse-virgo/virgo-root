@@ -1,5 +1,3 @@
-apply from: "multi-bundle/p2tools.gradle"
-
 def packageConfiguration(configurationName, configuration, target) {
     println "Copy the ${configurationName} artifacts:"
     configuration.each { File file -> println file.name }

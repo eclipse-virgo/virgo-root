@@ -1,5 +1,9 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+import static virgobuild.VirgoToolsPlugin.GLOBAL_TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS
+
+import virgobuild.Config
+
 apply plugin: 'distribution'
 
 distributions {
@@ -61,12 +65,12 @@ task ('prepareBundlesAndFeatures') {
 }
 
 // start in debug mode with gradle generateP2Inf --debug-jvm
-task ('generateP2Inf', type:JavaExec, dependsOn: ':packaging:fetchUnzippedVirgoBuildTools') {
+task ('generateP2Inf', type:JavaExec, dependsOn: GLOBAL_TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS) {
     description = "Generates p2.inf-s for all feature directories inside a wrapping 'features' directory."
     def assemblyFeatureDir = file("${buildDir}/assembly/features/")
 
     main = 'org.eclipse.equinox.launcher.Main'
-    classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+    classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
     args = [
         '-application',
         'org.eclipse.virgo.build.p2tools.instructions.P2InstructionGeneratorApplication',
@@ -82,7 +86,7 @@ task ('publishBundlesAndFeatures', type:JavaExec) {
     def repositoryDir = file("${buildDir}/repository/")
 
     main = 'org.eclipse.equinox.launcher.Main'
-    classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+    classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
     args = [
         '-application',
         'org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher',
@@ -131,7 +135,7 @@ tasks.addRule("Pattern: publish<ID>") { String taskName ->
             def javaprofileLocation = file("${projectDir}/src/main/dist/configuration/java6-server.profile")
 
             main = 'org.eclipse.equinox.launcher.Main'
-            classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+            classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
             args = [
                 '-application',
                 'org.eclipse.equinox.p2.publisher.ProductPublisher',
@@ -180,7 +184,7 @@ tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
             def productIu = "${product}.product"
 
             main = 'org.eclipse.equinox.launcher.Main'
-            classpath = files("${virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+            classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
             args = [
                 '-application',
                 'org.eclipse.equinox.p2.director',
