@@ -78,7 +78,7 @@
          id="org.eclipse.virgo.shell.command"
          download-size="0"
          install-size="0"
-         version="@KERNEL.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"
          autostart="true"/>
 

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.enterprise.xbean"
       label="%featureName"
-      version="@NANO.VERSION@"
+      version="@VIRGO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 

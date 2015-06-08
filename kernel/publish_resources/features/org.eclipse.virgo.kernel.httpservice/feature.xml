@@ -2,7 +2,7 @@
 <feature
 	  id="org.eclipse.virgo.kernel.httpservice"
 	  label="%featureName"
-	  version="@KERNEL.VERSION@"
+	  version="@VIRGO.VERSION@"
 	  provider-name="%providerName"
 	  image="eclipse_update_120.jpg">
 

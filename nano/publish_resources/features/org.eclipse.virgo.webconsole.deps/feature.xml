@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.webconsole.deps"
       label="%featureName"
-      version="@MNGMNT.CONSOLE.VERSION@"
+      version="@VIRGO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -22,7 +22,7 @@
     id="org.eclipse.virgo.management.console"
     download-size="0"
     install-size="0"
-    version="@MNGMNT.CONSOLE.VERSION@"
+    version="@VIRGO.VERSION@"
     unpack="false"/-->
     
     <plugin
@@ -36,7 +36,7 @@
     id="org.eclipse.virgo.management.fragment"
     download-size="0"
     install-size="0"
-    version="@VIRGO.MNGMNT.FR.VERSION@"
+    version="@VIRGO.VERSION@"
     unpack="false"/>
     
     <plugin

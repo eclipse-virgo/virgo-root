@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.core"
       label="%featureName"
-      version="@NANO.VERSION@"
+      version="@VIRGO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -26,20 +26,20 @@
          id="org.eclipse.virgo.nano.core"
          download-size="0"
          install-size="0"
-         version="@NANO.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"
          autostart="true"/>
     <plugin
          id="org.eclipse.virgo.nano.deployer.api"
          download-size="0"
          install-size="0"
-         version="@NANO.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
     <plugin
          id="org.eclipse.virgo.nano.deployer.hot"
          download-size="0"
          install-size="0"
-         version="@NANO.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
 
 </feature>

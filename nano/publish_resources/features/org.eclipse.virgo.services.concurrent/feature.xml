@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.services.concurrent"
       label="%featureName"
-      version="@NANO.VERSION@"
+      version="@VIRGO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -23,7 +23,7 @@
         id="org.eclipse.virgo.nano.services.concurrent"
         download-size="0"
         install-size="0"
-        version="@NANO.VERSION@"
+        version="@VIRGO.VERSION@"
         unpack="false"
         autostart="true"/>
 

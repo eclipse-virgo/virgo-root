@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.medic"
       label="%featureName"
-      version="@MEDIC.VERSION@"
+      version="@VIRGO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -22,26 +22,26 @@
          id="org.eclipse.virgo.medic"
          download-size="0"
          install-size="0"
-         version="@MEDIC.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.virgo.medic.core"
          download-size="0"
          install-size="0"
-         version="@MEDIC.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
    <plugin
          id="org.eclipse.virgo.medic.logbackcorefragment"
          download-size="0"
          install-size="0"
-         version="@MEDIC.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
    <plugin
          id="org.eclipse.virgo.medic.logbackclassicfragment"
          download-size="0"
          install-size="0"
-         version="@MEDIC.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
    <plugin
          id="ch.qos.logback.classic"

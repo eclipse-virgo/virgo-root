@@ -2,7 +2,7 @@
 <feature
 	  id="org.eclipse.virgo.management"
 	  label="%featureName"
-	  version="@KERNEL.VERSION@"
+	  version="@VIRGO.VERSION@"
 	  provider-name="%providerName"
 	  image="eclipse_update_120.jpg">
 
@@ -22,7 +22,7 @@
 		id="org.eclipse.virgo.management.fragment"
 		download-size="0"
 		install-size="0"
-		version="@KERNEL.VERSION@"
+		version="@VIRGO.VERSION@"
 		unpack="false"
 		autostart="true"/>
 	

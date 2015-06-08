@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.virgo.nano.war.deployer"
       label="%featureName"
-      version="@NANO.VERSION@"
+      version="@VIRGO.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -26,7 +26,7 @@
          id="org.eclipse.virgo.web.war.deployer"
          download-size="0"
          install-size="0"
-         version="@WEB.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"
          autostart="true"/>
 
