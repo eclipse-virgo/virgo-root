@@ -230,15 +230,6 @@ ext {
 	// used when copying features and products
 	tokenMap = [
 		'VIRGO.VERSION': version,
-		// TODO - remove duplication - only @VIRGO.VERSION@ should be used in all cases
-		'UTIL.VERSION': version,
-		'NANO.VERSION': version,
-		'MEDIC.VERSION': version,
-		'WEB.VERSION': version,
-		'KERNEL.VERSION': version, // used in oev.kernel.userregion.properties
-		'MNGMNT.CONSOLE.VERSION': version,
-		'REPOSITORY.VERSION': version,
-		'VIRGO.MNGMNT.FR.VERSION': version,
 
 		// TODO - rename to EQUINOX.VERSION
 		'OSGI': equinoxVersion,
