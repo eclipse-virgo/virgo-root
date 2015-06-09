@@ -1,6 +1,6 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-import static virgobuild.VirgoToolsPlugin.GLOBAL_TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS
+import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
 
 import virgobuild.Config
 
@@ -60,7 +60,7 @@ task ('prepareBundlesAndFeatures') {
 }
 
 // start in debug mode with gradle generateP2Inf --debug-jvm
-task ('generateP2Inf', type:JavaExec, dependsOn: GLOBAL_TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS) {
+task ('generateP2Inf', type:JavaExec, dependsOn: ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}") {
     description = "Generates p2.inf-s for all feature directories inside a wrapping 'features' directory."
     def assemblyFeatureDir = file("${buildDir}/assembly/features/")
 
