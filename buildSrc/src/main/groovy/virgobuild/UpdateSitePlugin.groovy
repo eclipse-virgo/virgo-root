@@ -179,16 +179,24 @@ class UpdateSitePlugin implements Plugin<Project> {
     }
 
     static void normalizeBundles(Project project) {
-        project.javaexec {
-            main = 'org.eclipse.equinox.internal.p2.jarprocessor.Main'
-            classpath Config.on(project).jarProcessorJar
-            args = [
-                '-processAll',
-                '-repack',
-                '-outputDir',
-                new File(project.buildDir, UNSIGNED_BUNDLES_DIR_NAME),
-                new File(project.buildDir, PRE_NORMALIZED_BUNDLES_DIR_NAME)
-            ]
+        if (System.properties['skip.normalize.bundles'] == 'true') {
+            project.logger.warn("Skipping normalization of bundles!")
+            project.copy {
+                from new File(project.buildDir, PRE_NORMALIZED_BUNDLES_DIR_NAME)
+                into new File(project.buildDir, UNSIGNED_BUNDLES_DIR_NAME)
+            }
+        } else {
+            project.javaexec {
+                main = 'org.eclipse.equinox.internal.p2.jarprocessor.Main'
+                classpath Config.on(project).jarProcessorJar
+                args = [
+                    '-processAll',
+                    '-repack',
+                    '-outputDir',
+                    new File(project.buildDir, UNSIGNED_BUNDLES_DIR_NAME),
+                    new File(project.buildDir, PRE_NORMALIZED_BUNDLES_DIR_NAME)
+                ]
+            }
         }
     }
 
