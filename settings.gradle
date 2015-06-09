@@ -87,6 +87,8 @@ if (System.properties['include.docs'] == 'true') {
 	include ':documentation:user-guide'
 }
 
+include ':org.eclipse.virgo.site'
+
 include ':packaging:nano'
 include ':packaging:kernel'
 include ':packaging:jetty-server'

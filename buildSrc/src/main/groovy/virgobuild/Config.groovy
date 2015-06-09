@@ -30,4 +30,12 @@ class Config {
     File getVirgoBuildToolsArchive() {
         new File(virgoBuildToolsDir, 'virgo-tools.zip')
     }
+
+    File getEquinoxLauncherJar() {
+        new File(virgoBuildToolsDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.launcher_') }
+    }
+
+    File getJarProcessorJar() {
+        new File(virgoBuildToolsDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.p2.jarprocessor_') }
+    }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+    <category-def name="Virgo" label="Virgo: OSGi bundles for Virgo" />
+    <feature id="org.eclipse.virgo"
+        url="features/org.eclipse.virgo_0.0.0.jar"
+        version="0.0.0">
+        <category name="Virgo" />
+    </feature>
+</site>

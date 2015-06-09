@@ -6,20 +6,91 @@ import org.gradle.api.logging.LogLevel
 
 import eclipsebuild.FileSemaphore
 
-// Derived from buildship's BuildDefinitionPlugin
+// new comment
+// Derived from buildship Plugins
 class VirgoToolsPlugin implements Plugin<Project> {
 
-    // task names
-    static final String TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS = "downloadVirgoBuildTools"
-    static final String GLOBAL_TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS = ':' + TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS
+    // virgo tasks names
+    static final String DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME = "downloadVirgoBuildTools"
+
+    static final String TASK_NAME_GENERATE_P2_INSTRUCTIONS = "generateP2Instructions"
+
     @Override
     public void apply(Project project) {
         Config config = Config.on(project)
         addTaskDownloadVirgoBuildTools(project, config)
     }
 
+    static void generateP2Instructions(Project project, File assemblyFeatureDir) {
+        project.logger.info("Generating p2 instructions for '${assemblyFeatureDir}'.")
+        project.javaexec {
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath Config.on(project).equinoxLauncherJar
+            args = [
+                '-application',
+                'org.eclipse.virgo.build.p2tools.instructions.P2InstructionGeneratorApplication',
+                '-source',
+                assemblyFeatureDir
+            ]
+        }
+        project.logger.info("Generated p2 instructions for '${assemblyFeatureDir}'.")
+    }
+
+    // TODO remove unnecessary variable quoting ${} ?
+    static void publishProduct(Project project, File repositoryDir, File productFileLocation, File javaProfileLocation) {
+        project.logger.info("Publishing Virgo ${productFileLocation} to '${repositoryDir}'.")
+        project.javaexec {
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath Config.on(project).equinoxLauncherJar
+            args = [
+                '-application',
+                'org.eclipse.equinox.p2.publisher.ProductPublisher',
+                '-metadataRepository',
+                repositoryDir.toURI().toURL(),
+                '-artifactRepository',
+                repositoryDir.toURI().toURL(),
+                '-append',
+                '-compress',
+                '-publishArtifacts',
+                '-productFile',
+                "${productFileLocation}",
+//                '-jreLocation',
+//                "${javaProfileLocation}",
+                '-configs',
+                'ANY.ANY.ANY',
+                '-flavor',
+                'tooling'
+            ]
+        }
+        project.logger.info("Published Virgo ${productFileLocation} to '${repositoryDir}'.")
+    }
+
+    static void installProduct(Project project, String productIu, File repositoryDir, File destinationDir) {
+        project.logger.info("Installing Virgo '${productIu}' assembled from '${repositoryDir}' into '${destinationDir}'.")
+        project.javaexec {
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath Config.on(project).equinoxLauncherJar
+            args = [
+                '-application',
+                'org.eclipse.equinox.p2.director',
+                '-repository',
+                "file:${repositoryDir}",
+                '-installIU',
+                "${productIu}",
+                '-tag',
+                'InitialState',
+                '-destination',
+                "${destinationDir}",
+                '-profile',
+                'VIRGOProfile',
+                '-roaming'
+            ]
+        }
+        project.logger.info("Installed Virgo '${productIu}' assembled from '${repositoryDir}' into '${destinationDir}'.")
+    }
+
     static void addTaskDownloadVirgoBuildTools(Project project, Config config) {
-        project.task(TASK_NAME_DOWNLOAD_VIRGO_BUILD_TOOLS) {
+        project.task(DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME) {
             group = Constants.gradleTaskGroupName
             description = "Downloads the Virgo Build Tools to perform P2 operations with."
             outputs.file config.virgoBuildToolsArchive
