@@ -1,9 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site>
-    <category-def name="Virgo" label="Virgo: OSGi bundles for Virgo" />
-    <feature id="org.eclipse.virgo"
-        url="features/org.eclipse.virgo_0.0.0.jar"
+<site pack200="true">
+    <!-- TODO add 2nd category 3rd party libraries? -->
+    <category-def name="virgo" label="Virgo from EclipseRT">
+    	<description>
+    		A module-based Java application server.  
+    	</description>
+    </category-def>
+    <!-- TODO rename to org.eclipse.equinox.region -->
+    <feature id="org.eclipse.equinox.regions"
+        url="features/org.eclipse.equinox.regions_0.0.0.jar"
         version="0.0.0">
-        <category name="Virgo" />
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.core"
+        url="features/org.eclipse.virgo.core_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <!-- TODO rename to org.eclipse.equinox.ds -->
+    <feature id="org.eclipse.virgo.ds"
+        url="features/org.eclipse.virgo.ds_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.kernel"
+        url="features/org.eclipse.virgo.kernel_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <!-- TODO rename to org.eclipse.equinox.http -->
+    <feature id="org.eclipse.virgo.kernel.httpservice"
+        url="features/org.eclipse.virgo.kernel.httpservice_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.kernel.springintegration"
+        url="features/org.eclipse.virgo.kernel.springintegration_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.management"
+        url="features/org.eclipse.virgo.management_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.medic"
+        url="features/org.eclipse.virgo.medic_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.nano.mbeans"
+        url="features/org.eclipse.virgo.nano.mbeans_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.shell"
+        url="features/org.eclipse.virgo.shell_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <feature id="org.eclipse.virgo.simpleconfigurator"
+        url="features/org.eclipse.virgo.simpleconfigurator_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
+    <!-- TODO rename to org.eclipse.gemini.blueprint -->
+    <feature id="org.eclipse.virgo.springdm"
+        url="features/org.eclipse.virgo.springdm_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
     </feature>
 </site>

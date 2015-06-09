@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.springdm"
+      label="%featureName"
+      version="@SPRING.DM.VERSION@"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.gemini.blueprint.core"
+         download-size="0"
+         install-size="0"
+         version="@SPRING.DM.VERSION@"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gemini.blueprint.extender"
+         download-size="0"
+         install-size="0"
+         version="@SPRING.DM.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.gemini.blueprint.io"
+         download-size="0"
+         install-size="0"
+         version="@SPRING.DM.VERSION@"
+         unpack="false"/>
+
+</feature>

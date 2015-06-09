@@ -479,7 +479,7 @@ configure(javaProjects + aspectjProjects) {
 	}
 }
 
-configure(javaProjects + aspectjProjects + packagingProjects) {
+configure(javaProjects + aspectjProjects + packagingProjects + project(":org.eclipse.virgo.site")) {
 	repositories {
 		mavenCentral()
 		ivy {
