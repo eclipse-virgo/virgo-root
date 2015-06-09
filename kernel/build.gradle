@@ -1,6 +1,8 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
+import static virgobuild.VirgoToolsPlugin.publishProduct
+import static virgobuild.VirgoToolsPlugin.installProduct
 
 import virgobuild.Config
 
@@ -11,6 +13,7 @@ distributions {
         baseName = 'virgo-kernel'
         contents {
             from { "${buildDir}/common_resources/" }
+            // TODO Move everything from src/main/dist that needs postprocessing to src/main/filtered to avoid duplicates in zip
             from ( 'src/main/dist' ) {
                 include ( '**/*.properties' )
                 include ( '**/.version' )
@@ -34,7 +37,10 @@ distributions {
     }
 }
 
-task ('assembleKernel', dependsOn: ['groupInstall',]) {
+task ('assembleKernel', dependsOn: [
+    'installProductKernel',
+    'packageResourcesAndProducts'
+]) {
     installDist.dependsOn(['assembleKernel'])
     distZip.dependsOn(['assembleKernel'])
 }
@@ -56,92 +62,29 @@ task ('packageResourcesAndProducts', dependsOn: [
     }
 }
 
-// start in debug mode with gradle publish<ID>
-tasks.addRule("Pattern: publish<ID>") { String taskName ->
-    if (taskName.startsWith("publish")) {
-        task (taskName, type:JavaExec, dependsOn: [
-            'packageResourcesAndProducts',
-        ]) {
-            def product = 'undefined'
-            switch (taskName.toString() - 'publish') {
-                case 'Kernel': product = 'kernel'; break
-            }
-            println "Publishing: " + product
+task ('publishKernel', dependsOn: [
+    ':org.eclipse.virgo.site:publishBase',
+    ':org.eclipse.virgo.site:publishKernelBase',
+]) {
+    description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
 
-            description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
-            File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
-            def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
-            def javaprofileLocation = file("${projectDir}/src/main/dist/configuration/java6-server.profile")
+    def product = 'kernel'
+    File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+    def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
+    def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java6-server.profile")
 
-            main = 'org.eclipse.equinox.launcher.Main'
-            classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
-            args = [
-                '-application',
-                'org.eclipse.equinox.p2.publisher.ProductPublisher',
-                '-metadataRepository',
-                "file:${repositoryDir}",
-                '-artifactRepository',
-                "file:${repositoryDir}",
-                '-append',
-                '-compress',
-                '-publishArtifacts',
-                '-productFile',
-                "${productFileLocation}",
-                '-jreLocation',
-                "${javaprofileLocation}",
-                '-configs',
-                'ANY.ANY.ANY',
-                '-flavor',
-                'tooling'
-            ]
-            doLast() { println "Published Virgo ${productFileLocation} to '${buildDir}/repository'." }
-        }
-    }
+    doLast() { publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation) }
 }
 
-task ('groupPublish', dependsOn: [
-    'publishKernel',
-]){ }
+task ('installProductKernel', dependsOn: ['publishKernel',]) {
 
-// start in debug mode with gradle publish<ID>
-tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
-    if (taskName.startsWith("installProduct")) {
-        // start in debug mode with gradle publishNanoBase --debug-jvm
-        task (taskName, type:JavaExec, dependsOn: ['groupPublish',]) {
-            description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
-            def product = 'undefined'
-            def shortProduct = 'undefined'
-            switch (taskName.toString() - 'installProduct') {
-                case 'Kernel': product = 'kernel'; shortProduct = "VK"; break;
-            }
-            println "Installing: " + product
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
 
-            File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
-            def destinationDir = file("${buildDir}/${shortProduct}/${product}")
-            def productIu = "${product}.product"
+    def product = 'kernel'
+    def shortProduct = 'VK'
+    File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+    def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+    def productIu = "${product}.product"
 
-            main = 'org.eclipse.equinox.launcher.Main'
-            classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
-            args = [
-                '-application',
-                'org.eclipse.equinox.p2.director',
-                '-repository',
-                "file:${repositoryDir}",
-                '-installIU',
-                "${productIu}",
-                '-tag',
-                'InitialState',
-                '-destination',
-                "${destinationDir}",
-                '-profile',
-                'VIRGOProfile',
-                '-roaming'
-            ]
-            doLast() { println "Installed Virgo '${productIu}' to '${destinationDir}'." }
-        }
-    }
+    doLast() { installProduct(project, productIu, repositoryDir, destinationDir) }
 }
-
-task ('groupInstall', dependsOn: [
-    'installProductKernel',
-]){ }
