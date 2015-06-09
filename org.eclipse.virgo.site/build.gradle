@@ -176,6 +176,11 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.io", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
 }
 
+task zipUpdateSite(type: Zip, dependsOn : createP2Repository) {
+    from "${buildDir}/repository"
+    baseName 'repository'
+}
+
 task uploadUpdateSite(dependsOn : createP2Repository) {
     description = "Uploads the generated update site to the eclipse.org server."
 
