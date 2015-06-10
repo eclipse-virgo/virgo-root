@@ -79,6 +79,9 @@ class UpdateSitePlugin implements Plugin<Project> {
 
     static void addTaskCopyBundles(Project project) {
         def copyBundlesTask = project.task(COPY_BUNDLES_TASK_NAME) {
+
+            dependsOn ':kernel:org.eclipse.virgo.kernel.services:rewriteJar'
+
             group = Constants.gradleTaskGroupName
             description = 'Collects the bundles that make up the update site.'
             outputs.dir new File(project.buildDir, PRE_NORMALIZED_BUNDLES_DIR_NAME)
