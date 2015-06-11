@@ -34,7 +34,9 @@ distributions {
     }
 }
 
-task ('assembleJettyServer', dependsOn: ['groupInstall',]) { distZip.dependsOn('groupInstall') }
+task ('assembleJettyServer', dependsOn: [
+    'installProductTomcatServer',
+]) { distZip.dependsOn('installProductTomcatServer') }
 
 task ('prepareBundlesAndFeatures') {
     def assemblyPluginsDir = file("${buildDir}/assembly/plugins/")
@@ -160,45 +162,31 @@ task ('groupPublish', dependsOn: [
     'publishTomcatServer',
 ]){ }
 
-// start in debug mode with gradle publish<ID>
-tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
-    if (taskName.startsWith("installProduct")) {
-        // start in debug mode with gradle publishNanoBase --debug-jvm
-        task (taskName, type:JavaExec, dependsOn: ['groupPublish',]) {
-            description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
-            def product = 'undefined'
-            def shortProduct = 'undefined'
-            switch (taskName.toString() - 'installProduct') {
-                case 'TomcatServer': product = 'tomcat-server'; shortProduct = "VTS"; break;
-            }
-            println "Installing: " + product
+task ('installProductTomcatServer', type:JavaExec, dependsOn: ['groupPublish',]) {
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+    def product = 'tomcat-server'
+    def shortProduct = 'VTS'
 
-            def repositoryDir = file("${buildDir}/repository/")
-            def destinationDir = file("${buildDir}/${shortProduct}/${product}")
-            def productIu = "${product}.product"
+    def repositoryDir = file("${buildDir}/repository/")
+    def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+    def productIu = "${product}.product"
 
-            main = 'org.eclipse.equinox.launcher.Main'
-            classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
-            args = [
-                '-application',
-                'org.eclipse.equinox.p2.director',
-                '-repository',
-                "file:${repositoryDir}",
-                '-installIU',
-                "${productIu}",
-                '-tag',
-                'InitialState',
-                '-destination',
-                "${destinationDir}",
-                '-profile',
-                'VIRGOProfile',
-                '-roaming'
-            ]
-            doLast() { println "Installed Virgo '${productIu}' to '${destinationDir}'." }
-        }
-    }
+    main = 'org.eclipse.equinox.launcher.Main'
+    classpath = files("${Config.on(project).virgoBuildToolsDir}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherVersion}.jar")
+    args = [
+        '-application',
+        'org.eclipse.equinox.p2.director',
+        '-repository',
+        "file:${repositoryDir}",
+        '-installIU',
+        "${productIu}",
+        '-tag',
+        'InitialState',
+        '-destination',
+        "${destinationDir}",
+        '-profile',
+        'VIRGOProfile',
+        '-roaming'
+    ]
+    doLast() { println "Installed Virgo '${productIu}' to '${destinationDir}'." }
 }
-
-task ('groupInstall', dependsOn: [
-    'installProductTomcatServer',
-]){ }
