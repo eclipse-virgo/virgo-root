@@ -36,7 +36,15 @@ class VirgoToolsPlugin implements Plugin<Project> {
         project.logger.info("Generated p2 instructions for '${assemblyFeatureDir}'.")
     }
 
+    static void publishProduct(Project project, File productFileLocation, File javaProfileLocation) {
+        File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+        publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation)
+
+    }
+
     // TODO remove unnecessary variable quoting ${} ?
+    // TODO remove unnecessary variable javaProfileLocation as this can be always oev.site/config/something?!
+    @Deprecated
     static void publishProduct(Project project, File repositoryDir, File productFileLocation, File javaProfileLocation) {
         project.logger.info("Publishing Virgo ${productFileLocation} to '${repositoryDir}'.")
         project.javaexec {
@@ -65,6 +73,12 @@ class VirgoToolsPlugin implements Plugin<Project> {
         project.logger.info("Published Virgo ${productFileLocation} to '${repositoryDir}'.")
     }
 
+    static void installProduct(Project project, String productIu, File destinationDir) {
+        File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+        installProduct(project, productIu, repositoryDir, destinationDir)
+    }
+
+    @Deprecated
     static void installProduct(Project project, String productIu, File repositoryDir, File destinationDir) {
         project.logger.info("Installing Virgo '${productIu}' assembled from '${repositoryDir}' into '${destinationDir}'.")
         project.javaexec {
