@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.virgo.tools"
+      label="%featureName"
+      version="@VIRGO.VERSION@"
+      provider-name="%providerName"
+      image="eclipse_update_120.jpg">
+
+   <description url="http://www.eclipse.org/virgo/">
+      %description
+   </description>
+
+   <copyright url="http://www.eclipse.org/virgo/">
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.virgo.util.common"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+<!-- 
+   <plugin
+         id="org.eclipse.virgo.util.io"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.math"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.osgi"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.osgi.manifest"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.parser.manifest"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.repository"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.medic"
+         download-size="0"
+         install-size="0"
+         version="@VIRGO.VERSION@"
+         unpack="false"
+         autostart="true"/>
+ -->
+
+</feature>

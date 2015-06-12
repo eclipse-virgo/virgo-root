@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 import static virgobuild.UpdateSitePlugin.CREATE_P2_REPOSITORY_TASK_NAME
 import static virgobuild.UpdateSitePlugin.PRE_NORMALIZED_BUNDLES_DIR_NAME
+import static virgobuild.VirgoToolsPlugin.installProduct
 import static virgobuild.VirgoToolsPlugin.publishProduct
 
 import virgobuild.Constants
@@ -150,7 +151,9 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.classic", version: logbackVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.slf4j", version: logbackVersion, configuration: "compile", ext: "jar"
 
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer')
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.controller')
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.shell')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console", version: equinoxConsoleVersion, configuration: "compile", ext: "jar"
@@ -163,6 +166,9 @@ dependencies {
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator.manipulator", version: equinoxSimpleConfiguratorManipulatorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin", version: equinoxFrameworkadminVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin.equinox", version: equinoxFrameworkadminEquinoxVersion, configuration: "compile", ext: "jar"
 
     // TODO - rename feature to org.eclipse.gemini.blueprint
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
@@ -174,6 +180,18 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.core", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.extender", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.io", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+
+    // nano base
+    // TODO - merge to oev.nano.services ?
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.concurrent')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.ds')
+
+    // TODO - merge with management features above?
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
+    // TODO - is this really required for webconsole access?
+    signedExternalPlugin group: "org.apache.commons", name: "com.springsource.org.apache.commons.fileupload", version: commonsFileuploadVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.apache.commons", name: "com.springsource.org.apache.commons.io", version: commonsIoVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.jolokia", name: "org.jolokia.osgi", version: jolokiaVersion, configuration: "compile", ext: "jar"
 }
 
 task zipUpdateSite(type: Zip, dependsOn : createP2Repository) {
@@ -374,6 +392,7 @@ project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
             switch (taskName.toString() - 'publish') {
                 case 'Base': product = 'base'; break
                 case 'KernelBase': product = 'kernel-base'; break
+                case 'NanoBase': product = 'nano-base'; break
             }
             group = Constants.gradleTaskGroupName
             description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
@@ -391,4 +410,20 @@ project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
             doLast { publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation) }
         }
     }
+}
+
+// for testing purposes only
+task ('installProductNanoBase', dependsOn: [
+    'publishBase',
+    'publishNanoBase'
+]) {
+
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+
+    def product = 'nano-base'
+    def shortProduct = 'VNB'
+    def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+    def productIu = "${product}.product"
+
+    doLast() { installProduct(project, productIu, destinationDir) }
 }
