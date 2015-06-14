@@ -192,6 +192,165 @@ dependencies {
     signedExternalPlugin group: "org.apache.commons", name: "com.springsource.org.apache.commons.fileupload", version: commonsFileuploadVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.apache.commons", name: "com.springsource.org.apache.commons.io", version: commonsIoVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.jolokia", name: "org.jolokia.osgi", version: jolokiaVersion, configuration: "compile", ext: "jar"
+
+    // nano
+    // TODO - merge with ecv.kernel.httpservice
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.httpservice')
+
+    // nano full
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.p2.provisioning')
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.contenttype", version: eclipseCoreContenttypeVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.jobs", version: eclipseCoreJobsVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.net", version: eclipseCoreNetVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.runtime", version: eclipseCoreRuntimeVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf", version: eclipseEcfVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.filetransfer", version: eclipseEcfFiletransferVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.identity", version: eclipseEcfIdentityVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.provider.filetransfer", version: eclipseEcfProviderFiletransferVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.ssl", version: eclipseEcfSslVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.app", version: equinoxAppVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.preferences", version: equinoxPreferencesVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.registry", version: equinoxRegistryVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.security", version: equinoxSecurityVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.sat4j.core", version: sat4jCoreVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.sat4j.pb", version: sat4jPbVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.artifact.repository", version: p2ArtifactRepositoryVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.console", version: p2ConsoleVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.core", version: p2CoreVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.director", version: p2DirectorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.engine", version: p2EngineVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.garbagecollector", version: p2GarbageCollectorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.jarprocessor", version: p2JarProcessorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.metadata", version: p2MetadataVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.metadata.repository", version: p2MetadataRepositoryVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.publisher", version: p2PublisherVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.publisher.eclipse", version: p2PublisherEclipseVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.repository", version: p2RepositoryVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.eclipse", version: p2TouchpointEclipseVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.natives", version: p2TouchpointNativesVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.transport.ecf", version: p2TransportEcfVersion, configuration: "compile", ext: "jar"
+
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.war.deployer')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.enterprise')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.web')
+    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.extender", version: geminiWebVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.apache.log4j", name: "com.springsource.org.apache.log4j", version: apacheLog4jVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.objectweb.asm", version: objectwebAsmVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javassist", version: javassistVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "scannotation", version: scannotationVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.bval", version: apacheBvalVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.quartz", version: quartzVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlApiVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp.jstl.impl", version: javaxServletJspJstlImplVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.wsdl", version: javaxWsdlVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ws.rs", version: javaxWsRsVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.javax.faces", version: glassfishJavaxFacesVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.connector", version: geronimoComponentsConnectorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.transaction", version: geronimoComponentsTransactionVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.j2ee.management", version: geronimoSpecsJ2eeManagementVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.locator", version: geronimoSpecsOsgiLocatorVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.registry", version: geronimoSpecsOsgiRegistryVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.beanutils", version: commonsBeanutilsVersion, configuration: "compile", ext: "jar"
+    // TODO move/copy to oev.mirrored?
+    signedExternalPlugin group: "org.apache.commons", name: "com.springsource.org.apache.commons.cli", version: commonsCliVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.collections", version: commonsCollectionsVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.lang", version: commonsLangVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.pool", version: commonsPoolVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "cdi.api", version: cdiApiVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.api", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.javaagent", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jpa-integration", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ee", version: apacheOpenwebbeansEEVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ee.common", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ejb", version: apacheOpenwebbeansEEVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.jsf", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.spi", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.tomcat7", version: apacheOpenwebbeansTomcat7Version, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.web", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.asm", version: apacheXBeanAsmVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.bundleutils", version: apacheXBeanBundleutilsVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.finder", version: apacheXBeanFinderVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.naming", version: apacheXBeanNamingVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.reflect", version: apacheXBeanReflectVersion, configuration: "compile", ext: "jar"
+
+    // Tomcat Runtime
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.mail", version: javaxMailVersion, configuration: "compile", ext: "jar"
+    // TODO - check CQ and put version into properties
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.activation", version: '1.1.0.v201211130549', configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.tribes", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.el", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.jasper", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipsejdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.antlr", version: eclipsePersistenceAntlrVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.asm", version: eclipsePersistenceAsmVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa", version: eclipsePersistenceJpaVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa.jpql", version: eclipsePersistenceJpaJpqlVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.derby", version: apacheDerbyVersion, configuration: "compile", ext: "jar"
+
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.applistener')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.jsf.support')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security.valve')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.services.accessor')
+    signedExternalPlugin project(':web:org.eclipse.virgo.web.war.deployer')
+
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.tools')
 }
 
 task zipUpdateSite(type: Zip, dependsOn : createP2Repository) {
@@ -392,7 +551,10 @@ project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
             switch (taskName.toString() - 'publish') {
                 case 'Base': product = 'base'; break
                 case 'KernelBase': product = 'kernel-base'; break
+                case 'NanoCore': product = 'nano-core'; break
                 case 'NanoBase': product = 'nano-base'; break
+                case 'Nano': product = 'nano'; break
+                case 'NanoFull': product = 'nano-full'; break
             }
             group = Constants.gradleTaskGroupName
             description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
@@ -414,7 +576,7 @@ project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
 
 // for testing purposes only
 task ('installProductNanoBase', dependsOn: [
-    'publishBase',
+    'publishNanoCore',
     'publishNanoBase'
 ]) {
 
@@ -422,6 +584,41 @@ task ('installProductNanoBase', dependsOn: [
 
     def product = 'nano-base'
     def shortProduct = 'VNB'
+    def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+    def productIu = "${product}.product"
+
+    doLast() { installProduct(project, productIu, destinationDir) }
+}
+
+// for testing purposes only
+task ('installProductNano', dependsOn: [
+    'publishNanoCore',
+    'publishNanoBase',
+    'publishNano',
+]) {
+
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+
+    def product = 'nano'
+    def shortProduct = 'VN'
+    def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+    def productIu = "${product}.product"
+
+    doLast() { installProduct(project, productIu, destinationDir) }
+}
+
+// for testing purposes only
+task ('installProductNanoFull', dependsOn: [
+    'publishNanoCore',
+    'publishNanoBase',
+    'publishNano',
+    'publishNanoFull',
+]) {
+
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+
+    def product = 'nano-full'
+    def shortProduct = 'VNF'
     def destinationDir = file("${buildDir}/${shortProduct}/${product}")
     def productIu = "${product}.product"
 

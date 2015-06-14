@@ -42,7 +42,6 @@ class VirgoToolsPlugin implements Plugin<Project> {
 
     }
 
-    // TODO remove unnecessary variable quoting ${} ?
     // TODO remove unnecessary variable javaProfileLocation as this can be always oev.site/config/something?!
     @Deprecated
     static void publishProduct(Project project, File repositoryDir, File productFileLocation, File javaProfileLocation) {
@@ -54,14 +53,14 @@ class VirgoToolsPlugin implements Plugin<Project> {
                 '-application',
                 'org.eclipse.equinox.p2.publisher.ProductPublisher',
                 '-metadataRepository',
-                repositoryDir.toURI().toURL(),
+                "file:${repositoryDir}",
                 '-artifactRepository',
-                repositoryDir.toURI().toURL(),
+                "file:${repositoryDir}",
                 '-append',
                 '-compress',
                 '-publishArtifacts',
                 '-productFile',
-                "${productFileLocation}",
+                productFileLocation,
 //                '-jreLocation',
 //                "${javaProfileLocation}",
                 '-configs',
@@ -90,11 +89,11 @@ class VirgoToolsPlugin implements Plugin<Project> {
                 '-repository',
                 "file:${repositoryDir}",
                 '-installIU',
-                "${productIu}",
+                productIu,
                 '-tag',
                 'InitialState',
                 '-destination',
-                "${destinationDir}",
+                destinationDir,
                 '-profile',
                 'VIRGOProfile',
                 '-roaming'
