@@ -15,7 +15,6 @@
    <features>
    </features>
 
-<!-- TODO - move shared configuration to kernel-base? product? -->
    <configurations>
 		<plugin id="org.apache.felix.gogo.command" autoStart="true"/>
 		<plugin id="org.apache.felix.gogo.runtime" autoStart="true"/>
