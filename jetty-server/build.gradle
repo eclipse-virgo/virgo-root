@@ -3,6 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
 import static virgobuild.VirgoToolsPlugin.installProduct
 import static virgobuild.VirgoToolsPlugin.publishProduct
+import static virgobuild.VirgoToolsPlugin.mirrorP2UpdateSite
 
 import virgobuild.Config
 
@@ -12,28 +13,18 @@ distributions {
     main {
         baseName = 'virgo-jetty-server'
         contents {
-            from { "${buildDir}/common_resources/" }
-            // TODO Move everything from src/main/dist that needs postprocessing to src/main/filtered to avoid duplicates in zip
-            from ( 'src/main/dist' ) {
+            exclude ( '**/placeholder' )
+            from ( 'src/main/filtered' ) {
                 include ( '**/*.properties' )
                 include ( '**/.version' )
                 filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
             }
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( 'bin/*.sh' )
                 fileMode 0755
             }
-            from ( 'src/main/dist' ) {
-                exclude ( '**/*.properties' )
-                exclude ( '**/.version' )
-                exclude ( 'bin/*.sh' )
-            }
-            exclude ( '**/placeholder' )
             from ( "${buildDir}/VJS/jetty-server/" ) { exclude ( 'Eclipse.app' ) }
-            from ( "${buildDir}/" ) {
-                include ( 'repository/ext/' )
-                include ( 'plugins/' )
-            }
+            from ( "${buildDir}/common_resources/" )
         }
     }
 }
@@ -70,7 +61,39 @@ task ('publishJettyServer', dependsOn: [
     doLast() { publishProduct(project, productFileLocation, javaProfileLocation) }
 }
 
-task ('installProductJettyServer', dependsOn: ['publishJettyServer',]) {
+task ('mirrorJettyResources', dependsOn: ['publishJettyServer',]) {
+
+    description = "Mirrors a P2 repository."
+
+    //    def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/${jettyVersion}"
+    def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.3.v20120416/"
+    File destinationDir = file("${buildDir}/jetty-mirror")
+
+    doLast() {
+        mirrorP2UpdateSite(project, source, destinationDir)
+        // copy jetty bundles to repository/ext (this directory is *not* handled by p2)
+        project.copy {
+            from "${buildDir}/jetty-mirror/plugins"
+            into "${buildDir}/common_resources/repository/ext"
+            include '*.jar'
+            exclude { details ->
+                (details.file.name.contains('.source_')
+                        || details.file.name.contains('javax.security.auth.message')
+                        || details.file.name.contains('org.eclipse.jetty.jaspi')
+                        || details.file.name.contains('org.eclipse.jetty.monitor')
+                        || details.file.name.contains('org.eclipse.jetty.nested')
+                        || details.file.name.contains('org.eclipse.jetty.nosql')
+                        || details.file.name.contains('org.eclipse.jetty.osgi.boot.warurl')
+                        || details.file.name.contains('org.eclipse.jetty.osgi.httpservice'))
+            }
+        }
+    }
+}
+
+task ('installProductJettyServer', dependsOn: [
+    'publishJettyServer',
+    'mirrorJettyResources'
+]) {
 
     description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
 
