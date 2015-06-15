@@ -113,6 +113,8 @@ include ':org.eclipse.virgo.site:org.eclipse.gemini.web'
 include ':org.eclipse.virgo.site:org.eclipse.virgo.nano.war.deployer'
 include ':org.eclipse.virgo.site:org.eclipse.virgo.enterprise'
 
+include ':org.eclipse.virgo.site:org.eclipse.virgo.tools'
+
 include ':packaging:nano'
 include ':packaging:kernel'
 include ':packaging:jetty-server'

@@ -70,4 +70,10 @@
         version="0.0.0">
         <category name="virgo" />
     </feature>
+
+    <feature id="org.eclipse.virgo.tools"
+        url="features/org.eclipse.virgo.tools_0.0.0.jar"
+        version="0.0.0">
+        <category name="virgo" />
+    </feature>
 </site>

@@ -102,6 +102,42 @@ class VirgoToolsPlugin implements Plugin<Project> {
         project.logger.info("Installed Virgo '${productIu}' assembled from '${repositoryDir}' into '${destinationDir}'.")
     }
 
+    static void mirrorP2UpdateSite(Project project, String source) {
+        File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+        mirrorP2UpdateSite(project, source, repositoryDir)
+    }
+
+    static void mirrorP2UpdateSite(Project project, String source, File destinationDir) {
+        project.logger.info("Mirrorring update site '${source}' into '${destinationDir}'.")
+        project.javaexec {
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath Config.on(project).equinoxLauncherJar
+            args = [
+                '-application',
+                'org.eclipse.equinox.p2.metadata.repository.mirrorApplication',
+                '-writeMode',
+                '-source',
+                "${source}",
+                '-destination',
+                "${destinationDir}",
+            ]
+        }
+        project.javaexec {
+            main = 'org.eclipse.equinox.launcher.Main'
+            classpath Config.on(project).equinoxLauncherJar
+            args = [
+                '-application',
+                'org.eclipse.equinox.p2.artifact.repository.mirrorApplication',
+                '-writeMode',
+                '-source',
+                "${source}",
+                '-destination',
+                "${destinationDir}",
+            ]
+        }
+        project.logger.info("Mirrorred update site '${source}' into '${destinationDir}'.")
+    }
+
     static void addTaskDownloadVirgoBuildTools(Project project, Config config) {
         project.task(DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME) {
             group = Constants.gradleTaskGroupName
