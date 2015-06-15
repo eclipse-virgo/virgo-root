@@ -12,79 +12,61 @@ distributions {
     main {
         baseName = 'virgo-nano'
         contents {
-            from { "${buildDir}/common_resources/" }
-            // TODO Move everything from src/main/dist that needs postprocessing to src/main/filtered to avoid duplicates in zip
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( '**/*.properties' )
                 include ( '**/.version' )
                 filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
             }
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( 'bin/*.sh' )
                 fileMode 0755
-            }
-            from ( 'src/main/dist' ) {
-                exclude ( '**/*.properties' )
-                exclude ( '**/.version' )
-                exclude ( 'bin/*.sh' )
             }
             from ( "${buildDir}/VN/nano/" ) {
                 exclude ( 'Eclipse.app' )
                 // Remove unwanted *kernel* bundles from nano deliverable
                 exclude('plugins/*.kernel.*')
             }
-        }
+            from ( "${buildDir}/common_resources/" )
+       }
     }
     full {
         baseName = 'virgo-nano-full'
         contents {
-            from { "${buildDir}/common_resources/" }
-            // TODO Move everything from src/main/dist that needs postprocessing to src/main/filtered to avoid duplicates in zip
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( '**/*.properties' )
                 include ( '**/.version' )
                 filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
             }
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( 'bin/*.sh' )
                 fileMode 0755
-            }
-            from ( 'src/main/dist' ) {
-                exclude ( '**/*.properties' )
-                exclude ( '**/.version' )
-                exclude ( 'bin/*.sh' )
             }
             from ( "${buildDir}/VNF/nano-full/" ) {
                 exclude ( 'Eclipse.app' )
                 // Remove unwanted *kernel* bundles from nano deliverable
                 exclude('plugins/*.kernel.*')
             }
+            from ( "${buildDir}/common_resources/" )
         }
     }
     rap {
         baseName = 'virgo-nano-rap'
         contents {
-            from { "${buildDir}/common_resources/" }
-            // TODO Move everything from src/main/dist that needs postprocessing to src/main/filtered to avoid duplicates in zip
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( '**/*.properties' )
                 include ( '**/.version' )
                 filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
             }
-            from ( 'src/main/dist' ) {
+            from ( 'src/main/filtered' ) {
                 include ( 'bin/*.sh' )
                 fileMode 0755
-            }
-            from ( 'src/main/dist' ) {
-                exclude ( '**/*.properties' )
-                exclude ( '**/.version' )
-                exclude ( 'bin/*.sh' )
             }
             from ( "${buildDir}/VNR/nano-rap/" ) {
                 exclude ( 'Eclipse.app' )
                 // Remove unwanted *kernel* bundles from nano deliverable
                 exclude('plugins/*.kernel.*')
             }
+            from ( "${buildDir}/common_resources/" )
         }
     }
 }
