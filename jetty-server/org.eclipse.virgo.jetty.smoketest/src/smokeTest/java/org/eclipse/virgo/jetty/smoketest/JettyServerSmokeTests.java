@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.server.smoketest;
+package org.eclipse.virgo.jetty.smoketest;
 
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.eclipse.virgo.test.tools.UrlWaitLatch.waitFor;
