@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.virgo.util.io.IOUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -120,10 +121,13 @@ public class SimpleFileHelpAccessor implements HelpAccessor {
             String fileResourceName = new StringBuffer(className).append(HELP_ACCESSOR_RESOURCE_EXTENSION).toString();
             URL resourceUrl = this.helpResourceUrl(clazz, fileResourceName);
             if (resourceUrl != null) {
-                try (InputStream resourceIn = resourceUrl.openStream()) {
+                InputStream resourceIn = null;
+                try {
+                    resourceIn = resourceUrl.openStream();
                     readFileIn = new BufferedReader(new InputStreamReader(resourceIn, UTF_8));
                 } catch (IOException ioe) {
                     logger.error(String.format("Exception reading help resource '%s'.", resourceUrl), ioe);
+                    IOUtils.closeQuietly(resourceIn);
                     return null;
                 }
             }
