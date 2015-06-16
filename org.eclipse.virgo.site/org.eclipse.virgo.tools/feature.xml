@@ -22,16 +22,23 @@
          id="org.eclipse.virgo.util.common"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
-<!-- 
    <plugin
          id="org.eclipse.virgo.util.io"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
+         unpack="false"
+         autostart="true"/>
+
+   <plugin
+         id="org.eclipse.virgo.util.jmx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
@@ -39,7 +46,7 @@
          id="org.eclipse.virgo.util.math"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
@@ -47,7 +54,7 @@
          id="org.eclipse.virgo.util.osgi"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
@@ -55,7 +62,7 @@
          id="org.eclipse.virgo.util.osgi.manifest"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
@@ -63,7 +70,7 @@
          id="org.eclipse.virgo.util.parser.manifest"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
@@ -71,7 +78,7 @@
          id="org.eclipse.virgo.repository"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
 
@@ -79,9 +86,8 @@
          id="org.eclipse.virgo.medic"
          download-size="0"
          install-size="0"
-         version="@VIRGO.VERSION@"
+         version="0.0.0"
          unpack="false"
          autostart="true"/>
- -->
 
 </feature>
