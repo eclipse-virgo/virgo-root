@@ -77,8 +77,8 @@ public class StandardSecurityService extends AbstractSecurityService {
 		HashSet<Principal> principals = new HashSet<Principal>();
 		principals.add(tomcatUser);
 
-		Subject subject = new Subject(true, principals, new HashSet(),
-				new HashSet());
+		Subject subject = new Subject(true, principals, new HashSet<Object>(),
+				new HashSet<Object>());
 		return subject;
 	}
 
@@ -88,7 +88,7 @@ public class StandardSecurityService extends AbstractSecurityService {
 		RunAsRole runAsRole = new RunAsRole(role);
 		HashSet<Principal> principals = new HashSet<Principal>();
 		principals.add(runAsRole);
-		return new Subject(true, principals, new HashSet(), new HashSet());
+		return new Subject(true, principals, new HashSet<Object>(), new HashSet<Object>());
 	}
 
 	@Override
