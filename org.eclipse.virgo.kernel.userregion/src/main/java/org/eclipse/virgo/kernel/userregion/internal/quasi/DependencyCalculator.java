@@ -125,7 +125,7 @@ public final class DependencyCalculator {
      */
     public BundleDescription[] calculateDependencies(State state, Region coregion, BundleDescription[] bundles,
         BundleDescription[] disabledProvisioningBundles) throws BundleException, UnableToSatisfyDependenciesException {
-        this.logger.info("Calculating missing dependencies of bundle(s) '{}'", bundles);
+        this.logger.info("Calculating missing dependencies of bundle(s) '{}'", (Object[]) bundles);
         synchronized (this.monitor) {
             this.coregion = coregion;
             try {
