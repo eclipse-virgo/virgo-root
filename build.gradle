@@ -239,8 +239,8 @@ ext {
 		'OSGI.ENTERPRISE.VERSION': osgiEnterpriseVersion,
 
 		// TODO remove duplication 'HTTPSERVICE.VERSION' and 'EQUINOX.HTTP.VERSION'
-		'HTTPSERVICE.VERSION': equinoxHttp,
-		'EQUINOX.HTTP.VERSION': equinoxHttp,
+		'HTTPSERVICE.VERSION': equinoxHttpVersion,
+		'EQUINOX.HTTP.VERSION': equinoxHttpVersion,
 
 		'EQUINOX.APP.VERSION': equinoxAppVersion,
 		'EQUINOX.COMMON.VERSION': equinoxCommonVersion,
@@ -288,12 +288,13 @@ ext {
 
 		// TODO add .VERSION
 		'GEMINI.WEB': geminiWebVersion,
-		'JASPER.VERSION': apacheJasperVersion,
-		'CATALINA.HA': apacheCatalinaHaVersion,
-		'TRIBES.VERSION': apacheCatalinaTribesVersion,
+        // TODO merge the apache catalina versions
+		'JASPER.VERSION': apacheCatalinaVersion,
+		'CATALINA.HA': apacheCatalinaVersion,
+		'TRIBES.VERSION': apacheCatalinaVersion,
 
 		// TODO - rename to aspectjVersion
-		'ASPECTJ': orgAspectj,
+		'ASPECTJ': orgAspectjVersion,
 		'LOGBACK.CLASSIC.VERSION': logbackVersion,
 		'LOGBACK.CORE.VERSION': logbackVersion,
 		'LOGBACK.SLF4J.VERSION': logbackVersion,

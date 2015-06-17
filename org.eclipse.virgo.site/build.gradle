@@ -117,7 +117,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.slf4j.log4j", version: slf4jVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.slf4j.jul", version: slf4jVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.springsource.org.aspectj.weaver", version: orgAspectj, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.springsource.org.aspectj.weaver", version: orgAspectjVersion, configuration: "compile", ext: "jar"
 
     // TODO - rename feature to region'_'
     localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
@@ -137,7 +137,7 @@ dependencies {
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.httpservice')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.osgi", name: "org.eclipse.equinox.http", version: equinoxHttp, configuration: "runtime", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.osgi", name: "org.eclipse.equinox.http", version: equinoxHttpVersion, configuration: "runtime", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, configuration: "compile", ext: "jar"
