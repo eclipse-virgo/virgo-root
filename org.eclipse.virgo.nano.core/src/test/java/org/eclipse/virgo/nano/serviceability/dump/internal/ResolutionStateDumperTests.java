@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,59 +35,61 @@ public class ResolutionStateDumperTests {
 
     @Test
     public void createDump() throws Exception {
-        
+
         State state = createNiceMock(State.class);
         StubStateWriter writer = new StubStateWriter();
-        
-        byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+        byte[] bytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         writer.addBytes(state, bytes);
-        
+
         ResolutionStateDumper dumper = new ResolutionStateDumper(new StubSystemStateAccessor(state), writer);
-        
+
         File outputFile = new File("./build/dump.zip");
         if (outputFile.exists()) {
             assertTrue(outputFile.delete());
-        }                
-        
+        }
+
         dumper.dump(outputFile);
 
         assertTrue(outputFile.exists());
-        
+
         PathReference unzipLocation = new PathReference("build/dump");
         if (unzipLocation.exists()) {
             assertTrue(unzipLocation.delete(true));
         }
-        
-        ZipUtils.unzipTo(new PathReference(outputFile), unzipLocation);        
+
+        ZipUtils.unzipTo(new PathReference(outputFile), unzipLocation);
         File stateFile = new File("build/dump/state/state");
-        
-        assertTrue(stateFile.exists());        
+
+        assertTrue(stateFile.exists());
         assertEquals(10, stateFile.length());
-        
+
         byte[] actualBytes = new byte[10];
-        
-        new FileInputStream(stateFile).read(actualBytes);
-        
+
+        try (InputStream in = new FileInputStream(stateFile)) {
+            in.read(actualBytes);
+        }
+
         assertArrayEquals(bytes, actualBytes);
     }
-    
+
     private static final class StubSystemStateAccessor implements SystemStateAccessor {
-        
+
         private final State systemState;
-                        
+
         private StubSystemStateAccessor(State systemState) {
             this.systemState = systemState;
         }
 
         public State getSystemState() {
             return this.systemState;
-        }        
-    }      
-    
+        }
+    }
+
     private static final class StubStateWriter implements StateWriter {
-        
-        private final Map<State, byte[]> stateBytes = new HashMap<State, byte[]>();                
-        
+
+        private final Map<State, byte[]> stateBytes = new HashMap<State, byte[]>();
+
         private void addBytes(State state, byte[] bytes) {
             this.stateBytes.put(state, bytes);
         }
@@ -97,7 +100,7 @@ public class ResolutionStateDumperTests {
                 throw new IOException();
             } else {
                 FileOutputStream fos = null;
-                
+
                 try {
                     fos = new FileOutputStream(new File(outputDir, "state"));
                     fos.write(bytes);
