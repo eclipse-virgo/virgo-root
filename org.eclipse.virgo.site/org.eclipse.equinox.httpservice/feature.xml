@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.equinox.httpservice"
       label="%featureName"
-      version="@HTTPSERVICE.VERSION@"
+      version="@EQUINOX.HTTP.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -22,7 +22,7 @@
          id="org.eclipse.equinox.http"
          download-size="0"
          install-size="0"
-         version="@HTTPSERVICE.VERSION@"
+         version="@EQUINOX.HTTP.VERSION@"
          unpack="false"
          autostart="true"/>
 

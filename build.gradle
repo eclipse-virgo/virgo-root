@@ -231,17 +231,10 @@ ext {
 	tokenMap = [
 		'VIRGO.VERSION': version,
 
-		// TODO - rename to EQUINOX.VERSION
-		'OSGI': equinoxVersion,
 		'OSGI.SERVICES.VERSION': osgiServicesVersion, // used in oev.kernel.userregion.properties
-		// TODO remove duplication 'OSGI.ENTERPRISE' and 'OSGI.ENTERPRISE.VERSION'
-		'OSGI.ENTERPRISE': osgiEnterpriseVersion,
 		'OSGI.ENTERPRISE.VERSION': osgiEnterpriseVersion,
 
-		// TODO remove duplication 'HTTPSERVICE.VERSION' and 'EQUINOX.HTTP.VERSION'
-		'HTTPSERVICE.VERSION': equinoxHttpVersion,
 		'EQUINOX.HTTP.VERSION': equinoxHttpVersion,
-
 		'EQUINOX.APP.VERSION': equinoxAppVersion,
 		'EQUINOX.COMMON.VERSION': equinoxCommonVersion,
 		'EQUINOX.CONFIGADMIN.VERSION': equinoxCmVersion,
@@ -254,7 +247,6 @@ ext {
 		'EQUINOX.FRKA.E.VERSION': equinoxFrameworkadminEquinoxVersion,
 		'EQUINOX.FRKA.VERSION': equinoxFrameworkadminVersion,
 		'EQUINOX.PFRCS.VERSION': equinoxPreferencesVersion,
-		// TODO add prefix EQIONOX.
 		'REGION.VERSION': equinoxRegionVersion,
 		'EQUINOX.REGISTRY.VERSION': equinoxRegistryVersion,
 		'EQUINOX.SECURITY.VERSION': equinoxSecurityVersion,
@@ -270,9 +262,6 @@ ext {
 		'ECF.SSL.VERSION': eclipseEcfSslVersion,
 		'ECF.VERSION': eclipseEcfVersion,
 
-		// TODO remove duplication 'GMNGMNT.VERSION' and 'GEMINI.MANAGEMENT.VERSION'
-		'GMNGMNT.VERSION': geminiManagementVersion,
-		'GEMINI.MANAGEMENT.VERSION': geminiManagementVersion,
 		'MINA.CORE.VERSION': minaCoreVersion,
 		'SSHD.CORE.VERSION': apacheSshdCoreVersion,
 		'FELIX.GOGO.COMMAND.VERSION': gogoCommandVersion,
@@ -283,17 +272,13 @@ ext {
 
 		'SPRING.VERSION': springframeworkVersion,
 
+		'GEMINI.MANAGEMENT.VERSION': geminiManagementVersion,
 		// TODO rename to 'GENIMI.BLUEPRINT.VERSION'
 		'SPRING.DM.VERSION': geminiBlueprintVersion,
+		'GEMINI.WEB.VERSION': geminiWebVersion,
 
-		// TODO add .VERSION
-		'GEMINI.WEB': geminiWebVersion,
-        // TODO merge the apache catalina versions
-		'JASPER.VERSION': apacheCatalinaVersion,
-		'CATALINA.HA': apacheCatalinaVersion,
-		'TRIBES.VERSION': apacheCatalinaVersion,
+		'CATALINA.VERSION': apacheCatalinaVersion,
 
-		// TODO - rename to aspectjVersion
 		'ASPECTJ': orgAspectjVersion,
 		'LOGBACK.CLASSIC.VERSION': logbackVersion,
 		'LOGBACK.CORE.VERSION': logbackVersion,

@@ -22,7 +22,7 @@
     id="org.eclipse.gemini.management"
     download-size="0"
     install-size="0"
-    version="@GMNGMNT.VERSION@"
+    version="@GEMINI.MANAGEMENT.VERSION@"
     unpack="false"/>
     
     <plugin

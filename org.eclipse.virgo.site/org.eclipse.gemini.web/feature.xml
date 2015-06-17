@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.gemini.web"
       label="%featureName"
-      version="@GEMINI.WEB@"
+      version="@GEMINI.WEB.VERSION@"
       provider-name="%providerName"
       image="eclipse_update_120.jpg">
 
@@ -22,7 +22,7 @@
          id="org.eclipse.gemini.web.tomcat"
          download-size="0"
          install-size="0"
-         version="@GEMINI.WEB@"
+         version="@GEMINI.WEB.VERSION@"
          unpack="false"
          autostart="true"/>
 
@@ -30,7 +30,7 @@
          id="org.eclipse.gemini.web.extender"
          download-size="0"
          install-size="0"
-         version="@GEMINI.WEB@"
+         version="@GEMINI.WEB.VERSION@"
          unpack="false"
          autostart="true"/>
 
@@ -38,7 +38,7 @@
          id="org.eclipse.gemini.web.core"
          download-size="0"
          install-size="0"
-         version="@GEMINI.WEB@"
+         version="@GEMINI.WEB.VERSION@"
          unpack="false"
          autostart="true"/>
     
@@ -46,21 +46,21 @@
         id="org.apache.jasper"
         download-size="0"
         install-size="0"
-        version="@JASPER.VERSION@"
+        version="@CATALINA.VERSION@"
         unpack="false"/>
     
     <plugin
         id="org.apache.catalina.ha"
         download-size="0"
         install-size="0"
-        version="@CATALINA.HA@"
+        version="@CATALINA.VERSION@"
         unpack="false"/>
     
     <plugin
         id="org.apache.catalina.tribes"
         download-size="0"
         install-size="0"
-        version="@TRIBES.VERSION@"
+        version="@CATALINA.VERSION@"
         unpack="false"/>
     
     <plugin
