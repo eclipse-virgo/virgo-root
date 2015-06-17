@@ -534,19 +534,6 @@ configure(packagingProjects) {
 		aspects { // visibility="private"
 			description = "Aspects to be woven" }
 
-		virgoCoreRuntime {
-			transitive = false
-			description = "Dependencies to be published for all Virgo flavors"
-		}
-
-		nanoRuntime {
-			transitive = false
-			description = "Dependencies to be published for Nano"
-		}
-		enterpriseRuntime {
-			transitive = false
-			description = "Enterprise dependencies to be published for Nano"
-		}
 		nanoLib {
 			description = "Dependencies to be packaged in lib"
 			transitive = true
@@ -556,19 +543,9 @@ configure(packagingProjects) {
 		nanoLibPersistence {
 			transitive = false
 			description = "Dependencies to be packaged in lib/persistence" }
-
 		nanoPickup {
 			transitive = false
 			description = "Dependencies to be packaged in pickup"
-		}
-
-		kernelBaseRuntime {
-			transitive = false
-			description = "Basic dependencies to be published for Kernel"
-		}
-		kernelRuntime {
-			transitive = false
-			description = "Dependencies to be published for specific Kernel flavor"
 		}
 		kernelPluginsExtras {
 			transitive = false
