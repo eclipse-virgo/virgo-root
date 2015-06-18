@@ -426,6 +426,8 @@ configure(javaProjects + aspectjProjects) {
 					'org.eclipse.jdt.internal.compiler.batch.Main',
 					'-source',
 					'1.7',
+                    '-target',
+                    '1.7',
 					'-warn:-unused'
 				]
 			}
@@ -443,6 +445,8 @@ configure(javaProjects + aspectjProjects) {
 					'org.eclipse.jdt.internal.compiler.batch.Main',
 					'-source',
 					'1.7',
+					'-target',
+					'1.7',
 					'-warn:-unused'
 				]
 			}
@@ -458,7 +462,7 @@ configure(javaProjects + aspectjProjects) {
 	configurations {  ecj { } }
 
 	dependencies {
-		ecj group: "org.eclipse.jdt.core.compiler", name: "ecj", version: "4.4"
+		ecj group: "org.eclipse.jdt.core.compiler", name: "ecj", version: "4.4.2"
 
 		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
 		testRuntime group: 'org.apache.commons', name: "com.springsource.org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
