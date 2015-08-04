@@ -11,6 +11,9 @@
 
 package org.eclipse.virgo.shell.internal.commands;
 
+import java.util.List;
+
+import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.virgo.kernel.model.management.ManageableCompositeArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
 import org.eclipse.virgo.shell.Command;
@@ -21,8 +24,35 @@ final class PlanCommands extends AbstractInstallArtifactBasedCommands<Manageable
 
     private static final String TYPE = "plan";
 
-    public PlanCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator) {
-        super(TYPE, objectNameCreator, new CompositeInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, null);
+    private static final String GLOBAL_REGION_NAME = "global";
+
+    public PlanCommands(RuntimeArtifactModelObjectNameCreator objectNameCreator, RegionDigraph regionDigraph) {
+        super(TYPE, objectNameCreator, new CompositeInstallArtifactCommandFormatter(), ManageableCompositeArtifact.class, regionDigraph);
+    }
+
+    @Command("examine")
+    public List<String> examine(String name, String version) {
+        return examine(name, version, GLOBAL_REGION_NAME);
+    }
+
+    @Command("start")
+    public List<String> start(String name, String version) {
+        return start(name, version, GLOBAL_REGION_NAME);
+    }
+
+    @Command("stop")
+    public List<String> stop(String name, String version) {
+        return stop(name, version, GLOBAL_REGION_NAME);
+    }
+
+    @Command("refresh")
+    public List<String> refresh(String name, String version) {
+        return refresh(name, version, GLOBAL_REGION_NAME);
+    }
+
+    @Command("uninstall")
+    public List<String> uninstall(String name, String version) {
+        return uninstall(name, version, GLOBAL_REGION_NAME);
     }
 
 }

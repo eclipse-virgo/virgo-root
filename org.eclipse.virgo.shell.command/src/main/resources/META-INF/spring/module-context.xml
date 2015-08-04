@@ -57,6 +57,7 @@
 
 	<bean id="planCommands" class="org.eclipse.virgo.shell.internal.commands.PlanCommands">
 		<constructor-arg ref="objectNameCreator"/>
+		<constructor-arg ref="regionDigraph" />
 	</bean>
 
 	<bean id="parCommands" class="org.eclipse.virgo.shell.internal.commands.ParCommands">
