@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 SAP AG
+ * Copyright (c) 2012, 2015 SAP SE
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,14 +14,17 @@ package org.eclipse.virgo.web.enterprise.services.accessor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +33,7 @@ import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleReference;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRevision;
@@ -61,35 +65,117 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     private final Map<Bundle, Set<String>> webAppBundles = new ConcurrentHashMap<Bundle, Set<String>>();
     
     private final Set<Bundle> postFindApiBundles = new CopyOnWriteArraySet<Bundle>();
+
     private Set<String> negativeCacheClassPrefixes = new HashSet<String>();
-	
+
+    private static Map<Bundle, CacheableObject> negativeCacheClassPerAPIBundle = new ConcurrentHashMap<Bundle, CacheableObject>();
+
+    private static Map<Bundle, CacheableObject> negativeCacheResourcePerAPIBundle = new ConcurrentHashMap<Bundle, CacheableObject>();
+
+    private static Map<Bundle, CacheableObject> negativeCacheClassPerTCCL = new ConcurrentHashMap<Bundle, CacheableObject>();
+
+    private static Map<Bundle, CacheableObject> negativeCacheResourcePerTCCL = new ConcurrentHashMap<Bundle, CacheableObject>();
+
+    private long timeToLive = 20 * 60 * 1000;
+
+    static {
+        Thread cleaner = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        removeFromNegativeCache(true, true);
+                        removeFromNegativeCache(true, false);
+                        removeFromNegativeCache(false, true);
+                        removeFromNegativeCache(false, false);
+                        Thread.sleep(60000);
+                    }
+                } catch (InterruptedException e) {
+                }
+                return;
+            }
+
+            private synchronized void removeFromNegativeCache(boolean isClass, boolean isAPI) {
+                Collection<CacheableObject> values;
+                if (isClass) {
+                    if (isAPI) {
+                        values = negativeCacheClassPerAPIBundle.values();
+                    } else {
+                        values = negativeCacheClassPerTCCL.values();
+                    }
+                } else {
+                    if (isAPI) {
+                        values = negativeCacheResourcePerAPIBundle.values();
+                    } else {
+                        values = negativeCacheResourcePerTCCL.values();
+                    }
+                }
+                for (CacheableObject value : values) {
+                    if (value.isExpired()) {
+                        values.remove(value);
+                    }
+                }
+            }
+
+        });
+
+        cleaner.setPriority(Thread.MIN_PRIORITY);
+        cleaner.start();
+    }
+
     WebAppBundleClassLoaderDelegateHook() {
-    	negativeCacheClassPrefixes.add("openwebbeans/Messages");
-    	negativeCacheClassPrefixes.add("com.sun.faces.LogStrings");
-    	negativeCacheClassPrefixes.add("javax.faces.LogStrings");
-    	negativeCacheClassPrefixes.add("org.apache.catalina.loader.LocalStrings");
-    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.file.LocalStrings");
-    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.scan.LocalStrings");
-    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.http.mapper.LocalStrings");
-    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.net.res.LocalStrings");
-    	negativeCacheClassPrefixes.add("org.apache.tomcat.util.threads.res.LocalStrings");
-    	negativeCacheClassPrefixes.add("ValidationMessages");
-    	negativeCacheClassPrefixes.add("org.apache.bval.jsr303.ValidationMessages");
-    	negativeCacheClassPrefixes.add("com.sun.xml.internal.messaging.saaj.soap.LocalStrings");
-    	negativeCacheClassPrefixes.add("org.apache.openejb.package-info");
-    	negativeCacheClassPrefixes.add("org.apache.openejb.monitoring.package-info");
-    	negativeCacheClassPrefixes.add("org.apache.geronimo.openejb.cdi.GeronimoWebBeansPlugin");
-    	negativeCacheClassPrefixes.add("org.apache.openejb.server.rest.RsRegistry");
-    	negativeCacheClassPrefixes.add("javax.faces.application.ConfigurableNavigationHandlerBeanInfo");
-    	negativeCacheClassPrefixes.add("javax.faces.application.NavigationHandlerBeanInfo");
-    	negativeCacheClassPrefixes.add("org.apache.webbeans.jsf.ConversationAwareViewHandlerBeanInfo");
-    	negativeCacheClassPrefixes.add("javax.faces.application.ViewHandlerWrapperBeanInfo");
-    	negativeCacheClassPrefixes.add("javax.faces.application.ViewHandlerBeanInfo");
-    	negativeCacheClassPrefixes.add("javax.faces.component.UIViewRootBeanInfo");
-    	negativeCacheClassPrefixes.add("javax.faces.component.UIComponentBaseBeanInfo");
-    	negativeCacheClassPrefixes.add("javax.faces.component.UIComponentBeanInfo");  
-    	negativeCacheClassPrefixes.add("javax.management.MBean");    
-    	// keep javax.management.MBean out of the list:
+        negativeCacheClassPrefixes.add("openwebbeans/Messages");
+        negativeCacheClassPrefixes.add("com.sun.faces.LogStrings");
+        negativeCacheClassPrefixes.add("javax.faces.LogStrings");
+        negativeCacheClassPrefixes.add("org.apache.catalina.loader.LocalStrings");
+        negativeCacheClassPrefixes.add("org.apache.tomcat.util.file.LocalStrings");
+        negativeCacheClassPrefixes.add("org.apache.tomcat.util.scan.LocalStrings");
+        negativeCacheClassPrefixes.add("org.apache.tomcat.util.http.mapper.LocalStrings");
+        negativeCacheClassPrefixes.add("org.apache.tomcat.util.net.res.LocalStrings");
+        negativeCacheClassPrefixes.add("org.apache.tomcat.util.threads.res.LocalStrings");
+        negativeCacheClassPrefixes.add("ValidationMessages");
+        negativeCacheClassPrefixes.add("org.apache.bval.jsr303.ValidationMessages");
+        negativeCacheClassPrefixes.add("com.sun.xml.internal.messaging.saaj.soap.LocalStrings");
+        negativeCacheClassPrefixes.add("org.apache.openejb.package-info");
+        negativeCacheClassPrefixes.add("org.apache.openejb.monitoring.package-info");
+        negativeCacheClassPrefixes.add("org.apache.geronimo.openejb.cdi.GeronimoWebBeansPlugin");
+        negativeCacheClassPrefixes.add("org.apache.openejb.server.rest.RsRegistry");
+        negativeCacheClassPrefixes.add("javax.faces.application.ConfigurableNavigationHandlerBeanInfo");
+        negativeCacheClassPrefixes.add("javax.faces.application.NavigationHandlerBeanInfo");
+        negativeCacheClassPrefixes.add("org.apache.webbeans.jsf.ConversationAwareViewHandlerBeanInfo");
+        negativeCacheClassPrefixes.add("javax.faces.application.ViewHandlerWrapperBeanInfo");
+        negativeCacheClassPrefixes.add("javax.faces.application.ViewHandlerBeanInfo");
+        negativeCacheClassPrefixes.add("javax.faces.component.UIViewRootBeanInfo");
+        negativeCacheClassPrefixes.add("javax.faces.component.UIComponentBaseBeanInfo");
+        negativeCacheClassPrefixes.add("javax.faces.component.UIComponentBeanInfo");
+        negativeCacheClassPrefixes.add("javax.management.MBean");
+        negativeCacheClassPrefixes.add("org.apache.cxf.APIMessages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.binding.xml.interceptor.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.bus.extension.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.bus.managers.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.common.injection.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.common.logging.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.common.util.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.endpoint.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.interceptor.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.impl.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.interceptor.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.model.wadl.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.provider.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.servlet.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.jaxrs.utils.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.resource.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.service.factory.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.service.invoker.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.service.model.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.staxutils.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.transport.http.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.transport.servlet.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.transport.https.Messages");
+        negativeCacheClassPrefixes.add("org.apache.cxf.phase.Messages");
+        // keep javax.management.MBean out of the list:
     }
 
     @Override
@@ -105,7 +191,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 	
 				if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    if (tccl != null && isBundleWebAppCL(tccl)) {
+                    if (tccl != null && isBundleWebAppCL(tccl) && !matchesNegativeCachePerTCCL(name, tccl, true)) {
                         try {
                             return tccl.loadClass(name);
                         } catch (ClassNotFoundException e) {
@@ -113,6 +199,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                             if (LOGGER.isDebugEnabled()) {
                                 LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
                             }
+                            addToNegativeCachePerTCCL(name, tccl, true);
                         } catch (NoClassDefFoundError e) {
                             // normal delegation should continue
                             if (LOGGER.isDebugEnabled()) {
@@ -141,7 +228,9 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         								+ ". Trying to load it with bundle "
         								+ postFindApiProvider.getSymbolicName());
         					}
-        					return postFindApiProvider.loadClass(name);
+        					if (!matchesNegativeCachePerAPIBundle(name, postFindApiProvider, true)) {
+        						return postFindApiProvider.loadClass(name);
+        					}
         				} catch (ClassNotFoundException e) {
         					// keep moving through the bundles
         					if (LOGGER.isDebugEnabled()) {
@@ -150,6 +239,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         								+ "]. Exception message: "
         								+ e.getMessage());
         					}
+        					addToNegativeCachePerAPIBundle(name, postFindApiProvider, true);
         				}
         			}
         		}
@@ -180,8 +270,13 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
                 if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    if (tccl != null && isBundleWebAppCL(tccl)) {
-                        return tccl.getResource(name);
+                    if (tccl != null && isBundleWebAppCL(tccl) && !matchesNegativeCachePerTCCL(name, tccl, false)) {
+                        URL resource = tccl.getResource(name);
+                        if (resource != null) {
+                            return resource;
+                        } else {
+                            addToNegativeCachePerTCCL(name, tccl, false);
+                        }
                     }
                 }
             } finally {
@@ -263,17 +358,10 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                 Bundle bundle = bd.getBundle();
 
                 if (this.webAppBundles.containsKey(bundle)) {
-                    try {
-                        if (checkPackageInImport(name, this.webAppBundles.get(bundle))) {
-                            return null;
-                        } else {
-                            return doFindApiClass(name);
-                        }
-                    } catch (ClassNotFoundException e) {
-                        // normal delegation should continue
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
-                        }
+                    if (checkPackageInImport(name, this.webAppBundles.get(bundle))) {
+                        return null;
+                    } else {
+                        return doFindApiClass(name);
                     }
                 }
             } finally {
@@ -405,25 +493,32 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         return this.implBundlesClassloaders.values().toArray(new ClassLoader[this.implBundlesClassloaders.size()]);
     }
 
-    private Class<?> doFindApiClass(String name) throws ClassNotFoundException {
+    private Class<?> doFindApiClass(String name) {
         for (Bundle bundle : this.apiBundles) {
             try {
-                return bundle.loadClass(name);
+                if (!matchesNegativeCachePerAPIBundle(name, bundle, true)) {
+                    return bundle.loadClass(name);
+                }
             } catch (ClassNotFoundException e) {
                 // keep moving through the bundles
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Exception occurred while trying to find class [" + name + "]. Exception message: " + e.getMessage());
                 }
+                addToNegativeCachePerAPIBundle(name, bundle, true);
             }
         }
-        throw new ClassNotFoundException(name);
+        return null;
     }
 
     private URL doFindApiResource(String name) {
         for (Bundle bundle : this.apiBundles) {
-            URL resource = bundle.getResource(name);
-            if (resource != null) {
-                return resource;
+            if (!matchesNegativeCachePerAPIBundle(name, bundle, false)) {
+                URL resource = bundle.getResource(name);
+                if (resource != null) {
+                    return resource;
+                } else {
+                    addToNegativeCachePerAPIBundle(name, bundle, false);
+                }
             }
         }
         return null;
@@ -482,4 +577,114 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
   		return false;
   	}
 
+    private boolean matchesNegativeCachePerTCCL(String name, ClassLoader tccl, boolean isClass) {
+        if (tccl instanceof BundleReference) {
+            Bundle bundle = ((BundleReference) tccl).getBundle();
+            CacheableObject object;
+            if (isClass) {
+                object = (negativeCacheClassPerTCCL.get(bundle));
+            } else {
+                object = (negativeCacheResourcePerTCCL.get(bundle));
+            }
+            if (object != null) {
+                Queue<String> cache = object.getObject();
+                for (String cachedName : cache) {
+                    if (name.equals(cachedName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private synchronized void addToNegativeCachePerTCCL(String name, ClassLoader tccl, boolean isClass) {
+        if (tccl instanceof BundleReference) {
+            Bundle bundle = ((BundleReference) tccl).getBundle();
+            CacheableObject object;
+            if (isClass) {
+                object = (negativeCacheClassPerTCCL.get(bundle));
+            } else {
+                object = (negativeCacheResourcePerTCCL.get(bundle));
+            }
+            Queue<String> classes;
+            if (object == null) {
+                classes = new ConcurrentLinkedQueue<String>();
+                if (isClass) {
+                    negativeCacheClassPerTCCL.put(bundle, new CacheableObject(
+                            classes, timeToLive));
+                } else {
+                    negativeCacheResourcePerTCCL.put(bundle, new CacheableObject(
+                            classes, timeToLive));
+                }
+            } else {
+                classes = object.getObject();
+            }
+            classes.add(name);
+        }
+    }
+
+    private boolean matchesNegativeCachePerAPIBundle(String name, Bundle apiBundle, boolean isClass) {
+        CacheableObject object;
+        if (isClass) {
+            object = (negativeCacheClassPerAPIBundle.get(apiBundle));
+        } else {
+            object = (negativeCacheResourcePerAPIBundle.get(apiBundle));
+        }
+        if (object != null) {
+            Queue<String> cache = object.getObject();
+            for (String cachedName : cache) {
+                if (name.equals(cachedName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private synchronized void addToNegativeCachePerAPIBundle(String name, Bundle apiBundle, boolean isClass) {
+        CacheableObject object;
+        if (isClass) {
+            object = (negativeCacheClassPerAPIBundle.get(apiBundle));
+        } else {
+            object = (negativeCacheResourcePerAPIBundle.get(apiBundle));
+        }
+        Queue<String> classes;
+        if (object == null) {
+            classes = new ConcurrentLinkedQueue<String>();
+            if (isClass) {
+                negativeCacheClassPerAPIBundle.put(apiBundle, new CacheableObject(
+                        classes, timeToLive));
+            } else {
+                negativeCacheResourcePerAPIBundle.put(apiBundle, new CacheableObject(
+                        classes, timeToLive));
+            }
+        } else {
+            classes = object.getObject();
+        }
+        classes.add(name);
+    }
+
+    static class CacheableObject {
+
+        private Queue<String> object;
+
+        private long expiration;
+
+        CacheableObject(Queue<String> object, long timeToLive) {
+            this.object = object;
+            this.expiration = System.currentTimeMillis() + timeToLive;
+        }
+
+        boolean isExpired() {
+            if (System.currentTimeMillis() > expiration) {
+                return true;
+            }
+            return false;
+        }
+
+        Queue<String> getObject() {
+            return object;
+        }
+    }
 }
