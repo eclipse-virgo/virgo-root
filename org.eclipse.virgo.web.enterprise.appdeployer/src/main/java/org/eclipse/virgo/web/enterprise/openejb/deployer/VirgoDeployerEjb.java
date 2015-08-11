@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 - 2014 SAP AG
+ * Copyright (c) 2012 - 2015 SAP SE
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -370,9 +370,6 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		for (Entry<String, Object> entry : appBindings.entrySet()) {
 			Object value = normalizeLinkRef(entry.getValue());
 			String jndiName = entry.getKey();
-			//TODO BeanManager should be provided by the CDI container and not transfered from OpenEjb, so skip it
-			if(jndiName.contains("comp/BeanManager"))
-				continue;
 			this.logger.debug("Binding " + jndiName + " with value " + value);
 			Contexts.createSubcontexts(jndiContext, jndiName);
 			try {
