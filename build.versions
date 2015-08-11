@@ -19,7 +19,7 @@ org.slf4j.log4j=1.7.2.v20130115-1340
 org.slf4j.jul=1.7.2.v20121108-1250
 
 # Enterprise Compile
-org.apache.openejb.core=4.5.2.virgo-2
+org.apache.openejb.core=4.5.2.virgo-3
 org.apache.openejb.loader=4.5.2
 org.apache.openejb.jee=4.5.2
 javax.validation=1.0.0.GA_v201205091237
