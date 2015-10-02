@@ -41,6 +41,10 @@ distributions {
                 include ( 'bin/*.sh' )
                 fileMode 0755
             }
+            from ( 'src/main/dist' ) {
+            }
+            from ( 'src/full/dist' ) {
+            }
             from ( "${buildDir}/VNF/nano-full/" ) {
                 exclude ( 'Eclipse.app' )
                 // Remove unwanted *kernel* bundles from nano deliverable
