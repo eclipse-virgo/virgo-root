@@ -71,7 +71,8 @@ dependencies {
     localPlugin project(':nano:org.eclipse.virgo.nano.services.ds')
 
     localPlugin project(':repository:org.eclipse.virgo.repository')
-    signedExternalPlugin group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
+    // TODO - review if all those signedExternalPlugins are signed
+    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.httpclient', version: commonsHttpClientVersion, configuration: "compile", ext: "jar"
 
     localPlugin project(':util:org.eclipse.virgo.util.common')
