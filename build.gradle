@@ -316,7 +316,8 @@ project(':kernel:org.eclipse.virgo.kernel.userregion') {
         testCompile project(':medic:org.eclipse.virgo.medic.test')
         testCompile project(':repository:org.eclipse.virgo.repository')
 
-        testRuntime group: "org.apache.commons", name: "com.springsource.org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, configuration: "compile", ext: "jar"
         testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
         testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
         testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
@@ -420,7 +421,7 @@ project(':kernel:org.eclipse.virgo.management.console') {
         // we don't provide OSGi-ified version of org.springframework.test
         testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.mozilla.javascript", version: mozillaJavascriptVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.apache.commons", name: "com.springsource.org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.apache.commons", name: "com.springsource.org.apache.commons.io", version: commonsIoVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"

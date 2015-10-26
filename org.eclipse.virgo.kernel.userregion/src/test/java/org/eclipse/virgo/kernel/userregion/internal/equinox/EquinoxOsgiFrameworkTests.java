@@ -96,7 +96,9 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
      * @throws BundleException
      */
     private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
-        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/7657caf2c78e1d79c74d36f2ae128a115f7cc180/com.springsource.org.apache.commons.logging-1.1.1.jar").getAbsolutePath());
-        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/3.2.10.RELEASE/47776685ca466021ad9121e336cc76c4321b7931/org.springframework.core-3.2.10.RELEASE.jar").getAbsolutePath());
+        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.m2/repository/org/eclipse/virgo/mirrored/org.apache.commons.logging/1.2.0/org.apache.commons.logging-1.2.0.jar").getAbsolutePath());
+        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.m2/repository/org/eclipse/virgo/mirrored/org.apache.commons.codec/1.10.0/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());
+        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.m2/repository/org/eclipse/virgo/mirrored/org.springframework.core/4.2.1.RELEASE/org.springframework.core-4.2.1.RELEASE.jar").getAbsolutePath());
+//        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/3.2.10.RELEASE/47776685ca466021ad9121e336cc76c4321b7931/org.springframework.core-3.2.10.RELEASE.jar").getAbsolutePath());
     }
 }
