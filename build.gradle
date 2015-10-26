@@ -4,8 +4,8 @@ project(':repository:org.eclipse.virgo.repository') {
 
 		testCompile project(':medic:org.eclipse.virgo.medic.test')
 		testCompile project(':test:org.eclipse.virgo.test.stubs')
-        testCompile group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
-		testCompile group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.logging', version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+        testCompile group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
+		testCompile group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.logging', version: commonsLoggingVersion, configuration: "compile", ext: "jar"
 
         testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
