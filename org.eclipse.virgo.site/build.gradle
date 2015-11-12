@@ -73,6 +73,9 @@ dependencies {
     localPlugin project(':repository:org.eclipse.virgo.repository')
     // TODO - review if all those signedExternalPlugins are signed
     signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
+    // optional requirement for org.springframework.core
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+
     signedExternalPlugin group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.httpclient', version: commonsHttpClientVersion, configuration: "compile", ext: "jar"
 
     localPlugin project(':util:org.eclipse.virgo.util.common')
