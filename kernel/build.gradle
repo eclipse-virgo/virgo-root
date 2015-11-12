@@ -60,7 +60,7 @@ task ('publishKernel', dependsOn: [
 
     def product = 'kernel'
     def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
-    def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java6-server.profile")
+    def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java7-server.profile")
 
     doLast() { publishProduct(project, productFileLocation, javaProfileLocation) }
 }
