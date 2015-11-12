@@ -7,5 +7,5 @@ dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web.servlet", version: springframeworkVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, configuration: "compile", ext: "jar"
 }

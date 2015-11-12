@@ -58,6 +58,7 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "org.aopalliance", name: "com.springsource.org.aopalliance", version: orgAopAllianceVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
@@ -99,18 +100,20 @@ configure([
 
         // 3rd party dependencies from Spring Framework
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
         // missing Spring Framework dependencies
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.aspects", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context.support", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.jdbc", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.messaging", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.jms", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.orm", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.oxm", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.transaction", version: springframeworkVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web.servlet", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web.portlet", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc.portlet", version: springframeworkVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.springsource.org.aspectj.weaver", version: orgAspectjVersion, configuration: "compile", ext: "jar"
 
