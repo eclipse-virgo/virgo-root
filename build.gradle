@@ -3,7 +3,7 @@ project(':web:org.eclipse.virgo.web.core') {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
 		// we don't provide OSGi-ified version of org.springframework.test
-        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
         testCompile project(':test:org.eclipse.virgo.test.stubs')
         testCompile project(':kernel:org.eclipse.virgo.kernel.stubs')
 
@@ -36,7 +36,7 @@ project(':web:org.eclipse.virgo.web.dm') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		// we don't provide OSGi-ified version of org.springframework.test
-        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
@@ -44,15 +44,15 @@ project(':web:org.eclipse.virgo.web.dm') {
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, configuration: "compile", ext: "jar"
-
         compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.io", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.core", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.extender", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+
 
         compile project(':medic:org.eclipse.virgo.medic')
         compile project(':nano:org.eclipse.virgo.nano.core')
