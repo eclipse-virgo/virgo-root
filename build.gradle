@@ -421,7 +421,7 @@ project(':kernel:org.eclipse.virgo.management.console') {
         // we don't provide OSGi-ified version of org.springframework.test
         testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.mozilla.javascript", version: mozillaJavascriptVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
         testCompile group: "org.apache.commons", name: "com.springsource.org.apache.commons.io", version: commonsIoVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
