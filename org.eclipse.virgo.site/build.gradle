@@ -72,9 +72,9 @@ dependencies {
 
     localPlugin project(':repository:org.eclipse.virgo.repository')
     // TODO - review if all those signedExternalPlugins are signed
-    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
     // optional requirement for org.springframework.core
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 
     signedExternalPlugin group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.httpclient', version: commonsHttpClientVersion, configuration: "compile", ext: "jar"
 
@@ -144,7 +144,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.osgi", name: "org.eclipse.equinox.http", version: equinoxHttpVersion, configuration: "runtime", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar" // contains org.osgi.jmx
@@ -177,13 +177,13 @@ dependencies {
     // TODO - rename feature to org.eclipse.gemini.blueprint
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
     signedExternalPlugin group: "org.aopalliance", name: "com.springsource.org.aopalliance", version: orgAopAllianceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.core", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.extender", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.blueprint.io", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, configuration: "compile", ext: "jar"
 
     // nano base
     // TODO - merge to oev.nano.services ?
