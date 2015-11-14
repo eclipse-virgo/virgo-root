@@ -465,7 +465,7 @@ configure(javaProjects + aspectjProjects) {
 		ecj group: "org.eclipse.jdt.core.compiler", name: "ecj", version: "4.4.2"
 
 		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
-		testRuntime group: 'org.eclipse.virgo.mirrored', name: "org.apache.commons.logging", version: commonsLoggingVersion, configuration: "compile", ext: "jar"
+		testRuntime group: 'org.eclipse.virgo.mirrored', name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 	}
 }
 
