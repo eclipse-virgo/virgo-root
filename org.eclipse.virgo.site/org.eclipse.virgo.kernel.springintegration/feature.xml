@@ -22,7 +22,7 @@
          id="org.springframework.expression"
          download-size="0"
          install-size="0"
-         version="@SPRING.VERSION@"
+         version="0.0.0"
          unpack="false"/>        
 
 </feature>
