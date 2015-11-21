@@ -28,8 +28,7 @@ project(':apps:org.eclipse.virgo.apps.repository.core') {
 project(':apps:org.eclipse.virgo.apps.repository.web') {
     dependencies {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-		// we don't provide OSGi-ified version of org.springframework.test
-        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
