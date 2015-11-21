@@ -2,8 +2,7 @@ project(':web:org.eclipse.virgo.web.core') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
-		// we don't provide OSGi-ified version of org.springframework.test
-        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
         testCompile project(':test:org.eclipse.virgo.test.stubs')
         testCompile project(':kernel:org.eclipse.virgo.kernel.stubs')
 
@@ -35,8 +34,7 @@ project(':web:org.eclipse.virgo.web.core') {
 project(':web:org.eclipse.virgo.web.dm') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-		// we don't provide OSGi-ified version of org.springframework.test
-        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
