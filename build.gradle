@@ -418,9 +418,8 @@ project(':kernel:org.eclipse.virgo.management.console') {
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.nop", version: slf4jNopVersion, configuration: "compile", ext: "jar"
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
-        // we don't provide OSGi-ified version of org.springframework.test
-        testCompile group: "org.springframework", name: "spring-test", version: springframeworkVersion, ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.mozilla.javascript", version: mozillaJavascriptVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
         testCompile group: "org.apache.commons", name: "com.springsource.org.apache.commons.io", version: commonsIoVersion, configuration: "compile", ext: "jar"
