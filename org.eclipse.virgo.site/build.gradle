@@ -152,9 +152,8 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.core", version: logbackVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.classic", version: logbackVersion, configuration: "compile", ext: "jar"
-//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.slf4j", version: logbackVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "ch.qos.logback", name: "logback-core", version: logbackVersion
+    signedExternalPlugin group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer')
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans')

@@ -283,8 +283,6 @@ ext {
 		'ASPECTJ': orgAspectjVersion,
 		'LOGBACK.CLASSIC.VERSION': logbackVersion,
 		'LOGBACK.CORE.VERSION': logbackVersion,
-		// TODO replaced with virgo fragment?
-//		'LOGBACK.SLF4J.VERSION': logbackVersion,
         'SLF4J.API': slf4jVersion,
 		'SLF4J.JCL': slf4jVersion,
 		'SLF4J.LOG4J': slf4jVersion,
