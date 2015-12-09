@@ -58,6 +58,7 @@ dependencies {
 
     localPlugin project(':medic:org.eclipse.virgo.medic')
     localPlugin project(':medic:org.eclipse.virgo.medic.core')
+    localPlugin project(':medic:org.eclipse.virgo.medic.slf4japifragment')
     localPlugin project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
     localPlugin project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
 
@@ -153,7 +154,7 @@ dependencies {
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.core", version: logbackVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.classic", version: logbackVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.slf4j", version: logbackVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "ch.qos.logback.slf4j", version: logbackVersion, configuration: "compile", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer')
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans')

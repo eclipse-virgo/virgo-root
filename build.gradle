@@ -90,6 +90,7 @@ ext.kernelProjects = [
 ext.medicProjects = [
 	project(':medic:org.eclipse.virgo.medic'),
 	project(':medic:org.eclipse.virgo.medic.core'),
+	project(':medic:org.eclipse.virgo.medic.slf4japifragment'),
 	project(':medic:org.eclipse.virgo.medic.logbackclassicfragment'),
 	project(':medic:org.eclipse.virgo.medic.logbackcorefragment'),
 ]
@@ -282,7 +283,9 @@ ext {
 		'ASPECTJ': orgAspectjVersion,
 		'LOGBACK.CLASSIC.VERSION': logbackVersion,
 		'LOGBACK.CORE.VERSION': logbackVersion,
-		'LOGBACK.SLF4J.VERSION': logbackVersion,
+		// TODO replaced with virgo fragment?
+//		'LOGBACK.SLF4J.VERSION': logbackVersion,
+        'SLF4J.API': slf4jVersion,
 		'SLF4J.JCL': slf4jVersion,
 		'SLF4J.LOG4J': slf4jVersion,
 
