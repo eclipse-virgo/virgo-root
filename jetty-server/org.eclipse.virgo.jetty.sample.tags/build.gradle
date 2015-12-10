@@ -1,5 +1,5 @@
 dependencies {
-    compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
 
