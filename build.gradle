@@ -6,7 +6,7 @@ project(':web:org.eclipse.virgo.web.core') {
         testCompile project(':test:org.eclipse.virgo.test.stubs')
         testCompile project(':kernel:org.eclipse.virgo.kernel.stubs')
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
@@ -37,7 +37,7 @@ project(':web:org.eclipse.virgo.web.dm') {
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
@@ -97,7 +97,7 @@ project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration') {
 
 project(':web:org.eclipse.virgo.web.enterprise.appdeployer') {
     dependencies {
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
@@ -134,7 +134,7 @@ project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initia
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
@@ -145,7 +145,7 @@ project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initia
 
 project(':web:org.eclipse.virgo.web.enterprise.jsf.support') {
     dependencies {
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
@@ -199,7 +199,7 @@ project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory') {
 
 project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser') {
     dependencies {
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
@@ -259,7 +259,7 @@ project(':web:org.eclipse.virgo.web.enterprise.services.accessor') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
@@ -283,7 +283,7 @@ project(':web:org.eclipse.virgo.web.enterprise.services.accessor') {
 
 project(':web:org.eclipse.virgo.web.war.deployer') {
     dependencies {
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
