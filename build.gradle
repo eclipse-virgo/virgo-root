@@ -4,7 +4,7 @@ project(':nano:org.eclipse.virgo.nano.core') {
         testCompile project(':test:org.eclipse.virgo.test.stubs')
         testCompile project(':medic:org.eclipse.virgo.medic.test')
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
@@ -22,7 +22,7 @@ project(':nano:org.eclipse.virgo.nano.deployer') {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 		testCompile project(':medic:org.eclipse.virgo.medic.test')
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
@@ -56,7 +56,7 @@ project(':nano:org.eclipse.virgo.nano.deployer.hot') {
 
         testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile project(':util:org.eclipse.virgo.util.io')
         compile project(':medic:org.eclipse.virgo.medic')
@@ -67,7 +67,7 @@ project(':nano:org.eclipse.virgo.nano.deployer.hot') {
 
 project(':nano:org.eclipse.virgo.nano.management') {
     dependencies {
-        compile group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
