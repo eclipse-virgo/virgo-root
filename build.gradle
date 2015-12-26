@@ -681,7 +681,7 @@ configure(integrationTestProjects) {
 		testCompile group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
 
 		// PaxExam
-		testRuntime group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+		testRuntime group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 		testCompile group: "org.ops4j.pax.exam", name:"pax-exam-junit4", version: paxExamJunit4Version
 		testRuntime group: "org.ops4j.pax.exam", name: "pax-exam-container-native", version: paxExamContainerNativeVersion
 		testRuntime group: "org.ops4j.pax.exam", name: "pax-exam-link-mvn", version: paxExamLinkMvnVersion

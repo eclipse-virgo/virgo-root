@@ -116,11 +116,11 @@ dependencies {
     localPlugin project(':web:org.eclipse.virgo.web.war.deployer')
 
     // TODO - review if all those signedExternalPlugins are signed
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.slf4j.api", version: slf4jVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     // exports package org.apache.commons.logging (jcl - Jakarta Commons Logging)
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.slf4j.jcl", version: slf4jVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.slf4j.log4j", version: slf4jVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.slf4j.jul", version: slf4jVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
+    signedExternalPlugin group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
+    signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.springsource.org.aspectj.weaver", version: orgAspectjVersion, configuration: "compile", ext: "jar"
 
