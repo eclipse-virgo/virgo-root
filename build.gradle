@@ -114,6 +114,7 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc.portlet", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.websocket", version: springframeworkVersion, ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.springsource.org.aspectj.weaver", version: orgAspectjVersion, configuration: "compile", ext: "jar"
 
