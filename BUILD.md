@@ -23,12 +23,20 @@ $ ./gradlew clean jar build publishToMavenLocal
 Build the Virgo deliverables
 ============================
 
-TBD
+To build distributable zipped files run:
+
+    ::::sh
+    $ ./gradlew clean jar build distZip fullDistZip rapDistZip
+
+There is an additional task to install the zips, too. This comes quite handy to quickly check the distributables:
+    
+    ::::sh
+    $ ./gradlew installDist installFullDist installRapDist
 
 To speed up local builds you can skip some time-consuming processes like follows:
-* `-Dskip.normalize.bundles=true`
-* `-Dskip.local.signing=true`
-* `-Dskip.compress.bundles=true`
+ * `-Dskip.normalize.bundles=true`
+ * `-Dskip.local.signing=true`
+ * `-Dskip.compress.bundles=true`
 
 If you are only interested in the distribution(s) you might additionally want to skip some Gradle tasks, too: `-x test -x findBugsMain -x findBugsTest`. 
 
