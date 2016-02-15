@@ -122,7 +122,7 @@ tasks.addRule("Pattern: publish<ID>") { String taskName ->
 
             File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
             def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
-            def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java7-server.profile")
+            def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java-server.profile")
 
             doLast() { publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation) }
         }
