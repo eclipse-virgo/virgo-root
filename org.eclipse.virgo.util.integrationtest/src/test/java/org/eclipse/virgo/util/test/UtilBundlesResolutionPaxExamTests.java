@@ -45,7 +45,7 @@ public class UtilBundlesResolutionPaxExamTests {
     private BundleContext bundleContext;
 
     private static String[] OSGI_BUNDLES = new String[] { //
-    "org.eclipse.virgo.util.common", //
+        "org.eclipse.virgo.util.common", //
         "org.eclipse.virgo.util.env", //
         "org.eclipse.virgo.util.io", //
         "org.eclipse.virgo.util.jmx", //
@@ -91,8 +91,8 @@ public class UtilBundlesResolutionPaxExamTests {
         };
         return options( //
             repositories("http://repository.springsource.com/maven/bundles/external"), //
-            bundle("mvn:org.slf4j/slf4j-api/1.7.2"), // CQ 3991 (using Orbit CQ3680)
-            bundle("mvn:org.slf4j/slf4j-nop/1.7.2").noStart(), // CQ 3990
+            bundle("mvn:org.slf4j/slf4j-api/1.7.13"), // CQ 10520
+            bundle("mvn:org.slf4j/slf4j-nop/1.7.13").noStart(), // CQ 11007
             bundle("mvn:org.aspectj/com.springsource.org.aspectj.runtime/1.6.12.RELEASE"), //
             utilBundles, //
             junitBundles() //
