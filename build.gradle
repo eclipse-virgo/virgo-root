@@ -19,13 +19,16 @@ if (System.properties['eclipse.build'] == 'true') {
 buildscript {
 	repositories {
 		mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
 		if (System.properties['local.build'] == 'true') {
 			jcenter()
 			maven { url 'https://repo.spring.io/libs-release' }
 		}
 	}
 	dependencies {
-		classpath 'org.eclipse.virgo.bundlor:bundlor-plugin:0.2.0.BUILD-SNAPSHOT'
+        classpath "gradle.plugin.org.eclipse.virgo.bundlor:bundlor-plugin:0.2"
 		if (System.properties['include.docs'] == 'true') {
 			// docbook processing
 			classpath 'net.sf.docbook:docbook-xsl:1.78.1:resources@zip'
@@ -564,7 +567,7 @@ ext.wabProjects = [
 
 configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + kernelProjects + webProjects + appsProjects + miscProjects) {
 
-	apply plugin: 'bundlor'
+	apply plugin: 'org.eclipse.virgo.bundlor'
 
 	task('addProjectVersionToGradlePropertiesTask', type: Copy) {
 		ext.outputDir = new File(buildDir, 'bundlor-properties')
