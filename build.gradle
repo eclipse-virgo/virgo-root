@@ -160,10 +160,6 @@ ext.webProjects = [
 	project(':web:org.eclipse.virgo.web.war.deployer'),
 ]
 
-ext.miscProjects = [
-	project(':packaging:jetty-server:org.eclipse.virgo.jetty.sample.tags'),
-]
-
 ext.integrationTestProjects = [
 	project(':util:org.eclipse.virgo.util.integrationtest'),
 	//	project(':medic:org.eclipse.virgo.medic.integrationtest'),
@@ -176,7 +172,7 @@ ext.smokeTestProjects = [
 	project(':packaging:tomcat-server:org.eclipse.virgo.tomcat.smoketest'),
 ]
 
-ext.javaProjects = ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects + ext.miscProjects + ext.testUtils + ext.integrationTestProjects + smokeTestProjects +
+ext.javaProjects = ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects + ext.testUtils + ext.integrationTestProjects + smokeTestProjects +
 		[
 			project(':nano:org.eclipse.virgo.nano.authentication'),
 			project(':nano:org.eclipse.virgo.nano.shutdown'),
@@ -562,10 +558,9 @@ configure(packagingProjects) {
 ext.wabProjects = [
 	project(':apps:org.eclipse.virgo.apps.splash'),
 	project(':kernel:org.eclipse.virgo.management.console'),
-	project(':packaging:jetty-server:org.eclipse.virgo.jetty.sample.tags'),
 ]
 
-configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + kernelProjects + webProjects + appsProjects + miscProjects) {
+configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + kernelProjects + webProjects + appsProjects) {
 
 	apply plugin: 'org.eclipse.virgo.bundlor'
 

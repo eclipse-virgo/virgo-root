@@ -119,7 +119,6 @@ include ':org.eclipse.virgo.site:org.eclipse.virgo.tools'
 include ':packaging:nano'
 include ':packaging:kernel'
 include ':packaging:jetty-server'
-include ':packaging:jetty-server:org.eclipse.virgo.jetty.sample.tags'
 include ':packaging:tomcat-server'
 
 if (System.properties['skip.smoke.tests'] != 'true') {
