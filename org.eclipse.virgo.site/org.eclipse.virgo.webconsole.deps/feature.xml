@@ -33,14 +33,14 @@
     unpack="false"/>
     
     <plugin
-    id="com.springsource.org.apache.commons.fileupload"
+    id="oevm.org.apache.commons.fileupload"
     download-size="0"
     install-size="0"
     version="@C.FILEUPLOAD.VERSION@"
     unpack="false"/>
     
     <plugin
-    id="com.springsource.org.apache.commons.io"
+    id="oevm.org.apache.commons.io"
     download-size="0"
     install-size="0"
     version="@C.IO.VERSION@"
