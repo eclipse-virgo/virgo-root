@@ -222,7 +222,7 @@ project(':web:org.eclipse.virgo.web.enterprise.security') {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
         testCompile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
-        testRuntime group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.fileupload", version: commonsFileuploadVersion, ext: "jar"
+        testRuntime group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
 
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
 
