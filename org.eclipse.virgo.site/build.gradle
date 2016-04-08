@@ -274,8 +274,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.registry", version: geronimoSpecsOsgiRegistryVersion, configuration: "compile", ext: "jar"
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.beanutils", version: commonsBeanutilsVersion, configuration: "compile", ext: "jar"
-    // TODO move/copy to oev.mirrored?
-    signedExternalPlugin group: "org.apache.commons", name: "com.springsource.org.apache.commons.cli", version: commonsCliVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.cli", version: commonsCliVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.collections", version: commonsCollectionsVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.lang", version: commonsLangVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
