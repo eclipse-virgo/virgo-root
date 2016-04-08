@@ -17,7 +17,9 @@ buildscript {
 
 updateSite {
     extraResources = files('epl-v10.html', 'notice.html', 'p2.index')
-    hook { Project project -> postProcessing(project) }
+    hook { Project project ->
+        postProcessing(project)
+    }
     signing { File unsignedFolder, File signedFolder ->
         if (gradle.taskGraph.hasTask(uploadUpdateSite)) {
             signByEclipseService(unsignedFolder, signedFolder)
@@ -77,7 +79,7 @@ dependencies {
     // optional requirement for org.springframework.core
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 
-    signedExternalPlugin group: 'org.apache.commons', name: 'com.springsource.org.apache.commons.httpclient', version: commonsHttpClientVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
 
     localPlugin project(':util:org.eclipse.virgo.util.common')
     localPlugin project(':util:org.eclipse.virgo.util.env')
@@ -140,9 +142,18 @@ dependencies {
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.httpservice')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.http.jetty')
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.jetty", version: equinoxHttpJettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.servlet", version: equinoxHttpServletVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.http", version: jettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.io", version: jettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.security", version: jettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.server", version: jettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
+
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.osgi", name: "org.eclipse.equinox.http", version: equinoxHttpVersion, configuration: "runtime", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
@@ -193,9 +204,6 @@ dependencies {
     // TODO - merge with management features above?
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
 
-    // nano
-    // TODO - merge with ecv.kernel.httpservice
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.httpservice')
     signedExternalPlugin group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
     signedExternalPlugin group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
     signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
