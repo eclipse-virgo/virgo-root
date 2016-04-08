@@ -91,7 +91,7 @@ project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration') {
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-        compile group: "org.hibernate", name: "com.springsource.org.hibernate", version: hibernateVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "oevm.org.hibernate", version: hibernateVersion, ext: "jar"
     }
 }
 
