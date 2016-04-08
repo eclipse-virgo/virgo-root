@@ -192,13 +192,13 @@ dependencies {
 
     // TODO - merge with management features above?
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
-    signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     // nano
     // TODO - merge with ecv.kernel.httpservice
     localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.httpservice')
     signedExternalPlugin group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
     signedExternalPlugin group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
+    signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     // nano full
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.p2.provisioning')
