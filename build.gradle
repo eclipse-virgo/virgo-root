@@ -69,7 +69,7 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.blueprint.extender", version: geminiBlueprintVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.blueprint.io", version: geminiBlueprintVersion, ext: "jar"
 
-        repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
         repositoryExt project(':kernel:org.eclipse.virgo.management.fragment')
 
         repositoryExt project(':kernel:org.eclipse.virgo.kernel.agent.dm')
