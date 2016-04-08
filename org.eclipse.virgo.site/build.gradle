@@ -192,10 +192,9 @@ dependencies {
 
     // TODO - merge with management features above?
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
-    // TODO - is this really required for webconsole access?
-    signedExternalPlugin group: "org.jolokia", name: "org.jolokia.osgi", version: jolokiaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.fileupload", version: commonsFileuploadVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.io", version: commonsIoVersion, ext: "jar"
+    signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     // nano
     // TODO - merge with ecv.kernel.httpservice
