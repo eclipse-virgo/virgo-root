@@ -149,7 +149,7 @@ dependencies {
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar" // contains org.osgi.jmx
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
     signedExternalPlugin group: "ch.qos.logback", name: "logback-core", version: logbackVersion
