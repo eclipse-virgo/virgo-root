@@ -409,7 +409,7 @@ project(':kernel:org.eclipse.virgo.management.fragment') {
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
-        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
     }
 }
 
@@ -431,7 +431,8 @@ project(':kernel:org.eclipse.virgo.management.console') {
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
         runtime group: "org.eclipse.osgi", name: "org.eclipse.equinox.http", version: equinoxHttpVersion, configuration: "runtime", ext: "jar"
 
-        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
 
         compile group: "org.jolokia", name: "org.jolokia.osgi", version: jolokiaVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.fileupload", version: commonsFileuploadVersion, ext: "jar"
