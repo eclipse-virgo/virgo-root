@@ -17,5 +17,5 @@ Import-Bundle:
  org.springframework.web;version="[4.2.1, 4.2.2)",
  org.springframework.webmvc;version="[4.2.1, 4.2.2)",
  org.springframework.webmvc.portlet;version="[4.2.1, 4.2.2)",
- com.springsource.org.aopalliance;version="[1.0.0, 1.0.0]",
+ oevm.org.aopalliance;version="[1.0.0, 1.0.0]",
  javax.jms;version="[1,2)"
