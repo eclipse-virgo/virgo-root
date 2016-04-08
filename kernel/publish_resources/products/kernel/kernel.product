@@ -13,7 +13,8 @@
 	</plugins>
 
 	<features>
-		<feature id="org.eclipse.virgo.kernel.httpservice" version="0.0.0"/>
+		<feature id="org.eclipse.equinox.http.jetty" version="0.0.0"/>
+		<!-- TODO configure port?! -->
 	</features>
 
    <configurations>
