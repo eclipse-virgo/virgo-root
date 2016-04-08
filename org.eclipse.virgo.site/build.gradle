@@ -122,7 +122,7 @@ dependencies {
     signedExternalPlugin group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
     signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.springsource.org.aspectj.weaver", version: orgAspectjVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aspectj.aspectjweaver", version: orgAspectjVersion, ext: "jar"
 
     // TODO - rename feature to region'_'
     localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
@@ -176,7 +176,7 @@ dependencies {
 
     // TODO - rename feature to org.eclipse.gemini.blueprint
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
-    signedExternalPlugin group: "org.aopalliance", name: "com.springsource.org.aopalliance", version: orgAopAllianceVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
