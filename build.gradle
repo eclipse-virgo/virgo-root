@@ -76,9 +76,9 @@ configure([
         repositoryExt project(':kernel:org.eclipse.virgo.kernel.deployer.dm')
         repositoryExt project(':kernel:org.eclipse.virgo.kernel.dmfragment')
 
-        repositoryExt group: "org.jolokia", name: "org.jolokia.osgi", version: jolokiaVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.fileupload", version: commonsFileuploadVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.io", version: commonsIoVersion, ext: "jar"
+        repositoryExt group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
     }
 }
 
