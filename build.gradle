@@ -422,7 +422,7 @@ project(':kernel:org.eclipse.virgo.management.console') {
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.mozilla.javascript", version: mozillaJavascriptVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.io", version: commonsIoVersion, ext: "jar"
+        testCompile group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
 
         compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
@@ -434,7 +434,7 @@ project(':kernel:org.eclipse.virgo.management.console') {
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
 
-        compile group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.fileupload", version: commonsFileuploadVersion, ext: "jar"
+        compile group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
         compile group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
     }
 }

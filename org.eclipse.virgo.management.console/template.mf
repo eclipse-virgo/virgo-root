@@ -11,7 +11,7 @@ Import-Template:
  org.eclipse.virgo.util.*;version="${version:[=.=.=, +1)}",
  org.jolokia.osgi.servlet;version="${jolokiaVersion:[=.=,+1.=)}",
  org.slf4j;version="${slf4jVersion:[=.=.=,+1)}",
- org.apache.commons.fileupload.*;version="0",
+ org.apache.commons.fileupload.*;version="${commonsFileuploadVersion:[=.=.=,+1)}",
  org.eclipse.osgi.internal.signedcontent;version="0",
  org.osgi.framework.*;version="0",
  org.osgi.service.*;version="0",
