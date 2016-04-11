@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.repositories;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -90,10 +89,9 @@ public class UtilBundlesResolutionPaxExamTests {
             }
         };
         return options( //
-            repositories("http://repository.springsource.com/maven/bundles/external"), //
             bundle("mvn:org.slf4j/slf4j-api/1.7.13"), // CQ 10520
             bundle("mvn:org.slf4j/slf4j-nop/1.7.13").noStart(), // CQ 11007
-            bundle("mvn:org.aspectj/com.springsource.org.aspectj.runtime/1.6.12.RELEASE"), //
+            bundle("wrap:mvn:org.aspectj/aspectjrt/1.7.2$Export-Package=org.aspectj.*;version=1.7.2"), //
             utilBundles, //
             junitBundles() //
         );
