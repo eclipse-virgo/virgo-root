@@ -154,9 +154,9 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
 
-        repositoryExt group: "org.apache.taglibs", name: "com.springsource.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
         repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         repositoryExt group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
