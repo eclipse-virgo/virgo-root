@@ -234,7 +234,7 @@ ext {
 		'OSGI.SERVICES.VERSION': osgiServicesVersion, // used in oev.kernel.userregion.properties
 		'OSGI.ENTERPRISE.VERSION': osgiEnterpriseVersion,
 
-		'EQUINOX.HTTP.VERSION': equinoxHttpVersion,
+        'EQUINOX.HTTP.JETTY.VERSION': equinoxHttpJettyVersion,
 		'EQUINOX.APP.VERSION': equinoxAppVersion,
 		'EQUINOX.COMMON.VERSION': equinoxCommonVersion,
 		'EQUINOX.CONFIGADMIN.VERSION': equinoxCmVersion,

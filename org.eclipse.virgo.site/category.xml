@@ -28,12 +28,12 @@
         version="0.0.0">
         <category name="virgo" />
     </feature>
-    <!-- TODO rename to org.eclipse.equinox.http -->
-    <feature id="org.eclipse.virgo.kernel.httpservice"
-        url="features/org.eclipse.virgo.kernel.httpservice_0.0.0.jar"
+    <feature id="org.eclipse.equinox.http.jetty"
+        url="features/org.eclipse.equinox.http.jetty_0.0.0.jar"
         version="0.0.0">
         <category name="virgo" />
     </feature>
+    <!-- TODO rename to gemini.blueprint -->
     <feature id="org.eclipse.virgo.kernel.springintegration"
         url="features/org.eclipse.virgo.kernel.springintegration_0.0.0.jar"
         version="0.0.0">
