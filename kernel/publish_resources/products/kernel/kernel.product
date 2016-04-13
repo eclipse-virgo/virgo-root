@@ -14,7 +14,6 @@
 
 	<features>
 		<feature id="org.eclipse.equinox.http.jetty" version="0.0.0"/>
-		<!-- TODO configure port?! -->
 	</features>
 
    <configurations>
@@ -26,7 +25,8 @@
 		<plugin id="org.eclipse.equinox.console" autoStart="true"/>
 		<plugin id="org.eclipse.equinox.console.ssh" autoStart="true"/>
 
-		<plugin id="org.eclipse.equinox.http" autoStart="true"/>
+		<plugin id="org.eclipse.equinox.http.jetty" autoStart="true"/>
+		<plugin id="org.eclipse.equinox.http.servlet" autoStart="true"/>
 		<plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true"/>
 		<plugin id="org.eclipse.gemini.management" autoStart="true"/>
 
@@ -41,7 +41,9 @@
 		<plugin id="org.eclipse.virgo.nano.core" autoStart="true"/>
 		<plugin id="org.eclipse.virgo.nano.management" autoStart="true"/>
 		<plugin id="org.eclipse.virgo.repository" autoStart="true"/>
-		<plugin id="" autoStart="true"/>
+
+	  <property name="org.osgi.service.http.port" value="8080"/>
+
 	</configurations>
 
 </product>

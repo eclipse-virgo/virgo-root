@@ -14,10 +14,13 @@
 
    <features>
 	  <feature id="org.eclipse.equinox.http.jetty" version="0.0.0"/>
-   </features>	
+   </features>
    
    <configurations>
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true"/>
+      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true"/>
+
 	  <property name="org.osgi.service.http.port" value="8080"/>
    </configurations>
-   
+
 </product>
