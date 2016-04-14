@@ -33,10 +33,7 @@ configure([
     }
 }
 
-project(':packaging:nano') {
-    dependencies {
-    }
-}
+project(':packaging:nano') { dependencies { } }
 
 if (System.properties['skip.smoke.tests'] != 'true') {
     project(':packaging:nano:org.eclipse.virgo.nano.smoketest') { dependencies { } }
@@ -84,10 +81,7 @@ configure([
 
 configure([
     project(':packaging:kernel'),
-]) {
-    dependencies {
-    }
-}
+]) { dependencies { } }
 
 configure([
     project(':packaging:jetty-server'),
@@ -128,9 +122,37 @@ configure([
 }
 
 configure([
-	project(':packaging:jetty-server'),
+    project(':packaging:jetty-server'),
 ]) {
-	dependencies {  repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter') } }
+    dependencies {
+        repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.deploy", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.http", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.io", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.osgi.boot", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.security", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.server", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.webapp", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.xml", version: jettyVersion, configuration: "compile", ext: "jar"
+
+        /* TODO think about adding additional Jetty bundles - e.g. for WebSocket support
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.ajp_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.annotations_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.client_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.jmx_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.jndi_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.osgi.boot.jsp_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.plus_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.policy_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.rewrite_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.servlets_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.websocket_8.1.16.v20140903.jar
+         */
+    }
+}
 
 configure([
     project(':packaging:tomcat-server'),
@@ -162,7 +184,7 @@ configure([
         repositoryExt group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
         repositoryExt group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
         repositoryExt group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
-    
+
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"

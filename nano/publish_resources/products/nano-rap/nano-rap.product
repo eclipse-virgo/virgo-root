@@ -14,7 +14,6 @@
 
    <features>
 	  <feature id="org.eclipse.equinox.http.jetty" version="0.0.0"/>
-	  <feature id="org.eclipse.jetty" version="0.0.0"/>
 	  <feature id="org.eclipse.rap" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.nano.deployer" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.nano.mbeans.controller" version="0.0.0"/>
@@ -24,12 +23,9 @@
    </features>
    
    <configurations>
-	  <property name="org.osgi.service.http.port" value="8080"/>
-   </configurations>
-
-   <configurations>
    	  <plugin id="org.eclipse.gemini.management" autoStart="true" />
-   	  <plugin id="org.eclipse.equinox.http" autoStart="true" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true"/>
+      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true"/>
 	  <plugin id="org.eclipse.virgo.nano.core" autoStart="true" startLevel="4"/>
 	  <plugin id="org.eclipse.virgo.nano.deployer" autoStart="true" startLevel="5"/>
       <plugin id="org.jolokia.osgi" autoStart="true" />
@@ -37,6 +33,6 @@
 	  <property name="org.osgi.service.http.port" value="8080"/>
 
 	  <property name="org.eclipse.virgo.fschecker.initialEventMode" value="bulk"/>
-   </configurations>	
+   </configurations>
 
 </product>

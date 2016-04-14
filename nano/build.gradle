@@ -27,7 +27,7 @@ distributions {
                 exclude('plugins/*.kernel.*')
             }
             from ( "${buildDir}/common_resources/" )
-       }
+        }
     }
     full {
         baseName = 'virgo-nano-full'
@@ -65,6 +65,8 @@ distributions {
                 include ( 'bin/*.sh' )
                 fileMode 0755
             }
+            from ( 'src/main/dist' ) {
+            }
             from ( "${buildDir}/VNR/nano-rap/" ) {
                 exclude ( 'Eclipse.app' )
                 // Remove unwanted *kernel* bundles from nano deliverable
@@ -78,15 +80,15 @@ distributions {
 task ('assembleNano', dependsOn: [
     'installProductNano',
     'installProductNanoFull',
-    // 'installProductNanoRap',
+    'installProductNanoRap',
     'packageResourcesAndProducts'
 ]) {
     installDist.dependsOn(['assembleNano'])
     installFullDist.dependsOn(['assembleNano'])
-    //    installRapDist.dependsOn(['installProductNanoRap'])
+    installRapDist.dependsOn(['installProductNanoRap'])
     distZip.dependsOn(['assembleNano'])
     fullDistZip.dependsOn(['assembleNano'])
-    //    rapDistZip.dependsOn(['installProductNanoRap'])
+    rapDistZip.dependsOn(['installProductNanoRap'])
 }
 
 task ('packageResourcesAndProducts', dependsOn: [
@@ -162,5 +164,5 @@ tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
 task ('groupInstall', dependsOn: [
     'installProductNano',
     'installProductNanoFull',
-    // 'installProductNanoRap',
+    'installProductNanoRap',
 ]){ }

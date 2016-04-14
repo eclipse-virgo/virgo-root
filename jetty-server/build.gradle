@@ -61,53 +61,9 @@ task ('publishJettyServer', dependsOn: [
     doLast() { publishProduct(project, productFileLocation, javaProfileLocation) }
 }
 
-task ('mirrorJettyResources', dependsOn: ['publishJettyServer',]) {
-
-    description = "Mirrors a P2 repository."
-
-    def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/${jettyVersion}"
-    // def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.4.v20120524/" - ok
-    // def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.5.v20120716/" - ok
-    // def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.6.v20120903/" - failed
-    // def source = "http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.14.v20131031/" - failed (subset used by Virgo RAP Server)
-    File destinationDir = file("${buildDir}/jetty-mirror")
-
-    doLast() {
-        mirrorP2UpdateSite(project, source, destinationDir)
-    }
-}
-
-task ('copyJettyResources', dependsOn: ['mirrorJettyResources',]) {
-
-    description = "Copies Jetty resources from a P2 repository into repository/ext."
-
-    File jettyMirrorDir = file("${buildDir}/jetty-mirror")
-
-    doLast() {
-        // copy jetty bundles to repository/ext (this directory is *not* handled by p2)
-        project.copy {
-            from "${buildDir}/jetty-mirror/plugins"
-            into "${buildDir}/common_resources/repository/ext"
-            include '*.jar'
-            exclude { details ->
-                (details.file.name.contains('.source_')
-                || details.file.name.contains('javax.security.auth.message')
-                || details.file.name.contains('org.eclipse.jetty.jaspi')
-                || details.file.name.contains('org.eclipse.jetty.monitor')
-                || details.file.name.contains('org.eclipse.jetty.nested')
-                || details.file.name.contains('org.eclipse.jetty.nosql')
-                        || details.file.name.contains('org.eclipse.jetty.osgi.boot.warurl')
-                || details.file.name.contains('org.eclipse.jetty.osgi.httpservice'))
-            }
-        }
-    }
-}
-
 task ('installProductJettyServer', dependsOn: [
     'publishJettyServer',
-    'copyJettyResources'
 ]) {
-
     description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
 
     def product = 'jetty-server'
