@@ -511,15 +511,6 @@ configure(javaProjects) {
 
 configure(packagingProjects) {
 	configurations {
-		additional { // visibility="private"
-			description = "Additional candidates to be included in the PAR" }
-		external { // visibility="private"
-			description = "External candidates to be woven" }
-		provided { description = "Maven provided dependencies" }
-		serverProvided { description = "Maven provided dependencies that already exist in the platform" }
-		//        test { // visibility="private"
-		//            description = "Test dependencies" }
-
 		aspects { // visibility="private"
 			description = "Aspects to be woven" }
 
