@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.rap"
+      label="Virgo RAP Server components"
+      version="2.3.2.20150128-1013"
+      provider-name="Eclipse.org - Virgo RAP Server components">
+
+   <description url="http://www.eclipse.org/rap/">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update label="RAP 2.3 Repository" url="http://download.eclipse.org/rt/rap/2.3/"/>
+   </url>
+
+   <plugin
+         id="org.eclipse.rap.rwt"
+         download-size="2813"
+         install-size="7126"
+         version="2.3.2.20150128-1013"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.rwt.osgi"
+         download-size="35"
+         install-size="78"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.jface"
+         download-size="994"
+         install-size="1978"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.jface.databinding"
+         download-size="266"
+         install-size="535"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+ <!--
+   <plugin
+         id="org.eclipse.rap.ui"
+         download-size="155"
+         install-size="274"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.ui.forms"
+         download-size="285"
+         install-size="575"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.ui.views"
+         download-size="76"
+         install-size="142"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.ui.workbench"
+         download-size="3473"
+         install-size="7209"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.ui.cheatsheets"
+         download-size="310"
+         install-size="634"
+         version="2.3.2.20150119-1706"
+         unpack="false"/>
+-->
+
+</feature>

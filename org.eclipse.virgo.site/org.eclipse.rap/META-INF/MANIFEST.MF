@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Build-Jdk: 1.6.0_45
+Built-By: genie.rt.rap
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+
+Name: epl-v10.html
+SHA1-Digest: NWZsVPJAYSVwfmPtqxLykU2FynY=
+
+Name: META-INF/maven/org.eclipse.rap/org.eclipse.rap.feature/pom.prope
+ rties
+SHA1-Digest: F8wm9360y8wEsjC325GUrUEFA5U=
+
+Name: p2.inf
+SHA1-Digest: 8jNlA+t4uBa/ntDwzpl09daVYcA=
+
+Name: META-INF/maven/org.eclipse.rap/org.eclipse.rap.feature/pom.xml
+SHA1-Digest: n0UEh5h6S0kW/Eev3Eb+DOeMpG8=
+
+Name: license.html
+SHA1-Digest: Z5WKoRSIDCgQNswUpOU/oSPE2a0=
+
+Name: feature.properties
+SHA1-Digest: JCUqinpGTwQuT94B6PNLFK0iE6s=
+
+Name: feature.xml
+SHA1-Digest: 9/Hc/lXeIU53a9klFaWKRFro2OU=
+
