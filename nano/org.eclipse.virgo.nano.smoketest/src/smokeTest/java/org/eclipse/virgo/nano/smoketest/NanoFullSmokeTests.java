@@ -33,9 +33,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class NanoSmokeTests extends AbstractSmokeTests {
+public class NanoFullSmokeTests extends AbstractSmokeTests {
 
-    private static final String VIRGO_FLAVOR = "nano";
+    private static final String VIRGO_FLAVOR = "nano-full";
 
     private static final String JAVA_PROFILE_TESTER_1_0_0_JAR = "java.profile.tester_1.0.0.jar";
 
@@ -57,12 +57,12 @@ public class NanoSmokeTests extends AbstractSmokeTests {
     }
 
     @Test
-    public void virgoNanoShouldBeStarted() throws Exception {
+    public void virgoNanoFullShouldBeStarted() throws Exception {
         assertTrue(isKernelStarted());
     }
 
     @Test
-    public void testNanoJavaProfileSetCorrectly() throws Exception {
+    public void testNanoFullJavaProfileSetCorrectly() throws Exception {
         assertTrue(isKernelStarted());
 
         // deploy bundle that should kill the server if the test is successful
@@ -82,7 +82,7 @@ public class NanoSmokeTests extends AbstractSmokeTests {
     }
 
     @Test
-    @Ignore("Splash is not available in Virgo Nano")
+    @Ignore("Splash is not available in Virgo Nano Full")
     public void splashScreenShouldBeAccessable() throws Exception {
         assertEquals(SC_OK, waitFor("http://localhost:8080/"));
     }

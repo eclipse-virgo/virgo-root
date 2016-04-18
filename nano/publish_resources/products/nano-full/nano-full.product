@@ -25,6 +25,9 @@
 		<plugin id="org.eclipse.virgo.web.enterprise.services.accessor" autoStart="true" startLevel="3" />
 		<plugin id="osgi.enterprise" autoStart="true"/>
 		<plugin id="org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer" autoStart="true"/>
+		<plugin id="org.eclipse.gemini.web.core" autoStart="true" startLevel="4" />
+		<plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" startLevel="4" />
+		<plugin id="org.eclipse.gemini.web.extender" autoStart="true" startLevel="4" />
 		
 		<property name="equinox.use.ds" value="true"/>
 		<property name="api.bundles" value="javassist;bundle-version=3.17.1.GA,org.apache.el;bundle-version=7.0.32.v201211081135"/>
