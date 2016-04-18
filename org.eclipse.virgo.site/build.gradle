@@ -55,7 +55,6 @@ dependencies {
     localPlugin project(':kernel:org.eclipse.virgo.kernel.userregion')
     localPlugin project(':kernel:org.eclipse.virgo.kernel.userregionfactory')
     localPlugin project(':kernel:org.eclipse.virgo.management.console')
-    localPlugin project(':kernel:org.eclipse.virgo.management.fragment')
     localPlugin project(':kernel:org.eclipse.virgo.shell.command')
 
     localPlugin project(':medic:org.eclipse.virgo.medic')

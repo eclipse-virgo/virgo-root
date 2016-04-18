@@ -24,14 +24,7 @@
     install-size="0"
     version="@GEMINI.MANAGEMENT.VERSION@"
     unpack="false"/>
-    
-    <plugin
-    id="org.eclipse.virgo.management.fragment"
-    download-size="0"
-    install-size="0"
-    version="@VIRGO.VERSION@"
-    unpack="false"/>
-    
+
     <plugin
     id="org.apache.commons.fileupload"
     download-size="0"

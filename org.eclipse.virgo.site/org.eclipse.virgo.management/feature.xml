@@ -17,15 +17,7 @@
    <license url="%licenseURL">
 	  %license
    </license>
-	
-	<plugin
-		id="org.eclipse.virgo.management.fragment"
-		download-size="0"
-		install-size="0"
-		version="@VIRGO.VERSION@"
-		unpack="false"
-		autostart="true"/>
-	
+
    <plugin
 		id="org.eclipse.gemini.management"
 		download-size="0"
@@ -33,12 +25,5 @@
 		version="@GEMINI.MANAGEMENT.VERSION@"
 		unpack="false"
 		autostart="true"/>
-
-	<plugin
-		id="osgi.enterprise"
-		download-size="0"
-		install-size="0"
-		version="@OSGI.ENTERPRISE.VERSION@"
-		unpack="false"/>
 
 </feature>

@@ -46,7 +46,6 @@ include ':kernel:org.eclipse.virgo.kernel.services'
 include ':kernel:org.eclipse.virgo.kernel.userregion'
 include ':kernel:org.eclipse.virgo.kernel.userregionfactory'
 include ':kernel:org.eclipse.virgo.management.console'
-include ':kernel:org.eclipse.virgo.management.fragment'
 include ':kernel:org.eclipse.virgo.shell.command'
 
 include ':web:org.eclipse.virgo.web.core'
