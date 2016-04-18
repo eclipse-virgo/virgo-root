@@ -402,17 +402,6 @@ project(':kernel:org.eclipse.virgo.shell.command') {
     }
 }
 
-project(':kernel:org.eclipse.virgo.management.fragment') {
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
-
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
-    }
-}
-
 project(':kernel:org.eclipse.virgo.management.console') {
     dependencies {
         testCompile group: "org.slf4j", name: "slf4j-nop", version: slf4jVersion
