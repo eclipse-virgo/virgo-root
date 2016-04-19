@@ -504,7 +504,7 @@ configure(javaProjects) {
 	if (System.properties['ci.build'] == 'true' || System.properties['include.jacoco'] == 'true') {
 		apply plugin: "jacoco"
 
-		jacoco { toolVersion = "0.7.6.201602180812" }
+		jacoco { toolVersion = "0.7.4.201502262128" }
 	}
 }
 
