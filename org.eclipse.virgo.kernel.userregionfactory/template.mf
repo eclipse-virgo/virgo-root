@@ -13,7 +13,7 @@ Import-Template:
  org.osgi.framework.*;version="0",
  org.osgi.service.*;version="0",
  org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",
- org.eclipse.equinox.region.*;version="${equinoxRegionVersion:[=.=.=, =.+1)}"
+ org.eclipse.equinox.region.*;version="${equinoxRegionExportedPackageVersion:[=.=.=, =.+1)}"
 Import-Package: org.aspectj.lang;version="0"
 Excluded-Imports: org.easymock,
  org.eclipse.virgo.test.*

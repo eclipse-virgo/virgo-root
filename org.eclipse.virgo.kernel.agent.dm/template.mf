@@ -12,7 +12,7 @@ Import-Template:
  org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",
  org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
  org.eclipse.gemini.blueprint.*;version="${geminiBlueprintVersion:[=.=.=, +1)}",
- org.eclipse.equinox.region.*;version="${equinoxRegionVersion:[=.=.=, =.+1)}",
+ org.eclipse.equinox.region.*;version="${equinoxRegionExportedPackageVersion:[=.=.=, =.+1)}",
  org.aspectj.*;version="${orgAspectjVersion:[=.=.=.=, +1)}",
  org.osgi.*;version="0",
  org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}",

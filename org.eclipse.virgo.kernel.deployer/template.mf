@@ -18,7 +18,7 @@ Import-Template:
  org.osgi.service.*;version="0",
  org.osgi.service.cm.*;version="0",
  org.osgi.util.tracker.*;version="0",
- org.eclipse.equinox.region.*;version="${equinoxRegionVersion:[=.=.=, =.+1)}",
+ org.eclipse.equinox.region.*;version="${equinoxRegionExportedPackageVersion:[=.=.=, =.+1)}",
  javax.management.*;version="0",
  javax.xml.*;version="0",
  org.xml.*;version="0",
