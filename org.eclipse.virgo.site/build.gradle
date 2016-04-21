@@ -343,7 +343,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipsejdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.antlr", version: eclipsePersistenceAntlrVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.asm", version: eclipsePersistenceAsmVersion, configuration: "compile", ext: "jar"
