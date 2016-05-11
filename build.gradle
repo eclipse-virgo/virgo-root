@@ -42,6 +42,7 @@ project(':web:org.eclipse.virgo.web.dm') {
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
+        compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
         compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
         compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
 
@@ -50,7 +51,6 @@ project(':web:org.eclipse.virgo.web.dm') {
         compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
-
 
         compile project(':medic:org.eclipse.virgo.medic')
         compile project(':nano:org.eclipse.virgo.nano.core')
