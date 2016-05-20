@@ -86,6 +86,7 @@ ext.kernelProjects = [
 	project(':kernel:org.eclipse.virgo.kernel.userregion'),
 	project(':kernel:org.eclipse.virgo.kernel.userregionfactory'),
 	project(':kernel:org.eclipse.virgo.management.console'),
+	project(':kernel:org.eclipse.virgo.management.fragment'),
 	project(':kernel:org.eclipse.virgo.shell.command'),
 ]
 
