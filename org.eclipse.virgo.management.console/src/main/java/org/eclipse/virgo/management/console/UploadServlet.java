@@ -86,7 +86,6 @@ public class UploadServlet extends HttpServlet {
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 		    response.setContentType("text/html");
-			@SuppressWarnings("unchecked")
 			List<FileItem> items = (List<FileItem>) upload.parseRequest(request);
 			List<File> uploadedFiles = new ArrayList<File>();
 			for (FileItem fileItem : items) {
