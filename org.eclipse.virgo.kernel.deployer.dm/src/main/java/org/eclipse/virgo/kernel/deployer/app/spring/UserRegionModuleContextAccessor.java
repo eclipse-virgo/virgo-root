@@ -62,9 +62,8 @@ final class UserRegionModuleContextAccessor implements ModuleContextAccessor {
                             if (service instanceof ApplicationContext) {
                                 ApplicationContext appCtx = (ApplicationContext) service;
                                 if (appCtx instanceof ConfigurableOsgiBundleApplicationContext) {
-                                    ConfigurableOsgiBundleApplicationContext cAppCtx = (ConfigurableOsgiBundleApplicationContext) appCtx;
-                                    if (bundleContext == cAppCtx.getBundleContext()) {
-                                        return new ModuleContextWrapper(cAppCtx);
+                                    if (bundleContext == ((ConfigurableOsgiBundleApplicationContext) appCtx).getBundleContext()) {
+                                        return new ModuleContextWrapper((ConfigurableOsgiBundleApplicationContext) appCtx);
                                     }
                                 }
                             }
