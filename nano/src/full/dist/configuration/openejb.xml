@@ -9,7 +9,7 @@
   # After the timeout is reached a javax.ejb.ConcurrentAccessTimeoutException
   # will be thrown.
   #
-  # Usable time units: nanoseconds, microsecons, milliseconds,
+  # Usable time units: nanoseconds, microseconds, milliseconds,
   # seconds, minutes, hours, days.  Or any combination such as
   # "1 hour and 27 minutes and 10 seconds"
 
@@ -25,7 +25,7 @@
   # After the timeout is reached a javax.ejb.ConcurrentAccessTimeoutException
   # will be thrown.
   #
-  # Usable time units: nanoseconds, microsecons, milliseconds,
+  # Usable time units: nanoseconds, microseconds, milliseconds,
   # seconds, minutes, hours, days.  Or any combination such as
   # "1 hour and 27 minutes and 10 seconds"
 
@@ -74,7 +74,7 @@
   # After the timeout is reached, if an instance in the pool cannot
   # be obtained, the method invocation will fail.
   #
-  # Usable time units: nanoseconds, microsecons, milliseconds,
+  # Usable time units: nanoseconds, microseconds, milliseconds,
   # seconds, minutes, hours, days.  Or any combination such as
   # "1 hour and 27 minutes and 10 seconds"
 
@@ -133,7 +133,7 @@
   # designed to hold potentially expensive resources such as memory
   # or file handles and need to be periodically cleared out.
   #
-  # Usable time units: nanoseconds, microsecons, milliseconds,
+  # Usable time units: nanoseconds, microseconds, milliseconds,
   # seconds, minutes, hours, days.  Or any combination such as
   # "1 hour and 27 minutes and 10 seconds"
 
@@ -143,7 +143,7 @@
   # sit idly in the pool without use before it should be retired and
   # removed.
   #
-  # Usable time units: nanoseconds, microsecons, milliseconds,
+  # Usable time units: nanoseconds, microseconds, milliseconds,
   # seconds, minutes, hours, days.  Or any combination such as
   # "1 hour and 27 minutes and 10 seconds"
 
