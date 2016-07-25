@@ -98,6 +98,6 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
         osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.logging/1.2.0/16f574f7c054451477d7fc9d1f294e22b70a8eba/org.apache.commons.logging-1.2.0.jar").getAbsolutePath());
         osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.codec/1.10.0/8aff50e99bd7e53f8c4f5fe45c2a63f1d47dd19c/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());
-        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.4.RELEASE/99686be84f6d80faf79805f2f974166cba2b8485/org.springframework.core-4.2.4.RELEASE.jar").getAbsolutePath());
+        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.4.RELEASE/b8fe7a25e1f006af08e447e2e11560eb3adbae3d/org.springframework.core-4.2.4.RELEASE.jar").getAbsolutePath());
     }
 }
