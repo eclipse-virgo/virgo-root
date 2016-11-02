@@ -13,3 +13,22 @@ project(':test:org.eclipse.virgo.test.tools') {
 		compile group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
 	}
 }
+
+project(':test:org.eclipse.virgo.test.launcher') {
+	dependencies {
+		compile project(':util:org.eclipse.virgo.util.parser.launcher')
+		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+	}
+}
+
+project(':test:org.eclipse.virgo.test.framework') {
+	dependencies {
+		compile project(':util:org.eclipse.virgo.util.common')
+        compile project(':test:org.eclipse.virgo.test.stubs')
+        compile project(':test:org.eclipse.virgo.test.launcher')
+		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+	}
+}
+
