@@ -41,6 +41,13 @@
          version="@GEMINI.WEB.VERSION@"
          unpack="false"
          autostart="true"/>
+
+   <plugin
+         id="org.eclipse.gemini.web.jaspic.fragment"
+         download-size="0"
+         install-size="0"
+         version="@GEMINI.WEB.VERSION@"
+         unpack="false"/>
     
     <plugin
         id="org.apache.jasper"
@@ -58,6 +65,13 @@
     
     <plugin
         id="org.apache.catalina.tribes"
+        download-size="0"
+        install-size="0"
+        version="@CATALINA.VERSION@"
+        unpack="false"/>
+    
+    <plugin
+        id="org.apache.tomcat.jni"
         download-size="0"
         install-size="0"
         version="@CATALINA.VERSION@"
