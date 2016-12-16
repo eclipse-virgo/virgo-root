@@ -40,9 +40,9 @@ import javax.servlet.ServletContext;
 import javax.validation.ValidationException;
 
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.deploy.ContextResource;
-import org.apache.catalina.deploy.ContextResourceEnvRef;
-import org.apache.catalina.deploy.ResourceBase;
+import org.apache.tomcat.util.descriptor.web.ContextResource;
+import org.apache.tomcat.util.descriptor.web.ContextResourceEnvRef;
+import org.apache.tomcat.util.descriptor.web.ResourceBase;
 import org.apache.naming.ContextAccessController;
 import org.apache.openejb.AppContext;
 import org.apache.openejb.ClassLoaderUtil;
@@ -345,12 +345,12 @@ public class VirgoDeployerEjb extends DeployerEjb {
 		JndiEncBuilder jndiBuilder = new JndiEncBuilder(webAppInfo.jndiEnc, null, webAppInfo.moduleId, TRANSACTION_TYPE_BEAN, null, webAppInfo.uniqueId, servletClassLoader);
 		appContext.getBindings().putAll(jndiBuilder.buildBindings(JndiEncBuilder.JndiScope.comp));
 
-		ContextAccessController.setWritable(standardContext.getNamingContextListener().getName(), standardContext);
+		ContextAccessController.setWritable(standardContext.getNamingContextListener().getName(), standardContext.getNamingToken());
 		//TODO do nothing when there is nothing for binding
 		try {
-		    Context root = standardContext.getNamingContextListener().getNamingContext();
+		    Context env = (Context) standardContext.getNamingContextListener().getEnvContext();
 
-			bindRefInTomcat(appContext.getBindings(), root);
+			bindRefInTomcat(appContext.getBindings(), env);
 		} finally {
 			ContextAccessController.setReadOnly(standardContext.getNamingContextListener().getName());
 		}

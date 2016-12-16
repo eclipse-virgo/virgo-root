@@ -15,7 +15,7 @@ import java.io.File;
 
 import javax.servlet.ServletContext;
 
-import org.apache.catalina.Container;
+import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
@@ -111,14 +111,14 @@ public class OpenEjbApplicationListener implements LifecycleListener {
                 // This event is very important
                 // It reorders the lifecycle listeners
                 // so that this listener appears after NamingContextListener
-                Container container = ((Loader) source).getContainer();
-                LifecycleListener[] listeners = container.findLifecycleListeners();
+                Context context = ((Loader) source).getContext();
+                LifecycleListener[] listeners = ((StandardContext) context).findLifecycleListeners();
                 for (int i = 0; listeners != null && i < listeners.length; i++) {
                     if (listeners[i].equals(this)) {
-                        container.removeLifecycleListener(this);// remove the listener from its current position
+                        context.removeLifecycleListener(this);// remove the listener from its current position
                     }
                 }
-                container.addLifecycleListener(this);// add the listener at the end
+                context.addLifecycleListener(this);// add the listener at the end
             }
         }
     }

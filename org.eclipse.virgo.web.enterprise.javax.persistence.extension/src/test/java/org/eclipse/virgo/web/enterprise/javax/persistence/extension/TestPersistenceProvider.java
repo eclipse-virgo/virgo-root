@@ -36,4 +36,12 @@ public class TestPersistenceProvider implements PersistenceProvider {
 		return null;
 	}
 
+	@Override
+	public boolean generateSchema(String arg0, Map arg1) {
+		return false;
+	}
+
+	@Override
+	public void generateSchema(PersistenceUnitInfo arg0, Map arg1) {
+	}
 }

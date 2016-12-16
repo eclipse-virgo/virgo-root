@@ -11,16 +11,18 @@ import org.apache.openejb.util.LogCategory;
 public class TomcatResourceFactory {
     private static final Logger LOGGER = Logger.getInstance(LogCategory.OPENEJB.createChild("tr"), TomcatResourceFactory.class);
 
-    private static final String COMP_ENV_SUBCONTEXT = "comp/env/";
-
     public static Object create(String jndiName, StandardContext standardContext) throws NamingException {
         if (standardContext == null) {
             return null;
         }
 
-        Context context = standardContext.getNamingContextListener().getNamingContext();
+        Context context = standardContext.getNamingContextListener().getEnvContext();
         try {
-            return context.lookup(COMP_ENV_SUBCONTEXT + jndiName);
+        	if (context != null) {
+                return context.lookup(jndiName);
+            } else {
+            return null;
+            }
         } catch (NamingException e) {
             LOGGER.error("Error while looking up " + jndiName, e);
             throw(e);

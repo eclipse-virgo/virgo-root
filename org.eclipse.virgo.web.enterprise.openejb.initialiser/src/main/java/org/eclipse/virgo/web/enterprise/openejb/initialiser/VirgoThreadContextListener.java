@@ -45,22 +45,22 @@ public class VirgoThreadContextListener implements ThreadContextListener {
 		}
 		// set the new context
 		try {
-			ContextBindings.bindThread(REDIRECTING_OPENEJB_CONTEXT);
+			ContextBindings.bindThread(REDIRECTING_OPENEJB_CONTEXT, null);
 		} catch (NamingException e) {
-			ContextBindings.unbindContext(REDIRECTING_OPENEJB_CONTEXT);
+			ContextBindings.unbindContext(REDIRECTING_OPENEJB_CONTEXT, null);
 			throw new IllegalArgumentException("Unable to bind OpenEJB enc");
 		}
 	}
 
 	public void contextExited(ThreadContext exitedContext, ThreadContext reenteredContext) {
 		// unbind the new context
-		ContextBindings.unbindThread(REDIRECTING_OPENEJB_CONTEXT);
+		ContextBindings.unbindThread(REDIRECTING_OPENEJB_CONTEXT, null);
 
 		// attempt to restore the old context
 		OldContextHolder data = exitedContext.get(OldContextHolder.class);
 		if (data != null && data.oldContextName != null) {
 			try {
-				ContextBindings.bindThread(data.oldContextName);
+				ContextBindings.bindThread(data.oldContextName, null);
 			} catch (NamingException e) {
 				System.err.println("Exception in method contextExited");
 				e.printStackTrace();

@@ -66,6 +66,7 @@ project(':web:org.eclipse.virgo.web.tomcat.support') {
     dependencies {
         compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
@@ -105,6 +106,7 @@ project(':web:org.eclipse.virgo.web.enterprise.appdeployer') {
         compile group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
@@ -186,8 +188,9 @@ project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser') {
 project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory') {
     dependencies {
         testCompile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
 
@@ -224,9 +227,11 @@ project(':web:org.eclipse.virgo.web.enterprise.security') {
 
         testRuntime group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
 
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli.extras", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
 
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
 
@@ -267,6 +272,7 @@ project(':web:org.eclipse.virgo.web.enterprise.services.accessor') {
         compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
 

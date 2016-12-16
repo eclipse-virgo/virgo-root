@@ -15,9 +15,9 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
-import org.apache.catalina.deploy.ContextEjb;
-import org.apache.catalina.deploy.ContextLocalEjb;
-import org.apache.catalina.deploy.NamingResources;
+import org.apache.tomcat.util.descriptor.web.ContextEjb;
+import org.apache.tomcat.util.descriptor.web.ContextLocalEjb;
+import org.apache.catalina.deploy.NamingResourcesImpl;
 
 public class NamingResourcesListener implements LifecycleListener {
 
@@ -30,7 +30,7 @@ public class NamingResourcesListener implements LifecycleListener {
         }
 
         if (Lifecycle.CONFIGURE_START_EVENT.equals(event.getType())) {
-            NamingResources namingResources = ((Context) container).getNamingResources();
+            NamingResourcesImpl namingResources = ((Context) container).getNamingResources();
 
             ContextEjb[] ejbs = namingResources.findEjbs();
             for (int i = 0; ejbs != null && i < ejbs.length; i++) {
