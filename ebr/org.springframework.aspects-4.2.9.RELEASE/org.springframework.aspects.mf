@@ -1,0 +1,29 @@
+Bundle-SymbolicName: org.springframework.aspects
+Bundle-Name: Spring Aspects
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ javax.cache;version="${javaxCacheVersion:[=.=.=, +1)}";resolution:=optional,
+ javax.persistence;version="[2.0.0, 3)";resolution:=optional,
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}";resolution:=optional,
+ org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cache.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cglib.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.dao.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.orm.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.scheduling.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.transaction.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional
+Export-Template:
+ org.springframework.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Tool
+Excluded-Imports:
+ org.springframework.context.*

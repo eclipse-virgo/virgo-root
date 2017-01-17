@@ -1,0 +1,184 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+import java.util.jar.JarEntry
+import java.util.jar.JarOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath 'org.apache.ivy:ivy:2.4.0'
+    }
+}
+
+plugins { id 'org.hidetake.ssh' version '2.7.0' }
+
+defaultTasks 'clean', 'dockerize', 'test'
+
+apply plugin: 'java'
+
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+        ivy {
+            url "http://build.eclipse.org/rt/virgo/ivy/bundles/release/"
+            layout "pattern", { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
+        }
+        maven { url 'http://repository.springsource.com/maven/bundles/external' }
+    }
+}
+
+subprojects {
+    apply plugin: 'ivy-publish'
+
+    configurations {
+        bundlorRuntime
+
+        sourceBundle
+    }
+
+    dependencies {
+        bundlorRuntime('org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor.commandline:1.1.2.RELEASE')
+        bundlorRuntime('org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor:1.1.2.RELEASE')
+        bundlorRuntime('org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor.blint:1.1.2.RELEASE')
+    }
+
+    task createBuildDir() {
+        doLast() {
+            file(project.buildDir).mkdir()
+        }
+    }
+
+    task('addProjectVersionToGradlePropertiesTask', type: Copy) {
+        ext.outputDir = new File(buildDir, 'bundlor-properties')
+        inputs.file project.rootProject.file('gradle.properties')
+        outputs.dir ext.outputDir
+        from project.rootProject.file('gradle.properties')
+        into ext.outputDir
+    }
+
+    def artifactName = project.name.split('-')[0]
+    def artifactVersion = project.name.split('-')[1]
+
+    def outputFile = new File(file(project.buildDir), "${project.name}.jar")
+
+    def propertiesPath = new File(file(project.buildDir), "bundlor-properties/gradle.properties")
+
+    task bundlor(type: JavaExec, dependsOn: [createBuildDir, 'addProjectVersionToGradlePropertiesTask']) {
+
+        classpath = configurations.bundlorRuntime
+
+        main = 'org.eclipse.virgo.bundlor.commandline.Bundlor'
+        args '-r', propertiesPath
+        args '-D', "springframeworkVersion=${springframeworkVersion}"
+        args '-i', "${->configurations.sourceBundle[0]}" // lazy GString to resolve the configuration at runtime
+        args '-m', "${artifactName}.mf"
+        args '-o', outputFile
+    }
+
+    publishing {
+        publications {
+            bundledArtifact(IvyPublication) {
+                organisation 'org.eclipse.virgo.mirrored'
+                module "${artifactName}"
+                revision "${artifactVersion}"
+                artifact(outputFile)
+            }
+        }
+
+        repositories { ivy { url "$buildDir" } }
+    }
+    publish.dependsOn bundlor
+
+    remotes {
+        eclipseDotOrg {
+            host = ECLIPSE_ORG_FTP_HOST
+            user =  ECLIPSE_ORG_FTP_USER
+            identity = file(System.properties['user.home'] + "/.ssh/${ECLIPSE_ORG_FTP_IDENTITY}")
+            knownHosts = file(System.properties['user.home'] + "/.ssh/known_hosts")
+        }
+    }
+
+    def groupId = 'org.eclipse.virgo.mirrored'
+    def mirrorPath = ECLIPSE_ORG_FTP_MIRROR_PATH
+
+    task upload << {
+        println "Uploading ${project.name} to ${remotes.eclipseDotOrg.host}..."
+        def artifactPath = "${groupId}/${artifactName}/${artifactVersion}"
+        ssh.run {
+            session(remotes.eclipseDotOrg) {
+                execute "mkdir -p ${mirrorPath}/${artifactPath}"
+                put from: "${buildDir}/${artifactPath}/ivy-${artifactVersion}.xml", into: "${mirrorPath}/${artifactPath}"
+                put from: "${buildDir}/${artifactPath}/ivy-${artifactVersion}.xml.sha1", into: "${mirrorPath}/${artifactPath}"
+                put from: "${buildDir}/${artifactPath}/${artifactName}-${artifactVersion}.jar", into: "${mirrorPath}/${artifactPath}"
+                put from: "${buildDir}/${artifactPath}/${artifactName}-${artifactVersion}.jar.sha1", into: "${mirrorPath}/${artifactPath}"
+            }
+        }
+        println "done."
+    }
+    upload.dependsOn publish
+}
+
+dependencies {
+    testCompile "junit:junit:${junitVersion}"
+    testCompile "org.ops4j.pax.exam:pax-exam-junit4:$paxExamJunit4Version"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
+
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "oevm.javax.portlet", version: javaxPortletVersion
+
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.context.support", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.jdbc", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.jms", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.messaging", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.orm", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.oxm", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.transaction", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc.portlet", version: springframeworkVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.websocket", version: springframeworkVersion, ext: "jar"
+
+    // mandatory dependencies for o.s.core
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
+
+    // mandatory dependencies for o.s.aop
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: '1.0.0', ext: "jar"
+
+    // mandatory dependencies for o.s.jms
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+
+    // mandatory dependencies for o.s.websocket
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+
+    testRuntime "org.ops4j.pax.exam:pax-exam-container-native:$paxExamContainerNativeVersion"
+    testRuntime "org.ops4j.pax.exam:pax-exam-link-mvn:$paxExamLinkMvnVersion"
+    testRuntime "org.ops4j.pax.url:pax-url-aether:$paxUrlAetherVersion"
+}
+
+test.dependsOn('copyTestBundles')
+task copyTestBundles(){
+    doLast {
+        configurations.testRuntime.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            println artifact
+            copy {
+                into "$buildDir/testBundles"
+                from artifact.file
+                rename '.*', artifact.name + '.jar'
+            }
+        }
+    }
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '2.10' } // CQ 11168

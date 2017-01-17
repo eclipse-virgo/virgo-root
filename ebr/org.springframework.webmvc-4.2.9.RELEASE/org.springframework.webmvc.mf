@@ -1,0 +1,59 @@
+Bundle-SymbolicName: org.springframework.webmvc
+Bundle-Name: Spring Web MVC
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
+ com.fasterxml.jackson.*;version="${jacksonVersion:[=.=.=, +1)}";resolution:=optional,
+ com.lowagie.text.*;version="[2.0.8, 3)";resolution:=optional,
+ com.rometools.rome.*;version="${romeVersion:[=.=.=, +1)}";resolution:=optional,
+ com.sun.syndication.*;version="[1, 2)";resolution:=optional,
+ freemarker.*;version="[2.3.14, 3)";resolution:=optional,
+ groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
+ javax.activation.*;version="0";resolution:=optional,
+ javax.el.*;version="[2.2.5, 3)";resolution:=optional,
+ javax.script;version="0";resotion:=optional,
+ javax.sql.*;version="0";resolution:=optional,
+ javax.servlet.*;version="[3.0.1, 4)",
+ javax.servlet.jsp.*;version="[2.2.1, 3)";resolution:=optional,
+ javax.servlet.jsp.jstl.*;version="[1.2.1, 2)";resolution:=optional,
+ javax.validation.*;version="[1, 2)";resolution:=optional,
+ javax.xml.*;version="0";resolution:=optional,
+ javax.xml.bind.*;version="0";resolution:=optional,
+ jxl.*;version="${jxlVersion:[=.=.=, +1)}";resolution:=optional,
+ net.sf.jasperreports.*;version="${jasperreportsVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.apache.poi.*;version="${poiVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.tiles.*;version="[2.2.2, 4)";resolution:=optional,
+ org.apache.velocity.*;version="${velocityVersion:[=.=.=, +1)}";resolution:=optional,
+ org.codehaus.jackson.*;version="[1.3.0, 2)";resolution:=optional,
+ org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cache.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cglib.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.expression.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.format.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.http.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.objenesis.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.oxm.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.scripting.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.stereotype;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.ui.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.validation.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.web.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.xml.sax.*;version="0";resolution:=optional,
+ org.webjars.*;version="${webjarsVersion:[=.=.=, +1)}";resolution:=optional,
+ org.w3c.dom.*;version="0";resolution:=optional,
+ edu.emory.mathcs.backport.*;version="[3, 4)";resolution:=optional
+Export-Template:
+ org.springframework.web.servlet.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool
