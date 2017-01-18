@@ -310,7 +310,7 @@ ext {
 		'JAVAX.SERVLET': javaxServletVersion,
 		'JAVAX.SERVLET.JSP': javaxServletJspVersion,
 		'JSTL.API': javaxServletJspJstlApiVersion,
-		'JSTL.IMPL': javaxServletJspJstlImplVersion,
+		'JSTL.IMPL': javaxServletJspJstlImplOsgiVersion,
 		'JAVAX.TRANSACTION': javaxTransactionVersion,
 		'JAVAX.VALIDATION': javaxValidationVersion,
 		'JAVAX.WEBSOCKET': javaxWebsocketVersion,

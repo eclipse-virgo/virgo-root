@@ -281,8 +281,8 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlApiVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp.jstl.impl", version: javaxServletJspJstlImplVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
+    signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.wsdl", version: javaxWsdlVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ws.rs", version: javaxWsRsVersion, configuration: "compile", ext: "jar"
