@@ -1,8 +1,8 @@
 IManifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.virgo.medic
-Import-Template: 
- org.aspectj.*;version="${orgAspectjVersion:[=.=.= , +1.0.0)}",
+Import-Template:
+ org.aspectj.*;version="${aspectjVersion:[=.=.= , +1.0.0)}",
  javax.management.*;version="0",
  org.osgi.framework;version="0",
  org.slf4j.*;version="${slf4jVersion:[=.=.=, =.+1.0)}"
