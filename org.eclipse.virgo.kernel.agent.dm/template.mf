@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Kernel Agent Spring DM integration
 Bundle-SymbolicName: org.eclipse.virgo.kernel.agent.dm
 Bundle-Version: ${version}
-Excluded-Exports: 
+Excluded-Exports:
  *.internal.*
-Import-Template: 
+Import-Template:
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.util.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.nano.*;version="${version:[=.=.=, =.+1)}",
@@ -13,7 +13,7 @@ Import-Template:
  org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
  org.eclipse.gemini.blueprint.*;version="${geminiBlueprintVersion:[=.=.=, +1)}",
  org.eclipse.equinox.region.*;version="${equinoxRegionExportedPackageVersion:[=.=.=, =.+1)}",
- org.aspectj.*;version="${orgAspectjVersion:[=.=.=.=, +1)}",
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  org.osgi.*;version="0",
  org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}",
  org.osgi.*;version="0",
