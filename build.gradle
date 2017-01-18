@@ -279,7 +279,7 @@ ext {
 
 		'CATALINA.VERSION': apacheCatalinaVersion,
 
-		'ASPECTJ': orgAspectjVersion,
+		'ASPECTJ': aspectjVersion,
 		'LOGBACK.CLASSIC.VERSION': logbackVersion,
 		'LOGBACK.CORE.VERSION': logbackVersion,
         'SLF4J.API': slf4jVersion,

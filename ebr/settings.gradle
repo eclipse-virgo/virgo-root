@@ -17,3 +17,5 @@ include "org.springframework.webmvc.portlet-${springframeworkVersion}"
 include "org.springframework.websocket-${springframeworkVersion}"
 
 include "org.springframework.test-${springframeworkVersion}"
+
+include "org.aspectj.weaver-${aspectjVersion}"

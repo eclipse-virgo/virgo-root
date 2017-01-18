@@ -1,0 +1,3 @@
+dependencies {
+    sourceBundle group: 'org.aspectj', name: 'aspectjweaver', version: "${aspectjVersion}"
+}

@@ -124,7 +124,7 @@ dependencies {
     signedExternalPlugin group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
     signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aspectj.aspectjweaver", version: orgAspectjVersion, ext: "jar"
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
 
     // TODO - rename feature to region'_'
     localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
