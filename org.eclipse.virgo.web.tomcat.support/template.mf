@@ -4,7 +4,7 @@ Bundle-Name: Virgo Web Support Tomcat Support
 Bundle-SymbolicName: org.eclipse.virgo.web.tomcat.support
 Fragment-Host: org.eclipse.gemini.web.tomcat
 Bundle-Version: ${version}
-Import-Template: 
+Import-Template:
  org.eclipse.virgo.kernel.*;version="${version:[=.=.=, +1)}",
  org.eclipse.virgo.nano.*;version="${version:[=.=.=, +1)}",
  org.eclipse.gemini.web.*;version="${geminiWebVersion:[=.=.=, +1)}",
@@ -13,9 +13,9 @@ Import-Template:
  org.eclipse.virgo.util.*;version="${version:[=.=.=, +1)}",
  org.apache.catalina.*;version="${apacheCatalinaVersion:[=.=.=, =.+1)}",
  javax.servlet.*;version="${javaxServletVersion:[-1.6.=, +1)}",
- org.aspectj.*;version="${orgAspectjVersion:[=.=.=, +1)}",
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  org.osgi.framework.*;version="0"
-Import-Package: 
+Import-Package:
  org.apache.catalina.ha;version="${apacheCatalinaVersion:[=.=.=, =.+1)}";resolution:=optional,
  org.apache.catalina.ha.tcp;version="${apacheCatalinaVersion:[=.=.=, =.+1)}";resolution:=optional,
  org.apache.catalina.ha.session;version="${apacheCatalinaVersion:[=.=.=, =.+1)}";resolution:=optional,
@@ -28,5 +28,5 @@ Import-Package:
  org.apache.catalina.tribes.transport;version="${apacheCatalinaVersion:[=.=.=, =.+1)}";resolution:=optional,
  org.apache.catalina.tribes.group.interceptors;version="${apacheCatalinaVersion:[=.=.=, =.+1)}";resolution:=optional,
  javax.websocket;version="${javaxWebsocketVersion:[=.=.=, =.+1)}";resolution:=optional
-Excluded-Exports: 
+Excluded-Exports:
  *

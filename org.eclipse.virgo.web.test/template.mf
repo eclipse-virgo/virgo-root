@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Virgo Web Test Bundle
 Bundle-SymbolicName: org.eclipse.virgo.web.test
 Bundle-Version: ${version}
-Import-Template: 
+Import-Template:
  org.eclipse.virgo.kernel.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
  org.eclipse.virgo.util.*;version="${version:[=.=.=, +1)}",
  org.eclipse.virgo.kernel.equinox.*;version="${org.eclipse.virgo.kernel:[=.=.=, +1)}",
@@ -12,7 +12,7 @@ Import-Template:
  javax.servlet.*;version="${javax.servlet:[-1.6.=, +1)}",
  org.apache.commons.logging.*;version="${org.apache.commons.logging:[=.=.=, +1)}",
  org.apache.commons.httpclient.*;version="${org.apache.commons.httpclient:[=.=.=, +1)}",
- org.aspectj.*;version="${orgAspectjVersion:[=.=.=, +1)}",
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  org.osgi.framework.*;version="0",
  org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
  org.osgi.service.cm.*;version="0",
@@ -25,14 +25,13 @@ Import-Template:
  org.eclipse.osgi.util.*;version="0",
  org.osgi.util.tracker.*;version="0",
  org.eclipse.gemini.blueprint.*;version="${geminiBlueprintVersion:[=.=.=, +1)}"
-Excluded-Imports: 
+Excluded-Imports:
  org.eclipse.virgo,
  org.eclipse.virgo.test.*,
  org.eclipse.gemini.web.tomcat.config,
  org.eclipse.virgo.server
-Excluded-Exports: 
+Excluded-Exports:
  org.eclipse.virgo.kernel.*,
  org.eclipse.virgo.util.*,
  config,
  config.management
-
