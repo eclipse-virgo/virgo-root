@@ -5,7 +5,7 @@
 
    <configIni use="default">
    </configIni>
-   
+
    <vm>
    </vm>
 
@@ -18,7 +18,7 @@
 	  <feature id="org.eclipse.virgo.nano.war.deployer" version="0.0.0"/>
 	  <feature id="org.eclipse.virgo.enterprise" version="0.0.0"/>
    </features>
-   
+
    <configurations>
 		<plugin id="org.eclipse.virgo.web.enterprise.openejb.initialiser" autoStart="true" startLevel="3" />
 		<plugin id="org.eclipse.virgo.web.enterprise.appdeployer" autoStart="true" startLevel="3" />
@@ -28,7 +28,7 @@
 		<plugin id="org.eclipse.gemini.web.core" autoStart="true" startLevel="4" />
 		<plugin id="org.eclipse.gemini.web.tomcat" autoStart="true" startLevel="4" />
 		<plugin id="org.eclipse.gemini.web.extender" autoStart="true" startLevel="4" />
-		
+
 		<property name="equinox.use.ds" value="true"/>
 		<property name="api.bundles" value="javassist;bundle-version=3.17.1.GA,org.apache.el;bundle-version=7.0.32.v201211081135"/>
 		<property name="impl.bundles" value="org.eclipse.persistence.jpa;bundle-version=2.4.1.v20121003-ad44345,org.eclipse.persistence.core;bundle-version=2.4.1.v20121003-ad44345,org.apache.openwebbeans.impl;bundle-version=1.1.7.v201304201405,org.apache.openwebbeans.web;bundle-version=1.1.7.v201304201405,org.apache.openwebbeans.jsf;bundle-version=1.1.7.v201304201405"/>
@@ -38,7 +38,7 @@
 		<property name="openejb.deployments.classpath" value="false"/>
 		<property name="openejb.read-all.persistence.xml" value="true"/>
 		<property name="register.default.datasources" value="false"/>
-		<property name="org.eclipse.virgo.jarscanner.bundles" value="javax.servlet.jsp.jstl.impl,org.glassfish.com.sun.faces"/>
+		<property name="org.eclipse.virgo.jarscanner.bundles" value="org.glassfish.web.javax.servlet.jsp.jstl,org.glassfish.com.sun.faces"/>
 		<property name="com.sun.faces.InjectionProvider" value="org.eclipse.virgo.web.enterprise.jsf.support.VirgoJsfInjectionProvider"/>
 		<property name="javax.persistence.provider" value="org.eclipse.persistence.jpa.PersistenceProvider"/>
 		<property name="org.eclipse.gemini.web.tomcat.config.path" value="configuration/tomcat-server.xml"/>

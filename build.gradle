@@ -114,8 +114,8 @@ configure([
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.javax.portlet", version: javaxPortletVersion, ext: "jar"
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlApiVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp.jstl.impl", version: javaxServletJspJstlImplVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
+        repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
 
         nanoPickup project(':apps:org.eclipse.virgo.apps.splash')
     }
