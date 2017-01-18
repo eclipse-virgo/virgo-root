@@ -91,7 +91,7 @@ public class UtilBundlesResolutionPaxExamTests {
         return options( //
             bundle("mvn:org.slf4j/slf4j-api/1.7.22"), // CQ 12462
             bundle("mvn:org.slf4j/slf4j-nop/1.7.22").noStart(), // CQ 12540
-            bundle("wrap:mvn:org.aspectj/aspectjrt/1.7.2$Export-Package=org.aspectj.*;version=1.7.2"), //
+            bundle("wrap:mvn:org.aspectj/aspectjrt/1.8.10$Export-Package=org.aspectj.*;version=1.8.10"), //
             utilBundles, //
             junitBundles() //
         );
