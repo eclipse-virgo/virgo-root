@@ -3,6 +3,8 @@ Bundle-Name: Spring Web MVC
 Bundle-Vendor: Eclipse Virgo
 Bundle-ManifestVersion: 2
 Bundle-Version: ${springframeworkVersion}
+Import-Package:
+ org.springframework.cglib.reflect;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}"
 Import-Template:
  org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
  com.fasterxml.jackson.*;version="${jacksonVersion:[=.=.=, +1)}";resolution:=optional,
