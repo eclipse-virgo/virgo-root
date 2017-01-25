@@ -60,7 +60,6 @@ dependencies {
 
     localPlugin project(':medic:org.eclipse.virgo.medic')
     localPlugin project(':medic:org.eclipse.virgo.medic.core')
-    localPlugin project(':medic:org.eclipse.virgo.medic.slf4japifragment')
     localPlugin project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
     localPlugin project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
 

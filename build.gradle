@@ -93,7 +93,6 @@ ext.kernelProjects = [
 ext.medicProjects = [
 	project(':medic:org.eclipse.virgo.medic'),
 	project(':medic:org.eclipse.virgo.medic.core'),
-	project(':medic:org.eclipse.virgo.medic.slf4japifragment'),
 	project(':medic:org.eclipse.virgo.medic.logbackclassicfragment'),
 	project(':medic:org.eclipse.virgo.medic.logbackcorefragment'),
 ]
@@ -711,4 +710,3 @@ configure(smokeTestProjects) {
 }
 
 task wrapper(type: Wrapper) { gradleVersion = '2.10' } // CQ 11168
-
