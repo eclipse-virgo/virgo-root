@@ -273,6 +273,8 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.quartz", version: quartzVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
 
+    signedExternalPlugin group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
+    signedExternalPlugin group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
