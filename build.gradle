@@ -31,6 +31,15 @@ project(':medic:org.eclipse.virgo.medic.core') {
     }
 }
 
+project(':medic:org.eclipse.virgo.medic.slf4japifragment') {
+    dependencies {
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+
+        compile "ch.qos.logback:logback-core:${logbackVersion}"
+        compile "ch.qos.logback:logback-classic:${logbackVersion}"
+    }
+}
+
 project(':medic:org.eclipse.virgo.medic.test') {
     dependencies {
         compile project(':medic:org.eclipse.virgo.medic')
