@@ -26,29 +26,34 @@
   <Listener className="org.eclipse.virgo.web.tomcat.support.ServerLifecycleLoggingListener"/>
 
   <Service name="Catalina">
-    <Connector port="8080" protocol="HTTP/1.1"
-               connectionTimeout="20000"
-               redirectPort="8443" />
+    <Connector address="127.0.0.1" port="8080" protocol="HTTP/1.1"
+               server="" connectionTimeout="20000" enableLookups="false" redirectPort="8443" />
 
-    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
-               maxThreads="150" scheme="https" secure="true"
-               clientAuth="false" sslProtocol="TLS"
+    <Connector address="0.0.0.0" port="8443" protocol="HTTP/1.1" 
+               server="" maxThreads="150"
+               SSLEnabled="true" scheme="https" secure="true" 
+               sslEnabledProtocols="TLSv1.2"
+               clientAuth="false" enableLookups="false"
                keystoreFile="configuration/keystore"
                keystorePass="changeit"/>
 
-    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
+    <!-- 
+    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" enableLookups="false" />
+    -->
 
     <Engine name="Catalina" defaultHost="localhost">
       <Realm className="org.apache.catalina.realm.JAASRealm" appName="virgo-kernel"
              userClassNames="org.eclipse.virgo.nano.authentication.User"
              roleClassNames="org.eclipse.virgo.nano.authentication.Role"/>
 
-      <Host name="localhost" appBase=""
+      <Host name="localhost" appBase="work"
             unpackWARs="false" autoDeploy="false"
             deployOnStartup="false" createDirs="false">
 
+        <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false"/>
+        
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="serviceability/logs/access"
-               prefix="localhost_access_log." suffix=".txt" pattern="common" resolveHosts="false"/>
+               prefix="localhost_access_log." suffix=".txt" pattern="common"/>
 
         <Valve className="org.eclipse.virgo.web.tomcat.support.ApplicationNameTrackingValve"/>
       </Host>
