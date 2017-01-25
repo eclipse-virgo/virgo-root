@@ -167,7 +167,7 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.mail", version: javaxMailVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
