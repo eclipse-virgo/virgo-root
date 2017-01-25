@@ -44,12 +44,6 @@
          version="@VIRGO.VERSION@"
          unpack="false"/>
    <plugin
-         id="org.eclipse.virgo.medic.slf4japifragment"
-         download-size="0"
-         install-size="0"
-         version="@VIRGO.VERSION@"
-         unpack="false"/>
-   <plugin
          id="ch.qos.logback.classic"
          download-size="0"
          install-size="0"
