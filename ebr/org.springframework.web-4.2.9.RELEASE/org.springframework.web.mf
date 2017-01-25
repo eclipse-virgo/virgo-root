@@ -19,7 +19,7 @@ Import-Template:
  javax.faces.*;version="[2.2, 3)";resolution:=optional,
  javax.imageio.*;version="0";resolution:=optional,
  javax.jws.*;version="0";resolution:=optional,
- javax.mail.*;version="[1.5.4, 2)";resolution:=optional,
+ javax.mail.*;version="[1.5, 2)";resolution:=optional,
  javax.portlet.*;version="[2, 3)";resolution:=optional,
  javax.servlet.*;version="[2.4, 4)",
  javax.servlet.annotation;version="[3, 4)";resolution:=optional,

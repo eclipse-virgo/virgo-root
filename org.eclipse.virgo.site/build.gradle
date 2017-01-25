@@ -329,7 +329,7 @@ dependencies {
 
     // Tomcat Runtime
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.mail", version: javaxMailVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
     // TODO - check CQ and put version into properties
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.activation", version: '1.1.0.v201211130549', configuration: "compile", ext: "jar"
 

@@ -413,6 +413,9 @@ configure(javaProjects + aspectjProjects) {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 
+	sourceCompatibility = '1.7'
+	targetCompatibility = '1.7'
+
 	compileJava {
 		options.encoding = 'utf-8'
 		options.fork = true
@@ -423,10 +426,6 @@ configure(javaProjects + aspectjProjects) {
 					'-cp',
 					configurations.ecj.asPath,
 					'org.eclipse.jdt.internal.compiler.batch.Main',
-					'-source',
-					'1.7',
-                    '-target',
-                    '1.7',
 					'-warn:-unused'
 				]
 			}
@@ -442,10 +441,6 @@ configure(javaProjects + aspectjProjects) {
 					'-cp',
 					configurations.ecj.asPath,
 					'org.eclipse.jdt.internal.compiler.batch.Main',
-					'-source',
-					'1.7',
-					'-target',
-					'1.7',
 					'-warn:-unused'
 				]
 			}
@@ -709,4 +704,4 @@ configure(smokeTestProjects) {
 	}
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '2.10' } // CQ 11168
+task wrapper(type: Wrapper) { gradleVersion = '3.1' } // CQ 11992
