@@ -27,7 +27,8 @@ configure([
         nanoLibPersistence project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
 
         nanoLibEndorsed group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
-        nanoLibEndorsed group: "org.eclipse.virgo.mirrored", name: "javax.transaction", version: javaxTransactionVersion, configuration: "compile", ext: "jar"
+        nanoLibEndorsed group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
+        nanoLibEndorsed group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
 
         nanoPickup project(':kernel:org.eclipse.virgo.management.console')
     }
