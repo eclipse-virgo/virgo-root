@@ -300,7 +300,7 @@ dependencies {
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.beanutils", version: commonsBeanutilsVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.cli", version: commonsCliVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.collections", version: commonsCollectionsVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "commons-collections", name: "commons-collections", version: commonsCollectionsVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.lang", version: commonsLangVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.pool", version: commonsPoolVersion, configuration: "compile", ext: "jar"
