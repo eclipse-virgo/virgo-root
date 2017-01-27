@@ -62,7 +62,7 @@ allprojects() {
 	if (System.properties['ci.build'] == 'true') {
 		version = '3.7.0.D-' + timestamp
 	} else {
-		version = '3.7.0.M04'
+		version = '3.7.0.RC01'
 	}
 }
 
