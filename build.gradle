@@ -473,17 +473,17 @@ configure(javaProjects + aspectjProjects) {
 }
 
 configure(javaProjects) {
-    jar.doLast {
+    build.doLast {
         // signing the archives
         if(System.properties['ci.build.signjars'] == 'true') {
-            println '|--> Signing Jar File: ' + archivePath
+            println '|--> Signing Jar File: ' + jar.archivePath
             exec {
                 workingDir destinationDir
                 commandLine 'curl',
                             '-o',
-                            archiveName,
+                            jar.archivePath,
                             '-F',
-                            "file=@${archiveName}",
+                            "file=@${jar.archivePath}",
                             '--show-error',
                             'http://build.eclipse.org:31338/sign'
             }
