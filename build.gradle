@@ -470,6 +470,25 @@ configure(javaProjects + aspectjProjects) {
     }
 }
 
+configure(javaProjects) {
+    jar.doLast {
+        // signing the archives
+        if(System.properties['ci.build.signjars'] == 'true') {
+            println '|--> Signing Jar File: ' + archivePath
+            exec {
+                workingDir destinationDir
+                commandLine 'curl',
+                            '-o',
+                            archiveName,
+                            '-F',
+                            "file=@${archiveName}",
+                            '--show-error',
+                            'http://build.eclipse.org:31338/sign'
+            }
+        }
+    }
+}
+
 configure(javaProjects) {   
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
