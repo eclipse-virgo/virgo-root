@@ -470,7 +470,7 @@ configure(javaProjects + aspectjProjects) {
     }
 }
 
-configure(javaProjects) {
+configure(javaProjects) {   
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
@@ -478,6 +478,27 @@ configure(javaProjects) {
 
     artifacts {
         archives sourcesJar
+    }    
+}
+
+configure(javaProjects) {
+    apply plugin: 'maven-publish'
+    publishing {
+        repositories {
+            maven {
+                name = "BuildEclipseOrg"
+                url "/opt/public/rt/virgo/gradle/bundles"
+            }
+        }
+        publications {
+            virgo(MavenPublication) {
+                groupId 'org.eclipse.virgo'
+                from components.java
+                artifact sourcesJar {
+                   classifier "sources"
+                }
+            }
+        }
     }
 }
 
