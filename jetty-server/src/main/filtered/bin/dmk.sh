@@ -132,6 +132,7 @@ then
 
 	if [ "$CLEAN_FLAG" ]
 	then
+        echo "Cleaning the serviceability and working directories..."
         rm -rf $KERNEL_HOME/work
         rm -rf $KERNEL_HOME/serviceability
 
@@ -189,7 +190,7 @@ then
 		# Ensure that the tmp directory exists
 		mkdir -p $TMP_DIR
 
-        JAVA_OPTS="-Xmx512m \
+        JAVA_OPTS="-Xmx1024m \
                     -XX:MaxPermSize=512m $JAVA_OPTS"
 
 		cd $KERNEL_HOME; exec $JAVA_EXECUTABLE \

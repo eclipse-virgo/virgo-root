@@ -131,6 +131,7 @@ then
 
 	if [ "$CLEAN_FLAG" ]
 	then
+        echo "Cleaning the serviceability and working directories..."
         rm -rf $KERNEL_HOME/work
         rm -rf $KERNEL_HOME/serviceability
 
@@ -147,7 +148,7 @@ then
     AUTH_LOGIN=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config
     AUTH_FILE=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties
     CONFIG_AREA=$KERNEL_HOME/work
-    JAVA_PROFILE=$KERNEL_HOME/configuration/java6-server.profile
+    JAVA_PROFILE=$KERNEL_HOME/configuration/java-server.profile
 
     if $cygwin; then
         ACCESS_PROPERTIES=$(cygpath -wp $ACCESS_PROPERTIES)
@@ -188,7 +189,7 @@ then
 		# Ensure that the tmp directory exists
 		mkdir -p $TMP_DIR
 
-        JAVA_OPTS="-Xmx512m \
+        JAVA_OPTS="-Xmx1024m \
                     -XX:MaxPermSize=512m $JAVA_OPTS"
 
 		cd $KERNEL_HOME; exec $JAVA_EXECUTABLE \
