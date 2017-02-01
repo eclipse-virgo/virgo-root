@@ -8,17 +8,8 @@ During `./gradlew <TODO_PROVIDE_BUILD_ALL_TASK>` we
 * create a temporary p2 repository
 * and package the Virgo deliverables.
 
-Prerequisites
-=============
 
-You will need the bundlor plugin installed locally. (It isn't available via Maven Central).
 
-```
-$ git clone git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.bundlor.git
-$ cd org.eclipse.virgo.bundlor
-$ cd 
-$ ./gradlew clean jar build publishToMavenLocal
-```
 
 Build the Virgo deliverables
 ============================
