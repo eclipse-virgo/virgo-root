@@ -1,27 +1,35 @@
 How to build Virgo locally
 ==========================
 
-Since 3.7.0.M02 Virgo is built with Gradle.
+Getting the Code
+----------------
 
-During `./gradlew <TODO_PROVIDE_BUILD_ALL_TASK>` we
-* build the Virgo sources
+The Virgo source code is managed with Git and hosted at the Eclipse Foundation.
+All Virgo related repositories are listed [here](https://wiki.eclipse.org/Virgo/Source#Virgo_git_Repositories).
+
+    $ git clone git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.root.git virgo
+    $ cd virgo
+    $ git submodule update --init
+
+For the impatient
+-----------------
+
+Since 3.7.0.M02 Virgo is built with [Gradle](https://gradle.org/).
+
+Running the default tasks with `./gradlew` will
+* compile the Virgo sources
 * create a temporary p2 repository
 * and package the Virgo deliverables.
-
-
-
 
 Build the Virgo deliverables
 ============================
 
 To build distributable zipped files run:
 
-    ::::sh
     $ ./gradlew clean jar build distZip fullDistZip rapDistZip
 
 There is an additional task to install the zips, too. This comes quite handy to quickly check the distributables:
-    
-    ::::sh
+
     $ ./gradlew installDist installFullDist installRapDist
 
 To speed up local builds you can skip some time-consuming processes like follows:
@@ -29,7 +37,7 @@ To speed up local builds you can skip some time-consuming processes like follows
  * `-Dskip.local.signing=true`
  * `-Dskip.compress.bundles=true`
 
-If you are only interested in the distribution(s) you might additionally want to skip some Gradle tasks, too: `-x test -x findBugsMain -x findBugsTest`. 
+If you are only interested in the distribution(s) you might additionally want to skip some Gradle tasks, too: `-x test -x findBugsMain -x findBugsTest`.
 
 Run the basic smoke tests
 =========================

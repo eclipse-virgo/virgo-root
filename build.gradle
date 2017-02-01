@@ -54,6 +54,8 @@ buildscript {
 
 def timestamp = new Date().format('yyyyMMddHHmmss', TimeZone.getTimeZone('GMT'))
 
+defaultTasks 'clean', 'jar', 'build', 'distZip'
+
 def Properties versions = new Properties()
 versions.load(new FileInputStream(project.rootProject.file('gradle.properties')))
 project.ext.props = versions
