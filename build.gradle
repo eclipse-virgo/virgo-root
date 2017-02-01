@@ -478,7 +478,7 @@ configure(javaProjects) {
         if(System.properties['ci.build.signjars'] == 'true') {
             println '|--> Signing Jar File: ' + jar.archivePath
             exec {
-                workingDir destinationDir
+                workingDir jar.destinationDir
                 commandLine 'curl',
                             '-o',
                             jar.archivePath,
