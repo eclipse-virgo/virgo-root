@@ -1,4 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: Test Code
-Bundle-SymbolicName: org.eclipse.virgo.util.test
-Bundle-Version: ${version}

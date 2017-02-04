@@ -1,7 +1,0 @@
-org.eclipse.osgi=3.8.1.v20120830-144521
-org.junit=4.7.0
-org.antlr=3.0.1
-org.aspectj=1.6.12.RELEASE
-org.slf4j.nop=1.7.2.v201212060727
-org.slf4j.api=1.7.2.v20121108-1250
-org.easymock=2.3.0
