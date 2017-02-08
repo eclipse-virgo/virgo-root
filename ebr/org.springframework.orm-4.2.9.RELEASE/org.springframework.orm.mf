@@ -5,15 +5,15 @@ Bundle-ManifestVersion: 2
 Bundle-Version: ${springframeworkVersion}
 Import-Package:
  com.ibatis.sqlmap.engine.transaction.external;version="[2.3.4, 3)";resolution:=optional,
- javax.persistence.criteria;version="[2.0.5, 3)";resolution:=optional,
  oracle.toplink.essentials.expressions;version="[2, 3)";resolution:=optional,
- javax.persistence.metamodel;version="[1, 3)";resolution:=optional,
+ javax.persistence.criteria;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ javax.persistence.metamodel;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
  org.eclipse.persistence.expressions;version="[1, 3)";resolution:=optional
 Import-Template:
  com.ibatis.*;version="[2.3.4, 3)";resolution:=optional,
  javax.jdo.*;version="[3.1, 4)";resolution:=optional,
  javax.naming.*;version="0";resolution:=optional,
- javax.persistence.*;version="[2.0.5, 3)";resolution:=optional,
+ javax.persistence.*;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
  javax.servlet.*;version="[3.0.1, 4)";resolution:=optional,
  javax.sql.*;version="0";resolution:=optional,
  javax.transaction.*;version="[1.0.1, 2)";resolution:=optional,

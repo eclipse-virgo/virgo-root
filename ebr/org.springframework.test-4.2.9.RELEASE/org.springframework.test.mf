@@ -6,7 +6,7 @@ Import-Template:
  javax.activation.*;version="0";resolution:=optional,
  javax.el.*;version="[1.0.0, 3.0.0)";resolution:=optional,
  javax.naming.*;version="0";resolution:=optional,
- javax.persistence.*;version="[1.0.0, 3.0.0)";resolution:=optional,
+ javax.persistence.*;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
  javax.portlet.*;version="[2.0.0, 3.0.0)";resolution:=optional,
  javax.servlet;version="[2.5.0, 4.0.0)";resolution:=optional,
  javax.servlet.http;version="[2.5.0, 4.0.0)";resolution:=optional,
