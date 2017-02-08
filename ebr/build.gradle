@@ -181,4 +181,4 @@ task copyTestBundles(){
     }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '2.10' } // CQ 11168
+task wrapper(type: Wrapper) { gradleVersion = '3.1' } // CQ 11992
