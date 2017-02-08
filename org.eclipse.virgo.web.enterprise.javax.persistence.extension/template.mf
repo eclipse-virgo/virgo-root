@@ -4,7 +4,7 @@ Bundle-Name: Virgo Web Enterprise javax.persistence Fragment
 Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.javax.persistence.extension
 Bundle-Version: ${version}
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Fragment-Host: javax.persistence;bundle-version="${javaxPersistenceVersion:[=.=.=, =.+1)}"
+Fragment-Host: javax.persistence;bundle-version="${javaxPersistenceVersion:[=.=, =.+1)}"
 Import-Template: org.osgi.framework;version="0"
 Export-Template: org.eclipse.virgo.web.enterprise.javax.persistence.extension
 Excluded-Imports:
