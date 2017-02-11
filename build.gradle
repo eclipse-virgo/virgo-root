@@ -162,6 +162,9 @@ ext.webProjects = [
 ]
 
 ext.integrationTestProjects = [
+	project(':test:org.eclipse.virgo.test.launcher'),
+	project(':test:org.eclipse.virgo.test.framework'),
+
 	project(':util:org.eclipse.virgo.util.integrationtest'),
 	//	project(':medic:org.eclipse.virgo.medic.integrationtest'),
 ]
