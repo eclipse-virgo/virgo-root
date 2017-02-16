@@ -62,9 +62,9 @@ project.ext.props = versions
 
 allprojects() {
 	if (System.properties['ci.build'] == 'true') {
-		version = '3.7.0.D-' + timestamp
+		version = '3.7.1.D-' + timestamp
 	} else {
-		version = '3.7.0.RC01'
+		version = '3.7.0.RELEASE'
 	}
 }
 
