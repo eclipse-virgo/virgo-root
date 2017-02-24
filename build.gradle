@@ -475,7 +475,7 @@ configure(javaProjects + aspectjProjects) {
     }
 }
 
-configure(javaProjects) {
+configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
     build.doLast {
         // signing the archives
         if(System.properties['ci.build.signjars'] == 'true') {
