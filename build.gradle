@@ -475,7 +475,7 @@ configure(javaProjects + aspectjProjects) {
     }
 }
 
-configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
+configure(javaProjects) {
     build.doLast {
         // signing the archives
         if(System.properties['ci.build.signjars'] == 'true') {
@@ -490,6 +490,7 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
                             '--show-error',
                             'http://build.eclipse.org:31338/sign'
             }
+            println '|--> Signing ' + jar.archivePath + ' returned with result: ' + execResult
         }
     }
 }
