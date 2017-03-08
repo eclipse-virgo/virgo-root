@@ -73,8 +73,8 @@ public class ImportExpansionHandlerTests {
         BundleBridge bundleBridge = new BundleBridge(new StubHashGenerator());
         LibraryBridge libraryBridge = new LibraryBridge(new StubHashGenerator());
 
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.9.RELEASE/a8d6a7492a2dabd36ab8955ff34da628697f5ea/org.springframework.core-4.2.9.RELEASE.jar")));
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.beans/4.2.9.RELEASE/2134af7cf6177d253ffb1e07d3eb6468b9fdffb6/org.springframework.beans-4.2.9.RELEASE.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.9.RELEASE/1c660c77b174384012745d391694de1d56f2c19a/org.springframework.core-4.2.9.RELEASE.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.beans/4.2.9.RELEASE/6895116b764a2820b829cef9dd1b3833b7cdfcaa/org.springframework.beans-4.2.9.RELEASE.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
