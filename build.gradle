@@ -1,5 +1,6 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.api.tasks.StopActionException
+import virgobuild.Config
 
 apply plugin: virgobuild.VirgoToolsPlugin
 
@@ -479,6 +480,15 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
     assemble.doLast {
 	    println '|--> Assembled Jar File: ' + jar.archivePath
         if(System.properties['ci.build.signjars'] == 'true') {
+			println '|--> Normalize Jar File: ' + jar.archivePath
+			project.javaexec {
+				main = 'org.eclipse.equinox.internal.p2.jarprocessor.Main'
+				classpath Config.on(project).jarProcessorJar
+				args = [
+						'-repack',
+						jar.archivePath
+				]
+			}
             println '|--> Signing Jar File: ' + jar.archivePath
             exec {
                 workingDir jar.destinationDir
@@ -486,12 +496,21 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
                             '-o',
                             jar.archivePath,
  	                        '-F',
- 	                        "file=@${jar.archivePath}",
+ 	                        "file=@${jar.archivePath.absolutePath + '_normalized'}",
  	                        '--show-error',
  	                        'http://build.eclipse.org:31338/sign'
  			}
+			println '|--> Compress Jar File: ' + jar.archivePath
+			project.javaexec {
+				main = 'org.eclipse.equinox.internal.p2.jarprocessor.Main'
+				classpath Config.on(project).jarProcessorJar
+				args = [
+						'-pack',
+						jar.archivePath
+				]
+			}
         } else {
-            println '|--> Skipping signing of Jar File: ' + jar.archivePath
+            println '|--> Skipping normalize/signing/compression of Jar File: ' + jar.archivePath
         }
     }
 }
