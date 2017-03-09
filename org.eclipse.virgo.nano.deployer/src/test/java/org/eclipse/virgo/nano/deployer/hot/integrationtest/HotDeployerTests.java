@@ -30,10 +30,12 @@ import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.util.io.PathReference;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  */
+@Ignore
 public class HotDeployerTests {
 
     private static final PathReference PICKUP_DIR = new PathReference("build/pickup");
