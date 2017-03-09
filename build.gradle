@@ -477,8 +477,8 @@ configure(javaProjects + aspectjProjects) {
 
 configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
 		task signing (dependsOn: jar) {
-        // hook into the java build process
-				// https://docs.gradle.org/current/userguide/java_plugin.html
+		// hook into the java build process
+		// https://docs.gradle.org/current/userguide/java_plugin.html
 				assemble.dependsOn signing
 				uploadArchives.dependsOn signing
 				doLast {
@@ -494,9 +494,13 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
 		                            '--show-error',
 		                            'http://build.eclipse.org:31338/sign'
 								}
-						}
+				    }
 		    }
-    }
+		}
+
+		assemble.doLast {
+				println '|--> Assembled Jar File: ' + jar.archivePath
+		}
 }
 
 configure(javaProjects) {

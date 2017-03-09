@@ -95,7 +95,7 @@ class UpdateSitePlugin implements Plugin<Project> {
                 // check if the dependent project is a bundle or feature, once its build script has been evaluated
                 def dependency = projectDependency.dependencyProject
                 //                if (dependency.plugins.hasPlugin(BundlePlugin)) {
-                copyBundlesTask.inputs.files dependency.tasks.jar.outputs.files
+                copyBundlesTask.inputs.files dependency.tasks.assemble.outputs.files
                 //                } else {
                 //                    dependency.afterEvaluate {
                 //                        if (dependency.plugins.hasPlugin(BundlePlugin)) {
