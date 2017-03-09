@@ -246,6 +246,8 @@ project(':kernel:org.eclipse.virgo.kernel.services') {
     }
 
     task rewriteJar(dependsOn: jar) {
+        tasks['signing'].dependsOn('rewriteJar')
+        tasks['uploadArchives'].dependsOn('rewriteJar')
         tasks['assemble'].dependsOn('rewriteJar')
         String jarFileName
         // store name of the created jar file
