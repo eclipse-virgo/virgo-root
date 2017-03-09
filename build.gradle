@@ -476,25 +476,30 @@ configure(javaProjects + aspectjProjects) {
 }
 
 configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
-    build.doLast {
-        // signing the archives
-        if(System.properties['ci.build.signjars'] == 'true') {
-            println '|--> Signing Jar File: ' + jar.archivePath
-            exec {
-                workingDir jar.destinationDir
-                commandLine 'curl',
-                            '-o',
-                            jar.archivePath,
-                            '-F',
-                            "file=@${jar.archivePath}",
-                            '--show-error',
-                            'http://build.eclipse.org:31338/sign'
-            }
-        }
+		task signing (dependsOn: jar) {
+        // hook into the java build process
+				// https://docs.gradle.org/current/userguide/java_plugin.html
+				assemble.dependsOn signing
+				uploadArchives.dependsOn signing
+				doLast {
+						if(System.properties['ci.build.signjars'] == 'true') {
+		            println '|--> Signing Jar File: ' + jar.archivePath
+								exec {
+		                workingDir jar.destinationDir
+		                commandLine 'curl',
+		                            '-o',
+		                            jar.archivePath,
+		                            '-F',
+		                            "file=@${jar.archivePath}",
+		                            '--show-error',
+		                            'http://build.eclipse.org:31338/sign'
+								}
+						}
+		    }
     }
 }
 
-configure(javaProjects) {   
+configure(javaProjects) {
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
@@ -502,7 +507,7 @@ configure(javaProjects) {
 
     artifacts {
         archives sourcesJar
-    }    
+    }
 }
 
 configure(javaProjects) {
