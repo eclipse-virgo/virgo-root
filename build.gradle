@@ -479,7 +479,7 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
 		task signing (dependsOn: build) {
 		// hook into the java build process
 		// https://docs.gradle.org/current/userguide/java_plugin.html
-				assemble.dependsOn signing
+				//assemble.dependsOn signing
 				uploadArchives.dependsOn signing
 				doLast {
 						if(System.properties['ci.build.signjars'] == 'true') {
