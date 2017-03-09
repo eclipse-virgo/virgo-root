@@ -496,7 +496,7 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
                             '-o',
                             jar.archivePath,
  	                        '-F',
- 	                        "file=@${jar.archivePath.absolutePath + '_normalized'}",
+ 	                        "file=@${jar.archivePath}",
  	                        '--show-error',
  	                        'http://build.eclipse.org:31338/sign'
  			}
