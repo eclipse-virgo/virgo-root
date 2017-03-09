@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.deployer.hot;
+package org.eclipse.virgo.nano.deployer.hot.integrationtest;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
