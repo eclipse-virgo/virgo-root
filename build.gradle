@@ -476,31 +476,24 @@ configure(javaProjects + aspectjProjects) {
 }
 
 configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
-		task signing (dependsOn: build) {
-		// hook into the java build process
-		// https://docs.gradle.org/current/userguide/java_plugin.html
-				//assemble.dependsOn signing
-				uploadArchives.dependsOn signing
-				doLast {
-						if(System.properties['ci.build.signjars'] == 'true') {
-		            println '|--> Signing Jar File: ' + jar.archivePath
-								exec {
-		                workingDir jar.destinationDir
-		                commandLine 'curl',
-		                            '-o',
-		                            jar.archivePath,
-		                            '-F',
-		                            "file=@${jar.archivePath}",
-		                            '--show-error',
-		                            'http://build.eclipse.org:31338/sign'
-								}
-				    }
-		    }
-		}
-
-		assemble.doLast {
-				println '|--> Assembled Jar File: ' + jar.archivePath
-		}
+    assemble.doLast {
+	    println '|--> Assembled Jar File: ' + jar.archivePath
+        if(System.properties['ci.build.signjars'] == 'true') {
+            println '|--> Signing Jar File: ' + jar.archivePath
+            exec {
+                workingDir jar.destinationDir
+                commandLine 'curl',
+                            '-o',
+                            jar.archivePath,
+ 	                        '-F',
+ 	                        "file=@${jar.archivePath}",
+ 	                        '--show-error',
+ 	                        'http://build.eclipse.org:31338/sign'
+ 			}
+        } else {
+            println '|--> Skipping signing of Jar File: ' + jar.archivePath
+        }
+    }
 }
 
 configure(javaProjects) {
