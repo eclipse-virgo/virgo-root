@@ -476,7 +476,7 @@ configure(javaProjects + aspectjProjects) {
 }
 
 configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
-		task signing (dependsOn: jar) {
+		task signing (dependsOn: build) {
 		// hook into the java build process
 		// https://docs.gradle.org/current/userguide/java_plugin.html
 				assemble.dependsOn signing
