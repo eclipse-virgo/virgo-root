@@ -39,6 +39,10 @@ To speed up local builds you can skip some time-consuming processes like follows
 
 If you are only interested in the distribution(s) you might additionally want to skip some Gradle tasks, too: `-x test -x findBugsMain -x findBugsTest`.
 
+A simple local build can be done using the following command:
+
+    $ ./gradlew -Dskip.normalize.bundles=true -Dskip.local.signing=true -Dskip.compress.bundles=true clean jar build distZip fullDistZip -x test
+
 Run the basic smoke tests
 =========================
 
