@@ -781,4 +781,5 @@ configure(smokeTestProjects) {
 	}
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '3.1' } // CQ 11992
+//task wrapper(type: Wrapper) { gradleVersion = '3.1' } // CQ 11992
+task wrapper(type: Wrapper) { gradleVersion = '3.5' } // CQ 13634
