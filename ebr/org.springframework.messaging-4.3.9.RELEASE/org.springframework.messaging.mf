@@ -1,0 +1,30 @@
+Bundle-SymbolicName: org.springframework.messaging
+Bundle-Name: Spring Messaging
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ com.fasterxml.jackson.*;version="${jacksonVersion:[=.=.=, +1)}";resolution:=optional,
+ io.netty.*;version="${nettyVersion:[=.=.=, +1)}";resolution:=optional,
+ javax.xml.transform.*;version="0",
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.reactivestreams;version="[1, 2)";resolution:=optional,
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.expression.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.format.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.oxm.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.scheduling.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.stereotype.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.validation.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ reactor.*;version="${reactorVersion:[=.=.=, +1)}";resolution:=optional
+Export-Template:
+ org.springframework.messaging.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

@@ -1,0 +1,58 @@
+Bundle-SymbolicName: org.springframework.context
+Bundle-Name: Spring Context
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Package:
+ org.springframework.cglib.reflect;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.orm.jpa.support;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ javax.inject;version="[1, 2)";resolution:=optional,
+ javax.persistence;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ com.ibm.websphere.management;version="0";resolution:=optional
+Import-Template:
+ bsh.*;version="${beanShellVersion:[=.=.=, +1)}";resolution:=optional,
+ com.sun.net.*;version="0";resolution:=optional,
+ edu.emory.mathcs.backport.*;version="[3.0.0, 4.0.0)";resolution:=optional,
+ groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
+ javax.annotation.*;version="0";resolution:=optional,
+ javax.ejb.*;version="[3, 4)";resolution:=optional,
+ javax.enterprise.concurrent;version="[1, 2)";resolution:=optional,
+ javax.interceptor.*;version="[3.0.0, 4.0.0)";resolution:=optional,
+ javax.jms.*;version="[1.1.0, 2.0.0)";resolution:=optional,
+ javax.management.*;version="0";resolution:=optional,
+ javax.money.*;version="[1, 2)";resolution:=optional,
+ javax.naming.*;version="0";resolution:=optional,
+ javax.persistence.*;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ javax.rmi.*;version="0";resolution:=optional,
+ javax.script;version="0";resotion:=optional,
+ javax.validation.*;version="[1, 2)";resolution:=optional,
+ javax.xml.*;version="0";resolution:=optional,
+ net.sf.ehcache.*;version="[1.0.0, 3.0.0)";resolution:=optional,
+ javax.cache.*;version="[0.5.0, 0.5.0]";resolution:=optional,
+ org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}";resolution:=optional,
+ org.codehaus.groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
+ org.hibernate.validator.*;version="${hibernateVersion:[=.=.=, +1)}";resolution:=optional,
+ org.joda.*;version="${jodaTimeVersion:[=.=.=, +1)}";resolution:=optional,
+ org.jruby.*;version="${jrubyVersion:[=.=.=, +1)}";resolution:=optional,
+ org.omg.CORBA.*;version="0";resolution:=optional,
+ org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.asm.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cglib.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.expression.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.instrument.*;version="0";resolution:=optional,
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.objenesis.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.xml.sax.*;version="0";resolution:=optional,
+ org.w3c.dom.*;version="0";resolution:=optional
+Export-Template:
+ org.springframework.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

@@ -1,0 +1,29 @@
+Bundle-SymbolicName: org.springframework.webmvc.portlet
+Bundle-Name: Spring Web MVC Portlet
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ javax.portlet.*;version="[2, 3)",
+ javax.servlet.*;version="[3.0.1, 4)",
+ javax.xml.*;version="0";resolution:=optional,
+ org.apache.commons.fileupload.*;version="${commonsFileuploadVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.http.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.jndi.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.stereotype;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.ui.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.validation.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.web.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.xml.sax.*;version="0";resolution:=optional
+Export-Template:
+ org.springframework.web.portlet.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool
