@@ -37,7 +37,6 @@ subprojects {
 
     configurations {
         bundlorRuntime
-
         sourceBundle
     }
 
