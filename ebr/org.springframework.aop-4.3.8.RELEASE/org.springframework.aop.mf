@@ -5,7 +5,6 @@ Bundle-ManifestVersion: 2
 Bundle-Version: ${springframeworkVersion}
 Import-Template:
  com.jamonapi.*;version="${jamonVersion:[=.=.=, +1)}";resolution:=optional,
- org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
  org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
  org.apache.commons.pool.*;version="${commonsPoolVersion:[=.=.=, +1)}";resolution:=optional,
  org.apache.commons.pool2.*;version="${commonsPool2Version:[=.=.=, +1)}";resolution:=optional,
@@ -24,3 +23,4 @@ Ignored-Existing-Headers:
  Import-Package,
  Export-Package,
  Tool
+

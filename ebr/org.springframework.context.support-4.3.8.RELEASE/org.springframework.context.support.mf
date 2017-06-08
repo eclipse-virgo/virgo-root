@@ -4,6 +4,7 @@ Bundle-Vendor: Eclipse Virgo
 Bundle-ManifestVersion: 2
 Bundle-Version: ${springframeworkVersion}
 Import-Template:
+ com.github.benmanes.caffeine.cache;version="${benmanesCaffeineVersion:[=.=.=, +1)}";resolution:=optional,
  com.google.common.*;version="[19, 100)";resolution:=optional,
  commonj.*;version="${commonjVersion:[=.=.=, +1)}";resolution:=optional,
  freemarker.*;version="${freemarkerVersion:[=.=.=, +1)}";resolution:=optional,
@@ -23,6 +24,7 @@ Import-Template:
  org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
  org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
  org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.lang;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
  org.springframework.expression.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
  org.springframework.jdbc.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
  org.springframework.jndi.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,

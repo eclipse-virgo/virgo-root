@@ -6,6 +6,7 @@ Bundle-Version: ${springframeworkVersion}
 Import-Template:
  javax.cache;version="${javaxCacheVersion:[=.=.=, +1)}";resolution:=optional,
  javax.persistence;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ javax.transaction;version="${javaxTransactionVersion:[=.=, +1)}";resolution:=optional,
  org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
  org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}";resolution:=optional,
  org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
