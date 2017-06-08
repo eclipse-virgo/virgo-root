@@ -5,8 +5,6 @@ buildscript {
     }
 }
 
-plugins { id 'org.hidetake.ssh' version '2.7.0' }
-
 defaultTasks 'clean', 'bundlor', 'test'
 
 apply plugin: 'java'
@@ -82,39 +80,13 @@ subprojects {
             }
         }
 
-        repositories { ivy { url "$buildDir" } }
+        repositories {
+            ivy {
+                url "/opt/public/rt/virgo/ivy/bundles/release"
+            }
+        }
     }
     publish.dependsOn bundlor
-
-    remotes {
-        eclipseDotOrg {
-            host = ECLIPSE_ORG_FTP_HOST
-            user = ECLIPSE_ORG_FTP_USER
-            identity = file(System.properties['user.home'] + "/.ssh/${ECLIPSE_ORG_FTP_IDENTITY}")
-            knownHosts = file(System.properties['user.home'] + "/.ssh/known_hosts")
-        }
-    }
-
-    def groupId = 'org.eclipse.virgo.mirrored'
-    def mirrorPath = ECLIPSE_ORG_FTP_MIRROR_PATH
-
-    task upload {
-        doLast {
-            println "Uploading ${project.name} to ${remotes.eclipseDotOrg.host}..."
-            def artifactPath = "${groupId}/${artifactName}/${artifactVersion}"
-            ssh.run {
-                session(remotes.eclipseDotOrg) {
-                    execute "mkdir -p ${mirrorPath}/${artifactPath}"
-                    put from: "${buildDir}/${artifactPath}/ivy-${artifactVersion}.xml", into: "${mirrorPath}/${artifactPath}"
-                    put from: "${buildDir}/${artifactPath}/ivy-${artifactVersion}.xml.sha1", into: "${mirrorPath}/${artifactPath}"
-                    put from: "${buildDir}/${artifactPath}/${artifactName}-${artifactVersion}.jar", into: "${mirrorPath}/${artifactPath}"
-                    put from: "${buildDir}/${artifactPath}/${artifactName}-${artifactVersion}.jar.sha1", into: "${mirrorPath}/${artifactPath}"
-                }
-            }
-            println "done."
-        }
-    }
-    upload.dependsOn publish
 }
 
 dependencies {
