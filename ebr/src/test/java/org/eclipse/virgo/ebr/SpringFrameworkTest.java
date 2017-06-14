@@ -1,34 +1,17 @@
 package org.eclipse.virgo.ebr;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 
-import javax.inject.Inject;
-
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeNotNull;
 import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.osgi.framework.Bundle.ACTIVE;
 
 /**
- * Test class using PaxExam runner to test Spring Framework bundle resolution.
+ * Test class testing Spring Framework bundle resolution.
  * <p>
  * Created by dam on 6/9/17.
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerClass.class)
-public class SpringFrameworkTest {
-
-    private static final String MIRROR_GROUP = "org.eclipse.virgo.mirrored";
+public class SpringFrameworkTest extends AbstractBaseTest {
 
     private static final String ASPECTJ_WEAVER = "org.aspectj.weaver";
     private static final String ASPECTJ_WEAVER_VERSION = "1.8.10";
@@ -53,10 +36,8 @@ public class SpringFrameworkTest {
     private static final String SF_WEBMVC_PORTLET = SF_PREFIX + "webmvc.portlet";
     private static final String SF_WEBSOCKET = SF_PREFIX + "websocket";
 
-    @Inject
-    private BundleContext bundleContext;
-
     @Configuration
+    @Override
     public Option[] config() {
         return options(
                 // spring framework dependencies
@@ -177,19 +158,5 @@ public class SpringFrameworkTest {
     @Test
     public void testSpringWebsocket() throws Exception {
         assertBundleActive(SF_WEBSOCKET);
-    }
-
-    private void assertBundleActive(String symbolicName) throws BundleException {
-        assumeNotNull(symbolicName);
-        assumeFalse(symbolicName.isEmpty());
-        for (Bundle b : this.bundleContext.getBundles()) {
-            if (symbolicName.equals(b.getSymbolicName())) {
-                if (ACTIVE != b.getState()) {
-                    b.start(); // start the bundle so we get the exception
-                }
-                return;
-            }
-        }
-        fail("Bundle with symbolicName [" + symbolicName + "] could not be found.");
     }
 }

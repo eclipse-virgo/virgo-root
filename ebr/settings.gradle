@@ -15,7 +15,7 @@ include "org.springframework.web-${springframeworkVersion}"
 include "org.springframework.webmvc-${springframeworkVersion}"
 include "org.springframework.webmvc.portlet-${springframeworkVersion}"
 include "org.springframework.websocket-${springframeworkVersion}"
-
 include "org.springframework.test-${springframeworkVersion}"
-
 include "org.aspectj.weaver-${aspectjVersion}"
+include "com.squareup.okio-${okioVersion}"
+include "com.squareup.okhttp3-${okhttp3Version}"
