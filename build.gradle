@@ -11,10 +11,10 @@ def packageConfiguration(configurationName, configuration, target) {
 }
 
 configure([
-    project(':packaging:nano'),
-    project(':packaging:kernel'),
-    project(':packaging:jetty-server'),
-    project(':packaging:tomcat-server'),
+        project(':packaging:nano'),
+        project(':packaging:kernel'),
+        project(':packaging:jetty-server'),
+        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         // TODO - rename to virgoLib, virgoLibPersistence, virgoLibEndorsed and virgoPickup?!
@@ -34,22 +34,23 @@ configure([
     }
 }
 
-project(':packaging:nano') { dependencies { } }
+project(':packaging:nano') { dependencies {} }
 
 if (System.properties['skip.smoke.tests'] != 'true') {
-    project(':packaging:nano:org.eclipse.virgo.nano.smoketest') { dependencies { } }
+    project(':packaging:nano:org.eclipse.virgo.nano.smoketest') { dependencies {} }
 }
 
 configure([
-    project(':packaging:kernel'),
-    project(':packaging:jetty-server'),
-    project(':packaging:tomcat-server'),
+        project(':packaging:kernel'),
+        project(':packaging:jetty-server'),
+        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         kernelPluginsExtras project(':kernel:org.eclipse.virgo.kernel.userregion')
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar" // contains org.osgi.jmx
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
+        // contains org.osgi.jmx
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
@@ -62,6 +63,9 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.squareup.okio", version: okioVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.squareup.okhttp3", version: okhttp3Version, ext: "jar"
 
         repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
         repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
@@ -82,12 +86,12 @@ configure([
 }
 
 configure([
-    project(':packaging:kernel'),
-]) { dependencies { } }
+        project(':packaging:kernel'),
+]) { dependencies {} }
 
 configure([
-    project(':packaging:jetty-server'),
-    project(':packaging:tomcat-server'),
+        project(':packaging:jetty-server'),
+        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         repositoryExt project(':medic:org.eclipse.virgo.medic')
@@ -124,7 +128,7 @@ configure([
 }
 
 configure([
-    project(':packaging:jetty-server'),
+        project(':packaging:jetty-server'),
 ]) {
     dependencies {
         repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
@@ -157,7 +161,7 @@ configure([
 }
 
 configure([
-    project(':packaging:tomcat-server'),
+        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         repositoryExt project(':web:org.eclipse.virgo.web.core')
