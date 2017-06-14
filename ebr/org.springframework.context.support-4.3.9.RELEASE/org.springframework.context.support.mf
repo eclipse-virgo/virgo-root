@@ -4,6 +4,7 @@ Bundle-Vendor: Eclipse Virgo
 Bundle-ManifestVersion: 2
 Bundle-Version: ${springframeworkVersion}
 Import-Template:
+ org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
  com.github.benmanes.caffeine.cache;version="${benmanesCaffeineVersion:[=.=.=, +1)}";resolution:=optional,
  com.google.common.*;version="[19, 100)";resolution:=optional,
  commonj.*;version="${commonjVersion:[=.=.=, +1)}";resolution:=optional,
@@ -15,7 +16,6 @@ Import-Template:
  javax.sql.*;version="0";resolution:=optional,
  net.sf.ehcache.*;version="${ehcacheVersion:[=.=.=, +1)}";resolution:=optional,
  net.sf.jasperreports.*;version="${jasperreportsVersion:[=.=.=, +1)}";resolution:=optional,
- org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
  org.apache.commons.collections.*;version="${commonsCollectionsVersion:[=.=.=, +1)}";resolution:=optional,
  org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
  org.apache.velocity.*;version="${velocityVersion:[=.=.=, +1)}";resolution:=optional,

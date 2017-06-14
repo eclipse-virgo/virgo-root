@@ -5,7 +5,7 @@ buildscript {
     }
 }
 
-defaultTasks 'clean', 'bundlor', 'test'
+defaultTasks 'clean', 'bundlor', 'publishToMavenLocal', 'test', 'publishIvyPublicationToIvyRepository'
 
 apply plugin: 'java'
 
@@ -24,6 +24,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'ivy-publish'
+    apply plugin: 'maven-publish'
 
     configurations {
         bundlorRuntime
@@ -72,21 +73,25 @@ subprojects {
 
     publishing {
         publications {
-            bundledArtifact(IvyPublication) {
+            ivy(IvyPublication) {
                 organisation 'org.eclipse.virgo.mirrored'
                 module "${artifactName}"
                 revision "${artifactVersion}"
                 artifact(outputFile)
             }
+            maven(MavenPublication) {
+                groupId 'org.eclipse.virgo.mirrored'
+                artifactId "${artifactName}"
+                version "${artifactVersion}"
+                artifact(outputFile)
+            }
         }
-
         repositories {
             ivy {
                 url "/opt/public/rt/virgo/ivy/bundles/release"
             }
         }
     }
-    publish.dependsOn bundlor
 }
 
 dependencies {
@@ -94,57 +99,9 @@ dependencies {
     testCompile "org.ops4j.pax.exam:pax-exam-junit4:$paxExamJunit4Version"
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     testCompile group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
-
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "oevm.javax.portlet", version: javaxPortletVersion
-
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.context.support", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.jdbc", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.jms", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.messaging", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.orm", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.oxm", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.transaction", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc.portlet", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.websocket", version: springframeworkVersion, ext: "jar"
-
-    // mandatory dependencies for o.s.core
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
-
-    // mandatory dependencies for o.s.aop
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: '1.0.0', ext: "jar"
-
-    // mandatory dependencies for o.s.jms
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
-
-    // mandatory dependencies for o.s.websocket
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
-
     testRuntime "org.ops4j.pax.exam:pax-exam-container-native:$paxExamContainerNativeVersion"
     testRuntime "org.ops4j.pax.exam:pax-exam-link-mvn:$paxExamLinkMvnVersion"
     testRuntime "org.ops4j.pax.url:pax-url-aether:$paxUrlAetherVersion"
-}
-
-test.dependsOn('copyTestBundles')
-task copyTestBundles() {
-    doLast {
-        configurations.testRuntime.resolvedConfiguration.resolvedArtifacts.each { artifact ->
-            println artifact
-            copy {
-                into "$buildDir/testBundles"
-                from artifact.file
-                rename '.*', artifact.name + '.jar'
-            }
-        }
-    }
 }
 
 task wrapper(type: Wrapper) {

@@ -1,9 +1,22 @@
-### Publishing 3rd party bundles
+## Publishing 3rd party bundles
 
-Please note this workaround when uploading spring-test:
+### Building 
 
-    ./gradlew clean org.springframework.test-4.2.9.RELEASE:rewriteJar
-    ./gradlew -x bundlor org.springframework.test-4.2.9.RELEASE:publish
-    ./gradlew -x bundlor -x publish org.springframework.test-4.2.9.RELEASE:upload
+Gradle default tasks:
+ 1. `clean` - Cleans old build output
+ 2. `bundlor` - Generates the OSGiifed MF and outputs jar bundles
+ 3. `publishToMavenLocal` - Publishes jar bundles to `[USER_HOME]/.m2/org/eclipse/virgo/mirrored/[artifactId]/[version]/[bundle].jar`
+ 4. `test` - Executes the PaxExam tests, the bundles are resolved against local Maven repo thus `publishToMavenLocal` is required to be executed before `test`
+ 5. `publishIvyPublicationToIvyRepository` - Publishes the jar bundles to `build.eclipse.org` ivy repo (only possible on HIPP)
+ 
+Building locally:
 
-Otherwise the upload will contain empty files.
+    `./gradlew clean bundlor publishToMavenLocal test`
+
+### Add new Version of Spring
+
+TBD
+
+### Writing PaxExam test for 3rd party bundle
+
+TBD
