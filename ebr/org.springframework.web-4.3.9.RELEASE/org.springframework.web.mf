@@ -18,7 +18,7 @@ Import-Template:
  groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
  io.netty.*;version="${nettyVersion:[=.=.=, +1)}";resolution:=optional,
  javax.activation.*;version="0";resolution:=optional,
- javax.el.*;version="[2.2.5, 3)";resolution:=optional,
+ javax.el.*;version="[2.2.5, 4)";resolution:=optional,
  javax.faces.*;version="[2.2, 3)";resolution:=optional,
  javax.imageio.*;version="0";resolution:=optional,
  javax.jws.*;version="0";resolution:=optional,
