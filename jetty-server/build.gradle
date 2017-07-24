@@ -23,6 +23,10 @@ distributions {
                 include ( 'bin/*.sh' )
                 fileMode 0755
             }
+            from ( 'src/main/filtered' ) {
+                include ( '**/*.libd' )
+                filter(ReplaceTokens, tokens: tokenMap)
+            }
             from ( "${buildDir}/VJS/jetty-server/" ) { exclude ( 'Eclipse.app' ) }
             from ( "${buildDir}/common_resources/" )
         }
