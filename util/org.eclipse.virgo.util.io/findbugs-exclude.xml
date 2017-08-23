@@ -1,0 +1,11 @@
+<FindBugsFilter>
+     <!-- Exclusions -->
+     <Match>
+       	<Bug pattern="AM_CREATES_EMPTY_ZIP_FILE_ENTRY"/>
+	    <Class name="org.eclipse.virgo.util.io.ZipUtils" />
+     </Match>
+     <Match>
+        <Bug pattern="AM_CREATES_EMPTY_JAR_FILE_ENTRY"/>
+	    <Class name="org.eclipse.virgo.util.io.JarTransformer" />
+	 </Match>	
+</FindBugsFilter>

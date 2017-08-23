@@ -1,0 +1,10 @@
+dependencies {
+    testRuntime project(':util:org.eclipse.virgo.util.common')
+    testRuntime project(':util:org.eclipse.virgo.util.env')
+    testRuntime project(':util:org.eclipse.virgo.util.io')
+    testRuntime project(':util:org.eclipse.virgo.util.jmx')
+    testRuntime project(':util:org.eclipse.virgo.util.math')
+    testRuntime project(':util:org.eclipse.virgo.util.osgi')
+    testRuntime project(':util:org.eclipse.virgo.util.osgi.manifest')
+    testRuntime project(':util:org.eclipse.virgo.util.parser.manifest')
+}

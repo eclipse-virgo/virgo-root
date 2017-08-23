@@ -1,0 +1,10 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: OSGi Manifest Utility Code
+Bundle-SymbolicName: org.eclipse.virgo.util.osgi.manifest
+Bundle-Version: ${version}
+Import-Template: 
+ org.eclipse.virgo.util.*;version="${version:[=.=.=, =.=.+1)}",
+ org.osgi.*;version="0"
+Excluded-Exports: 
+ org.eclipse.virgo.util.osgi.manifest.internal.*,
+ org.eclipse.virgo.util.osgi.manifest.parse.standard.*

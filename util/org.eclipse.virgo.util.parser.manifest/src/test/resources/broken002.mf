@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: toys
+Bundle-SymbolicName: toys
+Bundle-Version: 1.0.0
+Export-Package: com.doodaa
+
+Name: secondSection
+MissingColon SomeValue
+IncorrectValueStart:missingSpace
+InvalidöNameChar: foo
+MissingValue:

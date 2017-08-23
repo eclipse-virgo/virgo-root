@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,a.jar,b.jar
+Bundle-Description: The description
+Bundle-ManifestVersion: 2
+Bundle-Name: The name
+Bundle-SymbolicName: com.foo.bar
+Bundle-UpdateLocation: http://update.com
+DynamicImport-Package: com.foo.*
+Export-Package: com.bar
+Fragment-Host: com.foo.host
+Import-Bundle: com.baz
+Import-Library: com.lib
+Import-Package: com.pkg
+Module-Scope: the.scope
+Module-Type: web
+Require-Bundle: com.req
+Bundle-Version: 1.2.3
