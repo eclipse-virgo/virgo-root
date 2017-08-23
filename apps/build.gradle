@@ -1,0 +1,51 @@
+
+project(':apps:org.eclipse.virgo.apps.repository.core') {
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+		testCompile project(':medic:org.eclipse.virgo.medic.test')
+
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+		compile project(':util:org.eclipse.virgo.util.math')
+		compile project(':util:org.eclipse.virgo.util.io')
+		compile project(':util:org.eclipse.virgo.util.jmx')
+		compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+		compile project(':medic:org.eclipse.virgo.medic')
+		compile project(':repository:org.eclipse.virgo.repository')
+		compile project(':kernel:org.eclipse.virgo.kernel.services')
+
+        if (System.properties['weaving.enabled'] == 'true') {
+            aspectpath project(':medic:org.eclipse.virgo.medic')
+            aspectpath project(':util:org.eclipse.virgo.util.jmx')
+        }
+	}
+}
+
+project(':apps:org.eclipse.virgo.apps.repository.web') {
+    dependencies {
+		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion,ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+        compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+
+		compile project(':util:org.eclipse.virgo.util.io')
+		compile project(':apps:org.eclipse.virgo.apps.repository.core')
+	}
+}
+
+project(':apps:org.eclipse.virgo.apps.splash') {
+    dependencies {
+        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+        compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+		compile project(':apps:org.eclipse.virgo.apps.repository.core')
+	}
+}

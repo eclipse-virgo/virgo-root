@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Export-Package: config;version="3.0.0",config.management;version="3.0.
+ 0",hosted;version="3.0.0",org.eclipse.virgo.apps.repository.test;vers
+ ion="3.0.0";uses:="org.eclipse.virgo.util.io,org.junit,org.junit.runn
+ er,org.osgi.service.event",watched;version="3.0.0"
+Bundle-Vendor: SpringSource Inc.
+Bundle-ClassPath: .,b.jar,c.jar,hosted/a.jar,b.jar,c.jar,hosted/a.jar
+Bundle-Version: 3.0.0
+Tool: Bundlor 1.0.0.RELEASE
+Bundle-Name: Hosted Provisioning Repository Test
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.apps.repository.test
+Import-Package: org.eclipse.virgo.nano.deployer.api.core;version="[3.0
+ .0,4)",org.eclipse.virgo.util.io;version="[3.0.0,4)",org.junit;versio
+ n="[4.7.0,5)",org.junit.runner;version="[4.7.0,5)",org.osgi.framework
+ ;version="0",org.osgi.service.event
+

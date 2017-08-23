@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://ivyrep.jayasoft.org/ivy-doc.xsl"?>
+<ivy-module
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
+		version="1.3">
+
+	<info organisation="org.eclipse.virgo.server" module="${ant.project.name}">
+		<ivyauthor name="awilkinson"/>
+	</info>
+
+	<configurations>
+		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
+		<conf name="download" visibility="private" description="Dependencies to be downloaded, but not to be added to the classpath"/>
+	</configurations>
+
+	<publications>
+		<artifact name="${ant.project.name}"/>
+		<artifact name="${ant.project.name}-sources" type="src" ext="jar"/>
+	</publications>
+
+	<dependencies>
+		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.hot" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.management" rev="${org.eclipse.virgo.nano}" conf="test->compile"/>
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.services" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel.osgi" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>		
+		<dependency org="org.eclipse.virgo.web" name="org.eclipse.virgo.web.tomcat" rev="${org.eclipse.virgo.web}" conf="download->runtime"/>
+		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.framework" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.apps" name="org.eclipse.virgo.apps.repository.core" rev="latest.integration"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
+        <dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="test->runtime"/>
+
+		<!-- Prevent Xerces and Xalan from being on the classpath to work around Java bug 6723276 during integration testing -->
+		<exclude org="org.apache.xerces"/>
+		<exclude org="org.apache.xalan"/>
+	</dependencies>
+
+</ivy-module>

@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hosted Provisioning Repository Web Interface
+Bundle-SymbolicName: org.eclipse.virgo.apps.repository.web
+Bundle-Version: ${version}
+Bundle-ClassPath: WEB-INF/classes
+Web-ContextPath: org.eclipse.virgo.apps.repository
+Import-Template: 
+ org.eclipse.virgo.apps.repository.*;version="${version:[=.=.=, =.=.+1)}",
+ javax.servlet.*;version="${javaxServletVersion:[2.5.0,+1)}",
+ org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
+ org.osgi.framework.*;version="0"
+Import-Package: 
+ org.springframework.web.context;version="${springframeworkVersion:[2.5.6, +1)}",
+ org.springframework.web.servlet;version="${springframeworkVersion:[2.5.6, +1)}",
+ org.eclipse.virgo.web.dm;version="${version:[=.=.=, +1)}",
+ org.springframework.beans.factory.xml;version="${springframeworkVersion:[2.5.6, +1)}"
