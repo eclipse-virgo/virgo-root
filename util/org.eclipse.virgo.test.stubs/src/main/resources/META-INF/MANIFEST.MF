@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Export-Package: org.eclipse.virgo.test.stubs.framework;version="1.
+ 0.0";uses:="org.osgi.framework",org.eclipse.virgo.test.stubs.serv
+ ice.cm;version="1.0.0";uses:="org.osgi.framework,org.osgi.service.cm"
+ ,org.eclipse.virgo.test.stubs.service.event;version="1.0.0";uses:
+ ="org.osgi.service.event",org.eclipse.virgo.test.stubs.service.ev
+ ent.internal;version="1.0.0";uses:="org.osgi.service.event",org.eclip
+ se.virgo.teststubs.osgi.support;version="1.0.0";uses:="org.osgi.frame
+ work"
+Bundle-Version: 3.0.0
+Tool: Bundlor 1.0.0.RELEASE
+Bundle-Name: OSGi Framework Test Stub Implementations
+Bundle-ManifestVersion: 2
+Import-Package: org.aspectj.internal.lang.annotation;version="[1.6.3.R
+ ELEASE, 2.0.0)",org.aspectj.lang;version="[1.6.3.RELEASE, 2.0.0)",org
+ .aspectj.lang.annotation;version="[1.6.3.RELEASE, 2.0.0)",org.aspectj
+ .lang.reflect;version="[1.6.3.RELEASE, 2.0.0)",org.aspectj.runtime.in
+ ternal;version="[1.6.3.RELEASE, 2.0.0)",org.aspectj.runtime.reflect;v
+ ersion="[1.6.3.RELEASE, 2.0.0)",org.junit;version="[4.4.0, 5.0.0)",or
+ g.osgi.framework;version="0",org.osgi.service.cm;version="[1.2.0, 1.3
+ .0)",org.osgi.service.event;version="[1.1.0, 1.2.0)"
+Bundle-SymbolicName: org.eclipse.virgo.test.stubs
+
