@@ -1,0 +1,8 @@
+Manifest-Version: 1
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.test.test
+Bundle-Version: 3.0.0
+Import-Package: org.junit,
+ org.osgi.framework,
+ org.eclipse.virgo.test.framework
+
