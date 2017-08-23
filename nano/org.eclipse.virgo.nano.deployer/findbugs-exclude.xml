@@ -1,0 +1,8 @@
+<FindBugsFilter>
+     <!-- Exclusions -->
+     <Match>
+       	<Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ"/>
+        <Class name="org.eclipse.virgo.nano.deployer.api.core.module.StandardModule"/>
+        <Method name="unwrapNull"/>
+     </Match>	
+</FindBugsFilter>

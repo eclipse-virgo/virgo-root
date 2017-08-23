@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="Nano Recovery MBean" immediate="true">
+   <implementation class="org.eclipse.virgo.nano.management.deployer.StandardRecoveryMonitor"/>
+    
+    <property name="event.topics">org/eclipse/virgo/kernel/*</property>
+    
+    <service>
+       <provide interface="org.osgi.service.event.EventHandler"/>
+       <provide interface="org.eclipse.virgo.nano.deployer.api.RecoveryMonitor"/>
+    </service>
+    
+</scr:component>

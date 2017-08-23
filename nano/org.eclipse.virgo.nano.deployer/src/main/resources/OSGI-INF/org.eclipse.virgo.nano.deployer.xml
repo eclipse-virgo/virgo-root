@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.virgo.nano.deployer" immediate="true">
+	<implementation class="org.eclipse.virgo.nano.deployer.internal.StandardApplicationDeployer"/>
+	
+	<reference name="EventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLogger"
+		policy="static" 
+		cardinality="1..1" 
+		bind="bindEventLogger" 
+		unbind="unbindEventLogger"/>
+		
+	<reference name="EventAdmin"
+		interface="org.osgi.service.event.EventAdmin"
+		policy="static"
+		cardinality="1..1" 
+		bind="bindEventAdmin" 
+		unbind="unbindEventAdmin"/>
+		
+	<reference name="PackageAdmin"
+		interface="org.osgi.service.packageadmin.PackageAdmin"
+		policy="static" 
+		cardinality="1..1" 
+		bind="bindPackageAdmin" 
+		unbind="unbindPackageAdmin"/>
+		
+	<reference name="KernelConfig"
+		interface="org.eclipse.virgo.nano.core.KernelConfig"  
+		policy="static" 
+		cardinality="1..1" 
+		bind="bindKernelConfig" 
+		unbind="unbindKernelConfig"/>
+		
+	<reference name="SimpleDeployer"
+		interface="org.eclipse.virgo.nano.deployer.SimpleDeployer"  
+		policy="dynamic" 
+		cardinality="0..n" 
+		bind="bindSimpleDeployer" 
+		unbind="unbindSimpleDeployer"/>
+ 
+ 	<service>
+    	<provide interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer"/>
+ 	</service>
+
+</scr:component>
