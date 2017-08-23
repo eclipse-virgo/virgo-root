@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: test.bundle
+Import-Package: org.osgi.framework, org.slf4j, org.slf4j.spi
+Bundle-Activator: test.TestActivator
+Bundle-Version: 3.0

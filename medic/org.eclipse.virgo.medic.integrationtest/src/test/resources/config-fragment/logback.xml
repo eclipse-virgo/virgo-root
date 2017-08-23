@@ -1,0 +1,42 @@
+<configuration>
+	
+	<appender name="localized-console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>Localized: %-24.24thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
+    	</encoder>
+  	</appender>
+  	
+  	<appender name="default-console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>Default:   %-24.24thread &lt;%X{medic.eventCode}&gt; %msg %ex%n</Pattern>
+    	</encoder>
+  	</appender>
+  	
+  	<appender name="root-console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>Root: [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</Pattern>
+    	</encoder>
+  	</appender>
+  	
+  	<appender name="root-stub" class="org.eclipse.virgo.medic.log.appender.StubAppender"/>
+  	
+  	<appender name="default-stub" class="org.eclipse.virgo.medic.log.appender.StubAppender"/>		
+  	
+  	<appender name="localized-stub" class="org.eclipse.virgo.medic.log.appender.StubAppender"/>		    
+  	    
+  	<logger name="org.eclipse.virgo.medic.eventlog.localized">
+    	<appender-ref ref="localized-console" />
+    	<appender-ref ref="localized-stub" />
+    </logger>
+    
+    <logger name="org.eclipse.virgo.medic.eventlog.default">
+    	<appender-ref ref="default-console" />
+    	<appender-ref ref="default-stub" />
+    </logger>
+    
+    <root level="debug">
+		<appender-ref ref="root-stub"/>
+		<appender-ref ref="root-console"/>
+	</root>
+    
+</configuration>

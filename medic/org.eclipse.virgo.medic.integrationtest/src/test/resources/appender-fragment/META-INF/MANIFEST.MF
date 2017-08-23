@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: appender.fragment
+Fragment-Host: ch.qos.logback.classic
+Export-Package: org.eclipse.virgo.medic.log.appender
+
+ 

@@ -1,0 +1,15 @@
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>Bundle2 [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-24.24thread %msg %ex%n</pattern>
+    	</encoder>
+  	</appender>
+  	
+  	<appender name="bundle2-stub" class="org.eclipse.virgo.medic.log.appender.StubAppender"/>
+  	
+  	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="bundle2-stub"/>
+	</root>
+  	      	
+</configuration>

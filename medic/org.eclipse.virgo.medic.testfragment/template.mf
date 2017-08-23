@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.medic.testfragment
+Import-Template: 
+ org.aspectj.lang.*;version="${org.aspectj:[=.=.= , +1.0.0)}",
+ javax.management.*;version="0",
+ org.osgi.framework;version="0",
+ org.slf4j.*;version="${org.slf4j.api:[=.=.=, =.+1.0)}"
+Bundle-Version: ${version}
+Bundle-Name: Medic API
+Excluded-Imports: 
+ ch.qos.logback.classic.*

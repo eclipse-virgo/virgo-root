@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.eclipse.virgo.medic.testfragment">
+
+	<property name="clover.coverage" value="0%"/>
+	
+	<property file="${basedir}/../build.properties"/>
+	<property file="${basedir}/../build.versions"/>
+	<import file="${basedir}/../virgo-build/aspect/default.xml"/>
+
+</project>

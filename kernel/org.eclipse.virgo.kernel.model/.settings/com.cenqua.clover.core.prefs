@@ -1,0 +1,21 @@
+#Fri Sep 04 12:39:32 BST 2009
+block_filters=SourceDirective
+eclipse.preferences.version=1
+flush_interval=1000
+flush_policy=2
+include_filter=**/*.java
+init_string=target/clover/db/coverage.db
+init_string_default=false
+init_string_project_relative=true
+instrument_selected_source_folders=true
+instrumented_source_folder_patterns[0]=src/main/java\n**/*.java\n\nenabled
+instrumented_source_folder_patterns[1]=src/main/resources\n**/*.java\n\nenabled
+instrumented_source_folder_patterns[2]=src/test/java\n**/*.java\n\ndisabled
+instrumented_source_folder_patterns[3]=src/test/resources\n**/*.java\n\ndisabled
+output_root=.clover/bin
+output_root_same_as_project=true
+selected_test_source_folders[0]=src/test/java
+selected_test_source_folders[1]=src/test/resources
+should_qualify_java_lang=true
+test_include_filter=**/*Test.java,**/Test*.java
+test_source_folders=1

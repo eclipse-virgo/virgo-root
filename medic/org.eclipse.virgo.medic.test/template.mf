@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.medic.eventlog.test
+Bundle-Name: Medic Event Log Test Bundle
+Bundle-Version: ${version}
+Import-Template: 
+ org.eclipse.virgo.medic.*;version="0"
+Excluded-Imports: 
+ org.junit.*
