@@ -1,5 +1,0 @@
-#Thu Nov 12 08:44:12 GMT 2009
-org.eclipse.virgo.ide.bundlor.core.bundlor.generated.manifest.autoformatting=true
-org.eclipse.virgo.ide.bundlor.core.byte.code.scanning=true
-org.eclipse.virgo.ide.bundlor.core.template.properties.files=../build.versions;../build.properties
-eclipse.preferences.version=1
