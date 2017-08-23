@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+		xmlns="http://www.w3.org/2001/XMLSchema"
+		xmlns:index="http://www.eclipse.org/virgo/schema/index"
+		targetNamespace="http://www.eclipse.org/virgo/schema/index"
+		elementFormDefault="qualified">
+
+<!-- Types -->
+    <complexType name="propertyType">
+    	<sequence minOccurs="0" maxOccurs="unbounded">
+    		<element name="value" type="string">
+				<annotation>
+					<documentation><![CDATA[An value of this property.]]></documentation>
+				</annotation>
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="token" use="required">
+			<annotation>
+				<documentation><![CDATA[The name of this property.
+This is a unique identifier for this property within the context of an attribute.]]></documentation>
+			</annotation>
+    	</attribute>
+    </complexType>
+
+	<complexType name="attributeType">
+		<sequence minOccurs="0" maxOccurs="unbounded">
+			<element name="property" type="index:propertyType">
+				<annotation>
+					<documentation><![CDATA[An property of this attribute.]]></documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="name" type="token" use="required">
+			<annotation>
+				<documentation><![CDATA[The name of this attribute.
+This is a unique identifier for this attribute within the context of an artifact-descriptor.]]></documentation>
+			</annotation>
+		</attribute>
+		<attribute name="value" type="string" use="optional">
+			<annotation>
+				<documentation><![CDATA[The value of this attribute.]]></documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<complexType name="artifactDescriptorType">
+		<sequence minOccurs="0" maxOccurs="unbounded">
+			<element name="attribute" type="index:attributeType">
+				<annotation>
+					<documentation><![CDATA[An attribute of this artifact.]]></documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="uri" type="anyURI" use="required">
+			<annotation>
+				<documentation><![CDATA[The URI of the artifact.
+This is a unique identifier for this artifact.]]></documentation>
+			</annotation>
+		</attribute>
+		<attribute name="type" type="token" use="required">
+			<annotation>
+				<documentation><![CDATA[The type of the artifact.
+This is one component of the secondary unique identifier for this artifact.]]></documentation>
+			</annotation>
+		</attribute>
+		<attribute name="name" type="token" use="required">
+			<annotation>
+				<documentation><![CDATA[The name of the artifact.
+This is one component of the secondary unique identifier for this artifact.]]></documentation>
+			</annotation>
+		</attribute>
+		<attribute name="version" use="required">
+			<annotation>
+				<documentation><![CDATA[The version of the artifact.
+This version must meet the OSGi version specification. This is one component of the secondary unique identifier for this artifact.]]></documentation>
+			</annotation>
+			<simpleType>
+				<restriction base="token">
+					<pattern value="\d(.\d(.\d(.([\w_-])+)?)?)?"></pattern>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+
+	<complexType name="indexType">
+		<sequence minOccurs="0" maxOccurs="unbounded">
+			<element name="artifact-descriptor" type="index:artifactDescriptorType">
+				<annotation>
+					<documentation><![CDATA[An artifact-descriptor of this index.]]></documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+<!-- Elements -->
+	<element name="index" type="index:indexType">
+		<annotation>
+			<documentation><![CDATA[An index is a representation of all of the artifact metadata contained in a Virgo Server repository.]]></documentation>
+		</annotation>
+	</element>
+
+</schema>
