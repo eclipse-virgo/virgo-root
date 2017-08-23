@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <ServiceJar>
+  <ServiceProvider
+        id="ProvidedByTomcat"
+        types="javax.sql.DataSource,DataSource,javax.jms.ConnectionFactory,ConnectionFactory,java.lang.Object"
+        service="Resource"
+        class-name="org.eclipse.virgo.web.enterprise.openejb.tomcat.factory.TomcatResourceFactory"
+        factory-name="create"
+        constructor="jndiName, standardContext">
+        jndiName
+        standardContext
+   </ServiceProvider>
+ </ServiceJar>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	
+     <servlet>
+		<servlet-name>test</servlet-name>
+		<servlet-class>webfeature.tests.TestServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>testFilter</servlet-name>
+		<servlet-class>webfeature.tests.TestServlet</servlet-class>
+	</servlet>
+	
+	
+	 <servlet>
+	    <servlet-name>forward</servlet-name>
+	    <servlet-class>webfeature.tests.ForwardServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+	   <servlet-name>include</servlet-name>
+	   <servlet-class>webfeature.tests.IncludeServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>webfeature.tests.RequestDispatcherTestServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+	  <servlet-name>pathTranslation</servlet-name>
+	  <servlet-class>webfeature.tests.RequestPathTranslationServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>forwardAttributes</servlet-name>
+		<servlet-class>webfeature.tests.ForwardAttributesServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>includeAttributes</servlet-name>
+		<servlet-class>webfeature.tests.IncludeAttributesServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>test</servlet-name>
+		<url-pattern>/test</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+	  <servlet-name>forward</servlet-name>
+	  <url-pattern>/forward/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>forwardAttributes</servlet-name>
+		<url-pattern>/fa</url-pattern>
+		<url-pattern>/fa/*</url-pattern>
+	</servlet-mapping>
+	
+    <servlet-mapping>
+	  <servlet-name>include</servlet-name>
+	  <url-pattern>/include/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+	  <servlet-name>includeAttributes</servlet-name>
+	  <url-pattern>/ia</url-pattern>
+	  <url-pattern>/ia/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+	   <servlet-name>dispatcher</servlet-name>
+	   <url-pattern>/rd</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>testFilter</servlet-name>
+		<url-pattern>/testFilterOne</url-pattern>
+		<url-pattern>/testFilterTwo</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>pathTranslation</servlet-name>
+		<url-pattern>/path/*</url-pattern>
+		<url-pattern>/exact</url-pattern>
+	</servlet-mapping>
+
+	
+	<filter>
+	  <filter-name>fooName</filter-name>
+	  <filter-class>webfeature.tests.TestFilter</filter-class>
+	  	<init-param>
+			<param-name>name</param-name>
+			<param-value>foo</param-value>
+		</init-param>
+	</filter>
+	
+	<filter>
+	  <filter-name>barName</filter-name>
+	  <filter-class>webfeature.tests.TestFilter</filter-class>
+	  	<init-param>
+			<param-name>name</param-name>
+			<param-value>bar</param-value>
+		</init-param>
+	</filter>
+	
+	<filter>
+	  <filter-name>bazName</filter-name>
+	  <filter-class>webfeature.tests.TestFilter</filter-class>
+	  	<init-param>
+			<param-name>name</param-name>
+			<param-value>baz</param-value>
+		</init-param>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>fooName</filter-name>
+		<url-pattern>/testFilterOne</url-pattern>
+		<url-pattern>/testFilterTwo</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>barName</filter-name>
+		<servlet-name>testFilter</servlet-name>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>bazName</filter-name>
+		<servlet-name>testFilter</servlet-name>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	
+</web-app>

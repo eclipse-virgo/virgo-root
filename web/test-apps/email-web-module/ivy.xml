@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://ivyrep.jayasoft.org/ivy-doc.xsl"?>
+<ivy-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd" version="1.3">
+	<info organisation="org.eclipse.virgo.web.test" module="${ant.project.name}"/>
+	<configurations>
+		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
+	</configurations>
+	<publications>
+	</publications>
+	<dependencies>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.activation" rev="${javax.activation}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="provided->compile"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi" rev="${org.eclipse.osgi}" conf="provided->compile"/>
+		<dependency org="org.springframework" name="org.springframework.context.support" rev="${org.springframework}" conf="provided->compile"/>
+		<dependency org="org.springframework" name="org.springframework.web" rev="${org.springframework}" conf="provided->compile"/>
+		<dependency org="org.springframework" name="org.springframework.web.servlet" rev="${org.springframework}" conf="provided->compile"/>
+	</dependencies>
+</ivy-module>

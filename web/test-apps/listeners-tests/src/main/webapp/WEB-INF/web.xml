@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<listener>
+		<listener-class>listeners.tests.RequestListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>listeners.tests.ContextListener</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>listeners.tests.SessionListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>username</param-name>
+		<param-value>admin</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>password</param-name>
+		<param-value>springsource</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>requestListenerServlet</servlet-name>
+		<servlet-class>listeners.tests.RequestListenerTestServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>contextListenerServlet</servlet-name>
+		<servlet-class>listeners.tests.ContextListenerTestServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>sessionAttributeListenerServlet</servlet-name>
+		<servlet-class>listeners.tests.HttpSessionAttributeListenerTestServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>requestListenerServlet</servlet-name>
+		<url-pattern>/requestlistenertest</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>contextListenerServlet</servlet-name>
+		<url-pattern>/contextlistenertest</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>sessionAttributeListenerServlet</servlet-name>
+		<url-pattern>/sessionlistenertest</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise OpenEjb BVal Fragment
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.openejb.fragment.bval
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: org.apache.openejb.core
+Import-Package: org.apache.bval.constraints

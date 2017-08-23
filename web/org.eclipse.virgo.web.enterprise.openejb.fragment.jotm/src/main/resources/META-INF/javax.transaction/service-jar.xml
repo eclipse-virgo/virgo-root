@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <ServiceJar>
+   <ServiceProvider
+           id="jotm"
+           service="TransactionManager"
+           types="javax.transaction.TransactionManager"
+           factory-name="getTransactionManager"
+           class-name="org.eclipse.virgo.web.enterprise.openejb.jotmintegration.JotmFactory">
+   </ServiceProvider>
+ </ServiceJar>

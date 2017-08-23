@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://ivyrep.jayasoft.org/ivy-doc.xsl"?>
+<ivy-module
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
+		version="1.3">
+
+	<info organisation="${project.organisation}" module="${ant.project.name}"/>
+
+	<configurations>
+		<include file="${virgo.build.dir}/common/default-ivy-configurations.xml"/>
+		<conf name="download" visibility="private" description="Dependencies to be downloaded, but not to be added to the classpath"/>
+	</configurations>
+
+	<publications>
+		<artifact name="${ant.project.name}"/>
+		<artifact name="${ant.project.name}-sources" type="src" ext="jar"/>
+	</publications>
+
+	<dependencies>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.activation" rev="${javax.activation}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet" rev="${javax.servlet}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.servlet.jsp" rev="${javax.servlet.jsp}" conf="test->runtime"/>
+		<dependency org="javax.servlet" name="com.springsource.javax.servlet.jsp.jstl" rev="${javax.servlet.jsp.jstl}" conf="test->runtime"/>
+		<dependency org="javax.portlet" name="com.springsource.javax.portlet" rev="${javax.portlet}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.transaction" rev="${javax.transaction}" conf="test->runtime"/>
+		<dependency org="org.hsqldb" name="com.springsource.org.hsqldb" rev="${org.hsqldb}" conf="test->runtime"/>
+		<dependency org="org.junit" name="com.springsource.org.junit" rev="${org.junit}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.log4j" rev="${org.slf4j.log4j}" conf="test->runtime"/>
+		<dependency org="org.apache.taglibs" name="com.springsource.org.apache.taglibs.standard" rev="${org.apache.taglibs}" conf="test->runtime" />
+		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.codec" rev="${org.apache.commons.codec}" conf="test->runtime"/>
+		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.httpclient" rev="${org.apache.commons.httpclient}" conf="test->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.jdbc" rev="${org.springframework}" conf="test->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="test->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.context.support" rev="${org.springframework}" conf="test->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.aspects" rev="${org.springframework}" conf="test->runtime"/>
+		<dependency org="com.dumbster" name="com.springsource.com.dumbster.smtp" rev="${com.dumbster}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.io" rev="${org.eclipse.virgo.util}" conf="test->compile"/>
+        <dependency org="org.eclipse.virgo.util" name="org.eclipse.virgo.util.parser.launcher" rev="${org.eclipse.virgo.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.framework" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jcl" rev="${org.slf4j.jcl}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.slf4j.jul" rev="${org.slf4j.jul}" conf="test->runtime"/>
+		<dependency org="org.springframework" name="org.springframework.spring-library" rev="${org.springframework}" conf="test->runtime"/>	
+		<dependency org="org.eclipse.virgo.mirrored" name="javax.jms" rev="${javax.jms}" conf="test->runtime"/>	
+		<dependency org="org.eclipse.virgo.kernel" name="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.core" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.api" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.deployer.hot" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.nano" name="org.eclipse.virgo.nano.management" rev="${org.eclipse.virgo.nano}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.test" name="org.eclipse.virgo.test.framework" rev="${org.eclipse.virgo.test}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="com.springsource.org.aspectj.weaver" rev="${org.aspectj}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.ds" rev="${org.eclipse.equinox.ds}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.util" rev="${org.eclipse.equinox.util}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.osgi.services" rev="${org.eclipse.osgi.services}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.cm" rev="${org.eclipse.equinox.cm}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="org.eclipse.equinox.region" rev="${org.eclipse.equinox.region}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.mail" rev="${javax.mail}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.ejb" rev="${javax.ejb}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="javax.websocket" rev="${javax.websocket}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.core" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackcorefragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.medic" name="org.eclipse.virgo.medic.logbackclassicfragment" rev="${org.eclipse.virgo.medic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.classic" rev="${ch.qos.logback.classic}" conf="test->runtime"/>
+		<dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.core" rev="${ch.qos.logback.core}" conf="test->runtime"/>
+        <dependency org="org.eclipse.virgo.mirrored" name="ch.qos.logback.slf4j" rev="${ch.qos.logback.slf4j}" conf="test->runtime"/>
+
+
+		
+		<dependency org="org.springframework.webflow.samples" name="swf-booking-mvc" rev="${org.springframework.webflow}" conf="test->provided"/>
+		<dependency org="org.springframework.webflow.samples" name="swf-booking-faces" rev="${org.springframework.webflow}" conf="test->provided"/>
+		
+		<!-- Prevent Xerces and Xalan from being on the classpath to workaround Java bug 6723276 during integration testing -->
+		<exclude org="org.apache.xerces"/>
+		<exclude org="org.apache.xalan"/>
+        <exclude org="org.eclipse.osgi"/>
+		
+		<override org="org.eclipse.virgo.kernel" rev="${org.eclipse.virgo.kernel}"/>
+		
+		<!-- Allow Equinox to be upgraded in steps-->
+		<override org="org.eclipse.virgo.mirrored" module="org.eclipse.osgi" rev="${org.eclipse.osgi}"/>
+	</dependencies>
+
+</ivy-module>

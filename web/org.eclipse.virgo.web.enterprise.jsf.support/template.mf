@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise JSF support
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.jsf.support
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Exposed-ContentType: Implementation
+Import-Template: javax.annotation;version="0",
+ javax.ejb;version="0",
+ javax.persistence;version="0",
+ com.sun.faces.spi;version="0",
+ org.apache.naming;version="${apacheCatalinaVersion:[=.=.=, +1)}",
+ javax.naming;version="0",
+ org.slf4j.*;version="0",
+ org.apache.webbeans.*;version="0",
+ javax.enterprise.context.spi;version="0",
+ javax.enterprise.inject.spi;version="0",
+ org.apache.webbeans.container;version="0"
+Excluded-Exports:
+ *.internal.*

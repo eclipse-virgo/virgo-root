@@ -1,0 +1,5 @@
+Manifest-Version: 1
+Bundle-SymbolicName: jstl.tests
+Bundle-Version: 1.0
+Web-ContextPath: jstltest
+

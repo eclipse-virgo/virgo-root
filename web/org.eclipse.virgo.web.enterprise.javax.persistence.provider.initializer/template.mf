@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise Custom PersistenceProviderResolver Initializer
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Template: org.eclipse.virgo.web.enterprise.javax.persistence.extension;version="0",
+ javax.persistence.spi;version="0",
+ org.osgi.framework;version="0",
+ org.slf4j;version="0"
+Excluded-Exports:
+ *
+Bundle-Activator: org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer.Activator

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+     <!-- Exclusions -->
+     <Match>
+       	<Bug pattern="DM_EXIT"/>
+        <Class name="org.eclipse.virgo.web.tomcat.support.ServerLifecycleLoggingListener"/>
+        <Or>
+            <Method name="checkPortAvailability"/>
+        </Or>
+     </Match>	
+</FindBugsFilter>

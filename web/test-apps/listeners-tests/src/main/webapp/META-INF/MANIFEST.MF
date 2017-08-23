@@ -1,0 +1,5 @@
+Manifest-Version: 1
+Bundle-SymbolicName: listeners.tests
+Bundle-Version: 1.0
+Web-ContextPath: listenertest
+

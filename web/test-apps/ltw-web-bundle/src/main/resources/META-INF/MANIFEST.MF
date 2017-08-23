@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: LtwWeb
+Web-ContextPath: ltwweb
+Import-Library: org.springframework.spring;version="[3,4)"
+Import-Package: org.eclipse.virgo.web.dm;version="[3,4)",
+ org.aspectj.lang;version="[1.6.6.RELEASE,1.7)"
+

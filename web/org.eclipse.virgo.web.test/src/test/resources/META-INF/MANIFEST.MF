@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Export-Package: 
+ org.eclipse.virgo.web.test;version="3.0.0";uses:="org.apache.commons.httpclient,org.junit,org.junit.runner",
+ repository.ext;version="3.0.0"
+Bundle-Version: 3.0.0
+Tool: Bundlor 1.0.0.RELEASE
+Bundle-Name: Virgo Web Test Bundle
+Bundle-ManifestVersion: 2
+Import-Package: 
+ javax.management;version="0",
+ org.apache.commons.httpclient;version="[3.1.0,4)",
+ org.apache.commons.httpclient.methods;version="[3.1.0,4)",
+ org.junit;version="[4.7.0,5)",
+ org.junit.runner;version="[4.7.0,5)",
+ org.eclipse.virgo.nano.deployer.api.config;version="[3.0.0,4)",
+ org.eclipse.virgo.nano.deployer.api.core;version="[3.0.0,4)",
+ org.eclipse.virgo.kernel.model.management;version="[3.0.0,4)",
+ org.eclipse.virgo.kernel.osgi.framework;version="[3.0.0,4)",
+ org.eclipse.virgo.util.io;version="[3.0.0,4)",
+ org.osgi.framework;version="0"
+Bundle-SymbolicName: org.eclipse.virgo.web.test
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="wab_classloader_customizer">
+   <implementation class="org.eclipse.virgo.web.enterprise.services.accessor.WebAppBundleClassloaderCustomizer"/>
+   <service>
+      <provide interface="org.eclipse.gemini.web.tomcat.spi.ClassLoaderCustomizer"/>
+      <provide interface="org.eclipse.gemini.web.tomcat.spi.JarScannerCustomizer"/>
+   </service>
+</scr:component>

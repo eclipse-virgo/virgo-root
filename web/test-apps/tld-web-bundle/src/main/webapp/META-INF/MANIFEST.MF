@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-Name: Tld Web Bundle
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: tld.web.bundle
+Bundle-Version: 1.0.0
+Import-Bundle: tld.bundle;version="1.0.0"
+Web-ContextPath: tldbundletest
+

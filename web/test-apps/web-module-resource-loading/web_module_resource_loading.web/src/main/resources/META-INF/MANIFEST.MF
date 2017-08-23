@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Description: Par which tests resource loading 
+Bundle-Name: Web Module Resource Loading Test
+Bundle-SymbolicName: web_module_resource_loading.web
+Bundle-Version: 2.0.8
+Import-Library: org.springframework.spring;version="2.5.5"
+Import-Bundle: com.springsource.org.apache.taglibs.standard;version="1.1.2"
+Import-Package: org.osgi.framework,org.eclipse.gemini.blueprint.context
+Module-Type: Web
+Web-ContextPath: web_module_resource_loading
+Web-DispatcherServletUrlPatterns: /*
+

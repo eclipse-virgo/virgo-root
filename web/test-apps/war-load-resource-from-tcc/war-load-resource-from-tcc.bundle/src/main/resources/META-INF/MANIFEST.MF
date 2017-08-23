@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Export-Package: test.bundle
+Bundle-Version: 1.0.0.201105111422
+Bundle-Name: Testbundle
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: testbundle
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+

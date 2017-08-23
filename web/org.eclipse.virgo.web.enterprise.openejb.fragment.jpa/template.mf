@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise OpenEjb JPA Fragment
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.openejb.fragment.jpa
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: org.apache.openejb.core
+Import-Package: org.apache.derby.jdbc;resolution:=optional

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise Security Tomcat Valve
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.security.valve
+Bundle-Version: ${version}
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Template: org.apache.catalina.valves;version="0",
+ org.apache.openejb.loader;version="0",
+ org.apache.openejb.spi;version="0",
+ org.eclipse.virgo.web.enterprise.security;version="0",
+ org.apache.tomcat.util.http.mapper;version="0",
+ org.apache.catalina.*;version="0",
+ javax.servlet;version="0"
+Excluded-Exports:
+ *
+Fragment-Host: org.eclipse.gemini.web.tomcat

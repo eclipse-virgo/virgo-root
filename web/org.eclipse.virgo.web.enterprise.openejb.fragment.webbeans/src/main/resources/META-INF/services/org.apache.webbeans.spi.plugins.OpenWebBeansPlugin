@@ -1,0 +1,2 @@
+org.apache.webbeans.web.tomcat.TomcatWebPlugin
+org.apache.webbeans.jsf.plugin.OpenWebBeansJsfPlugin

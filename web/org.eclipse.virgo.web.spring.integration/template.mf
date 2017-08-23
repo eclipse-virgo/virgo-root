@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Spring Integration
+Bundle-SymbolicName: org.eclipse.virgo.web.spring.integration
+Bundle-Version: ${version}
+Fragment-host: org.apache.catalina
+Import-Package: org.springframework.web

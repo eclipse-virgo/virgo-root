@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-Name: Tld Bundle
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: tld.bundle
+Bundle-Version: 1.0.0
+Export-Package: tld.bundle, tld.listeners
+Import-Package: 
+ javax.servlet,
+ javax.servlet.http,
+ javax.servlet.jsp.tagext,
+ javax.servlet.jsp
+
+
