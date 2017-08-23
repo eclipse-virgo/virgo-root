@@ -1,0 +1,9 @@
+<Context sendRedirectBody="true">
+    <Valve className="org.eclipse.virgo.web.enterprise.security.valve.OpenEjbSecurityInitializationValve"/>
+    <Listener className="org.eclipse.virgo.web.enterprise.openwebbeans.initialiser.VirgoContextLifecycleListener"/>
+    <Listener className="org.eclipse.virgo.web.enterprise.applistener.internal.NamingResourcesListener"/>
+    <Manager sessionIdLength ="32" maxInactiveInterval="1200" pathname=""/>
+    <Listener className="org.eclipse.virgo.web.enterprise.applistener.internal.OpenEjbApplicationListener"/>
+    <Resource name="UserTransaction" auth="Container" type="javax.transaction.UserTransaction"/>
+    <Transaction factory="org.objectweb.jotm.UserTransactionFactory" jotm.timeout="60"/>
+</Context>

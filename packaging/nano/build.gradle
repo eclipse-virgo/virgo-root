@@ -1,0 +1,168 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
+import static virgobuild.VirgoToolsPlugin.installProduct
+import static virgobuild.VirgoToolsPlugin.publishProduct
+
+import virgobuild.Config
+
+apply plugin: 'distribution'
+
+distributions {
+    main {
+        baseName = 'virgo-nano'
+        contents {
+            from ( 'src/main/filtered' ) {
+                include ( '**/*.properties' )
+                include ( '**/.version' )
+                filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
+            }
+            from ( 'src/main/filtered' ) {
+                include ( 'bin/*.sh' )
+                fileMode 0755
+            }
+            from ( "${buildDir}/VN/nano/" ) {
+                exclude ( 'Eclipse.app' )
+                // Remove unwanted *kernel* bundles from nano deliverable
+                exclude('plugins/*.kernel.*')
+            }
+            from ( "${buildDir}/common_resources/" )
+        }
+    }
+    full {
+        baseName = 'virgo-nano-full'
+        contents {
+            from ( 'src/main/filtered' ) {
+                include ( '**/*.properties' )
+                include ( '**/.version' )
+                filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
+            }
+            from ( 'src/main/filtered' ) {
+                include ( 'bin/*.sh' )
+                fileMode 0755
+            }
+            from ( 'src/main/dist' ) {
+            }
+            from ( 'src/full/dist' ) {
+            }
+            from ( "${buildDir}/VNF/nano-full/" ) {
+                exclude ( 'Eclipse.app' )
+                // Remove unwanted *kernel* bundles from nano deliverable
+                exclude('plugins/*.kernel.*')
+            }
+            from ( "${buildDir}/common_resources/" )
+        }
+    }
+    rap {
+        baseName = 'virgo-nano-rap'
+        contents {
+            from ( 'src/main/filtered' ) {
+                include ( '**/*.properties' )
+                include ( '**/.version' )
+                filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
+            }
+            from ( 'src/main/filtered' ) {
+                include ( 'bin/*.sh' )
+                fileMode 0755
+            }
+            from ( 'src/main/dist' ) {
+            }
+            from ( "${buildDir}/VNR/nano-rap/" ) {
+                exclude ( 'Eclipse.app' )
+                // Remove unwanted *kernel* bundles from nano deliverable
+                exclude('plugins/*.kernel.*')
+            }
+            from ( "${buildDir}/common_resources/" )
+        }
+    }
+}
+
+task ('assembleNano', dependsOn: [
+    'installProductNano',
+    'installProductNanoFull',
+    'installProductNanoRap',
+    'packageResourcesAndProducts'
+]) {
+    installDist.dependsOn(['assembleNano'])
+    installFullDist.dependsOn(['assembleNano'])
+    installRapDist.dependsOn(['installProductNanoRap'])
+    distZip.dependsOn(['assembleNano'])
+    fullDistZip.dependsOn(['assembleNano'])
+    rapDistZip.dependsOn(['installProductNanoRap'])
+}
+
+task ('packageResourcesAndProducts', dependsOn: [
+    ':kernel:org.eclipse.virgo.kernel.equinox.extensions:jar',
+    ':kernel:org.eclipse.virgo.management.console:war',
+    ':nano:org.eclipse.virgo.nano.authentication:jar',
+    ':nano:org.eclipse.virgo.nano.shutdown:jar',
+    ':util:org.eclipse.virgo.util.env:jar',
+]) {
+    doLast {
+        packageConfiguration('lib', configurations.nanoLib, file("${buildDir}/common_resources/lib/"))
+        packageConfiguration('libPersistence', configurations.nanoLibPersistence, file("${buildDir}/common_resources/lib/persistence/"))
+        packageConfiguration('libEndorsed', configurations.nanoLibEndorsed, file("${buildDir}/common_resources/lib/endorsed/"))
+        packageConfiguration('pickup', configurations.nanoPickup, file("${buildDir}/common_resources/pickup/"))
+    }
+}
+
+// start in debug mode with gradle publish<ID>
+tasks.addRule("Pattern: publish<ID>") { String taskName ->
+    if (taskName.startsWith("publish")) {
+        task (taskName, dependsOn: [
+            ':org.eclipse.virgo.site:publishBase',
+            ':org.eclipse.virgo.site:publishNanoBase',
+        ]) {
+            def product = 'undefined'
+            switch (taskName.toString() - 'publish') {
+                case 'Nano': product = 'nano'; break
+                case 'NanoFull': product = 'nano-full'; break
+                case 'NanoRap': product = 'nano-rap'; break
+            }
+
+            description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
+
+            File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+            def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
+            def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java-server.profile")
+
+            doLast() { publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation) }
+        }
+    }
+}
+
+task ('groupPublish', dependsOn: [
+    ':org.eclipse.virgo.site:publishNanoCore',
+    ':org.eclipse.virgo.site:publishNanoBase',
+    'publishNano',
+    'publishNanoFull',
+    'publishNanoRap',
+]){ }
+
+tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
+    if (taskName.startsWith("installProduct")) {
+        task (taskName, dependsOn: ['groupPublish',]) {
+            def product = 'undefined'
+            def shortProduct = 'undefined'
+            switch (taskName.toString() - 'installProduct') {
+                case 'Nano': product = 'nano'; shortProduct = "VN"; break;
+                case 'NanoFull': product = 'nano-full'; shortProduct = "VNF"; break;
+                case 'NanoRap': product = 'nano-rap'; shortProduct = "VNR"; break;
+            }
+
+            description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+
+            File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
+            def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+            def productIu = "${product}.product"
+
+            doLast() { installProduct(project, productIu, repositoryDir, destinationDir) }
+        }
+    }
+}
+
+task ('groupInstall', dependsOn: [
+    'installProductNano',
+    'installProductNanoFull',
+    'installProductNanoRap',
+]){ }

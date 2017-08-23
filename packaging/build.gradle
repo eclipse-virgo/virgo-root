@@ -1,0 +1,220 @@
+def packageConfiguration(configurationName, configuration, target) {
+    println "Copy the ${configurationName} artifacts:"
+    configuration.each { File file -> println file.name }
+    println "to '${target}'."
+    copy {
+        from configuration into target
+        // TODO - gradle-build remove backward compatibility? Why an underscore?
+        // replace first hyphen with underscore
+        rename(/(.+?)-(.+)/, '$1_$2')
+    }
+}
+
+configure([
+        project(':packaging:nano'),
+        project(':packaging:kernel'),
+        project(':packaging:jetty-server'),
+        project(':packaging:tomcat-server'),
+]) {
+    dependencies {
+        // TODO - rename to virgoLib, virgoLibPersistence, virgoLibEndorsed and virgoPickup?!
+        nanoLib project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+        nanoLib project(':nano:org.eclipse.virgo.nano.authentication')
+        nanoLib project(':nano:org.eclipse.virgo.nano.shutdown')
+        nanoLib project(':util:org.eclipse.virgo.util.env')
+        nanoLib group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.launcher", version: equinoxLauncherVersion, configuration: "compile", ext: "jar"
+
+        nanoLibPersistence project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
+
+        nanoLibEndorsed group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+        nanoLibEndorsed group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
+        nanoLibEndorsed group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+
+        nanoPickup project(':kernel:org.eclipse.virgo.management.console')
+    }
+}
+
+project(':packaging:nano') { dependencies {} }
+
+if (System.properties['skip.smoke.tests'] != 'true') {
+    project(':packaging:nano:org.eclipse.virgo.nano.smoketest') { dependencies {} }
+}
+
+configure([
+        project(':packaging:kernel'),
+        project(':packaging:jetty-server'),
+        project(':packaging:tomcat-server'),
+]) {
+    dependencies {
+        kernelPluginsExtras project(':kernel:org.eclipse.virgo.kernel.userregion')
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
+        // contains org.osgi.jmx
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.squareup.okio", version: okioVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.squareup.okhttp3", version: okhttp3Version, ext: "jar"
+
+        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extensions", version: geminiBlueprintVersion, ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
+        repositoryExt project(':kernel:org.eclipse.virgo.management.fragment')
+
+        repositoryExt project(':kernel:org.eclipse.virgo.kernel.agent.dm')
+        repositoryExt project(':kernel:org.eclipse.virgo.kernel.deployer.dm')
+        repositoryExt project(':kernel:org.eclipse.virgo.kernel.dmfragment')
+
+        repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
+        repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+        repositoryExt group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
+    }
+}
+
+configure([
+        project(':packaging:kernel'),
+]) { dependencies {} }
+
+configure([
+        project(':packaging:jetty-server'),
+        project(':packaging:tomcat-server'),
+]) {
+    dependencies {
+        repositoryExt project(':medic:org.eclipse.virgo.medic')
+        repositoryExt project(':medic:org.eclipse.virgo.medic.core')
+        repositoryExt project(':web:org.eclipse.virgo.web.dm')
+
+        // 3rd party dependencies from Spring Framework
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+        // missing Spring Framework dependencies
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.aspects", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context.support", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.jdbc", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.messaging", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.jms", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.orm", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.oxm", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.transaction", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc.portlet", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.websocket", version: springframeworkVersion, ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.javax.portlet", version: javaxPortletVersion, ext: "jar"
+
+        repositoryExt group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
+        repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
+
+        nanoPickup project(':apps:org.eclipse.virgo.apps.splash')
+    }
+}
+
+configure([
+        project(':packaging:jetty-server'),
+]) {
+    dependencies {
+        repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.deploy", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.http", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.io", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.osgi.boot", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.security", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.server", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.webapp", version: jettyVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.xml", version: jettyVersion, configuration: "compile", ext: "jar"
+
+        /* TODO think about adding additional Jetty bundles - e.g. for WebSocket support
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.ajp_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.annotations_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.client_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.jmx_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.jndi_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.osgi.boot.jsp_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.plus_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.policy_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.rewrite_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.servlets_8.1.16.v20140903.jar
+         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.websocket_8.1.16.v20140903.jar
+         */
+    }
+}
+
+configure([
+        project(':packaging:tomcat-server'),
+]) {
+    dependencies {
+        repositoryExt project(':web:org.eclipse.virgo.web.core')
+        repositoryExt project(':web:org.eclipse.virgo.web.tomcat.support')
+        repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
+        repositoryExt project(':web:org.eclipse.virgo.web.spring.integration')
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
+        repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+        repositoryExt group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
+        repositoryExt group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
+        repositoryExt group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.tribes", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.el", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.jasper", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.jni", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+        repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.jaspic.fragment", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+        // TODO - gradle-build build :apps:repository.par
+        //        <dependency org="org.eclipse.virgo.apps" name="org.eclipse.virgo.apps.repository" rev="${org.eclipse.virgo.apps}" conf="pickup->runtime"/>
+        //        nanoPickup project(':apps:org.eclipse.virgo.apps.repository')
+    }
+}

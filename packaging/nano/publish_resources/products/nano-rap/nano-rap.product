@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Eclipse Virgo RAP Product" uid="nano-rap.product" version="1.0.0" useFeatures="true" includeLaunchers="false">
+
+   <configIni use="default">
+   </configIni>
+   
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+	  <feature id="org.eclipse.equinox.http.jetty" version="0.0.0"/>
+	  <feature id="org.eclipse.rap" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.nano.deployer" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.nano.mbeans.controller" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.services.concurrent" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.services.ds" version="0.0.0"/>
+	  <feature id="org.eclipse.virgo.webconsole.deps" version="0.0.0"/>
+   </features>
+   
+   <configurations>
+   	  <plugin id="org.eclipse.gemini.management" autoStart="true" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true"/>
+      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true"/>
+	  <plugin id="org.eclipse.virgo.nano.core" autoStart="true" startLevel="4"/>
+	  <plugin id="org.eclipse.virgo.nano.deployer" autoStart="true" startLevel="5"/>
+      <plugin id="org.jolokia.osgi" autoStart="true" />
+
+	  <property name="org.osgi.service.http.port" value="8080"/>
+
+	  <property name="org.eclipse.virgo.fschecker.initialEventMode" value="bulk"/>
+   </configurations>
+
+</product>

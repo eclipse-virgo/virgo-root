@@ -1,0 +1,75 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+import static virgobuild.VirgoToolsPlugin.installProduct
+import static virgobuild.VirgoToolsPlugin.publishProduct
+
+apply plugin: 'distribution'
+
+distributions {
+    main {
+        baseName = 'virgo-jetty-server'
+        contents {
+            exclude ( '**/placeholder' )
+            from ( 'src/main/filtered' ) {
+                include ( '**/*.properties' )
+                include ( '**/.version' )
+                filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
+            }
+            from ( 'src/main/filtered' ) {
+                include ( 'bin/*.sh' )
+                fileMode 0755
+            }
+            from ( 'src/main/filtered' ) {
+                include ( '**/*.libd' )
+                filter(ReplaceTokens, tokens: tokenMap)
+            }
+            from ( "${buildDir}/VJS/jetty-server/" ) { exclude ( 'Eclipse.app' ) }
+            from ( "${buildDir}/common_resources/" )
+        }
+    }
+}
+
+task ('assembleJettyServer', dependsOn: [
+    'installProductJettyServer',
+    'packageResourcesAndProducts'
+]) {
+    installDist.dependsOn(['assembleJettyServer'])
+    distZip.dependsOn(['assembleJettyServer'])
+}
+
+task ('packageResourcesAndProducts') {
+    doLast {
+        packageConfiguration('lib', configurations.nanoLib, file("${buildDir}/common_resources/lib/"))
+        packageConfiguration('libPersistence', configurations.nanoLibPersistence, file("${buildDir}/common_resources/lib/persistence/"))
+        packageConfiguration('libEndorsed', configurations.nanoLibEndorsed, file("${buildDir}/common_resources/lib/endorsed/"))
+        packageConfiguration('pluginsExtras', configurations.kernelPluginsExtras, file("${buildDir}/common_resources/plugins/"))
+        packageConfiguration('repositoryExt', configurations.repositoryExt, file("${buildDir}/common_resources/repository/ext/"))
+        packageConfiguration('pickup', configurations.nanoPickup, file("${buildDir}/common_resources/pickup/"))
+    }
+}
+
+task ('publishJettyServer', dependsOn: [
+    ':org.eclipse.virgo.site:publishBase',
+    ':org.eclipse.virgo.site:publishKernelBase',
+]) {
+    description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
+
+    def product = 'jetty-server'
+    def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
+    def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java-server.profile")
+
+    doLast() { publishProduct(project, productFileLocation, javaProfileLocation) }
+}
+
+task ('installProductJettyServer', dependsOn: [
+    'publishJettyServer',
+]) {
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+
+    def product = 'jetty-server'
+    def shortProduct = 'VJS'
+    def destinationDir = file("${buildDir}/${shortProduct}/${product}")
+    def productIu = "${product}.product"
+
+    doLast() { installProduct(project, productIu, destinationDir) }
+}
