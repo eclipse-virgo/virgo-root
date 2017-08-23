@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bundle-activation-policy">
+
+	<path id="bundles">
+		<pathelement location="../bundle.activation.policy.module.b"/>
+		<pathelement location="../bundle.activation.policy.module.a"/>
+	</path>
+
+	<property file="${basedir}/../../build.properties"/>
+	<property name="par.output.file" value="${basedir}/../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/bundle-activation-policy.par"/>
+
+	<import file="${basedir}/../../../virgo-build/par/default.xml"/>
+
+</project>

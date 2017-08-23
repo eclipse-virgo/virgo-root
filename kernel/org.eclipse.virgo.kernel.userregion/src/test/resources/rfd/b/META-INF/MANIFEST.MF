@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: rfd.b
+Bundle-Version: 1.0
+Import-Package: rfd.c
+Export-Package: rfd.b
+

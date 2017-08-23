@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+	<bean class="org.eclipse.virgo.kernel.model.internal.bundle.ModelBundleListenerInitializer">
+		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="packageAdminUtil"/>
+		<constructor-arg ref="bundleContext"/>
+		<constructor-arg ref="regionDigraph"/>
+		<constructor-arg ref="springContextAccessor" />
+	</bean>
+
+	<bean class="org.eclipse.virgo.kernel.model.internal.configurationadmin.ModelConfigurationListenerInitializer">
+		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="bundleContext"/>
+		<constructor-arg ref="configurationAdmin"/>
+		<constructor-arg ref="globalRegion"/>
+	</bean>
+
+	<bean class="org.eclipse.virgo.kernel.model.internal.deployer.ModelInstallArtifactLifecycleListenerInitializer">
+		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="bundleContext"/>
+		<constructor-arg ref="runtimeArtifactModel"/>
+		<constructor-arg ref="regionDigraph"/>
+		<constructor-arg ref="globalRegion"/>
+		<constructor-arg ref="springContextAccessor" />
+	</bean>
+
+	<bean id="bundleDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.bundle.BundleDependencyDeterminer">
+		<constructor-arg ref="quasiFrameworkFactory"/>
+		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="regionDigraph"/>
+	</bean>
+
+	<bean id="deployerCompositeArtifactDependencyDeterminer" class="org.eclipse.virgo.kernel.model.internal.deployer.DeployerCompositeArtifactDependencyDeterminer">
+		<constructor-arg ref="artifactRepository"/>
+		<constructor-arg ref="userRegion"/>
+		<constructor-arg ref="globalRegion"/>
+	</bean>
+
+	<bean id="artifactRepository" class="org.eclipse.virgo.kernel.model.internal.NotifyingRuntimeArtifactRepository">
+		<constructor-arg ref="artifactRepositoryListener"/>
+	</bean>
+
+	<bean id="artifactRepositoryListener" class="org.eclipse.virgo.kernel.model.management.internal.JmxArtifactRepositoryListener" destroy-method="destroy">
+		<constructor-arg ref="runtimeArtifactModelObjectNameCreator"/>
+	</bean>
+	
+	<bean id="springContextAccessor" class="org.eclipse.virgo.kernel.model.internal.StandardSpringContextAccessor" />
+
+	<bean id="runtimeArtifactModelObjectNameCreator" class="org.eclipse.virgo.kernel.model.management.internal.DefaultRuntimeArtifactModelObjectNameCreator">
+		<constructor-arg value="#{kernelConfig.getProperty('domain')}"/>
+	</bean>
+	
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+
+	<context:annotation-config/>
+
+</beans>

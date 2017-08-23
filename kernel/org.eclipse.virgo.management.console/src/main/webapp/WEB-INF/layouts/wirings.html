@@ -1,0 +1,30 @@
+
+<!--@&header@-->
+
+	<h1>OSGi Explorer</h1>
+	
+	<div>
+		<div id="side-bar">
+			
+		</div>
+			
+		<div id="display">
+			<div id="main-button-container" class="button-container">
+				<div class="control-cap-left"></div>
+				<div class="controls">
+					<div class="control-text">View relationships by: </div>
+					<div class="button button-selected" id="view-wires-button" onclick="layoutManager.displayType('wires')">
+						<div class="button-cap-left-blue"></div><div class="button-text">Wirings</div><div class="button-cap-right-blue"></div>
+					</div>
+					<div class="button" id="view-services-button" onclick="layoutManager.displayType('services')">
+						<div class="button-cap-left-blue"></div><div class="button-text">Services</div><div class="button-cap-right-blue"></div>
+					</div>
+				</div>
+				<div class="control-cap-right"></div>
+			</div>
+			
+			<div id="bundle-canvas"></div>
+			
+		</div>
+	</div>
+<!--@&footer@-->

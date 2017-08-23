@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+		
+	<osgi:reference id="tracingService" interface="org.eclipse.virgo.nano.shim.serviceability.TracingService"/>
+
+	<bean id="serverExtensionConfigurer" class="org.eclipse.virgo.kernel.dmfragment.internal.KernelExtensionConfiguringOsgiPostProcessor">
+		<constructor-arg>
+			<list>
+				<bean class="org.eclipse.virgo.kernel.dmfragment.internal.ContextClassLoaderPostProcessor"/>
+				<bean class="org.eclipse.virgo.kernel.dmfragment.internal.LoadTimeWeaverPostProcessor"/>	
+				<bean class="org.eclipse.virgo.kernel.dmfragment.internal.MBeanExporterPostProcessor">
+					<constructor-arg ref="tracingService"/>
+				</bean>
+				<bean class="org.eclipse.virgo.kernel.dmfragment.internal.ApplicationContextShutdownBeanPostProcessor"/>	
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<osgi:service ref="serverExtensionConfigurer" interface="org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor" />
+
+	<bean id="taskExecutor" class="org.eclipse.virgo.kernel.agent.dm.ContextPropagatingTaskExecutor">
+		<constructor-arg value="region-dm-" />
+		<constructor-arg value="15" />		
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+	
+	<alias alias="shutdownTaskExecutor" name="taskExecutor"/>
+	
+	<bean id="serviceProxyRetryDisabler" class="org.eclipse.virgo.kernel.dmfragment.internal.ServiceProxyRetryDisablingBundleListener">
+ 	    <constructor-arg ref="bundleContext"/>
+ 	</bean>
+ 	
+ 	<bean id="applicationContextCreator" class="org.eclipse.virgo.kernel.dmfragment.internal.KernelOsgiApplicationContextCreator" />
+	
+</beans>

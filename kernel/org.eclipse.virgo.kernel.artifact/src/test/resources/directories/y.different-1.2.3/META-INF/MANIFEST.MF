@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: y.different
+Export-Package: x
+Bundle-Version: 1.2.3

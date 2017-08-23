@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title><!--@<servletContextName@--> - <!--@<viewName@--></title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"				/>
+		<link rel="shortcut icon" href="<!--@<contextPath@-->/resources/images/favicon.ico"			/>
+		<link rel="stylesheet"    href="<!--@<contextPath@-->/resources/styles/<!--@<viewName@-->.css"	type="text/css" />
+		<link rel="stylesheet"    href="<!--@<contextPath@-->/resources/styles/print.css"				type="text/css" media="print" />
+		<script type="text/javascript">var contextPath = "<!--@<contextPath@-->";</script>
+		<script src="<!--@<contextPath@-->/resources/js/jquery-1.7.2.min.js"							type="text/javascript" ></script>
+		<script src="<!--@<contextPath@-->/resources/js/jquery-ui-1.8.18.min.js"						type="text/javascript" ></script>
+		<script src="<!--@<contextPath@-->/resources/js/common.js"										type="text/javascript" ></script>
+		<script src="<!--@<contextPath@-->/resources/js/<!--@<viewName@-->.js"							type="text/javascript" ></script>
+	</head>
+	
+	<body>
+	    <div id="page">
+	        <div id="header">
+	            <div id="name-and-company">
+	                <div id='site-name'>
+	                </div>
+	            </div> <!-- /name-and-company -->
+	        </div> <!-- /header -->
+	
+			<div id="servers" class="container">
+				<h1>Manage Servers</h1> 
+				<div id="servers-list"></div>
+			</div>
+	
+	    	<div id="navigation">
+	        	<div id="navigation-left">
+	            	<ul>
+						<script type="text/javascript">loadMenus('<!--@<menuNames@-->', '<!--@<viewName@-->')</script>
+	            	</ul>
+	        	</div>
+		       	<div id="navigation-left-curve"></div>
+<!-- 	        	<div id="navigation-right">
+	            	<ul>
+	            	    <li id="servers-button" >
+	            	    	<a title="Servers" onclick="v_servers.toggle()"><div class="button-cap-left-white"></div><div class="navigation-text">Servers</div><div class="button-cap-right-white"></div></a>
+	            	    </li>
+	            	</ul>
+	        	</div> -->
+	        	<div id="navigation-right-curve"></div>
+	    	</div>
+
+			<div id="content" class="container">

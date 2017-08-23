@@ -1,0 +1,5 @@
+Manifest-Version: 1
+Bundle-SymbolicName: refresh
+Bundle-Version: 1.0
+Bundle-ManifestVersion: 2
+Export-Package: one,two

@@ -1,0 +1,53 @@
+@import "common.css";
+
+/* 
+ * Virgo Admin Console
+ *
+ * Styles for the configuration page
+ *
+ * Christopher Frost - 2011
+ */
+
+.config-list {
+	padding-top: 0px;
+}
+
+.config-header {
+	color: #002F5E;
+    font-size: 15px;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+.config-label {
+	cursor: pointer;
+    margin-top: 3px;
+}
+
+.config-label:hover {
+	background: #BAD9EC;
+}
+
+.config-container td + td {
+	 word-wrap: break-word;
+	 word-break: break-all;
+}
+ 
+.config-properties {
+	display: none;
+	overflow-x: auto; 
+}
+
+.config-table {
+    margin-bottom: 5px;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+	
+.tree-icon {
+	display: inline-block;
+	vertical-align: bottom;
+	margin-right: 2px;
+	height: 18px;
+	width: 18px;
+}

@@ -1,0 +1,5 @@
+Bundle-SymbolicName: bundle.activation.policy.module.b
+Bundle-Version: 1.0
+Bundle-ManifestVersion: 2
+Export-Package: b
+Bundle-ActivationPolicy: lazy

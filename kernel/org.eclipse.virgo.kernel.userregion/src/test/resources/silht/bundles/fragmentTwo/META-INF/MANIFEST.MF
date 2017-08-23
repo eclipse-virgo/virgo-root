@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.foo.fragment.two
+Bundle-Version: 3
+Fragment-Host: com.foo.host;bundle-version="[1.0, 2.0)"
+Export-Package: com.foo.fragment.two;version="1.0",com.foo.host.b;version="1.0"

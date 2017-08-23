@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+	<!-- Deployer -->
+	<bean class="org.eclipse.virgo.kernel.management.ManagementExporter">
+		<constructor-arg>
+			<bean class="org.eclipse.virgo.kernel.deployer.management.StandardDeployer">
+				<constructor-arg ref="pipelinedApplicationDeployer" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg
+			value="#{kernelConfig.getProperty('domain')}:category=Control,type=Deployer" />
+	</bean>
+
+	<!-- RecoveryMonitor -->
+	<bean class="org.eclipse.virgo.kernel.management.ManagementExporter">
+		<constructor-arg ref="recoveryMonitor" />
+		<constructor-arg value="#{kernelConfig.getProperty('domain')}:category=Control,type=RecoveryMonitor" />
+	</bean>
+	
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+	
+	<osgi:reference id="recoveryMonitor" interface="org.eclipse.virgo.nano.deployer.api.RecoveryMonitor" />
+</beans>

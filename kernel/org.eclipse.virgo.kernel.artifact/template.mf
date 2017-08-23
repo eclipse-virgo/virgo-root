@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel Artifact Integration
+Bundle-SymbolicName: org.eclipse.virgo.kernel.artifact
+Bundle-Version: ${version}
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}", 
+ org.eclipse.virgo.util.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.nano.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.repository.*;version="${version:[=.=.=, =.+1)}",
+ org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}",
+ org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",
+ org.osgi.framework.*;version="0",
+ org.osgi.service.cm.*;version="0",
+ org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
+ javax.xml.*;version="0",
+ org.xml.*;version="0",
+ org.w3c.*;version="0"
+Excluded-Exports: *.internal.*

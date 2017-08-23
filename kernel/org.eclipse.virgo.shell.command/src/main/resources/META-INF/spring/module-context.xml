@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- START UP THE SHELL -->
+
+	<bean id="commandProcessor" class="org.eclipse.virgo.shell.internal.StandardCommandProcessor">
+		<constructor-arg ref="commandInvoker" />
+	</bean>
+
+	<bean id="singleCommandExecutor" class="org.eclipse.virgo.shell.internal.SingleSessionCommandExecutor">
+		<constructor-arg ref="commandProcessor"/>
+	</bean>
+
+	<bean id="ioManager" class="org.eclipse.virgo.shell.internal.LocalInputOutputManager">
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+
+	<bean id="completerRegistry" class="org.eclipse.virgo.shell.internal.completers.ServiceRegistryCommandCompleterRegistry" init-method="initialize">
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+
+	<!-- START UP THE INTIAL COMMAND PROVIDER -->
+	
+	<bean id="quasiBundleUtil" class="org.eclipse.virgo.shell.internal.util.QuasiBundleUtil">
+		<constructor-arg ref="quasiFrameworkFactory" />
+	</bean>
+	<bean id="quasiServiceUtil" class="org.eclipse.virgo.shell.internal.util.QuasiServiceUtil">
+		<constructor-arg ref="bundleContext"/>
+		<constructor-arg ref="quasiFrameworkFactory" />
+	</bean>
+	
+	<bean id="installCommand" class="org.eclipse.virgo.shell.internal.commands.InstallCommand"/>
+
+	<bean id="bundleCommands" class="org.eclipse.virgo.shell.internal.commands.BundleCommands">
+		<constructor-arg ref="objectNameCreator"/>
+		<constructor-arg ref="quasiBundleUtil" />
+		<constructor-arg ref="quasiServiceUtil" />
+		<constructor-arg ref="moduleContextAccessor" />
+		<constructor-arg ref="regionDigraph" />
+	</bean>
+
+	<bean id="serviceCommands" class="org.eclipse.virgo.shell.internal.commands.ServiceCommands">
+		<constructor-arg ref="quasiServiceUtil" />
+	</bean>
+
+	<bean id="packageCommands" class="org.eclipse.virgo.shell.internal.commands.PackageCommands">
+		<constructor-arg ref="quasiFrameworkFactory" />
+	</bean>
+
+	<bean id="configCommands" class="org.eclipse.virgo.shell.internal.commands.ConfigCommands">
+		<constructor-arg ref="objectNameCreator"/>
+		<constructor-arg ref="configAdmin" />
+		<constructor-arg ref="regionDigraph" />
+	</bean>
+
+	<bean id="planCommands" class="org.eclipse.virgo.shell.internal.commands.PlanCommands">
+		<constructor-arg ref="objectNameCreator"/>
+		<constructor-arg ref="regionDigraph" />
+	</bean>
+
+	<bean id="parCommands" class="org.eclipse.virgo.shell.internal.commands.ParCommands">
+		<constructor-arg ref="objectNameCreator"/>
+	</bean>
+
+	<bean id="shutdownCommand" class="org.eclipse.virgo.shell.internal.commands.ShutdownCommand">
+		<constructor-arg ref="ioManager"/>
+	</bean>
+	
+	<bean id="exitCommand" class="org.eclipse.virgo.shell.internal.commands.ExitCommand"/>
+	
+	<bean id="helpCommand" class="org.eclipse.virgo.shell.internal.commands.HelpCommand">
+		<constructor-arg ref="commandRegistry"/>
+		<constructor-arg ref="helpAccessor"/>
+	</bean>
+	
+	<bean id="helpAccessor" class="org.eclipse.virgo.shell.internal.help.SimpleFileHelpAccessor"/>
+
+	<bean id="helpCommandCompleter" class="org.eclipse.virgo.shell.internal.completers.HelpCommandCompleter">
+		<constructor-arg ref="commandRegistry"/>
+	</bean>
+
+	<bean id="bundleCompleter" class="org.eclipse.virgo.shell.internal.completers.BundleCompleter">
+		<constructor-arg ref="objectNameCreator"/>
+	</bean>
+
+	<bean id="packageCompleter" class="org.eclipse.virgo.shell.internal.completers.PackageCompleter">
+		<constructor-arg ref="quasiFrameworkFactory" />
+	</bean>
+
+	<bean id="configCompleter" class="org.eclipse.virgo.shell.internal.completers.ConfigCompleter">
+		<constructor-arg ref="objectNameCreator"/>
+		<constructor-arg ref="regionDigraph" />
+	</bean>
+	
+	<bean id="parCompleter" class="org.eclipse.virgo.shell.internal.completers.ParCompleter">
+		<constructor-arg ref="objectNameCreator"/>
+	</bean>
+	
+	<bean id="planCompleter" class="org.eclipse.virgo.shell.internal.completers.PlanCompleter">
+		<constructor-arg ref="objectNameCreator"/>
+	</bean>
+	
+	<bean id="installCompleter" class="org.eclipse.virgo.shell.internal.completers.InstallCompleter"/>
+
+	<!-- CREATE THE VARIOUS TYPE CONVERTERS -->
+
+	<bean id="longConverter" class="org.eclipse.virgo.shell.internal.converters.LongConverter" />
+
+	<bean id="stringConverter" class="org.eclipse.virgo.shell.internal.converters.StringConverter" />
+
+	<bean id="commandResolver" class="org.eclipse.virgo.shell.internal.CompoundCommandResolver">
+		<constructor-arg>
+			<list>
+				<bean class="org.eclipse.virgo.shell.internal.AnnotationBasedCommandResolver"/>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="commandRegistry" class="org.eclipse.virgo.shell.internal.CommandRegistry" init-method="initialize">
+		<constructor-arg ref="commandResolver"/>
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+
+	<bean id="commandInvoker" class="org.eclipse.virgo.shell.internal.CommandRegistryCommandInvoker">
+		<constructor-arg ref="commandRegistry"/>
+		<constructor-arg ref="converterRegistry"/>
+	</bean>
+
+	<bean id="converterRegistry" class="org.eclipse.virgo.shell.internal.converters.ServiceRegistryConverterRegistry" init-method="initialize">
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+
+</beans>

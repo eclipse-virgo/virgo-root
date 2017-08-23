@@ -1,0 +1,4 @@
+Application-SymbolicName: .@$%
+Application-Version: 1.2.3
+Application-Name: Basic Par
+Application-Description: A basic PAR file for the unit tests

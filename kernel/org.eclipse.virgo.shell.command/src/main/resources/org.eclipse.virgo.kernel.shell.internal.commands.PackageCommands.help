@@ -1,0 +1,5 @@
+# Summary
+Examination of exported packages
+# Detail
+package list                     - List all packages that are currently exported
+package examine <name> <version> - Examine an exported package

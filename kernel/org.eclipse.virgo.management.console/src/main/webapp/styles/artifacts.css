@@ -1,0 +1,97 @@
+@import "common.css";
+
+/* 
+ * Virgo Admin Console
+ *
+ * Styles for the artifacts page
+ *
+ * Christopher Frost - 2011
+ */
+
+/*
+ * UPLOAD MANAGER
+ */
+
+#upload-manager {
+    border-bottom: 1px solid #BAD9EC;
+    display: none;
+    margin-bottom: 13px;
+    padding: 0 22px 11px;
+}
+
+#upload-manager li {
+	list-style: none;
+	margin: 4px 0;
+}
+
+#add-upload-box {
+    background: transparent url("../images/add.png") no-repeat;
+}
+
+#minus-upload-box {
+    background: transparent url("../images/minus.png") no-repeat;
+}
+
+.upload-control {
+    display: inline-block;
+	cursor: pointer;
+    height: 23px;
+    margin: 0 5px;
+    width: 23px;
+}
+
+iframe {
+    background-color: #FFFFFF;
+    height: 0px;
+    width: 0px;
+    margin: 0;
+    width: 100%;
+}
+
+/*
+ * ARTIFACT TREE
+ */
+
+.artifact-label, .artifact-attribute {
+    margin-top: 3px;
+}
+
+.artifact-label:hover {
+	background: #BAD9EC;
+	cursor: pointer;
+}
+
+.label-text {
+	margin: 0 2px;
+}
+	
+.fx-container {
+	display: none;
+	margin-left: 20px;
+}
+	
+.tree-icon {
+	display: inline-block;
+	vertical-align: bottom;
+	margin-right: 2px;
+	height: 18px;
+	width: 18px;
+}
+
+.artifact-attribute {
+	overflow-x: auto;
+	overflow-y: hidden;
+	word-wrap: break-word;	
+}
+
+.artifact-attribute .artifact-control {	
+	cursor: pointer;
+	display: inline;
+	margin-left: 8px;
+	color: #888888;
+	text-decoration: none;
+}
+.artifact-control:hover {
+	color: #0095CA;
+}
+

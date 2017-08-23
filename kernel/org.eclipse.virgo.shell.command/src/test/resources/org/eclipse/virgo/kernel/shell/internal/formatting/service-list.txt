@@ -1,0 +1,3 @@
+Id Object Class(es)                                             Providing Bundle
+1  bundle.symbolic.name1                                                       2
+1  bundle.symbolic.name2                                                       4

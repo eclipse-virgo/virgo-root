@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<beans:bean id="hotDeployer"
+		class="org.eclipse.virgo.kernel.deployer.hotenabler.HotDeployerEnabler"
+		destroy-method="stop">
+		<beans:constructor-arg ref="deployerConfig" />
+		<beans:constructor-arg ref="pipelinedApplicationDeployer" />
+		<beans:constructor-arg ref="eventLogger" />
+	</beans:bean>
+
+	<service id="hotDeployerService" ref="hotDeployer"
+		interface="org.osgi.service.event.EventHandler">
+		<service-properties>
+			<beans:entry key="event.topics" value="org/eclipse/virgo/kernel/deployer/recovery/*" />
+		</service-properties>
+	</service>
+
+</beans:beans>

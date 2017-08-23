@@ -1,0 +1,4 @@
+Manifest-Version: 1
+Library-SymbolicName: test.library
+Library-Version: 1.2
+Import-Bundle: a,b,c

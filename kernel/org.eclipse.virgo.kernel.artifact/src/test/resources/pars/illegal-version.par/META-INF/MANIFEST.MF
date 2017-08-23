@@ -1,0 +1,4 @@
+Application-SymbolicName: basic
+Application-Version: alpha
+Application-Name: Basic Par
+Application-Description: A basic PAR file for the unit tests

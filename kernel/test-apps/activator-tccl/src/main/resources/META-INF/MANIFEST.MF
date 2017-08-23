@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: activator.tccl
+Bundle-Name: Bundle activator thread context class loader tests
+Import-Package: org.osgi.framework,
+ org.eclipse.osgi.framework.adaptor
+Bundle-Activator: eg.Activator
+

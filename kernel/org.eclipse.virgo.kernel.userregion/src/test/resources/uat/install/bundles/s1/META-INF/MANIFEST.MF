@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: uat.install.s
+Bundle-Version: 1.0
+Export-Package: s;version="1.0"

@@ -1,0 +1,10 @@
+<plan name="org.eclipse.virgo.kernel.test.userregion.springdm" version="3.0" scoped="false" atomic="false"
+                xmlns="http://www.springsource.org/schema/dm-server/plan"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="
+                        http://www.springsource.org/schema/dm-server/plan 
+                        http://www.springsource.org/schema/dm-server/plan/springsource-dm-server-plan.xsd">
+
+        <artifact type="bundle" name="com.springsource.kernel.agent.dm" version="[3.0, 4.0)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[3.0, 4.0)"/>
+</plan>

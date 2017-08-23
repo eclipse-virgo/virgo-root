@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/util 
+       http://www.springframework.org/schema/util/spring-util-2.5.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+	<reference id="dumpGenerator" interface="org.eclipse.virgo.medic.dump.DumpGenerator"/>
+
+	<reference id="eventLogger" interface="org.eclipse.virgo.medic.eventlog.EventLogger"/>
+	
+	<reference id="tracingService" interface="org.eclipse.virgo.nano.shim.serviceability.TracingService" />
+	
+	<reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+
+	<beans:bean id="exporter" class="org.eclipse.virgo.kernel.services.concurrent.management.JmxExecutorServiceExporter" destroy-method="destroy">
+		<beans:constructor-arg value="#{kernelConfig.getProperty('domain')}"/>
+	</beans:bean>
+
+	<beans:bean id="deadlockMonitor" class="org.eclipse.virgo.kernel.services.concurrent.monitor.DeadlockMonitor" init-method="start" destroy-method="stop">
+		<beans:constructor-arg>
+			<beans:bean class="org.eclipse.virgo.kernel.services.concurrent.KernelScheduledThreadPoolExecutor">
+				<beans:constructor-arg value="1"/>
+				<beans:constructor-arg value="deadlock-monitor"/>
+				<beans:constructor-arg ref="tracingService"/>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="dumpGenerator"/>
+		<beans:constructor-arg ref="eventLogger"/>
+	</beans:bean>
+</beans:beans>

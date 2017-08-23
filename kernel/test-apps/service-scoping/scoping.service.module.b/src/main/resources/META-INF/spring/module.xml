@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<service ref="appendable" interface="java.lang.Appendable">
+		<service-properties>
+			<beans:entry key="provider" value="local" />
+		</service-properties>
+	</service>
+	
+	<service id="nestingCheck" interface="java.io.Serializable">
+		<beans:bean class="java.lang.String">
+			<beans:constructor-arg value="foo"/>
+		</beans:bean>
+	</service>
+	
+	<service id="interfacesCheck">
+		<interfaces>
+			<beans:value>java.io.Serializable</beans:value>
+		</interfaces>
+		<service-properties>
+			<beans:entry key="a" value="b"/>
+		</service-properties>
+		<beans:bean class="java.lang.String">
+			<beans:constructor-arg value="foo"/>
+		</beans:bean>
+	</service>
+	
+	<service id="publishIntoGlobal" interface="java.lang.CharSequence">
+		<service-properties>
+			<beans:entry key="org.eclipse.virgo.service.scope" value="global" />
+		</service-properties>
+		<beans:bean class="java.lang.String">
+			<beans:constructor-arg value="foo"/>
+		</beans:bean>
+	</service>
+	
+	<beans:bean id="appendable" class="java.lang.StringBuilder" />
+	
+	<reference id="global" interface="java.lang.Appendable" filter="(provider=global)"/>
+</beans:beans>

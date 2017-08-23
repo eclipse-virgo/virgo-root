@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="synthetic.tccl.global">
+
+	<property file="${basedir}/../../build.properties"/>
+    <property file="${basedir}/../../../build.versions"/>
+	<property name="jar.output.dir" value="${basedir}/../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/synthetic-tccl"/>
+	<import file="${basedir}/../../../virgo-build/standard/default.xml"/>
+
+</project>

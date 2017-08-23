@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.kernel.dmfragment.test.inbuilt
+Import-Package: org.eclipse.virgo.kernel.osgi.framework,
+ org.springframework.context.weaving
+

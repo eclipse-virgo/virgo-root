@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
+
+	<bean id="repository" class="org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean" destroy-method="destroy">
+		<constructor-arg>
+			<osgi-compendium:cm-properties persistent-id="org.eclipse.virgo.repository"/>
+		</constructor-arg>
+		<constructor-arg ref="eventLogger"/>
+		<constructor-arg ref="repositoryFactory"/>
+		<constructor-arg value="#{kernelConfig.getProperty('work.directory')}"/>
+		<constructor-arg >
+		<set>
+			<ref bean="bundleBridge"/>
+			<ref bean="libraryBridge"/>
+			<ref bean="parBridge"/>
+			<ref bean="planBridge"/>
+			<ref bean="propertiesBridge"/>
+		</set>
+		</constructor-arg>		
+		<constructor-arg value="#{kernelConfig.getProperty('domain')}"/>
+	</bean>
+	
+	<bean id="bundleBridge" class="org.eclipse.virgo.kernel.artifact.bundle.BundleBridge">
+		<constructor-arg ref="hashGenerator"/>
+	</bean>
+	<osgi:service ref="bundleBridge" interface="org.eclipse.virgo.repository.ArtifactBridge"/>
+	
+	<bean id="libraryBridge" class="org.eclipse.virgo.kernel.artifact.library.LibraryBridge">
+		<constructor-arg ref="hashGenerator"/>
+	</bean>
+	<osgi:service ref="libraryBridge" interface="org.eclipse.virgo.repository.ArtifactBridge"/>
+	
+	<bean id="parBridge" class="org.eclipse.virgo.kernel.artifact.par.ParBridge">
+		<constructor-arg ref="hashGenerator"/>
+	</bean>
+	<osgi:service ref="parBridge" interface="org.eclipse.virgo.repository.ArtifactBridge"/>
+	
+	<bean id="planBridge" class="org.eclipse.virgo.kernel.artifact.plan.PlanBridge">
+		<constructor-arg ref="hashGenerator"/>
+	</bean>
+	<osgi:service ref="planBridge" interface="org.eclipse.virgo.repository.ArtifactBridge"/>
+	
+	<bean id="propertiesBridge" class="org.eclipse.virgo.kernel.artifact.properties.PropertiesBridge">
+		<constructor-arg ref="hashGenerator"/>
+		<constructor-arg>
+		  <osgi:reference interface="org.osgi.service.cm.ConfigurationAdmin"/>
+		</constructor-arg>
+	</bean>
+	<osgi:service ref="propertiesBridge" interface="org.eclipse.virgo.repository.ArtifactBridge"/>
+	
+	<osgi:reference id="repositoryFactory" interface="org.eclipse.virgo.repository.RepositoryFactory" />
+	
+	<osgi:reference id="eventLogger" interface="org.eclipse.virgo.medic.eventlog.EventLogger" />
+	
+	<osgi:service ref="repository" interface="org.eclipse.virgo.repository.Repository"/>
+
+	<osgi:reference id="hashGenerator" interface="org.eclipse.virgo.repository.HashGenerator"/>
+	
+	<osgi:reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+
+</beans>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+		xmlns="http://www.springframework.org/schema/osgi" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:beans="http://www.springframework.org/schema/beans" 
+		xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+		xsi:schemaLocation="
+				http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd
+				http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
+				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<service ref="artifactRepository" interface="org.eclipse.virgo.kernel.model.RuntimeArtifactRepository"/>
+	
+	<service ref="bundleDependencyDeterminer" interface="org.eclipse.virgo.kernel.model.internal.DependencyDeterminer">
+		<service-properties>
+			<beans:entry key="artifactType" value="bundle"/>
+		</service-properties>
+	</service>
+
+	<service ref="deployerCompositeArtifactDependencyDeterminer" interface="org.eclipse.virgo.kernel.model.internal.DependencyDeterminer">
+		<service-properties>
+			<beans:entry key="artifactType" value="plan"/>
+		</service-properties>
+	</service>
+
+	<service ref="deployerCompositeArtifactDependencyDeterminer" interface="org.eclipse.virgo.kernel.model.internal.DependencyDeterminer">
+		<service-properties>
+			<beans:entry key="artifactType" value="par"/>
+		</service-properties>
+	</service>
+	
+	<service ref="runtimeArtifactModelObjectNameCreator" interface="org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator"/>
+
+	<reference id="packageAdminUtil" interface="org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil"/>
+
+	<reference id="configurationAdmin" interface="org.osgi.service.cm.ConfigurationAdmin"/>
+	
+	<reference id="quasiFrameworkFactory" interface="org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory"/>
+	
+	<reference id="runtimeArtifactModel" interface="org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel"/>
+	
+	<reference id="regionDigraph" interface="org.eclipse.equinox.region.RegionDigraph" />
+	
+	<reference id="globalRegion" interface="org.eclipse.equinox.region.Region" filter="(org.eclipse.virgo.kernel.region.name=global)" />
+	
+	<reference id="userRegion" interface="org.eclipse.equinox.region.Region" filter="(org.eclipse.virgo.kernel.region.name=org.eclipse.virgo.region.user)" />
+
+</beans:beans>

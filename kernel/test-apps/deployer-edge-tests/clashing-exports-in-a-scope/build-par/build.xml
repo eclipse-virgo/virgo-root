@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="clashing-exports-in-a-scope-par">
+
+	<path id="bundles">
+		<pathelement location="../c1"/>
+		<pathelement location="../c2"/>
+	</path>
+
+	<property file="${basedir}/../../../build.properties"/>
+	<property name="par.output.dir" value="${basedir}/../../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources"/>
+
+	<import file="${basedir}/../../../../virgo-build/par/default.xml"/>
+
+
+</project>

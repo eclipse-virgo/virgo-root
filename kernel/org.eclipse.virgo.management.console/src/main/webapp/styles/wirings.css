@@ -1,0 +1,36 @@
+@import "common.css";
+
+/* 
+ * Virgo Admin Console
+ *
+ * Styles for the artifacts page
+ */
+
+#side-bar, #display {
+	vertical-align: top;
+}
+
+#side-bar {
+	display: inline-block;
+	overflow-y: auto;
+	width: 34%;
+	height: 613px;
+}
+
+#display {
+	display: inline-block;
+	width: 65%;
+}
+
+.warning-note{
+    margin: 10px;
+    text-align: center;
+}
+
+#bundle-canvas {
+	margin-top: 13px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0px;
+	overflow-x: auto;
+}

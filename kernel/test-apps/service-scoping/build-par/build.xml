@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="service-scoping">
+
+	<path id="bundles">
+		<pathelement location="../scoping.service.module.a"/>
+		<pathelement location="../scoping.service.module.b"/>
+	</path>
+
+	<property file="${basedir}/../../build.properties"/>
+	<property name="par.output.file" value="${basedir}/../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/service-scoping/service-scoping.par"/>
+	<import file="${basedir}/../../../virgo-build/par/default.xml"/>
+
+</project>

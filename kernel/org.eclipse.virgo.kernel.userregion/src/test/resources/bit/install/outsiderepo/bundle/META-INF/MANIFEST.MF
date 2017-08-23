@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: install.outsiderepo
+Import-Package: install.standalone

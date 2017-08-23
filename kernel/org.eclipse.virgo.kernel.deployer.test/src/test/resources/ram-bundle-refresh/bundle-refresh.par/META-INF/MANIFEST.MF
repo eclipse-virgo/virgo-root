@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Application-SymbolicName: bundle-refresh
+Application-Version: 1.0

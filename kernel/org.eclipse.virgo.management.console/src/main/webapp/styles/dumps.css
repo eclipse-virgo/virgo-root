@@ -1,0 +1,110 @@
+@import "common.css";
+
+/* 
+ * Virgo Admin Console
+ *
+ * Styles for the dumps page
+ *
+ * Christopher Frost - 2011
+ */
+ 
+#side-bar {
+    position: absolute;
+    width: 250px;
+    min-height: 550px;
+}
+
+#side-bar h2 {
+	margin-top: 0px;
+}
+
+.grey-out {
+	color: #AAAAAA !important;
+}
+
+#dumps, #dump-items {
+	max-height: 200px;
+    min-height: 100px;
+    overflow: auto;
+}
+
+#dumps li, #dump-items li{
+	line-height: 19px;
+}
+	
+.dump .label, .dump-item .label {
+	display: inline;
+}
+	
+.dump .delete {
+	margin: 0 10px;
+	cursor: pointer;
+	color: transparent;
+	float: right;
+}
+
+.dump:hover .delete {
+	color: #666666;
+}
+
+.dump .label:hover, .dump-item .label:hover {
+	cursor: pointer;
+}
+
+.dump:hover, .dump-item:hover {
+	background-color: #BAD9EC;
+}
+
+.selected-item {
+	background-color: #E8F6FF;
+}
+
+#dump-item-content {
+    margin: 13px 0 0 312px;
+    max-width: 69%;
+    min-height: 580px;
+    display: inline-block;
+}
+
+.dump-file-line {
+    font-family : "Courier New", Courier, monospace;
+	white-space: pre-wrap;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.dump-file-line:hover {
+	background-color: #BAD9EC;
+}
+
+#gui-controls {
+	margin: 15px 0 5px;
+}
+
+#table-holder {
+	margin-top: 15px;
+	max-height: 200px;
+	overflow: auto;
+}
+
+.unresolved-bundle {
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+.unresolved-bundle:hover {
+	background-color: #BAD9EC;
+}
+
+.unresolved-bundle-cause {
+	padding-left: 20px;
+}
+
+#bundle-canvas {
+	margin-top: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0px;
+	overflow-x: auto;
+}
+ 

@@ -1,0 +1,65 @@
+   
+<!--@&header@-->
+
+	<h1>Deployed Artifacts</h1>
+
+ 	<div id="upload-manager" class="container">
+		<h2>Deployer</h2> 
+				
+		<form id="upload-form" name="upload-form" enctype="multipart/form-data" method="POST" action="<!--@<contextPath@-->/upload" target="upload-target" >
+			<ul id="upload-list">
+				<li><input name="1" type="file" size="70"></input></li>
+			</ul>
+		</form>
+		<div id="add-upload-box" class="upload-control"></div>
+		<div id="minus-upload-box" class="upload-control"></div>
+
+		<iframe id="upload-target-id" name="upload-target" src=""></iframe>
+
+		<div class="button-container">
+       		<div class="control-cap-left"></div>
+       		<div class="controls">
+				<div class="button" onclick="uploadManager.startUpload()">
+					<div class="button-cap-left-blue"></div><div class="button-text">Deploy</div><div class="button-cap-right-blue"></div>
+				</div>
+				<div class="button" onclick="uploadManager.resetForm()">
+					<div class="button-cap-left-blue"></div><div class="button-text">Reset Form</div><div class="button-cap-right-blue"></div>
+				</div>
+			</div>
+       		<div class="control-cap-right"></div>
+		</div>
+	</div>
+	
+	<div class="button-container">
+		<div class="control-cap-left"></div>
+		<div class="controls">
+			<div id="upload-toggle-button" class="button" onclick="uploadManager.toggle()">
+				<div class="button-cap-left-blue"></div><div class="button-text">Deployer</div><div class="button-cap-right-blue"></div>
+			</div>
+		</div>
+		<div class="control-cap-right"></div>
+	</div>
+
+	<br />
+
+	<div class="button-container">
+		<div class="control-cap-left"></div>
+		<div class="controls">
+			<div class="control-text">
+				Sort by: 
+			</div>
+			<div id="type-filter-button" class="button button-selected" onclick="tree.reRenderWithFilter('type')">
+				<div class="button-cap-left-blue"></div><div class="button-text">Type</div><div class="button-cap-right-blue"></div>
+			</div>
+			<div id="region-filter-button" class="button" onclick="tree.reRenderWithFilter('region')">
+				<div class="button-cap-left-blue"></div><div class="button-text">Region</div><div class="button-cap-right-blue"></div>
+			</div>
+		</div>
+		<div class="control-cap-right"></div>
+	</div>
+	
+	<div id="artifacts-tree" class="bordered-container">
+		
+	</div>
+
+<!--@&footer@-->

@@ -1,0 +1,3 @@
+Bundle-SymbolicName: c
+Export-Package: com.foo.c
+Bundle-ManifestVersion: 2

@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel User Region OSGi Spring DM Fragment
+Fragment-Host: org.eclipse.gemini.blueprint.extender
+Bundle-SymbolicName: org.eclipse.virgo.kernel.dmfragment
+Bundle-Version: ${version}
+Import-Package:
+ org.eclipse.virgo.kernel.agent.dm;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.nano.shim.serviceability;version="${version:[=.=.=, =.+1)}"
+Import-Template:
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",
+ org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}",
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
+ javax.management.*;version="0",
+ org.osgi.framework.*;version="0",
+ org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}"
+Excluded-Imports:
+ org.eclipse.gemini.blueprint.*
+Excluded-Exports:
+ org.eclipse.virgo.kernel.dmfragment.internal.*

@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Application-SymbolicName: org.eclipse.virgo.kernel.deployer.app.MultiBundleApplicationTestApp
+Application-Version: 1.0.0

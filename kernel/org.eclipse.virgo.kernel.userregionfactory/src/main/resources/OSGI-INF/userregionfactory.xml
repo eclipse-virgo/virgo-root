@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="User Region Factory Component">
+	<implementation class="org.eclipse.virgo.kernel.userregionfactory.Activator"/>
+	<reference name="EventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLogger"
+		policy="static"/>
+	<reference name="DumpGenerator"
+		interface="org.eclipse.virgo.medic.dump.DumpGenerator"
+		policy="static"/>	
+	<reference name="ConfigAdmin"
+		interface="org.osgi.service.cm.ConfigurationAdmin"
+		policy="static"/>
+  	<reference name="EventAdmin"
+		interface="org.osgi.service.event.EventAdmin"
+		policy="static"/>
+	<reference name="Shutdown"
+		interface="org.eclipse.virgo.nano.core.Shutdown"
+		policy="static"/>
+	<reference name="RegionDigraph"
+		interface="org.eclipse.equinox.region.RegionDigraph"
+		policy="static"/>
+	<reference name="Repository"
+		interface="org.eclipse.virgo.repository.Repository"
+		policy="static"/>		
+</scr:component>

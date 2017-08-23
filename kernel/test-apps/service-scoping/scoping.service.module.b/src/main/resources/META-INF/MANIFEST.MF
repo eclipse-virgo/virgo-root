@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: scoping.service.module.b
+Import-Package: org.osgi.framework, javax.management
+Bundle-Activator: scoping.Activator

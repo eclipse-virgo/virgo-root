@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+<!-- SERVICES FOR THE CORE SHELL SYSTEM -->
+
+	<osgi:reference id="quasiFrameworkFactory" interface="org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory" />
+
+	<osgi:reference id="moduleContextAccessor" interface="org.eclipse.virgo.kernel.module.ModuleContextAccessor" />
+
+	<osgi:reference id="eventLogger" interface="org.eclipse.virgo.medic.eventlog.EventLogger" />
+
+	<osgi:reference id="configAdmin" interface="org.osgi.service.cm.ConfigurationAdmin" />
+
+	<osgi:service ref="commandProcessor" interface="org.eclipse.virgo.shell.internal.CommandProcessor" />
+	
+	<osgi:service ref="singleCommandExecutor" interface="org.eclipse.virgo.shell.CommandExecutor" />
+
+	<osgi:reference id="userRegionBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
+	    
+    <osgi:reference id="regionDigraph" interface="org.eclipse.equinox.region.RegionDigraph" />
+    
+<!-- SERVICES FOR THE TYPE CONVERTERS -->
+
+	<osgi:service ref="longConverter" interface="org.eclipse.virgo.shell.Converter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.Converter.CONVERTER_CLASSES"/></key>
+				<value>#{longConverter.getTypes()}</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service ref="stringConverter" interface="org.eclipse.virgo.shell.Converter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.Converter.CONVERTER_CLASSES"/></key>
+				<value>#{stringConverter.getTypes()}</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+
+<!-- SERVICES FOR THE COMMAND PROVIDERS -->
+
+	<osgi:service ref="helpCommand" auto-export="class-hierarchy"/>
+	
+	<osgi:service ref="installCommand" auto-export="class-hierarchy"/>	
+	
+	<osgi:service ref="shutdownCommand" auto-export="class-hierarchy"/>
+	
+	<osgi:service ref="exitCommand" auto-export="class-hierarchy"/>
+
+	<osgi:service ref="serviceCommands" auto-export="class-hierarchy"/>
+
+	<osgi:service ref="bundleCommands" auto-export="class-hierarchy"/>
+
+	<osgi:service ref="packageCommands" auto-export="class-hierarchy"/>
+
+	<osgi:service ref="configCommands" auto-export="class-hierarchy"/>
+
+	<osgi:service ref="planCommands" auto-export="class-hierarchy"/>
+
+	<osgi:service ref="parCommands" auto-export="class-hierarchy"/>
+
+	<osgi:reference id="objectNameCreator" interface="org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator"/>
+
+	<osgi:service ref="helpCommandCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>help</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service ref="bundleCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>bundle</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service ref="packageCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>package</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service ref="configCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>config</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service ref="parCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>par</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service ref="planCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>plan</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+	
+		<osgi:service ref="installCompleter" interface="org.eclipse.virgo.shell.CommandCompleter">
+		<osgi:service-properties>
+			<entry>
+				<key><util:constant static-field="org.eclipse.virgo.shell.CommandCompleter.SERVICE_PROPERTY_COMPLETER_COMMAND_NAMES"/></key>
+				<value>install</value>
+			</entry>
+		</osgi:service-properties>
+	</osgi:service>
+
+</beans>

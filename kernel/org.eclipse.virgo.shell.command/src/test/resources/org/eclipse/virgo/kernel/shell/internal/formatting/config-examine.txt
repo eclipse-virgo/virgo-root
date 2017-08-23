@@ -1,0 +1,13 @@
+Factory pid:     testPid
+Bundle Location: /a/location
+
+Properties:
+    key1:
+        value11111111111111111111111111111111111111111111111111111111111111111111111111111111a, 
+        value1b
+    key2:
+        value2
+    service.factoryPid:
+        testPid
+    service.pid:
+        testPid

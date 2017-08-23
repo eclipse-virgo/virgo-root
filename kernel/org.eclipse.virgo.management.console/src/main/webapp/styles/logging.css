@@ -1,0 +1,28 @@
+@import "common.css";
+
+/* 
+ * Virgo Admin Console
+ *
+ * Styles for the logging page
+ *
+ * Christopher Frost - 2011
+ */
+ 
+#logging-display {
+	margin-bottom: 30px;
+}
+ 
+.logger-table .logger-update {
+	color: transparent;
+}
+
+.table-tr-hovered .logger-update {
+	color: #666666;
+	cursor: pointer;
+}
+
+.logger-details-table {
+	margin-bottom: 15px;
+	margin-left: auto;
+	margin-right: auto;	
+}

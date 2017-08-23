@@ -1,0 +1,4 @@
+# Summary
+Install (deploy) an artifact to the server
+# Detail
+install <uri> - Deploy the artifact, identified by URI

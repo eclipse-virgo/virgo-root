@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RefreshTest">
+	
+	<path id="bundles">
+            <pathelement location="../exporter"/>
+            <pathelement location="../exporter2"/>
+            <pathelement location="../exporter3"/>
+            <pathelement location="../importer"/>
+    </path>
+
+	<property file="${basedir}/../../../build.properties"/>
+    <property file="${basedir}/../../../../build.versions"/>
+	<property name="par.expanded.dir" value="${basedir}/target/par-expanded"/>
+	<import file="${basedir}/../../../../virgo-build/par/default.xml"/>
+
+	<target name="jar">
+		<all-bundles target="jar"/>
+		
+		<mkdir dir="${par.expanded.dir}/build"/>		
+		<copy todir="${par.expanded.dir}" file="../importer/target/artifacts/RefreshImporter.jar"/>
+		<copy todir="${par.expanded.dir}" file="../exporter/target/artifacts/RefreshExporter.jar"/>
+		<copy todir="${par.expanded.dir}/build" file="../exporter2/target/artifacts/RefreshExporterv2.jar"/>
+		<copy todir="${par.expanded.dir}/build" file="../exporter3/target/artifacts/RefreshExporterv3.jar"/>
+		
+     	<mkdir dir="${basedir}/target/artifacts"/>		
+		<jar destfile="${basedir}/target/artifacts/refresh.par">
+			<fileset dir="${par.expanded.dir}" includes="**/*"/>
+			<manifest>
+				<attribute name="Application-Version" value="1.0"/>
+				<attribute name="Application-SymbolicName" value="${ant.project.name}"/>
+			</manifest>
+		</jar>
+		
+		<copy todir="${basedir}/../../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources" file="target/artifacts/refresh.par"/>
+				
+	</target>
+
+</project>

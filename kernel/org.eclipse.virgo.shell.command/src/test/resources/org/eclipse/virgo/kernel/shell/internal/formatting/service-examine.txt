@@ -1,0 +1,14 @@
+Properties:
+    objectClass:
+        bundle.symbolic.name
+    propertyName1:
+        This is a string array...., Second string
+    service.id:
+        1
+    service.ranking:
+        0
+
+Publisher: bundle.symbolic.name 1.0.1.asdhjgf [2]
+
+Consumer(s):
+    None

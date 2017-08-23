@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="simple.module.good">
+
+	<property file="${basedir}/../../build.properties"/>
+    <property file="${basedir}/../../../build.versions"/>
+	<property name="jar.output.file" value="${basedir}/../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/redeploy-refresh/good/simple.module.jar"/>
+	<import file="${basedir}/../../../virgo-build/standard/default.xml"/>
+
+</project>

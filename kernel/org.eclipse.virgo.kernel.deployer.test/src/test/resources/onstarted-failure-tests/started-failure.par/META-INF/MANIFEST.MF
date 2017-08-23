@@ -1,0 +1,2 @@
+Application-SymbolicName: onstarted-failure
+Application-Version: 1

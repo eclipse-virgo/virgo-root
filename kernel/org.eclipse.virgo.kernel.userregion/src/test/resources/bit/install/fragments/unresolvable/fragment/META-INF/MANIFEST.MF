@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: fragments.unresolvable.frag
+Fragment-Host: fragments.unresolvable.host
+Import-Package: no.chance

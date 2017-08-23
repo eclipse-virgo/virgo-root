@@ -1,0 +1,4 @@
+Bundle-SymbolicName: faulty
+Bundle-ManifestVersion: 2
+Bundle-Version: 1
+Import-Package: alpha

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: install.five
+Export-Package: install.five
+Require-Bundle: install.three
+

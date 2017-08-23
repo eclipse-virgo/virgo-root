@@ -1,0 +1,6 @@
+# Summary
+Exit the kernel shell environment
+# Detail
+exit - leave the shell. If the shell is local the console reverts to the kernel log.
+       If the shell is remote, the connection is dropped. Issue shutdown to terminate
+       the kernel. This command has no effect when issued from the OSGi console.

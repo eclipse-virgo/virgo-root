@@ -1,0 +1,4 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: TestImportP1P2
+Import-Bundle: TestP1,TestP2
+

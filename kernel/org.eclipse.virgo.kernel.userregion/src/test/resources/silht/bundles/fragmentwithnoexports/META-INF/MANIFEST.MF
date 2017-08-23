@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: silht.bundles.fragmentwithnoexports
+Bundle-ManifestVersion: 2
+Bundle-Name: Fragment bundle with no exports
+Bundle-Version: 1.0
+Fragment-Host: silht.bundles.noexports

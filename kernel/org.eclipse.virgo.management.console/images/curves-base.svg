@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="1488.189"
+   height="1052.3622"
+   id="svg2"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="curves-base.svg">
+  <metadata
+     id="metadata11">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1918"
+     inkscape:window-height="1172"
+     id="namedview9"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="887.6495"
+     inkscape:cy="551.5489"
+     inkscape:window-x="1"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective13" />
+  </defs>
+  <path
+     style="fill:#002f5e;fill-opacity:1;stroke:none"
+     d="m 100,692.36224 0,130 0,130 c 19.63495,0 39.26218,-3.38355 57.40251,-9.89566 18.14034,-6.51211 34.7795,-16.14765 48.66351,-28.18046 13.88401,-12.03281 25.00194,-26.45341 32.51591,-42.17503 C 246.0959,856.38946 250,839.3792 250,822.36224 c 0,-17.01696 3.64383,-34.02722 10.65687,-49.74885 7.01304,-15.72162 17.38977,-30.14222 30.34818,-42.17503 12.95841,-12.03281 28.48829,-21.66835 45.41927,-28.18046 16.93098,-6.51211 35.24972,-9.89566 53.57568,-9.89566 l 10,0 -300,0 z"
+     id="rect3654"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/menu-curve-left.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccsssssssccc" />
+  <rect
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     style="fill:#002f5e;fill-opacity:1;stroke:none"
+     id="rect3775"
+     width="119.9999"
+     height="230"
+     x="250.00009"
+     y="342.36218" />
+  <path
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     transform="matrix(-1.5990648,0,0,1.7111233,1307.563,-754.59186)"
+     sodipodi:open="true"
+     sodipodi:end="7.8539816"
+     sodipodi:start="4.712389"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:ry="84.739655"
+     sodipodi:rx="93.804832"
+     sodipodi:cy="708.27979"
+     sodipodi:cx="661.36346"
+     id="path3777"
+     style="fill:#002f5e;fill-opacity:1"
+     sodipodi:type="arc" />
+  <rect
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     y="312.36218"
+     x="250.00009"
+     height="30"
+     width="135"
+     id="rect3779"
+     style="fill:#002f5e;fill-opacity:1;stroke:none" />
+  <rect
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     style="fill:#002f5e;fill-opacity:1;stroke:none"
+     id="rect3781"
+     width="135"
+     height="30"
+     x="250.00009"
+     y="572.36218" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#002f5e;fill-opacity:1"
+     id="path3783"
+     sodipodi:cx="661.36346"
+     sodipodi:cy="708.27979"
+     sodipodi:rx="93.804832"
+     sodipodi:ry="84.739655"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:start="4.712389"
+     sodipodi:end="7.8539816"
+     sodipodi:open="true"
+     transform="matrix(0.15990648,0,0,0.17701276,279.24375,461.98762)"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9" />
+  <path
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     transform="matrix(0.15990648,0,0,0.17701276,279.24375,201.98762)"
+     sodipodi:open="true"
+     sodipodi:end="7.8539816"
+     sodipodi:start="4.712389"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:ry="84.739655"
+     sodipodi:rx="93.804832"
+     sodipodi:cy="708.27979"
+     sodipodi:cx="661.36346"
+     id="path3785"
+     style="fill:#002f5e;fill-opacity:1"
+     sodipodi:type="arc" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#002f5e;fill-opacity:1"
+     id="path3787"
+     sodipodi:cx="661.36346"
+     sodipodi:cy="708.27979"
+     sodipodi:rx="93.804832"
+     sodipodi:ry="84.739655"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:start="4.712389"
+     sodipodi:end="7.8539816"
+     sodipodi:open="true"
+     transform="matrix(-1.2792518,0,0,1.3570978,1866.0504,-153.84275)"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-left-blue.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#ffffff;fill-opacity:1"
+     id="path3610"
+     sodipodi:cx="661.36346"
+     sodipodi:cy="708.27979"
+     sodipodi:rx="93.804832"
+     sodipodi:ry="84.739655"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:start="4.712389"
+     sodipodi:end="7.8539816"
+     sodipodi:open="true"
+     transform="matrix(-1.2792508,0,0,1.3570978,1216.0496,-503.84275)"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-left-white.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9" />
+  <path
+     inkscape:connector-curvature="0"
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/menu-curve-right.png"
+     id="path3618"
+     d="m 800,692.36224 0,130 0,130 c -19.63495,0 -39.26218,-3.38355 -57.40251,-9.89566 -18.14034,-6.51211 -34.7795,-16.14765 -48.66351,-28.18046 C 680.04997,902.25331 668.93204,887.83271 661.41807,872.11109 653.9041,856.38946 650,839.3792 650,822.36224 650,805.34528 646.35617,788.33502 639.34313,772.61339 632.33009,756.89177 621.95336,742.47117 608.99495,730.43836 596.03654,718.40555 580.50666,708.77001 563.57568,702.2579 546.6447,695.74579 528.32596,692.36224 510,692.36224 l -10,0 300,0 z"
+     style="fill:#002f5e;fill-opacity:1;stroke:none"
+     sodipodi:nodetypes="cccsssssssccc" />
+  <g
+     id="g3635"
+     transform="translate(0,-0.01281738)"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-left.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9">
+    <g
+       id="g3652">
+      <path
+         style="fill:#002f5e;fill-opacity:1;stroke:none"
+         d="m 650,312.375 c -82.8427,0 -150,64.91871 -150,145 0,80.08127 67.1573,145 150,145 l 135,0 c 8.28427,0 15,-6.71573 15,-15 0,-8.28427 -6.71573,-15 -15,-15 l -15,0 c -66.27411,0 -120,-51.48727 -120,-115 0,-63.51275 53.72589,-115 120,-115 l 15,0 c 8.28427,0 15,-6.71573 15,-15 0,-8.28427 -6.71573,-15 -15,-15 l -135,0 z"
+         id="rect3620" />
+    </g>
+  </g>
+  <g
+     transform="matrix(-1,0,0,1,1700,-0.01281738)"
+     id="g3661"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/controls-cap-right.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9">
+    <g
+       id="g3663">
+      <path
+         id="path3665"
+         d="m 650,312.375 c -82.8427,0 -150,64.91871 -150,145 0,80.08127 67.1573,145 150,145 l 135,0 c 8.28427,0 15,-6.71573 15,-15 0,-8.28427 -6.71573,-15 -15,-15 l -15,0 c -66.27411,0 -120,-51.48727 -120,-115 0,-63.51275 53.72589,-115 120,-115 l 15,0 c 8.28427,0 15,-6.71573 15,-15 0,-8.28427 -6.71573,-15 -15,-15 l -135,0 z"
+         style="fill:#002f5e;fill-opacity:1;stroke:none" />
+    </g>
+  </g>
+  <path
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-right-blue.png"
+     transform="matrix(1.2792518,0,0,1.3570978,253.94959,-153.84275)"
+     sodipodi:open="true"
+     sodipodi:end="7.8539816"
+     sodipodi:start="4.712389"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:ry="84.739655"
+     sodipodi:rx="93.804832"
+     sodipodi:cy="708.27979"
+     sodipodi:cx="661.36346"
+     id="path3667"
+     style="fill:#002f5e;fill-opacity:1"
+     sodipodi:type="arc" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#ffffff;fill-opacity:1"
+     id="path3669"
+     sodipodi:cx="661.36346"
+     sodipodi:cy="708.27979"
+     sodipodi:rx="93.804832"
+     sodipodi:ry="84.739655"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:start="4.712389"
+     sodipodi:end="7.8539816"
+     sodipodi:open="true"
+     transform="matrix(-1.2792518,0,0,1.3570978,2266.0504,-153.84275)"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-left-white.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9" />
+  <path
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-right-white.png"
+     transform="matrix(1.2792518,0,0,1.3570978,453.94959,-503.84275)"
+     sodipodi:open="true"
+     sodipodi:end="7.8539816"
+     sodipodi:start="4.712389"
+     d="m 661.36347,623.54013 a 93.804832,84.739655 0 0 1 0,169.47931"
+     sodipodi:ry="84.739655"
+     sodipodi:rx="93.804832"
+     sodipodi:cy="708.27979"
+     sodipodi:cx="661.36346"
+     id="path3671"
+     style="fill:#ffffff;fill-opacity:1"
+     sodipodi:type="arc" />
+  <path
+     inkscape:export-ydpi="9"
+     inkscape:export-xdpi="9"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-left-blue.png"
+     transform="matrix(-1.2259496,0,0,1.3570978,1025.7983,-803.84275)"
+     d="m 755.1683,708.27979 a 93.804832,84.739655 0 1 1 -187.60967,0 93.804832,84.739655 0 1 1 187.60967,0 z"
+     sodipodi:ry="84.739655"
+     sodipodi:rx="93.804832"
+     sodipodi:cy="708.27979"
+     sodipodi:cx="661.36346"
+     id="path3675"
+     style="fill:#002f5e;fill-opacity:1"
+     sodipodi:type="arc" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#ffffff;fill-opacity:1"
+     id="path3677"
+     sodipodi:cx="661.36346"
+     sodipodi:cy="708.27979"
+     sodipodi:rx="93.804832"
+     sodipodi:ry="84.739655"
+     d="m 755.1683,708.27979 a 93.804832,84.739655 0 1 1 -187.60967,0 93.804832,84.739655 0 1 1 187.60967,0 z"
+     transform="matrix(-0.90613669,0,0,1.0030723,814.28567,-553.09365)"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/button-cap-left-blue.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9" />
+  <rect
+     style="fill:#002f5e;fill-opacity:1;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     id="rect3683"
+     width="110"
+     height="30"
+     x="159.99997"
+     y="142.36218"
+     ry="15" />
+  <rect
+     ry="15"
+     y="-229.99997"
+     x="102.36218"
+     height="30"
+     width="110"
+     id="rect3685"
+     style="fill:#002f5e;fill-opacity:1;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     transform="matrix(0,1,-1,0,0,0)" />
+  <g
+     id="g3697"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/add.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9">
+    <path
+       id="path3687"
+       d="M 515 42.375 C 451.48726 42.375 400 93.862254 400 157.375 C 400 220.88775 451.48726 272.375 515 272.375 C 578.51274 272.375 630 220.88775 630 157.375 C 630 93.862254 578.51274 42.375 515 42.375 z M 512.8125 72.375 C 513.54155 72.356529 514.2665 72.375 515 72.375 C 561.9442 72.375 600 110.4308 600 157.375 C 600 204.3192 561.9442 242.375 515 242.375 C 468.0558 242.375 430 204.3192 430 157.375 C 430 111.1643 466.88223 73.538652 512.8125 72.375 z "
+       style="fill:#002f5e;fill-opacity:1" />
+    <path
+       id="rect3691"
+       d="M 515 102.375 C 506.69 102.375 500 109.065 500 117.375 L 500 142.375 L 475 142.375 C 466.69 142.375 460 149.065 460 157.375 C 460 165.685 466.69 172.375 475 172.375 L 500 172.375 L 500 197.375 C 500 205.685 506.69 212.375 515 212.375 C 523.31 212.375 530 205.685 530 197.375 L 530 172.375 L 555 172.375 C 563.31 172.375 570 165.685 570 157.375 C 570 149.065 563.31 142.375 555 142.375 L 530 142.375 L 530 117.375 C 530 109.065 523.31 102.375 515 102.375 z "
+       style="fill:#002f5e;fill-opacity:1;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+  </g>
+  <g
+     id="g3710"
+     inkscape:export-filename="/Users/cgfrost/Repos/codewax/admin-jolokia/org.eclipse.virgo.apps.admin/src/main/webapp/images/minus.png"
+     inkscape:export-xdpi="9"
+     inkscape:export-ydpi="9">
+    <path
+       id="path3701"
+       d="M 815 42.375 C 751.48726 42.375 700 93.862254 700 157.375 C 700 220.88775 751.48726 272.375 815 272.375 C 878.51274 272.375 930 220.88775 930 157.375 C 930 93.862254 878.51274 42.375 815 42.375 z M 812.8125 72.375 C 813.54155 72.356529 814.2665 72.375 815 72.375 C 861.9442 72.375 900 110.4308 900 157.375 C 900 204.3192 861.9442 242.375 815 242.375 C 768.0558 242.375 730 204.3192 730 157.375 C 730 111.1643 766.88223 73.538652 812.8125 72.375 z "
+       style="fill:#002f5e;fill-opacity:1" />
+    <rect
+       style="fill:#002f5e;fill-opacity:1;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3705"
+       width="110"
+       height="30"
+       x="760"
+       y="142.36218"
+       ry="15" />
+  </g>
+</svg>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<service id="applicationDeployer" ref="pipelinedApplicationDeployer"
+		interface="org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer" />
+
+	<beans:bean id="recoveryLog"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.recovery.DeployerRecoveryLog">
+		<beans:constructor-arg value="#{workArea.workDirectory}" />
+	</beans:bean>
+
+	<beans:bean id="deploymentListener"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.recovery.DeployerRecoveryLogDeploymentListener">
+		<beans:constructor-arg ref="recoveryLog" />
+	</beans:bean>
+
+	<beans:bean id="artifactStorageFactory"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactStorageFactory">
+		<beans:constructor-arg value="#{workArea.workDirectory}" />
+		<beans:constructor-arg>
+			<beans:bean
+				class="org.eclipse.virgo.kernel.artifact.fs.StandardArtifactFSFactory" />
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="eventLogger" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.unpackBundles')}" />
+	</beans:bean>
+
+	<beans:bean id="syntheticContextCreatingTransformer"
+		class="org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.SyntheticContextBundleCreatingTransformer">
+		<beans:constructor-arg ref="bundleInstallArtifactGraphFactory" />
+		<beans:constructor-arg ref="artifactStorageFactory" />
+	</beans:bean>
+
+	<beans:bean id="scopingTransformer"
+		class="org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.ScopingTransformer" />
+
+	<beans:bean id="bundleManifestVersionUpgrader"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.ManifestUpgrader" />
+
+	<beans:bean id="planResolver"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.PlanResolver">
+		<beans:constructor-arg ref="installArtifactGraphInclosure" />
+		<beans:constructor-arg ref="runtimeArtifactModel" />
+		<beans:constructor-arg ref="repository" />
+		<beans:constructor-arg ref="artifactIdentityDeterminer" />
+		<beans:constructor-arg ref="eventLogger" />
+	</beans:bean>
+
+	<beans:bean id="importExpandingTransformer"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.ImportExpandingTransformer">
+		<beans:constructor-arg ref="importExpander" />
+	</beans:bean>
+
+	<beans:bean id="bundleDeploymentProperties"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.BundleDeploymentPropertiesTransformer" />
+
+	<beans:bean id="userInstalledTaggingTransformer"
+		class="org.eclipse.virgo.kernel.install.pipeline.stage.transform.internal.UserInstalledTaggingTransformer" />
+
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="planResolver" ranking="1000" />
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="bundleManifestVersionUpgrader" ranking="2000" />
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="bundleDeploymentProperties" ranking="2500" />
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="userInstalledTaggingTransformer" ranking="2750" />
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="syntheticContextCreatingTransformer" ranking="3000" />
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="scopingTransformer" ranking="4000" />
+	<service
+		interface="org.eclipse.virgo.kernel.install.pipeline.stage.transform.Transformer"
+		ref="importExpandingTransformer" ranking="5000" />
+
+	<reference id="recoveryMonitor" interface="org.eclipse.virgo.nano.deployer.api.RecoveryMonitor" />
+
+	<service id="recoveryAgent" interface="org.osgi.service.event.EventHandler">
+		<service-properties>
+			<beans:entry key="event.topics" value="org/eclipse/virgo/kernel/*" />
+		</service-properties>
+		<beans:bean
+			class="org.eclipse.virgo.kernel.deployer.core.internal.recovery.RecoveryAgent">
+			<beans:constructor-arg ref="pipelinedApplicationDeployer" />
+			<beans:constructor-arg ref="recoveryLog" />
+			<beans:constructor-arg ref="eventLogger" />
+			<beans:constructor-arg ref="eventAdmin" />
+		</beans:bean>
+	</service>
+
+	<beans:bean id="mainPipeline" factory-bean="plumber"
+		factory-method="getMainPipeline" />
+	<beans:bean id="refreshSubpipeline" factory-bean="plumber"
+		factory-method="getRefreshSubpipeline" />
+
+	<beans:bean id="pipelinedApplicationDeployer"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.PipelinedApplicationDeployer">
+		<beans:constructor-arg ref="mainPipeline" />
+		<beans:constructor-arg ref="installArtifactGraphInclosure" />
+		<beans:constructor-arg ref="artifactIdentityDeterminer" />
+		<beans:constructor-arg ref="installEnvironmentFactory" />
+		<beans:constructor-arg ref="runtimeArtifactModel" />
+		<beans:constructor-arg ref="deploymentListener" />
+		<beans:constructor-arg ref="eventLogger" />
+		<beans:constructor-arg ref="uriNormaliser" />
+		<beans:constructor-arg ref="deployerConfig" />
+		<beans:constructor-arg ref="bundleContext" />
+	</beans:bean>
+
+	<beans:bean id="stateCleanupListener"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.StateCleanupInstallArtifactLifecycleListener">
+		<beans:constructor-arg ref="deploymentListener" />
+		<beans:constructor-arg ref="runtimeArtifactModel" />
+	</beans:bean>
+
+	<service ref="stateCleanupListener"
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener" />
+
+	<service ref="uriNormaliser"
+		interface="org.eclipse.virgo.nano.deployer.api.core.DeployUriNormaliser" />
+
+	<beans:bean id="uriNormaliser"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.uri.CompoundDeployUriNormaliser">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean
+					class="org.eclipse.virgo.kernel.deployer.core.internal.uri.RepositoryDeployUriNormaliser">
+					<beans:constructor-arg ref="repository" />
+					<beans:constructor-arg ref="eventLogger" />
+				</beans:bean>
+				<beans:bean
+					class="org.eclipse.virgo.kernel.deployer.core.internal.uri.FileDeployUriNormaliser" />
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="plumber"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.Plumber">
+		<beans:constructor-arg ref="packageAdmin" />
+		<beans:constructor-arg ref="bundleContext" />
+		<beans:constructor-arg ref="pipelineFactory" />
+		<beans:constructor-arg ref="quasiFrameworkFactory" />
+	</beans:bean>
+
+	<beans:bean id="pipelineFactory"
+		class="org.eclipse.virgo.kernel.install.pipeline.internal.StandardPipelineFactory" />
+
+	<beans:bean id="installArtifactGraphInclosure"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactGraphInclosure">
+		<beans:constructor-arg ref="artifactStorageFactory" />
+		<beans:constructor-arg ref="bundleContext" />
+		<beans:constructor-arg ref="eventLogger" />
+	</beans:bean>
+
+	<beans:bean id="installEnvironmentFactory"
+		class="org.eclipse.virgo.kernel.install.environment.internal.StandardInstallEnvironmentFactory">
+		<beans:constructor-arg ref="quasiFrameworkFactory" />
+		<beans:constructor-arg ref="eventLogger" />
+	</beans:bean>
+
+	<beans:bean id="runtimeArtifactModel"
+		class="org.eclipse.virgo.kernel.deployer.model.internal.StandardRuntimeArtifactModel">
+		<beans:constructor-arg ref="uriNormaliser" />
+	</beans:bean>
+
+	<service ref="runtimeArtifactModel"
+		interface="org.eclipse.virgo.kernel.deployer.model.RuntimeArtifactModel" />
+
+	<service ref="loggingListener"
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener" />
+
+	<beans:bean id="loggingListener"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.LoggingInstallArtifactLifecycleListener">
+		<beans:constructor-arg ref="eventLogger" />
+	</beans:bean>
+
+	<reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+	
+	<beans:bean id="deployerConfig"
+		class="org.eclipse.virgo.kernel.deployer.core.internal.StandardDeployerConfiguration">
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.timeout')}" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.pickupDirectory')}" />
+		<beans:constructor-arg value="#{kernelConfig.getProperty('deployer.scanIntervalMillis')}" />
+	</beans:bean>
+
+	<service ref="deployerConfig"
+		interface="org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration" />
+
+	<beans:bean id="applicationDeploymentEventNotifier"
+		class="org.eclipse.virgo.kernel.deployer.core.event.ApplicationDeploymentEventNotifier">
+		<beans:constructor-arg ref="deploymentListeners" />
+	</beans:bean>
+
+	<set id="deploymentListeners"
+		interface="org.eclipse.virgo.kernel.deployer.core.event.DeploymentListener"
+		cardinality="0..N" />
+
+	<reference id="packageAdminUtil"
+		interface="org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil" />
+
+	<!--  scoping -->
+	<reference id="scopeFactory"
+		interface="org.eclipse.virgo.nano.shim.scope.ScopeFactory" />
+
+	<beans:bean id="scopeServiceRepository"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardScopeServiceRepository" />
+
+	<service ref="scopeServiceRepository"
+		interface="org.eclipse.virgo.kernel.install.artifact.ScopeServiceRepository" />
+
+	<!--  basic artifact identity determination -->
+	<service
+		interface="org.eclipse.virgo.kernel.install.artifact.ArtifactIdentityDeterminer">
+		<beans:bean
+			class="org.eclipse.virgo.kernel.install.artifact.internal.StandardArtifactIdentityDeterminer">
+			<beans:constructor-arg>
+				<set id="artifactBridges" interface="org.eclipse.virgo.repository.ArtifactBridge" />
+			</beans:constructor-arg>
+		</beans:bean>
+	</service>
+
+	<beans:bean id="artifactIdentityDeterminer"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.DelegatingServiceRegistryBackedArtifactIdentityDeterminer"
+		init-method="init" destroy-method="destroy">
+		<beans:constructor-arg ref="bundleContext" />
+	</beans:bean>
+
+	<beans:bean id="refreshHandler"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.StandardInstallArtifactRefreshHandler">
+		<beans:constructor-arg ref="installEnvironmentFactory" />
+		<beans:constructor-arg ref="refreshSubpipeline" />
+	</beans:bean>
+
+	<!--  basic artifact type factories -->
+	<beans:bean id="bundleInstallArtifactGraphFactory"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.bundle.BundleInstallArtifactGraphFactory">
+		<beans:constructor-arg ref="osgiFramework" />
+		<beans:constructor-arg ref="bundleContext" />
+		<beans:constructor-arg ref="refreshHandler" />
+		<beans:constructor-arg ref="bundleStarter" />
+		<beans:constructor-arg ref="tracingService" />
+		<beans:constructor-arg ref="packageAdminUtil" />
+		<beans:constructor-arg ref="userBundleContext" />
+		<beans:constructor-arg ref="eventLogger" />
+		<beans:constructor-arg ref="artifactIdentityDeterminer" />
+		<beans:constructor-arg ref="installArtifactGraph" />
+	</beans:bean>
+	
+	<beans:bean id="installArtifactGraph"
+      class="org.eclipse.virgo.kernel.install.artifact.internal.InstallArtifactDAGSingletonFactory"
+      factory-method="createInstance"/>
+	
+	<reference id="userBundleContext" interface="org.osgi.framework.BundleContext" filter="(org.eclipse.virgo.kernel.regionContext=true)"/>
+
+	<service ref="bundleInstallArtifactGraphFactory"
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory" />
+
+	<beans:bean id="configInstallArtifactGraphFactory"
+		class="org.eclipse.virgo.kernel.install.artifact.internal.ConfigInstallArtifactGraphFactory">
+		<beans:constructor-arg ref="bundleContext" />
+		<beans:constructor-arg ref="eventLogger" />
+		<beans:constructor-arg ref="installArtifactGraph" />
+	</beans:bean>
+
+	<service ref="configInstallArtifactGraphFactory"
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory" />
+
+	<service
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactGraphFactory">
+		<beans:bean
+			class="org.eclipse.virgo.kernel.install.artifact.internal.PlanInstallArtifactGraphFactory">
+			<beans:constructor-arg ref="bundleContext" />
+			<beans:constructor-arg ref="scopeServiceRepository" />
+			<beans:constructor-arg ref="scopeFactory" />
+			<beans:constructor-arg ref="eventLogger" />
+			<beans:constructor-arg ref="bundleInstallArtifactGraphFactory" />
+			<beans:constructor-arg ref="refreshHandler" />
+			<beans:constructor-arg ref="configInstallArtifactGraphFactory" />
+			<beans:constructor-arg ref="artifactStorageFactory" />
+			<beans:constructor-arg ref="artifactIdentityDeterminer" />
+			<beans:constructor-arg ref="installArtifactGraph" />
+		</beans:bean>
+	</service>
+
+	<service
+		interface="org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListener">
+		<beans:bean
+			class="org.eclipse.virgo.kernel.install.artifact.internal.AtomicInstallArtifactLifecycleListener" />
+	</service>
+
+</beans:beans>

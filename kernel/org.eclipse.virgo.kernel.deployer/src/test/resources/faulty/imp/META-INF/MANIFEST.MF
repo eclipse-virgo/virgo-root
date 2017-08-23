@@ -1,0 +1,5 @@
+Manifest-Version: 1
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: faulty.imp
+Bundle-Version: 1.2.3
+Import-Package: foo.bar

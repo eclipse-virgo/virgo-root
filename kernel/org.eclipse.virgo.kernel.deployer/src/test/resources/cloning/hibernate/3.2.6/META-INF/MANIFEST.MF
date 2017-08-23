@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.hibernate.clone
+Bundle-Version: 3.2.6
+Export-Package: org.hibernate;version="3.2.6"

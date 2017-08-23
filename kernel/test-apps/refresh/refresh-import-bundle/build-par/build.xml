@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RefreshTest-Import-Bundle">
+	
+	<path id="bundles">
+		<pathelement location="../exporter"/>
+		<pathelement location="../importer"/>
+	</path>
+
+	<property file="${basedir}/../../../build.properties"/>
+	<property name="par.output.file" value="${basedir}/../../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/refresh-import-bundle.par"/>
+
+	<import file="${basedir}/../../../../virgo-build/par/default.xml"/>
+
+</project>

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Import-Package: install.two,install.one
+Bundle-SymbolicName: install.three
+Export-Package: install.three
+

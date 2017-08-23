@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd">
+
+	<!-- Configuration for OSGi services that the kernel depends on and provides 
+		to the framework. These services are not considered part of the kernel API. -->
+
+	<osgi:reference id="configAdmin"
+		interface="org.osgi.service.cm.ConfigurationAdmin" />
+
+	<osgi:reference id="eventLogger"
+		interface="org.eclipse.virgo.medic.eventlog.EventLogger" />
+
+	<osgi:reference id="dumpGenerator"
+		interface="org.eclipse.virgo.medic.dump.DumpGenerator" />
+
+	<osgi:reference id="packageAdmin"
+		interface="org.osgi.service.packageadmin.PackageAdmin" />
+
+	<osgi:reference id="repository"
+		interface="org.eclipse.virgo.repository.Repository" />
+
+	<osgi:reference id="scopeFactory"
+		interface="org.eclipse.virgo.nano.shim.scope.ScopeFactory" />
+
+	<osgi:reference id="shutdown"
+		interface="org.eclipse.virgo.nano.core.Shutdown" />
+
+	<osgi:reference id="tracingService"
+		interface="org.eclipse.virgo.nano.shim.serviceability.TracingService" />
+
+	<osgi:reference id="workArea"
+		interface="org.eclipse.virgo.kernel.services.work.WorkArea" />
+
+	<osgi:reference id="osgiFramework"
+		interface="org.eclipse.virgo.kernel.osgi.framework.OsgiFramework" />
+
+	<osgi:reference id="quasiFrameworkFactory"
+		interface="org.eclipse.virgo.kernel.osgi.quasi.QuasiFrameworkFactory" />
+
+	<osgi:reference id="eventAdmin" interface="org.osgi.service.event.EventAdmin" />
+
+	<osgi:reference id="bundleStarter"
+		interface="org.eclipse.virgo.nano.core.BundleStarter"
+		context-class-loader="unmanaged" />
+
+	<osgi:reference id="importExpander"
+		interface="org.eclipse.virgo.kernel.osgi.framework.ImportExpander" />
+
+	<!-- services -->
+	<osgi:service ref="moduleContextEventPublisher"
+		interface="org.eclipse.virgo.kernel.module.ModuleContextEventPublisher" />
+
+</beans>

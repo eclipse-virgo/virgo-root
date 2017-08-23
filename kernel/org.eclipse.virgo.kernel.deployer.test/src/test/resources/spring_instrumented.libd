@@ -1,0 +1,5 @@
+Library-SymbolicName: org.springframework
+Library-Version: 2.5.3
+Import-Bundle: org.springframework.core.instrumented;version="[2.5.3,3.0.0)",
+ org.springframework.beans.instrumented;version="[2.5.3,3.0.0)"
+ 

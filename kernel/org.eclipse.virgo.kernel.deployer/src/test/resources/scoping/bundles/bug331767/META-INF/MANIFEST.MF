@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Export-Package: bug331767;version="1.0.0";uses:="org.osgi.fra
+ mework",foo.test;version="0.4.1"
+Import-Package: foo.test;version="0.4.1"
+Require-Bundle: foobundle;visibility:=reexport
+Import-Library: javax_persistence;version="1.0.0"
+Bundle-Classpath: .
+Bundle-Name: Dynamic Import Problem
+Created-By: Apache Maven
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+DynamicImport-Package: *,*;testattr=test
+Bundle-Version: 1.0.0
+Build-Jdk: 1.6.0_20
+Bundle-Activator: bug331767.Activator
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: BUNDLEbug331767

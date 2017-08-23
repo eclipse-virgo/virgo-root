@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="synthetic.tccl">
+
+	<path id="bundles">
+		<pathelement location="../synthetic.tccl.bundle.a"/>
+		<pathelement location="../synthetic.tccl.bundle.b"/>
+	</path>
+
+	<property file="${basedir}/../../build.properties"/>
+	<property name="par.output.dir" value="${basedir}/../../../org.eclipse.virgo.kernel.deployer.test/src/test/resources/synthetic-tccl"/>
+	<import file="${basedir}/../../../virgo-build/par/default.xml"/>
+
+</project>

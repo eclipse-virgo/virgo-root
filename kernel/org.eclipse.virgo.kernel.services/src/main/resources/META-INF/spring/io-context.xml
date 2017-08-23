@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<beans:bean id="workAreaFactory" class="org.eclipse.virgo.kernel.services.work.WorkAreaServiceFactory">
+		<beans:constructor-arg value="#{kernelConfig.getProperty('work.directory')}"/>
+	</beans:bean>
+	
+	<beans:bean id="kernelWorkArea" class="org.eclipse.virgo.kernel.services.work.StandardWorkArea">
+		<beans:constructor-arg value="#{kernelConfig.getProperty('work.directory')}"/>
+		<beans:constructor-arg value="#{bundleContext.bundle}"/>
+	</beans:bean>
+	
+	<service interface="org.eclipse.virgo.kernel.services.work.WorkArea" ref="workAreaFactory"/>
+	
+	<reference id="kernelConfig" interface="org.eclipse.virgo.nano.core.KernelConfig"/>
+	
+</beans:beans>

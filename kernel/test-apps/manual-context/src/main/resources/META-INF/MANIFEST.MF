@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: manual.context
+Bundle-Name: Manual Context Test
+Import-Package: org.osgi.framework,
+ org.springframework.context.support
+Bundle-Activator: eg.Activator
+

@@ -1,0 +1,18 @@
+@import "common.css";
+
+/* 
+ * Virgo Admin Console
+ *
+ * Styles for the artifacts page
+ *
+ * Christopher Frost - 2011
+ */
+
+.repository-table .repository-deploy {
+	color: transparent;
+}
+
+.table-tr-hovered .repository-deploy {
+	color: #666666;
+	cursor: pointer;
+}

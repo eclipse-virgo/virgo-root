@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: install.optional.dep.dep
+Export-Package: pqr
+Import-Package: foo
+

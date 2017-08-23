@@ -1,0 +1,3 @@
+Bundle-SymbolicName: three
+Bundle-Version: 1
+Bundle-ManifestVersion: 2

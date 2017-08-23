@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="agentDMStartTracker" enabled="false" xmlns:src="http://www.osgi.org/xmlns/src/v1.1.0">
+	<implementation class="org.eclipse.virgo.kernel.agent.dm.StandardAgentDMStartTracker"/>
+	<service>
+      <provide interface="org.eclipse.virgo.kernel.agent.dm.AgentDMStartTracker"/>
+   	</service>
+</component>

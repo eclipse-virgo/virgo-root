@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel Unit Test Stubs
+Bundle-SymbolicName: org.eclipse.virgo.kernel.stubs
+Bundle-Version: ${version}
+Import-Template: 
+ org.eclipse.virgo.kernel.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.nano.*;version="${version:[=.=.=, =.+1)}",
+ org.eclipse.virgo.util.*;version="${version:[=.=.=, =.+1)}",
+ org.osgi.framework.*;version="0"

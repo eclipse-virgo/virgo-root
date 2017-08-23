@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: dependent.bundle
+Bundle-Version: 1.0.0.SNAPSHOT
+Import-Library: org.springframework.spring
