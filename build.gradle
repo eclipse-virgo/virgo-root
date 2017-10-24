@@ -418,8 +418,8 @@ configure(javaProjects + aspectjProjects) {
     apply plugin: 'java'
     apply plugin: 'eclipse'
 
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 
     compileJava {
         options.encoding = 'utf-8'
@@ -469,8 +469,8 @@ configure(javaProjects + aspectjProjects) {
 
     eclipse {
         jdt {
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
         }
     }
 }
