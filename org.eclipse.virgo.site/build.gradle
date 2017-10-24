@@ -1,11 +1,8 @@
-import org.apache.tools.ant.filters.ReplaceTokens
+import virgobuild.Constants
 
 import static virgobuild.UpdateSitePlugin.CREATE_P2_REPOSITORY_TASK_NAME
-import static virgobuild.UpdateSitePlugin.PRE_NORMALIZED_BUNDLES_DIR_NAME
 import static virgobuild.VirgoToolsPlugin.installProduct
 import static virgobuild.VirgoToolsPlugin.publishProduct
-
-import virgobuild.Constants
 
 apply plugin: virgobuild.UpdateSitePlugin
 apply plugin: 'org.hidetake.ssh'
@@ -35,7 +32,7 @@ updateSite {
 remotes {
     eclipseDotOrg {
         host = ECLIPSE_ORG_FTP_HOST
-        user =  ECLIPSE_ORG_FTP_USER
+        user = ECLIPSE_ORG_FTP_USER
         password = ECLIPSE_ORG_FTP_PASSWORD
         knownHosts = project.rootProject.file('gradle/ssh/known_hosts')
     }
@@ -76,7 +73,6 @@ dependencies {
     // TODO - review if all those signedExternalPlugins are signed
     signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
     // optional requirement for org.springframework.core
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 
     signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
 
@@ -118,10 +114,10 @@ dependencies {
 
     // TODO - review if all those signedExternalPlugins are signed
     signedExternalPlugin group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-    // exports package org.apache.commons.logging (jcl - Jakarta Commons Logging)
-    signedExternalPlugin group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
-    signedExternalPlugin group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
     signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
+    // exports package org.apache.commons.logging (jcl - Jakarta Commons Logging)
+    signedExternalPlugin group: "org.slf4j", name: "jcl-over-slf4j", version: slf4jVersion
+    signedExternalPlugin group: "org.slf4j", name: "log4j-over-slf4j", version: slf4jVersion
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
 
@@ -172,7 +168,8 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar" // contains org.osgi.jmx
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
+    // contains org.osgi.jmx
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
@@ -380,12 +377,12 @@ dependencies {
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.tools')
 }
 
-task zipUpdateSite(type: Zip, dependsOn : createP2Repository) {
+task zipUpdateSite(type: Zip, dependsOn: createP2Repository) {
     from "${buildDir}/repository"
     baseName 'repository'
 }
 
-task uploadUpdateSite(dependsOn : createP2Repository) {
+task uploadUpdateSite(dependsOn: createP2Repository) {
     description = "Uploads the generated update site to the eclipse.org server."
 
     doLast {
@@ -402,9 +399,9 @@ task uploadUpdateSite(dependsOn : createP2Repository) {
         // create composite update site for the root of the release repository and for the versions folder
         def config = eclipsebuild.BuildshipConfig.on(project)
         def compositeFolders = config.isRelease() ? [
-            releaseTypeFolder,
-            versionFolder
-        ]: [versionFolder]
+                releaseTypeFolder,
+                versionFolder
+        ] : [versionFolder]
 
         // upload the update site and update the composite descriptors
         ssh.run {
@@ -416,8 +413,10 @@ task uploadUpdateSite(dependsOn : createP2Repository) {
                 put from: files { file("$buildDir/repository").listFiles() }, into: repositoryFolder
 
                 // recreate the compositeArtifacts.jar and the compositeContent.jar files
-                compositeFolders.each { execute("""cd ${it}
-                      ${file('updateCompositeUpdateSite.sh').text}""") }
+                compositeFolders.each {
+                    execute("""cd ${it}
+                      ${file('updateCompositeUpdateSite.sh').text}""")
+                }
             }
         }
     }
@@ -426,11 +425,11 @@ task uploadUpdateSite(dependsOn : createP2Repository) {
 // utility methods
 def releaseTypeFolder(Project project) {
     def config = eclipsebuild.BuildshipConfig.on(project)
-    if(config.isRelease()) {
+    if (config.isRelease()) {
         "releases"
-    } else if(config.isMilestone()){
+    } else if (config.isMilestone()) {
         "milestones"
-    } else if(config.isSnapshot()) {
+    } else if (config.isSnapshot()) {
         "snapshots"
     } else {
         throw new IllegalStateException("BuildshipConfig must either be a release, milestone, or snapshot.")
@@ -529,8 +528,10 @@ private void addExtraPropertiesToArtifactsXml(Node artifactsXml) {
     if (ECLIPSE_ORG_MIRROR_PATH) {
         // add p2.mirrorsUrl to the properties section
         // https://wiki.eclipse.org/Equinox/p2/p2.mirrorsURL
-        def mainPropertiesNode = artifactsXml.depthFirst().find { it.parent()?.name() == 'repository' && it.name() == 'properties' }
-        new Node(mainPropertiesNode, 'property', ['name': 'p2.mirrorsURL', 'value': calculateP2MirrorsUrl(project)] )
+        def mainPropertiesNode = artifactsXml.depthFirst().find {
+            it.parent()?.name() == 'repository' && it.name() == 'properties'
+        }
+        new Node(mainPropertiesNode, 'property', ['name': 'p2.mirrorsURL', 'value': calculateP2MirrorsUrl(project)])
 
         // add download.stats property to each installable unit
         // https://wiki.eclipse.org/Equinox_p2_download_stats#Enabling_stats_in_your_repository
@@ -544,7 +545,7 @@ private void addExtraPropertiesToArtifactsXml(Node artifactsXml) {
                     it.parent()?.@classifier == 'org.eclipse.update.feature' &&
                     it.name() == 'properties'
         }.each {
-            new Node(it, 'property', ['name': 'download.stats', 'value': it.parent().@id ] )
+            new Node(it, 'property', ['name': 'download.stats', 'value': it.parent().@id])
             it.@size = it.children().size()
         }
     }
@@ -562,8 +563,8 @@ def calculateStatsUri(Project project) {
 // TODO - think about a way to trigger :org.eclipse.virgo.site:publishBase and :org.eclipse.virgo.site:publishKernelBase after site creation
 project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
     if (taskName.startsWith("publish")) {
-        project.task (taskName, dependsOn: [
-            ":org.eclipse.virgo.site:${CREATE_P2_REPOSITORY_TASK_NAME}",
+        project.task(taskName, dependsOn: [
+                ":org.eclipse.virgo.site:${CREATE_P2_REPOSITORY_TASK_NAME}",
         ]) {
             def product = 'undefined'
             switch (taskName.toString() - 'publish') {
@@ -593,9 +594,9 @@ project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
 }
 
 // for testing purposes only
-task ('installProductNanoBase', dependsOn: [
-    'publishNanoCore',
-    'publishNanoBase'
+task('installProductNanoBase', dependsOn: [
+        'publishNanoCore',
+        'publishNanoBase'
 ]) {
 
     description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
@@ -609,10 +610,10 @@ task ('installProductNanoBase', dependsOn: [
 }
 
 // for testing purposes only
-task ('installProductNano', dependsOn: [
-    'publishNanoCore',
-    'publishNanoBase',
-    'publishNano',
+task('installProductNano', dependsOn: [
+        'publishNanoCore',
+        'publishNanoBase',
+        'publishNano',
 ]) {
 
     description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
@@ -626,11 +627,11 @@ task ('installProductNano', dependsOn: [
 }
 
 // for testing purposes only
-task ('installProductNanoFull', dependsOn: [
-    'publishNanoCore',
-    'publishNanoBase',
-    'publishNano',
-    'publishNanoFull',
+task('installProductNanoFull', dependsOn: [
+        'publishNanoCore',
+        'publishNanoBase',
+        'publishNano',
+        'publishNanoFull',
 ]) {
 
     description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
