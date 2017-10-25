@@ -1,10 +1,11 @@
 org.osgi.framework.system.packages = \
  javax.accessibility,\
  javax.activation,\
- javax.activation;version="1.1.0",\
+ javax.activation;version="1.1.1",\
  javax.activity,\
  javax.annotation,\
  javax.annotation;version="1.0.0",\
+ javax.annotation;version="1.1.0",\
  javax.annotation.processing,\
  javax.crypto,\
  javax.crypto.interfaces,\
@@ -74,6 +75,7 @@ org.osgi.framework.system.packages = \
  javax.swing.plaf.basic,\
  javax.swing.plaf.metal,\
  javax.swing.plaf.multi,\
+ javax.swing.plaf.nimbus,\
  javax.swing.plaf.synth,\
  javax.swing.table,\
  javax.swing.text,\
@@ -144,11 +146,15 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.soap;version="2.1.1",\
  javax.xml.ws.spi,\
  javax.xml.ws.spi;version="2.1.1",\
+ javax.xml.ws.spi.http,\
+ javax.xml.ws.spi.http;version="2.1.1",\
+ javax.xml.ws.wsaddressing,\
+ javax.xml.ws.wsaddressing;version="2.1.1",\
  javax.xml.xpath,\
+ org.eclipse.virgo.kernel.equinox.extensions,\
  org.eclipse.virgo.kernel.equinox.extensions;version="3.7.0",\
+ org.eclipse.virgo.kernel.equinox.extensions.hooks,\
  org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.7.0",\
- org.eclipse.virgo.test.launcher;version="3.7.0",\
- org.eclipse.virgo.util.parser.launcher;version="3.7.0",\
  org.ietf.jgss,\
  org.omg.CORBA,\
  org.omg.CORBA_2_3,\
@@ -187,26 +193,42 @@ org.osgi.framework.system.packages = \
  org.w3c.dom.ranges,\
  org.w3c.dom.stylesheets,\
  org.w3c.dom.traversal,\
- org.w3c.dom.views ,\
+ org.w3c.dom.views,\
+ org.w3c.dom.xpath,\
  org.xml.sax,\
  org.xml.sax.ext,\
  org.xml.sax.helpers
 org.osgi.framework.bootdelegation = \
- com_cenqua_clover,\
- com.cenqua.*,\
- com.yourkit.*,\
  org.eclipse.virgo.nano.authentication,\
- com.sun.*,\
+ javax.*,\
  javax.xml.*,\
  org.apache.xerces.jaxp.*,\
+ org.ietf.jgss,\
+ org.omg.*,\
  org.w3c.*,\
  org.xml.*,\
- sun.*
+ sun.*,\
+ com.sun.*
 org.osgi.framework.executionenvironment = \
  OSGi/Minimum-1.0,\
  OSGi/Minimum-1.1,\
+ OSGi/Minimum-1.2,\
+ JavaSE/compact1-1.8,\
+ JavaSE/compact2-1.8,\
+ JavaSE/compact3-1.8,\
+ JRE-1.1,\
+ J2SE-1.2,\
  J2SE-1.3,\
  J2SE-1.4,\
  J2SE-1.5,\
- JavaSE-1.6
-osgi.java.profile.name = Virgo-AppServer-Java6
+ JavaSE-1.6,\
+ JavaSE-1.7,\
+ JavaSE-1.8
+org.osgi.framework.system.capabilities = \
+ osgi.ee; osgi.ee="OSGi/Minimum"; version:List<Version>="1.0, 1.1, 1.2",\
+ osgi.ee; osgi.ee="JRE"; version:List<Version>="1.0, 1.1",\
+ osgi.ee; osgi.ee="JavaSE"; version:List<Version>="1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8",\
+ osgi.ee; osgi.ee="JavaSE/compact1"; version:List<Version>="1.8",\
+ osgi.ee; osgi.ee="JavaSE/compact2"; version:List<Version>="1.8",\
+ osgi.ee; osgi.ee="JavaSE/compact3"; version:List<Version>="1.8"
+osgi.java.profile.name = Virgo-Java8
