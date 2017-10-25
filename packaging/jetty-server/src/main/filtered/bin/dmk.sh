@@ -178,7 +178,7 @@ then
 		mkdir -p "$TMP_DIR"
 
         JAVA_OPTS="-Xmx1024m \
-                    -XX:MaxPermSize=512m $JAVA_OPTS"
+                    -XX:MaxMetaspaceSize=512m $JAVA_OPTS"
 
 		cd "$KERNEL_HOME"; exec $JAVA_EXECUTABLE \
 			$JAVA_OPTS \
