@@ -11,20 +11,6 @@
 
 package org.eclipse.virgo.shell.osgicommand.internal;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.util.Enumeration;
-
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
@@ -36,6 +22,17 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.util.Enumeration;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for class loading commands
@@ -127,7 +124,8 @@ public class GogoClassLoadingCommandTests {
         String output = getOutput();
 
         assertTrue("Command output [" + output + "] does not contain class name [" + CLASS_NAME + "]", output.contains("" + CLASS_NAME_PATH));
-        assertTrue("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE + "]", output.contains("" + CLASS_PACKAGE_PATH));
+        assertTrue("Command output [" + output + "] does not contain class package [" + CLASS_PACKAGE + "]",
+            output.contains("" + CLASS_PACKAGE_PATH));
         assertFalse("Command output [" + output + "] contains bundle ID [" + BUNDLE_ID + "]", output.contains("" + BUNDLE_ID));
         assertFalse("Command output [" + output + "] contains bundle symbolic name [" + BUNDLE_SYMBOLIC_NAME + "]",
             output.contains(BUNDLE_SYMBOLIC_NAME));
@@ -191,7 +189,7 @@ public class GogoClassLoadingCommandTests {
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
         PackageAdmin packageAdmin = createMock(PackageAdmin.class);
-        ServiceReference packageAdminServiceReference = createMock(ServiceReference.class);
+        ServiceReference<PackageAdmin> packageAdminServiceReference = createMock(ServiceReference.class);
 
         expect((Class) bundle.loadClass(CLASS_NAME)).andReturn(GogoClassLoadingCommandTests.class);
         expect(bundle.getBundleId()).andReturn(BUNDLE_ID);
@@ -266,11 +264,11 @@ public class GogoClassLoadingCommandTests {
         verify(bundle, bundleContext);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     @Test
     public void testClExportWithMissingPackage() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
-        ServiceReference platformAdminServiceReference = createMock(ServiceReference.class);
+        ServiceReference<PlatformAdmin> platformAdminServiceReference = createMock(ServiceReference.class);
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
         State bundleState = createMock(State.class);
@@ -303,7 +301,7 @@ public class GogoClassLoadingCommandTests {
     @Test
     public void testClExportWithExportedPackage() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
-        ServiceReference platformAdminServiceReference = createMock(ServiceReference.class);
+        ServiceReference<PlatformAdmin> platformAdminServiceReference = createMock(ServiceReference.class);
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
         State bundleState = createMock(State.class);
@@ -336,11 +334,11 @@ public class GogoClassLoadingCommandTests {
         verify(platformAdmin, platformAdminServiceReference, bundle, bundleContext, bundleState, bundleDescription, exportPackageDescription);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     @Test
     public void testClExportWithExportedPackageMissingClass() throws Exception {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
-        ServiceReference platformAdminServiceReference = createMock(ServiceReference.class);
+        ServiceReference<PlatformAdmin> platformAdminServiceReference = createMock(ServiceReference.class);
         Bundle bundle = createMock(Bundle.class);
         BundleContext bundleContext = createMock(BundleContext.class);
         State bundleState = createMock(State.class);
