@@ -129,6 +129,10 @@ dependencies {
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.ds')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+
+    // Provides deprecated PlatformAdminImpl (has been removed from oerg.eclipse.osgi)
+    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.compatibility.state", version: osgiCompatibilityStateVersion, configuration: "compile", ext: "jar"
+
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.common", version: equinoxCommonVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
@@ -165,7 +169,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: springframeworkGroupId, name: springframeworkArtifactPrefix + "expression", version: springframeworkVersion, ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
@@ -198,10 +202,11 @@ dependencies {
     // TODO - rename feature to org.eclipse.gemini.blueprint
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: springframeworkGroupId, name: springframeworkArtifactPrefix + "aop", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: springframeworkGroupId, name: springframeworkArtifactPrefix + "expression", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: springframeworkGroupId, name: springframeworkArtifactPrefix + "beans", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: springframeworkGroupId, name: springframeworkArtifactPrefix + "context", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin group: springframeworkGroupId, name: springframeworkArtifactPrefix + "core", version: springframeworkVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"

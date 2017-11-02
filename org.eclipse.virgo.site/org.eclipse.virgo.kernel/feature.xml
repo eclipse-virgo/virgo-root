@@ -23,6 +23,15 @@
 		<import feature="org.eclipse.equinox.regions" version="0.0.0"/>
 	</requires>
 
+	<!-- TODO - merge with above into org.eclipse.equinox.feature? -->
+   <plugin
+		id="org.eclipse.osgi.compatibility.state"
+		download-size="0"
+		install-size="0"
+		version="@OSGI.COMPATIBILITY.STATE.VERSION@"
+		unpack="false"
+		autostart="true"/>
+
    <plugin
 		id="org.eclipse.virgo.kernel.deployer"
 		download-size="0"
