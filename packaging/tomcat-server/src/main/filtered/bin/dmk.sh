@@ -146,7 +146,7 @@ then
     ACCESS_PROPERTIES=$CONFIG_DIR/org.eclipse.virgo.kernel.jmxremote.access.properties
     AUTH_LOGIN=$CONFIG_DIR/org.eclipse.virgo.kernel.authentication.config
     AUTH_FILE=$CONFIG_DIR/org.eclipse.virgo.kernel.users.properties
-    CONFIG_AREA=$KERNEL_HOME/work
+    CONFIG_AREA=$KERNEL_HOME/configuration
     JAVA_PROFILE=$KERNEL_HOME/configuration/java-server.profile
 
     if $cygwin; then
