@@ -13,7 +13,9 @@ package org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook;
 
 public class ClasspathExtenderClassLoadingHookException extends Exception {
 
-	public ClasspathExtenderClassLoadingHookException(String message) {
+	private static final long serialVersionUID = 1L;
+
+    public ClasspathExtenderClassLoadingHookException(String message) {
 		super(message);
 	}
 	

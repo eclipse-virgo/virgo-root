@@ -16,12 +16,10 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleData;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
-import org.osgi.framework.Bundle;
-
 import org.eclipse.gemini.web.core.WebApplication;
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
+import org.osgi.framework.Bundle;
 
 
 /**
@@ -34,7 +32,7 @@ import org.eclipse.gemini.web.core.WebApplication;
  * Thread-safe.
  *
  */
-final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
+final class WebAppClassLoaderDelegateHook extends ClassLoaderHook {
     
     private static final Object DELEGATION_IN_PROGRESS_MARKER = new Object();
     
@@ -53,7 +51,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> postFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
         if (this.delegationInProgress.get() == null) {
             try {
                 this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
@@ -75,14 +73,14 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public String postFindLibrary(String name, BundleClassLoader classLoader, BundleData data) {        
+    public String postFindLibrary(String name, ModuleClassLoader classLoader) {        
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {  
+    public URL postFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {  
         if (this.delegationInProgress.get() == null) {
             try {
                 this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
@@ -104,7 +102,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> postFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         if (this.delegationInProgress.get() == null) {
             try {
                 this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
@@ -129,28 +127,28 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> preFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public String preFindLibrary(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public URL preFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         return null;
     }
 

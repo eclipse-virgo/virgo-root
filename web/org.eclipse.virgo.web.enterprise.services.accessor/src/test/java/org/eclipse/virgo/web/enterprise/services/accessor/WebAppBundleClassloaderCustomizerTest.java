@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableDelegatingClassLoaderDelegateHook;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -91,7 +91,7 @@ public class WebAppBundleClassloaderCustomizerTest {
 
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook().getApiBundles().contains(apiBundle));
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook().getImplBundles().contains(implBundle));
-        assertTrue(((List<ClassLoaderDelegateHook>) field.get(PluggableDelegatingClassLoaderDelegateHook.getInstance())).contains(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook()));
+        assertTrue(((List<ClassLoaderHook>) field.get(PluggableDelegatingClassLoaderDelegateHook.getInstance())).contains(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook()));
 
         assertTrue(webAppBundleClassloaderCustomizer.extendClassLoaderChain(webBundle).length == 0);
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleTrackerCustomizer().getExposeAdditionalApiBundles().isEmpty());
@@ -101,7 +101,7 @@ public class WebAppBundleClassloaderCustomizerTest {
 
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook().getApiBundles().isEmpty());
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook().getImplBundles().isEmpty());
-        assertTrue(((List<ClassLoaderDelegateHook>) field.get(PluggableDelegatingClassLoaderDelegateHook.getInstance())).isEmpty());
+        assertTrue(((List<ClassLoaderHook>) field.get(PluggableDelegatingClassLoaderDelegateHook.getInstance())).isEmpty());
 
         verify(ctx, bundleContext, apiBundle, implBundle, webBundle, bundleRevision, bundleWiring);
     }

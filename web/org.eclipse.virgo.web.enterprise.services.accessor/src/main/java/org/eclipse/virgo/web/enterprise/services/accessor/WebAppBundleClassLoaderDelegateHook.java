@@ -28,10 +28,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleData;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
+import org.eclipse.osgi.container.ModuleWiring;
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.FrameworkUtil;
@@ -42,7 +41,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
+class WebAppBundleClassLoaderDelegateHook extends ClassLoaderHook {
 
     private static final String GEMINI_WEB_TOMCAT_SYMBOLIC_NAME = "org.eclipse.gemini.web.tomcat";
 
@@ -179,15 +178,14 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
+    public Class<?> postFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
     	if(matchesNegativeCache(name)) {
     		return null;
     	}
         if (shouldEnter(MAX_IMPL_SEARCH_DEPTH)) {
             try {
                 enter();
-
-                Bundle bundle = bd.getBundle();
+                Bundle bundle = classLoader.getBundle();
                 	
 				if (this.implBundles.contains(bundle)) {
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -216,7 +214,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         if (shouldEnter(MAX_API_SEARCH_DEPTH)) {
         	try {
         		enter();
-        		Bundle bundle = bd.getBundle();
+        		Bundle bundle = classLoader.getBundle();
 
         		if (this.webAppBundles.containsKey(bundle)) {
         			for (Bundle postFindApiProvider : postFindApiBundles) {
@@ -251,18 +249,18 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public String postFindLibrary(String name, BundleClassLoader bcl, BundleData bd) {
+    public String postFindLibrary(String name, ModuleClassLoader classLoader) {
         // no-op
         return null;
     }
 
     @Override
-    public URL postFindResource(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public URL postFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         if (shouldEnter(MAX_RESOURCE_SEARCH_DEPTH)) {
             try {
                 enter();
 
-                Bundle bundle = bd.getBundle();
+                Bundle bundle = classLoader.getBundle();
 
                 if (this.webAppBundles.containsKey(bundle)) {
                     return doFindApiResource(name);
@@ -315,12 +313,12 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public Enumeration<URL> postFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         if (shouldEnter(MAX_RESOURCE_SEARCH_DEPTH)) {
             try {
                 enter();
 
-                Bundle bundle = bd.getBundle();
+                Bundle bundle = classLoader.getBundle();
 
                 if (this.webAppBundles.containsKey(bundle)) {
                     return doFindApiResources(name);
@@ -347,7 +345,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
+    public Class<?> preFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
     	if(matchesNegativeCache(name)) {
     		return null;
     	}
@@ -355,7 +353,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
             try {
                 enter();
 
-                Bundle bundle = bd.getBundle();
+                Bundle bundle = classLoader.getBundle();
 
                 if (this.webAppBundles.containsKey(bundle)) {
                     if (checkPackageInImport(name, this.webAppBundles.get(bundle))) {
@@ -381,19 +379,19 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public String preFindLibrary(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public String preFindLibrary(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         // no-op
         return null;
     }
 
     @Override
-    public URL preFindResource(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public URL preFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         // no-op
         return null;
     }
 
     @Override
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         // no-op
         return null;
     }
@@ -542,14 +540,17 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     private ClassLoader getBundleClassloader(Bundle bundle) {
-        if (bundle instanceof BundleHost) {
-            return ((BundleHost) bundle).getClassLoader();
-        } else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Cannot obtain classloader for bundle " + bundle);
-            }
-            return null;
-        }
+        BundleWiring moduleWiring = bundle.adapt(BundleWiring.class);
+        return moduleWiring.getClassLoader();
+        // TODO Think about fragments here?
+//        if (bundle instanceof BundleHost) {
+//            return ((BundleHost) bundle).getClassLoader();
+//        } else {
+//            if (LOGGER.isDebugEnabled()) {
+//                LOGGER.debug("Cannot obtain classloader for bundle " + bundle);
+//            }
+//            return null;
+//        }
     }
 
     Set<Bundle> getApiBundles() {

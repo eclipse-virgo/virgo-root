@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -35,9 +36,7 @@ import java.util.jar.Manifest;
 
 import org.eclipse.gemini.web.core.InstallationOptions;
 import org.eclipse.gemini.web.core.WebBundleManifestTransformer;
-import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.framework.internal.core.PackageAdminImpl;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.nano.core.KernelConfig;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
@@ -56,6 +55,8 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -379,10 +380,15 @@ public class WARDeployer implements SimpleDeployer {
             	}
             	wabStates.put(bundle.getSymbolicName(), "");
             	bundle.stop();
-            	if (bundle instanceof BundleHost) {
-            		BundleClassLoader loader = (BundleClassLoader)((BundleHost) bundle).getClassLoader(); 
-            		loader.close();
-            	}
+            	BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+            	// TODO filter fragment?
+            	// TODO add type check before cast?
+            	ModuleClassLoader loader = (ModuleClassLoader) bundleWiring.getClassLoader();
+            	loader.close();
+//            	if (bundle instanceof BundleHost) {
+//            		BundleClassLoader loader = (BundleClassLoader)((BundleHost) bundle).getClassLoader(); 
+//            		loader.close();
+//            	}
                 // Extract the war file to the webapps directory. Use always JarUtils.unpackToDestructive.
                 try {
                     JarUtils.unpackToDestructive(new PathReference(updatedFile), new PathReference(warDir));
@@ -398,8 +404,13 @@ public class WARDeployer implements SimpleDeployer {
                 transformUnpackedManifest(warDir, warName);
                 this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
-                if (this.packageAdmin != null) {
-                    ((PackageAdminImpl)this.packageAdmin).refreshPackages(new Bundle[] { bundle }, true, null);
+                FrameworkWiring frameworkWiring = bundle.adapt(FrameworkWiring.class);
+                // TODO is this sanity check necessary ?!
+//                if (this.packageAdmin != null) {
+//                    ((PackageAdminImpl)this.packageAdmin).refreshPackages(new Bundle[] { bundle }, true, null);
+//                }
+                if (frameworkWiring != null) {
+                    frameworkWiring.refreshBundles(Collections.singletonList(bundle));
                     this.logger.info("Update of file with path [" + path + "] is successful.");
                 }
                 bundle.start();

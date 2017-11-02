@@ -30,10 +30,9 @@ import org.apache.tomcat.JarScanType;
 import org.apache.tomcat.JarScanner;
 import org.apache.tomcat.JarScannerCallback;
 import org.apache.tomcat.util.scan.JarFactory;
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
-import org.eclipse.osgi.framework.adaptor.BundleData;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
+import org.eclipse.osgi.internal.framework.EquinoxBundle;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,12 +158,10 @@ public class ClassLoaderJarScanner implements JarScanner {
     }
 
     private BundleFile getBundleFile(Bundle bundle) {
-        if (bundle instanceof BundleHost) {
-            BundleHost bh = (BundleHost) bundle;
-            BundleData bundleData = bh.getBundleData();
-            if (bundleData instanceof BaseData) {
-                return ((BaseData) bundleData).getBundleFile();
-            }
+        if (bundle instanceof EquinoxBundle) {
+            EquinoxBundle equinoxBundle = (EquinoxBundle) bundle;
+            Generation generation = (Generation) equinoxBundle.getModule().getCurrentRevision().getRevisionInfo();
+            return generation.getBundleFile();
         }
         return null;
     }

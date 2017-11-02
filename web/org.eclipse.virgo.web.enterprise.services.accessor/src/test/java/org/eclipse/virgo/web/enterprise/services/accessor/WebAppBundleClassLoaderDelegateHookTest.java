@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
 import org.eclipse.osgi.framework.adaptor.BundleData;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleRevision;
@@ -39,7 +40,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
     @Test
     public void testPostFindWithWAB() throws ClassNotFoundException, IOException {
         BundleData bd = createMock(BundleData.class);
-        BundleClassLoader bcl = createMock(BundleClassLoader.class);
+        ModuleClassLoader bcl = createMock(ModuleClassLoader.class);
         Bundle wab = createMock(Bundle.class);
         Bundle apiBundle = createMock(Bundle.class);
         BundleRevision bundleRevision = createMock(BundleRevision.class);
