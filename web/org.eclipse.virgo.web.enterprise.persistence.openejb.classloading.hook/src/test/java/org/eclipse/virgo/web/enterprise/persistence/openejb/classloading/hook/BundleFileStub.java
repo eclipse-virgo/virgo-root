@@ -15,8 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
+import org.eclipse.osgi.storage.bundlefile.BundleEntry;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
 
 public class BundleFileStub extends BundleFile {
 	private String classpath;
@@ -24,8 +24,10 @@ public class BundleFileStub extends BundleFile {
 	public String getClassPath() {
 		return classpath;
 	}
-	
+
 	public BundleFileStub(String classpath) {
+	    // TODO create new File()?!
+	    super(null);
 		this.classpath = classpath;
 	}
 	
@@ -61,5 +63,10 @@ public class BundleFileStub extends BundleFile {
 	@Override
 	public void open() throws IOException {
 	}
+
+    @Override
+    public Enumeration<String> getEntryPaths(String arg0, boolean arg1) {
+        return null;
+    }
 	
 }

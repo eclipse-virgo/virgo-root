@@ -19,9 +19,10 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.easymock.EasyMock;
-import org.eclipse.osgi.baseadaptor.loader.BaseClassLoader;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathManager;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathEntry;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -94,14 +95,15 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
     public void testAddClassPathEntryPositive() throws IOException {
         File jpaIntegrationFile = prepare();
         ArrayList<ClasspathEntry> cpEntries = new ArrayList<ClasspathEntry>();
-        BaseClassLoader classloader = EasyMock.createMock(BaseClassLoader.class);
-        BaseDataStub data = new BaseDataStub(0, null);
+        ModuleClassLoader classloader = EasyMock.createMock(ModuleClassLoader.class);
+        // BaseDataStub data = new BaseDataStub(0, null);
         Dictionary<String, String> manifest = new Hashtable<String, String>();
         manifest.put(WEB_CONTEXTPATH_HEADER, TESTAPP);
-        data.setManifest(manifest);
-        ClasspathManager classpathmanager = new ClasspathManagerStub(data, new String[] {}, classloader);
+        Generation data = null;
+        // data.setManifest(manifest);
+        ClasspathManager classpathmanager = new ClasspathManagerStub(data, classloader);
         AppLoaderClasspathExtenderClassLoadingHook hook = new AppLoaderClasspathExtenderClassLoadingHook();
-        boolean result = hook.addClassPathEntry(cpEntries, "", classpathmanager, data, new ProtectionDomain(null, null));
+        boolean result = hook.addClassPathEntry(cpEntries, "", classpathmanager, data);
         Assert.assertTrue("Classpath entry should be added successfully but it is not", result);
         Assert.assertTrue("There should be added only one classapth entry, but they are " + cpEntries.size(), cpEntries.size() == 1);
         ClasspathEntry entry = cpEntries.get(0);
@@ -112,24 +114,24 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
     @Test
     public void testAddClassPathEntryNegativeNotAppBundle() {
         ArrayList<ClasspathEntry> cpEntries = new ArrayList<ClasspathEntry>();
-        BaseClassLoader classloader = EasyMock.createMock(BaseClassLoader.class);
-        BaseDataStub data = new BaseDataStub(0, null);
+        ModuleClassLoader classloader = EasyMock.createMock(ModuleClassLoader.class);
+        Generation data = null;
         Dictionary<String, String> manifest = new Hashtable<String, String>();
-        data.setManifest(manifest);
-        ClasspathManager classpathmanager = new ClasspathManagerStub(data, new String[] {}, classloader);
+//        data.setManifest(manifest);
+        ClasspathManager classpathmanager = new ClasspathManagerStub(data, classloader);
         AppLoaderClasspathExtenderClassLoadingHook hook = new AppLoaderClasspathExtenderClassLoadingHook();
-        boolean result = hook.addClassPathEntry(cpEntries, "", classpathmanager, data, new ProtectionDomain(null, null));
+        boolean result = hook.addClassPathEntry(cpEntries, "", classpathmanager, data);
         Assert.assertFalse("Classpath entry should not be added because this is not an application bundle but it is", result);
     }
 
     @Test
     public void testAddClassPathEntryNegativeAlreadyAdded() {
         ArrayList<ClasspathEntry> cpEntries = new ArrayList<ClasspathEntry>();
-        BaseClassLoader classloader = EasyMock.createMock(BaseClassLoader.class);
+        ModuleClassLoader classloader = EasyMock.createMock(ModuleClassLoader.class);
         BaseDataStub data = new BaseDataStub(0, null);
         Dictionary<String, String> manifest = new Hashtable<String, String>();
         data.setManifest(manifest);
-        ClasspathManager classpathmanager = new ClasspathManagerStub(data, new String[] {}, classloader);
+        ClasspathManager classpathmanager = new ClasspathManagerStub(data, classloader);
         File libDir = new File(new File("."), LIB_DIR);
         File libPersistenceDir = new File(libDir, PERSISTENCE_DIR);
         String classpath = new File(libPersistenceDir, PERSISTENCE_INTEGRATION_JAR).getAbsolutePath();
@@ -143,7 +145,7 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
     @Test
     public void testAddClassPathEntryNegativeExceptionThrown() {
         ArrayList<ClasspathEntry> cpEntries = new ArrayList<ClasspathEntry>();
-        BaseClassLoader classloader = EasyMock.createMock(BaseClassLoader.class);
+        ModuleClassLoader classloader = EasyMock.createMock(ModuleClassLoader.class);
         BaseDataStub data = new BaseDataStub(0, null);
         Dictionary<String, String> manifest = new Hashtable<String, String>();
         manifest.put(WEB_CONTEXTPATH_HEADER, TESTAPP);
@@ -308,7 +310,7 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
     @Test
     public void determinePersistenceIntegrationPathPositive() throws IOException {
         File jpaIntegrationFile = prepare();
-        BaseClassLoader classloader = EasyMock.createMock(BaseClassLoader.class);
+        ModuleClassLoader classloader = EasyMock.createMock(ModuleClassLoader.class);
         BaseDataStub data = new BaseDataStub(0, null);
         Dictionary<String, String> manifest = new Hashtable<String, String>();
         manifest.put(WEB_CONTEXTPATH_HEADER, TESTAPP);
@@ -328,7 +330,7 @@ public class AppLoaderClasspathExtenderClassLoadingHookTests {
     @Test
     public void determinePersistenceIntegrationPathThrowsException() throws IOException {
         prepare();
-        BaseClassLoader classloader = EasyMock.createMock(BaseClassLoader.class);
+        ModuleClassLoader classloader = EasyMock.createMock(ModuleClassLoader.class);
         BaseDataStub data = new BaseDataStub(0, null);
         Dictionary<String, String> manifest = new Hashtable<String, String>();
         manifest.put(WEB_CONTEXTPATH_HEADER, TESTAPP);
