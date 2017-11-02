@@ -51,7 +51,7 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
 
     private final BundleContext bundleContext;
 
-    private final PlatformAdmin platformAdmin;
+    private PlatformAdmin platformAdmin;
 
     private final ResolutionFailureDetective detective;
 

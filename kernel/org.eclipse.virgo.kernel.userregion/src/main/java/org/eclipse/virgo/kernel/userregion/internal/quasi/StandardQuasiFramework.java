@@ -228,7 +228,6 @@ final class StandardQuasiFramework implements QuasiFramework {
             if (!failures.isEmpty()) {
                 this.otherBundles = null;
             }
-
             return failures;
         }
     }

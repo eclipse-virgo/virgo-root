@@ -55,9 +55,21 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
 
     @Test(expected = BundleClassLoaderUnavailableException.class)
     public void testGetClassLoaderFromUnresolved() throws Exception {
-        Bundle faultyBundle = this.framework.getBundleContext().installBundle(new File("src/test/resources/EquinoxOsgiFrameworkTests/faulty").toURI().toString());
+        Bundle faultyBundle = this.framework.getBundleContext().installBundle(
+            new File("src/test/resources/EquinoxOsgiFrameworkTests/faulty").toURI().toString());
         assertEquals(Bundle.INSTALLED, faultyBundle.getState());
         this.framework.getBundleClassLoader(faultyBundle);
+    }
+
+    @Test
+    public void testEquinoxDeclarativServices() throws Exception {
+        this.framework.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.eclipse.osgi.services/3.5.0.v20150519-2006/f8b39d71416901549bf27cbff5d709d25a347632/org.eclipse.osgi.services-3.5.0.v20150519-2006.jar").getAbsolutePath());
+        this.framework.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.eclipse.equinox.util/1.0.500.v20130404-1337/ffedd440831050fce73a848a14104028759ff9fb/org.eclipse.equinox.util-1.0.500.v20130404-1337.jar").getAbsolutePath());
+        Bundle dsBundle = this.framework.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.eclipse.equinox.ds/1.4.200.v20131126-2331/8306727a3fe6b9d6c2aec60f229c04edcf8268f0/org.eclipse.equinox.ds-1.4.200.v20131126-2331.jar").getAbsolutePath());
+        dsBundle.start();
     }
 
     @Test
@@ -96,8 +108,15 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
      * @throws BundleException
      */
     private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
-        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.logging/1.2.0/16f574f7c054451477d7fc9d1f294e22b70a8eba/org.apache.commons.logging-1.2.0.jar").getAbsolutePath());
-        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.codec/1.10.0/8aff50e99bd7e53f8c4f5fe45c2a63f1d47dd19c/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());
-        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.9.RELEASE/1c660c77b174384012745d391694de1d56f2c19a/org.springframework.core-4.2.9.RELEASE.jar").getAbsolutePath());
+        Bundle commonsLoggingBundle = osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.logging/1.2.0/16f574f7c054451477d7fc9d1f294e22b70a8eba/org.apache.commons.logging-1.2.0.jar").getAbsolutePath());
+        commonsLoggingBundle.start();
+        Bundle commonsCodecBundle = osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.codec/1.10.0/8aff50e99bd7e53f8c4f5fe45c2a63f1d47dd19c/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());
+        commonsCodecBundle.start();
+        Bundle springframeworkCoreBundle = osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.1.RELEASE/57e9cdf473ba084c6ae2b9f166ab497f48334cd8/org.springframework.core-4.2.1.RELEASE.jar").getAbsolutePath());
+        springframeworkCoreBundle.start();
+        return springframeworkCoreBundle;
     }
 }

@@ -44,6 +44,7 @@ import org.eclipse.virgo.kernel.osgi.framework.ExtendedNoClassDefFoundError;
 import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -334,7 +335,9 @@ public final class KernelBundleClassLoader extends EquinoxClassLoader implements
     @Override
     public String toString() {
         // TODO - how to get the delegate?!
-        return String.format("%s: [bundle=%s]", getClass().getSimpleName(), /* this.delegate */ null);
+        Bundle bundle = getGeneration().getRevision().getBundle();
+//        bundle.adapt(BundleWiring.class).getClassLoader();
+        return String.format("%s: [bundle=%s]", getClass().getSimpleName(), bundle);
     }
 
     private Bundle[] getDependencyBundles(boolean includeDependenciesFragments) {

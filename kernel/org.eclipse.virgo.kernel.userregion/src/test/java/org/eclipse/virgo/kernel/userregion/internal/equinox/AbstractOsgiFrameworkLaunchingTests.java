@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.equinox.internal.region.StandardRegionDigraph;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
@@ -95,16 +96,24 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
             assertTrue(FileSystemUtils.deleteRecursively(new File("build/work")));
         }
 
-        // Uncomment this line to enable Equinox debugging
-        // FrameworkProperties.setProperty("osgi.debug", "src/test/resources/debug.options");
-
-        // Uncomment thils line to enable Equinox console
-        // FrameworkProperties.setProperty("osgi.console", "2401");
         EquinoxLauncherConfiguration launcherConfiguration = new EquinoxLauncherConfiguration();
         launcherConfiguration.setClean(true);
+        launcherConfiguration.setProfilePath(new File("/Users/fluffi/Projects/virgo-3.7.x/scm-repos/virgo-root/"
+            + "packaging/kernel/build/install/virgo-kernel/configuration/java-server.profile").toURI());
         URI targetURI = new File("./build").toURI();
         launcherConfiguration.setConfigPath(targetURI);
         launcherConfiguration.setInstallPath(targetURI);
+        // Uncomment this line to enable Equinox debugging
+        // TODO - check how to set this property with Equinox 3.10
+        // FrameworkProperties.setProperty("osgi.debug", "src/test/resources/debug.options");
+        launcherConfiguration.getFrameworkProperties().put(EclipseStarter.PROP_DEBUG, "src/test/resources/debug.options");
+        // Uncomment this line to enable Equinox console
+        // TODO - check how to set this property with Equinox 3.10
+        // FrameworkProperties.setProperty("osgi.console", "2401");
+        launcherConfiguration.getFrameworkProperties().put(EclipseStarter.PROP_CONSOLE, "2401");
+
+//        launcherConfiguration.getFrameworkProperties().put(Constants.FRAMEWORK_EXECUTIONENVIRONMENT,
+//            "OSGi/Minimum-1.0,OSGi/Minimum-1.1,OSGi/Minimum-1.2,CDC-1.1/Foundation-1.1,JRE-1.1,J2SE-1.2,J2SE-1.3,J2SE-1.4,J2SE-1.5,JavaSE-1.5,JavaSE-1.6,JavaSE-1.7");
 
         equinox = ExtendedEquinoxLauncher.launch(launcherConfiguration);
 
@@ -180,7 +189,8 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
             }
         };
         DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
-        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph, dumpExtractor).create();
+        this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph,
+            dumpExtractor).create();
     }
 
     private ImportExpander createImportExpander(PackageAdmin packageAdmin) {

@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions;
 
+import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +22,9 @@ import org.eclipse.osgi.internal.location.EquinoxLocations;
 import org.eclipse.osgi.launch.Equinox;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.ExtensionsHookConfigurator;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
+import org.osgi.framework.wiring.FrameworkWiring;
 
 
 /**
@@ -42,8 +46,19 @@ public final class ExtendedEquinoxLauncher {
 
     public static Equinox launch(EquinoxLauncherConfiguration config) throws BundleException {
         Map<String, String> configuration = populateConfiguration(config);        
-        Equinox equinox = new Equinox(configuration);      
+        Equinox equinox = new Equinox(configuration);
+
         equinox.start();
+
+        // install framework extension org.eclipse.osgi.compatibility.state
+        equinox.getBundleContext().installBundle(
+            "file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored"
+                + "/org.eclipse.osgi.compatibility.state/1.0.1.v20140709-1414/369f04450efbcb56a620a5f792bf477cfbfc5903"
+                + "/org.eclipse.osgi.compatibility.state-1.0.1.v20140709-1414.jar").getAbsolutePath());
+
+        // ...and refresh the System bundle to pick up the framework extension
+        equinox.adapt(FrameworkWiring.class).resolveBundles(Collections.singletonList(equinox.getBundleContext().getBundle()));
+
         equinox.getBundleContext().registerService(Framework.class.getName(), equinox, null);
 
         return equinox;
@@ -52,6 +67,10 @@ public final class ExtendedEquinoxLauncher {
     private static Map<String, String> populateConfiguration(EquinoxLauncherConfiguration config) {
         Map<String, String> configuration = new HashMap<String, String>();
         configuration.putAll(config.getFrameworkProperties());
+
+        // TODO - remove once all deprecated PlatformAdmin/State is reworked
+        configuration.put(Constants.FRAMEWORK_EXECUTIONENVIRONMENT,
+            "OSGi/Minimum-1.0,OSGi/Minimum-1.1,OSGi/Minimum-1.2,CDC-1.1/Foundation-1.1,JRE-1.1,J2SE-1.2,J2SE-1.3,J2SE-1.4,J2SE-1.5,JavaSE-1.5,JavaSE-1.6,JavaSE-1.7");
 
         mergeListProperty(configuration, HookRegistry.PROP_HOOK_CONFIGURATORS_INCLUDE, ExtensionsHookConfigurator.class.getName());
 

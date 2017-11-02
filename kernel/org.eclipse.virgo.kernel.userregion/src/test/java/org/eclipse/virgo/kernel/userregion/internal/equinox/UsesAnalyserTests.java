@@ -153,6 +153,7 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
     private Bundle install(String subPath) throws BundleException {
         String fullPath = "src/test/resources/uat/" + subPath;
         String location = "reference:file:/" + new File(fullPath).getAbsolutePath();
-        return this.framework.getBundleContext().installBundle(location);
+        Bundle bundle = this.framework.getBundleContext().installBundle(location);
+        return bundle;
     }
 }

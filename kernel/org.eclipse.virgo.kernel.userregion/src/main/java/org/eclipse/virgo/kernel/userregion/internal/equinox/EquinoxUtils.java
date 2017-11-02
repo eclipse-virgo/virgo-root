@@ -19,6 +19,7 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.namespace.BundleNamespace;
@@ -44,11 +45,17 @@ public final class EquinoxUtils {
      * @return the bundle <code>ClassLoader</code>.
      */
     public static ClassLoader getBundleClassLoader(Bundle bundle) {
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        if (wiring == null) {
-            throw new IllegalStateException("Unable to access BundleWiring for bundle '" + bundle.getSymbolicName() + "'.");
+        try {
+            BundleWiring wiring = bundle.adapt(BundleWiring.class);
+            if (wiring == null) {
+                throw new IllegalStateException("Unable to access BundleWiring for bundle '" + bundle.getSymbolicName() + "'.");
+            }
+            return wiring.getClassLoader();
+        } catch (IllegalStateException e) {
+            // Bundle isn't resolved
+            throw new BundleClassLoaderUnavailableException("Failed to get class loader for bundle '" + bundle
+                + "' - possible resolution problem.", e);
         }
-        return wiring.getClassLoader();
     }
 
     /**
