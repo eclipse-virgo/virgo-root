@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.nano.serviceability.dump.internal;
 
-import org.eclipse.osgi.internal.baseadaptor.StateManager;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 
@@ -36,6 +35,6 @@ final class StandardSystemStateAccessor implements SystemStateAccessor {
      * {@inheritDoc}
      */
     public State getSystemState() {
-        return ((StateManager)this.platformAdmin).getSystemState();
+        return this.platformAdmin.getState();
     }
 }

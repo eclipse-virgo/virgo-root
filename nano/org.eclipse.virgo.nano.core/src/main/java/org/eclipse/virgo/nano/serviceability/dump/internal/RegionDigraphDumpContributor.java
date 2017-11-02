@@ -44,6 +44,7 @@ public final class RegionDigraphDumpContributor implements DumpContributor {
     @Override
     public void contribute(Dump dump) throws DumpContributionFailedException {
         File outputFile = dump.createFile("region.digraph");
+        // TODO use potentially delayed
         ServiceReference<RegionDigraph> serviceReference = this.bundleContext.getServiceReference(RegionDigraph.class);
         RegionDigraph regionDigraph = this.bundleContext.getService(serviceReference);
         try {
