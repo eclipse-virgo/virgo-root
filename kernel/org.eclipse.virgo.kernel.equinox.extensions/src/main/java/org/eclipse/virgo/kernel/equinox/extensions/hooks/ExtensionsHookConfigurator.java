@@ -11,8 +11,8 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
-import org.eclipse.osgi.baseadaptor.HookConfigurator;
-import org.eclipse.osgi.baseadaptor.HookRegistry;
+import org.eclipse.osgi.internal.hookregistry.HookConfigurator;
+import org.eclipse.osgi.internal.hookregistry.HookRegistry;
 
 /**
  * Configures Equinox hooks with which its runtime behaviour is customised.
@@ -29,10 +29,11 @@ public class ExtensionsHookConfigurator implements HookConfigurator {
      * {@inheritDoc}
      */
     public void addHooks(HookRegistry hookRegistry) {
-        hookRegistry.addClassLoadingHook(PluggableClassLoadingHook.getInstance());
+        hookRegistry.addClassLoaderHook(PluggableClassLoaderHook.getInstance());
+        // TODO why isn't this a singleton, too?
         hookRegistry.addBundleFileWrapperFactoryHook(new ExtendedBundleFileWrapperFactoryHook());
         hookRegistry.addBundleFileWrapperFactoryHook(BundleFileClosingBundleFileWrapperFactoryHook.getInstance());
         hookRegistry.addBundleFileWrapperFactoryHook(PluggableBundleFileWrapperFactoryHook.getInstance());
-        hookRegistry.addClassLoaderDelegateHook(PluggableDelegatingClassLoaderDelegateHook.getInstance());
+        hookRegistry.addClassLoaderHook(PluggableDelegatingClassLoaderDelegateHook.getInstance());
     }
 }

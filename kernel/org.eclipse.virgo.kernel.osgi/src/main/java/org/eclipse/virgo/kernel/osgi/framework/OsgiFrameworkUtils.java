@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.osgi.storage.BundleInfo.Generation;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -44,6 +45,16 @@ public final class OsgiFrameworkUtils {
     }
 
     /**
+     * Gets the scope for the supplied {@link Generation}.
+     * 
+     * @param generation the <code>Generation</code>.
+     * @return the scope, or <code>null</code> if no scope is specified.
+     */
+    public static String getScopeName(Generation generation) {
+        return (String) generation.getHeaders().get(HEADER_MODULE_SCOPE);
+    }
+
+    /**
      * Queries whether the supplied {@link Bundle} is scoped.
      * 
      * @param bundle the <code>Bundle</code>.
@@ -51,6 +62,17 @@ public final class OsgiFrameworkUtils {
      */
     public static boolean isScoped(Bundle bundle) {
         String scope = getScopeName(bundle);
+        return scope != null && scope.length() > 0;
+    }
+
+    /**
+     * Queries whether the supplied {@link Generation} is scoped.
+     * 
+     * @param generation the <code>Generation</code>.
+     * @return <code>true</code> if the <code>Genertion</code> is scoped, otherwise <code>false</code>.
+     */
+    public static boolean isScoped(Generation generation) {
+        String scope = getScopeName(generation);
         return scope != null && scope.length() > 0;
     }
 

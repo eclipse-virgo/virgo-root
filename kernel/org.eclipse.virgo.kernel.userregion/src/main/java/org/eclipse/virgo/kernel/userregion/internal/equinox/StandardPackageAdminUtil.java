@@ -11,13 +11,12 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
-import org.eclipse.osgi.framework.internal.core.PackageAdminImpl;
+import java.util.Arrays;
+
+import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.packageadmin.PackageAdmin;
-
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
-import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
+import org.osgi.framework.wiring.FrameworkWiring;
 
 /**
  * {@link StandardPackageAdminUtil} is the implementation of {@link PackageAdminUtil}.
@@ -28,19 +27,21 @@ import org.eclipse.virgo.kernel.osgi.framework.PackageAdminUtil;
  * This class is thread safe.
  * 
  */
-@SuppressWarnings("deprecation")
 public final class StandardPackageAdminUtil implements PackageAdminUtil {
 
-    private final PackageAdmin packageAdmin;
+    private BundleContext bundleContext;
 
     public StandardPackageAdminUtil(BundleContext bundleContext) {
-        this.packageAdmin = OsgiFrameworkUtils.getService(bundleContext, PackageAdmin.class).getService();
+        this.bundleContext = bundleContext;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public void synchronouslyRefreshPackages(Bundle[] bundles) {
-        ((PackageAdminImpl)this.packageAdmin).refreshPackages(bundles, true, null);        
+        FrameworkWiring frameworkWiring = this.bundleContext.getBundle().adapt(FrameworkWiring.class);
+        if (frameworkWiring == null)
+            return;
+        frameworkWiring.refreshBundles(Arrays.asList(bundles));
     }
 }

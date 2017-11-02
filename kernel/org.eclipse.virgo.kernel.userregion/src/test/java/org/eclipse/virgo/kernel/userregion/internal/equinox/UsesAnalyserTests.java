@@ -16,17 +16,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import org.eclipse.osgi.internal.baseadaptor.StateManager;
 import org.eclipse.osgi.service.resolver.ResolverError;
 import org.eclipse.osgi.service.resolver.State;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.UsesAnalyser;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.UsesAnalyser.AnalysedUsesConflict;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-
 import org.osgi.framework.Version;
-
 
 /**
  */
@@ -51,28 +47,28 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
         } catch (BundleException ex) {
         }
 
-        State systemState = ((StateManager) this.platformAdmin).getSystemState();
-        
+        State systemState = this.platformAdmin.getState();
+
         UsesAnalyser analyser = new UsesAnalyser();
-        
+
         ResolverError[] resolverErrors = analyser.getUsesResolverErrors(systemState, systemState.getBundle(p.getBundleId()));
         assertNotNull("No uses errors found for bundle '" + p + "'.", resolverErrors);
-        
+
         AnalysedUsesConflict[] usesConflicts = analyser.getUsesConflicts(systemState, resolverErrors[0]);
         assertNotNull("No conflicts found for bundle '" + p + "'.", usesConflicts);
         printUsesConflicts(usesConflicts);
- 
-        assertEquals("No, or more than one conflict discovered.", 1, usesConflicts.length);
-        
-        assertEquals("q",usesConflicts[0].getUsesRootPackage().getName());
 
-        assertEquals("r",usesConflicts[0].getPackage().getName());
+        assertEquals("No, or more than one conflict discovered.", 1, usesConflicts.length);
+
+        assertEquals("q", usesConflicts[0].getUsesRootPackage().getName());
+
+        assertEquals("r", usesConflicts[0].getPackage().getName());
         assertEquals(new Version("1.1.0"), usesConflicts[0].getPackage().getVersion());
 
-        assertEquals("r",usesConflicts[0].getConflictingPackage().getName());
+        assertEquals("r", usesConflicts[0].getConflictingPackage().getName());
         assertEquals(new Version("1.0.0"), usesConflicts[0].getConflictingPackage().getVersion());
     }
-    
+
     @Test
     public void testInstallOrder() throws Exception {
         install("install/bundles/s1");
@@ -88,9 +84,9 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
         } catch (BundleException ex) {
         }
 
-        State systemState = ((StateManager) this.platformAdmin).getSystemState();
+        State systemState = this.platformAdmin.getState();
         UsesAnalyser analyser = new UsesAnalyser();
-        
+
         ResolverError[] resolverErrors = analyser.getUsesResolverErrors(systemState, systemState.getBundle(p.getBundleId()));
         assertNotNull("No uses errors found for bundle '" + p + "'.", resolverErrors);
 
@@ -101,17 +97,17 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
 
         assertEquals("No, or more than one conflict discovered.", 1, usesConflicts.length);
 
-        assertEquals("q",usesConflicts[0].getUsesRootPackage().getName());
+        assertEquals("q", usesConflicts[0].getUsesRootPackage().getName());
 
-        assertEquals("r",usesConflicts[0].getPackage().getName());
+        assertEquals("r", usesConflicts[0].getPackage().getName());
         assertEquals(new Version("1.1.0"), usesConflicts[0].getPackage().getVersion());
 
-        assertEquals("r",usesConflicts[0].getConflictingPackage().getName());
+        assertEquals("r", usesConflicts[0].getConflictingPackage().getName());
         assertEquals(new Version("1.0.0"), usesConflicts[0].getConflictingPackage().getVersion());
-        
+
     }
-    
-    @Test 
+
+    @Test
     public void transitiveUsesConstraint() throws Exception {
         install("transitiveconstraint/tmD.jar");
         install("transitiveconstraint/tmC.jar");
@@ -122,9 +118,9 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
         } catch (BundleException ignored) {
         }
 
-        State systemState = ((StateManager) this.platformAdmin).getSystemState();
+        State systemState = this.platformAdmin.getState();
         UsesAnalyser analyser = new UsesAnalyser();
-        
+
         ResolverError[] resolverErrors = analyser.getUsesResolverErrors(systemState, systemState.getBundle(a.getBundleId()));
         assertNotNull("No uses errors found for bundle '" + a + "'.", resolverErrors);
 
@@ -135,12 +131,12 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
 
         assertEquals("No, or more than one conflict discovered.", 1, usesConflicts.length);
 
-        assertEquals("p",usesConflicts[0].getUsesRootPackage().getName());
+        assertEquals("p", usesConflicts[0].getUsesRootPackage().getName());
 
-        assertEquals("r",usesConflicts[0].getPackage().getName());
+        assertEquals("r", usesConflicts[0].getPackage().getName());
         assertEquals(new Version("1.0.0"), usesConflicts[0].getPackage().getVersion());
 
-        assertEquals("r",usesConflicts[0].getConflictingPackage().getName());
+        assertEquals("r", usesConflicts[0].getConflictingPackage().getName());
         assertEquals(new Version("0.0.0"), usesConflicts[0].getConflictingPackage().getVersion());
     }
 

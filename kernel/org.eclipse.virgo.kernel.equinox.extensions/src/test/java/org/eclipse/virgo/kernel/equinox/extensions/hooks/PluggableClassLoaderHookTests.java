@@ -19,15 +19,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.loader.BaseClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
+import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
+import org.eclipse.osgi.internal.loader.BundleLoader;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.eclipse.osgi.launch.Equinox;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
 import org.eclipse.virgo.kernel.equinox.extensions.EquinoxLauncherConfiguration;
 import org.eclipse.virgo.kernel.equinox.extensions.ExtendedEquinoxLauncher;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.ClassLoaderCreator;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,10 +33,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
-
 /**
  */
-public class PluggableClassLoadingHookTests {
+public class PluggableClassLoaderHookTests {
 
     private Equinox osgi;
 
@@ -53,48 +50,48 @@ public class PluggableClassLoadingHookTests {
         this.osgi = ExtendedEquinoxLauncher.launch(config);
         this.context = osgi.getBundleContext();
     }
-    
+
     @After
     public void after() throws BundleException {
-        if(this.osgi != null) {
+        if (this.osgi != null) {
             this.osgi.stop();
         }
     }
 
     @Test
     public void testAddClassLoaderCreator() throws Exception {
-        final List<BaseData> baseDatas = new ArrayList<BaseData>();
-        
+        final List<Generation> generations = new ArrayList<Generation>();
+
         ClassLoaderCreator creator = new ClassLoaderCreator() {
 
-            public BaseClassLoader createClassLoader(ClassLoader parent, ClassLoaderDelegate delegate, BundleProtectionDomain domain, BaseData data,
-                String[] bundleclasspath) {
-                baseDatas.add(data);
+            public ModuleClassLoader createClassLoader(ClassLoader parent, EquinoxConfiguration configuration, BundleLoader delegate,
+                Generation generation) {
+                generations.add(generation);
                 return null;
             }
-            
+
         };
-        
-        PluggableClassLoadingHook.getInstance().setClassLoaderCreator(creator);
+
+        PluggableClassLoaderHook.getInstance().setClassLoaderCreator(creator);
         this.context.registerService(ClassLoaderCreator.class.getName(), creator, null);
-        
+
         Bundle b = this.context.installBundle(new File("src/test/resources/hooks/classloading/bundle").toURI().toString());
         try {
             b.loadClass("foo");
             fail("shouldn't be able to load foo!");
         } catch (ClassNotFoundException e) {
             // expected
-            assertEquals(1, baseDatas.size());
-            assertEquals("hooks.classloading", baseDatas.get(0).getSymbolicName());
+            assertEquals(1, generations.size());
+            assertEquals("hooks.classloading", generations.get(0).getRevision().getSymbolicName());
         }
     }
-    
+
     @Test
     public void testBundleClassLoaderParent() {
-        PluggableClassLoadingHook hook = PluggableClassLoadingHook.getInstance();
-        
+        PluggableClassLoaderHook hook = PluggableClassLoaderHook.getInstance();
+
         assertNull(hook.getBundleClassLoaderParent());
-        
+
         ClassLoader classLoader = getClass().getClassLoader();
         hook.setBundleClassLoaderParent(classLoader);
         assertEquals(classLoader, hook.getBundleClassLoaderParent());

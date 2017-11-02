@@ -17,13 +17,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleData;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 
 
 /**
- * A pluggable {@link ClassLoaderDelegateHook} into which one or more <code>ClassLoaderDelegateHook</code>
+ * A pluggable {@link ClassLoaderHook} into which one or more <code>ClassLoaderHook</code>
  * can be plugged.
  * <p />
  *
@@ -32,9 +31,9 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
  * Thread-safe.
  *
  */
-public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDelegateHook {
+public class PluggableDelegatingClassLoaderDelegateHook extends ClassLoaderHook {
     
-    private final List<ClassLoaderDelegateHook> delegates = new CopyOnWriteArrayList<ClassLoaderDelegateHook>();
+    private final List<ClassLoaderHook> delegates = new CopyOnWriteArrayList<ClassLoaderHook>();
     
     private static final PluggableDelegatingClassLoaderDelegateHook INSTANCE = new PluggableDelegatingClassLoaderDelegateHook();
     
@@ -45,17 +44,17 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return INSTANCE;
     }
     
-    public void addDelegate(ClassLoaderDelegateHook delegate) {
+    public void addDelegate(ClassLoaderHook delegate) {
         this.delegates.add(delegate);
     }
     
-    public void removeDelegate(ClassLoaderDelegateHook delegate) {
+    public void removeDelegate(ClassLoaderHook delegate) {
         this.delegates.remove(delegate);
     }
     
-    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            Class<?> clazz = delegate.postFindClass(name, classLoader, data);    
+    public Class<?> postFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            Class<?> clazz = delegate.postFindClass(name, classLoader);    
             if (clazz != null) {
                 return clazz;
             } 
@@ -63,9 +62,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public String postFindLibrary(String name, BundleClassLoader classLoader, BundleData data) {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            String library = delegate.postFindLibrary(name, classLoader, data);    
+    public String postFindLibrary(String name, ModuleClassLoader classLoader) {
+        for (ClassLoaderHook delegate : this.delegates) {
+            String library = delegate.postFindLibrary(name, classLoader);    
             if (library != null) {
                 return library;
             }        
@@ -73,9 +72,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            URL resource = delegate.postFindResource(name, classLoader, data);    
+    public URL postFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            URL resource = delegate.postFindResource(name, classLoader);    
             if (resource != null) {
                 return resource;
             }        
@@ -83,9 +82,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            Enumeration<URL> resources = delegate.postFindResources(name, classLoader, data);    
+    public Enumeration<URL> postFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            Enumeration<URL> resources = delegate.postFindResources(name, classLoader);    
             if (resources != null) {
                 return resources;
             }        
@@ -93,9 +92,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            Class<?> clazz = delegate.preFindClass(name, classLoader, data);    
+    public Class<?> preFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            Class<?> clazz = delegate.preFindClass(name, classLoader);    
             if (clazz != null) {
                 return clazz;
             }        
@@ -103,9 +102,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            String library = delegate.preFindLibrary(name, classLoader, data);    
+    public String preFindLibrary(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            String library = delegate.preFindLibrary(name, classLoader);    
             if (library != null) {
                 return library;
             }        
@@ -113,9 +112,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            URL resource = delegate.preFindResource(name, classLoader, data);    
+    public URL preFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            URL resource = delegate.preFindResource(name, classLoader);    
             if (resource != null) {
                 return resource;
             }        
@@ -123,9 +122,9 @@ public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDe
         return null;
     }
 
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
-        for (ClassLoaderDelegateHook delegate : this.delegates) {
-            Enumeration<URL> resources = delegate.preFindResources(name, classLoader, data);    
+    public Enumeration<URL> preFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
+        for (ClassLoaderHook delegate : this.delegates) {
+            Enumeration<URL> resources = delegate.preFindResources(name, classLoader);    
             if (resources != null) {
                 return resources;
             }        

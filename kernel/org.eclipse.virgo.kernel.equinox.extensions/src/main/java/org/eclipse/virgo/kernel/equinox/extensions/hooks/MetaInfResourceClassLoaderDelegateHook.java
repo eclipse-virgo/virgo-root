@@ -21,9 +21,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleData;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -32,7 +31,7 @@ import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
- * A {@link ClassLoaderDelegateHook} which in {@link #postFindResource} and {@link #postFindResources} propagates the
+ * Extends a {@link ClassLoaderHook} which in {@link #postFindResource} and {@link #postFindResources} propagates the
  * attempt to get <code>META-INF</code> resource(s) to the principle bundle's dependencies, unless the request is being
  * driven through Spring DM's DelgatedNamespaceHandlerResolver.
  * 
@@ -48,8 +47,8 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * Thread-safe.
  * 
  */
-@SuppressWarnings("deprecation")
-public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelegateHook {
+// TODO rename to ClassLoaderHook
+public class MetaInfResourceClassLoaderDelegateHook extends ClassLoaderHook {
 
     private static final String SPRINGDM_DELEGATED_NAMESPACE_HANDLER_RESOLVER_CLASS_NAME = "org.springframework.osgi.context.support.DelegatedNamespaceHandlerResolver";
 
@@ -104,7 +103,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public URL postFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         if (this.resourceSearchInProgress.get() == null && isDelegatedResource(name)) {
             try {
                 this.resourceSearchInProgress.set(SEARCH_IN_PROGRESS_MARKER);
@@ -137,7 +136,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> postFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         if (this.resourceSearchInProgress.get() == null && isDelegatedResource(name)) {
             try {
                 this.resourceSearchInProgress.set(SEARCH_IN_PROGRESS_MARKER);
@@ -261,6 +260,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
         }
     }
 
+    // TODO - rework to use EquinoxUtils.getDirectDependencies(bundle, includeFragments = false)?
     private Set<Bundle> determineDependencies(Bundle bundle) {
         Set<Bundle> bundles = new HashSet<Bundle>();
         for (Bundle candidate : this.systemBundleContext.getBundles()) {
@@ -327,42 +327,42 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> postFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String postFindLibrary(String name, BundleClassLoader classLoader, BundleData data) {
+    public String postFindLibrary(String name, ModuleClassLoader classLoader) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> preFindClass(String name, ModuleClassLoader classLoader) throws ClassNotFoundException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public String preFindLibrary(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public URL preFindResource(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
         return null;
     }
 }

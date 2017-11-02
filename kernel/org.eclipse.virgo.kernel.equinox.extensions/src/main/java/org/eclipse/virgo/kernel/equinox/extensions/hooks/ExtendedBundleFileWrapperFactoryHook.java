@@ -19,10 +19,12 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.jar.JarFile;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
-import org.eclipse.osgi.baseadaptor.hooks.BundleFileWrapperFactoryHook;
+import org.eclipse.osgi.container.Module;
+import org.eclipse.osgi.internal.hookregistry.BundleFileWrapperFactoryHook;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
+import org.eclipse.osgi.storage.bundlefile.BundleEntry;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
+import org.eclipse.osgi.storage.bundlefile.BundleFileWrapper;
 
 /**
  * A {@link BundleFileWrapperFactoryHook} implementation that wraps {@link BundleFile BundleFiles} to ensure that all
@@ -38,7 +40,8 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
     /**
      * {@inheritDoc}
      */
-    public BundleFile wrapBundleFile(BundleFile bundleFile, Object content, BaseData data, boolean base) throws IOException {
+    @Override
+    public BundleFileWrapper wrapBundleFile(BundleFile bundleFile, Generation generation, boolean base) {
         return new FileResourceEnforcingBundleFile(bundleFile);
     }
 
@@ -50,11 +53,12 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
      * As thread-safe as the encapsulated <code>BundleFile</code> instance.
      * 
      */
-    private static class FileResourceEnforcingBundleFile extends BundleFile {
+    private static class FileResourceEnforcingBundleFile extends BundleFileWrapper {
 
         private final BundleFile bundleFile;
 
         private FileResourceEnforcingBundleFile(BundleFile bundleFile) {
+            super(bundleFile);
             this.bundleFile = bundleFile;
         }
 
@@ -124,26 +128,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
          * @return a <code>file</code> protocol URL for the resource
          */
         @Override
-        public URL getResourceURL(String path, long hostBundleID, int index) {
-            return doGetResourceURL(path);
-        }
-
-        /**
-         * Locates the resource in the BundleFile identified by the supplied path and, if found, returns a
-         * <code>file</code> protocol URL for the resource.
-         * 
-         * @return a <code>file</code> protocol URL for the resource
-         */
-        @Override
-        public URL getResourceURL(String path, long hostBundleID) {
-            return doGetResourceURL(path);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public URL getResourceURL(String path, BaseData hostData, int index) {
+        public URL getResourceURL(String path, Module hostModule, int index) {
             return doGetResourceURL(path);
         }
 

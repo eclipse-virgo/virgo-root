@@ -21,7 +21,6 @@ import java.util.zip.ZipException;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionDigraphPersistence;
-import org.eclipse.osgi.internal.baseadaptor.StateManager;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
@@ -34,7 +33,6 @@ import org.eclipse.virgo.kernel.userregion.internal.equinox.TransformedManifestP
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +53,6 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
 
     private final PlatformAdmin platformAdmin;
 
-    private final StateManager stateManager;
-
     private final ResolutionFailureDetective detective;
 
     private final Repository repository;
@@ -73,8 +69,6 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
         this.platformAdmin = getPlatformAdminService(bundleContext);
         this.detective = detective;
         this.repository = repository;
-        ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
-        this.stateManager = (StateManager) bundleContext.getService(platformAdminServiceReference);
         this.bundleTransformationHandler = bundleTransformationHandler;
         this.regionDigraph = regionDigraph;
         this.dumpExtractor = dumpExtractor;
@@ -124,7 +118,7 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
         State state;
 
         try {
-            this.platformAdmin.getFactory().writeState(this.stateManager.getSystemState(), baos);
+            this.platformAdmin.getFactory().writeState(this.platformAdmin.getState(), baos);
             state = this.platformAdmin.getFactory().readState(new ByteArrayInputStream(baos.toByteArray()));
         } catch (IOException ioe) {
             throw new RuntimeException("Failed to create a copy of the OSGi state", ioe);

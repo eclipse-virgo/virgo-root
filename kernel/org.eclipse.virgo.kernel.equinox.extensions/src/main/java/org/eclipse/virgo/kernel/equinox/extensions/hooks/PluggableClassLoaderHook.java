@@ -11,17 +11,17 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
-import java.security.ProtectionDomain;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
-import org.eclipse.osgi.baseadaptor.hooks.ClassLoadingHook;
-import org.eclipse.osgi.baseadaptor.loader.BaseClassLoader;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathManager;
-import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
+import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
+import org.eclipse.osgi.internal.loader.BundleLoader;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathEntry;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
+import org.eclipse.osgi.storage.bundlefile.BundleEntry;
 
 /**
  * A {@link ClassLoadingHook} into which a {@link ClassLoaderCreator} can be plugged to provide a custom class loader
@@ -33,9 +33,9 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
  * Thread-safe.
  * 
  */
-public final class PluggableClassLoadingHook implements ClassLoadingHook {
+public final class PluggableClassLoaderHook extends ClassLoaderHook {
 
-    private static final PluggableClassLoadingHook INSTANCE = new PluggableClassLoadingHook();
+    private static final PluggableClassLoaderHook INSTANCE = new PluggableClassLoaderHook();
 
     private final Object monitor = new Object();
 
@@ -43,24 +43,25 @@ public final class PluggableClassLoadingHook implements ClassLoadingHook {
 
     private ClassLoader bundleClassLoaderParent;
 
-    private PluggableClassLoadingHook() {
+    private PluggableClassLoaderHook() {
 
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean addClassPathEntry(ArrayList<ClasspathEntry> cpEntries, String cp, ClasspathManager hostmanager, BaseData sourcedata, ProtectionDomain sourcedomain) {
+    @Override
+    public boolean addClassPathEntry(ArrayList<ClasspathEntry> cpEntries, String cp, ClasspathManager hostmanager, Generation sourceGeneration) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public BaseClassLoader createClassLoader(ClassLoader parent, ClassLoaderDelegate delegate, BundleProtectionDomain domain, BaseData data,
-        String[] bundleclasspath) {
+    @Override
+    public ModuleClassLoader createClassLoader(ClassLoader parent, EquinoxConfiguration configuration, BundleLoader delegate, Generation generation) {
         if (this.creator != null) {
-            return this.creator.createClassLoader(parent, delegate, domain, data, bundleclasspath);
+            return this.creator.createClassLoader(parent, configuration, delegate, generation);
         } else {
             return null;
         }
@@ -69,28 +70,32 @@ public final class PluggableClassLoadingHook implements ClassLoadingHook {
     /**
      * {@inheritDoc}
      */
-    public String findLibrary(BaseData data, String libName) {
+    // TODO Is returning "null" the correct behavior?!
+    @Override
+    public String preFindLibrary(String name, ModuleClassLoader classLoader) throws FileNotFoundException {
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    // TODO Is returning "null" the correct behavior?!
+    @Override
+    public String postFindLibrary(String name, ModuleClassLoader classLoader) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ClassLoader getBundleClassLoaderParent() {
-        synchronized (this.monitor) {
-            return this.bundleClassLoaderParent;
-        }
-    }
+    // TODO check this method
+//    public void initializedClassLoader(BaseClassLoader baseClassLoader, BaseData data) {
+//    }
 
     /**
      * {@inheritDoc}
      */
-    public void initializedClassLoader(BaseClassLoader baseClassLoader, BaseData data) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public byte[] processClass(String name, byte[] classbytes, ClasspathEntry classpathEntry, BundleEntry entry, ClasspathManager manager) {
         return null;
     }
@@ -104,8 +109,15 @@ public final class PluggableClassLoadingHook implements ClassLoadingHook {
     /**
      * @return singleton
      */
-    public static PluggableClassLoadingHook getInstance() {
+    public static PluggableClassLoaderHook getInstance() {
         return INSTANCE;
+    }
+
+    // TODO reduce visibility - unsed for testing only?!
+    public ClassLoader getBundleClassLoaderParent() {
+        synchronized (this.monitor) {
+            return this.bundleClassLoaderParent;
+        }
     }
 
     /**
@@ -113,6 +125,7 @@ public final class PluggableClassLoadingHook implements ClassLoadingHook {
      * 
      * @param bundleClassLoaderParent the class loader to be used
      */
+    // TODO reduce visibility - unsed for testing only?!
     public void setBundleClassLoaderParent(ClassLoader bundleClassLoaderParent) {
         synchronized (this.monitor) {
             this.bundleClassLoaderParent = bundleClassLoaderParent;

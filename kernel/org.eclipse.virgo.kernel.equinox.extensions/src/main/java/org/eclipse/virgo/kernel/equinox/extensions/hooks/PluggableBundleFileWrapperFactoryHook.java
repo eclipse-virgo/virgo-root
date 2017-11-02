@@ -11,11 +11,9 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
-import java.io.IOException;
-
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
-import org.eclipse.osgi.baseadaptor.hooks.BundleFileWrapperFactoryHook;
+import org.eclipse.osgi.internal.hookregistry.BundleFileWrapperFactoryHook;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
 
 
 /**
@@ -48,10 +46,10 @@ public class PluggableBundleFileWrapperFactoryHook implements BundleFileWrapperF
     /** 
      * {@inheritDoc}
      */
-    public BundleFile wrapBundleFile(BundleFile bundleFile, Object content, BaseData data, boolean base) throws IOException {
+    public org.eclipse.osgi.storage.bundlefile.BundleFileWrapper wrapBundleFile(BundleFile bundleFile, Generation generation, boolean base) {
         synchronized(this.monitor) {
             if (wrapper != null) {
-                return wrapper.wrapBundleFile(bundleFile);
+                return new org.eclipse.osgi.storage.bundlefile.BundleFileWrapper(wrapper.wrapBundleFile(bundleFile));
             } else {
                 return null;
             }

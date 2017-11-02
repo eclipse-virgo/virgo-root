@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -33,22 +32,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathManager;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
-import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
-import org.eclipse.osgi.service.resolver.PlatformAdmin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
+import org.eclipse.osgi.internal.loader.BundleLoader;
+import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathEntry;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
+import org.eclipse.osgi.storage.bundlefile.BundleEntry;
 import org.eclipse.virgo.kernel.osgi.framework.ExtendedClassNotFoundException;
 import org.eclipse.virgo.kernel.osgi.framework.ExtendedNoClassDefFoundError;
 import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extension to {@link DefaultClassLoader} that adds instrumentation support.
@@ -59,7 +56,7 @@ import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
  * As threadsafe as <code>DefaultClassLoader</code>.
  * 
  */
-public final class KernelBundleClassLoader extends DefaultClassLoader implements InstrumentableClassLoader {
+public final class KernelBundleClassLoader extends EquinoxClassLoader implements InstrumentableClassLoader {
 
     static {
         try {
@@ -81,8 +78,6 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
 
     private final String[] instrumentedPackages;
 
-    private final String[] classpath;
-
     private final String bundleScope;
 
     private final Set<Class<Driver>> loadedDriverClasses = new HashSet<Class<Driver>>();
@@ -91,20 +86,19 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
 
     private volatile boolean instrumented;
 
+    // TODO fix JavaDoc once the solution is settled
     /**
      * Constructs a new <code>ServerBundleClassLoader</code>.
      * 
      * @param parent the parent <code>ClassLoader</code>.
      * @param delegate the delegate for this ClassLoader</code>
-     * @param domain the domain for this ClassLoader</code>
      * @param bundledata the bundledata for this ClassLoader</code>
-     * @param classpath the classpath for this ClassLoader</code>
      */
-    KernelBundleClassLoader(ClassLoader parent, ClassLoaderDelegate delegate, ProtectionDomain domain, BaseData bundledata, String[] classpath) {
-        super(parent, delegate, domain, bundledata, classpath);
-        this.classpath = classpath;
-        this.bundleScope = OsgiFrameworkUtils.getScopeName(bundledata.getBundle());
-        this.instrumentedPackages = findInstrumentedPackages(bundledata.getBundle());
+    // TODO change order in constructor to match EquinoxClassLoader
+    KernelBundleClassLoader(ClassLoader parent, BundleLoader delegate, EquinoxConfiguration configuration, Generation generation) {
+        super(parent, configuration, delegate, generation);
+        this.bundleScope = OsgiFrameworkUtils.getScopeName(generation);
+        this.instrumentedPackages = findInstrumentedPackages(generation);
     }
 
     /**
@@ -170,8 +164,8 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
     /**
      * Finds the explicit list of packages to include in instrumentation (if specified).
      */
-    private String[] findInstrumentedPackages(Bundle bundle) {
-        String headerValue = (String) bundle.getHeaders().get(HEADER_INSTRUMENT_PACKAGE);
+    private String[] findInstrumentedPackages(Generation generation) {
+        String headerValue = (String) generation.getHeaders().get(HEADER_INSTRUMENT_PACKAGE);
         if (headerValue == null || headerValue.length() == 0) {
             return new String[0];
         } else {
@@ -217,10 +211,10 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
      * {@inheritDoc}
      */
     public ThrowAwayClassLoader createThrowAway() {
-        final ClasspathManager manager = new ClasspathManager(this.manager.getBaseData(), this.classpath, this);
-        manager.initialize();
+        final ClasspathManager manager = new ClasspathManager(getGeneration(), this);
+        // TODO check if we need to initialize the new ClasspathManager
+//        manager.initialize();
         return AccessController.doPrivileged(new PrivilegedAction<ThrowAwayClassLoader>() {
-
             public ThrowAwayClassLoader run() {
                 return new ThrowAwayClassLoader(manager);
             }
@@ -231,27 +225,33 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
      * {@inheritDoc}
      */
     @Override
-    public Class<?> defineClass(String name, byte[] classbytes, ClasspathEntry classpathEntry, BundleEntry entry) {
-
+    public DefineClassResult defineClass(String name, byte[] classbytes, ClasspathEntry classpathEntry) {
         byte[] transformedBytes = classbytes;
         if (shouldInstrument(name)) {
             for (ClassFileTransformer transformer : this.classFileTransformers) {
                 try {
                     String transformName = name.replaceAll("\\.", "/");
-                    byte[] transform = transformer.transform(this, transformName, null, this.domain, transformedBytes);
+                    byte[] transform = transformer.transform(this, transformName, null, getGeneration().getDomain(), transformedBytes);
                     if (transform != null) {
                         transformedBytes = transform;
                     }
                 } catch (IllegalClassFormatException e) {
-                    throw new ClassFormatError("Error reading class from bundle entry '" + entry.getName() + "'. " + e.getMessage());
+                    // TODO how to get bundle name from Generation?!
+                    throw new ClassFormatError("Error reading class from bundle entry '" + getGeneration().getBundleInfo().getBundleId() + "'. " + e.getMessage());
                 }
             }
         }
         try {
-            Class<?> definedClass = super.defineClass(name, transformedBytes, classpathEntry, entry);
-            storeClassIfDriver(definedClass);
+            // TODO why is entry not needed anymore?
+            DefineClassResult definedClass = super.defineClass(name, transformedBytes, classpathEntry);
+            // TODO store only if defined?!
+            if (definedClass.defined) {
+                storeClassIfDriver(definedClass.clazz);
+            }
+            // TODO throw ExtendedNoClassDefFoundError if defined == false?
             return definedClass;
         } catch (NoClassDefFoundError e) {
+            // TODO - think about using DefineClassResult to handle this case
             throw new ExtendedNoClassDefFoundError(this, e);
         }
     }
@@ -280,6 +280,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
         }
 
         synchronized (DriverManager.class) {
+            // TODO remove Java 6 support ?!
             try { // Java 6
                 Field writeDriversField = DriverManager.class.getDeclaredField("writeDrivers");
                 writeDriversField.setAccessible(true);
@@ -332,14 +333,13 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
 
     @Override
     public String toString() {
-        return String.format("%s: [bundle=%s]", getClass().getSimpleName(), this.delegate);
+        // TODO - how to get the delegate?!
+        return String.format("%s: [bundle=%s]", getClass().getSimpleName(), /* this.delegate */ null);
     }
 
     private Bundle[] getDependencyBundles(boolean includeDependenciesFragments) {
-        Bundle bundle = this.manager.getBaseData().getBundle();
-        BundleContext systemBundleContext = getBundleContext();
-        PlatformAdmin serverAdmin = getPlatformAdmin();
-        Bundle[] deps = EquinoxUtils.getDirectDependencies(bundle, systemBundleContext, serverAdmin, includeDependenciesFragments);
+        Bundle bundle = getGeneration().getRevision().getBundle();
+        Bundle[] deps = EquinoxUtils.getDirectDependencies(bundle, includeDependenciesFragments);
         return deps;
     }
 
@@ -348,18 +348,18 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
      * 
      * @return the <code>BundleContext</code>.
      */
-    private BundleContext getBundleContext() {
-        return this.manager.getBaseData().getAdaptor().getContext();
-    }
+//    private BundleContext getBundleContext() {
+//        return this.manager.getBaseData().getAdaptor().getContext();
+//    }
 
     /**
      * Gets the {@link PlatformAdmin} service.
      * 
      * @return the <code>PlatformAdmin</code> service.
      */
-    private PlatformAdmin getPlatformAdmin() {
-        return this.manager.getBaseData().getAdaptor().getPlatformAdmin();
-    }
+//    private PlatformAdmin getPlatformAdmin() {
+//        return this.manager.getBaseData().getAdaptor().getPlatformAdmin();
+//    }
 
     /**
      * Throwaway classloader for OSGi bundles.

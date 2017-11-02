@@ -15,20 +15,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
-import org.eclipse.osgi.baseadaptor.hooks.BundleFileWrapperFactoryHook;
-
+import org.eclipse.osgi.internal.hookregistry.BundleFileWrapperFactoryHook;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
+import org.eclipse.osgi.storage.bundlefile.BundleFileWrapper;
 
 /**
- * A {@link BundleFileWrapperFactoryHook} that keeps track of {@link BundleFile BundleFiles} and,
- * when instructed to clean up, ensures that they are closed.
+ * A {@link BundleFileWrapperFactoryHook} that keeps track of {@link BundleFile BundleFiles} and, when instructed to
+ * clean up, ensures that they are closed.
  * 
  * <p />
  * 
- * This is a workaround for Equinox bug 290389. Unfortunately when working with nested frameworks
- * the suggested workaround of calling PackageAdmin.refreshPackages does not work for the
- * child framework's composite bundle.
+ * This is a workaround for Equinox bug 290389. Unfortunately when working with nested frameworks the suggested
+ * workaround of calling PackageAdmin.refreshPackages does not work for the child framework's composite bundle.
  *
  * <strong>Concurrent Semantics</strong><br />
  *
@@ -36,26 +35,27 @@ import org.eclipse.osgi.baseadaptor.hooks.BundleFileWrapperFactoryHook;
  *
  */
 public final class BundleFileClosingBundleFileWrapperFactoryHook implements BundleFileWrapperFactoryHook {
-    
+
     private final Object monitor = new Object();
-    
+
     private final List<BundleFile> bundleFiles = new ArrayList<BundleFile>();
-    
+
     private static final BundleFileClosingBundleFileWrapperFactoryHook INSTANCE = new BundleFileClosingBundleFileWrapperFactoryHook();
-    
+
     private BundleFileClosingBundleFileWrapperFactoryHook() {
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
-    public BundleFile wrapBundleFile(BundleFile bundleFile, Object content, BaseData data, boolean base) throws IOException {
+    @Override
+    public BundleFileWrapper wrapBundleFile(BundleFile bundleFile, Generation generation, boolean base) {
         synchronized (this.monitor) {
             this.bundleFiles.add(bundleFile);
         }
         return null;
     }
-    
+
     public void cleanup() {
         List<BundleFile> localBundleFiles;
         synchronized (this.monitor) {
@@ -69,8 +69,9 @@ public final class BundleFileClosingBundleFileWrapperFactoryHook implements Bund
             }
         }
     }
-    
+
     public static BundleFileClosingBundleFileWrapperFactoryHook getInstance() {
         return INSTANCE;
     }
+
 }

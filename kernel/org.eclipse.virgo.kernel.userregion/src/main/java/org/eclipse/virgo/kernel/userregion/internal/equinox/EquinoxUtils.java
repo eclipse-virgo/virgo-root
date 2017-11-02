@@ -11,19 +11,20 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.internal.loader.BundleLoader;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
-import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.namespace.BundleNamespace;
+import org.osgi.framework.namespace.PackageNamespace;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * Utility methods for working with Equinox internals.
@@ -43,32 +44,11 @@ public final class EquinoxUtils {
      * @return the bundle <code>ClassLoader</code>.
      */
     public static ClassLoader getBundleClassLoader(Bundle bundle) {
-        ClassLoader classLoader = null;
-        if (BundleHost.class.isAssignableFrom(bundle.getClass())) {
-            BundleHost bundleHost = (BundleHost) bundle;
-
-            Class<?>[] parmTypes = {};
-            Method checkLoaderMethod;
-            try {
-                checkLoaderMethod = BundleHost.class.getDeclaredMethod("checkLoader", parmTypes);
-                Object[] args = {};
-                checkLoaderMethod.setAccessible(true);
-                BundleLoader bundleLoader = (BundleLoader) checkLoaderMethod.invoke(bundleHost, args);
-
-                if (bundleLoader == null) {
-                    throw new IllegalStateException("Unable to access BundleLoader for bundle '" + bundle.getSymbolicName() + "'.");
-                }
-
-                Method createClassLoaderMethod = BundleLoader.class.getDeclaredMethod("createClassLoader", parmTypes);
-                createClassLoaderMethod.setAccessible(true);
-
-                classLoader = (ClassLoader) createClassLoaderMethod.invoke(bundleLoader, args);
-            } catch (Exception e) {
-                throw new BundleClassLoaderUnavailableException("Failed to get class loader for bundle '" + bundle
-                    + "' - possible resolution problem.", e);
-            }
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        if (wiring == null) {
+            throw new IllegalStateException("Unable to access BundleWiring for bundle '" + bundle.getSymbolicName() + "'.");
         }
-        return classLoader;
+        return wiring.getClassLoader();
     }
 
     /**
@@ -80,6 +60,7 @@ public final class EquinoxUtils {
      * @param serverAdmin the {@link PlatformAdmin} service.
      * @return the direct dependencies.
      */
+    // TODO track down usages and remove them
     public static Bundle[] getDirectDependencies(Bundle bundle, BundleContext bundleContext, PlatformAdmin serverAdmin) {
         return getDirectDependencies(bundle, bundleContext, serverAdmin, false);
     }
@@ -95,6 +76,7 @@ public final class EquinoxUtils {
      * @param includeFragments whether to include fragments or no
      * @return an array of {@link Bundle}s which are direct dependencies
      */
+    // TODO track down usages and remove them
     public static Bundle[] getDirectDependencies(Bundle bundle, BundleContext bundleContext, PlatformAdmin serverAdmin, boolean includeFragments) {
         State state = serverAdmin.getState(false);
 
@@ -123,6 +105,40 @@ public final class EquinoxUtils {
         }
 
         return dependencies.toArray(new Bundle[dependencies.size()]);
+    }
+
+    // TODO add JavaDoc
+    // TODO handle the includeFragments
+    public static Bundle[] getDirectDependencies(Bundle bundle, boolean includeFragments) {
+        Set<Bundle> dependencies = getDependencies(bundle);
+        return dependencies.toArray(new Bundle[dependencies.size()]);
+    }
+
+    private static Set<Bundle> getDependencies(Bundle bundle) {
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        Set<Bundle> dependencies = new HashSet<Bundle>();
+        // first get the imported packages
+        List<BundleWire> packageWires = wiring.getRequiredWires(PackageNamespace.PACKAGE_NAMESPACE);
+        for (BundleWire packageWire : packageWires) {
+            dependencies.add(packageWire.getProvider().getBundle());
+        }
+        // now get dependencies from required bundles
+        for (BundleWire requiredWire : wiring.getRequiredWires(BundleNamespace.BUNDLE_NAMESPACE)) {
+            getRequiredBundleDependencies(requiredWire, dependencies);
+        }
+        return dependencies;
+    }
+
+    private static void getRequiredBundleDependencies(BundleWire requiredWire, Set<Bundle> dependencies) {
+        BundleWiring providerWiring = requiredWire.getProviderWiring();
+        dependencies.add(providerWiring.getBundle());
+        // now get re-exported requires of the required bundle
+        for (BundleWire providerBundleWire : providerWiring.getRequiredWires(BundleNamespace.BUNDLE_NAMESPACE)) {
+            String visibilityDirective = providerBundleWire.getRequirement().getDirectives().get(BundleNamespace.REQUIREMENT_VISIBILITY_DIRECTIVE);
+            if (BundleNamespace.VISIBILITY_REEXPORT.equals(visibilityDirective)) {
+                getRequiredBundleDependencies(providerBundleWire, dependencies);
+            }
+        }
     }
 
     /**

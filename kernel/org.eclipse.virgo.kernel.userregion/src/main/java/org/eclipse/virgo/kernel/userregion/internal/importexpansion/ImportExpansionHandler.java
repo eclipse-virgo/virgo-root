@@ -19,28 +19,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.osgi.framework.internal.core.BundleRepository;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
+import org.eclipse.virgo.kernel.artifact.library.LibraryDefinition;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.framework.ImportMergeException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-
-import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
-import org.eclipse.virgo.kernel.artifact.library.LibraryDefinition;
-import org.eclipse.virgo.nano.serviceability.Assert;
 import org.eclipse.virgo.kernel.userregion.internal.UserRegionLogEvents;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.nano.serviceability.Assert;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
 import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.util.math.OrderedPair;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.BundleSymbolicName;
@@ -49,6 +40,14 @@ import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
 import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+// TODO - check JavaDoc referencing non existing BundleRepository
+// import org.eclipse.osgi.framework.internal.core.BundleRepository;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A helper class for handling the expansion of <code>Import-Library</code> and <code>Import-Bundle</code> headers in a
@@ -100,8 +99,8 @@ public final class ImportExpansionHandler implements ImportExpander {
      * 
      * @throws ImportMergeException
      */
-    public ImportPromotionVector expandImports(List<BundleManifest> bundleManifests) throws UnableToSatisfyDependenciesException,
-        ImportMergeException {
+    public ImportPromotionVector expandImports(List<BundleManifest> bundleManifests)
+        throws UnableToSatisfyDependenciesException, ImportMergeException {
         StandardImportPromotionVector importPromotionVector = new StandardImportPromotionVector(this.trackedPackageImportsFactory);
         TrackedPackageImports packageImportsToBePromoted = this.trackedPackageImportsFactory.createCollector();
 
@@ -179,11 +178,13 @@ public final class ImportExpansionHandler implements ImportExpander {
         return expanded;
     }
 
-    UnableToSatisfyBundleDependenciesException createExceptionForMissingLibrary(String name, VersionRange versionRange, BundleManifest bundleManifest) {
+    UnableToSatisfyBundleDependenciesException createExceptionForMissingLibrary(String name, VersionRange versionRange,
+        BundleManifest bundleManifest) {
         String description = String.format("A library with the name '%s' and a version within the range '%s' could not be found", name, versionRange);
         BundleSymbolicName bundleSymbolicName = bundleManifest.getBundleSymbolicName();
-        return new UnableToSatisfyBundleDependenciesException(bundleSymbolicName != null ? bundleSymbolicName.getSymbolicName()
-            : MISSING_BUNDLE_SYMBOLIC_NAME, bundleManifest.getBundleVersion(), description);
+        return new UnableToSatisfyBundleDependenciesException(
+            bundleSymbolicName != null ? bundleSymbolicName.getSymbolicName() : MISSING_BUNDLE_SYMBOLIC_NAME, bundleManifest.getBundleVersion(),
+            description);
     }
 
     @SuppressWarnings("unchecked")
@@ -227,14 +228,14 @@ public final class ImportExpansionHandler implements ImportExpander {
      */
     private TrackedPackageImports getAdditionalPackageImports(List<ImportedLibrary> importedLibraries, List<ImportedBundle> directlyImportedBundles,
         BundleManifest bundleManifest, TrackedPackageImports packageImportsToBePromoted, List<BundleManifest> additionalManifests)
-        throws UnableToSatisfyDependenciesException, UnableToSatisfyBundleDependenciesException {
+            throws UnableToSatisfyDependenciesException, UnableToSatisfyBundleDependenciesException {
         TrackedPackageImports additionalPackageImports = this.trackedPackageImportsFactory.createCollector();
         TrackedPackageImports libraryPackageImports = getLibraryPackageImports(importedLibraries, packageImportsToBePromoted, bundleManifest,
             additionalManifests);
         additionalPackageImports.merge(libraryPackageImports);
         for (ImportedBundle directlyImportedBundle : directlyImportedBundles) {
-            additionalPackageImports.merge(getBundlePackageImports(directlyImportedBundle, packageImportsToBePromoted, bundleManifest,
-                additionalManifests));
+            additionalPackageImports.merge(
+                getBundlePackageImports(directlyImportedBundle, packageImportsToBePromoted, bundleManifest, additionalManifests));
         }
         return additionalPackageImports;
     }
@@ -271,8 +272,9 @@ public final class ImportExpansionHandler implements ImportExpander {
         } else if (mandatory) {
             throw new UnableToSatisfyBundleDependenciesException(
                 importingBundle.getBundleSymbolicName() != null ? importingBundle.getBundleSymbolicName().getSymbolicName()
-                    : MISSING_BUNDLE_SYMBOLIC_NAME, importingBundle.getBundleVersion(), "Import-Bundle with symbolic name '" + bundleSymbolicName
-                    + "' in version range '" + importVersionRange + "' could not be satisfied");
+                    : MISSING_BUNDLE_SYMBOLIC_NAME,
+                importingBundle.getBundleVersion(),
+                "Import-Bundle with symbolic name '" + bundleSymbolicName + "' in version range '" + importVersionRange + "' could not be satisfied");
         } else {
             return this.trackedPackageImportsFactory.createEmpty();
         }
@@ -337,8 +339,8 @@ public final class ImportExpansionHandler implements ImportExpander {
             diagnoseSystemBundleOverlap(packageImports, bundleSymbolicName, bundleVersion);
         }
 
-        return this.trackedPackageImportsFactory.create(packageImports, "Import-Bundle '" + bundleManifest.getBundleSymbolicName().getSymbolicName()
-            + "' version '" + bundleManifest.getBundleVersion() + "'");
+        return this.trackedPackageImportsFactory.create(packageImports,
+            "Import-Bundle '" + bundleManifest.getBundleSymbolicName().getSymbolicName() + "' version '" + bundleManifest.getBundleVersion() + "'");
     }
 
     private void tagImportsAsPromoted(List<ImportedPackage> packageImports) {
@@ -409,8 +411,8 @@ public final class ImportExpansionHandler implements ImportExpander {
                 }
 
                 Version libraryVersion = libraryArtefact.getVersion();
-                TrackedPackageImports libraryPackageImports = this.trackedPackageImportsFactory.createContainer("Import-Library '"
-                    + importedLibrary.getLibrarySymbolicName() + "' version '" + libraryVersion + "'");
+                TrackedPackageImports libraryPackageImports = this.trackedPackageImportsFactory.createContainer(
+                    "Import-Library '" + importedLibrary.getLibrarySymbolicName() + "' version '" + libraryVersion + "'");
 
                 Set<Attribute> importedBundles = libraryArtefact.getAttribute("Import-Bundle");
 
@@ -431,8 +433,8 @@ public final class ImportExpansionHandler implements ImportExpander {
                         if (importScopeSet != null && !importScopeSet.isEmpty()) {
                             applicationImportScope = IMPORT_SCOPE_APPLICATION.equals(importScopeSet.iterator().next());
                         }
-                        libraryPackageImports.merge(createTrackedPackageImportsFromImportedBundle(bundleManifest, applicationImportScope,
-                            packageImportsToBePromoted));
+                        libraryPackageImports.merge(
+                            createTrackedPackageImportsFromImportedBundle(bundleManifest, applicationImportScope, packageImportsToBePromoted));
                     } else {
                         Resolution importedBundleResolution = Resolution.MANDATORY;
                         Set<String> resolutionSet = properties.get("resolution");
@@ -443,9 +445,10 @@ public final class ImportExpansionHandler implements ImportExpander {
                         if (importedBundleResolution.equals(Resolution.MANDATORY)) {
                             throw new UnableToSatisfyBundleDependenciesException(
                                 importingBundle.getBundleSymbolicName() != null ? importingBundle.getBundleSymbolicName().getSymbolicName()
-                                    : MISSING_BUNDLE_SYMBOLIC_NAME, importingBundle.getBundleVersion(), "Imported library '" + libraryName
-                                    + "' version '" + libraryVersion + "' contains Import-Bundle for bundle '" + bundleSymbolicName
-                                    + "' in version range '" + bundleVersionRange + "' which could not be satisfied");
+                                    : MISSING_BUNDLE_SYMBOLIC_NAME,
+                                importingBundle.getBundleVersion(),
+                                "Imported library '" + libraryName + "' version '" + libraryVersion + "' contains Import-Bundle for bundle '"
+                                    + bundleSymbolicName + "' in version range '" + bundleVersionRange + "' which could not be satisfied");
                         }
                     }
                 }
@@ -510,8 +513,8 @@ public final class ImportExpansionHandler implements ImportExpander {
         }
 
         if (bundleManifest != null) {
-            this.logger.info("Found definition for bundle with symbolic name '{}' and version range '{}': {}", new Object[] { bundleSymbolicName,
-                versionRange, bundleManifest });
+            this.logger.info("Found definition for bundle with symbolic name '{}' and version range '{}': {}",
+                new Object[] { bundleSymbolicName, versionRange, bundleManifest });
         } else {
             this.logger.info("Could not find definition for bundle with symbolic name '{}' and version range '{}'", bundleSymbolicName, versionRange);
         }

@@ -31,7 +31,7 @@ import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.equinox.extensions.EquinoxLauncherConfiguration;
 import org.eclipse.virgo.kernel.equinox.extensions.ExtendedEquinoxLauncher;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoaderHook;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiFramework;
 import org.eclipse.virgo.kernel.services.repository.internal.RepositoryFactoryBean;
@@ -164,7 +164,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         TransformedManifestProvidingBundleFileWrapper bundleFileWrapper = new TransformedManifestProvidingBundleFileWrapper(importExpander);
         this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), packageAdmin, bundleFileWrapper);
 
-        PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
+        PluggableClassLoaderHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
 
         WorkArea workArea = new WorkArea() {

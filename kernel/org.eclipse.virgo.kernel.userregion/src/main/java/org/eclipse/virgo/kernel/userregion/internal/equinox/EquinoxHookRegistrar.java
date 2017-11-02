@@ -11,11 +11,10 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
-
+import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableBundleFileWrapperFactoryHook;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
+import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoaderHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableDelegatingClassLoaderDelegateHook;
 
 /**
@@ -31,21 +30,21 @@ public final class EquinoxHookRegistrar  {
 
     private final TransformedManifestProvidingBundleFileWrapper bundleFileWrapper;
     
-    private final ClassLoaderDelegateHook metaInfResourceClassLoaderDelegateHook;
+    private final ClassLoaderHook metaInfResourceClassLoaderDelegateHook;
 
-    public EquinoxHookRegistrar(TransformedManifestProvidingBundleFileWrapper bundleFileWrapper, ClassLoaderDelegateHook metaInfResourceClassLoaderDelegateHook) {
+    public EquinoxHookRegistrar(TransformedManifestProvidingBundleFileWrapper bundleFileWrapper, ClassLoaderHook metaInfResourceClassLoaderDelegateHook) {
         this.bundleFileWrapper = bundleFileWrapper;
         this.metaInfResourceClassLoaderDelegateHook = metaInfResourceClassLoaderDelegateHook;
     }
 
     public void init() {
-        PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
+        PluggableClassLoaderHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         PluggableBundleFileWrapperFactoryHook.getInstance().setBundleFileWrapper(this.bundleFileWrapper);
         PluggableDelegatingClassLoaderDelegateHook.getInstance().addDelegate(this.metaInfResourceClassLoaderDelegateHook);
     }
     
     public void destroy() throws Exception {
-        PluggableClassLoadingHook.getInstance().setClassLoaderCreator(null);
+        PluggableClassLoaderHook.getInstance().setClassLoaderCreator(null);
         PluggableBundleFileWrapperFactoryHook.getInstance().setBundleFileWrapper(null);
         PluggableDelegatingClassLoaderDelegateHook.getInstance().removeDelegate(this.metaInfResourceClassLoaderDelegateHook);
         BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();

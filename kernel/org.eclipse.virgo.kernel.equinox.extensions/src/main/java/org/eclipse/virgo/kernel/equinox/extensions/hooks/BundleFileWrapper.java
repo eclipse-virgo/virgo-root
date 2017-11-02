@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
 
 /**
  * A <code>BundleFileWrapper</code> implementation can be plugged into the {@link PluggableBundleFileWrapperFactoryHook}
@@ -21,6 +21,7 @@ import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
  * <strong>Concurrent Semantics</strong><br /> Implementations <strong>must</strong> be thread-safe.
  * 
  */
+// TODO check name clash with new Equinox class BundleFileWrapper
 public interface BundleFileWrapper {
 
     /**

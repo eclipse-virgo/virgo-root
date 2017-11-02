@@ -11,14 +11,15 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.loader.BaseClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
-
+import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
+import org.eclipse.osgi.internal.loader.BundleLoader;
+import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
 
 /**
- * A <code>ClassLoaderCreator</code> is used to create an Equinox {@link BaseClassLoader} for a {@link org.osgi.framework.Bundle Bundle}.
+ * A <code>ClassLoaderCreator</code> is used to create an {@link EquinoxClassLoader} for a
+ * {@link org.osgi.framework.Bundle Bundle}.
  * <p />
  *
  * <strong>Concurrent Semantics</strong><br />
@@ -28,5 +29,5 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
  */
 public interface ClassLoaderCreator {
 
-    public BaseClassLoader createClassLoader(ClassLoader parent, ClassLoaderDelegate delegate, BundleProtectionDomain domain, BaseData data, String[] bundleclasspath);
+    public ModuleClassLoader createClassLoader(ClassLoader parent, EquinoxConfiguration configuration, BundleLoader delegate, Generation generation);
 }

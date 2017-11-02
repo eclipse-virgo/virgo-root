@@ -11,14 +11,12 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.adaptor.LocationManager;
-import org.eclipse.osgi.baseadaptor.HookRegistry;
-import org.eclipse.osgi.framework.internal.core.Constants;
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
+import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
+import org.eclipse.osgi.internal.hookregistry.HookRegistry;
+import org.eclipse.osgi.internal.location.EquinoxLocations;
 import org.eclipse.osgi.launch.Equinox;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.ExtensionsHookConfigurator;
 import org.osgi.framework.BundleException;
@@ -43,15 +41,6 @@ public final class ExtendedEquinoxLauncher {
     private static final String PROP_OSGI_PARENT_CLASSLOADER = "osgi.parentClassloader";
 
     public static Equinox launch(EquinoxLauncherConfiguration config) throws BundleException {
-        try {
-            Field f = FrameworkProperties.class.getDeclaredField("properties");
-            f.setAccessible(true);
-            f.set(null, null);
-        } catch (Exception e) {
-            System.out.println("Unable to reset Equinox FrameworkProperties");
-            e.printStackTrace(System.out);
-        }
-        
         Map<String, String> configuration = populateConfiguration(config);        
         Equinox equinox = new Equinox(configuration);      
         equinox.start();
@@ -70,11 +59,11 @@ public final class ExtendedEquinoxLauncher {
         configuration.put(PROP_CONTEXT_BOOTDELEGATION, "false");
         configuration.put(PROP_COMPATIBILITY_BOOTDELEGATION, "false");
         if (config.getProfilePath() != null) {
-            configuration.put(Constants.OSGI_JAVA_PROFILE, config.getProfilePath().toString());
+            configuration.put(EquinoxConfiguration.PROP_OSGI_JAVA_PROFILE, config.getProfilePath().toString());
         }
-        configuration.put(Constants.OSGI_JAVA_PROFILE_BOOTDELEGATION, Constants.OSGI_BOOTDELEGATION_OVERRIDE);
-        configuration.put(LocationManager.PROP_CONFIG_AREA, config.getConfigPath().toString());
-        configuration.put(LocationManager.PROP_INSTALL_AREA, config.getInstallPath().toString());
+        configuration.put(EquinoxConfiguration.PROP_OSGI_JAVA_PROFILE_BOOTDELEGATION, EquinoxConfiguration.PROP_OSGI_BOOTDELEGATION_OVERRIDE);
+        configuration.put(EquinoxLocations.PROP_CONFIG_AREA, config.getConfigPath().toString());
+        configuration.put(EquinoxLocations.PROP_INSTALL_AREA, config.getInstallPath().toString());
         configuration.put(PROP_OSGI_CLEAN, Boolean.toString(config.isClean()));
         return configuration;
     }

@@ -17,26 +17,24 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.equinox.region.Region;
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.framework.adaptor.BundleData;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
+import org.eclipse.osgi.internal.framework.EquinoxBundle;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.service.resolver.ExportPackageDescription;
 import org.eclipse.osgi.service.resolver.HostSpecification;
 import org.eclipse.osgi.service.resolver.ImportPackageSpecification;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.eclipse.osgi.storage.BundleInfo.Generation;
 import org.eclipse.virgo.kernel.artifact.plan.PlanDescriptor.Provisioning;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiBundle;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiExportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiImportPackage;
 import org.eclipse.virgo.kernel.osgi.quasi.QuasiRequiredBundle;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link StandardQuasiBundle} is the default implementation of {@link QuasiBundle}.
@@ -315,13 +313,10 @@ final class StandardQuasiBundle implements QuasiBundle {
     }
 
     public File getBundleFile() {
-        if (bundle instanceof BundleHost) {
-            BundleHost bh = (BundleHost) bundle;
-            BundleData bundleData = bh.getBundleData();
-            if (bundleData instanceof BaseData) {
-                File file = ((BaseData) bundleData).getBundleFile().getBaseFile();
-                return file;
-            }
+        if (bundle instanceof EquinoxBundle) {
+            EquinoxBundle equinoxBundle = (EquinoxBundle) bundle;
+            Generation generation = (Generation) equinoxBundle.getModule().getCurrentRevision().getRevisionInfo();
+            return generation.getBundleFile().getBaseFile();
         }
         return null;
     }

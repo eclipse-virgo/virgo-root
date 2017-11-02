@@ -26,9 +26,9 @@ import java.util.Enumeration;
 import java.util.Stack;
 import java.util.jar.JarFile;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
-import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
+import org.eclipse.osgi.container.Module;
+import org.eclipse.osgi.storage.bundlefile.BundleEntry;
+import org.eclipse.osgi.storage.bundlefile.BundleFile;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileWrapper;
 import org.eclipse.virgo.kernel.osgi.framework.ImportExpander;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
@@ -99,6 +99,7 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
         private final Object monitor = new Object();
 
         private TransformedManifestProvidingBundleFile(BundleFile bundleFile, ImportExpander importExpander) {
+            super(bundleFile.getBaseFile());
             this.bundleFile = bundleFile;
             this.importExpander = importExpander;
         }
@@ -178,13 +179,17 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
             }
         }
 
+        @Override
+        public Enumeration<String> getEntryPaths(String path) {
+            return this.bundleFile.getEntryPaths(path);
+        }
+
         /**
          * {@inheritDoc}
          */
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
-        public Enumeration getEntryPaths(String path) {
-            return this.bundleFile.getEntryPaths(path);
+        public Enumeration<String> getEntryPaths(String path, boolean recurse) {
+            return this.bundleFile.getEntryPaths(path, recurse);
         }
 
         /**
@@ -212,23 +217,8 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
         }
 
         @Override
-        @SuppressWarnings("deprecation")
-        public URL getResourceURL(String path, long hostBundleID, int index) {
-            return this.bundleFile.getResourceURL(path, hostBundleID, index);
-        }
-
-        @Override
-        @SuppressWarnings("deprecation")
-        public URL getResourceURL(String path, long hostBundleID) {
-            return this.bundleFile.getResourceURL(path, hostBundleID);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public URL getResourceURL(String path, BaseData hostData, int index) {
-            return this.bundleFile.getResourceURL(path, hostData, index);
+        public URL getResourceURL(String path, Module hostModule, int index) {
+            return this.bundleFile.getResourceURL(path, hostModule, index);
         }
     }
     

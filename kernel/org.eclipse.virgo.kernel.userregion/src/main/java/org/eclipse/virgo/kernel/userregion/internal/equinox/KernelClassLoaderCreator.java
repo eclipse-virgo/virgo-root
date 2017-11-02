@@ -14,17 +14,17 @@ package org.eclipse.virgo.kernel.userregion.internal.equinox;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.eclipse.osgi.baseadaptor.BaseData;
-import org.eclipse.osgi.baseadaptor.loader.BaseClassLoader;
-import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
-import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
-import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
-
+import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
+import org.eclipse.osgi.internal.loader.BundleLoader;
+import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
+import org.eclipse.osgi.storage.BundleInfo.Generation;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.ClassLoaderCreator;
 
 /**
- * {@link ClassLoaderCreator} to replace the standard Equinox {@link DefaultClassLoader} with the
- * {@link KernelBundleClassLoader}. <p/>
+ * {@link ClassLoaderCreator} to replace the standard {@link EquinoxClassLoader} with the
+ * {@link KernelBundleClassLoader}.
+ * <p/>
  * 
  * <strong>Concurrent Semantics</strong><br />
  * 
@@ -34,13 +34,14 @@ import org.eclipse.virgo.kernel.equinox.extensions.hooks.ClassLoaderCreator;
 final class KernelClassLoaderCreator implements ClassLoaderCreator {
 
     /**
-     * Creates a {@link KernelBundleClassLoader} in place of the standard Equinox {@link DefaultClassLoader}.
+     * Creates a {@link KernelBundleClassLoader} in place of the standard {@link EquinoxClassLoader}.
      */
-    public BaseClassLoader createClassLoader(final ClassLoader parent, final ClassLoaderDelegate delegate, final BundleProtectionDomain domain,
-        final BaseData data, final String[] bundleclasspath) {
-        return AccessController.doPrivileged(new PrivilegedAction<BaseClassLoader>() {
-            public BaseClassLoader run() {
-                return new KernelBundleClassLoader(parent, delegate, domain, data, bundleclasspath);
+    public ModuleClassLoader createClassLoader(final ClassLoader parent, final EquinoxConfiguration configuration, final BundleLoader delegate,
+        final Generation generation) {
+        return AccessController.doPrivileged(new PrivilegedAction<EquinoxClassLoader>() {
+
+            public EquinoxClassLoader run() {
+                return new KernelBundleClassLoader(parent, delegate, configuration, generation);
             }
         });
     }
