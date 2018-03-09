@@ -14,10 +14,10 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 public class OkHttp3Test extends AbstractBaseTest {
 
     private static final String OKIO = "com.squareup.okio";
-    private static final String OKIO_VERSION = "1.13.0";
+    private static final String OKIO_VERSION = "1.14.0";
 
     private static final String OKHTTP3 = "com.squareup.okhttp3";
-    private static final String OKHTTP3_VERSION = "3.8.0";
+    private static final String OKHTTP3_VERSION = "3.9.1";
 
     @Configuration
     @Override

@@ -1,0 +1,28 @@
+Bundle-SymbolicName: org.springframework.beans
+Bundle-Name: Spring Beans
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cglib.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ javax.el.*;version="[3.0.1, 4)";resolution:=optional,
+ javax.inject.*;version="[1, 2)";resolution:=optional,
+ javax.xml.*;version="0";resolution:=optional,
+ groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
+ org.yaml.snakeyaml.*;version="${snakeYamlVersion:[=.=.=, +1)}";resolution:="optional",
+ org.codehaus.groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
+ org.xml.sax.*;version="0";resolution:=optional,
+ org.w3c.dom.*;version="0";resolution:=optional,
+ kotlin.*;version="${kotlinVersion:[=.=.=, +1)}";resolution:="optional",
+ org.jetbrains.annotations.*;version="${orgJetbrainsAnnotations:[=.=.=, +1)}";resolution:="optional"
+Export-Template:
+ org.springframework.beans.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

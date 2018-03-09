@@ -1,0 +1,27 @@
+Bundle-SymbolicName: org.springframework.aop
+Bundle-Name: Spring AOP
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ com.jamonapi.*;version="${jamonVersion:[=.=.=, +1)}";resolution:=optional,
+ org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.apache.commons.pool2.*;version="${commonsPool2Version:[=.=.=, +1)}";resolution:=optional,
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}";resolution:=optional,
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cglib.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.objenesis.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.w3c.dom.*;version="0";resolution:=optional
+Export-Template:
+ org.springframework.aop.*;version="${springframeworkVersion}"
+Excluded-Exports:
+ org.aopalliance.*
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

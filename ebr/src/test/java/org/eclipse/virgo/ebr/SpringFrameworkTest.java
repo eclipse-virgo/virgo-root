@@ -14,9 +14,9 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 public class SpringFrameworkTest extends AbstractBaseTest {
 
     private static final String ASPECTJ_WEAVER = "org.aspectj.weaver";
-    private static final String ASPECTJ_WEAVER_VERSION = "1.8.10";
+    private static final String ASPECTJ_WEAVER_VERSION = "1.8.13";
 
-    private static final String SF_VERSION = "4.3.9.RELEASE";
+    private static final String SF_VERSION = "5.0.4.RELEASE";
     private static final String SF_PREFIX = "org.springframework.";
     private static final String SF_CORE = SF_PREFIX + "core";
     private static final String SF_BEANS = SF_PREFIX + "beans";
@@ -27,13 +27,14 @@ public class SpringFrameworkTest extends AbstractBaseTest {
     private static final String SF_CONTEXT_SUPPORT = SF_PREFIX + "context.support";
     private static final String SF_TRANSACTION = SF_PREFIX + "transaction";
     private static final String SF_JDBC = SF_PREFIX + "jdbc";
+    private static final String SF_JCL = SF_PREFIX + "jcl";
     private static final String SF_MESSAGING = SF_PREFIX + "messaging";
     private static final String SF_JMS = SF_PREFIX + "jms";
     private static final String SF_ORM = SF_PREFIX + "orm";
     private static final String SF_OXM = SF_PREFIX + "oxm";
     private static final String SF_WEB = SF_PREFIX + "web";
+    private static final String SF_WEBFLUX = SF_PREFIX + "webflux";
     private static final String SF_WEBMVC = SF_PREFIX + "webmvc";
-    private static final String SF_WEBMVC_PORTLET = SF_PREFIX + "webmvc.portlet";
     private static final String SF_WEBSOCKET = SF_PREFIX + "websocket";
 
     @Configuration
@@ -58,12 +59,13 @@ public class SpringFrameworkTest extends AbstractBaseTest {
                 mavenBundle(MIRROR_GROUP, SF_TRANSACTION, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_JDBC, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_MESSAGING, SF_VERSION),
+                mavenBundle(MIRROR_GROUP, SF_JCL, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_JMS, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_ORM, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_OXM, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_WEB, SF_VERSION),
+                mavenBundle(MIRROR_GROUP, SF_WEBFLUX, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_WEBMVC, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_WEBMVC_PORTLET, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_WEBSOCKET, SF_VERSION),
                 // specify junit bundles
                 junitBundles()
@@ -116,6 +118,11 @@ public class SpringFrameworkTest extends AbstractBaseTest {
     }
 
     @Test
+    public void testSpringJcl() throws Exception {
+        assertBundleActive(SF_JCL);
+    }
+
+    @Test
     public void testSpringJdbc() throws Exception {
         assertBundleActive(SF_JDBC);
     }
@@ -146,13 +153,13 @@ public class SpringFrameworkTest extends AbstractBaseTest {
     }
 
     @Test
-    public void testSpringWebMvc() throws Exception {
-        assertBundleActive(SF_WEBMVC);
+    public void testSpringWebflux() throws Exception {
+        assertBundleActive(SF_WEBFLUX);
     }
 
     @Test
-    public void testSpringWebMvcPortlet() throws Exception {
-        assertBundleActive(SF_WEBMVC_PORTLET);
+    public void testSpringWebMvc() throws Exception {
+        assertBundleActive(SF_WEBMVC);
     }
 
     @Test

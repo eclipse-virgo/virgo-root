@@ -1,6 +1,8 @@
 ## Publishing 3rd party bundles
 
-### Building 
+We publish 3rd party OSGi bundles via Jenkins job [virgo-mirrored-master](https://ci.eclipse.org/virgo/view/Virgo/job/virgo-mirrored-master/)
+
+### Building
 
 Gradle default tasks:
  1. `clean` - Cleans old build output
@@ -13,9 +15,10 @@ Building locally:
 
     `./gradlew clean bundlor publishToMavenLocal test`
 
-### Add new Version of Spring
+### Update Spring Framework
 
-TBD
+The Spring Framework BOM (Bill of Material) is a good point to start
+[spring-framework-bom : 5.0.4.RELEASE](http://search.maven.org/#artifactdetails%7Corg.springframework%7Cspring-framework-bom%7C5.0.4.RELEASE%7Cpom)
 
 ### Writing PaxExam test for 3rd party bundle
 

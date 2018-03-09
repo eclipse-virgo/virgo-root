@@ -1,0 +1,51 @@
+Bundle-SymbolicName: org.springframework.orm
+Bundle-Name: Spring ORM
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Package:
+ com.ibatis.sqlmap.engine.transaction.external;version="[2.3.4, 3)";resolution:=optional,
+ oracle.toplink.essentials.expressions;version="[2, 3)";resolution:=optional,
+ javax.persistence.criteria;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ javax.persistence.metamodel;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ org.eclipse.persistence.expressions;version="[1, 3)";resolution:=optional
+Import-Template:
+ org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
+ com.ibatis.*;version="[2.3.4, 3)";resolution:=optional,
+ javax.jdo.*;version="[3.1, 4)";resolution:=optional,
+ javax.naming.*;version="0";resolution:=optional,
+ javax.persistence.*;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
+ javax.servlet.*;version="[3.0.1, 4)";resolution:=optional,
+ javax.sql.*;version="0";resolution:=optional,
+ javax.transaction.*;version="[1.0.1, 2)";resolution:=optional,
+ javax.xml.*;version="0";resolution:=optional,
+ oracle.toplink.essentials.*;version="[2, 3)";resolution:=optional,
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.apache.openjpa.persistence.*;version="${openjpaVersion:[=.=.=, +1)}";resolution:=optional,
+ org.eclipse.persistence.core.*;version="${eclipsePersistenceCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ org.eclipse.persistence.jpa.*;version="${eclipsePersistenceJpaVersion:[=.=.=, +1)}";resolution:=optional,
+ org.eclipse.persistence.sessions.*;version="${eclipsePersistenceCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ org.hibernate.*;version="[3.6.10.Final, 6)";resolution:=optional,
+ org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.dao.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.instrument.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.jdbc.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.jndi.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.transaction.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.web.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.ui.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.xml.sax.*;version="0";resolution:=optional,
+ org.w3c.dom.*;version="0";resolution:=optional
+Export-Template:
+ org.springframework.orm.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ DynamicImport-Package,
+ Import-Package,
+ Export-Package,
+ Tool
