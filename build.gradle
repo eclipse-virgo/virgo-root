@@ -3,19 +3,6 @@ import virgobuild.Config
 
 apply plugin: virgobuild.VirgoToolsPlugin
 
-if (System.properties['eclipse.build'] == 'true') {
-    // https://gradle.org/docs/current/userguide/build_environment.html
-    // https://wiki.eclipse.org/Hudson#Why_use_a_Proxy.3F
-    println "Checking that proxy properties are set before proceeding..."
-    if (!System.properties['http.proxyHost'] && !System.properties['http.proxyPort']) {
-        throw new StopActionException("Properties 'http.proxyHost' and 'http.proxyPort' are both not set.")
-    }
-    println 'http.proxyHost = ' + System.properties['http.proxyHost']
-    println 'http.proxyPort = ' + System.properties['http.proxyPort']
-    println 'http.nonProxyHosts = ' + System.properties['http.nonProxyHosts']
-    println 'Done.'
-}
-
 buildscript {
     repositories {
         mavenLocal()
