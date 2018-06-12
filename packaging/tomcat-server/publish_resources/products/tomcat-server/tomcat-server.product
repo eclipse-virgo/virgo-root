@@ -45,7 +45,6 @@
 		<plugin id="org.eclipse.virgo.nano.core" autoStart="true"/>
 		<plugin id="org.eclipse.virgo.nano.management" autoStart="true"/>
 		<plugin id="org.eclipse.virgo.repository" autoStart="true"/>
-		<plugin id="" autoStart="true"/>
 	</configurations>
 
 </product>
