@@ -599,7 +599,7 @@ task('installProductNanoBase', dependsOn: [
         'publishNanoBase'
 ]) {
 
-    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment configurations are ANY."
 
     def product = 'nano-base'
     def shortProduct = 'VNB'
@@ -616,7 +616,7 @@ task('installProductNano', dependsOn: [
         'publishNano',
 ]) {
 
-    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment configurations are ANY."
 
     def product = 'nano'
     def shortProduct = 'VN'
@@ -634,7 +634,7 @@ task('installProductNanoFull', dependsOn: [
         'publishNanoFull',
 ]) {
 
-    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
+    description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment configurations are ANY."
 
     def product = 'nano-full'
     def shortProduct = 'VNF'
