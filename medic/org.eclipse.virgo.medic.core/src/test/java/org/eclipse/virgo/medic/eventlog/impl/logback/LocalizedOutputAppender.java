@@ -19,7 +19,7 @@ import ch.qos.logback.core.AppenderBase;
 
 public class LocalizedOutputAppender extends AppenderBase<LoggingEvent> {
 
-    private static List<LoggingEvent> loggingEvents = new ArrayList<LoggingEvent>();
+    private static List<LoggingEvent> loggingEvents = new ArrayList<>();
 
     @Override
     protected void append(LoggingEvent eventObject) {
@@ -28,7 +28,7 @@ public class LocalizedOutputAppender extends AppenderBase<LoggingEvent> {
 
     static List<LoggingEvent> getAndResetLoggingEvents() {
         List<LoggingEvent> loggingEvents = LocalizedOutputAppender.loggingEvents;
-        LocalizedOutputAppender.loggingEvents = new ArrayList<LoggingEvent>();
+        LocalizedOutputAppender.loggingEvents = new ArrayList<>();
         return loggingEvents;
     }
 }
