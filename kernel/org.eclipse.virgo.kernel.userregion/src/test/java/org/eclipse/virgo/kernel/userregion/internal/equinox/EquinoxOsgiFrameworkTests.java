@@ -21,16 +21,12 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
+import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
-import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.KernelBundleClassLoader;
 
-/**
- */
 public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTests {
 
     @Override
@@ -39,7 +35,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     }
 
     @Test
-    public void testStartAndStop() throws Exception {
+    public void testStartAndStop() {
         assertNotNull(this.framework.getBundleContext());
         assertEquals(Bundle.ACTIVE, this.framework.getBundleContext().getBundle().getState());
     }
@@ -90,11 +86,6 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
         assertEquals(1, count.get());
     }
 
-    /**
-     * @param osgi
-     * @return
-     * @throws BundleException
-     */
     private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
         osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.logging/1.2.0/16f574f7c054451477d7fc9d1f294e22b70a8eba/org.apache.commons.logging-1.2.0.jar").getAbsolutePath());
         osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.codec/1.10.0/8aff50e99bd7e53f8c4f5fe45c2a63f1d47dd19c/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());

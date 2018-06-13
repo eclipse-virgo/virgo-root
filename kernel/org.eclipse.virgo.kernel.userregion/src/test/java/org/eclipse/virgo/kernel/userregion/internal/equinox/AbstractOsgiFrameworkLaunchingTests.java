@@ -59,14 +59,13 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-@SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     protected EquinoxOsgiFramework framework;
 
-    protected PlatformAdmin platformAdmin;
+    PlatformAdmin platformAdmin;
 
-    protected Repository repository;
+    Repository repository;
 
     private RepositoryBundleActivator repositoryBundleActivator;
 
@@ -82,13 +81,12 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     private Equinox equinox;
 
-    protected QuasiFramework quasiFramework;
-
-    private ThreadLocal<Region> threadLocal;
+    QuasiFramework quasiFramework;
 
     @Before
     public void setUp() throws Exception {
 
+        // TODO - use a JUnit temporary folder?
         final File workDir = new File("build/work");
 
         if (workDir.exists()) {
@@ -120,8 +118,8 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         };
 
-        this.threadLocal = new ThreadLocal<Region>();
-        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
+        ThreadLocal<Region> threadLocal = new ThreadLocal<>();
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, threadLocal);
 
         Region userRegion = regionDigraph.createRegion("org.eclipse.virgo.region.user");
         userRegion.addBundle(this.bundleContext.getBundle());
@@ -144,7 +142,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
             repositoryProperties.load(properties);
         }
 
-        Set<ArtifactBridge> artifactBridges = new HashSet<ArtifactBridge>();
+        Set<ArtifactBridge> artifactBridges = new HashSet<>();
         artifactBridges.add(new BundleBridge(new StubHashGenerator()));
         artifactBridges.add(new LibraryBridge(new StubHashGenerator()));
 
@@ -155,14 +153,14 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         repositoryRegistration = bundleContext.registerService(Repository.class, repository, null);
 
         ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
-        this.platformAdmin = (PlatformAdmin) bundleContext.getService(platformAdminServiceReference);
+        this.platformAdmin = bundleContext.getService(platformAdminServiceReference);
 
         ServiceReference<PackageAdmin> packageAdminServiceReference = bundleContext.getServiceReference(PackageAdmin.class);
         PackageAdmin packageAdmin = (PackageAdmin) bundleContext.getService(packageAdminServiceReference);
 
         ImportExpander importExpander = createImportExpander(packageAdmin);
         TransformedManifestProvidingBundleFileWrapper bundleFileWrapper = new TransformedManifestProvidingBundleFileWrapper(importExpander);
-        this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), packageAdmin, bundleFileWrapper);
+        this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), bundleFileWrapper);
 
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
@@ -184,7 +182,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
     }
 
     private ImportExpander createImportExpander(PackageAdmin packageAdmin) {
-        Set<String> packagesExportedBySystemBundle = new HashSet<String>(30);
+        Set<String> packagesExportedBySystemBundle = new HashSet<>(30);
         ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(bundleContext.getBundle(0));
 
         for (ExportedPackage exportedPackage : exportedPackages) {

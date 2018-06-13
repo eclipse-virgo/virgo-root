@@ -11,10 +11,13 @@
 
 package org.eclipse.virgo.kernel.osgi.framework.support;
 
+import static java.util.Arrays.asList;
+
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.framework.BundleReference;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,40 +35,42 @@ import org.slf4j.LoggerFactory;
  * Implementation is thread safe.
  * 
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFramework implements OsgiFramework {
 
-    public static final String DIRECTIVE_SEPARATOR = ";";
-
-    public static final boolean DIRECTIVE_PUBLISH_CONTEXT_DEFAULT = true;
-
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final PackageAdmin packageAdmin;
 
     private final BundleContext bundleContext;
 
 
-    protected AbstractOsgiFramework(BundleContext context, PackageAdmin packageAdmin) {
+    protected AbstractOsgiFramework(BundleContext context) {
         this.bundleContext = context;
-        this.packageAdmin = packageAdmin;
     }
 
-    public Bundle getClassBundle(Class<?> cls) {
-        if (this.packageAdmin != null) {
-            return this.packageAdmin.getBundle(cls);
-        } else {
-            return null;
+    // http://git.eclipse.org/c/equinox/rt.equinox.framework.git/tree/bundles/org.eclipse.osgi/container/src/org/eclipse/osgi/internal/framework/legacy/PackageAdminImpl.java#n148
+    public Bundle getClassBundle(Class<?> clazz) {
+        if (System.getSecurityManager() == null) {
+            return getBundlePriv(clazz);
         }
+        throw new IllegalStateException("Running with SecurityManager is currently not supported.");
+        // TODO - think about getting this code from PackageAdmin also
+        // See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=344276 - As user I want to start virgo with security manager
+        //        return AccessController.doPrivileged(new GetBundleAction(this, clazz));
     }
-    
-    /**
-     * Gets the {@link PackageAdmin} service.
-     * 
-     * @return the <code>PackageAdmin</code> service.
-     */
-    protected final PackageAdmin getPackageAdmin() {
-        return this.packageAdmin;
+
+    private Bundle getBundlePriv(Class<?> clazz) {
+        ClassLoader cl = clazz.getClassLoader();
+        if (cl instanceof BundleReference) {
+            return ((BundleReference) cl).getBundle();
+        }
+        if (cl == getClass().getClassLoader()) {
+            return bundleContext.getBundle(0);
+        }
+        return null;
+    }
+
+    protected void refreshPackages(Bundle[] toRefresh) {
+        FrameworkWiring frameworkWiring = bundleContext.getBundle(0).adapt(FrameworkWiring.class);
+        frameworkWiring.refreshBundles(asList(toRefresh));
     }
 
     /**

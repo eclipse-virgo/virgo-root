@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
-import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
@@ -30,13 +29,11 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * Implementation of <code>OsgiFramework</code> using Equinox.
  * 
  */
-@SuppressWarnings("deprecation")
 public class EquinoxOsgiFramework extends AbstractOsgiFramework {
     
     private static final String FILE_SCHEME = "file:";
@@ -53,11 +50,10 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
     /**
      * Creates a new <code>EquinoxOsgiFramework</code>.
      * @param context execution context of bundle
-     * @param packageAdmin framework service for access to {@link State}
      * @param bundleTransformationHandler wrapper for bundle manifest transformations
      */
-    public EquinoxOsgiFramework(BundleContext context, PackageAdmin packageAdmin, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
-        super(context, packageAdmin);
+    public EquinoxOsgiFramework(BundleContext context, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
+        super(context);
         this.bootDelegationHelper = new EquinoxBootDelegationHelper(FrameworkProperties.getProperty(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION));
         this.platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class);
         this.bundleTransformationHandler = bundleTransformationHandler;
@@ -68,7 +64,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
      */
     public void refresh(Bundle bundle) throws BundleException {
         ClassLoader cl = getBundleClassLoader(bundle);
-        List<Bundle> refreshBundles = new ArrayList<Bundle>();
+        List<Bundle> refreshBundles = new ArrayList<>();
         if (cl instanceof KernelBundleClassLoader) {
             KernelBundleClassLoader pbcl = (KernelBundleClassLoader) cl;
             if (pbcl.isInstrumented()) {
@@ -83,8 +79,8 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         }
         bundle.update();
         refreshBundles.add(bundle);
-        Bundle[] toRefresh = refreshBundles.toArray(new Bundle[refreshBundles.size()]);
-        getPackageAdmin().refreshPackages(toRefresh);
+        Bundle[] toRefresh = refreshBundles.toArray(new Bundle[0]);
+        refreshPackages(toRefresh);
     }
 
     final void stop() {
@@ -118,7 +114,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         BundleContext bundleContext = getBundleContext();
         ServiceReference<PlatformAdmin> serviceRef = bundleContext.getServiceReference(PlatformAdmin.class);
         try {
-            PlatformAdmin serverAdmin = (PlatformAdmin) bundleContext.getService(serviceRef);
+            PlatformAdmin serverAdmin = bundleContext.getService(serviceRef);
             return EquinoxUtils.getDirectDependencies(bundle, bundleContext, serverAdmin, includeFragments);
         } finally {
             bundleContext.ungetService(serviceRef);
@@ -158,7 +154,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         }
     }
 
-    private String getAbsoluteUriString(File location) throws BundleException {
+    private String getAbsoluteUriString(File location) {
         return FILE_SCHEME + location.getAbsolutePath();
     }
 }

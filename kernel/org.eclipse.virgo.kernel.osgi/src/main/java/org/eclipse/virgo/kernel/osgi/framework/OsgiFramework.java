@@ -12,12 +12,14 @@
 package org.eclipse.virgo.kernel.osgi.framework;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.jar.Manifest;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.wiring.FrameworkWiring;
 
 /**
  * <code>OsgiFramework</code> defines a basic abstraction for interacting with various OSGi implementations in a
@@ -28,7 +30,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * <code>OsgiFramework</code> class names.
  * 
  */
-@SuppressWarnings("deprecation")
 public interface OsgiFramework {
 
     /**
@@ -85,7 +86,7 @@ public interface OsgiFramework {
      * 
      * @param bundle the <code>Bundle</code> to refresh.
      * @throws BundleException if there is an error during refresh.
-     * @see PackageAdmin#refreshPackages(Bundle[])
+     * @see FrameworkWiring#refreshBundles(Collection, FrameworkListener...)
      */
     void refresh(Bundle bundle) throws BundleException;
 

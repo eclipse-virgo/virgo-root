@@ -73,7 +73,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * Thread-safe.
  * 
  */
-@SuppressWarnings("deprecation")
 public class Activator implements BundleActivator {
 
     private static final long SYSTEM_BUNDLE_ID = 0;
@@ -114,7 +113,7 @@ public class Activator implements BundleActivator {
 
         TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler = createBundleTransformationHandler(importExpansionHandler);
 
-        OsgiFramework osgiFramework = createOsgiFramework(context, packageAdmin, bundleTransformerHandler);
+        OsgiFramework osgiFramework = createOsgiFramework(context, bundleTransformerHandler);
         this.registrationTracker.track(context.registerService(OsgiFramework.class.getName(), osgiFramework, null));
 
         DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
@@ -171,9 +170,8 @@ public class Activator implements BundleActivator {
         return new StandardResolutionFailureDetective(platformAdmin);
     }
 
-    private OsgiFramework createOsgiFramework(BundleContext context, PackageAdmin packageAdmin,
-        TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
-        return new EquinoxOsgiFramework(context, packageAdmin, bundleTransformerHandler);
+    private OsgiFramework createOsgiFramework(BundleContext context, TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
+        return new EquinoxOsgiFramework(context, bundleTransformerHandler);
     }
 
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
