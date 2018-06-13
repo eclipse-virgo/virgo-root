@@ -24,11 +24,6 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
-import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesException;
-
-/**
- *
- */
 public class KernelBundleClassLoaderTests extends AbstractOsgiFrameworkLaunchingTests {
 
     private Bundle dependant;
@@ -38,11 +33,6 @@ public class KernelBundleClassLoaderTests extends AbstractOsgiFrameworkLaunching
         return new File("src/test/resources/config/KernelBundleClassLoaderTests").getAbsolutePath();
     }
 
-	/**
-	 * Test method for {@link org.eclipse.virgo.kernel.userregion.internal.equinox.KernelBundleClassLoader#getResources(java.lang.String)}.
-	 * @throws UnableToSatisfyDependenciesException 
-	 * @throws Exception 
-	 */
 	@Test
 	public void testGetResourcesStringFromBundle() throws Exception {
         Enumeration<URL> resources = this.dependant.getResources("/META-INF/GET_ME");
@@ -53,24 +43,14 @@ public class KernelBundleClassLoaderTests extends AbstractOsgiFrameworkLaunching
         
 	}
 
-	/**
-	 * Test method for {@link org.eclipse.virgo.kernel.userregion.internal.equinox.KernelBundleClassLoader#getResource(java.lang.String)}.
-	 * @throws UnableToSatisfyDependenciesException 
-	 * @throws Exception 
-	 */
 	@Test
-	public void testGetResourceStringFromBundle() throws Exception {
+	public void testGetResourceStringFromBundle() {
         URL resource = this.dependant.getResource("/META-INF/GET_ME");
 
         assertNotNull(resource);
         assertTrue(resource.getPath().endsWith("bundlefile!/META-INF/GET_ME"));
 	}
 
-	/**
-	 * Test method for {@link org.eclipse.virgo.kernel.userregion.internal.equinox.KernelBundleClassLoader#getResources(java.lang.String)}.
-	 * @throws UnableToSatisfyDependenciesException 
-	 * @throws Exception 
-	 */
 	@Test
 	public void testGetResourcesStringFromBundleClassLoader() throws Exception {
         Bundle bundle = this.dependant;
@@ -83,13 +63,8 @@ public class KernelBundleClassLoaderTests extends AbstractOsgiFrameworkLaunching
         
 	}
 
-	/**
-	 * Test method for {@link org.eclipse.virgo.kernel.userregion.internal.equinox.KernelBundleClassLoader#getResource(java.lang.String)}.
-	 * @throws UnableToSatisfyDependenciesException 
-	 * @throws Exception 
-	 */
 	@Test
-	public void testGetResourceStringFromBundleClassLoader() throws Exception {
+	public void testGetResourceStringFromBundleClassLoader() {
         ClassLoader loader = this.framework.getBundleClassLoader(this.dependant);
         URL resource = loader.getResource("/META-INF/GET_ME");
 

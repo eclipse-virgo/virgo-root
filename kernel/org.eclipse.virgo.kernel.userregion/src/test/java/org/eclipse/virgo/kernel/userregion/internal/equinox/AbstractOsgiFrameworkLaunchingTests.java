@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -56,8 +57,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.packageadmin.ExportedPackage;
-import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.framework.namespace.PackageNamespace;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 
 public abstract class AbstractOsgiFrameworkLaunchingTests {
 
@@ -155,10 +157,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
         this.platformAdmin = bundleContext.getService(platformAdminServiceReference);
 
-        ServiceReference<PackageAdmin> packageAdminServiceReference = bundleContext.getServiceReference(PackageAdmin.class);
-        PackageAdmin packageAdmin = (PackageAdmin) bundleContext.getService(packageAdminServiceReference);
-
-        ImportExpander importExpander = createImportExpander(packageAdmin);
+        ImportExpander importExpander = createImportExpander();
         TransformedManifestProvidingBundleFileWrapper bundleFileWrapper = new TransformedManifestProvidingBundleFileWrapper(importExpander);
         this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), bundleFileWrapper);
 
@@ -181,14 +180,13 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph, dumpExtractor).create();
     }
 
-    private ImportExpander createImportExpander(PackageAdmin packageAdmin) {
+    private ImportExpander createImportExpander() {
         Set<String> packagesExportedBySystemBundle = new HashSet<>(30);
-        ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(bundleContext.getBundle(0));
-
-        for (ExportedPackage exportedPackage : exportedPackages) {
-            packagesExportedBySystemBundle.add(exportedPackage.getName());
+        BundleWiring systemBundleWiring = bundleContext.getBundle(0).adapt(BundleWiring.class);
+        List<BundleWire> packageWires = systemBundleWiring.getRequiredWires(PackageNamespace.PACKAGE_NAMESPACE);
+        for (BundleWire packageWire : packageWires) {
+            packagesExportedBySystemBundle.add(packageWire.getCapability().getNamespace());
         }
-
         return new ImportExpansionHandler(repository, bundleContext, packagesExportedBySystemBundle, new MockEventLogger());
     }
 

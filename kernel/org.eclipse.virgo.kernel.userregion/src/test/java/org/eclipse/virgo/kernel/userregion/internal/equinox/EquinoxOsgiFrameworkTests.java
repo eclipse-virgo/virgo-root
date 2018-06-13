@@ -16,9 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
-import java.security.ProtectionDomain;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
@@ -73,14 +70,9 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
         assertNotNull(bundleClassLoader);
         InstrumentableClassLoader icl = (InstrumentableClassLoader) bundleClassLoader;
         final AtomicInteger count = new AtomicInteger(0);
-        icl.addClassFileTransformer(new ClassFileTransformer() {
-
-            public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-                byte[] classfileBuffer) throws IllegalClassFormatException {
-                count.incrementAndGet();
-                return null;
-            }
-
+        icl.addClassFileTransformer((loader, className, classBeingRedefined, protectionDomain, classfileBuffer) -> {
+            count.incrementAndGet();
+            return null;
         });
         bundle.loadClass("org.springframework.core.JdkVersion");
         assertEquals(1, count.get());

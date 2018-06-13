@@ -14,12 +14,9 @@ package org.eclipse.virgo.kernel.userregion.internal.equinox;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxBootDelegationHelper;
 import org.junit.Test;
 
 
-/**
- */
 public class EquinoxBootDelegationHelperTests {
 
     @Test public void isBootDelegated() {
