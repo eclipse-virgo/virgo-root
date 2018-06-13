@@ -66,6 +66,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     @Test
     public void testAddClassFileTransformer() throws Exception {
         Bundle bundle = installSpringCore(this.framework);
+        bundle.start();
         ClassLoader bundleClassLoader = this.framework.getBundleClassLoader(bundle);
         assertNotNull(bundleClassLoader);
         InstrumentableClassLoader icl = (InstrumentableClassLoader) bundleClassLoader;

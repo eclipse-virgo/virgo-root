@@ -54,6 +54,7 @@ public class LoadTimeWeavingTests extends AbstractOsgiFrameworkLaunchingTests {
         this.framework.getBundleContext().installBundle(new File("src/test/resources/ltw/ltw-domain.jar").toURI().toString());
         this.includeBundle = this.framework.getBundleContext().installBundle(new File("src/test/resources/ltw/ltw-include.jar").toURI().toString());
         this.emBundle = this.framework.getBundleContext().installBundle(new File("src/test/resources/ltw/ltw-em.jar").toURI().toString());
+        this.emBundle.start();
     }
 
     @Test public void instrumentPackageIncludes() throws ClassNotFoundException {

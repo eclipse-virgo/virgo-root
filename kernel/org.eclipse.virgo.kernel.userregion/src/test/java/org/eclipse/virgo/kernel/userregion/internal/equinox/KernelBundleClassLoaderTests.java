@@ -76,6 +76,7 @@ public class KernelBundleClassLoaderTests extends AbstractOsgiFrameworkLaunching
 	@Before
 	public void installDependant() throws BundleException {
 	    this.dependant = this.framework.getBundleContext().installBundle(new File("src/test/resources/KernelBundleClassLoaderTests/dependant.jar").toURI().toString());
+	    this.dependant.start();
 	}
 	
 	@After
