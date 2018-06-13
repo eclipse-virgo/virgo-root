@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
+import static org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
@@ -54,7 +55,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
      */
     public EquinoxOsgiFramework(BundleContext context, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
         super(context);
-        this.bootDelegationHelper = new EquinoxBootDelegationHelper(FrameworkProperties.getProperty(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION));
+        this.bootDelegationHelper = new EquinoxBootDelegationHelper(context.getProperty(FRAMEWORK_BOOTDELEGATION));
         this.platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class);
         this.bundleTransformationHandler = bundleTransformationHandler;
     }
