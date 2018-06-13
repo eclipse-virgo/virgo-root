@@ -83,7 +83,7 @@ public final class ImportExpansionHandler implements ImportExpander {
 
     private final EventLogger eventLogger;
 
-    public ImportExpansionHandler(Repository repository, Set<String> packagesExportedBySystemBundle, EventLogger eventLogger) {
+    ImportExpansionHandler(Repository repository, Set<String> packagesExportedBySystemBundle, EventLogger eventLogger) {
         this(repository, null, packagesExportedBySystemBundle, eventLogger);
     }
 
@@ -128,7 +128,7 @@ public final class ImportExpansionHandler implements ImportExpander {
      */
     private void detectPromotedPackageImports(BundleManifest bundleManifest, TrackedPackageImports bundlePackageImportsToBePromoted) {
         List<ImportedPackage> importedPackages = bundleManifest.getImportPackage().getImportedPackages();
-        List<ImportedPackage> importedPackagesToPromote = new ArrayList<ImportedPackage>();
+        List<ImportedPackage> importedPackagesToPromote = new ArrayList<>();
         for (ImportedPackage importedPackage : importedPackages) {
             if (IMPORT_SCOPE_APPLICATION.equals(importedPackage.getDirectives().get(IMPORT_SCOPE_DIRECTIVE))) {
                 importedPackagesToPromote.add(importedPackage);
@@ -153,16 +153,13 @@ public final class ImportExpansionHandler implements ImportExpander {
         }
     }
 
-    /**
-     * @param importsToBemerged
-     * @param bundleManifest
-     */
     private void mergeImports(TrackedPackageImports importsToBemerged, BundleManifest bundleManifest) throws ImportMergeException {
         TrackedPackageImports bundleTrackedPackageImports = this.trackedPackageImportsFactory.create(bundleManifest);
         bundleTrackedPackageImports.merge(importsToBemerged);
         setMergedImports(bundleManifest, bundleTrackedPackageImports);
     }
 
+    // TODO either write test to check if imports have been expanded or remove return value?
     private boolean expandImportsIfNecessary(BundleManifest manifest, TrackedPackageImports packageImportsToBePromoted,
         List<BundleManifest> bundleManifests) throws UnableToSatisfyDependenciesException {
         boolean expanded = false;
@@ -179,23 +176,18 @@ public final class ImportExpansionHandler implements ImportExpander {
         return expanded;
     }
 
-    UnableToSatisfyBundleDependenciesException createExceptionForMissingLibrary(String name, VersionRange versionRange, BundleManifest bundleManifest) {
+    private UnableToSatisfyBundleDependenciesException createExceptionForMissingLibrary(String name, VersionRange versionRange,
+        BundleManifest bundleManifest) {
         String description = String.format("A library with the name '%s' and a version within the range '%s' could not be found", name, versionRange);
         BundleSymbolicName bundleSymbolicName = bundleManifest.getBundleSymbolicName();
         return new UnableToSatisfyBundleDependenciesException(bundleSymbolicName != null ? bundleSymbolicName.getSymbolicName()
             : MISSING_BUNDLE_SYMBOLIC_NAME, bundleManifest.getBundleVersion(), description);
     }
 
-    @SuppressWarnings("unchecked")
     void expandImports(List<ImportedLibrary> libraryImports, List<ImportedBundle> directlyImportedBundles, BundleManifest bundleManifest)
         throws UnableToSatisfyDependenciesException {
         expandImports(libraryImports, directlyImportedBundles, bundleManifest, this.trackedPackageImportsFactory.createCollector(),
             Collections.EMPTY_LIST);
-    }
-
-    void expandImports(List<ImportedLibrary> libraryImports, List<ImportedBundle> directlyImportedBundles, BundleManifest bundleManifest,
-        List<BundleManifest> bundleManifests) throws UnableToSatisfyDependenciesException {
-        expandImports(libraryImports, directlyImportedBundles, bundleManifest, this.trackedPackageImportsFactory.createCollector(), bundleManifests);
     }
 
     private void expandImports(List<ImportedLibrary> libraryImports, List<ImportedBundle> directlyImportedBundles, BundleManifest bundleManifest,
@@ -215,19 +207,10 @@ public final class ImportExpansionHandler implements ImportExpander {
      * The bundle with the given bundle manifest imports the given list of libraries and the given list of bundles.
      * Dereference these imports and return a collection of the corresponding {@link TrackedPackageImports}. Any
      * promoted imports are added to the given <code>TrackedPackageImports</code> of imports to be promoted.
-     * 
-     * @param importedLibraries
-     * @param directlyImportedBundles
-     * @param bundleManifest
-     * @param bundleRepository
-     * @param packageImportsToBePromoted
-     * @return
-     * @throws UnableToSatisfyDependenciesException
-     * @throws UnableToSatisfyBundleDependenciesException
      */
     private TrackedPackageImports getAdditionalPackageImports(List<ImportedLibrary> importedLibraries, List<ImportedBundle> directlyImportedBundles,
         BundleManifest bundleManifest, TrackedPackageImports packageImportsToBePromoted, List<BundleManifest> additionalManifests)
-        throws UnableToSatisfyDependenciesException, UnableToSatisfyBundleDependenciesException {
+        throws UnableToSatisfyDependenciesException {
         TrackedPackageImports additionalPackageImports = this.trackedPackageImportsFactory.createCollector();
         TrackedPackageImports libraryPackageImports = getLibraryPackageImports(importedLibraries, packageImportsToBePromoted, bundleManifest,
             additionalManifests);
@@ -242,16 +225,9 @@ public final class ImportExpansionHandler implements ImportExpander {
     /**
      * Get a {@link TrackedPackageImports} instance representing the package imports that correspond to the given bundle
      * import. The imported bundle is looked up in the given {@link BundleRepository} and, if it is not found,
-     * {@link UnableToSatisfiedBundleDependenciesException} is thrown. If the bundle import is to be promoted, then the
+     * {@link UnableToSatisfyBundleDependenciesException} is thrown. If the bundle import is to be promoted, then the
      * result is also merged into the given <code>TrackedPackageImports</code> instance representing the package imports
      * to be promoted.
-     * 
-     * @param importedBundle
-     * @param bundleRepository
-     * @param packageImportsToBePromoted
-     * @param importingBundle
-     * @return
-     * @throws UnableToSatisfyBundleDependenciesException
      */
     private TrackedPackageImports getBundlePackageImports(ImportedBundle importedBundle, TrackedPackageImports packageImportsToBePromoted,
         BundleManifest importingBundle, List<BundleManifest> additionalManifests) throws UnableToSatisfyBundleDependenciesException {
@@ -265,7 +241,7 @@ public final class ImportExpansionHandler implements ImportExpander {
         }
 
         OrderedPair<BundleManifest, Boolean> bundleManifestHolder = findBundle(bundleSymbolicName, importVersionRange, additionalManifests);
-        if (bundleManifestHolder != null && bundleManifestHolder.getFirst() != null) {
+        if (bundleManifestHolder.getFirst() != null) {
             return createTrackedPackageImportsFromImportedBundle(bundleManifestHolder, importedBundle.isApplicationImportScope(),
                 packageImportsToBePromoted);
         } else if (mandatory) {
@@ -281,11 +257,6 @@ public final class ImportExpansionHandler implements ImportExpander {
     /**
      * Return the {@link TrackedPackageImports} corresponding to importing the given {@link BundleManifest} and, if
      * appropriate, merge them into the given imports to be promoted.
-     * 
-     * @param bundleManifest
-     * @param promoteExports
-     * @param packageImportsToBePromoted
-     * @return
      */
     private TrackedPackageImports createTrackedPackageImportsFromImportedBundle(OrderedPair<BundleManifest, Boolean> bundleManifest,
         boolean promoteExports, TrackedPackageImports packageImportsToBePromoted) {
@@ -356,7 +327,7 @@ public final class ImportExpansionHandler implements ImportExpander {
      * @param bundleVersion the version of the imported bundle
      */
     private void diagnoseSystemBundleOverlap(List<ImportedPackage> importedPackages, String bundleSymbolicNameString, String bundleVersion) {
-        Set<String> overlap = new HashSet<String>();
+        Set<String> overlap = new HashSet<>();
         for (ImportedPackage importedPackage : importedPackages) {
             String packageName = importedPackage.getPackageName();
             if (this.packagesExportedBySystemBundle.contains(packageName)) {
@@ -381,16 +352,9 @@ public final class ImportExpansionHandler implements ImportExpander {
     /**
      * Get a {@link TrackedPackageImports} instance representing the package imports that correspond to the given
      * library imports. Each imported library is looked up in the given {@link BundleRepository} and, if it is not
-     * found, {@link UnableToSatisfiedBundleDependenciesException} is thrown. If any package imports are to be promoted,
+     * found, {@link UnableToSatisfyBundleDependenciesException} is thrown. If any package imports are to be promoted,
      * then the result is also merged into the given <code>TrackedPackageImports</code> instance representing the
      * package imports to be promoted.
-     * 
-     * @param importedLibraries
-     * @param bundleRepository
-     * @param packageImportsToBePromoted
-     * @param importingBundle
-     * @return
-     * @throws UnableToSatisfyBundleDependenciesException
      */
     private TrackedPackageImports getLibraryPackageImports(List<ImportedLibrary> importedLibraries, TrackedPackageImports packageImportsToBePromoted,
         BundleManifest importingBundle, List<BundleManifest> additionalManifests) throws UnableToSatisfyBundleDependenciesException {
@@ -471,14 +435,8 @@ public final class ImportExpansionHandler implements ImportExpander {
 
     /**
      * Find the bundle with the given symbolic name and version range in the given bundle repository. If the given
-     * scoper is non-null, scope the symbolic name before searching the repository. Return the {@link BundleDefinition}
+     * scoper is non-null, scope the symbolic name before searching the repository. Return the {@link BundleManifest}
      * of the bundle if it was found.
-     * 
-     * @param bundleSymbolicName
-     * @param versionRange
-     * @param bundleRepository
-     * @param scoper
-     * @return
      */
     private OrderedPair<BundleManifest, Boolean> findBundle(String bundleSymbolicName, VersionRange versionRange,
         List<BundleManifest> additionalManifests) {
@@ -493,10 +451,8 @@ public final class ImportExpansionHandler implements ImportExpander {
             for (Bundle bundle : installedBundles) {
                 if (bundleSymbolicName.equals(bundle.getSymbolicName()) && versionRange.includes(bundle.getVersion())) {
                     bundleManifest = getBundleManifest(bundle);
-                    if (bundleManifest != null) {
-                        diagnose = true;
-                        break;
-                    }
+                    diagnose = true;
+                    break;
                 }
             }
         }
@@ -510,13 +466,13 @@ public final class ImportExpansionHandler implements ImportExpander {
         }
 
         if (bundleManifest != null) {
-            this.logger.info("Found definition for bundle with symbolic name '{}' and version range '{}': {}", new Object[] { bundleSymbolicName,
-                versionRange, bundleManifest });
+            this.logger.info("Found definition for bundle with symbolic name '{}' and version range '{}': {}", bundleSymbolicName, versionRange,
+                bundleManifest);
         } else {
             this.logger.info("Could not find definition for bundle with symbolic name '{}' and version range '{}'", bundleSymbolicName, versionRange);
         }
 
-        return new OrderedPair<BundleManifest, Boolean>(bundleManifest, diagnose);
+        return new OrderedPair<>(bundleManifest, diagnose);
     }
 
     /**
@@ -551,7 +507,7 @@ public final class ImportExpansionHandler implements ImportExpander {
     }
 
     /**
-     * Get a {@link BundleDefinition} for the given {@link Bundle}. If a definition cannot be created, return
+     * Get a {@link BundleManifest} for the given {@link Bundle}. If a definition cannot be created, return
      * <code>null</code>.
      * 
      * @param bundle the bundle whose definition is required
