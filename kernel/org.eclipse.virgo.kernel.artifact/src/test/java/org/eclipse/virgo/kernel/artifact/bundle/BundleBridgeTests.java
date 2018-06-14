@@ -11,9 +11,11 @@
 
 package org.eclipse.virgo.kernel.artifact.bundle;
 
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.virgo.kernel.artifact.bundle.BundleBridge.convertToDictionary;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +36,7 @@ import org.osgi.framework.Version;
 
 /**
  * <p>
- * Unit tests for {@link org.eclipse.virgo.kernel.artifact.bundle.BundleBridge BundleBridge}. Uses a combination of real
- * bundle files and static test data.
+ * Unit tests for {@link BundleBridge BundleBridge}. Uses a combination of real bundle files and static test data.
  * </p>
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -62,7 +63,7 @@ public class BundleBridgeTests {
     private static final String BUNDLE_NAME_HEADER_NAME = "Bundle-Name";
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         BUNDLE_BRIDGE = new BundleBridge(new StubHashGenerator());
     }
 
@@ -71,7 +72,7 @@ public class BundleBridgeTests {
         File file = new File("foo/bar.jar");
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
-            assertTrue("Should throw exception", false);
+            fail("Should throw exception");
         } catch (ArtifactGenerationException age) {
             assertEquals("ArtifactType in exception is incorrect", age.getArtifactType(), BundleBridge.BRIDGE_TYPE);
         }
@@ -82,7 +83,7 @@ public class BundleBridgeTests {
         File file = new File("./src/test/resources/wars/testbad01.war"); // contains Erroneous-Data: Bundle-Version
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
-            assertTrue("Should throw exception", false);
+            fail("Should throw exception");
         } catch (ArtifactGenerationException age) {
             assertEquals("ArtifactType in exception is incorrect", age.getArtifactType(), BundleBridge.BRIDGE_TYPE);
         }
@@ -90,11 +91,12 @@ public class BundleBridgeTests {
 
     @Test
     public void testGenerateArtefact() throws ArtifactGenerationException {
-        File jarsDirectory = new File(
-            System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/4378c1a6c057f1e1da2b8287351b288c2c13e6c0/org.apache.commons.dbcp-1.4.0.v201204271417.jar");
+        File jarsDirectory = new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/"
+            + "4378c1a6c057f1e1da2b8287351b288c2c13e6c0/org.apache.commons.dbcp-1.4.0.v201204271417.jar");
         File directoriesDirectory = new File("./src/test/resources/directories");
 
-        Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
+        Set<ArtifactDescriptor> artefacts = new HashSet<>();
 
         artefacts.add(BUNDLE_BRIDGE.generateArtifactDescriptor(jarsDirectory));
 
@@ -127,12 +129,13 @@ public class BundleBridgeTests {
 
     @Test
     public void testBuildDictionary() throws ArtifactGenerationException, IOException {
-        File testFile = new File(
-            System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/javax.servlet/3.1.0.v201410161800/e0e698d1be57aaef38e54428f5c09c7fe0cf594e/javax.servlet-3.1.0.v201410161800.jar");
+        File testFile = new File(System.getProperty("user.home")
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/javax.servlet/3.1.0.20170128/"
+            + "e1928d3e6307028208245e12ca5d11b9a451daf9/javax.servlet-3.1.0.20170128.jar");
 
         ArtifactDescriptor inputArtefact = BUNDLE_BRIDGE.generateArtifactDescriptor(testFile);
 
-        Dictionary<String, String> dictionary = BundleBridge.convertToDictionary(inputArtefact);
+        Dictionary<String, String> dictionary = requireNonNull(convertToDictionary(inputArtefact));
 
         JarFile testJar = new JarFile(testFile);
         Attributes attributes = testJar.getManifest().getMainAttributes();
@@ -187,7 +190,7 @@ public class BundleBridgeTests {
     }
 
     private Set<ArtifactDescriptor> generateArtefacts(File directory) throws ArtifactGenerationException {
-        Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
+        Set<ArtifactDescriptor> artefacts = new HashSet<>();
 
         File[] fileList = directory.listFiles();
         if (fileList == null) {
