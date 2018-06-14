@@ -224,6 +224,9 @@ ext {
     // used when copying features and products
     tokenMap = [
             'VIRGO.VERSION'                : version,
+            // used in plan files
+            'VIRGO.VERSION.LOWER_BOUND'    : "3.8",
+            'VIRGO.VERSION.UPPER_BOUND'    : "4",
 
             'OSGI.SERVICES.VERSION'        : osgiServicesVersion, // used in oev.kernel.userregion.properties
             'OSGI.ENTERPRISE.VERSION'      : osgiEnterpriseVersion,

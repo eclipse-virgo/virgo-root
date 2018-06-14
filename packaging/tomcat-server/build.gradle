@@ -20,6 +20,7 @@ distributions {
             }
             from ( 'src/main/filtered' ) {
                 include ( '**/*.libd' )
+                include ( '**/*.plan' )
                 filter(ReplaceTokens, tokens: tokenMap)
             }
             from ( "${buildDir}/VTS/tomcat-server/" ) { exclude ( 'Eclipse.app' ) }

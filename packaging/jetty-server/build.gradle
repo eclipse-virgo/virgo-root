@@ -21,6 +21,7 @@ distributions {
             }
             from ( 'src/main/filtered' ) {
                 include ( '**/*.libd' )
+                include ( '**/*.plan' )
                 filter(ReplaceTokens, tokens: tokenMap)
             }
             from ( "${buildDir}/VJS/jetty-server/" ) { exclude ( 'Eclipse.app' ) }

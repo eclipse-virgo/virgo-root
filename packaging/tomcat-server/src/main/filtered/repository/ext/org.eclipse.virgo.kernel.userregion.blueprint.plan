@@ -1,4 +1,4 @@
-<plan name="org.eclipse.virgo.kernel.userregion.blueprint" version="3.7.1" scoped="false" atomic="false"
+<plan name="org.eclipse.virgo.kernel.userregion.blueprint" version="@VIRGO.VERSION@" scoped="false" atomic="false"
       xmlns="http://www.eclipse.org/virgo/schema/plan"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
@@ -7,8 +7,10 @@
     <artifact type="bundle" name="org.eclipse.gemini.blueprint.extender" version="[2.1, 3)"/>
     <artifact type="bundle" name="org.eclipse.gemini.blueprint.io" version="[2.1, 3)"/>
     <artifact type="bundle" name="org.eclipse.gemini.blueprint.extensions" version="[2.1, 3)"/>
-    <artifact type="bundle" name="org.eclipse.virgo.kernel.agent.dm" version="[3.7.1, 4.0)"/>
-    <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[3.7.1, 4.0)"/>
+
+    <artifact type="bundle" name="org.eclipse.virgo.kernel.agent.dm" version="[@VIRGO.VERSION.LOWER_BOUND@, @VIRGO.VERSION.UPPER_BOUND@)"/>
+    <artifact type="bundle" name="org.eclipse.virgo.kernel.deployer.dm" version="[@VIRGO.VERSION.LOWER_BOUND@, @VIRGO.VERSION.UPPER_BOUND@)"/>
+
     <artifact type="bundle" name="org.eclipse.equinox.ds" version="0.0.0"/>
     <artifact type="bundle" name="org.eclipse.equinox.util" version="0.0.0"/>
     <artifact type="configuration" name="osgi.console" version="0"/>
