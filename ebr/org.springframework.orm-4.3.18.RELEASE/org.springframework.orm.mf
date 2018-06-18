@@ -12,7 +12,7 @@ Import-Package:
 Import-Template:
  org.aopalliance.*;version="${orgAopAllianceVersion:[=.=.=, +1)}",
  com.ibatis.*;version="[2.3.4, 3)";resolution:=optional,
- javax.jdo.*;version="[3.1, 4)";resolution:=optional,
+ javax.jdo.*;version="${jdoApiVersion:[=.=, +1)}";resolution:=optional,
  javax.naming.*;version="0";resolution:=optional,
  javax.persistence.*;version="${javaxPersistenceVersion:[=.=, +1)}";resolution:=optional,
  javax.servlet.*;version="[3.0.1, 4)";resolution:=optional,
@@ -25,7 +25,7 @@ Import-Template:
  org.eclipse.persistence.core.*;version="${eclipsePersistenceCoreVersion:[=.=.=, +1)}";resolution:=optional,
  org.eclipse.persistence.jpa.*;version="${eclipsePersistenceJpaVersion:[=.=.=, +1)}";resolution:=optional,
  org.eclipse.persistence.sessions.*;version="${eclipsePersistenceCoreVersion:[=.=.=, +1)}";resolution:=optional,
- org.hibernate.*;version="[3.6.10.Final, 6)";resolution:=optional,
+ org.hibernate.*;version="${hibernateVersion:[=.=.=, +1)}";resolution:=optional,
  org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
  org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
  org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,

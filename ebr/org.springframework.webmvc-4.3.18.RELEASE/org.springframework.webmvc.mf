@@ -11,7 +11,7 @@ Import-Template:
  com.lowagie.text.*;version="[2.0.8, 3)";resolution:=optional,
  com.rometools.rome.*;version="${romeVersion:[=.=.=, +1)}";resolution:=optional,
  com.sun.syndication.*;version="[1, 2)";resolution:=optional,
- freemarker.*;version="[2.3.14, 3)";resolution:=optional,
+ freemarker.*;version="${freemarkerVersion:[=.=.=, +1)}";resolution:=optional,
  groovy.*;version="${groovyVersion:[=.=.=, +1)}";resolution:="optional",
  javax.activation.*;version="0";resolution:=optional,
  javax.el.*;version="[2.2.5, 4)";resolution:=optional,
