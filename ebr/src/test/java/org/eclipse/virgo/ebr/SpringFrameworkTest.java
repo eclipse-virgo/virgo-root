@@ -16,7 +16,7 @@ public class SpringFrameworkTest extends AbstractBaseTest {
     private static final String ASPECTJ_WEAVER = "org.aspectj.weaver";
     private static final String ASPECTJ_WEAVER_VERSION = "1.8.10";
 
-    private static final String SF_VERSION = "4.3.9.RELEASE";
+    private static final String SF_VERSION = "4.3.18.RELEASE";
     private static final String SF_PREFIX = "org.springframework.";
     private static final String SF_CORE = SF_PREFIX + "core";
     private static final String SF_BEANS = SF_PREFIX + "beans";

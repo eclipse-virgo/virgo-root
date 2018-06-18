@@ -11,7 +11,9 @@ Gradle default tasks:
  
 Building locally:
 
-    `./gradlew clean bundlor publishToMavenLocal test`
+```bash
+$ ./gradlew clean bundlor publishToMavenLocal test
+```
 
 ### Add new Version of Spring
 
