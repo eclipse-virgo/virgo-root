@@ -77,10 +77,10 @@ public class ImportExpansionHandlerTests {
 
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home")
             + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.3.18.RELEASE"
-            + "/74796680c0057c1cdc78f07a3d1194d237a73c29/org.springframework.core-4.3.18.RELEASE.jar")));
+            + "/94ea91866a78e518943e91488017d8b58d3142ad/org.springframework.core-4.3.18.RELEASE.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home")
             + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.beans/4.3.18.RELEASE"
-            + "/56f156056a8c5df4c7ed2ce664b02ae2e0b1321/org.springframework.beans-4.3.18.RELEASE.jar")));
+            + "/533ebe4038cc80dbff5117214ecc094cb5f62e/org.springframework.beans-4.3.18.RELEASE.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
