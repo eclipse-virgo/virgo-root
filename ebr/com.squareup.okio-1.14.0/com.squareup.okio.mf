@@ -2,11 +2,13 @@ Bundle-SymbolicName: com.squareup.okio
 Bundle-Name: Okio
 Bundle-Vendor: Eclipse Virgo
 Bundle-ManifestVersion: 2
-Bundle-Version: 1.13.0
+Bundle-Version: ${okioVersion}
 Import-Template:
  javax.annotation;version="0";resolution:=optional,
  javax.crypto.*;version="0";resolution:=optional,
  org.codehaus.mojo.animal_sniffer;version="[1.15,2)";resolution:=optional
+Export-Template:
+ okio.*;version="${okioVersion}"
 Ignored-Existing-Headers:
  Bnd-LastModified,
  Import-Package,

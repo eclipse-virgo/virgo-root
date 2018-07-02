@@ -6,16 +6,12 @@ import org.ops4j.pax.exam.Option;
 
 import static org.ops4j.pax.exam.CoreOptions.*;
 
-/**
- * Test class testing Spring Framework bundle resolution.
- * <p>
- * Created by dam on 6/9/17.
- */
-public class SpringFrameworkTest extends AbstractBaseTest {
+public class GeminiBlueprint3Test extends AbstractBaseTest {
 
     private static final String ASPECTJ_WEAVER = "org.aspectj.weaver";
     private static final String ASPECTJ_WEAVER_VERSION = "1.8.10";
 
+    private static final String GEMINI_BLUEPRINT_VERSION = "3.0.0.M01";
     private static final String SF_VERSION = "5.0.7.RELEASE";
 
     private static final String SF_PREFIX = "org.springframework.";
@@ -67,103 +63,28 @@ public class SpringFrameworkTest extends AbstractBaseTest {
                 mavenBundle(MIRROR_GROUP, SF_WEBFLUX, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_WEBMVC, SF_VERSION),
                 mavenBundle(MIRROR_GROUP, SF_WEBSOCKET, SF_VERSION),
+
+                mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-io", GEMINI_BLUEPRINT_VERSION),
+                mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-core", GEMINI_BLUEPRINT_VERSION),
+                mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-extender", GEMINI_BLUEPRINT_VERSION),
+
                 // specify junit bundles
                 junitBundles()
         );
     }
 
     @Test
-    public void testAspectjWeaver() throws Exception {
-        assertBundleActive(ASPECTJ_WEAVER);
+    public void testGeminiBlueprintIo() throws Exception {
+        assertBundleActive("org.eclipse.gemini.blueprint.io");
     }
 
     @Test
-    public void testSpringCore() throws Exception {
-        assertBundleActive(SF_CORE);
+    public void testGeminiBlueprintCore() throws Exception {
+        assertBundleActive("org.eclipse.gemini.blueprint.core");
     }
 
     @Test
-    public void testSpringBeans() throws Exception {
-        assertBundleActive(SF_BEANS);
-    }
-
-    @Test
-    public void testSpringAop() throws Exception {
-        assertBundleActive(SF_AOP);
-    }
-
-    @Test
-    public void testSpringAspects() throws Exception {
-        assertBundleActive(SF_ASPECTS);
-    }
-
-    @Test
-    public void testSpringExpression() throws Exception {
-        assertBundleActive(SF_EXPRESSION);
-    }
-
-    @Test
-    public void testSpringContext() throws Exception {
-        assertBundleActive(SF_CONTEXT);
-    }
-
-    @Test
-    public void testSpringContextSupport() throws Exception {
-        assertBundleActive(SF_CONTEXT_SUPPORT);
-    }
-
-    @Test
-    public void testSpringTransaction() throws Exception {
-        assertBundleActive(SF_TRANSACTION);
-    }
-
-    @Test
-    public void testSpringJcl() throws Exception {
-        assertBundleActive(SF_JCL);
-    }
-
-    @Test
-    public void testSpringJdbc() throws Exception {
-        assertBundleActive(SF_JDBC);
-    }
-
-    @Test
-    public void testSpringMessaging() throws Exception {
-        assertBundleActive(SF_MESSAGING);
-    }
-
-    @Test
-    public void testSpringJsm() throws Exception {
-        assertBundleActive(SF_JMS);
-    }
-
-    @Test
-    public void testSpringOrm() throws Exception {
-        assertBundleActive(SF_ORM);
-    }
-
-    @Test
-    public void testSpringOxm() throws Exception {
-        assertBundleActive(SF_OXM);
-    }
-
-    @Test
-    public void testSpringWeb() throws Exception {
-        assertBundleActive(SF_WEB);
-    }
-
-    @Test
-    public void testSpringWebMvc() throws Exception {
-        assertBundleActive(SF_WEBMVC);
-    }
-
-    @Test
-    public void testSpringWebflux() throws Exception {
-        assertBundleActive(SF_WEBFLUX);
-    }
-
-    @Test
-    public void testSpringWebsocket() throws Exception {
-        assertBundleActive(SF_WEBSOCKET);
+    public void testGeminiBlueprintExtender() throws Exception {
+        assertBundleActive("org.eclipse.gemini.blueprint.extender");
     }
 }

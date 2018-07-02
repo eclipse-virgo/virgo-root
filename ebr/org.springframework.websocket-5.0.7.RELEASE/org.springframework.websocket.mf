@@ -1,0 +1,33 @@
+Bundle-SymbolicName: org.springframework.websocket
+Bundle-Name: Spring Websocket
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ com.fasterxml.jackson.*;version="${jacksonVersion:[=.=.=, +1)}";resolution:=optional,
+ io.undertow.*;version="${undertowVersion:[=.=.=, +1)}";resolution:=optional,
+ javax.servlet.*;version="[3.1, 4)";resolution:=optional,
+ javax.websocket.*;version="[1, 2)";resolution:=optional,
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.apache.tomcat.websocket.server;version="[8.5.31, 9)";resolution:=optional,
+ org.eclipse.jetty.*;version="[9.4.6.v20170531, 10)";resolution:=optional,
+ org.glassfish.tyrus.*;version="[1.3.5, 2)";resolution:=optional,
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.http.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.messaging.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.scheduling.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.stereotype;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.web.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.w3c.dom.*;version="0";resolution:=optional,
+ org.xnio.*;version="0";resolution:=optional
+Export-Template:
+ org.springframework.web.socket.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

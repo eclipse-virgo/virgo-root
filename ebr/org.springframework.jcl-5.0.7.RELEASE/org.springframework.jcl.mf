@@ -1,0 +1,16 @@
+Bundle-SymbolicName: org.springframework.jcl
+Bundle-Name: Spring JCL
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ org.apache.logging.log4j.*;version="${apacheLog4jVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.log4j.*;version="${apacheLog4jVersion:[=.=.=, +1)}";resolution:=optional,
+ org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}";resolution:=optional
+Export-Template:
+ org.apache.commons.logging.*;version="1.2"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

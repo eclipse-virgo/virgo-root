@@ -1,0 +1,44 @@
+Bundle-SymbolicName: org.springframework.webflux
+Bundle-Name: Spring Webflux
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ javax.script;version="0";resotion:=optional,
+ javax.servlet.*;version="[3.1, 4)";resolution:=optional,
+ javax.websocket.*;version="[1, 2)";resolution:=optional,
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ org.webjars;version="0";resolution:=optional,
+ org.xnio.*;version="0";resolution:=optional,
+ freemarker.*;version="${freemarkerVersion:[=.=.=, +1)}";resolution:=optional,
+ io.netty.*;version="${nettyVersion:[=.=.=, +1)}";resolution:=optional,
+ io.undertow.*;version="${undertowVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.tomcat.*;version="${apacheCatalinaVersion:[=.=.=, +1)}";resolution:=optional,
+ org.eclipse.jetty.*;version="${jettyVersion:[=.=.=, +1)}";resolution:=optional,
+ org.springframework.aop.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.beans.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.cache.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.context.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.core.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.format.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.http.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.lang.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.scripting.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.stereotype.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.ui.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}";resolution:=optional,
+ org.springframework.util.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.validation.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ org.springframework.web.*;version="${springframeworkVersion:[=.=.=.=, =.=.=.=]}",
+ reactor.core.*;version="${reactorCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ reactor.ipc.*;version="${reactorCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ reactor.util.*;version="${reactorCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ org.reactivestreams.*;version="${reactiveStreamsVersion:[=.=.=, +1)}";resolution:=optional,
+ kotlin.*;version="${kotlinVersion:[=.=.=, +1)}";resolution:="optional",
+ org.jetbrains.annotations.*;version="${orgJetbrainsAnnotations:[=.=.=, +1)}";resolution:="optional"
+Export-Template:
+ org.springframework.webflux.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool
