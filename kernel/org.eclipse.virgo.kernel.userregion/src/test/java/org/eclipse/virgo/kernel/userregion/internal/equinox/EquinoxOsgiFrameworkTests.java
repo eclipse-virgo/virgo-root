@@ -64,7 +64,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     public void testLoadClassAndGetClassLoader() throws Exception {
         Bundle bundle = installSpringCore(this.framework);
         assertEquals("incorrect bundle loaded", "org.springframework.core", bundle.getSymbolicName());
-        Class<?> cls = bundle.loadClass("org.springframework.core.JdkVersion");
+        Class<?> cls = bundle.loadClass("org.springframework.core.SpringVersion");
         assertNotNull(cls);
         assertTrue(cls.getClassLoader() instanceof KernelBundleClassLoader);
         assertTrue("classloader is screwed", cls.getClassLoader().toString().contains("org.springframework.core"));
@@ -86,7 +86,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
             }
 
         });
-        bundle.loadClass("org.springframework.core.JdkVersion");
+        bundle.loadClass("org.springframework.core.SpringVersion");
         assertEquals(1, count.get());
     }
 
@@ -103,7 +103,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
             + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.codec/1.10.0/"
             + "8aff50e99bd7e53f8c4f5fe45c2a63f1d47dd19c/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());
         return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.3.18.RELEASE"
-            + "/94ea91866a78e518943e91488017d8b58d3142ad/org.springframework.core-4.3.18.RELEASE.jar").getAbsolutePath());
+            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/5.0.7.RELEASE"
+            + "/7dbe6456d86292b3ade3ad3e6b3c1220f16e526/org.springframework.core-5.0.7.RELEASE.jar").getAbsolutePath());
     }
 }
