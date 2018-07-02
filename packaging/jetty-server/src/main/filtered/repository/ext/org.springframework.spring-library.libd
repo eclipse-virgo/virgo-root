@@ -15,8 +15,8 @@ Import-Bundle:
  org.springframework.oxm;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  org.springframework.transaction;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  org.springframework.web;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
+ org.springframework.webflux;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  org.springframework.webmvc;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
- org.springframework.webmvc.portlet;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  org.springframework.websocket;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  oevm.org.aopalliance;version="[1.0.0, 1.0.0]",
  javax.jms;version="[1,2)"
