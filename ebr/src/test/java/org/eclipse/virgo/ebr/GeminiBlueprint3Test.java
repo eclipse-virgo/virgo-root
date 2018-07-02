@@ -67,6 +67,7 @@ public class GeminiBlueprint3Test extends AbstractBaseTest {
                 mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-io", GEMINI_BLUEPRINT_VERSION),
                 mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-core", GEMINI_BLUEPRINT_VERSION),
                 mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-extender", GEMINI_BLUEPRINT_VERSION),
+                mavenBundle("org.eclipse.gemini.blueprint", "gemini-blueprint-extensions", GEMINI_BLUEPRINT_VERSION),
 
                 // specify junit bundles
                 junitBundles()
@@ -86,5 +87,10 @@ public class GeminiBlueprint3Test extends AbstractBaseTest {
     @Test
     public void testGeminiBlueprintExtender() throws Exception {
         assertBundleActive("org.eclipse.gemini.blueprint.extender");
+    }
+
+    @Test
+    public void testGeminiBlueprintExtensions() throws Exception {
+        assertBundleActive("org.eclipse.gemini.blueprint.extensions");
     }
 }
