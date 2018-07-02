@@ -1,0 +1,38 @@
+Bundle-SymbolicName: org.springframework.core
+Bundle-Name: Spring Core
+Bundle-Vendor: Eclipse Virgo
+Bundle-ManifestVersion: 2
+Bundle-Version: ${springframeworkVersion}
+Import-Template:
+ javax.net;version="0",
+ javax.xml.*;version="0",
+ org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
+ joptsimple.*;version="${joptSimpleVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.tools.ant.*;version="0";resolution:=optional,
+ org.apache.commons.codec.*;version="${commonsCodecVersion:[=.=.=, +1)}";resolution:=optional,
+ org.apache.log4j.*;version="${apacheLog4jVersion:[=.=.=, +1)}";resolution:=optional,
+ org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}";resolution:=optional,
+ javax.annotation;version="0";resolution:=optional,
+ javax.annotation.meta;version="0";resolution:=optional,
+ org.xml.sax.*;version="0";resolution:=optional,
+ org.w3c.dom.*;version="0";resolution:=optional,
+ io.netty.*;version="${nettyVersion:[=.=.=, +1)}";resolution:=optional,
+ reactor.core.*;version="${reactorCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ reactor.adapter.*;version="${reactorCoreVersion:[=.=.=, +1)}";resolution:=optional,
+ org.reactivestreams.*;version="${reactiveStreamsVersion:[=.=.=, +1)}";resolution:=optional,
+ io.reactivex.*;version="${rxJava2Version:[=.=.=, +1)}";resolution:=optional,
+ rx.*;version="${rxJavaVersion:[=.=.=, +1)}";resolution:=optional,
+ kotlin.*;version="${kotlinVersion:[=.=.=, +1)}";resolution:="optional",
+ org.jetbrains.annotations.*;version="${orgJetbrainsAnnotations:[=.=.=, +1)}";resolution:="optional"
+Export-Template:
+ org.springframework.asm.*;version="${springframeworkVersion}",
+ org.springframework.cglib.*;version="${springframeworkVersion}",
+ org.springframework.core.*;version="${springframeworkVersion}",
+ org.springframework.lang.*;version="${springframeworkVersion}",
+ org.springframework.objenesis.*;version="${springframeworkVersion}",
+ org.springframework.util.*;version="${springframeworkVersion}"
+Ignored-Existing-Headers:
+ Bnd-LastModified,
+ Import-Package,
+ Export-Package,
+ Tool

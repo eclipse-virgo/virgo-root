@@ -2,13 +2,16 @@ Bundle-SymbolicName: com.squareup.okhttp3
 Bundle-Name: OkHttp
 Bundle-Vendor: Eclipse Virgo
 Bundle-ManifestVersion: 2
-Bundle-Version: 3.8.0
+Bundle-Version: ${okhttp3Version}
 Import-Template:
- okio;version="[1.13.0,2)",
+ okio;version="${okioVersion:[=.=.=, +1)}",
+ android.os;version="0";resolution:="optional",
  android.util;version="0";resolution:="optional",
  javax.annotation;version="0";resolution:=optional,
  javax.net.*;version="0";resolution:=optional,
  javax.security.auth.x500;version="0";resolution:=optional
+Export-Template:
+ okhttp3.*;version="${okhttp3Version}"
 Ignored-Existing-Headers:
  Bnd-LastModified,
  Import-Package,

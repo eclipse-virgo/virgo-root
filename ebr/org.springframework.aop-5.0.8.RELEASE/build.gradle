@@ -1,0 +1,16 @@
+configurations {
+    origin
+}
+
+dependencies {
+    origin group: 'org.springframework', name: 'spring-aop', version: "${springframeworkVersion}"
+    sourceBundle fileTree("$buildDir/libs")
+}
+
+task removeAopallianceFromJar(type: Jar) {
+    baseName = 'spring-aop'
+    from zipTree(configurations.origin[0])
+    exclude 'org/aopalliance/**'
+}
+
+bundlor.dependsOn removeAopallianceFromJar
