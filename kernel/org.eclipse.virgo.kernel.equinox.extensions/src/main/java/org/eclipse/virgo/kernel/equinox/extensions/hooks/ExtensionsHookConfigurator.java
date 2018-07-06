@@ -31,7 +31,6 @@ public class ExtensionsHookConfigurator implements HookConfigurator {
     public void addHooks(HookRegistry hookRegistry) {
         hookRegistry.addClassLoadingHook(PluggableClassLoadingHook.getInstance());
         hookRegistry.addBundleFileWrapperFactoryHook(new ExtendedBundleFileWrapperFactoryHook());
-        hookRegistry.addBundleFileWrapperFactoryHook(BundleFileClosingBundleFileWrapperFactoryHook.getInstance());
         hookRegistry.addBundleFileWrapperFactoryHook(PluggableBundleFileWrapperFactoryHook.getInstance());
         hookRegistry.addClassLoaderDelegateHook(PluggableDelegatingClassLoaderDelegateHook.getInstance());
     }

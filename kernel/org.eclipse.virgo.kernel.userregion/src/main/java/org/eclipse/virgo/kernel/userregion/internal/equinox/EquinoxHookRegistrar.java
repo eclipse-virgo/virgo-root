@@ -13,7 +13,6 @@ package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
 
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.BundleFileClosingBundleFileWrapperFactoryHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableBundleFileWrapperFactoryHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableDelegatingClassLoaderDelegateHook;
@@ -48,6 +47,5 @@ public final class EquinoxHookRegistrar  {
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(null);
         PluggableBundleFileWrapperFactoryHook.getInstance().setBundleFileWrapper(null);
         PluggableDelegatingClassLoaderDelegateHook.getInstance().removeDelegate(this.metaInfResourceClassLoaderDelegateHook);
-        BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
     }
 }

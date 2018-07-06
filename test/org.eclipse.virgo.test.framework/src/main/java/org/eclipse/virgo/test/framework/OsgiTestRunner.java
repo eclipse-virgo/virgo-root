@@ -95,8 +95,6 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
                 }
             }
             unregisterVirgoMBeans(notifier);
-            // TODO confirm that this can be removed as nested frameworks are no longer used
-            //BundleFileClosingBundleFileWrapperFactoryHook.getInstance().cleanup();
         }
     }
 
