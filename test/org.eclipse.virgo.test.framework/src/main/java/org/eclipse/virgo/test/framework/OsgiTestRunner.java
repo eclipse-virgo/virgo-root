@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.test.framework;
 
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.virgo.test.launcher.FrameworkBuilder;
 import org.eclipse.virgo.test.launcher.FrameworkBuilder.FrameworkCustomizer;
 import org.eclipse.virgo.test.framework.plugin.PluginManager;
@@ -63,26 +62,12 @@ public class OsgiTestRunner extends BlockJUnit4ClassRunner {
         this.searchObjectName = new ObjectName("org.eclipse.virgo.*:*");
     }
 
-    private void stupidEquinoxHack() {
-        try {
-            Field field = FrameworkProperties.class.getDeclaredField("properties");
-            synchronized (FrameworkProperties.class) {
-                field.setAccessible(true);
-                field.set(null, null);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to hack Equinox", e);
-        }
-    }
-
     @Override
     public final void run(RunNotifier notifier) {
 
         Framework framework = null;
 
         try {
-            stupidEquinoxHack();
-
             // Preserve and re-instate the context classloader since tests can sometimes leave it in a strange state.
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             try {
