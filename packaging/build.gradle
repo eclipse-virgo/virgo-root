@@ -112,8 +112,8 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.oxm", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.transaction", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webflux", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc.portlet", version: springframeworkVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.websocket", version: springframeworkVersion, ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"

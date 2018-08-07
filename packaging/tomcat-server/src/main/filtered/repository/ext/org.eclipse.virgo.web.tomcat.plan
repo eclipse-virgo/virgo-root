@@ -7,7 +7,9 @@
 
         <artifact type="configuration" name="org.eclipse.virgo.web"/>
 
+<!-- TODO add oev.web.spring.integration back to Tomcat plan
         <artifact type="bundle" name="org.eclipse.virgo.web.spring.integration" version="[@VIRGO.VERSION.LOWER_BOUND@, @VIRGO.VERSION.UPPER_BOUND@)"/>
+-->
         <artifact type="bundle" name="org.eclipse.gemini.web.core" version="[3.0, 4.0)"/>
         <artifact type="bundle" name="org.eclipse.gemini.web.tomcat" version="[3.0, 4.0)"/>
 

@@ -1,4 +1,4 @@
 Library-SymbolicName: org.springframework
-Library-Version: 4.3.18
-Import-Bundle: org.springframework.core;version="[4.3.18.RELEASE,4.3.18.RELEASE]",
- org.springframework.beans;version="[4.3.18.RELEASE,4.3.18.RELEASE]"
+Library-Version: 5.0.8
+Import-Bundle: org.springframework.core;version="[5.0.8.RELEASE,5.0.8.RELEASE]",
+ org.springframework.beans;version="[5.0.8.RELEASE,5.0.8.RELEASE]"
