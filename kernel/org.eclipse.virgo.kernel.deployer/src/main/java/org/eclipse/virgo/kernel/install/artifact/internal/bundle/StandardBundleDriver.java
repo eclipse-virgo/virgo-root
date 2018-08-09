@@ -16,7 +16,7 @@ import java.io.File;
 
 import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.eclipse.virgo.nano.core.BundleStarter;
-import org.eclipse.virgo.nano.core.BundleUtils;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.eclipse.virgo.nano.core.KernelException;
 import org.eclipse.virgo.nano.core.Signal;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;

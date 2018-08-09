@@ -22,7 +22,7 @@ import javax.management.ObjectName;
 
 import org.eclipse.virgo.nano.config.internal.KernelConfiguration;
 import org.eclipse.virgo.nano.core.BlockingAbortableSignal;
-import org.eclipse.virgo.nano.core.BundleUtils;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.eclipse.virgo.nano.core.FailureSignalledException;
 import org.eclipse.virgo.nano.core.FatalKernelException;
 import org.eclipse.virgo.nano.core.Shutdown;

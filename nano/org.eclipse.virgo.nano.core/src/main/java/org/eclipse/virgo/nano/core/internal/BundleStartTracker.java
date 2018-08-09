@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.eclipse.virgo.nano.core.AbortableSignal;
-import org.eclipse.virgo.nano.core.BundleUtils;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.eclipse.virgo.nano.core.Signal;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

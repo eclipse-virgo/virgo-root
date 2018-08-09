@@ -9,11 +9,12 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.nano.core;
+package org.eclipse.virgo.util.osgi;
 
-import org.eclipse.virgo.util.common.StringUtils;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
+import org.osgi.framework.wiring.BundleRevision;
+
+import static org.osgi.framework.wiring.BundleRevision.TYPE_FRAGMENT;
 
 /**
  * <code>BundleUtils</code> provides utility methods for interacting with {@link Bundle Bundles}.
@@ -31,10 +32,9 @@ public final class BundleUtils {
      * @param bundle the <code>Bundle</code>.
      * @return <code>true</code> if the <code>Bundle</code> is fragment, otherwise <code>false</code>.
      */
-    // TODO Move this method into utils project
     public static boolean isFragmentBundle(Bundle bundle) {
-        String fragmentHostHeader = (String) bundle.getHeaders().get(Constants.FRAGMENT_HOST);
-        return StringUtils.hasText(fragmentHostHeader);
+        BundleRevision rev = bundle.adapt(BundleRevision.class);
+        return rev != null && (rev.getTypes() & TYPE_FRAGMENT)!= 0;
     }
 
 }

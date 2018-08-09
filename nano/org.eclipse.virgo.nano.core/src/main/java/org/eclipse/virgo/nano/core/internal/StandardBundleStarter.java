@@ -13,7 +13,7 @@ package org.eclipse.virgo.nano.core.internal;
 
 import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.eclipse.virgo.nano.core.BundleStarter;
-import org.eclipse.virgo.nano.core.BundleUtils;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
