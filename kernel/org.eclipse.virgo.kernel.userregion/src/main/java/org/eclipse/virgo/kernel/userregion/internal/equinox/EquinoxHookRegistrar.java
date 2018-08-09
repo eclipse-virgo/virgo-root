@@ -44,7 +44,7 @@ public final class EquinoxHookRegistrar  {
         PluggableDelegatingClassLoaderDelegateHook.getInstance().addDelegate(this.metaInfResourceClassLoaderDelegateHook);
     }
     
-    public void destroy() throws Exception {
+    public void destroy() {
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(null);
         PluggableBundleFileWrapperFactoryHook.getInstance().setBundleFileWrapper(null);
         PluggableDelegatingClassLoaderDelegateHook.getInstance().removeDelegate(this.metaInfResourceClassLoaderDelegateHook);

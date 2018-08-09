@@ -15,7 +15,7 @@ import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
 
 /**
  * A <code>BundleFileWrapper</code> implementation can be plugged into the {@link PluggableBundleFileWrapperFactoryHook}
- * at runtime. It will be called to wrap each {@BundleFile BundleFile} that is subsequently accessed by
+ * at runtime. It will be called to wrap each {@link BundleFile BundleFile} that is subsequently accessed by
  * Equinox.<p />
  * 
  * <strong>Concurrent Semantics</strong><br /> Implementations <strong>must</strong> be thread-safe.

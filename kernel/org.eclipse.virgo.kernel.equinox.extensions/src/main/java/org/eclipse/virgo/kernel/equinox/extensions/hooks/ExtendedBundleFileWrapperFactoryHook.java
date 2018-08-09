@@ -38,7 +38,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
     /**
      * {@inheritDoc}
      */
-    public BundleFile wrapBundleFile(BundleFile bundleFile, Object content, BaseData data, boolean base) throws IOException {
+    public BundleFile wrapBundleFile(BundleFile bundleFile, Object content, BaseData data, boolean base) {
         return new FileResourceEnforcingBundleFile(bundleFile);
     }
 
@@ -80,8 +80,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
          */
         @Override
         public BundleEntry getEntry(String path) {
-            BundleEntry entry = this.bundleFile.getEntry(path);
-            return entry;
+            return this.bundleFile.getEntry(path);
         }
 
         /**
@@ -89,8 +88,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
          */
         @Override
         public Enumeration<String> getEntryPaths(String path) {
-            Enumeration<String> paths = this.bundleFile.getEntryPaths(path);
-            return paths;
+            return this.bundleFile.getEntryPaths(path);
         }
 
         /**
@@ -163,7 +161,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
                 connection = url.openConnection();
                 connection.setDefaultUseCaches(false);
                 connection.setUseCaches(false);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 
             }
             if (!"jar".equals(url.getProtocol()) || doesJarEntryReallyExist(connection)) {
@@ -177,7 +175,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
             boolean entryExists = false;
             JarFile jarFile = null;
             try {
-                if (connection != null && connection instanceof JarURLConnection) {
+                if (connection instanceof JarURLConnection) {
                     JarURLConnection jarURLConnection = (JarURLConnection) connection;
                     jarFile = jarURLConnection.getJarFile();
                     String entryName = jarURLConnection.getEntryName();
@@ -185,8 +183,7 @@ final class ExtendedBundleFileWrapperFactoryHook implements BundleFileWrapperFac
                     	entryExists = true;
                     }
                 }
-            } catch (IOException ioe) {
-                entryExists = false;
+            } catch (IOException ignored) {
             } finally {
             	if (jarFile != null) {
             		try {
