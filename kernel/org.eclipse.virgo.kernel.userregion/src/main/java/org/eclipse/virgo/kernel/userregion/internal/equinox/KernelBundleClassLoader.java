@@ -40,6 +40,7 @@ import org.eclipse.osgi.baseadaptor.loader.ClasspathManager;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
 import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KernelBundleClassLoader.class);
 
-    private final List<ClassFileTransformer> classFileTransformers = new CopyOnWriteArrayList<ClassFileTransformer>();
+    private final List<ClassFileTransformer> classFileTransformers = new CopyOnWriteArrayList<>();
 
     private final String[] instrumentedPackages;
 
@@ -85,7 +86,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
 
     private final String bundleScope;
 
-    private final Set<Class<Driver>> loadedDriverClasses = new HashSet<Class<Driver>>();
+    private final Set<Class<Driver>> loadedDriverClasses = new HashSet<>();
 
     private final Object monitor = new Object();
 
@@ -129,10 +130,6 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
         }
     }
 
-    /**
-     * @param bundle
-     * @return
-     */
     private ClassLoader getBundleClassLoader(Bundle bundle) {
         return EquinoxUtils.getBundleClassLoader(bundle);
     }
@@ -171,7 +168,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
      * Finds the explicit list of packages to include in instrumentation (if specified).
      */
     private String[] findInstrumentedPackages(Bundle bundle) {
-        String headerValue = (String) bundle.getHeaders().get(HEADER_INSTRUMENT_PACKAGE);
+        String headerValue = bundle.getHeaders().get(HEADER_INSTRUMENT_PACKAGE);
         if (headerValue == null || headerValue.length() == 0) {
             return new String[0];
         } else {
@@ -185,7 +182,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
     }
 
     private boolean propagateInstrumentationTo(Bundle bundle) {
-        return !EquinoxUtils.isSystemBundle(bundle) && this.bundleScope != null && this.bundleScope.equals(OsgiFrameworkUtils.getScopeName(bundle));
+        return !BundleUtils.isSystemBundle(bundle) && this.bundleScope != null && this.bundleScope.equals(OsgiFrameworkUtils.getScopeName(bundle));
     }
 
     private boolean shouldInstrument(String className) {
@@ -256,9 +253,6 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
         }
     }
 
-    /**
-     * @param definedClass
-     */
     @SuppressWarnings("unchecked")
     private void storeClassIfDriver(Class<?> candidateClass) {
         if (Driver.class.isAssignableFrom(candidateClass)) {
@@ -276,7 +270,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
     private void clearJdbcDrivers() {
         Set<Class<Driver>> localLoadedDriverClasses;
         synchronized (this.monitor) {
-            localLoadedDriverClasses = new HashSet<Class<Driver>>(this.loadedDriverClasses);
+            localLoadedDriverClasses = new HashSet<>(this.loadedDriverClasses);
         }
 
         synchronized (DriverManager.class) {
@@ -308,7 +302,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
                     CopyOnWriteArrayList<?> registeredDrivers = (CopyOnWriteArrayList<?>) registeredDriversField.get(null);
 
                     Iterator<?> driverElements = registeredDrivers.iterator();
-                    List<Object> driverElementsToRemove = new ArrayList<Object>();
+                    List<Object> driverElementsToRemove = new ArrayList<>();
 
                     while (driverElements.hasNext()) {
                         Object driverObj = driverElements.next();
@@ -339,8 +333,7 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
         Bundle bundle = this.manager.getBaseData().getBundle();
         BundleContext systemBundleContext = getBundleContext();
         PlatformAdmin serverAdmin = getPlatformAdmin();
-        Bundle[] deps = EquinoxUtils.getDirectDependencies(bundle, systemBundleContext, serverAdmin, includeDependenciesFragments);
-        return deps;
+        return EquinoxUtils.getDirectDependencies(bundle, systemBundleContext, serverAdmin, includeDependenciesFragments);
     }
 
     /**
@@ -372,13 +365,10 @@ public final class KernelBundleClassLoader extends DefaultClassLoader implements
      */
     final class ThrowAwayClassLoader extends ClassLoader {
 
-        private final ConcurrentMap<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
+        private final ConcurrentMap<String, Class<?>> loadedClasses = new ConcurrentHashMap<>();
 
         private final ClasspathManager manager;
 
-        /**
-         * @param manager
-         */
         private ThrowAwayClassLoader(ClasspathManager manager) {
             this.manager = manager;
         }

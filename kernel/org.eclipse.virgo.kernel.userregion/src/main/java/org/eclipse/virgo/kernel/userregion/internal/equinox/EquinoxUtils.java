@@ -100,7 +100,7 @@ public final class EquinoxUtils {
 
         ExportPackageDescription[] exportPackageDescriptions = serverAdmin.getStateHelper().getVisiblePackages(state.getBundle(bundle.getBundleId()));
 
-        Set<Bundle> dependencies = new HashSet<Bundle>();
+        Set<Bundle> dependencies = new HashSet<>();
 
         for (ExportPackageDescription exportPackageDescription : exportPackageDescriptions) {
             BundleDescription bundleDescription = exportPackageDescription.getExporter();
@@ -122,16 +122,7 @@ public final class EquinoxUtils {
             }
         }
 
-        return dependencies.toArray(new Bundle[dependencies.size()]);
+        return dependencies.toArray(new Bundle[0]);
     }
 
-    /**
-     * Queries whether the supplied {@link Bundle} is the system bundle.
-     * 
-     * @param bundle the <code>Bundle</code>.
-     * @return <code>true</code> if <code>bundle</code> is the system bundle, otherwise <code>false</code>.
-     */
-    public static boolean isSystemBundle(Bundle bundle) {
-        return bundle != null && bundle.getBundleId() == 0;
-    }
 }

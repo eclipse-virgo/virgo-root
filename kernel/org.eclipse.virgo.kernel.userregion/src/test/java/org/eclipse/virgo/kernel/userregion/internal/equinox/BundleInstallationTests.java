@@ -29,8 +29,6 @@ import org.eclipse.virgo.util.io.IOUtils;
 import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 
-/**
- */
 public class BundleInstallationTests extends AbstractOsgiFrameworkLaunchingTests {
 
     @Override

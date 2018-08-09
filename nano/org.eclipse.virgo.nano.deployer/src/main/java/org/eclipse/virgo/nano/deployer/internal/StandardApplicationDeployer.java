@@ -26,7 +26,6 @@ import org.eclipse.virgo.nano.deployer.NanoDeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.SimpleDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.eclipse.virgo.nano.deployer.api.core.DeployerConfiguration;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
 import org.eclipse.virgo.nano.deployer.support.HotDeployerEnabler;
@@ -48,7 +47,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private PackageAdmin packageAdmin;
 
-    private final List<SimpleDeployer> simpleDeployers = new ArrayList<SimpleDeployer>();
+    private final List<SimpleDeployer> simpleDeployers = new ArrayList<>();
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -62,7 +61,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     private EventAdmin eventAdmin;
 
-    public void activate(ComponentContext context) throws Exception {
+    public void activate(ComponentContext context) {
         this.bundleContext = context.getBundleContext();
         this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
         this.simpleDeployers.add(this.defaultDeployer);
@@ -74,7 +73,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
         // Deployer deployerMBean = new StandardDeployer(appDeployer);
     }
 
-    public void deactivate(ComponentContext context) throws Exception {
+    public void deactivate(ComponentContext context) {
         if (this.hotDeployerEnabler != null) {
             this.hotDeployerEnabler.stopHotDeployer();
         }
@@ -90,7 +89,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     @Override
-    public DeploymentIdentity deploy(URI uri) throws DeploymentException {
+    public DeploymentIdentity deploy(URI uri) {
         boolean isThereSuitableDeployer = false;
         for (SimpleDeployer deployer : this.simpleDeployers) {
             if (deployer.canServeFileType(getFileTypeFromUri(uri))) {
@@ -113,7 +112,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     @Override
-    public DeploymentIdentity[] bulkDeploy(List<URI> uris, DeploymentOptions options) throws DeploymentException {
+    public DeploymentIdentity[] bulkDeploy(List<URI> uris, DeploymentOptions options) {
         if (uris != null && !uris.isEmpty()) {
             installDeployables(uris);
             startDeployables(uris);
@@ -125,7 +124,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     private DeploymentIdentity[] getDeploymentIdentities(List<URI> uris) {
-        List<DeploymentIdentity> accumulatedDIs = new ArrayList<DeploymentIdentity>();
+        List<DeploymentIdentity> accumulatedDIs = new ArrayList<>();
         for (URI uri : uris) {
             DeploymentIdentity di = getDeploymentIdentity(uri);
             if (di != null) {
@@ -136,11 +135,11 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     @Override
-    public void undeploy(DeploymentIdentity deploymentIdentity) throws DeploymentException {
+    public void undeploy(DeploymentIdentity deploymentIdentity) {
         if (this.bundleContext != null) {
             String symbolicName = deploymentIdentity.getSymbolicName();
             String version = deploymentIdentity.getVersion();
-            List<Bundle> existingBundles = new ArrayList<Bundle>();
+            List<Bundle> existingBundles = new ArrayList<>();
 
             for (Bundle bundle : this.bundleContext.getBundles()) {
                 if (bundle.getSymbolicName().equals(symbolicName) && bundle.getVersion().toString().equals(version)) {
@@ -149,7 +148,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
             }
             if (existingBundles.size() > 1) {
                 this.logger.warn("Multiple bundles matching the marked for uninstall symbolicName-version pair. List of all matches: "
-                    + Arrays.toString(existingBundles.toArray(new Bundle[existingBundles.size()])));
+                    + Arrays.toString(existingBundles.toArray(new Bundle[0])));
                 this.logger.warn("Uninstalling the last-installed matching bundle " + existingBundles.get(existingBundles.size() - 1).toString());
             }
             boolean isThereSuitableDeployer = false;
@@ -191,52 +190,52 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     @Override
-    public DeploymentIdentity deploy(URI uri, DeploymentOptions options) throws DeploymentException {
+    public DeploymentIdentity deploy(URI uri, DeploymentOptions options) {
         return this.deploy(uri);
     }
 
     @Override
-    public DeploymentIdentity deploy(String type, String name, Version version) throws DeploymentException {
+    public DeploymentIdentity deploy(String type, String name, Version version) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public DeploymentIdentity deploy(String type, String name, Version version, DeploymentOptions options) throws DeploymentException {
+    public DeploymentIdentity deploy(String type, String name, Version version, DeploymentOptions options) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public void undeploy(String applicationSymbolicName, String version) throws DeploymentException {
+    public void undeploy(String applicationSymbolicName, String version) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public DeploymentIdentity install(URI uri, DeploymentOptions options) throws DeploymentException {
+    public DeploymentIdentity install(URI uri, DeploymentOptions options) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public DeploymentIdentity install(URI uri) throws DeploymentException {
+    public DeploymentIdentity install(URI uri) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public void undeploy(String type, String name, String version) throws DeploymentException {
+    public void undeploy(String type, String name, String version) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public void undeploy(DeploymentIdentity deploymentIdentity, boolean deleted) throws DeploymentException {
+    public void undeploy(DeploymentIdentity deploymentIdentity, boolean deleted) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public DeploymentIdentity refresh(URI uri, String symbolicName) throws DeploymentException {
+    public DeploymentIdentity refresh(URI uri, String symbolicName) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
     @Override
-    public void refreshBundle(String bundleSymbolicName, String bundleVersion) throws DeploymentException {
+    public void refreshBundle(String bundleSymbolicName, String bundleVersion) {
         throw new UnsupportedOperationException("Not supported in Virgo Nano.");
     }
 
@@ -286,7 +285,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     }
 
     private void handleUnsupportedFileType(URI uri) {
-        List<String> acceptedTypes = new ArrayList<String>();
+        List<String> acceptedTypes = new ArrayList<>();
         for (SimpleDeployer deployer : this.simpleDeployers) {
             acceptedTypes.addAll(deployer.getAcceptedFileTypes());
         }

@@ -131,7 +131,7 @@ public class Activator implements BundleActivator {
 
         scheduleRegistrationOfServiceScopingRegistryHooks(context, eventLogger);
 
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Dictionary<String, Object> properties = new Hashtable<>();
         properties.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
         this.registrationTracker.track(context.registerService(ModuleContextAccessor.class.getName(), new EmptyModuleContextAccessor(), properties));
 
@@ -145,8 +145,6 @@ public class Activator implements BundleActivator {
     /**
      * This method gets the kernel and user regions configurations from the kernel region and publishes them in the
      * configuration admin in the user region.
-     * 
-     * @throws Exception
      */
     private void publishConfigurations(BundleContext context) throws Exception {
         ConfigurationExporter configurationExporter = getPotentiallyDelayedService(context, ConfigurationExporter.class);
@@ -219,7 +217,7 @@ public class Activator implements BundleActivator {
     private void scheduleInitialArtifactDeployerCreation(BundleContext context, EventLogger eventLogger) {
         KernelStartedAwaiter startedAwaiter = new KernelStartedAwaiter();
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
         this.registrationTracker.track(context.registerService(EventHandler.class.getName(), startedAwaiter, properties));
 
@@ -237,7 +235,7 @@ public class Activator implements BundleActivator {
     /**
      * {@inheritDoc}
      */
-    public void stop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) {
         this.registrationTracker.unregisterAll();
         
         if (this.consoleConfigurationConvertor != null) {
@@ -266,7 +264,7 @@ public class Activator implements BundleActivator {
 
         private final ServiceRegistrationTracker registrationTracker;
 
-        public ServiceScopingHookRegisteringRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker, EventLogger eventLogger) {
+        ServiceScopingHookRegisteringRunnable(BundleContext context, ServiceRegistrationTracker registrationTracker, EventLogger eventLogger) {
             this.context = context;
             this.registrationTracker = registrationTracker;
             this.eventLogger = eventLogger;
@@ -305,8 +303,8 @@ public class Activator implements BundleActivator {
 
         private final ServiceRegistrationTracker registrationTracker;
 
-        public InitialArtifactDeployerCreatingRunnable(BundleContext context, EventLogger eventLogger,
-            ServiceRegistrationTracker registrationTracker, KernelStartedAwaiter startAwaiter) {
+        InitialArtifactDeployerCreatingRunnable(BundleContext context, EventLogger eventLogger,
+                                                ServiceRegistrationTracker registrationTracker, KernelStartedAwaiter startAwaiter) {
             this.context = context;
             this.eventLogger = eventLogger;
             this.startAwaiter = startAwaiter;
@@ -329,7 +327,7 @@ public class Activator implements BundleActivator {
                 InitialArtifactDeployer initialArtifactDeployer = new InitialArtifactDeployer(this.startAwaiter, deployer,
                     artifactConfiguration.get(PROPERTY_USER_REGION_ARTIFACTS), artifactConfiguration.get(PROPERTY_USER_REGION_COMMANDLINE_ARTIFACTS),
                     uriNormaliser, eventAdmin, eventLogger, shutdown);
-                Dictionary<String, String> properties = new Hashtable<String, String>();
+                Dictionary<String, String> properties = new Hashtable<>();
                 properties.put(EventConstants.EVENT_TOPIC, "org/eclipse/virgo/kernel/*");
                 this.registrationTracker.track(context.registerService(EventHandler.class.getName(), initialArtifactDeployer, properties));
 
@@ -347,8 +345,7 @@ public class Activator implements BundleActivator {
             ConfigurationAdmin configAdmin = OsgiFrameworkUtils.getService(this.context, ConfigurationAdmin.class).getService();
             try {
                 Configuration config = configAdmin.getConfiguration(USER_REGION_CONFIGURATION_PID, null);
-                Dictionary<String, Object> properties = (Dictionary<String, Object>) config.getProperties();
-                return properties;
+                return config.getProperties();
             } catch (IOException ioe) {
                 throw new RuntimeException("Failed to read region artifact configuration", ioe);
             }

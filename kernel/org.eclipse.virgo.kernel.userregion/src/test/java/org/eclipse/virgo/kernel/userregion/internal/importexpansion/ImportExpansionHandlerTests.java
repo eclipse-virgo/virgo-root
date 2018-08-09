@@ -56,8 +56,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-/**
- */
 public class ImportExpansionHandlerTests {
 
     private StubRepository repository = new StubRepository();

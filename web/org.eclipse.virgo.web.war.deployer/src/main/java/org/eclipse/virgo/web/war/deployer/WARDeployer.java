@@ -150,7 +150,7 @@ public class WARDeployer implements SimpleDeployer {
 
     private File kernelHomeFile;
     
-    private Map<String, String> wabStates = new ConcurrentHashMap<String, String>();
+    private Map<String, String> wabStates = new ConcurrentHashMap<>();
     
     public WARDeployer() {
         warDeployerInternalInit(null);
@@ -301,14 +301,12 @@ public class WARDeployer implements SimpleDeployer {
             // we need to decode the path before delete or a /webapps entry might leak
             FileSystemUtils.deleteRecursively(new File(warDir.getAbsolutePath()));
             this.eventLogger.log(WARDeployerLogEvents.NANO_UNINSTALLED, bundle.getSymbolicName(), bundle.getVersion());
-            wabStates.remove((String) bundle.getSymbolicName());
+            wabStates.remove(bundle.getSymbolicName());
         } catch (BundleException e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_UNDEPLOY_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
             StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_UNDEPLOY, STATUS_ERROR, -1, -1);
             return STATUS_ERROR;
-        } catch (IOException e) {
-            this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
-        } catch (URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             this.eventLogger.log(WARDeployerLogEvents.NANO_PERSIST_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());
         }
 
@@ -372,7 +370,7 @@ public class WARDeployer implements SimpleDeployer {
         if (bundle != null) {
             try {
             	boolean isLegalState = checkWabState(bundle, isOfflineUpdated);
-            	if (isLegalState == false) {
+            	if (!isLegalState) {
             		this.eventLogger.log(WARDeployerLogEvents.NANO_UPDATE_STATE_ERROR, bundle.getSymbolicName(), bundle.getVersion());
             		StatusFileModificator.createStatusFile(warName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, bundleId, lastModified);
                     return STATUS_ERROR;
@@ -487,7 +485,7 @@ public class WARDeployer implements SimpleDeployer {
         return isWritable;
     }
 
-    private final void transformUnpackedManifest(File srcFile, String warName) throws IOException {
+    private void transformUnpackedManifest(File srcFile, String warName) throws IOException {
         if (srcFile == null) {
             throw new NullPointerException("Source file is null.");
         }
@@ -530,7 +528,7 @@ public class WARDeployer implements SimpleDeployer {
     }
 
     private InstallationOptions prepareInstallationOptions(boolean strictWABHeaders, String warName, BundleManifest manifest) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         String webContextPathHeader = manifest.getHeader(HEADER_WEB_CONTEXT_PATH);
         if (webContextPathHeader == null || webContextPathHeader.trim().length() == 0) {
             if (warName.equals(ROOT_WAR_NAME)) {
@@ -546,7 +544,7 @@ public class WARDeployer implements SimpleDeployer {
         return installationOptions;
     }
 
-    private final Manifest toManifest(Dictionary<String, String> headers) {
+    private Manifest toManifest(Dictionary<String, String> headers) {
         Manifest manifest = new Manifest();
         Attributes attributes = manifest.getMainAttributes();
         Enumeration<String> names = headers.keys();
@@ -606,7 +604,7 @@ public class WARDeployer implements SimpleDeployer {
 
     @Override
     public List<String> getAcceptedFileTypes() {
-        List<String> types = new ArrayList<String>();
+        List<String> types = new ArrayList<>();
         types.add(WAR);
         return types;
     }
@@ -649,7 +647,7 @@ public class WARDeployer implements SimpleDeployer {
     }
     
     private void registerWebContainerEventsHandler(BundleContext bundleContext) {
-    	Dictionary<String, Object> props = new Hashtable<String, Object>();
+    	Dictionary<String, Object> props = new Hashtable<>();
     	props.put(EventConstants.EVENT_TOPIC, new String[] {EVENT_TOPIC_DEPLOYING, EVENT_TOPIC_DEPLOYED, EVENT_TOPIC_UNDEPLOYING, EVENT_TOPIC_UNDEPLOYED, EVENT_TOPIC_FAILED});
     	bundleContext.registerService(EventHandler.class, new WebContainerEventsHandler(), props);
     }
@@ -658,7 +656,7 @@ public class WARDeployer implements SimpleDeployer {
         boolean strictWABHeaders = true;
         String wabHeadersPropertyValue = null;
         if (this.kernelConfig.getProperty(PROPERTY_WAB_HEADERS) != null) {
-            wabHeadersPropertyValue = this.kernelConfig.getProperty(PROPERTY_WAB_HEADERS).toString();
+            wabHeadersPropertyValue = this.kernelConfig.getProperty(PROPERTY_WAB_HEADERS);
         }
         if (wabHeadersPropertyValue != null) {
             if (PROPERTY_VALUE_WAB_HEADERS_DEFAULTED.equals(wabHeadersPropertyValue)) {

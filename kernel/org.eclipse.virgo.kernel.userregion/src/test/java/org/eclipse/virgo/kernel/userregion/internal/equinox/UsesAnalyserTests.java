@@ -19,7 +19,6 @@ import java.io.File;
 import org.eclipse.osgi.internal.baseadaptor.StateManager;
 import org.eclipse.osgi.service.resolver.ResolverError;
 import org.eclipse.osgi.service.resolver.State;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.UsesAnalyser;
 import org.eclipse.virgo.kernel.userregion.internal.equinox.UsesAnalyser.AnalysedUsesConflict;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -48,7 +47,7 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
 
         try {
             p.start();
-        } catch (BundleException ex) {
+        } catch (BundleException ignored) {
         }
 
         State systemState = ((StateManager) this.platformAdmin).getSystemState();
@@ -85,7 +84,7 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
         install("install/bundles/r2");
         try {
             p.start();
-        } catch (BundleException ex) {
+        } catch (BundleException ignored) {
         }
 
         State systemState = ((StateManager) this.platformAdmin).getSystemState();
@@ -144,7 +143,7 @@ public class UsesAnalyserTests extends AbstractOsgiFrameworkLaunchingTests {
         assertEquals(new Version("0.0.0"), usesConflicts[0].getConflictingPackage().getVersion());
     }
 
-    private static final void printUsesConflicts(AnalysedUsesConflict[] usesConflicts) {
+    private static void printUsesConflicts(AnalysedUsesConflict[] usesConflicts) {
         int count = 0;
         for (AnalysedUsesConflict a : usesConflicts) {
             System.out.println("AnalysedUsesConflict element " + (count++));

@@ -25,7 +25,6 @@ import java.util.*;
 /**
  * Helper for class loading supporting commands
  */
-@SuppressWarnings("deprecation")
 public class ClassLoadingHelper {
 
     /**
@@ -60,7 +59,7 @@ public class ClassLoadingHelper {
      */
     public static Map<Bundle, Bundle> getBundlesLoadingClass(BundleContext bundleContext, String className) {
         Bundle[] bundles = bundleContext.getBundles();
-        HashMap<Bundle, Bundle> foundBundles = new HashMap<Bundle, Bundle>();
+        HashMap<Bundle, Bundle> foundBundles = new HashMap<>();
         for (Bundle bundle : bundles) {
             Bundle originBundle = getOriginBundleOfClass(className, bundleContext, bundle);
             if (originBundle != null) {
@@ -79,7 +78,7 @@ public class ClassLoadingHelper {
      * @param loadingBundle Bundle instance to load class from
      * @return originating {@link Bundle} or null if it cannot be loaded by <code>testBundle</code>
      */
-    public static Bundle getOriginBundleOfClass(String className, BundleContext bundleContext, Bundle loadingBundle) {
+    private static Bundle getOriginBundleOfClass(String className, BundleContext bundleContext, Bundle loadingBundle) {
         Class<?> clasz = tryToLoadClass(className, loadingBundle);
         Bundle originBundle = null;
         if (clasz != null) {
@@ -117,7 +116,7 @@ public class ClassLoadingHelper {
      * @param resourcePath Path to the resource
      * @return Class name
      */
-    public static String convertToClassName(String resourcePath) {
+    static String convertToClassName(String resourcePath) {
         if (resourcePath == null)
             return null;
 
@@ -163,7 +162,7 @@ public class ClassLoadingHelper {
      * @throws IllegalArgumentException if there is no bundle with such name/id
      */
     public static Map<Bundle, Bundle> getBundlesLoadingClass(BundleContext bundleContext, String className, String bundle) throws IllegalArgumentException {
-        HashMap<Bundle, Bundle> result = new HashMap<Bundle, Bundle>();
+        HashMap<Bundle, Bundle> result = new HashMap<>();
         long id = Long.MIN_VALUE;
         try {
             id = Long.parseLong(bundle);
@@ -206,12 +205,12 @@ public class ClassLoadingHelper {
      * @return Map between the bundle (key) and the URL(s) of the resources (value)
      */
     public static Map<Bundle, List<String>> getBundlesContainingResource(BundleContext bundleContext, String resourcePattern) {
-        Map<Bundle, List<String>> result = new HashMap<Bundle, List<String>>();
+        Map<Bundle, List<String>> result = new HashMap<>();
 
         Bundle[] bundles = bundleContext.getBundles();
         for (Bundle bundle : bundles) {
             List<String> entries = findEntries(bundle, resourcePattern);
-            if (entries != null && entries.size() != 0) {
+            if (entries.size() != 0) {
                 result.put(bundle, entries);
             }
         }
@@ -227,7 +226,7 @@ public class ClassLoadingHelper {
      * @return List with found entries
      */
     private static List<String> findEntries(Bundle bundle, String resourcePattern) {
-        HashSet<String> urls = new HashSet<String>();
+        HashSet<String> urls = new HashSet<>();
 
         int index = resourcePattern.lastIndexOf("/");
         if (index != -1) {
@@ -243,7 +242,7 @@ public class ClassLoadingHelper {
 
         // Search the root of the bundle for entity matching the specified pattern
         addURLs(urls, bundle.findEntries("/", resourcePattern, true), null);
-        return new ArrayList<String>(urls);
+        return new ArrayList<>(urls);
     }
 
     /**

@@ -24,10 +24,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
-/**
- * Class for unit testing {@link ClassLoadingHelper}
- */
-@SuppressWarnings("deprecation")
 public class ClassLoadingHelperTests {
 
     private static final long BUNDLE_ID = 1234;
@@ -42,7 +38,7 @@ public class ClassLoadingHelperTests {
 
     @SuppressWarnings({ "unchecked" })
     @Test
-    public void testIsMissingPackageExported() throws Exception {
+    public void testIsMissingPackageExported() {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
         ServiceReference<PlatformAdmin> platformAdminServiceReference = createMock(ServiceReference.class);
         Bundle bundle = createMock(Bundle.class);
@@ -67,7 +63,7 @@ public class ClassLoadingHelperTests {
 
     @SuppressWarnings({ "unchecked" })
     @Test
-    public void testIsExistingPackageExported() throws Exception {
+    public void testIsExistingPackageExported() {
         PlatformAdmin platformAdmin = createMock(PlatformAdmin.class);
         ServiceReference<PlatformAdmin> platformAdminServiceReference = createMock(ServiceReference.class);
         Bundle bundle = createMock(Bundle.class);
@@ -106,7 +102,7 @@ public class ClassLoadingHelperTests {
     }
 
     @Test
-    public void testTryToLoadMissingBundle() throws Exception {
+    public void testTryToLoadMissingBundle() {
         assertNull("Class [" + CLASS_NAME + "] found, while no bundle is specified", ClassLoadingHelper.tryToLoadClass(CLASS_NAME, null));
     }
 
@@ -147,8 +143,8 @@ public class ClassLoadingHelperTests {
 
         replay(bundle, bundleContext);
 
-        assertTrue("The bundle [" + BUNDLE_SYMBOLIC_NAME + "] should NOT be able to load class [" + CLASS_NAME + "]",
-            ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME).size() == 0);
+        assertEquals("The bundle [" + BUNDLE_SYMBOLIC_NAME + "] should NOT be able to load class [" + CLASS_NAME + "]",
+                0, ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME).size());
 
         verify(bundle, bundleContext);
     }
@@ -186,8 +182,8 @@ public class ClassLoadingHelperTests {
 
         replay(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
 
-        assertTrue("No bundle should be able to load class [" + CLASS_NAME + "]",
-            ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME, BUNDLE_SYMBOLIC_NAME).size() == 0);
+        assertEquals("No bundle should be able to load class [" + CLASS_NAME + "]",
+                0, ClassLoadingHelper.getBundlesLoadingClass(bundleContext, CLASS_NAME, BUNDLE_SYMBOLIC_NAME).size());
 
         verify(bundle, bundleContext, packageAdmin, packageAdminServiceReference);
     }
@@ -233,14 +229,14 @@ public class ClassLoadingHelperTests {
     }
 
     @Test
-    public void testConvertToClassName() throws Exception {
+    public void testConvertToClassName() {
         assertEquals("Path to resource [" + CLASS_NAME_PATH + "] not converted properly", CLASS_NAME,
             ClassLoadingHelper.convertToClassName(CLASS_NAME_PATH));
         assertEquals("Path to resource [" + CLASS_NAME + "] not converted properly", CLASS_NAME, ClassLoadingHelper.convertToClassName(CLASS_NAME));
     }
 
     @Test
-    public void testConvertToResourcePath() throws Exception {
+    public void testConvertToResourcePath() {
         assertEquals("Class name [" + CLASS_NAME + "] not converted properly", CLASS_NAME_PATH, ClassLoadingHelper.convertToResourcePath(CLASS_NAME));
         assertEquals("Class name [" + CLASS_NAME_PATH + "] not converted properly", CLASS_NAME_PATH,
             ClassLoadingHelper.convertToResourcePath(CLASS_NAME_PATH));

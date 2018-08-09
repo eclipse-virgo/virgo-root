@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.osgi.framework.internal.core.BundleRepository;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -224,7 +223,7 @@ public final class ImportExpansionHandler implements ImportExpander {
 
     /**
      * Get a {@link TrackedPackageImports} instance representing the package imports that correspond to the given bundle
-     * import. The imported bundle is looked up in the given {@link BundleRepository} and, if it is not found,
+     * import. The imported bundle is looked up and, if it is not found,
      * {@link UnableToSatisfyBundleDependenciesException} is thrown. If the bundle import is to be promoted, then the
      * result is also merged into the given <code>TrackedPackageImports</code> instance representing the package imports
      * to be promoted.
@@ -351,7 +350,7 @@ public final class ImportExpansionHandler implements ImportExpander {
 
     /**
      * Get a {@link TrackedPackageImports} instance representing the package imports that correspond to the given
-     * library imports. Each imported library is looked up in the given {@link BundleRepository} and, if it is not
+     * library imports. Each imported library is looked up and, if it is not
      * found, {@link UnableToSatisfyBundleDependenciesException} is thrown. If any package imports are to be promoted,
      * then the result is also merged into the given <code>TrackedPackageImports</code> instance representing the
      * package imports to be promoted.

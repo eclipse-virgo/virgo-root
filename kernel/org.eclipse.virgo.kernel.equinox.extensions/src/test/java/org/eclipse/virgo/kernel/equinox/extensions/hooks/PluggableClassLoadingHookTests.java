@@ -26,8 +26,6 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
 import org.eclipse.osgi.launch.Equinox;
 import org.eclipse.virgo.kernel.equinox.extensions.EquinoxLauncherConfiguration;
 import org.eclipse.virgo.kernel.equinox.extensions.ExtendedEquinoxLauncher;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.ClassLoaderCreator;
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.PluggableClassLoadingHook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +34,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 
-/**
- */
 public class PluggableClassLoadingHookTests {
 
     private Equinox osgi;
@@ -63,7 +59,7 @@ public class PluggableClassLoadingHookTests {
 
     @Test
     public void testAddClassLoaderCreator() throws Exception {
-        final List<BaseData> baseDatas = new ArrayList<BaseData>();
+        final List<BaseData> baseDatas = new ArrayList<>();
         
         ClassLoaderCreator creator = new ClassLoaderCreator() {
 
@@ -72,7 +68,7 @@ public class PluggableClassLoadingHookTests {
                 baseDatas.add(data);
                 return null;
             }
-            
+
         };
         
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(creator);

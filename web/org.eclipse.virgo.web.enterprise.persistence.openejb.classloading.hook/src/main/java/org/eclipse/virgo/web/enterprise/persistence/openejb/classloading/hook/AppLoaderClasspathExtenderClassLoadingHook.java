@@ -12,7 +12,6 @@
 package org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -105,17 +104,9 @@ public class AppLoaderClasspathExtenderClassLoadingHook implements ClassLoadingH
 			throw new ClasspathExtenderClassLoadingHookException("lib/persistence folder is missing");
 		}
 		
-		String[] libs = persistenceLibDir.list(new FilenameFilter() {	
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.startsWith(PERSISTENCE_INTEGRATION_JAR)) {
-					return true;
-				}
-				return false;
-			}
-		});
+		String[] libs = persistenceLibDir.list((dir, name) -> name.startsWith(PERSISTENCE_INTEGRATION_JAR));
 		
-		if (libs.length == 0) {
+		if (libs == null || libs.length == 0) {
 			throw new ClasspathExtenderClassLoadingHookException("No file with name starting with [" + PERSISTENCE_INTEGRATION_JAR + "] was found in lib/persistence folder");
 		}
 		

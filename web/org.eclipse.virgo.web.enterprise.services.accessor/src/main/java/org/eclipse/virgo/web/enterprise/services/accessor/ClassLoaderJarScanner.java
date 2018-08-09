@@ -13,12 +13,10 @@ package org.eclipse.virgo.web.enterprise.services.accessor;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +48,7 @@ public class ClassLoaderJarScanner implements JarScanner {
     
     public static final String SKIP_BUNDLES_PROPERTY = "gemini.web.scan.BundleDependenciesJarScanned.bundlesToSkip";
 
-    private final Set<Bundle> bundles = new HashSet<Bundle>();
+    private final Set<Bundle> bundles = new HashSet<>();
     
     private Logger logger = LoggerFactory.getLogger(ClassLoaderJarScanner.class);
 
@@ -58,12 +56,7 @@ public class ClassLoaderJarScanner implements JarScanner {
 
     public ClassLoaderJarScanner(Set<Bundle> bundles) {
     	this.bundles.addAll(bundles);
-    	this.jarScanFilter = new JarScanFilter() {
-  		    @Override
- 		    public boolean check(JarScanType jarScanType, String bundleSymbolicName) {
-  	 	        return true;
-    	    }
-    	};
+    	this.jarScanFilter = (jarScanType, bundleSymbolicName) -> true;
     }
 
     @Override

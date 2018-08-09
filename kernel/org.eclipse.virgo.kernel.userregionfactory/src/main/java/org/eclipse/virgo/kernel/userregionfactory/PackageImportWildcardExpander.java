@@ -40,7 +40,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * Thread safe.
  * 
  */
-@SuppressWarnings("deprecation")
 final class PackageImportWildcardExpander {
 
     private static final String wildcard = "*";
@@ -52,11 +51,11 @@ final class PackageImportWildcardExpander {
     }
 
     private static String[] getExportedPackageNames(BundleContext bundleContext) {
-        Set<String> exportedPackageNames = new HashSet<String>();
+        Set<String> exportedPackageNames = new HashSet<>();
         for (ExportedPackage exportedPackage : getExportedPackages(bundleContext)) {
             exportedPackageNames.add(exportedPackage.getName());
         }
-        return exportedPackageNames.toArray(new String[exportedPackageNames.size()]);
+        return exportedPackageNames.toArray(new String[0]);
     }
 
     private static ExportedPackage[] getExportedPackages(BundleContext bundleContext) {
@@ -71,13 +70,13 @@ final class PackageImportWildcardExpander {
         return exportedPackages;
     }
 
-    private static String expandWildcards(String userRegionImportsProperty, String[] exportedPackageNamess, EventLogger eventLogger) {
+    private static String expandWildcards(String userRegionImportsProperty, String[] exportedPackageNames, EventLogger eventLogger) {
         DynamicImportPackage dynamicImportPackage = representImportsAsDynamicImports(userRegionImportsProperty, eventLogger);
-        return expandWildcards(dynamicImportPackage, exportedPackageNamess, eventLogger);
+        return expandWildcards(dynamicImportPackage, exportedPackageNames, eventLogger);
     }
 
     private static DynamicImportPackage representImportsAsDynamicImports(String userRegionImportsProperty, EventLogger eventLogger) {
-        Dictionary<String, String> headers = new Hashtable<String, String>();
+        Dictionary<String, String> headers = new Hashtable<>();
         headers.put("DynamicImport-Package", userRegionImportsProperty);
 
         BundleManifest manifest = BundleManifestFactory.createBundleManifest(headers, new UserRegionFactoryParserLogger(eventLogger));
@@ -85,7 +84,7 @@ final class PackageImportWildcardExpander {
     }
 
     private static String expandWildcards(DynamicImportPackage dynamicImportPackage, String[] exportedPackageNames, EventLogger eventLogger) {
-        StringBuffer expandedPackages = new StringBuffer();
+        StringBuilder expandedPackages = new StringBuilder();
         boolean first = true;
         List<DynamicallyImportedPackage> dynamicallyImportedPackages = dynamicImportPackage.getDynamicallyImportedPackages();
         for (DynamicallyImportedPackage dynamicallyImportedPackage : dynamicallyImportedPackages) {
@@ -115,7 +114,7 @@ final class PackageImportWildcardExpander {
     }
 
     private static List<String> expandWildcard(String wildcardedPackageName, String[] exportedPackageNames, EventLogger eventLogger) {
-        List<String> expansions = new ArrayList<String>();
+        List<String> expansions = new ArrayList<>();
 
         String prefix = wildcardedPackageName.substring(0, wildcardedPackageName.length() - 1);
         for (String exportedPackage : exportedPackageNames) {

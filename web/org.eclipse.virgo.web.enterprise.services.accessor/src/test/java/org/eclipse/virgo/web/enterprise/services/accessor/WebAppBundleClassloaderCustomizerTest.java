@@ -17,6 +17,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -34,7 +35,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleRevision;
-import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 
@@ -52,9 +52,9 @@ public class WebAppBundleClassloaderCustomizerTest {
         BundleRevision bundleRevision = createMock(BundleRevision.class);
         BundleWiring bundleWiring = createMock(BundleWiring.class);
 
-        Dictionary<String, String> apiHeaders = new Hashtable<String, String>();
+        Dictionary<String, String> apiHeaders = new Hashtable<>();
         apiHeaders.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE, WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE_API_VALUE);
-        Dictionary<String, String> implHeaders = new Hashtable<String, String>();
+        Dictionary<String, String> implHeaders = new Hashtable<>();
         implHeaders.put(WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE,
             WebAppBundleTrackerCustomizer.HEADER_EXPOSED_CONTENT_TYPE_IMPL_VALUE);
 
@@ -74,8 +74,8 @@ public class WebAppBundleClassloaderCustomizerTest {
 
         expect(webBundle.adapt(BundleRevision.class)).andReturn(bundleRevision);
         expect(bundleRevision.getWiring()).andReturn(bundleWiring);
-        expect(bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)).andReturn(new ArrayList<BundleWire>());
-        expect(bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE)).andReturn(new ArrayList<BundleWire>());
+        expect(bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)).andReturn(new ArrayList<>());
+        expect(bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE)).andReturn(new ArrayList<>());
 
         replay(ctx, bundleContext, apiBundle, implBundle, webBundle, bundleRevision, bundleWiring);
 
@@ -93,7 +93,7 @@ public class WebAppBundleClassloaderCustomizerTest {
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook().getImplBundles().contains(implBundle));
         assertTrue(((List<ClassLoaderDelegateHook>) field.get(PluggableDelegatingClassLoaderDelegateHook.getInstance())).contains(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook()));
 
-        assertTrue(webAppBundleClassloaderCustomizer.extendClassLoaderChain(webBundle).length == 0);
+        assertEquals(0, webAppBundleClassloaderCustomizer.extendClassLoaderChain(webBundle).length);
         assertTrue(webAppBundleClassloaderCustomizer.getWebAppBundleTrackerCustomizer().getExposeAdditionalApiBundles().isEmpty());
         assertTrue(((Map<Bundle, Set<String>>) field2.get(webAppBundleClassloaderCustomizer.getWebAppBundleClassLoaderDelegateHook())).containsKey(webBundle));
 

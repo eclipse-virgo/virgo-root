@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,11 +25,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
 import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.EquinoxOsgiFramework;
-import org.eclipse.virgo.kernel.userregion.internal.equinox.KernelBundleClassLoader;
 
-/**
- */
 public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTests {
 
     @Override
@@ -39,7 +34,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     }
 
     @Test
-    public void testStartAndStop() throws Exception {
+    public void testStartAndStop() {
         assertNotNull(this.framework.getBundleContext());
         assertEquals(Bundle.ACTIVE, this.framework.getBundleContext().getBundle().getState());
     }
@@ -80,7 +75,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
         icl.addClassFileTransformer(new ClassFileTransformer() {
 
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-                byte[] classfileBuffer) throws IllegalClassFormatException {
+                byte[] classfileBuffer) {
                 count.incrementAndGet();
                 return null;
             }
@@ -90,11 +85,6 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
         assertEquals(1, count.get());
     }
 
-    /**
-     * @param osgi
-     * @return
-     * @throws BundleException
-     */
     private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
         osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
             + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.logging/1.2.0/"

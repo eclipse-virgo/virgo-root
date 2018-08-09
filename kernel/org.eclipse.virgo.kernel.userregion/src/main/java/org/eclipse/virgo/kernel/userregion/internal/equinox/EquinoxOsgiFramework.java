@@ -68,7 +68,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
      */
     public void refresh(Bundle bundle) throws BundleException {
         ClassLoader cl = getBundleClassLoader(bundle);
-        List<Bundle> refreshBundles = new ArrayList<Bundle>();
+        List<Bundle> refreshBundles = new ArrayList<>();
         if (cl instanceof KernelBundleClassLoader) {
             KernelBundleClassLoader pbcl = (KernelBundleClassLoader) cl;
             if (pbcl.isInstrumented()) {
@@ -83,7 +83,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         }
         bundle.update();
         refreshBundles.add(bundle);
-        Bundle[] toRefresh = refreshBundles.toArray(new Bundle[refreshBundles.size()]);
+        Bundle[] toRefresh = refreshBundles.toArray(new Bundle[0]);
         getPackageAdmin().refreshPackages(toRefresh);
     }
 
@@ -118,7 +118,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         BundleContext bundleContext = getBundleContext();
         ServiceReference<PlatformAdmin> serviceRef = bundleContext.getServiceReference(PlatformAdmin.class);
         try {
-            PlatformAdmin serverAdmin = (PlatformAdmin) bundleContext.getService(serviceRef);
+            PlatformAdmin serverAdmin = bundleContext.getService(serviceRef);
             return EquinoxUtils.getDirectDependencies(bundle, bundleContext, serverAdmin, includeFragments);
         } finally {
             bundleContext.ungetService(serviceRef);
@@ -158,7 +158,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         }
     }
 
-    private String getAbsoluteUriString(File location) throws BundleException {
+    private String getAbsoluteUriString(File location) {
         return FILE_SCHEME + location.getAbsolutePath();
     }
 }

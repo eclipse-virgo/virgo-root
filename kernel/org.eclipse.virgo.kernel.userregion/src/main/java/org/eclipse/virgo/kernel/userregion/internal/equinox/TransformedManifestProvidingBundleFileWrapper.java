@@ -75,7 +75,7 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
 
         @Override
         public Stack<ManifestTransformer> initialValue() {
-            return new Stack<ManifestTransformer>();
+            return new Stack<>();
         }
     }
 
@@ -259,7 +259,7 @@ public class TransformedManifestProvidingBundleFileWrapper implements BundleFile
          * {@inheritDoc}
          */
         @Override
-        public InputStream getInputStream() throws IOException {                  
+        public InputStream getInputStream() {
             return new ByteArrayInputStream(this.manifestBytes); 
         }
 

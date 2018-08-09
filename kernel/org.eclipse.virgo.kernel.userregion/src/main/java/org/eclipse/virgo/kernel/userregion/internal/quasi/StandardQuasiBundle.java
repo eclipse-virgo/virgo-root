@@ -69,7 +69,7 @@ final class StandardQuasiBundle implements QuasiBundle {
      * Constructs an unresolved, uncommitted {@link QuasiBundle} with the given {@link BundleDescription}.
      * 
      * @param bundleDescription the <code>BundleDescription</code> for this <code>QuasiBundle</code>
-     * @param bundleManifest
+     * @param bundleManifest the <code>BundleManifest</code> for this <code>QuasiBundle</code>
      * @param region the <code>Region</code> this bundle belongs to
      */
     public StandardQuasiBundle(BundleDescription bundleDescription, BundleManifest bundleManifest, Region region) {
@@ -213,12 +213,9 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     /**
      * Utility method to wrap a list of {@link BundleDescription} in QuasiBundle.
-     * 
-     * @param bundleDescriptions
-     * @return
      */
     private List<QuasiBundle> wrapBundleDescriptions(BundleDescription[] bundleDescriptions) {
-        List<QuasiBundle> quasiBundles = new ArrayList<QuasiBundle>();
+        List<QuasiBundle> quasiBundles = new ArrayList<>();
         for (BundleDescription bundleDescription : bundleDescriptions) {
 			Region bundleRegion = this.region.getRegionDigraph().getRegion(bundleDescription.getBundleId());
 			quasiBundles.add(new StandardQuasiBundle(bundleDescription, null, bundleRegion));
@@ -228,12 +225,9 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     /**
      * Utility method to wrap a list of {@link BundleDescription} in QuasiBundle.
-     * 
-     * @param bundleDescriptions
-     * @return
      */
     private List<QuasiRequiredBundle> wrapBundleSpecificationsAsRequiredBundles(BundleSpecification[] bundleDescriptions) {
-        List<QuasiRequiredBundle> quasiRequiredBundles = new ArrayList<QuasiRequiredBundle>();
+        List<QuasiRequiredBundle> quasiRequiredBundles = new ArrayList<>();
         for (BundleSpecification bundleSpecification : bundleDescriptions) {
             quasiRequiredBundles.add(new StandardQuasiRequiredBundle(bundleSpecification, this));
         }
@@ -242,13 +236,9 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     /**
      * Utility method to wrap a list of {@link BundleDescription} in {@link QuasiExportPackage}.
-     * 
-     * @param exportPackageDescriptions
-     * @param quasiBundle
-     * @return
      */
     private List<QuasiExportPackage> wrapExportPackageDescriptions(ExportPackageDescription[] exportPackageDescriptions) {
-        List<QuasiExportPackage> quasiExportPackages = new ArrayList<QuasiExportPackage>();
+        List<QuasiExportPackage> quasiExportPackages = new ArrayList<>();
         for (ExportPackageDescription exportPackageDescription : exportPackageDescriptions) {
             quasiExportPackages.add(new StandardQuasiExportPackage(exportPackageDescription, this));
         }
@@ -257,12 +247,9 @@ final class StandardQuasiBundle implements QuasiBundle {
 
     /**
      * Utility method to wrap a list of {@link BundleDescription} in {@link QuasiImportPackage}.
-     * 
-     * @param bundleDescriptions
-     * @return
      */
     private List<QuasiImportPackage> wrapImportPackageSpecifications(ImportPackageSpecification[] importPackageSpecifications) {
-        List<QuasiImportPackage> quasiImportPackages = new ArrayList<QuasiImportPackage>();
+        List<QuasiImportPackage> quasiImportPackages = new ArrayList<>();
         for (ImportPackageSpecification importPackageSpecification : importPackageSpecifications) {
             quasiImportPackages.add(new StandardQuasiImportPackage(importPackageSpecification, this));
         }

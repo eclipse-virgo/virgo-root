@@ -37,4 +37,13 @@ public final class BundleUtils {
         return rev != null && (rev.getTypes() & TYPE_FRAGMENT)!= 0;
     }
 
+    /**
+     * Queries whether the supplied {@link Bundle} is the system bundle.
+     *
+     * @param bundle the <code>Bundle</code>.
+     * @return <code>true</code> if <code>bundle</code> is the system bundle, otherwise <code>false</code>.
+     */
+    public static boolean isSystemBundle(Bundle bundle) {
+        return bundle != null && bundle.getBundleId() == 0;
+    }
 }

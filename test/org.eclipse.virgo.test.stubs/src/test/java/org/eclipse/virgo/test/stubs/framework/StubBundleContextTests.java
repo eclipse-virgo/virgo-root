@@ -19,7 +19,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -30,7 +29,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
@@ -121,7 +119,7 @@ public class StubBundleContextTests {
     }
 
     @Test
-    public void installBundle() throws BundleException {
+    public void installBundle() {
         TestBundleListener listener = new TestBundleListener();
         this.bundleContext.addBundleListener(listener);
         Bundle bundle = this.bundleContext.installBundle("/");
@@ -136,7 +134,7 @@ public class StubBundleContextTests {
     }
 
     @Test
-    public void installBundleInputStream() throws BundleException {
+    public void installBundleInputStream() {
         TestBundleListener listener = new TestBundleListener();
         this.bundleContext.addBundleListener(listener);
         Bundle bundle = this.bundleContext.installBundle("/", new TestInputStream());
@@ -194,7 +192,7 @@ public class StubBundleContextTests {
 
     @Test
     public void registerServiceArray() {
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put("testKey", "testValue");
         ServiceRegistration<?> serviceRegistration = this.bundleContext.registerService(
             new String[] { Object.class.getName(), Exception.class.getName() }, new Object(), properties);
@@ -236,8 +234,8 @@ public class StubBundleContextTests {
 
     @Test
     public void ungetService() {
-        StubServiceRegistration<Object> serviceRegistration = new StubServiceRegistration<Object>(this.bundleContext);
-        StubServiceReference<Object> serviceReference = new StubServiceReference<Object>(serviceRegistration);
+        StubServiceRegistration<Object> serviceRegistration = new StubServiceRegistration<>(this.bundleContext);
+        StubServiceReference<Object> serviceReference = new StubServiceReference<>(serviceRegistration);
         assertTrue(this.bundleContext.ungetService(serviceReference));
         serviceRegistration.unregister();
         assertFalse(this.bundleContext.ungetService(serviceReference));
@@ -286,18 +284,18 @@ public class StubBundleContextTests {
     }
 
     @Test
-    public void getServiceReferenceNoValues() throws InvalidSyntaxException {
+    public void getServiceReferenceNoValues() {
         assertNull(this.bundleContext.getServiceReference((String)null));
     }
 
     @Test
-    public void getServiceReferenceOneValue() throws InvalidSyntaxException {
+    public void getServiceReferenceOneValue() {
         this.bundleContext.registerService(Object.class.getName(), new Object(), null);
         assertNotNull(this.bundleContext.getServiceReference((String)null));
     }
 
     @Test
-    public void getServiceReferenceOneValueTyped() throws InvalidSyntaxException {
+    public void getServiceReferenceOneValueTyped() {
         this.bundleContext.registerService(Object.class.getName(), new Object(), null);
         assertNotNull(this.bundleContext.getServiceReference(Object.class));
     }
@@ -310,7 +308,7 @@ public class StubBundleContextTests {
     }
 
     @Test
-    public void getServiceReferenceTwoValues() throws InvalidSyntaxException {
+    public void getServiceReferenceTwoValues() {
         this.bundleContext.registerService(Object.class.getName(), new Object(), null);
         this.bundleContext.registerService(Object.class.getName(), new Object(), null);
         assertNotNull(this.bundleContext.getServiceReference((String)null));
@@ -320,7 +318,7 @@ public class StubBundleContextTests {
 
         private boolean called = false;
 
-        private List<BundleEvent> events = new ArrayList<BundleEvent>();
+        private List<BundleEvent> events = new ArrayList<>();
 
         public void bundleChanged(BundleEvent event) {
             this.called = true;
@@ -332,7 +330,7 @@ public class StubBundleContextTests {
         }
 
         public BundleEvent[] getEvents() {
-            return events.toArray(new BundleEvent[events.size()]);
+            return events.toArray(new BundleEvent[0]);
         }
 
     }
@@ -356,7 +354,7 @@ public class StubBundleContextTests {
     private static class TestInputStream extends InputStream {
 
         @Override
-        public int read() throws IOException {
+        public int read() {
             throw new UnsupportedOperationException();
         }
 

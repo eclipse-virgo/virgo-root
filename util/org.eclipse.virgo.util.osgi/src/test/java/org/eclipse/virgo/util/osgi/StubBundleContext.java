@@ -19,11 +19,9 @@ import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -63,14 +61,14 @@ public class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public void addServiceListener(ServiceListener arg0, String arg1) throws InvalidSyntaxException {
+    public void addServiceListener(ServiceListener arg0, String arg1) {
         // System.out.println("4");
     }
 
     /**
      * {@inheritDoc}
      */
-    public Filter createFilter(String arg0) throws InvalidSyntaxException {
+    public Filter createFilter(String arg0) {
         // System.out.println("5");
         return new Filter() {
 
@@ -96,7 +94,7 @@ public class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public ServiceReference<?>[] getAllServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
+    public ServiceReference<?>[] getAllServiceReferences(String arg0, String arg1) {
         // System.out.println("6");
         return null;
     }
@@ -161,7 +159,7 @@ public class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public ServiceReference<?>[] getServiceReferences(String arg0, String arg1) throws InvalidSyntaxException {
+    public ServiceReference<?>[] getServiceReferences(String arg0, String arg1) {
         // System.out.println("14");
         ServiceReference<?>[] refs = new ServiceReference[1];
         refs[0] = new ServiceReference<ServiceObject>() {
@@ -197,7 +195,7 @@ public class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public Bundle installBundle(String arg0) throws BundleException {
+    public Bundle installBundle(String arg0) {
         // System.out.println("15");
         return null;
     }
@@ -205,7 +203,7 @@ public class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public Bundle installBundle(String arg0, InputStream arg1) throws BundleException {
+    public Bundle installBundle(String arg0, InputStream arg1) {
         // System.out.println("16");
         return null;
     }
@@ -272,7 +270,7 @@ public class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter) throws InvalidSyntaxException {
+    public <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter) {
         return null;
     }
 

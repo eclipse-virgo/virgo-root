@@ -16,17 +16,10 @@ import static org.eclipse.virgo.test.stubs.internal.Duplicator.shallowCopy;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -55,39 +48,39 @@ public final class StubBundleContext implements BundleContext {
 
     private final Object bundleMonitor = new Object();
 
-    private final List<BundleListener> bundleListeners = new ArrayList<BundleListener>();
+    private final List<BundleListener> bundleListeners = new ArrayList<>();
 
     private final Object bundleListenersMonitor = new Object();
 
-    private final List<FrameworkListener> frameworkListeners = new ArrayList<FrameworkListener>();
+    private final List<FrameworkListener> frameworkListeners = new ArrayList<>();
 
     private final Object frameworkListenersMonitor = new Object();
 
-    private final List<ServiceListener> serviceListeners = new ArrayList<ServiceListener>();
+    private final List<ServiceListener> serviceListeners = new ArrayList<>();
 
     private final Object serviceListenersMonitor = new Object();
 
-    private volatile long installedBundleId = Long.valueOf(2);
+    private volatile long installedBundleId = 2L;
 
-    private final Map<Long, StubBundle> installedBundles = new HashMap<Long, StubBundle>();
+    private final Map<Long, StubBundle> installedBundles = new HashMap<>();
 
     private final Object installedBundlesMonitor = new Object();
 
-    private final List<StubServiceRegistration<Object>> serviceRegistrations = new ArrayList<StubServiceRegistration<Object>>();
+    private final List<StubServiceRegistration<Object>> serviceRegistrations = new ArrayList<>();
 
-    private final Map<StubServiceReference<Object>, Object> services = new HashMap<StubServiceReference<Object>, Object>();
+    private final Map<StubServiceReference<Object>, Object> services = new HashMap<>();
 
     private final Object servicesMonitor = new Object();
 
-    private final Map<String, File> dataFiles = new HashMap<String, File>();
+    private final Map<String, File> dataFiles = new HashMap<>();
 
     private final Object dataFilesMonitor = new Object();
 
-    private final Map<String, String> properties = new HashMap<String, String>();
+    private final Map<String, String> properties = new HashMap<>();
 
     private final Object propertiesMonitor = new Object();
 
-    private final Map<String, Filter> filters = new HashMap<String, Filter>();
+    private final Map<String, Filter> filters = new HashMap<>();
 
     private final Object filtersMonitor = new Object();
 
@@ -130,17 +123,13 @@ public final class StubBundleContext implements BundleContext {
      * {@inheritDoc}
      */
     public void addServiceListener(ServiceListener listener) {
-        try {
-            addServiceListener(listener, null);
-        } catch (InvalidSyntaxException e) {
-            // In theory this exception can never be thrown
-        }
+        addServiceListener(listener, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addServiceListener(ServiceListener listener, String filter) throws InvalidSyntaxException {
+    public void addServiceListener(ServiceListener listener, String filter) {
         synchronized (this.serviceListenersMonitor) {
             this.serviceListeners.add(listener);
         }
@@ -219,7 +208,7 @@ public final class StubBundleContext implements BundleContext {
      */
     public Bundle[] getBundles() {
         synchronized (this.installedBundlesMonitor) {
-            return this.installedBundles.values().toArray(new Bundle[this.installedBundles.values().size()]);
+            return this.installedBundles.values().toArray(new Bundle[0]);
         }
     }
 
@@ -325,7 +314,7 @@ public final class StubBundleContext implements BundleContext {
      */
     public ServiceReference<?>[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
         synchronized (this.servicesMonitor) {
-            List<ServiceReference<?>> candidateReferences = new ArrayList<ServiceReference<?>>();
+            List<ServiceReference<?>> candidateReferences = new ArrayList<>();
 
             Filter f = getFilter(filter);
             for (ServiceReference<?> serviceReference : this.services.keySet()) {
@@ -338,7 +327,7 @@ public final class StubBundleContext implements BundleContext {
             if (candidateReferences.isEmpty()) {
                 return null;
             } else {
-                return candidateReferences.toArray(new ServiceReference[candidateReferences.size()]);
+                return candidateReferences.toArray(new ServiceReference[0]);
             }
         }
     }
@@ -368,7 +357,7 @@ public final class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public Bundle installBundle(String location) throws BundleException {
+    public Bundle installBundle(String location) {
         StubBundle bundle = new StubBundle(this.installedBundleId++, location, Version.emptyVersion, location);
         bundle.setState(Bundle.INSTALLED);
         return bundle;
@@ -377,7 +366,7 @@ public final class StubBundleContext implements BundleContext {
     /**
      * {@inheritDoc}
      */
-    public Bundle installBundle(String location, InputStream input) throws BundleException {
+    public Bundle installBundle(String location, InputStream input) {
         return installBundle(location);
     }
 
@@ -397,13 +386,13 @@ public final class StubBundleContext implements BundleContext {
     }
 
     private StubServiceRegistration<Object> createServiceRegistration(String[] clazzes, Dictionary<String, ?> properties) {
-        StubServiceRegistration<Object> serviceRegistration = new StubServiceRegistration<Object>(this, clazzes);
+        StubServiceRegistration<Object> serviceRegistration = new StubServiceRegistration<>(this, clazzes);
         serviceRegistration.setProperties(properties);
         return serviceRegistration;
     }
 
     private <S> StubServiceReference<S> createServiceReference(String[] clazzes, Object service, StubServiceRegistration<S> serviceRegistration) {
-        StubServiceReference<S> serviceReference = new StubServiceReference<S>(serviceRegistration);
+        StubServiceReference<S> serviceReference = new StubServiceReference<>(serviceRegistration);
         serviceRegistration.setServiceReference(serviceReference);
         return serviceReference;
     }
@@ -544,12 +533,10 @@ public final class StubBundleContext implements BundleContext {
      */
     @SuppressWarnings("unchecked")
     public <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter) throws InvalidSyntaxException {
-        Collection<ServiceReference<S>> references = new ArrayList<ServiceReference<S>>();
+        Collection<ServiceReference<S>> references = new ArrayList<>();
         ServiceReference<S>[] matchingReferences = (ServiceReference<S>[]) getServiceReferences(clazz.getName(), filter);
         if (matchingReferences != null) {
-            for (ServiceReference<S> reference : matchingReferences) {
-                references.add(reference);
-            }
+            Collections.addAll(references, matchingReferences);
         }
         return references;
     }

@@ -25,8 +25,6 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 
 
-/**
- */
 public final class ExtendedEquinoxLauncher {
 
     private static final String PROP_CONTEXT_BOOTDELEGATION = "osgi.context.bootdelegation";
@@ -61,10 +59,10 @@ public final class ExtendedEquinoxLauncher {
     }
 
     private static Map<String, String> populateConfiguration(EquinoxLauncherConfiguration config) {
-        Map<String, String> configuration = new HashMap<String, String>();
-        configuration.putAll(config.getFrameworkProperties());
+        Map<String, String> configuration = new HashMap<>(config.getFrameworkProperties());
 
-        mergeListProperty(configuration, HookRegistry.PROP_HOOK_CONFIGURATORS_INCLUDE, ExtensionsHookConfigurator.class.getName());
+        configuration.merge(HookRegistry.PROP_HOOK_CONFIGURATORS_INCLUDE,
+                ExtensionsHookConfigurator.class.getName(), (a, b) -> a + "," + b);
 
         configuration.put(PROP_OSGI_PARENT_CLASSLOADER, "fwk");
         configuration.put(PROP_CONTEXT_BOOTDELEGATION, "false");
@@ -78,13 +76,5 @@ public final class ExtendedEquinoxLauncher {
         configuration.put(PROP_OSGI_CLEAN, Boolean.toString(config.isClean()));
         return configuration;
     }
-    
-    private static void mergeListProperty(Map<String, String> properties, String key, String value) {
-        String existingValue = properties.get(key);
-        if (existingValue != null) {
-            properties.put(key, existingValue + "," + value);
-        } else {
-            properties.put(key, value);
-        }
-    }
+
 }

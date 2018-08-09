@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipException;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.eclipse.equinox.region.RegionDigraphPersistence;
@@ -92,7 +91,7 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
      * {@inheritDoc}
      */
     @Override
-    public QuasiFramework create(File dumpDirName) throws ZipException, IOException {
+    public QuasiFramework create(File dumpDirName) throws IOException {
         return create(this.dumpExtractor.getStateDump(dumpDirName), this.dumpExtractor.getRegionDigraphDump(dumpDirName));
     }
 
@@ -105,11 +104,8 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
         RegionDigraphPersistence regionDigraphPersistence = this.regionDigraph.getRegionDigraphPersistence();
         RegionDigraph digraph;
         try {
-            InputStream input = new FileInputStream(regionDigraphDump);
-            try {
+            try (InputStream input = new FileInputStream(regionDigraphDump)) {
                 digraph = regionDigraphPersistence.load(input);
-            } finally {
-                input.close();
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to read region digraph dump", e);
@@ -142,7 +138,7 @@ public final class StandardQuasiFrameworkFactory implements QuasiFrameworkFactor
     }
 
     private State readStateDump(File outdir) {
-        State state = null;
+        State state;
 
         try {
             StateObjectFactory sof = this.platformAdmin.getFactory();

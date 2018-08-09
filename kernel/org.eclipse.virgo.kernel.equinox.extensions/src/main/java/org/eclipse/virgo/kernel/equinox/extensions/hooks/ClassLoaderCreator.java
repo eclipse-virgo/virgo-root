@@ -28,5 +28,5 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
  */
 public interface ClassLoaderCreator {
 
-    public BaseClassLoader createClassLoader(ClassLoader parent, ClassLoaderDelegate delegate, BundleProtectionDomain domain, BaseData data, String[] bundleclasspath);
+    BaseClassLoader createClassLoader(ClassLoader parent, ClassLoaderDelegate delegate, BundleProtectionDomain domain, BaseData data, String[] bundleclasspath);
 }

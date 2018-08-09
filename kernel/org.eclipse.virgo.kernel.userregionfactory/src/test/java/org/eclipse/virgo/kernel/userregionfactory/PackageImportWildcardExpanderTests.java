@@ -25,9 +25,6 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
-/**
- */
-@SuppressWarnings("deprecation")
 public class PackageImportWildcardExpanderTests {
 
     private StubBundleContext stubBundleContext;
@@ -39,7 +36,7 @@ public class PackageImportWildcardExpanderTests {
     private ExportedPackage[] exportedPackages;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.stubBundleContext = new StubBundleContext();
 
         this.mockEventLogger = createMock(EventLogger.class);
