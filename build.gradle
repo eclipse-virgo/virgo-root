@@ -221,9 +221,9 @@ ext {
 
             'MINA.CORE.VERSION'            : minaCoreVersion,
             'SSHD.CORE.VERSION'            : apacheSshdCoreVersion,
-            'FELIX.GOGO.COMMAND.VERSION'   : gogoCommandVersion,
-            'FELIX.GOGO.RUNTIME.VERSION'   : gogoRuntimeVersion,
-            'FELIX.GOGO.SHELL.VERSION'     : gogoShellVersion,
+            'FELIX.GOGO.COMMAND.VERSION'   : gogoCommandVersion, // used in oev.kernel.userregion.properties and oev.shell.feature/feature.xml
+            'FELIX.GOGO.RUNTIME.VERSION'   : gogoRuntimeVersion, // used in oev.kernel.userregion.properties and oev.shell.feature/feature.xml
+            'FELIX.GOGO.SHELL.VERSION'     : gogoShellVersion, // used in oev.kernel.userregion.properties and oev.shell.feature/feature.xml
 
             'JOLOKIA.VERSION'              : jolokiaVersion,
 

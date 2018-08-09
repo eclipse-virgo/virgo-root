@@ -36,9 +36,9 @@ dependencies {
     testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
     testCompile group: "org.hsqldb", name:"hsqldb", version: hsqldbVersion
 
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.command", version: gogoCommandVersion, configuration: "compile", ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.shell", version: gogoShellVersion, configuration: "compile", ext: "jar"
+    testRuntimeOnly 'org.apache.felix:org.apache.felix.gogo.command'
+    testRuntimeOnly 'org.apache.felix:org.apache.felix.gogo.runtime'
+    testRuntimeOnly 'org.apache.felix:org.apache.felix.gogo.shell'
 
     testImplementation 'org.springframework:spring-context'
     testRuntimeOnly 'org.springframework:spring-expression'

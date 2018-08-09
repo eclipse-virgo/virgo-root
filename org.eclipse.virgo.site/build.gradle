@@ -170,9 +170,9 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console.ssh", version: equinoxConsoleSshVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.mina.core", version: minaCoreVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.sshd.core", version: apacheSshdCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.command", version: gogoCommandVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.shell", version: gogoShellVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'org.apache.felix:org.apache.felix.gogo.command'
+    signedExternalPlugin 'org.apache.felix:org.apache.felix.gogo.runtime'
+    signedExternalPlugin 'org.apache.felix:org.apache.felix.gogo.shell'
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"

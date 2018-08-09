@@ -1,13 +1,11 @@
 package org.eclipse.virgo.ebr;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 
 import static org.ops4j.pax.exam.CoreOptions.*;
 
-@Ignore("TODO - reactivate when switching to bundles from Maven Central")
 public class GogoShellTest extends AbstractBaseTest {
 
     private static final String FELIX = "org.apache.felix";
