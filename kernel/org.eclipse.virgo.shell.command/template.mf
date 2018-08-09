@@ -9,7 +9,7 @@ Import-Template:
  org.eclipse.virgo.util.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.medic.*;version="${version:[=.=.=, =.+1)}",
  org.eclipse.virgo.repository.*;version="${version:[=.=.=, =.+1)}",
- org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
+ org.springframework.*;version="${springframeworkVersion:[=.=.=.=, +1)}",
  org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}",
  org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  javax.crypto.*;version="0",

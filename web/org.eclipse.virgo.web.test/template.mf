@@ -14,7 +14,7 @@ Import-Template:
  org.apache.commons.httpclient.*;version="${org.apache.commons.httpclient:[=.=.=, +1)}",
  org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  org.osgi.framework.*;version="0",
- org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
+ org.springframework.*;version="${springframeworkVersion:[=.=.=.=, +1)}",
  org.osgi.service.cm.*;version="0",
  org.osgi.service.component.*;version="0",
  org.osgi.service.log.*;version="0",

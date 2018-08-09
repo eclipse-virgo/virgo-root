@@ -9,7 +9,7 @@ Import-Template:
  org.apache.commons.logging.*;version="${commonsLoggingVersion:[=.=.=, +1)}",
  org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  org.osgi.framework.*;version="0",
- org.springframework.*;version="${springframeworkVersion:[3.1, +1)}",
+ org.springframework.*;version="${springframeworkVersion:[=.=.=.=, +1)}",
  org.eclipse.gemini.blueprint.*;version="${geminiBlueprintVersion:[=.=.=, +1)}",
  org.eclipse.virgo.medic.*;version="${version:[=.=.=, +1)}",
  org.slf4j.*;version="${slf4jVersion:[=.=.=, +1)}"

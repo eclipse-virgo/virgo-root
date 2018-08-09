@@ -14,7 +14,7 @@ Import-Template:
  org.aspectj.*;version="${aspectjVersion:[=.=.=, +1)}",
  javax.management.*;version="0",
  org.osgi.framework.*;version="0",
- org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}"
+ org.springframework.*;version="${springframeworkVersion:[=.=.=.=, +1)}"
 Excluded-Imports:
  org.eclipse.gemini.blueprint.*
 Excluded-Exports:
