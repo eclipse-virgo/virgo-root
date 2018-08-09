@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.web.core.internal;
 
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,9 +37,9 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     
     private static final Object DELEGATION_IN_PROGRESS_MARKER = new Object();
     
-    private final ConcurrentHashMap<Bundle, ClassLoader> webAppClassLoaders = new ConcurrentHashMap<Bundle, ClassLoader>();
+    private final ConcurrentHashMap<Bundle, ClassLoader> webAppClassLoaders = new ConcurrentHashMap<>();
     
-    private final ThreadLocal<Object> delegationInProgress = new ThreadLocal<Object>();
+    private final ThreadLocal<Object> delegationInProgress = new ThreadLocal<>();
     
     void addWebApplication(WebApplication webApplication, Bundle bundle) {
         this.webAppClassLoaders.put(bundle, webApplication.getClassLoader());
@@ -53,7 +52,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) {
         if (this.delegationInProgress.get() == null) {
             try {
                 this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
@@ -82,7 +81,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {  
+    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) {
         if (this.delegationInProgress.get() == null) {
             try {
                 this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
@@ -104,7 +103,7 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) {
         if (this.delegationInProgress.get() == null) {
             try {
                 this.delegationInProgress.set(DELEGATION_IN_PROGRESS_MARKER);
@@ -129,28 +128,28 @@ final class WebAppClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     /** 
      * {@inheritDoc}
      */
-    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
     /** 
      * {@inheritDoc}
      */
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 

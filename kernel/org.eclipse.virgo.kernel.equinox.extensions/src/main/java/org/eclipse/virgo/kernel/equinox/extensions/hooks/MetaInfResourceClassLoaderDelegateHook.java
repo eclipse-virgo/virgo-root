@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.kernel.equinox.extensions.hooks;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -71,13 +70,13 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
 
     private final PackageAdmin packageAdmin;
 
-    private final ThreadLocal<Object> resourceSearchInProgress = new ThreadLocal<Object>();
+    private final ThreadLocal<Object> resourceSearchInProgress = new ThreadLocal<>();
 
     private final Object SEARCH_IN_PROGRESS_MARKER = new Object();
 
     private final Object monitor = new Object();
 
-    private final WeakHashMap<Bundle, Set<Bundle>> dependenciesCache = new WeakHashMap<Bundle, Set<Bundle>>();
+    private final WeakHashMap<Bundle, Set<Bundle>> dependenciesCache = new WeakHashMap<>();
 
     private final BundleListener cacheClearingBundleListener = new CacheClearingBundleListener();
 
@@ -104,7 +103,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public URL postFindResource(String name, BundleClassLoader classLoader, BundleData data) {
         if (this.resourceSearchInProgress.get() == null && isDelegatedResource(name)) {
             try {
                 this.resourceSearchInProgress.set(SEARCH_IN_PROGRESS_MARKER);
@@ -137,12 +136,12 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> postFindResources(String name, BundleClassLoader classLoader, BundleData data) {
         if (this.resourceSearchInProgress.get() == null && isDelegatedResource(name)) {
             try {
                 this.resourceSearchInProgress.set(SEARCH_IN_PROGRESS_MARKER);
 
-                Set<URL> found = new HashSet<URL>();
+                Set<URL> found = new HashSet<>();
                 Bundle[] bundles = getDependencyBundles(classLoader.getBundle());
                 for (Bundle dependency : bundles) {
                     try {
@@ -159,9 +158,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
                     }
                 }
 
-                if (!found.isEmpty()) {
-                    return new IteratorEnumerationAdaptor<URL>(found.iterator());
-                }
+                if (!found.isEmpty()) return new IteratorEnumerationAdaptor<>(found.iterator());
             } finally {
                 this.resourceSearchInProgress.set(null);
             }
@@ -241,14 +238,14 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
         synchronized (this.monitor) {
             Set<Bundle> dependencies = this.dependenciesCache.get(bundle);
             if (dependencies != null) {
-                return dependencies.toArray(new Bundle[dependencies.size()]);
+                return dependencies.toArray(new Bundle[0]);
             }
         }
 
         Set<Bundle> dependencies = determineDependencies(bundle);
         synchronized (this.monitor) {
             this.dependenciesCache.put(bundle, dependencies);
-            return dependencies.toArray(new Bundle[dependencies.size()]);
+            return dependencies.toArray(new Bundle[0]);
         }
     }
 
@@ -262,7 +259,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     }
 
     private Set<Bundle> determineDependencies(Bundle bundle) {
-        Set<Bundle> bundles = new HashSet<Bundle>();
+        Set<Bundle> bundles = new HashSet<>();
         for (Bundle candidate : this.systemBundleContext.getBundles()) {
             if (!candidate.equals(bundle)) {
                 ExportedPackage[] exportedPackages = getExportedPackages(candidate);
@@ -327,7 +324,7 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> postFindClass(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
@@ -341,28 +338,28 @@ public class MetaInfResourceClassLoaderDelegateHook implements ClassLoaderDelega
     /**
      * {@inheritDoc}
      */
-    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) throws ClassNotFoundException {
+    public Class<?> preFindClass(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public String preFindLibrary(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public URL preFindResource(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, BundleClassLoader classLoader, BundleData data) {
         return null;
     }
 }

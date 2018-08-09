@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,13 +36,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.packageadmin.ExportedPackage;
 
-import org.eclipse.virgo.kernel.equinox.extensions.hooks.MetaInfResourceClassLoaderDelegateHook;
 import org.eclipse.virgo.test.stubs.framework.StubBundle;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 
 
-/**
- */
 @SuppressWarnings("deprecation")
 public class MetaInfResourceClassLoaderDelegateHookTests {
     
@@ -74,17 +70,17 @@ public class MetaInfResourceClassLoaderDelegateHookTests {
     }
     
     @Test
-    public void findResourceWithNoExportedPackages() throws FileNotFoundException {
+    public void findResourceWithNoExportedPackages() {
         assertNull(hook.postFindResource("META-INF/the.resource", classLoader, null));
     }
     
     @Test
-    public void findResourcesWithNoExportedPackages() throws FileNotFoundException {
+    public void findResourcesWithNoExportedPackages() {
         assertNull(hook.postFindResources("META-INF/the.resource", classLoader, null));
     }
     
     @Test
-    public void findResource() throws FileNotFoundException, MalformedURLException {
+    public void findResource() throws MalformedURLException {
         ExportedPackage exportedPackage = createMock(ExportedPackage.class);
         expect(exportedPackage.getImportingBundles()).andReturn(new Bundle[] {this.principleBundle});
         replay(exportedPackage);
@@ -98,7 +94,7 @@ public class MetaInfResourceClassLoaderDelegateHookTests {
     }
     
     @Test
-    public void findResources() throws FileNotFoundException, MalformedURLException {
+    public void findResources() throws MalformedURLException {
         ExportedPackage exportedPackage = createMock(ExportedPackage.class);
         expect(exportedPackage.getImportingBundles()).andReturn(new Bundle[] {this.principleBundle}).anyTimes();
         replay(exportedPackage);
@@ -115,7 +111,7 @@ public class MetaInfResourceClassLoaderDelegateHookTests {
         Enumeration<?> postFindResources = this.hook.postFindResources("META-INF/the.resource", this.classLoader, null);
         assertNotNull(postFindResources);
         
-        List<URL> results = new ArrayList<URL>();
+        List<URL> results = new ArrayList<>();
         while (postFindResources.hasMoreElements()) {
             results.add((URL)postFindResources.nextElement());
         }
@@ -126,7 +122,7 @@ public class MetaInfResourceClassLoaderDelegateHookTests {
     }
     
     private Enumeration<URL> createEnumeration(URL url) {
-        Vector<URL> vector = new Vector<URL>();
+        Vector<URL> vector = new Vector<>();
         vector.add(url);
         return vector.elements();
     }
@@ -137,7 +133,7 @@ public class MetaInfResourceClassLoaderDelegateHookTests {
             super(systemBundleContext, null);
         }
 
-        private final Map<Bundle, ExportedPackage[]> exportedPackages = new HashMap<Bundle, ExportedPackage[]>();
+        private final Map<Bundle, ExportedPackage[]> exportedPackages = new HashMap<>();
 
         @Override
         protected ExportedPackage[] getExportedPackages(Bundle bundle) {

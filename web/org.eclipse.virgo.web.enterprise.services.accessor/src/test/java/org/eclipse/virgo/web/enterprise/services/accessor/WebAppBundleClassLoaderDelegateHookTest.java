@@ -16,6 +16,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,7 +31,6 @@ import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleRevision;
-import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
 public class WebAppBundleClassLoaderDelegateHookTest {
@@ -47,14 +47,14 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         expect(bd.getBundle()).andReturn(wab).anyTimes();
         expect((Class<String>) apiBundle.loadClass("")).andReturn(String.class).andThrow(new ClassNotFoundException());
         expect(apiBundle.getResource("")).andReturn(new URL("file:foo.txt")).andReturn(null);
-        List<URL> resources = new ArrayList<URL>();
+        List<URL> resources = new ArrayList<>();
         resources.add(new URL("file:foo.txt"));
         Enumeration<URL> enumeration = Collections.enumeration(resources);
         expect(apiBundle.getResources("")).andReturn(enumeration).andReturn(null).andThrow(new IOException());
         expect(wab.adapt(BundleRevision.class)).andReturn(bundleRevision);
         expect(bundleRevision.getWiring()).andReturn(bundleWiring);
-        expect(bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)).andReturn(new ArrayList<BundleWire>());
-        expect(bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE)).andReturn(new ArrayList<BundleWire>());
+        expect(bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)).andReturn(new ArrayList<>());
+        expect(bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE)).andReturn(new ArrayList<>());
 
         replay(bd, bcl, wab, apiBundle, bundleRevision, bundleWiring);
 
@@ -67,13 +67,13 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         checkExpectations(webAppBundleClassLoaderDelegateHook, "", bcl, bd, new Object[] { String.class, new URL("file:foo.txt"), enumeration });
 
         checkExpectations(webAppBundleClassLoaderDelegateHook, "", bcl, bd, new Object[] { null, null, null });
-        assertEquals(null, webAppBundleClassLoaderDelegateHook.postFindResources("", bcl, bd));
+        assertNull(webAppBundleClassLoaderDelegateHook.postFindResources("", bcl, bd));
 
         verify(bd, bcl, wab/* , apiBundle */, bundleRevision, bundleWiring);
     }
 
     @Test
-    public void testPostFindWithImplBundle() throws ClassNotFoundException, IOException {
+    public void testPostFindWithImplBundle() {
         BundleData bd = createMock(BundleData.class);
         BundleClassLoader bcl = createMock(BundleClassLoader.class);
         Bundle implBundle = createMock(Bundle.class);
@@ -114,7 +114,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         tccl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(new ClassLoaderExt3());
-            assertEquals(null, webAppBundleClassLoaderDelegateHook.postFindResources("", bcl, bd));
+            assertNull(webAppBundleClassLoaderDelegateHook.postFindResources("", bcl, bd));
         } finally {
             Thread.currentThread().setContextClassLoader(tccl);
         }
@@ -123,7 +123,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
     }
 
     @Test
-    public void testPostFindNotWABNorImplBundle() throws ClassNotFoundException, IOException {
+    public void testPostFindNotWABNorImplBundle() {
         BundleData bd = createMock(BundleData.class);
         BundleClassLoader bcl = createMock(BundleClassLoader.class);
         Bundle wab = createMock(Bundle.class);
@@ -139,7 +139,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
     }
 
     private void checkExpectations(WebAppBundleClassLoaderDelegateHook webAppBundleClassLoaderDelegateHook, String name, BundleClassLoader bcl,
-        BundleData bd, Object[] expected) throws ClassNotFoundException, IOException {
+        BundleData bd, Object[] expected) {
         // assertEquals(expected[0], webAppBundleClassLoaderDelegateHook.postFindClass(name, bcl, bd));
         assertEquals(expected[1], webAppBundleClassLoaderDelegateHook.postFindResource(name, bcl, bd));
         assertEquals(expected[2], webAppBundleClassLoaderDelegateHook.postFindResources(name, bcl, bd));
@@ -154,7 +154,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         }
 
         @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
+        public Class<?> loadClass(String name) {
             return String.class;
         }
 
@@ -168,7 +168,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         }
 
         @Override
-        public Enumeration<URL> getResources(String name) throws IOException {
+        public Enumeration<URL> getResources(String name) {
             return this.enumeration;
         }
     }
@@ -186,7 +186,7 @@ public class WebAppBundleClassLoaderDelegateHookTest {
         }
 
         @Override
-        public Enumeration<URL> getResources(String name) throws IOException {
+        public Enumeration<URL> getResources(String name) {
             return null;
         }
     }

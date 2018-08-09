@@ -34,7 +34,7 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
  */
 public class PluggableDelegatingClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     
-    private final List<ClassLoaderDelegateHook> delegates = new CopyOnWriteArrayList<ClassLoaderDelegateHook>();
+    private final List<ClassLoaderDelegateHook> delegates = new CopyOnWriteArrayList<>();
     
     private static final PluggableDelegatingClassLoaderDelegateHook INSTANCE = new PluggableDelegatingClassLoaderDelegateHook();
     

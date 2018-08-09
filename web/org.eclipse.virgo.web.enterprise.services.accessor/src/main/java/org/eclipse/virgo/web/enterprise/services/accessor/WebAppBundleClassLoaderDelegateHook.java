@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.web.enterprise.services.accessor;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -54,27 +53,27 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
 
     private static final int MAX_RESOURCE_SEARCH_DEPTH = 1;
 
-    private final ThreadLocal<AtomicInteger> delegationInProgress = new ThreadLocal<AtomicInteger>();
+    private final ThreadLocal<AtomicInteger> delegationInProgress = new ThreadLocal<>();
 
-    private final Set<Bundle> apiBundles = new CopyOnWriteArraySet<Bundle>();
+    private final Set<Bundle> apiBundles = new CopyOnWriteArraySet<>();
 
-    private final Set<Bundle> implBundles = new CopyOnWriteArraySet<Bundle>();
+    private final Set<Bundle> implBundles = new CopyOnWriteArraySet<>();
 
-    private final Map<Bundle, ClassLoader> implBundlesClassloaders = Collections.synchronizedMap(new TreeMap<Bundle, ClassLoader>(new VirgoEEBundleComparable()));
+    private final Map<Bundle, ClassLoader> implBundlesClassloaders = Collections.synchronizedMap(new TreeMap<>(new VirgoEEBundleComparable()));
 
-    private final Map<Bundle, Set<String>> webAppBundles = new ConcurrentHashMap<Bundle, Set<String>>();
+    private final Map<Bundle, Set<String>> webAppBundles = new ConcurrentHashMap<>();
     
-    private final Set<Bundle> postFindApiBundles = new CopyOnWriteArraySet<Bundle>();
+    private final Set<Bundle> postFindApiBundles = new CopyOnWriteArraySet<>();
 
-    private Set<String> negativeCacheClassPrefixes = new HashSet<String>();
+    private Set<String> negativeCacheClassPrefixes = new HashSet<>();
 
-    private static Map<Bundle, CacheableObject> negativeCacheClassPerAPIBundle = new ConcurrentHashMap<Bundle, CacheableObject>();
+    private static Map<Bundle, CacheableObject> negativeCacheClassPerAPIBundle = new ConcurrentHashMap<>();
 
-    private static Map<Bundle, CacheableObject> negativeCacheResourcePerAPIBundle = new ConcurrentHashMap<Bundle, CacheableObject>();
+    private static Map<Bundle, CacheableObject> negativeCacheResourcePerAPIBundle = new ConcurrentHashMap<>();
 
-    private static Map<Bundle, CacheableObject> negativeCacheClassPerTCCL = new ConcurrentHashMap<Bundle, CacheableObject>();
+    private static Map<Bundle, CacheableObject> negativeCacheClassPerTCCL = new ConcurrentHashMap<>();
 
-    private static Map<Bundle, CacheableObject> negativeCacheResourcePerTCCL = new ConcurrentHashMap<Bundle, CacheableObject>();
+    private static Map<Bundle, CacheableObject> negativeCacheResourcePerTCCL = new ConcurrentHashMap<>();
 
     private long timeToLive = 20 * 60 * 1000;
 
@@ -91,9 +90,8 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
                         removeFromNegativeCache(false, false);
                         Thread.sleep(60000);
                     }
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
-                return;
             }
 
             private synchronized void removeFromNegativeCache(boolean isClass, boolean isAPI) {
@@ -179,7 +177,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
+    public Class<?> postFindClass(String name, BundleClassLoader bcl, BundleData bd) {
     	if(matchesNegativeCache(name)) {
     		return null;
     	}
@@ -257,7 +255,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public URL postFindResource(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public URL postFindResource(String name, BundleClassLoader bcl, BundleData bd) {
         if (shouldEnter(MAX_RESOURCE_SEARCH_DEPTH)) {
             try {
                 enter();
@@ -315,7 +313,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public Enumeration<URL> postFindResources(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public Enumeration<URL> postFindResources(String name, BundleClassLoader bcl, BundleData bd) {
         if (shouldEnter(MAX_RESOURCE_SEARCH_DEPTH)) {
             try {
                 enter();
@@ -347,7 +345,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) throws ClassNotFoundException {
+    public Class<?> preFindClass(String name, BundleClassLoader bcl, BundleData bd) {
     	if(matchesNegativeCache(name)) {
     		return null;
     	}
@@ -381,19 +379,19 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     @Override
-    public String preFindLibrary(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public String preFindLibrary(String name, BundleClassLoader bcl, BundleData bd) {
         // no-op
         return null;
     }
 
     @Override
-    public URL preFindResource(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public URL preFindResource(String name, BundleClassLoader bcl, BundleData bd) {
         // no-op
         return null;
     }
 
     @Override
-    public Enumeration<URL> preFindResources(String name, BundleClassLoader bcl, BundleData bd) throws FileNotFoundException {
+    public Enumeration<URL> preFindResources(String name, BundleClassLoader bcl, BundleData bd) {
         // no-op
         return null;
     }
@@ -455,7 +453,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     private Set<String> cacheRequiredCapabilities(Bundle bundle) {
-        Set<String> importedPackages = new HashSet<String>();
+        Set<String> importedPackages = new HashSet<>();
 
         BundleWiring bundleWiring = bundle.adapt(BundleRevision.class).getWiring();
         importedPackages.addAll(getImportedPackages(bundleWiring));
@@ -469,7 +467,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     private Set<String> getImportedPackagesFromRequiredBundles(BundleWiring bundleWiring) {
-        Set<String> importedPackages = new HashSet<String>();
+        Set<String> importedPackages = new HashSet<>();
         List<BundleWire> requiredWires = bundleWiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE);
         for (BundleWire requiredWire : requiredWires) {
             List<BundleCapability> capabilities = requiredWire.getProviderWiring().getCapabilities(BundleRevision.PACKAGE_NAMESPACE);
@@ -481,7 +479,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     private Set<String> getImportedPackages(BundleWiring bundleWiring) {
-        Set<String> importedPackages = new HashSet<String>();
+        Set<String> importedPackages = new HashSet<>();
         List<BundleWire> requiredWires = bundleWiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE);
         for (BundleWire requiredWire : requiredWires) {
             importedPackages.add((String) requiredWire.getCapability().getAttributes().get(BundleRevision.PACKAGE_NAMESPACE));
@@ -490,7 +488,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
     }
 
     ClassLoader[] getImplBundlesClassloaders() {
-        return this.implBundlesClassloaders.values().toArray(new ClassLoader[this.implBundlesClassloaders.size()]);
+        return this.implBundlesClassloaders.values().toArray(new ClassLoader[0]);
     }
 
     private Class<?> doFindApiClass(String name) {
@@ -609,7 +607,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
             }
             Queue<String> classes;
             if (object == null) {
-                classes = new ConcurrentLinkedQueue<String>();
+                classes = new ConcurrentLinkedQueue<>();
                 if (isClass) {
                     negativeCacheClassPerTCCL.put(bundle, new CacheableObject(
                             classes, timeToLive));
@@ -651,7 +649,7 @@ class WebAppBundleClassLoaderDelegateHook implements ClassLoaderDelegateHook {
         }
         Queue<String> classes;
         if (object == null) {
-            classes = new ConcurrentLinkedQueue<String>();
+            classes = new ConcurrentLinkedQueue<>();
             if (isClass) {
                 negativeCacheClassPerAPIBundle.put(apiBundle, new CacheableObject(
                         classes, timeToLive));
