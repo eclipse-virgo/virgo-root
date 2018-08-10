@@ -12,6 +12,7 @@
 package org.eclipse.virgo.nano.deployer.internal;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singleton;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,9 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarFile;
 
 import org.eclipse.virgo.medic.eventlog.EventLogger;
@@ -35,6 +34,7 @@ import org.eclipse.virgo.nano.deployer.util.BundleLocationUtil;
 import org.eclipse.virgo.nano.deployer.util.StatusFileModificator;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.IOUtils;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.FragmentHost;
@@ -42,7 +42,7 @@ import org.eclipse.virgo.util.osgi.manifest.parse.BundleManifestParseException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.framework.wiring.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,18 +72,15 @@ public class BundleDeployer implements SimpleDeployer {
 
     private final BundleInfosUpdater bundleInfosUpdater;
 
-    private final PackageAdmin packageAdmin;
-
     private final File workBundleInstallLocation;
 
     private final File kernelHomeFile;
 
     private final File pickupDir;
 
-    public BundleDeployer(BundleContext bundleContext, PackageAdmin packageAdmin, EventLogger eventLogger) {
+    public BundleDeployer(BundleContext bundleContext, EventLogger eventLogger) {
         this.eventLogger = eventLogger;
         this.bundleContext = bundleContext;
-        this.packageAdmin = packageAdmin;
         String kernelHome = System.getProperty(KERNEL_HOME_PROP);
         if (kernelHome != null) {
             this.kernelHomeFile = new File(kernelHome);
@@ -126,23 +123,13 @@ public class BundleDeployer implements SimpleDeployer {
         return hostHolder != null && hostHolder.getBundleSymbolicName() != null;
     }
 
-    private Boolean isFragment(Bundle bundle) {
-        Enumeration<String> keys = bundle.getHeaders().keys();
-        while (keys.hasMoreElements()) {
-            if (keys.nextElement().equalsIgnoreCase(FRAGMEN_HOST_HEADER)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void refreshHosts(FragmentHost hostHolder, Bundle fragment) {
+    private void refreshHosts(Bundle fragment) {
         try {
-            Bundle[] hosts = this.packageAdmin.getBundles(hostHolder.getBundleSymbolicName(), null);
+            Set<Bundle> hosts = BundleUtils.getHosts(fragment);
             if (hosts != null) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, fragment.getSymbolicName(), fragment.getVersion());
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, fragment.getSymbolicName(), fragment.getVersion());
-                this.packageAdmin.refreshPackages(hosts);
+                BundleUtils.refreshBundles(this.bundleContext, hosts);
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHED_HOST, fragment.getSymbolicName(), fragment.getVersion());
             }
         } catch (Exception e) {
@@ -184,7 +171,7 @@ public class BundleDeployer implements SimpleDeployer {
 
             // if fragment, refresh hosts and update bundles.info
             if (isFragment(hostHolder)) {
-                refreshHosts(hostHolder, installed);
+                refreshHosts(installed);
                 updateBundleInfo(installed, stagedFile, true);
             }
             StatusFileModificator.createStatusFile(jarName, this.pickupDir, StatusFileModificator.OP_DEPLOY, STATUS_ERROR, installed.getBundleId(),
@@ -208,7 +195,7 @@ public class BundleDeployer implements SimpleDeployer {
         if (installedBundle != null) {
             this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTING, installedBundle.getSymbolicName(), installedBundle.getVersion());
             try {
-                if (!isFragment(installedBundle)) {
+                if (!BundleUtils.isFragmentBundle(installedBundle)) {
                     installedBundle.start();
                     updateBundleInfo(installedBundle, stagedFile, false);
                     this.eventLogger.log(NanoDeployerLogEvents.NANO_STARTED, installedBundle.getSymbolicName(), installedBundle.getVersion());
@@ -271,10 +258,10 @@ public class BundleDeployer implements SimpleDeployer {
 
         if (hostHolder != null && hostHolder.getBundleSymbolicName() != null) {
             try {
-                Bundle[] hosts = this.packageAdmin.getBundles(hostHolder.getBundleSymbolicName(), null);
+                Set<Bundle> hosts = BundleUtils.getBundlesBySymbolicName(bundleContext, hostHolder.getBundleSymbolicName());
                 if (hosts != null) {
                     this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHING_HOST, installed.getSymbolicName(), installed.getVersion());
-                    this.packageAdmin.refreshPackages(hosts);
+                    BundleUtils.refreshBundles(bundleContext, hosts);
                     this.eventLogger.log(NanoDeployerLogEvents.NANO_REFRESHED_HOST, installed.getSymbolicName(), installed.getVersion());
                 }
             } catch (Exception e) {
@@ -342,10 +329,8 @@ public class BundleDeployer implements SimpleDeployer {
 
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATING, bundle.getSymbolicName(), bundle.getVersion());
                 bundle.update();
-                if (this.packageAdmin != null) {
-                    this.packageAdmin.refreshPackages(new Bundle[] { bundle });
-                    this.logger.info("Update of file with path '" + path + "' is successful.");
-                }
+                BundleUtils.refreshBundles(this.bundleContext, singleton(bundle));
+                this.logger.info("Update of file with path '" + path + "' is successful.");
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATED, bundle.getSymbolicName(), bundle.getVersion());
             } catch (Exception e) {
                 this.eventLogger.log(NanoDeployerLogEvents.NANO_UPDATE_ERROR, e, bundle.getSymbolicName(), bundle.getVersion());

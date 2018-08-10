@@ -16,13 +16,6 @@
 		bind="bindEventAdmin" 
 		unbind="unbindEventAdmin"/>
 		
-	<reference name="PackageAdmin"
-		interface="org.osgi.service.packageadmin.PackageAdmin"
-		policy="static" 
-		cardinality="1..1" 
-		bind="bindPackageAdmin" 
-		unbind="unbindPackageAdmin"/>
-		
 	<reference name="KernelConfig"
 		interface="org.eclipse.virgo.nano.core.KernelConfig"  
 		policy="static" 

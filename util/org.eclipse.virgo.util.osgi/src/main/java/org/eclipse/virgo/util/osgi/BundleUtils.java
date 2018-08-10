@@ -11,16 +11,20 @@
 
 package org.eclipse.virgo.util.osgi;
 
+import org.eclipse.osgi.framework.internal.core.Constants;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.wiring.BundleCapability;
-import org.osgi.framework.wiring.BundleRevision;
-import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.*;
+import org.osgi.framework.BundleContext;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
+import static org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION;
 import static org.osgi.framework.namespace.PackageNamespace.PACKAGE_NAMESPACE;
+import static org.osgi.framework.wiring.BundleRevision.HOST_NAMESPACE;
 import static org.osgi.framework.wiring.BundleRevision.TYPE_FRAGMENT;
 
 /**
@@ -83,5 +87,45 @@ public final class BundleUtils {
             throw new IllegalArgumentException("Given bundle is not the system bundle");
         }
         return getExportedPackages(bundle);
+    }
+
+    /**
+     * Get the host of the given fragment {@link Bundle}.
+     *
+     * @param fragment the <code>Bundle</code>.
+     * @return <code>Set</code> containing the host if the <code>bundle</code> was a fragment.
+     * @throws IllegalArgumentException if given bundle is not a fragment or <code>null</code>.
+     */
+    public static Set<Bundle> getHosts(Bundle fragment) {
+        if (!isFragmentBundle(fragment)) {
+            throw new IllegalArgumentException("Provided bundle is no fragment: " + fragment);
+        }
+        List<BundleWire> providedWires = fragment.adapt(BundleWiring.class).getProvidedWires(HOST_NAMESPACE);
+        return providedWires.stream().map(bundleWire -> bundleWire.getProviderWiring().getBundle())
+                .collect(toSet());
+    }
+
+    /**
+     * Get set of bundles with the given symbolic name.
+     *
+     * @param bundleContext the <code>BundleContext</code>.
+     * @param symbolicName the symbolic name.
+     * @return <code>Set</code> containing the bundles with the given symbolic name.
+     */
+    public static Set<Bundle> getBundlesBySymbolicName(BundleContext bundleContext, String symbolicName) {
+        return Arrays.stream(bundleContext.getBundles())
+                .filter(bundle -> symbolicName.equals(bundle.adapt(BundleRevision.class).getSymbolicName()))
+                .collect(toSet());
+    }
+
+    /**
+     * Refresh the given set of bundles.
+     *
+     * @param bundleContext the <code>BundleContext</code>.
+     * @param bundles to refresh.
+     */
+    public static void refreshBundles(BundleContext bundleContext, Set<Bundle> bundles) {
+        // Equinox regions could hide bundle ID 0
+        bundleContext.getBundle(SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class).refreshBundles(bundles);
     }
 }

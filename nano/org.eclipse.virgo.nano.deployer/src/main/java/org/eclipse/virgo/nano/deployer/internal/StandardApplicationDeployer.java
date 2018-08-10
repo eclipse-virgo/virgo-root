@@ -35,7 +35,6 @@ import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
-import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +43,6 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
     private static final String TOPIC_RECOVERY_COMPLETED = "org/eclipse/virgo/kernel/deployer/recovery/COMPLETED";
 
     private EventLogger eventLogger;
-
-    private PackageAdmin packageAdmin;
 
     private final List<SimpleDeployer> simpleDeployers = new ArrayList<>();
 
@@ -63,7 +60,7 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     public void activate(ComponentContext context) {
         this.bundleContext = context.getBundleContext();
-        this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.packageAdmin, this.eventLogger);
+        this.defaultDeployer = new BundleDeployer(context.getBundleContext(), this.eventLogger);
         this.simpleDeployers.add(this.defaultDeployer);
 
         recoveryComplete();
@@ -266,14 +263,6 @@ public class StandardApplicationDeployer implements ApplicationDeployer {
 
     public void unbindKernelConfig(KernelConfig config) {
         this.kernelConfig = null;
-    }
-
-    public void bindPackageAdmin(PackageAdmin packageAdmin) {
-        this.packageAdmin = packageAdmin;
-    }
-
-    public void unbindPackageAdmin(PackageAdmin packageAdmin) {
-        this.packageAdmin = null;
     }
 
     public void bindSimpleDeployer(SimpleDeployer deployer) {
