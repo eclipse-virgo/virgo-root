@@ -70,4 +70,18 @@ public final class BundleUtils {
         }
         return packagesExportedBySystemBundle;
     }
+
+    /**
+     * Get the packages exported by the given system {@link Bundle}.
+     *
+     * @param bundle the <code>Bundle</code>.
+     * @return <code>Set<String></code> of exported packages if <code>bundle</code> is the system bundle.
+     * @throws IllegalArgumentException if given bundle is not the system bundle or <code>null</code>.
+     */
+    public static Set<String> getPackagesExportedBySystemBundle(Bundle bundle) {
+        if (!isSystemBundle(bundle)) {
+            throw new IllegalArgumentException("Given bundle is not the system bundle");
+        }
+        return getExportedPackages(bundle);
+    }
 }

@@ -18,8 +18,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -34,18 +36,16 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     }
 
     @Test
-    public void testStartAndStop() {
-        assertNotNull(this.framework.getBundleContext());
-        assertEquals(Bundle.ACTIVE, this.framework.getBundleContext().getBundle().getState());
+    public void bundleUtilsShouldGetPackagesExportedBySystemBundle() {
+        Set<String> exportedBundles = BundleUtils.getPackagesExportedBySystemBundle(this.framework.getBundleContext().getBundle());
+
+        assertTrue("System bundle should export 'org.osgi.framework'", exportedBundles.contains("org.osgi.framework"));
     }
 
     @Test
-    public void testGetClassBundle() throws Exception {
-        Class<?> c = this.framework.getBundleContext().getBundle().loadClass("org.osgi.framework.Bundle");
-        assertNotNull(c);
-        Bundle b = this.framework.getClassBundle(c);
-        assertNotNull(b);
-        assertEquals(0, b.getBundleId());
+    public void testStartAndStop() {
+        assertNotNull(this.framework.getBundleContext());
+        assertEquals(Bundle.ACTIVE, this.framework.getBundleContext().getBundle().getState());
     }
 
     @Test(expected = BundleClassLoaderUnavailableException.class)

@@ -12,11 +12,7 @@
 package org.eclipse.virgo.kernel.osgi.framework.support;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.packageadmin.PackageAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,40 +28,13 @@ import org.slf4j.LoggerFactory;
  * Implementation is thread safe.
  * 
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFramework implements OsgiFramework {
-
-    public static final String DIRECTIVE_SEPARATOR = ";";
-
-    public static final boolean DIRECTIVE_PUBLISH_CONTEXT_DEFAULT = true;
-
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final PackageAdmin packageAdmin;
 
     private final BundleContext bundleContext;
 
 
-    protected AbstractOsgiFramework(BundleContext context, PackageAdmin packageAdmin) {
+    protected AbstractOsgiFramework(BundleContext context) {
         this.bundleContext = context;
-        this.packageAdmin = packageAdmin;
-    }
-
-    public Bundle getClassBundle(Class<?> cls) {
-        if (this.packageAdmin != null) {
-            return this.packageAdmin.getBundle(cls);
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Gets the {@link PackageAdmin} service.
-     * 
-     * @return the <code>PackageAdmin</code> service.
-     */
-    protected final PackageAdmin getPackageAdmin() {
-        return this.packageAdmin;
     }
 
     /**

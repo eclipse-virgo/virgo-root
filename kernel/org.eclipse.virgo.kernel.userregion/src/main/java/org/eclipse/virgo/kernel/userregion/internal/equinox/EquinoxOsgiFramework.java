@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
-import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.virgo.kernel.osgi.framework.ManifestTransformer;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiServiceHolder;
@@ -30,13 +29,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.framework.wiring.FrameworkWiring;
 
 /**
  * Implementation of <code>OsgiFramework</code> using Equinox.
  * 
  */
-@SuppressWarnings("deprecation")
 public class EquinoxOsgiFramework extends AbstractOsgiFramework {
     
     private static final String FILE_SCHEME = "file:";
@@ -53,11 +51,10 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
     /**
      * Creates a new <code>EquinoxOsgiFramework</code>.
      * @param context execution context of bundle
-     * @param packageAdmin framework service for access to {@link State}
      * @param bundleTransformationHandler wrapper for bundle manifest transformations
      */
-    public EquinoxOsgiFramework(BundleContext context, PackageAdmin packageAdmin, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
-        super(context, packageAdmin);
+    public EquinoxOsgiFramework(BundleContext context, TransformedManifestProvidingBundleFileWrapper bundleTransformationHandler) {
+        super(context);
         this.bootDelegationHelper = new EquinoxBootDelegationHelper(FrameworkProperties.getProperty(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION));
         this.platformAdmin = OsgiFrameworkUtils.getService(context, PlatformAdmin.class);
         this.bundleTransformationHandler = bundleTransformationHandler;
@@ -83,8 +80,7 @@ public class EquinoxOsgiFramework extends AbstractOsgiFramework {
         }
         bundle.update();
         refreshBundles.add(bundle);
-        Bundle[] toRefresh = refreshBundles.toArray(new Bundle[0]);
-        getPackageAdmin().refreshPackages(toRefresh);
+        getBundleContext().getBundle(0).adapt(FrameworkWiring.class).refreshBundles(refreshBundles);
     }
 
     final void stop() {

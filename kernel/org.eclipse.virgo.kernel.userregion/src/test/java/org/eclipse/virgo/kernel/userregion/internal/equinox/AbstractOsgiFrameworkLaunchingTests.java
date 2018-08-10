@@ -50,23 +50,21 @@ import org.eclipse.virgo.repository.RepositoryFactory;
 import org.eclipse.virgo.repository.internal.RepositoryBundleActivator;
 import org.eclipse.virgo.util.io.FileSystemUtils;
 import org.eclipse.virgo.util.io.PathReference;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.packageadmin.ExportedPackage;
-import org.osgi.service.packageadmin.PackageAdmin;
 
-@SuppressWarnings("deprecation")
 public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     protected EquinoxOsgiFramework framework;
 
-    PlatformAdmin platformAdmin;
+    protected PlatformAdmin platformAdmin;
 
-    Repository repository;
+    protected Repository repository;
 
     private RepositoryBundleActivator repositoryBundleActivator;
 
@@ -82,7 +80,9 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
     private Equinox equinox;
 
-    QuasiFramework quasiFramework;
+    protected QuasiFramework quasiFramework;
+
+    private ThreadLocal<Region> threadLocal;
 
     @Before
     public void setUp() throws Exception {
@@ -118,8 +118,8 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
 
         };
 
-        ThreadLocal<Region> threadLocal = new ThreadLocal<>();
-        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, threadLocal);
+        this.threadLocal = new ThreadLocal<Region>();
+        RegionDigraph regionDigraph = new StandardRegionDigraph(this.bundleContext, this.threadLocal);
 
         Region userRegion = regionDigraph.createRegion("org.eclipse.virgo.region.user");
         userRegion.addBundle(this.bundleContext.getBundle());
@@ -142,7 +142,7 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
             repositoryProperties.load(properties);
         }
 
-        Set<ArtifactBridge> artifactBridges = new HashSet<>();
+        Set<ArtifactBridge> artifactBridges = new HashSet<ArtifactBridge>();
         artifactBridges.add(new BundleBridge(new StubHashGenerator()));
         artifactBridges.add(new LibraryBridge(new StubHashGenerator()));
 
@@ -155,12 +155,9 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         ServiceReference<PlatformAdmin> platformAdminServiceReference = bundleContext.getServiceReference(PlatformAdmin.class);
         this.platformAdmin = bundleContext.getService(platformAdminServiceReference);
 
-        ServiceReference<PackageAdmin> packageAdminServiceReference = bundleContext.getServiceReference(PackageAdmin.class);
-        PackageAdmin packageAdmin = bundleContext.getService(packageAdminServiceReference);
-
-        ImportExpander importExpander = createImportExpander(packageAdmin);
+        ImportExpander importExpander = createImportExpander();
         TransformedManifestProvidingBundleFileWrapper bundleFileWrapper = new TransformedManifestProvidingBundleFileWrapper(importExpander);
-        this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), packageAdmin, bundleFileWrapper);
+        this.framework = new EquinoxOsgiFramework(equinox.getBundleContext(), bundleFileWrapper);
 
         PluggableClassLoadingHook.getInstance().setClassLoaderCreator(new KernelClassLoaderCreator());
         StandardResolutionFailureDetective detective = new StandardResolutionFailureDetective(platformAdmin);
@@ -181,13 +178,9 @@ public abstract class AbstractOsgiFrameworkLaunchingTests {
         this.quasiFramework = new StandardQuasiFrameworkFactory(bundleContext, detective, repository, bundleFileWrapper, regionDigraph, dumpExtractor).create();
     }
 
-    private ImportExpander createImportExpander(PackageAdmin packageAdmin) {
-        Set<String> packagesExportedBySystemBundle = new HashSet<>(30);
-        ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(bundleContext.getBundle(0));
-
-        for (ExportedPackage exportedPackage : exportedPackages) {
-            packagesExportedBySystemBundle.add(exportedPackage.getName());
-        }
+    private ImportExpander createImportExpander() {
+        Set<String> packagesExportedBySystemBundle =
+                BundleUtils.getPackagesExportedBySystemBundle(bundleContext.getBundle(0));
 
         return new ImportExpansionHandler(repository, bundleContext, packagesExportedBySystemBundle, new MockEventLogger());
     }

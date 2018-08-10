@@ -17,7 +17,6 @@ import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.getWaitLimitS
 
 import java.io.IOException;
 import java.util.Dictionary;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -52,7 +51,9 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.EventLoggerFactory;
 import org.eclipse.virgo.kernel.equinox.extensions.hooks.MetaInfResourceClassLoaderDelegateHook;
 import org.eclipse.virgo.repository.Repository;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -61,7 +62,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
@@ -109,12 +109,12 @@ public class Activator implements BundleActivator {
 
         WorkArea workArea = getPotentiallyDelayedService(context, WorkArea.class);
 
-        ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, packageAdmin, repository, eventLogger);
+        ImportExpansionHandler importExpansionHandler = createImportExpansionHandler(context, repository, eventLogger);
         this.registrationTracker.track(context.registerService(ImportExpander.class.getName(), importExpansionHandler, null));
 
         TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler = createBundleTransformationHandler(importExpansionHandler);
 
-        OsgiFramework osgiFramework = createOsgiFramework(context, packageAdmin, bundleTransformerHandler);
+        OsgiFramework osgiFramework = createOsgiFramework(context, bundleTransformerHandler);
         this.registrationTracker.track(context.registerService(OsgiFramework.class.getName(), osgiFramework, null));
 
         DumpExtractor dumpExtractor = new StandardDumpExtractor(workArea);
@@ -169,9 +169,9 @@ public class Activator implements BundleActivator {
         return new StandardResolutionFailureDetective(platformAdmin);
     }
 
-    private OsgiFramework createOsgiFramework(BundleContext context, PackageAdmin packageAdmin,
-        TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
-        return new EquinoxOsgiFramework(context, packageAdmin, bundleTransformerHandler);
+    private OsgiFramework createOsgiFramework(BundleContext context,
+                                              TransformedManifestProvidingBundleFileWrapper bundleTransformerHandler) {
+        return new EquinoxOsgiFramework(context, bundleTransformerHandler);
     }
 
     private QuasiFrameworkFactory createQuasiFrameworkFactory(BundleContext bundleContext, ResolutionFailureDetective detective,
@@ -184,15 +184,11 @@ public class Activator implements BundleActivator {
         return new TransformedManifestProvidingBundleFileWrapper(importExpander);
     }
 
-    private ImportExpansionHandler createImportExpansionHandler(BundleContext context, PackageAdmin packageAdmin, Repository repository,
-        EventLogger eventLogger) {
+    private ImportExpansionHandler createImportExpansionHandler(BundleContext context, Repository repository,
+                                                                EventLogger eventLogger) {
 
-        Set<String> packagesExportedBySystemBundle = new HashSet<String>(30);
-        ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(context.getBundle(SYSTEM_BUNDLE_ID));
-
-        for (ExportedPackage exportedPackage : exportedPackages) {
-            packagesExportedBySystemBundle.add(exportedPackage.getName());
-        }
+        Bundle systemBundle = context.getBundle(SYSTEM_BUNDLE_ID);
+        Set<String> packagesExportedBySystemBundle = BundleUtils.getPackagesExportedBySystemBundle(systemBundle);
 
         return new ImportExpansionHandler(repository, context, packagesExportedBySystemBundle, eventLogger);
     }
