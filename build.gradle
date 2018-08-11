@@ -109,6 +109,7 @@ ext.testUtils = [
         project(':medic:org.eclipse.virgo.medic.test'),
         project(':kernel:org.eclipse.virgo.kernel.stubs'),
         project(':test:org.eclipse.virgo.test.tools'),
+        project(':test:org.eclipse.virgo.test.test'),
 ]
 
 ext.utilProjects = [

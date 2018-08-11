@@ -120,9 +120,9 @@ include ':packaging:kernel'
 include ':packaging:jetty-server'
 include ':packaging:tomcat-server'
 
-// included as required from Virgo Snaps
 include ':test:org.eclipse.virgo.test.launcher'
 include ':test:org.eclipse.virgo.test.framework'
+include ':test:org.eclipse.virgo.test.test'
 
 if (System.properties['skip.smoke.tests'] != 'true') {
 	include ':test:org.eclipse.virgo.test.tools'

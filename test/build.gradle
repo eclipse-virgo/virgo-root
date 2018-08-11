@@ -32,3 +32,19 @@ project(':test:org.eclipse.virgo.test.framework') {
 	}
 }
 
+project(':test:org.eclipse.virgo.test.test') {
+	sourceSets {
+		test {
+			output.resourcesDir = "${buildDir}/classes/test"
+		}
+	}
+
+	dependencies {
+		compile project(':util:org.eclipse.virgo.util.common')
+		compile project(':test:org.eclipse.virgo.test.stubs')
+		compile project(':test:org.eclipse.virgo.test.launcher')
+		compile project(':test:org.eclipse.virgo.test.framework')
+		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+	}
+}
