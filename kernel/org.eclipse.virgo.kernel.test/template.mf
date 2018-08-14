@@ -8,11 +8,11 @@ Import-Template:
  org.eclipse.virgo.nano.*;version="${version:[=.=.=, +1)}",
  org.eclipse.virgo.util.*;version="${version:[=.=.=, +1)}",
  javax.management.*;version="0",
- org.easymock.*;version="${org.easymock:[=.=.=, +1)}",
- org.junit.*;version="${org.junit:[=.=.=, +1)}",
+ org.easymock.*;version="${easymockVersion:[=.=.=, +1)}",
+ org.junit.*;version="${junitVersion:[=.=.=, +1)}",
  org.eclipse.osgi.*;version="0",
  org.osgi.*;version="0",
- org.springframework.*;version="${springframeworkVersion:[2.5.6, +1)}",
+ org.springframework.*;version="${springframeworkVersion:[=.=.=.=, +1)}",
  org.eclipse.gemini.blueprint.*;version="${geminiBlueprintVersion:[=.=.=, +1)}"
 Excluded-Imports: 
  subsystem.installation,
@@ -20,4 +20,5 @@ Excluded-Imports:
  org.eclipse.virgo.kernel.equinox.*,
  org.eclipse.virgo.kernel.core,
  org.eclipse.virgo.test.*
-Excluded-Exports: delay,quick,slow,test,config,quasi
+Excluded-Exports: delay,quick,slow,test,config,quasi,
+ org.eclipse.virgo.kernel.osgicommand.helper.test

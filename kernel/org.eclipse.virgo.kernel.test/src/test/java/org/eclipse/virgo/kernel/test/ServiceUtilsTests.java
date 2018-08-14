@@ -19,16 +19,13 @@ import static org.junit.Assert.assertNotNull;
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
 import org.junit.Test;
 
-
-/**
- */
 public class ServiceUtilsTests extends AbstractKernelIntegrationTest {
 
     @Test
     public void testServiceUtils() throws Exception {
         ApplicationDeployer service = getPotentiallyDelayedService(context, ApplicationDeployer.class);
         assertNotNull("Application deployer service was not present", service);
-        assertEquals(181,getWaitLimitSeconds());
+        assertEquals(181, getWaitLimitSeconds());
         
     }
 }

@@ -21,9 +21,6 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
-
-/**
- */
 public class StandardBundleStarterTests extends AbstractKernelIntegrationTest {
 
     private BundleStarter monitor;

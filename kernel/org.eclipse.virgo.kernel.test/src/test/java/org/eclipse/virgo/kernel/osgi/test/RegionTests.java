@@ -21,8 +21,6 @@ import org.osgi.framework.ServiceReference;
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
 
-/**
- */
 public class RegionTests extends AbstractKernelIntegrationTest {
 
     @Test

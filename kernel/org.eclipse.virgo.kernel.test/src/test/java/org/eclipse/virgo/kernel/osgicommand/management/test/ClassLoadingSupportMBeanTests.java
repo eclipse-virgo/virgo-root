@@ -25,9 +25,6 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Test for testing Class loading support mBean
- */
 public class ClassLoadingSupportMBeanTests extends AbstractKernelIntegrationTest {
 
     private final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();

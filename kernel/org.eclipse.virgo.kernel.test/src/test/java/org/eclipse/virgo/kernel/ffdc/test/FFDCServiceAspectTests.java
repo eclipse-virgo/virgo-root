@@ -19,9 +19,6 @@ import org.eclipse.virgo.kernel.test.AbstractKernelIntegrationTest;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
-/**
- */
 public class FFDCServiceAspectTests extends AbstractKernelIntegrationTest {
 
     @Ignore("[DMS-2884] Cannot weave test projects in Ant yet")

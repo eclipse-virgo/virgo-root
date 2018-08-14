@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
+import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
 
 public class ConfigurationPropertiesLoader {
 
@@ -28,7 +29,7 @@ public class ConfigurationPropertiesLoader {
 
     private static final String PROP_BASEDIR = "basedir";
 
-    public Properties loadConfigurationProperties(Class<?> testClass) throws IOException {
+    Properties loadConfigurationProperties(Class<?> testClass) throws IOException {
         Properties config = new Properties();
         loadProperties(config, getClass().getClassLoader(), DEFAULT_CONFIG_LOCATION, true);
 
@@ -57,11 +58,8 @@ public class ConfigurationPropertiesLoader {
             String[] includes = includeProperties.split(",");
             for (String include : includes) {
                 URL url = new URL(include.trim());
-                InputStream s = url.openStream();
-                try {
+                try (InputStream s = url.openStream()) {
                     config.load(s);
-                } finally {
-                    s.close();
                 }
             }
         }
@@ -72,9 +70,10 @@ public class ConfigurationPropertiesLoader {
         if (!config.containsKey(PROP_BASEDIR)) {
             config.setProperty(PROP_BASEDIR, System.getProperty("user.dir"));
         }
+        config.setProperty("gradle.cache", System.getProperty("user.home") + ArgumentParser.GRADLE_CACHE_RELATIVE);
     }
 
-    protected final void loadProperties(Properties properties, ClassLoader classLoader, String path, boolean required) throws IOException {
+    private void loadProperties(Properties properties, ClassLoader classLoader, String path, boolean required) throws IOException {
         InputStream stream = classLoader.getResourceAsStream(path);
 
         if (required && stream == null) {

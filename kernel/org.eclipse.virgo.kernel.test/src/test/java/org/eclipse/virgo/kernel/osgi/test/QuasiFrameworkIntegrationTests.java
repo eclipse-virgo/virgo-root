@@ -15,10 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -39,8 +36,6 @@ import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.RequireBundle;
 
-/**
- */
 public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTest {
 
     private static final String EXPORTER_BSN = "exporter";
@@ -57,17 +52,15 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
 
     private static final Version BUNDLE_VERSION = new Version("2.3");
 
-    private QuasiFrameworkFactory quasiFrameworkFactory;
-
     private QuasiFramework quasiFramework;
 
     @Before
     public void setUp() {
         BundleContext bundleContext = this.framework.getBundleContext();
         OsgiServiceHolder<QuasiFrameworkFactory> holder = OsgiFrameworkUtils.getService(bundleContext, QuasiFrameworkFactory.class);
-        this.quasiFrameworkFactory = holder.getService();
-        Assert.assertNotNull(this.quasiFrameworkFactory);
-        this.quasiFramework = this.quasiFrameworkFactory.create();
+        QuasiFrameworkFactory quasiFrameworkFactory = holder.getService();
+        Assert.assertNotNull(quasiFrameworkFactory);
+        this.quasiFramework = quasiFrameworkFactory.create();
         Assert.assertNotNull(this.quasiFramework);
     }
     
@@ -78,7 +71,7 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
 
     @Test
     public void testInstall() throws Exception {
-        BundleManifest bundleManifest = getBundleManifest("test", BUNDLE_VERSION);
+        BundleManifest bundleManifest = getBundleManifest("test");
 
         QuasiBundle quasiBundle = this.quasiFramework.install(new URI("test"), bundleManifest);
         Assert.assertEquals("test", quasiBundle.getSymbolicName());
@@ -258,7 +251,7 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
     
     private QuasiBundle installExporterBundle() throws BundleException, URISyntaxException {
         QuasiBundle exporterQuasiBundle;
-        BundleManifest exporterBundleManifest = getBundleManifest(EXPORTER_BSN, BUNDLE_VERSION);
+        BundleManifest exporterBundleManifest = getBundleManifest(EXPORTER_BSN);
         exporterBundleManifest.getExportPackage().addExportedPackage(QUASI_TEST_PACKAGE);
 
         exporterQuasiBundle = this.quasiFramework.install(new URI(EXPORTER_JAR_PATH), exporterBundleManifest);
@@ -271,7 +264,7 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
 
     private QuasiBundle installImporterBundle() throws BundleException, URISyntaxException {
         QuasiBundle importerQuasiBundle;
-        BundleManifest importerBundleManifest = getBundleManifest(IMPORTER_BSN, BUNDLE_VERSION);
+        BundleManifest importerBundleManifest = getBundleManifest(IMPORTER_BSN);
         importerBundleManifest.getImportPackage().addImportedPackage(QUASI_TEST_PACKAGE);
 
         importerQuasiBundle = this.quasiFramework.install(new URI(IMPORTER_JAR_PATH), importerBundleManifest);
@@ -284,7 +277,7 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
     
     private QuasiBundle installRequiringBundle() throws BundleException, URISyntaxException {
         QuasiBundle requiringQuasiBundle;
-        BundleManifest requiringBundleManifest = getBundleManifest(REQUIRING_BSN, BUNDLE_VERSION);
+        BundleManifest requiringBundleManifest = getBundleManifest(REQUIRING_BSN);
         RequireBundle requireBundle = requiringBundleManifest.getRequireBundle();
         requireBundle.addRequiredBundle(EXPORTER_BSN);
 
@@ -296,12 +289,12 @@ public class QuasiFrameworkIntegrationTests extends AbstractKernelIntegrationTes
         return requiringQuasiBundle;
     }
 
-    private BundleManifest getBundleManifest(String symbolicName, Version bundleVersion) {
+    private BundleManifest getBundleManifest(String symbolicName) {
         BundleManifest bundleManifest;
         bundleManifest = BundleManifestFactory.createBundleManifest();
         bundleManifest.setBundleManifestVersion(2);
         bundleManifest.getBundleSymbolicName().setSymbolicName(symbolicName);
-        bundleManifest.setBundleVersion(bundleVersion);
+        bundleManifest.setBundleVersion(BUNDLE_VERSION);
         return bundleManifest;
     }
 

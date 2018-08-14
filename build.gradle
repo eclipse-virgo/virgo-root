@@ -67,6 +67,7 @@ ext.kernelProjects = [
         project(':kernel:org.eclipse.virgo.kernel.services'),
         project(':kernel:org.eclipse.virgo.kernel.userregion'),
         project(':kernel:org.eclipse.virgo.kernel.userregionfactory'),
+        project(':kernel:org.eclipse.virgo.kernel.test'),
         project(':kernel:org.eclipse.virgo.management.console'),
         project(':kernel:org.eclipse.virgo.management.fragment'),
         project(':kernel:org.eclipse.virgo.shell.command'),
@@ -615,14 +616,27 @@ configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + ker
         into ext.outputDir
     }
 
-    task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
-        ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
-        inputs.file sourceSets.main.output.classesDir
-        inputs.file sourceSets.main.resources
-        outputs.dir ext.bundlorInputPath
-        from sourceSets.main.output.classesDir
-        from sourceSets.main.resources
-        into ext.bundlorInputPath
+    if (it.name == 'org.eclipse.virgo.kernel.test') {
+        // We deploy the JUnit tests inside this bundle
+        task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
+            ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
+            inputs.file sourceSets.test.output.classesDir
+            inputs.file sourceSets.test.resources
+            outputs.dir ext.bundlorInputPath
+            from sourceSets.test.output.classesDir
+            from sourceSets.test.resources
+            into ext.bundlorInputPath
+        }
+    } else {
+        task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
+            ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
+            inputs.file sourceSets.main.output.classesDir
+            inputs.file sourceSets.main.resources
+            outputs.dir ext.bundlorInputPath
+            from sourceSets.main.output.classesDir
+            from sourceSets.main.resources
+            into ext.bundlorInputPath
+        }
     }
 
     project.tasks.'bundlor'.dependsOn('copyGradlePropertiesTask', 'mergeClassesAndResources')

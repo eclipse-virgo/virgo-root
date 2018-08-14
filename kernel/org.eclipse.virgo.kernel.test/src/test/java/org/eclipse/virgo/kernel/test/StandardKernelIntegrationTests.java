@@ -18,12 +18,10 @@ import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 
 
-/**
- */
 public class StandardKernelIntegrationTests extends AbstractKernelIntegrationTest {
 
     @Test
-    public void testRunKernelBundle() throws Exception {
+    public void testRunKernelBundle() {
         ServiceReference<ApplicationDeployer> serviceReference = context.getServiceReference(ApplicationDeployer.class);
         assertNotNull("Application deployer service was not present", serviceReference);
     }

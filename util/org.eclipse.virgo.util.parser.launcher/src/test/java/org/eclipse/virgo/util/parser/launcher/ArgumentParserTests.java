@@ -22,16 +22,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
 
-import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
-import org.eclipse.virgo.util.parser.launcher.BundleEntry;
-import org.eclipse.virgo.util.parser.launcher.LaunchCommand;
-import org.eclipse.virgo.util.parser.launcher.ParseException;
-import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * 
- */
 public class ArgumentParserTests {
 
     private ArgumentParser parser = new ArgumentParser();
@@ -66,7 +58,7 @@ public class ArgumentParserTests {
     
     @Test
     public void testGradleCachePlaceholderSubstitution() {
-        String commandLine = "-B${gradle.cache}/junit/junit/4.7/d9444742a5b897c6280724a49f57a8155517d21f/junit-4.7.jar";
+        String commandLine = "-B%gradle.cache%/junit/junit/4.7/d9444742a5b897c6280724a49f57a8155517d21f/junit-4.7.jar";
         LaunchCommand command = parse(commandLine);
 
         BundleEntry[] bundleDeclarations = command.getBundleEntries();

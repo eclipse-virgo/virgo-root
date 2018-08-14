@@ -54,7 +54,7 @@ public class DmKernelTestRunner extends OsgiTestRunner {
         this(klass, DEFAULT_USER_REGION_START_WAIT_TIME);
     }
 
-    protected DmKernelTestRunner(Class<?> klass, long userRegionStartWaitTime) throws InitializationError, MalformedObjectNameException {
+    DmKernelTestRunner(Class<?> klass, long userRegionStartWaitTime) throws InitializationError, MalformedObjectNameException {
         super(klass);
         this.userRegionStartWaitTime = userRegionStartWaitTime;
     }
@@ -68,7 +68,7 @@ public class DmKernelTestRunner extends OsgiTestRunner {
                 throw new IllegalStateException("There must be exactly one user region bundle context in the service registry. "
                     + serviceReferences.size() + " were found.");
             } else {
-                BundleContext targetBundleContext = (BundleContext) bundleContext.getService(serviceReferences.iterator().next());
+                BundleContext targetBundleContext = bundleContext.getService(serviceReferences.iterator().next());
                 if (targetBundleContext != null) {
                     return targetBundleContext;
                 }
@@ -88,7 +88,7 @@ public class DmKernelTestRunner extends OsgiTestRunner {
          * Use the same default start level for user region bundles as the user region factory. Program the framework
          * start level instance defensively to allow for stubs which don't understand adapt.
          */
-        FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel) bundleContext.getBundle(0).adapt(FrameworkStartLevel.class);
+        FrameworkStartLevel frameworkStartLevel = bundleContext.getBundle(0).adapt(FrameworkStartLevel.class);
         if (frameworkStartLevel != null) {
             frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
         }
@@ -106,15 +106,15 @@ public class DmKernelTestRunner extends OsgiTestRunner {
             return;
         }
 
-        final List<Bundle> bundlesToStart = new ArrayList<Bundle>();
+        final List<Bundle> bundlesToStart = new ArrayList<>();
 
-        List<BundleEntry> bundleEntries = new ArrayList<BundleEntry>();
+        List<BundleEntry> bundleEntries = new ArrayList<>();
 
         while (annotationDeclaringClazz != null) {
             RegionBundleDependencies dependencies = annotationDeclaringClazz.getAnnotation(annotationType);
             BundleEntry[] entries = dependencies.entries();
 
-            bundleEntries.addAll(0, Arrays.<BundleEntry> asList(entries));
+            bundleEntries.addAll(0, Arrays.asList(entries));
             annotationDeclaringClazz = dependencies.inheritDependencies() ? TestFrameworkUtils.findAnnotationDeclaringClass(annotationType,
                 annotationDeclaringClazz.getSuperclass()) : null;
         }

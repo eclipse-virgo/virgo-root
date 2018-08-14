@@ -46,7 +46,7 @@ public final class ArgumentParser {
 
     private static final String START_FLAG = "start";
     
-    private static final String GRADLE_CACHE_RELATIVE = File.separator + ".gradle"
+    public static final String GRADLE_CACHE_RELATIVE = File.separator + ".gradle"
             + File.separator + "caches"
             + File.separator + "modules-2"
             + File.separator + "files-2.1";
@@ -119,7 +119,7 @@ public final class ArgumentParser {
     }
 
     private String processGradleCachePlaceholder(String path) {
-        return path.replace("${gradle.cache}", System.getProperty("user.home") + GRADLE_CACHE_RELATIVE);
+        return path.replace("%gradle.cache%", System.getProperty("user.home") + GRADLE_CACHE_RELATIVE);
     }
 
     private void parseConfigProperties(String configPath, LaunchCommand command) {
