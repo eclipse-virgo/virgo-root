@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.deployer.test;
 
 import java.util.Set;
 
+// don't move unless you recreate the test bundles/pars and update the MANIFEST.MF imports
 public interface LoadableClasses {
 
     Set<String> getLoadableClasses();

@@ -39,7 +39,7 @@ public class RAMConfigurationRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test
     public void refresh() throws DeploymentException, IOException, InvalidSyntaxException {
-        PathReference copyToDeploy = new PathReference("build/test.properties");
+        PathReference copyToDeploy = new PathReference("target/test.properties");
         if (copyToDeploy.exists() && !copyToDeploy.delete()) {
             fail("Failed to delete " + copyToDeploy);
         }
@@ -67,7 +67,7 @@ public class RAMConfigurationRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test
     public void refreshWithinAPar() throws DeploymentException, IOException, InvalidSyntaxException {
-        PathReference copyToDeploy = new PathReference("build/config-refresh.par");
+        PathReference copyToDeploy = new PathReference("target/config-refresh.par");
         if (copyToDeploy.exists() && !copyToDeploy.delete(true)) {
             fail("Failed to delete " + copyToDeploy);
         }
@@ -98,19 +98,19 @@ public class RAMConfigurationRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test
     public void refreshWithinAPlan() throws DeploymentException, IOException, InvalidSyntaxException, InterruptedException {
-        PathReference watchedRepository = new PathReference("build/watched");
+        PathReference watchedRepository = new PathReference("target/watched");
         if (watchedRepository.exists() && ! watchedRepository.delete(true)) {
             fail("Failed to delete watched repository");
         }
         
         watchedRepository.createDirectory();
         
-        PathReference copyToDeploy = new PathReference("build/watched/test.properties");
+        PathReference copyToDeploy = new PathReference("target/watched/test.properties");
         if (copyToDeploy.exists() && !copyToDeploy.delete(true)) {
             fail("Failed to delete " + copyToDeploy);
         }                
         
-        PathReference configurationCopy = new PathReference("build/watched/test.properties");
+        PathReference configurationCopy = new PathReference("target/watched/test.properties");
         new PathReference("src/test/resources/ram-config-refresh/test.properties").copy(configurationCopy);
         
         Thread.sleep(2000);

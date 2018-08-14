@@ -13,6 +13,7 @@ package org.eclipse.virgo.kernel.deployer.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -38,23 +39,23 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 @RunWith(DmKernelTestRunner.class)
-@SuppressWarnings("deprecation")
 public abstract class AbstractDeployerIntegrationTest {
+
+    volatile BundleContext kernelContext;
 
     protected final BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
-    protected static final String TEST_APPS_VERSION = "1.0.0.BUILD-20120912133003";
+    static final String TEST_APPS_VERSION = "1.0.0.BUILD-20120912133003";
 
     protected volatile OsgiFramework framework;
 
     protected volatile ApplicationDeployer deployer;
 
-    protected volatile BundleContext kernelContext;
-
-    protected volatile PackageAdmin packageAdmin;
+    volatile PackageAdmin packageAdmin;
 
     @Before
     public void setup() {
+        this.kernelContext = getKernelContext();
         ServiceReference<OsgiFramework> osgiFrameworkServiceReference = context.getServiceReference(OsgiFramework.class);
         if (osgiFrameworkServiceReference != null) {
             this.framework = context.getService(osgiFrameworkServiceReference);
@@ -65,14 +66,12 @@ public abstract class AbstractDeployerIntegrationTest {
             this.deployer = this.context.getService(applicationDeployerServiceReference);
         }
 
-        this.kernelContext = getKernelContext();
-
         ServiceReference<PackageAdmin> packageAdminServiceReference = context.getServiceReference(PackageAdmin.class);
         if (packageAdminServiceReference != null) {
             this.packageAdmin = context.getService(packageAdminServiceReference);
         }
     }
-    
+
     private BundleContext getKernelContext() {
         return this.context.getBundle(0L).getBundleContext();
     }
@@ -80,17 +79,17 @@ public abstract class AbstractDeployerIntegrationTest {
     @BeforeClass
     public static void awaitKernelStartup() throws Exception {
         MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-        int sleepCount = 800;
+        int sleepCount = 1000;
         while (!"STARTED".equals(platformMBeanServer.getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"), "Status"))) {
-            Thread.sleep(50);
+            Thread.sleep(60);
             if (--sleepCount == 0)
                 break;
         }
         assertFalse("Waited for Kernel too long.", sleepCount == 0);
     }
 
-    protected static void assertDeploymentIdentityEquals(DeploymentIdentity deploymentIdentity, String name, String type, String symbolicName,
-        String version) {
+    static void assertDeploymentIdentityEquals(DeploymentIdentity deploymentIdentity, String name, String type, String symbolicName,
+                                               String version) {
         String header = String.format("DeploymentIdentity('%s').", name);
 
         assertEquals(header + "type is incorrect", type, deploymentIdentity.getType());
@@ -98,7 +97,7 @@ public abstract class AbstractDeployerIntegrationTest {
         assertEquals(header + "version is incorrect", new Version(version), new Version(deploymentIdentity.getVersion()));
     }
 
-    protected Configuration getConfiguration(String pid) throws IOException, InvalidSyntaxException {
+    Configuration getConfiguration(String pid) throws IOException, InvalidSyntaxException {
         ServiceReference<?> serviceReference = this.context.getServiceReference(ConfigurationAdmin.class.getName());
         ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) this.context.getService(serviceReference);
         try {
@@ -117,7 +116,7 @@ public abstract class AbstractDeployerIntegrationTest {
         }
     }
 
-    protected Bundle getBundle(String symbolicName, Version version) {
+    Bundle getBundle(String symbolicName, Version version) {
         Bundle[] bundles = this.context.getBundles();
         for (Bundle bundle : bundles) {
             if (symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
@@ -126,4 +125,27 @@ public abstract class AbstractDeployerIntegrationTest {
         }
         return null;
     }
+
+    void assertBundlePresent(String symbolicName, Version version) {
+        Bundle[] bundles = this.context.getBundles();
+
+        for (Bundle bundle : bundles) {
+            if (symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
+                return;
+            }
+        }
+
+        fail("The bundle " + symbolicName + " " + version + " was not found.");
+    }
+
+    void assertBundleNotPresent(String symbolicName, Version version) {
+        Bundle[] bundles = this.context.getBundles();
+
+        for (Bundle bundle : bundles) {
+            if (symbolicName.equals(bundle.getSymbolicName()) && version.equals(bundle.getVersion())) {
+                fail("Bundle " + bundle + " should not be present");
+            }
+        }
+    }
+
 }

@@ -39,17 +39,15 @@ import org.eclipse.virgo.util.io.PathReference;
  */
 public class BundleRefreshTests extends AbstractDeployerIntegrationTest {
 
-    private final String TEST_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshImporter";
-
     @Test
     public void testBundleRefresh() throws DeploymentException, InterruptedException {
         UninstallTrackingInstallArtifactLifecycleListener listener = new UninstallTrackingInstallArtifactLifecycleListener();
         ServiceRegistration<InstallArtifactLifecycleListener> listenerRegistration = this.context.registerService(InstallArtifactLifecycleListener.class, listener, null);
         
-        new PathReference("./target/bundle-refresh").createDirectory();
+        new PathReference("./build/classes/test/bundle-refresh").createDirectory();
 
         PathReference exporterSource = new PathReference("./src/test/resources/bundle-refresh/RefreshExporter.jar");
-        PathReference exporter = new PathReference("./target/bundle-refresh/RefreshExporter.jar");
+        PathReference exporter = new PathReference("./build/classes/test/bundle-refresh/RefreshExporter.jar");
         exporter.delete();
         exporterSource.copy(exporter);
 
@@ -59,6 +57,7 @@ public class BundleRefreshTests extends AbstractDeployerIntegrationTest {
         this.deployer.deploy(importer.toURI());
 
         // Check that the test bundle's application contexts are created.
+        String TEST_IMPORTER_BUNDLE_SYMBOLIC_NAME = "RefreshImporter";
         assertNotNull(ApplicationContextUtils.getApplicationContext(this.context, TEST_IMPORTER_BUNDLE_SYMBOLIC_NAME));
 
         checkV1Classes();
@@ -135,12 +134,12 @@ public class BundleRefreshTests extends AbstractDeployerIntegrationTest {
     
     private final class UninstallTrackingInstallArtifactLifecycleListener extends InstallArtifactLifecycleListenerSupport {
         
-        private final List<InstallArtifact> uninstalledArtifacts = new ArrayList<InstallArtifact>();
+        private final List<InstallArtifact> uninstalledArtifacts = new ArrayList<>();
         
         private final Object monitor = new Object();
 
         @Override
-        public void onUninstalled(InstallArtifact installArtifact) throws DeploymentException {
+        public void onUninstalled(InstallArtifact installArtifact) {
             synchronized (this.monitor) {
                 this.uninstalledArtifacts.add(installArtifact);
             }
@@ -148,7 +147,7 @@ public class BundleRefreshTests extends AbstractDeployerIntegrationTest {
         
         private List<InstallArtifact> getUninstalledArtifacts() {
             synchronized (this.monitor) {
-                return new ArrayList<InstallArtifact>(this.uninstalledArtifacts);
+                return new ArrayList<>(this.uninstalledArtifacts);
             }
         }
     }

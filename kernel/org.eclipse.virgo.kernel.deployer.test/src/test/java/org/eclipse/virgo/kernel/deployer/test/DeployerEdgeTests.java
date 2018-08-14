@@ -49,7 +49,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
     private PathReference jar;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         PathReference pr = new PathReference("./target/org.eclipse.virgo.kernel");
         pr.delete(true);
         pr.createDirectory();
@@ -74,7 +74,7 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }

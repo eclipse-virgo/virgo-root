@@ -17,9 +17,6 @@ import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.junit.Test;
 
 
-
-/**
- */
 public class MissingImportLibraryTests extends AbstractParTests {
 
     @Test(expected=DeploymentException.class)

@@ -25,11 +25,11 @@ import org.eclipse.virgo.nano.deployer.api.core.DeployerLogEvents;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.test.framework.ConfigLocation;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
-/**
- */
+@Ignore
 @ConfigLocation("META-INF/no.heap.dump.test.config.properties")
 public class DeployerLogMessageTests extends AbstractParTests {
 

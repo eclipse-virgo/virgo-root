@@ -45,9 +45,9 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
 
     private static final int POLLING_INTERVAL_MILLIS = 100;
 
-    private final PathReference pickup = new PathReference("./build/pickup");
+    private final PathReference pickup = new PathReference("./target/pickup");
 
-    private final PathReference target = new PathReference("./build");
+    private final PathReference target = new PathReference("./target");
 
     private StubInstallArtifactLifecycleListener lifecycleListener;
 
@@ -60,8 +60,8 @@ public class PipelinedDeployerIntegrationTests extends AbstractDeployerIntegrati
     private DeploymentIdentity deploymentIdentity;
     
     @Before
-    public void setUp() throws Exception {
-        PathReference pr = new PathReference("./build/deployer");
+    public void setUp() {
+        PathReference pr = new PathReference("./target/deployer");
         pr.delete(true);
         pr.createDirectory();
 

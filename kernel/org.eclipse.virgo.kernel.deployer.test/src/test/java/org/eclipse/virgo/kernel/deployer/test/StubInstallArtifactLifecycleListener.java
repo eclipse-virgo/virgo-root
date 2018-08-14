@@ -40,109 +40,58 @@ final class StubInstallArtifactLifecycleListener implements InstallArtifactLifec
             && stopped == this.stoppedCount.get();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onInstalling(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onInstallFailed(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onInstalled(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onResolving(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onResolveFailed(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onResolved(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStarting(InstallArtifact installArtifact) {
         this.startingCount.incrementAndGet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStartFailed(InstallArtifact installArtifact, Throwable cause) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStartAborted(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStarted(InstallArtifact installArtifact) {
         this.startedCount.incrementAndGet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStopping(InstallArtifact installArtifact) {
         this.stoppingCount.incrementAndGet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStopFailed(InstallArtifact installArtifact, Throwable cause) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onStopped(InstallArtifact installArtifact) {
         this.stoppedCount.incrementAndGet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onUnresolved(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onUninstalling(InstallArtifact installArtifact) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onUninstallFailed(InstallArtifact installArtifact, Throwable cause) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void onUninstalled(InstallArtifact installArtifact) {
     }
 

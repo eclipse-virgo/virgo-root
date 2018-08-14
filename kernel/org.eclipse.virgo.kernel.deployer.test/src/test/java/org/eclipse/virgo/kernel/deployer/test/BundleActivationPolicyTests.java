@@ -11,17 +11,14 @@
 
 package org.eclipse.virgo.kernel.deployer.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 
-/**
- */
+import static org.junit.Assert.*;
+
 @Ignore("[DMS-2882] Bundle activation policy is current ignored by the pipelined deployer")
 public class BundleActivationPolicyTests extends AbstractParTests {
     
@@ -36,7 +33,7 @@ public class BundleActivationPolicyTests extends AbstractParTests {
         Bundle moduleB = null;
         
         for (Bundle bundle : bundles) {
-            String bundleSymbolicName = (String)bundle.getHeaders().get("Bundle-SymbolicName");
+            String bundleSymbolicName = bundle.getHeaders().get("Bundle-SymbolicName");
             if (bundleSymbolicName != null) {
                 if (bundleSymbolicName.endsWith(MODULE_A_BUNDLE_SYMBOLIC_NAME)) {
                     moduleA = bundle;
@@ -54,15 +51,15 @@ public class BundleActivationPolicyTests extends AbstractParTests {
         
         assertNotNull(moduleA);
         assertNotNull(moduleB);
-        
-        assertTrue(moduleA.getState() == Bundle.ACTIVE);
-        assertTrue(moduleB.getState() == Bundle.STARTING);
+
+        assertEquals(moduleA.getState(), Bundle.ACTIVE);
+        assertEquals(moduleB.getState(), Bundle.STARTING);
         
         Class<?> clazz = moduleA.loadClass("a.UseBundleB");
         Object instance = clazz.newInstance();
         assertNotNull(clazz.getMethod("getClassInBundleB", (Class[])null).invoke(instance, (Object[])null));
-        
-        assertTrue(moduleA.getState() == Bundle.ACTIVE);
-        assertTrue(moduleB.getState() == Bundle.ACTIVE);
+
+        assertEquals(moduleA.getState(), Bundle.ACTIVE);
+        assertEquals(moduleB.getState(), Bundle.ACTIVE);
     }
 }

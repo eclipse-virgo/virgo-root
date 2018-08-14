@@ -17,6 +17,7 @@ import java.io.File;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.ServiceRegistration;
 
@@ -39,6 +40,7 @@ import org.eclipse.virgo.test.framework.ConfigLocation;
  * Thread-safe.
  *
  */
+@Ignore
 @ConfigLocation("META-INF/no.heap.dump.test.config.properties")
 public class OnStartedFailureTests extends AbstractRAMIntegrationTests {
     

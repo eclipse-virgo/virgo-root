@@ -33,8 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.event.Event;
 
-/**
- */
 public class HotDeployerTests {
 
     private static final PathReference PICKUP_DIR = new PathReference("build/pickup");
@@ -87,13 +85,8 @@ public class HotDeployerTests {
         HotDeployerEnabler enabler = new HotDeployerEnabler(deployerConfiguration, this.deployer, new MockEventLogger());
         enabler.handleEvent(new Event("org/eclipse/virgo/kernel/deployer/recovery/COMPLETED", (Map<String, ?>)null));
 
-        try {
-            // Deployer.start() is asynchronous: sleep long
-            // enough for it to have started up
-            Thread.sleep(2000);
-        } catch (InterruptedException ie) {
-
-        }
+        // Deployer.start() is asynchronous: sleep long enough for it to have started up
+        sleep(2000);
 
         PathReference copy = sourceFile.copy(PICKUP_DIR);
         pauseOnCreate(copy, 4000, 4000);
@@ -116,8 +109,7 @@ public class HotDeployerTests {
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException e) {
-
+        } catch (InterruptedException ignored) {
         }
     }
 }

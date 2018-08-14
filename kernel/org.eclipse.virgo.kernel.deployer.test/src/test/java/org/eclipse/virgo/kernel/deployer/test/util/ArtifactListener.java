@@ -22,7 +22,7 @@ public class ArtifactListener extends InstallArtifactLifecycleListenerSupport {
 
     private final Object monitor = new Object();
 
-    List<ArtifactLifecycleEvent> eventList = new ArrayList<ArtifactLifecycleEvent>();
+    private List<ArtifactLifecycleEvent> eventList = new ArrayList<>();
 
     public void clear() {
         synchronized (this.monitor) {
@@ -30,18 +30,16 @@ public class ArtifactListener extends InstallArtifactLifecycleListenerSupport {
         }
     }
 
-    public boolean waitForEvents(final Set<ArtifactLifecycleEvent> expectedEventSet, long timeout) {
+    public void waitForEvents(final Set<ArtifactLifecycleEvent> expectedEventSet, long timeout) {
         boolean allReceived = eventsReceived(expectedEventSet);
         while (!allReceived && timeout > 0) {
             timeout -= 50L;
             try {
                 Thread.sleep(50L);
-            } catch (InterruptedException _) {
-                // do nothing
+            } catch (InterruptedException ignored) {
             }
             allReceived = eventsReceived(expectedEventSet);
         }
-        return allReceived;
     }
 
     private boolean eventsReceived(Set<ArtifactLifecycleEvent> eventSet) {
@@ -57,93 +55,60 @@ public class ArtifactListener extends InstallArtifactLifecycleListenerSupport {
 
     public List<ArtifactLifecycleEvent> extract() {
         synchronized (this.monitor) {
-            return new ArrayList<ArtifactLifecycleEvent>(this.eventList);
+            return new ArrayList<>(this.eventList);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onInstalled(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.INSTALLED, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onInstalling(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.INSTALLING, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onResolved(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.RESOLVED, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onResolving(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.RESOLVING, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onStarted(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.STARTED, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onStarting(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.STARTING, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onStopped(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.STOPPED, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onStopping(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.STOPPING, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onUninstalled(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.UNINSTALLED, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onUninstalling(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.UNINSTALLING, installArtifact);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onUnresolved(InstallArtifact installArtifact) {
         addEvent(TestLifecycleEvent.UNRESOLVED, installArtifact);

@@ -29,8 +29,6 @@ import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.util.io.PathReference;
 
 
-/**
- */
 public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
 
 	private static final String ORG_ECLIPSE_VIRGO_REGION_USER = "org.eclipse.virgo.region.user";
@@ -38,41 +36,39 @@ public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
     private static final String GLOBAL_REGION = "global";
 
 	private static final long TIMEOUT = 10000;
-    
-    private final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-    
+
     @Test
     public void programmaticUndeployDeletesHotDeployedPropertiesFile() throws DeploymentException {
         PathReference pathReference = new PathReference("src/test/resources/hot-deployment-tests/test.properties");
-        doTest(pathReference, "configuration", "test", "0.0.0");
+        doTest(pathReference, "configuration", "0.0.0");
     }
     
     @Test
     public void programmaticUndeployDeletesHotDeployedExplodedBundle() throws DeploymentException {
         PathReference pathReference = new PathReference("src/test/resources/hot-deployment-tests/bundle");
-        doTest(pathReference, "bundle", "test", "1.0.0");
+        doTest(pathReference, "bundle", "1.0.0");
     }
     
     @Test
     public void programmaticUndeployDeletesHotDeployedBundle() throws DeploymentException {
         PathReference pathReference = new PathReference("src/test/resources/hot-deployment-tests/bundle.jar");
-        doTest(pathReference, "bundle", "test", "1.0.0");
+        doTest(pathReference, "bundle", "1.0.0");
     }
     
-    private void doTest(PathReference artifact, String type, String name, String version) throws DeploymentException {
-        PathReference copyInPickup = artifact.copy(new PathReference("build/pickup"), true);
-        
+    private void doTest(PathReference artifact, String type, String version) throws DeploymentException {
+        PathReference copyInPickup = artifact.copy(new PathReference("target/pickup"), true);
+
         try {
             while (!this.deployer.isDeployed(copyInPickup.toURI())) {
                 try {
                     Thread.sleep(50);
-                } catch (InterruptedException _) {
+                } catch (InterruptedException ignored) {
                 }
             }
+
+            awaitActive(type, "test", version);
             
-            awaitActive(type, name, version);
-            
-            this.deployer.undeploy(type, name, version);
+            this.deployer.undeploy(type, "test", version);
             
             assertFalse(copyInPickup.toFile().exists());
             
@@ -80,15 +76,16 @@ public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
             copyInPickup.delete();
         }
     }
-    
-    private void awaitActive(String type, String name, String version) {
-    	String region = ORG_ECLIPSE_VIRGO_REGION_USER;
-    	if(type=="configuration"){
+
+    private static void awaitActive(String type, String name, String version) {
+        String region = ORG_ECLIPSE_VIRGO_REGION_USER;
+    	if(type.equals("configuration")){
     		region = GLOBAL_REGION;
     	}
         try {
             ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=" + type + ",name=" + name + ",version=" + version + ",region=" + region);
-            ManageableArtifact artifact = JMX.newMXBeanProxy(this.mBeanServer, objectName, ManageableArtifact.class);
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            ManageableArtifact artifact = JMX.newMXBeanProxy(mBeanServer, objectName, ManageableArtifact.class);
             
             long startTime = System.currentTimeMillis();
             
@@ -98,7 +95,7 @@ public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
                 }
                 try {
                     Thread.sleep(50);
-                } catch (InterruptedException _) {
+                } catch (InterruptedException ignored) {
                 }
             }
         } catch (JMException jme) {

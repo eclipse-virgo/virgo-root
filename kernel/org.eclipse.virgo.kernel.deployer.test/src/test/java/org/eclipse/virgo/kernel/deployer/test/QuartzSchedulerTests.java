@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotSame;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
@@ -27,6 +28,7 @@ import org.springframework.context.ApplicationContext;
  * </p>
  * 
  */
+@Ignore
 public class QuartzSchedulerTests extends AbstractParTests {
 
     private static final String SCHEDULER_FACTORY_BEAN_NAME = "schedulerFactoryBean";

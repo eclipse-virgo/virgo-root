@@ -37,8 +37,6 @@ import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 
 
-/**
- */
 public class PropertiesArtifactMBeanTests extends AbstractDeployerIntegrationTest {
     
     private final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -94,7 +92,7 @@ public class PropertiesArtifactMBeanTests extends AbstractDeployerIntegrationTes
         try {
             mBeanServer.getMBeanInfo(objectName);
             fail("MBean still present after uninstall");
-        } catch (InstanceNotFoundException infe) {            
+        } catch (InstanceNotFoundException ignored) {
         }
     }
 }

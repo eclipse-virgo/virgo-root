@@ -11,36 +11,29 @@
 
 package org.eclipse.virgo.kernel.test;
 
+import static org.junit.Assert.assertFalse;
+
 import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
 import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 @RunWith(DmKernelTestRunner.class)
 public abstract class AbstractKernelIntegrationTest {
-    
-    protected volatile BundleContext kernelContext;
-   
-    protected volatile BundleContext context = FrameworkUtil.getBundle(AbstractKernelIntegrationTest.class).getBundleContext();
 
-    protected volatile OsgiFramework framework;
+    protected volatile BundleContext kernelContext;
+
+    protected final BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
     @Before
     public void setup() {
-        ServiceReference<OsgiFramework> serviceReference = this.context.getServiceReference(OsgiFramework.class);
-        if (serviceReference != null) {
-            this.framework = this.context.getService(serviceReference);
-        }
-        
         this.kernelContext = getKernelContext();
     }
 
@@ -50,9 +43,13 @@ public abstract class AbstractKernelIntegrationTest {
 
     @BeforeClass
     public static void awaitKernelStartup() throws Exception {
-    	MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-    	while (!"STARTED".equals(platformMBeanServer.getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"), "Status"))) {
-    		Thread.sleep(50);
-    	}
+        MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
+        int sleepCount = 1000;
+        while (!"STARTED".equals(platformMBeanServer.getAttribute(new ObjectName("org.eclipse.virgo.kernel:type=KernelStatus"), "Status"))) {
+            Thread.sleep(60);
+            if (--sleepCount == 0)
+                break;
+        }
+        assertFalse("Waited for Kernel too long.", sleepCount == 0);
     }
 }

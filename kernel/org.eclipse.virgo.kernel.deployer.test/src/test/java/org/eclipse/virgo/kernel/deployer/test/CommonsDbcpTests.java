@@ -16,6 +16,7 @@ import java.io.File;
 import org.hsqldb.Server;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.eclipse.virgo.util.io.FileSystemUtils;
@@ -43,7 +44,11 @@ public class CommonsDbcpTests extends AbstractDeployerIntegrationTest {
 
     @Test
     public void testCommonsDbcpClassLoading() throws Exception {
-        this.deployer.deploy(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache/repository/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/org.apache.commons.dbcp-1.4.0.v201204271417.jar").toURI());
+        // TODO - rewrite test to use newer libraries
+        this.deployer.deploy(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1" +
+                "/org.eclipse.virgo.mirrored/org.apache.commons.pool/1.6.0.v201204271246/d07ad53300e04f66b6245f54f06eeb255bd2d7b0/org.apache.commons.pool-1.6.0.v201204271246.jar").toURI());
+        this.deployer.deploy(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1" +
+                "/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/4378c1a6c057f1e1da2b8287351b288c2c13e6c0/org.apache.commons.dbcp-1.4.0.v201204271417.jar").toURI());
         this.deployer.deploy(new File("src/test/resources/com.springsource.platform.test.commons-dbcp.jar").toURI());
         ApplicationContextUtils.assertApplicationContextContainsExpectedBeanDefinitions(ApplicationContextUtils.getApplicationContext(this.context, "com.springsource.server.test.commons-dbcp"), "dataSourceTest");
     }    

@@ -98,6 +98,48 @@ project(':kernel:org.eclipse.virgo.kernel.deployer') {
     }
 }
 
+project(':kernel:org.eclipse.virgo.kernel.deployer.test') {
+    sourceSets {
+        test {
+            output.resourcesDir = "${buildDir}/classes/test"
+        }
+    }
+
+    dependencies {
+        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile project(':test:org.eclipse.virgo.test.stubs')
+        testCompile project(':test:org.eclipse.virgo.test.framework')
+
+        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+        testCompile group: "org.hsqldb", name:"hsqldb", version: hsqldbVersion
+
+        testCompile project(':util:org.eclipse.virgo.util.parser.launcher')
+        testCompile project(':util:org.eclipse.virgo.util.osgi')
+        testCompile project(':util:org.eclipse.virgo.util.osgi.manifest')
+        testCompile project(':util:org.eclipse.virgo.util.parser.manifest')
+        testCompile project(':medic:org.eclipse.virgo.medic')
+        testCompile project(':medic:org.eclipse.virgo.medic.core')
+        testCompile project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
+        testCompile project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
+        testCompile project(':nano:org.eclipse.virgo.nano.core')
+        testCompile project(':nano:org.eclipse.virgo.nano.management')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.agent.dm')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.deployer')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.dmfragment')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.userregion')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.userregionfactory')
+        testCompile project(':kernel:org.eclipse.virgo.shell.command')
+        testCompile project(':kernel:org.eclipse.virgo.kernel.osgi')
+    }
+}
+
 project(':kernel:org.eclipse.virgo.kernel.deployer.dm') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion

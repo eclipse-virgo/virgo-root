@@ -32,7 +32,7 @@ public class ImportMergeDiagnosticsTests extends AbstractDeployerIntegrationTest
         try {
             this.deployer.deploy(new File("src/test/resources/importMergeDiagnostics/TestImportP1P2.jar").toURI());
         } catch (DeploymentException e) {
-            System.out.println(e);
+            e.printStackTrace();
             Throwable ime = e.getCause();
             String message = ime.getMessage();
             Assert.assertEquals(
@@ -44,7 +44,7 @@ public class ImportMergeDiagnosticsTests extends AbstractDeployerIntegrationTest
             this.deployer.undeploy(p2Identity);
         }
     }
-    
+
     @Test
     public void testImportClashingLibraries() throws DeploymentException {
         DeploymentIdentity p1Identity = this.deployer.deploy(new File("src/test/resources/importMergeDiagnostics/TestP1.jar").toURI());
@@ -52,7 +52,7 @@ public class ImportMergeDiagnosticsTests extends AbstractDeployerIntegrationTest
         try {
             this.deployer.deploy(new File("src/test/resources/importMergeDiagnostics/TestImportP1P2ViaLibraries.jar").toURI());
         } catch (DeploymentException e) {
-            System.out.println(e);
+            e.printStackTrace();
             Throwable ime = e.getCause();
             String message = ime.getMessage();
             Assert.assertEquals(

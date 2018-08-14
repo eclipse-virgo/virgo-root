@@ -16,11 +16,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
-@Ignore("Failed when not connected to the internet")
+//@Ignore("Failed when not connected to the internet")
 public class ManualSpringContextTests extends AbstractDeployerIntegrationTest {
 
     @Test

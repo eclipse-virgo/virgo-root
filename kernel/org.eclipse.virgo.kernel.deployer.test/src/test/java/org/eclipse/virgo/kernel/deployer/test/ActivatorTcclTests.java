@@ -17,11 +17,6 @@ import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.junit.Test;
 
-
-
-/**
- *
- */
 public class ActivatorTcclTests extends AbstractDeployerIntegrationTest {
     
     @Test

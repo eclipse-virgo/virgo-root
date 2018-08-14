@@ -36,12 +36,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-
 public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
 
-	private ServiceReference<ConfigurationAdmin> configAdminServiceReference;
-
-	private ConfigurationAdmin configAdmin;
+    private ConfigurationAdmin configAdmin;
 	
 	@Test
 	public void planReferencingAPar() throws Exception {
@@ -92,9 +89,9 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
     }
     
     @Before
-    public void setUp() throws Exception {        
-        this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
-        this.configAdmin = this.context.getService(this.configAdminServiceReference);
+    public void setUp() {
+        ServiceReference<ConfigurationAdmin> configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
+        this.configAdmin = this.context.getService(configAdminServiceReference);
     }
 
     private void testPlanDeployment(File plan, File propertiesFile, String... candidateBsns) throws Exception {
@@ -141,7 +138,7 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
                 if (uninstallBsn.equals(symbolicName)) {
                     try {
                         bundle.uninstall();
-                    } catch (BundleException _) {
+                    } catch (BundleException ignored) {
                     }
                 }
             }
@@ -183,7 +180,7 @@ public class DMSPlanDeploymentTests extends AbstractDeployerIntegrationTest {
     }
 
     private List<String> getInstalledBsns(Bundle[] bundles) {
-        List<String> installedBsns = new ArrayList<String>(bundles.length);
+        List<String> installedBsns = new ArrayList<>(bundles.length);
         for (Bundle bundle : bundles) {
             installedBsns.add(bundle.getSymbolicName());
         }

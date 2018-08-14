@@ -32,7 +32,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 
@@ -54,8 +53,7 @@ public class QuasiFrameworkStateDumpIntegrationTests extends AbstractKernelInteg
 
     @Before
     public void setUp() {
-        BundleContext bundleContext = this.framework.getBundleContext();
-        OsgiServiceHolder<QuasiFrameworkFactory> holder = OsgiFrameworkUtils.getService(bundleContext, QuasiFrameworkFactory.class);
+        OsgiServiceHolder<QuasiFrameworkFactory> holder = OsgiFrameworkUtils.getService(this.kernelContext, QuasiFrameworkFactory.class);
         this.quasiFrameworkFactory = holder.getService();
         Assert.assertNotNull(this.quasiFrameworkFactory);
         this.quasiFramework = this.quasiFrameworkFactory.create();

@@ -17,14 +17,14 @@ import java.io.File;
 import java.util.jar.JarFile;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.junit.Ignore;
 import org.osgi.framework.ServiceRegistration;
 
 import org.eclipse.virgo.kernel.module.ModuleContextEvent;
 import org.eclipse.virgo.kernel.module.ModuleContextEventListener;
 import org.eclipse.virgo.kernel.module.ModuleContextFailedEvent;
 
-/**
- */
+@Ignore
 public abstract class AbstractParTests extends AbstractDeployerIntegrationTest {
 
     protected DeploymentIdentity deploy(File file) throws Throwable {

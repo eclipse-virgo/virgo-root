@@ -46,8 +46,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
 
-    private ServiceReference<ConfigurationAdmin> configAdminServiceReference;
-
     private ConfigurationAdmin configAdmin;
 
     private static final String PLAN_SYMBOLIC_NAME_BUG336200 = "bug336200.plan";
@@ -114,9 +112,9 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
     }
 
     @Before
-    public void setUp() throws Exception {
-        this.configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
-        this.configAdmin = this.context.getService(this.configAdminServiceReference);
+    public void setUp() {
+        ServiceReference<ConfigurationAdmin> configAdminServiceReference = this.context.getServiceReference(ConfigurationAdmin.class);
+        this.configAdmin = this.context.getService(configAdminServiceReference);
         this.context.registerService(InstallArtifactLifecycleListener.class.getName(), artifactListener, null);
     }
 
@@ -150,7 +148,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
 
         this.artifactListener.clear();
 
-        Set<ArtifactLifecycleEvent> expectedEventSet = new HashSet<ArtifactLifecycleEvent>();
+        Set<ArtifactLifecycleEvent> expectedEventSet = new HashSet<>();
         // events expected due to explicit refresh;
         expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.RESOLVING, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
         expectedEventSet.add(new ArtifactLifecycleEvent(TestLifecycleEvent.RESOLVED, "plan", PLAN_SYMBOLIC_NAME_BUG336200, VERSION_BUG336200));
@@ -172,7 +170,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         startBundleThread.start();
         
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(plan.toURI());
-        waitForAndCheckEventsReceived(expectedEventSet, 10000L);
+        waitForAndCheckEventsReceived(expectedEventSet);
 
         Bundle[] afterDeployBundles = this.context.getBundles();
         assertBundlesInstalled(afterDeployBundles, candidateBsns);
@@ -191,7 +189,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
                 if (uninstallBsn.equals(symbolicName)) {
                     try {
                         bundle.uninstall();
-                    } catch (BundleException _) {
+                    } catch (BundleException ignored) {
                     }
                 }
             }
@@ -200,9 +198,9 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
     
     private class StartBundleRunnable implements Runnable {
 
-        BundleContext context = null;
+        BundleContext context;
 
-        public StartBundleRunnable(BundleContext bundleContext) {
+        StartBundleRunnable(BundleContext bundleContext) {
             this.context = bundleContext;
         }
 
@@ -210,9 +208,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         public void run() {
             try {
                 waitAndStartLazyBundle();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (BundleException e) {
+            } catch (InterruptedException | BundleException e) {
                 e.printStackTrace();
             }
 
@@ -230,10 +226,10 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
 
     }
 
-    private void waitForAndCheckEventsReceived(Set<ArtifactLifecycleEvent> expectedEventSet, long timeout) {
-        this.artifactListener.waitForEvents(expectedEventSet, timeout);
+    private void waitForAndCheckEventsReceived(Set<ArtifactLifecycleEvent> expectedEventSet) {
+        this.artifactListener.waitForEvents(expectedEventSet, (long) 10000);
         
-        Set<ArtifactLifecycleEvent> actualEventSet = new HashSet<ArtifactLifecycleEvent>(this.artifactListener.extract());
+        Set<ArtifactLifecycleEvent> actualEventSet = new HashSet<>(this.artifactListener.extract());
 
         Set<ArtifactLifecycleEvent> extraEvents = Sets.difference(actualEventSet, expectedEventSet);
         Set<ArtifactLifecycleEvent> missingEvents = Sets.difference(expectedEventSet, actualEventSet);
@@ -243,7 +239,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
         
         List<ArtifactLifecycleEvent> actualEventSetList = this.artifactListener.extract();
         ArtifactLifecycleEvent planStartingEvent = new ArtifactLifecycleEvent(TestLifecycleEvent.STARTING, "bundle", BUG336200_LAZY_BSN, VERSION_BUG336200);
-        assertTrue("More than one STARTING event received for the atomic plan.", actualEventSetList.indexOf(planStartingEvent) == actualEventSetList.lastIndexOf(planStartingEvent));
+        assertEquals("More than one STARTING event received for the atomic plan.", actualEventSetList.indexOf(planStartingEvent), actualEventSetList.lastIndexOf(planStartingEvent));
     }
 
     static void assertBundlesNotInstalled(Bundle[] bundles, String... candidateBsns) {
@@ -292,7 +288,7 @@ public class PlanDeploymentTests extends AbstractDeployerIntegrationTest {
     }
 
     static List<String> getInstalledBsns(Bundle[] bundles) {
-        List<String> installedBsns = new ArrayList<String>(bundles.length);
+        List<String> installedBsns = new ArrayList<>(bundles.length);
         for (Bundle bundle : bundles) {
             installedBsns.add(bundle.getSymbolicName());
         }

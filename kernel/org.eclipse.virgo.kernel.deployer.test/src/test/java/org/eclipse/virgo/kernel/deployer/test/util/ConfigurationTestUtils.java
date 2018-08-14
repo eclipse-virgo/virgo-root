@@ -11,7 +11,7 @@
  *    dsklyut - initial contribution
  */
 
-package org.eclipse.virgo.kernel.deployer.test;
+package org.eclipse.virgo.kernel.deployer.test.util;
 
 import static org.junit.Assert.fail;
 
@@ -28,9 +28,9 @@ import org.osgi.service.cm.ConfigurationAdmin;
  * <p />
  * 
  */
-final class ConfigurationTestUtils {
+public final class ConfigurationTestUtils {
 
-    static void pollUntilInDeploymentIdentities(ApplicationDeployer appDeployer, String type, String name, String version)
+    public static void pollUntilInDeploymentIdentities(ApplicationDeployer appDeployer, String type, String name, String version)
         throws InterruptedException {
         long start = System.currentTimeMillis();
 
@@ -43,7 +43,7 @@ final class ConfigurationTestUtils {
         }
     }
 
-    static void pollUntilNotInDeploymentIdentities(ApplicationDeployer appDeployer, String type, String name, String version)
+    public static void pollUntilNotInDeploymentIdentities(ApplicationDeployer appDeployer, String type, String name, String version)
         throws InterruptedException {
         long start = System.currentTimeMillis();
 
@@ -56,7 +56,7 @@ final class ConfigurationTestUtils {
         }
     }
 
-    static boolean isInDeploymentIdentities(ApplicationDeployer appDeployer, DeploymentIdentity deploymentIdentity) {
+    public static boolean isInDeploymentIdentities(ApplicationDeployer appDeployer, DeploymentIdentity deploymentIdentity) {
         for (DeploymentIdentity id : appDeployer.getDeploymentIdentities()) {
             if (deploymentIdentity.equals(id)) {
                 return true;
@@ -75,7 +75,7 @@ final class ConfigurationTestUtils {
         return false;
     }
 
-    static boolean isInConfigurationAdmin(ConfigurationAdmin configAdmin, String pid) throws IOException, InvalidSyntaxException {
+    public static boolean isInConfigurationAdmin(ConfigurationAdmin configAdmin, String pid) throws IOException, InvalidSyntaxException {
         Configuration[] configurations = configAdmin.listConfigurations(null);
         for (Configuration configuration : configurations) {
             if (pid.equals(configuration.getPid())) {
@@ -97,7 +97,7 @@ final class ConfigurationTestUtils {
         return false;
     }
 
-    static void pollUntilFactoryInConfigurationAdmin(ConfigurationAdmin configAdmin, String factoryPid) throws Exception {
+    public static void pollUntilFactoryInConfigurationAdmin(ConfigurationAdmin configAdmin, String factoryPid) throws Exception {
         long start = System.currentTimeMillis();
 
         while (!isFactoryInConfigurationAdmin(configAdmin, factoryPid)) {
@@ -109,7 +109,7 @@ final class ConfigurationTestUtils {
         }
     }
 
-    static void pollUntilFactoryNotInConfigurationAdmin(ConfigurationAdmin configAdmin, String factoryPid) throws Exception {
+    public static void pollUntilFactoryNotInConfigurationAdmin(ConfigurationAdmin configAdmin, String factoryPid) throws Exception {
         long start = System.currentTimeMillis();
 
         while (isFactoryInConfigurationAdmin(configAdmin, factoryPid)) {

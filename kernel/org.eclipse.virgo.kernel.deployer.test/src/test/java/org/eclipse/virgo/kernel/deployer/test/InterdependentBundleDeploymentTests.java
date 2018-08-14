@@ -15,6 +15,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 
@@ -32,7 +33,7 @@ public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegra
 
     private ApplicationDeployer appDeployer;
 
-    @Before public void setUp() throws Exception {
+    @Before public void setUp() {
         PathReference pr = new PathReference("./target/org.eclipse.virgo.kernel");
         pr.delete(true);
         pr.createDirectory();
@@ -41,7 +42,7 @@ public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegra
         this.appDeployer = this.context.getService(this.appDeployerServiceReference);
     }
 
-    @After public void tearDown() throws Exception {
+    @After public void tearDown() {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }
@@ -55,7 +56,7 @@ public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegra
     }
     
     @Test
-//    @Ignore("[DMS-2883] Fails intermittently due to problem described in ENGINE-1755")
+    @Ignore("[DMS-2883] Fails intermittently due to problem described in ENGINE-1755")
     public void testUndeploymentOrder() throws Exception {
         DeploymentIdentity deploymentIdentity = this.appDeployer.deploy(new File("src/test/resources/osgi_test.jar").toURI());
         DeploymentIdentity deploymentIdentity2 = this.appDeployer.deploy(new File("src/test/resources/osgi_test2.jar").toURI());

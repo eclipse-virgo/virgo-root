@@ -18,6 +18,7 @@ import java.io.File;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,7 @@ import org.junit.Test;
  * Thread-safe.
  *
  */
+@Ignore
 public class RAMPlanRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test

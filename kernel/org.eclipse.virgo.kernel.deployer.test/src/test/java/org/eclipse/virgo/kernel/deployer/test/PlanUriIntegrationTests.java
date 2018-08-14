@@ -23,6 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * These tests cover the use of URIs in plans.
  */
@@ -32,7 +34,7 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
 
     private static final String TEST_RESOURCES_DIRECTORY = "src/test/resources/plan-deployment/";
 
-    private static final String GENERATED_PLAN_DIRECTORY = "build/PlanUriIntegrationTests/";
+    private static final String GENERATED_PLAN_DIRECTORY = "target/PlanUriIntegrationTests/";
 
     private static final String PLAN_EXTENSION = ".plan";
 
@@ -41,33 +43,33 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
     private static final String NAMESPACES = "    xmlns=\"http://www.eclipse.org/virgo/schema/plan\" \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n    xsi:schemaLocation=\" http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd\"";
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         File generatedPlanDirectory = new File(GENERATED_PLAN_DIRECTORY);
         generatedPlanDirectory.mkdirs();
     }
 
     @Test
-    public void testUriInPlan() throws IOException, DeploymentException, InterruptedException {
+    public void testUriInPlan() throws IOException, DeploymentException {
         TestArtifactInfo planInfo = createPlanFile("uriplan", Version.emptyVersion, false, false,
             new File(TEST_RESOURCES_DIRECTORY + "global.jar").toURI().toString());
         testPlan(planInfo);
     }
 
     @Test
-    public void testBundleAndConfigUrisInPlan() throws IOException, DeploymentException, InterruptedException {
+    public void testBundleAndConfigUrisInPlan() throws IOException, DeploymentException {
         TestArtifactInfo planInfo = createPlanFile("uriplan", Version.emptyVersion, false, false, new File(TEST_RESOURCES_DIRECTORY
             + "com.foo.bar.properties").toURI().toString(), new File(TEST_RESOURCES_DIRECTORY + "global.jar").toURI().toString());
         testPlan(planInfo);
     }
 
     @Test(expected = DeploymentException.class)
-    public void testNonFileUriInPlan() throws IOException, DeploymentException, InterruptedException {
+    public void testNonFileUriInPlan() throws IOException, DeploymentException {
         TestArtifactInfo planInfo = createPlanFile("uriplan", Version.emptyVersion, false, false, "http://www.eclipse.org");
         testPlan(planInfo);
     }
 
     @Test(expected = DeploymentException.class)
-    public void testRelativeUriInPlan() throws IOException, DeploymentException, InterruptedException {
+    public void testRelativeUriInPlan() throws IOException, DeploymentException {
         TestArtifactInfo planInfo = createPlanFile("uriplan", Version.emptyVersion, false, false, "file:" + TEST_RESOURCES_DIRECTORY + "global.jar");
         testPlan(planInfo);
     }
@@ -85,15 +87,16 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
         return identity;
     }
 
-    public static TestArtifactInfo createPlanFile(String planName, Version planVersion, boolean scoped, boolean atomic, String... uris)
+    private static TestArtifactInfo createPlanFile(String planName, Version planVersion, boolean scoped, boolean atomic, String... uris)
         throws IOException {
-        StringBuffer planContent = new StringBuffer(1024);
+        StringBuilder planContent = new StringBuilder(1024);
         planContent.append(XML_HEADER);
-        planContent.append("<plan name=\"" + planName + "\" version=\"" + planVersion + "\" scoped=\"" + new Boolean(scoped) + "\" atomic=\""
-            + new Boolean(atomic) + "\" \n" + NAMESPACES + ">\n");
+        planContent.append("<plan name=\"").append(planName).append("\" version=\"")
+                .append(planVersion).append("\" scoped=\"").append(Boolean.valueOf(scoped)).append("\" atomic=\"")
+                .append(Boolean.valueOf(atomic)).append("\" \n").append(NAMESPACES).append(">\n");
 
         for (String uri : uris) {
-            planContent.append("    <artifact uri=\"" + uri + "\"/>\n");
+            planContent.append("    <artifact uri=\"").append(uri).append("\"/>\n");
         }
 
         planContent.append("</plan>");
@@ -102,11 +105,8 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
 
         String fileName = planName + "-" + planVersion + PLAN_EXTENSION;
         File planFile = new File(GENERATED_PLAN_DIRECTORY + fileName);
-        Writer writer = new FileWriter(planFile);
-        try {
+        try (Writer writer = new FileWriter(planFile)) {
             writer.write(planContent.toString());
-        } finally {
-            writer.close();
         }
 
         info.setFile(planFile);
@@ -124,7 +124,7 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
 
         private File file;
 
-        public TestArtifactInfo(String type, String name, Version version) {
+        TestArtifactInfo(String type, String name, Version version) {
             this.type = type;
             this.name = name;
             this.version = version;
@@ -153,9 +153,6 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
             return file;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String toString() {
             return name;

@@ -28,10 +28,10 @@ import org.eclipse.virgo.kernel.install.artifact.InstallArtifactLifecycleListene
  * Test bundle state when listening to deployer lifecycle events.
  * 
  */
-public class BundleLifecycleTests extends AbstractDeployerIntegrationTest {    
+public class BundleLifecycleTests extends AbstractDeployerIntegrationTest {
 
     @Before
-    public void setUp() throws Exception {                
+    public void setUp() {
         this.context.registerService(InstallArtifactLifecycleListener.class.getName(), new Listener(), null);
     }
 
@@ -47,98 +47,63 @@ public class BundleLifecycleTests extends AbstractDeployerIntegrationTest {
     
     private class Listener extends InstallArtifactLifecycleListenerSupport {
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onInstalled(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.INSTALLED);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onInstalling(InstallArtifact installArtifact) {
             assertNoBundle(installArtifact);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onResolved(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.RESOLVED);            
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onResolving(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.INSTALLED);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onStarted(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.ACTIVE);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onStarting(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.STARTING);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onStopped(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.RESOLVED);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onStopping(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.STOPPING);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onUninstalled(InstallArtifact installArtifact) {
             assertNoBundle(installArtifact);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onUninstalling(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.RESOLVED);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
         @Override
         public void onUnresolved(InstallArtifact installArtifact) {
             assertBundleState(installArtifact, Bundle.INSTALLED);
         }
-        
-        
     }
 
-    public void assertBundleState(InstallArtifact installArtifact, int expectedBundleState) {
+    private void assertBundleState(InstallArtifact installArtifact, int expectedBundleState) {
         Assert.assertTrue(installArtifact instanceof BundleInstallArtifact);
         BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact)installArtifact;
         Bundle bundle = bundleInstallArtifact.getBundle();
@@ -146,7 +111,7 @@ public class BundleLifecycleTests extends AbstractDeployerIntegrationTest {
         Assert.assertEquals(expectedBundleState, bundle.getState());
     }
     
-    public void assertNoBundle(InstallArtifact installArtifact) {
+    private void assertNoBundle(InstallArtifact installArtifact) {
         Assert.assertTrue(installArtifact instanceof BundleInstallArtifact);
         BundleInstallArtifact bundleInstallArtifact = (BundleInstallArtifact)installArtifact;
         Bundle bundle = bundleInstallArtifact.getBundle();

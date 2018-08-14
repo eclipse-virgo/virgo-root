@@ -71,7 +71,7 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }
@@ -156,11 +156,11 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
         // Ensure bundles are not already deployed.
         try {
             this.appDeployer.undeploy("bundle", "RefreshExporter.jar", TEST_APPS_VERSION);
-        } catch (DeploymentException e) {
+        } catch (DeploymentException ignored) {
         }
         try {
             this.appDeployer.undeploy("bundle", "RefreshImporter.jar", TEST_APPS_VERSION);
-        } catch (DeploymentException e) {
+        } catch (DeploymentException ignored) {
         }
 
         DeploymentIdentity diExporter = this.appDeployer.deploy(explodedExporterJar.toURI());
@@ -183,7 +183,7 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
         // Redeploy the importer which will fail because of a duplicate bundle.
         try {
             this.appDeployer.deploy(explodedImporterJar.toURI());
-            assertFalse("deploy should fail because of a duplicate bundle", true);
+            fail("deploy should fail because of a duplicate bundle");
         } catch (DeploymentException e) {
             assertTrue("Message did not report clash: " + e.getMessage(), e.getMessage().contains("clashes"));
         }

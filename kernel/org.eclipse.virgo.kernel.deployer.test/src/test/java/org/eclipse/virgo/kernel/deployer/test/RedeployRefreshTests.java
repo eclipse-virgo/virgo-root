@@ -14,10 +14,7 @@ package org.eclipse.virgo.kernel.deployer.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.osgi.framework.ServiceReference;
 
 import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
@@ -43,7 +40,7 @@ public class RedeployRefreshTests extends AbstractDeployerIntegrationTest {
     private PathReference simpleModule;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // The following races with server startup and causes unpleasantness on
         // the console, but is unfortunately
         // necessary until the test framework cold starts the server.
@@ -57,7 +54,7 @@ public class RedeployRefreshTests extends AbstractDeployerIntegrationTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }
@@ -74,7 +71,7 @@ public class RedeployRefreshTests extends AbstractDeployerIntegrationTest {
         badModule.copy(this.simpleModule);
         try {
             deploymentIdentity = this.appDeployer.deploy(this.simpleModule.toURI(), OPTIONS_NON_RECOVERABLE);
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (DeploymentException e) {
             // Expected
         }

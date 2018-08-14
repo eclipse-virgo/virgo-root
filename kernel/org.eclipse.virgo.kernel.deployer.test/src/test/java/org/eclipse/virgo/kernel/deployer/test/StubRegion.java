@@ -25,9 +25,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 
-/**
- * StubRegion
- */
 public class StubRegion implements Region {
 
     private final String name;
@@ -36,125 +33,79 @@ public class StubRegion implements Region {
         this.name = name;
     }
     
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return this.name;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public void addBundle(Bundle bundle) throws BundleException {
 
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public void addBundle(long bundleId) {
 
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
         return null;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public Bundle installBundle(String location) throws BundleException {
         return null;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public Set<Long> getBundleIds() {
         return null;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public boolean contains(Bundle bundle) {
         return false;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public boolean contains(long bundleId) {
         return false;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public Bundle getBundle(String symbolicName, Version version) {
         return null;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public void connectRegion(Region headRegion, RegionFilter filter) throws BundleException {
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public RegionDigraph getRegionDigraph() {
         return null;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public void removeBundle(Bundle bundle) {
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public void removeBundle(long bundleId) {
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public Set<FilteredRegion> getEdges() {
         return null;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
     @Override
     public void visitSubgraph(RegionDigraphVisitor visitor) {
     }
 
 	@Override
-	public Bundle installBundleAtLocation(String arg0, InputStream arg1)
-			throws BundleException {
+	public Bundle installBundleAtLocation(String arg0, InputStream arg1) {
 		return null;
 	}
 

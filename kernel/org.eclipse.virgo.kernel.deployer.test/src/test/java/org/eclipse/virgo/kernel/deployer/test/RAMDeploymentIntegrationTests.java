@@ -46,24 +46,22 @@ public class RAMDeploymentIntegrationTests extends AbstractDeployerIntegrationTe
     
     private RuntimeArtifactRepository ram;
 
-    private ServiceReference<RegionDigraph> regionDigraphReference;
-
     private RegionDigraph regionDigraph;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.lifecycleListener = new StubInstallArtifactLifecycleListener();
         this.lifecycleListenerRegistration = this.kernelContext.registerService(InstallArtifactLifecycleListener.class, this.lifecycleListener, null);
 
         this.ramReference = this.kernelContext.getServiceReference(RuntimeArtifactRepository.class);
         this.ram = this.kernelContext.getService(ramReference);
-        
-        this.regionDigraphReference = this.kernelContext.getServiceReference(RegionDigraph.class);
+
+        ServiceReference<RegionDigraph> regionDigraphReference = this.kernelContext.getServiceReference(RegionDigraph.class);
         this.regionDigraph = this.kernelContext.getService(regionDigraphReference);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (this.lifecycleListenerRegistration != null) {
             this.lifecycleListenerRegistration.unregister();
         }

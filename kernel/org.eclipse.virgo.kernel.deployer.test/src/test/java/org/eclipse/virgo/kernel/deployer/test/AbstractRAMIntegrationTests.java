@@ -21,17 +21,19 @@ import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
 import org.eclipse.virgo.kernel.model.management.RuntimeArtifactModelObjectNameCreator;
+import org.junit.Ignore;
 import org.osgi.framework.Version;
 
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
 
-public class AbstractRAMIntegrationTests extends AbstractDeployerIntegrationTest {
+@Ignore
+public abstract class AbstractRAMIntegrationTests extends AbstractDeployerIntegrationTest {
     
-    public ManageableArtifact getManageableArtifact(DeploymentIdentity deploymentIdentity, Region region) {
+    ManageableArtifact getManageableArtifact(DeploymentIdentity deploymentIdentity, Region region) {
         return getManageableArtifact(deploymentIdentity.getType(), deploymentIdentity.getSymbolicName(), new Version(deploymentIdentity.getVersion()), region);
     }
     
-    public ManageableArtifact getManageableArtifact(String type, String name, Version version, Region region) {
+    ManageableArtifact getManageableArtifact(String type, String name, Version version, Region region) {
         RuntimeArtifactModelObjectNameCreator objectNameCreator = OsgiFrameworkUtils.getService(this.kernelContext, RuntimeArtifactModelObjectNameCreator.class).getService();
         ObjectName objectName = objectNameCreator.createArtifactModel(type, name, version, region);
         
@@ -39,8 +41,7 @@ public class AbstractRAMIntegrationTests extends AbstractDeployerIntegrationTest
     }
     
     private ManageableArtifact getManageableArtifact(ObjectName objectName) {
-        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();        
-        ManageableArtifact artifact = JMX.newMXBeanProxy(mBeanServer, objectName, ManageableArtifact.class);
-        return artifact;
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        return JMX.newMXBeanProxy(mBeanServer, objectName, ManageableArtifact.class);
     }
 }

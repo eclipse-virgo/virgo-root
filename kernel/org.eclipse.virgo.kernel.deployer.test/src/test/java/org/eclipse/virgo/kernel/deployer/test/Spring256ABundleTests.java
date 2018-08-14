@@ -19,6 +19,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import org.osgi.framework.ServiceReference;
@@ -29,6 +30,7 @@ import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.test.framework.ConfigLocation;
 import org.eclipse.virgo.util.io.PathReference;
 
+@Ignore
 @ConfigLocation("META-INF/spring256.test.config.properties")
 public class Spring256ABundleTests extends AbstractDeployerIntegrationTest {
 

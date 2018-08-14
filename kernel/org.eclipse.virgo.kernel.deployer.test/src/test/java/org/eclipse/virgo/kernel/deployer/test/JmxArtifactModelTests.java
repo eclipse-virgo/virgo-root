@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServerConnection;
@@ -30,6 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
+import org.springframework.jmx.support.JmxUtils;
 
 /**
  * Test deployed artifacts show up correctly in JMX, in both the older Model and the newer, region-aware ArtifactModel.
@@ -52,14 +52,14 @@ public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
     private MBeanServerConnection mBeanServerConnection;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
-        this.appDeployer = (ApplicationDeployer) this.context.getService(this.appDeployerServiceReference);
+        this.appDeployer = this.context.getService(this.appDeployerServiceReference);
         this.mBeanServerConnection = getMBeanServerConnection();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }
@@ -82,7 +82,7 @@ public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
 
         this.appDeployer.undeploy(deploymentIdentity);
     }
-    
+
     //TODO: test other artefact types
 
     private String getStringValue(TabularDataSupport attribute, String key) {
@@ -91,21 +91,21 @@ public class JmxArtifactModelTests extends AbstractDeployerIntegrationTest {
         return (String) cds.get("value");
     }
 
-    private void assertArtifactState(String region, String type, String name, String version, String state) throws MalformedObjectNameException,
-        IOException, Exception {
+    private void assertArtifactState(String region, String type, String name, String version, String state) throws
+            Exception {
         assertArtifactExists(region, type, name, version);
         assertEquals(String.format("Artifact %s:%s:%s:%s is not in state %s", region, type, name, version, state), state, this.mBeanServerConnection.getAttribute(getObjectName(region, type, name, version), "State"));
     }
 
-    private void assertArtifactExists(String region, String type, String name, String version) throws IOException, Exception, MalformedObjectNameException {
+    private void assertArtifactExists(String region, String type, String name, String version) throws Exception {
         assertTrue(String.format("Artifact %s:%s:%s:%s does not exist", region, type, name, version), this.mBeanServerConnection.isRegistered(getObjectName(region, type, name, version)));
     }
 
-    protected static ObjectName getObjectName(String region, String type, String name, String version) throws MalformedObjectNameException {
+    private static ObjectName getObjectName(String region, String type, String name, String version) throws MalformedObjectNameException {
         return new ObjectName(String.format("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=%s,name=%s,version=%s,region=%s",type, name, version,region));
     }
 
-    private static MBeanServerConnection getMBeanServerConnection() throws Exception {
+    private static MBeanServerConnection getMBeanServerConnection() {
         return ManagementFactory.getPlatformMBeanServer();
     }
 

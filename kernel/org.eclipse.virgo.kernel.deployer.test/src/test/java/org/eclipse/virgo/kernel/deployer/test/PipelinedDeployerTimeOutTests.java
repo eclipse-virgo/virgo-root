@@ -15,6 +15,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -33,6 +34,7 @@ import org.eclipse.virgo.util.io.PathReference;
 // TODO Additional config paths in the new test framework
 // @AdditionalConfigPaths("src/test/resources/configTimeout/")
 // TODO This test is not robust: it passes without the change to the configured timeout value
+@Ignore
 public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTest {
 
     private ServiceReference<ApplicationDeployer> appDeployerServiceReference;
@@ -46,7 +48,7 @@ public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTe
     private ServiceRegistration<InstallArtifactLifecycleListener> lifecycleListenerRegistration;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         PathReference pr = new PathReference("./target/deployer");
         pr.delete(true);
         pr.createDirectory();
@@ -67,7 +69,7 @@ public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTe
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         clearPickup();
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);

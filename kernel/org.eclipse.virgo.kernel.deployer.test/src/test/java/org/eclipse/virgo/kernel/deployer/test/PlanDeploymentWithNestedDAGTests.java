@@ -17,6 +17,7 @@ import static org.eclipse.virgo.kernel.deployer.test.PlanDeploymentTests.assertB
 import java.io.File;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PlanDeploymentWithNestedDAGTests extends AbstractDeployerIntegrationTest {
@@ -29,7 +30,7 @@ public class PlanDeploymentWithNestedDAGTests extends AbstractDeployerIntegratio
 
         DeploymentIdentity deploymentIdentity = this.deployer.deploy(new File("src/test/resources/testunscopednonatomicNested.plan").toURI());
         assertBundlesInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);
-        // TODO - check that the bundle in installed once?!
+        // TODO - check that the bundle is installed once?!
 
         this.deployer.undeploy(deploymentIdentity);
         assertBundlesNotInstalled(this.context.getBundles(), BUNDLE_ONE_SYMBOLIC_NAME);

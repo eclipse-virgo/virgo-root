@@ -58,6 +58,7 @@ ext.kernelProjects = [
         project(':kernel:org.eclipse.virgo.kernel.agent.dm'),
         project(':kernel:org.eclipse.virgo.kernel.artifact'),
         project(':kernel:org.eclipse.virgo.kernel.deployer'),
+        project(':kernel:org.eclipse.virgo.kernel.deployer.test'),
         project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
         project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
         project(':kernel:org.eclipse.virgo.kernel.equinox.extensions'),
@@ -618,7 +619,7 @@ configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + ker
         into ext.outputDir
     }
 
-    if (it.name == 'org.eclipse.virgo.kernel.test') {
+    if (it.name == 'org.eclipse.virgo.kernel.test' || it.name == 'org.eclipse.virgo.kernel.deployer.test') {
         // We deploy the JUnit tests inside this bundle
         task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
             ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')

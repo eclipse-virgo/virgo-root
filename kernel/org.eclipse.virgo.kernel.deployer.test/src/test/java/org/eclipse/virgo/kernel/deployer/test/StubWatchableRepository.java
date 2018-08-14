@@ -12,19 +12,15 @@ public class StubWatchableRepository implements WatchableRepository {
     
     @Override
     public Set<String> getArtifactLocations(String filename) {
-        return new HashSet<String>();
+        return new HashSet<>();
     }
 
     @Override
-    public void forceCheck() throws Exception {
+    public void forceCheck() {
         this.checkCount++;
     }
-    
-    public void resetCheckCount(){
-        this.checkCount = 0;
-    }
-    
-    public int getCheckCount(){
+
+    int getCheckCount(){
         return this.checkCount;
     }
 

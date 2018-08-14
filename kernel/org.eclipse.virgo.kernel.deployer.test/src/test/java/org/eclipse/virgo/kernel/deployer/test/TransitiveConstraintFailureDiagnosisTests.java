@@ -41,13 +41,13 @@ public class TransitiveConstraintFailureDiagnosisTests extends AbstractDeployerI
     private ApplicationDeployer appDeployer;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         this.appDeployer = this.context.getService(this.appDeployerServiceReference);
     }
     
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }
@@ -63,10 +63,9 @@ public class TransitiveConstraintFailureDiagnosisTests extends AbstractDeployerI
      * 
      * A should fail to resolve because the transitive uses constraint prevents wiring r to A from D 
      * because of the version clash with r from C exposed by the transitive uses directives.
-     * @throws Exception if run-time errors
      */
     @Test
-    public void listTesterModuleHeaders() throws Exception {
+    public void listTesterModuleHeaders() {
         TesterModule tmA = new TesterModule.Builder("a")
         .addImport(new TesterModuleImport.Builder("r").versionRange("[1,2)").build())
         .addImport(new TesterModuleImport.Builder("p").build())

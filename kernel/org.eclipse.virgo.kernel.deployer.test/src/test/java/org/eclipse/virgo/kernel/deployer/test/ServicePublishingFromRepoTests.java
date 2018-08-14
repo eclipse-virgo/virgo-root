@@ -13,11 +13,11 @@ package org.eclipse.virgo.kernel.deployer.test;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 
-/**
- */
+@Ignore
 public class ServicePublishingFromRepoTests extends AbstractParTests {
     @Test
     public void publicationOfServiceByBundleInRepository() throws Throwable {        
