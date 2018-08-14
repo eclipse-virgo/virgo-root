@@ -16,14 +16,7 @@ package org.eclipse.virgo.kernel.userregionfactory;
 import static org.eclipse.virgo.kernel.osgi.framework.ServiceUtils.getPotentiallyDelayedService;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
@@ -32,6 +25,7 @@ import org.eclipse.equinox.region.RegionFilterBuilder;
 import org.eclipse.virgo.nano.core.Shutdown;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 import org.eclipse.virgo.medic.eventlog.EventLogger;
+import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
 import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
 import org.eclipse.virgo.util.parser.launcher.BundleEntry;
 import org.eclipse.virgo.util.osgi.ServiceRegistrationTracker;
@@ -105,6 +99,8 @@ public final class Activator {
 
     private String regionServiceExports;
 
+    private Properties regionVariables = new Properties();
+
     private BundleContext bundleContext;
 
     private final ArgumentParser parser = new ArgumentParser();
@@ -116,7 +112,7 @@ public final class Activator {
     public void activate(ComponentContext componentContext) throws Exception {
         this.bundleContext = componentContext.getBundleContext();
         
-        FrameworkStartLevel frameworkStartLevel = (FrameworkStartLevel)componentContext.getBundleContext().getBundle(0).adapt(FrameworkStartLevel.class);
+        FrameworkStartLevel frameworkStartLevel = componentContext.getBundleContext().getBundle(0).adapt(FrameworkStartLevel.class);
         frameworkStartLevel.setInitialBundleStartLevel(DEFAULT_BUNDLE_START_LEVEL);
         
         this.dumpGenerator = getPotentiallyDelayedService(bundleContext, DumpGenerator.class);
@@ -142,6 +138,14 @@ public final class Activator {
                 this.regionServiceImports = properties.get(USER_REGION_SERVICE_IMPORTS_PROPERTY).toString();
                 this.regionBundleImports = properties.get(USER_REGION_BUNDLE_IMPORTS_PROPERTY).toString();
                 this.regionServiceExports = properties.get(USER_REGION_SERVICE_EXPORTS_PROPERTY).toString();
+
+                Collections.list(properties.keys()).stream()
+                        .filter(key -> !key.equals(USER_REGION_BASE_BUNDLES_PROPERTY)
+                                && !key.equals(USER_REGION_PACKAGE_IMPORTS_PROPERTY)
+                                && !key.equals(USER_REGION_SERVICE_IMPORTS_PROPERTY)
+                                && !key.equals(USER_REGION_BUNDLE_IMPORTS_PROPERTY)
+                                && !key.equals(USER_REGION_SERVICE_EXPORTS_PROPERTY))
+                        .forEach(key -> this.regionVariables.put(key, properties.get(key)));
             } else {
                 eventLogger.log(UserRegionFactoryLogEvents.USER_REGION_CONFIGURATION_UNAVAILABLE);
                 shutdown.immediateShutdown();
@@ -191,7 +195,7 @@ public final class Activator {
     }
 
     private RegionFilter createKernelFilter(RegionDigraph digraph, BundleContext systemBundleContext, EventLogger eventLogger)
-        throws BundleException, InvalidSyntaxException {
+        throws InvalidSyntaxException {
         RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
         Collection<String> allowedBundles = allowImportedBundles(eventLogger);
         for (String filter : allowedBundles) {
@@ -217,7 +221,7 @@ public final class Activator {
     }
 
     private RequireBundle representBundleImportsAsRequireBundle(String userRegionBundleImportsProperty, EventLogger eventLogger) {
-        Dictionary<String, String> headers = new Hashtable<String, String>();
+        Dictionary<String, String> headers = new Hashtable<>();
         headers.put("Require-Bundle", userRegionBundleImportsProperty);
         BundleManifest manifest = BundleManifestFactory.createBundleManifest(headers, new UserRegionFactoryParserLogger(eventLogger));
         return manifest.getRequireBundle();
@@ -226,7 +230,7 @@ public final class Activator {
     private static Collection<String> importBundleToFilter(List<RequiredBundle> importedBundles) {
         if (importedBundles == null || importedBundles.isEmpty())
             return Collections.emptyList();
-        Collection<String> result = new ArrayList<String>(importedBundles.size());
+        Collection<String> result = new ArrayList<>(importedBundles.size());
         for (RequiredBundle importedBundle : importedBundles) {
             StringBuilder f = new StringBuilder();
             f.append("(&(").append(RegionFilter.VISIBLE_BUNDLE_NAMESPACE).append('=').append(importedBundle.getBundleSymbolicName()).append(')');
@@ -249,7 +253,7 @@ public final class Activator {
         List<ImportedPackage> list = manifest.getImportPackage().getImportedPackages();
         if (list.isEmpty())
             return Collections.emptyList();
-        Collection<String> filters = new ArrayList<String>(list.size());
+        Collection<String> filters = new ArrayList<>(list.size());
         for (ImportedPackage importedPackage : list) {
             StringBuilder f = new StringBuilder();
             f.append("(&(").append(RegionFilter.VISIBLE_PACKAGE_NAMESPACE).append('=').append(importedPackage.getPackageName()).append(')');
@@ -269,16 +273,16 @@ public final class Activator {
 
     private static void addRange(String key, VersionRange range, StringBuilder f) {
         if (range.isFloorInclusive()) {
-            f.append('(' + key + ">=" + range.getFloor() + ')');
+            f.append('(').append(key).append(">=").append(range.getFloor()).append(')');
         } else {
-            f.append("(!(" + key + "<=" + range.getFloor() + "))");
+            f.append("(!(").append(key).append("<=").append(range.getFloor()).append("))");
         }
         Version ceiling = range.getCeiling();
         if (ceiling != null) {
             if (range.isCeilingInclusive()) {
-                f.append('(' + key + "<=" + ceiling + ')');
+                f.append('(').append(key).append("<=").append(ceiling).append(')');
             } else {
-                f.append("(!(" + key + ">=" + ceiling + "))");
+                f.append("(!(").append(key).append(">=").append(ceiling).append("))");
             }
         }
     }
@@ -291,7 +295,7 @@ public final class Activator {
         if (classes.length == 0) {
             return Collections.emptyList();
         }
-        Collection<String> result = new ArrayList<String>(classes.length);
+        Collection<String> result = new ArrayList<>(classes.length);
         for (String className : classes) {
             result.add("(objectClass=" + className + ")");
         }
@@ -314,7 +318,7 @@ public final class Activator {
     }
 
     private void notifyUserRegionStarting(BundleContext userRegionBundleContext) {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(EVENT_PROPERTY_REGION_BUNDLECONTEXT, userRegionBundleContext);
         this.eventAdmin.sendEvent(new Event(EVENT_REGION_STARTING, properties));
     }
@@ -325,8 +329,13 @@ public final class Activator {
             : this.bundleContext.getProperty(USER_REGION_BASE_BUNDLES_PROPERTY);
 
         if (userRegionBundlesProperty != null) {
-            List<Bundle> bundlesToStart = new ArrayList<Bundle>();
+            try {
+                userRegionBundlesProperty = new PropertyPlaceholderResolver().resolve(userRegionBundlesProperty, this.regionVariables);
+            } catch (Exception e) {
+                throw new BundleException("Failed to resolve variables in " + USER_REGION_BASE_BUNDLES_PROPERTY, e);
+            }
 
+            List<Bundle> bundlesToStart = new ArrayList<>();
             for (BundleEntry entry : this.parser.parseBundleEntries(userRegionBundlesProperty)) {
                 URI uri = entry.getURI();
                 Bundle bundle = userRegion.installBundle(uri.toString());
@@ -349,18 +358,18 @@ public final class Activator {
     }
 
     private void registerRegionService(Region region) {
-        Dictionary<String, String> props = new Hashtable<String, String>();
+        Dictionary<String, String> props = new Hashtable<>();
         props.put("org.eclipse.virgo.kernel.region.name", region.getName());
         this.tracker.track(this.bundleContext.registerService(Region.class, region, props));
     }
 
     private void publishUserRegionBundleContext(BundleContext userRegionBundleContext) {
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put(USER_REGION_BUNDLE_CONTEXT_SERVICE_PROPERTY, "true");
         this.bundleContext.registerService(BundleContext.class, userRegionBundleContext, properties);
     }
 
-    public void deactivate(ComponentContext context) throws Exception {
+    public void deactivate(ComponentContext context) {
     }
 
 }
