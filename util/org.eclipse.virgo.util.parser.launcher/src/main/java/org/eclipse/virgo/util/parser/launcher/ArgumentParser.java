@@ -46,7 +46,10 @@ public final class ArgumentParser {
 
     private static final String START_FLAG = "start";
     
-    protected static final String IVY_CACHE_RELATIVE = File.separator + "virgo-build-cache" + File.separator + "ivy-cache";
+    private static final String GRADLE_CACHE_RELATIVE = File.separator + ".gradle"
+            + File.separator + "caches"
+            + File.separator + "modules-2"
+            + File.separator + "files-2.1";
 
     public LaunchCommand parse(String[] args) {
         LaunchCommand command = new LaunchCommand();
@@ -100,7 +103,7 @@ public final class ArgumentParser {
         String[] components = parseCommandComponents(decl, BUNDLE_PATH_DELIMITER, MAXIMUM_BUNDLE_DECLARATION_COMPONENTS);
 
         String path = components[0];
-        path = processIvyCachePlaceholder(path);
+        path = processGradleCachePlaceholder(path);
         URI uri = pathToURI(path);
 
         boolean autoStart = false;
@@ -114,9 +117,9 @@ public final class ArgumentParser {
         }
         return new BundleEntry(uri, autoStart);
     }
-    
-    private String processIvyCachePlaceholder(String path) {
-        return path.replace("${ivy.cache}", System.getProperty("user.home") + IVY_CACHE_RELATIVE);
+
+    private String processGradleCachePlaceholder(String path) {
+        return path.replace("${gradle.cache}", System.getProperty("user.home") + GRADLE_CACHE_RELATIVE);
     }
 
     private void parseConfigProperties(String configPath, LaunchCommand command) {
@@ -125,19 +128,10 @@ public final class ArgumentParser {
             throw new ParseException("Config path '" + file.getAbsolutePath() + "' does not exist.");
         }
         Properties props = new Properties();
-        InputStream stream = null;
-        try {
-            stream = new FileInputStream(file);
+        try (InputStream stream = new FileInputStream(file)) {
             props.load(stream);
         } catch (IOException e) {
             throw new ParseException("Unable to read config properties file '" + file.getAbsolutePath() + "'.", e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException ex) {
-                }
-            }
         }
         command.setConfigProperties(props);
     }
@@ -191,7 +185,7 @@ public final class ArgumentParser {
                 if (u.isAbsolute()) {
                     uri = u;
                 }
-            } catch (URISyntaxException e) {
+            } catch (URISyntaxException ignored) {
             }
         }
         

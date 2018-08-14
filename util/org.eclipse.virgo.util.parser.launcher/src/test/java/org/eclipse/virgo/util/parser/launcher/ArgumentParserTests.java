@@ -65,18 +65,17 @@ public class ArgumentParserTests {
     }
     
     @Test
-    @Ignore("[Bug 463462] - As a developer I'd like to be able to build the Virgo artifacts with Gradle")
-    public void testIvyCachePlaceholderSubstitution() {
-        String commandLine = "-B${ivy.cache}/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar";
+    public void testGradleCachePlaceholderSubstitution() {
+        String commandLine = "-B${gradle.cache}/junit/junit/4.7/d9444742a5b897c6280724a49f57a8155517d21f/junit-4.7.jar";
         LaunchCommand command = parse(commandLine);
-        
+
         BundleEntry[] bundleDeclarations = command.getBundleEntries();
         assertNotNull(bundleDeclarations);
         assertEquals(1, bundleDeclarations.length);
-        
+
         BundleEntry bd = bundleDeclarations[0];
         assertFalse(bd.isAutoStart());
-        assertEquals(new File(System.getProperty("user.home") + "/virgo-build-cache/ivy-cache" + "/repository/org.junit/com.springsource.org.junit/4.7.0/com.springsource.org.junit-4.7.0.jar").toURI(), bd.getURI());
+        assertEquals(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/junit/junit/4.7/d9444742a5b897c6280724a49f57a8155517d21f/junit-4.7.jar").toURI(), bd.getURI());
     }
     
     @Test(expected=ParseException.class)
