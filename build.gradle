@@ -42,21 +42,11 @@ buildscript {
     }
 }
 
-def timestamp = new Date().format('yyyyMMddHHmmss', TimeZone.getTimeZone('GMT'))
-
 defaultTasks 'clean', 'jar', 'build', 'distZip'
 
 def Properties versions = new Properties()
 versions.load(new FileInputStream(project.rootProject.file('gradle.properties')))
 project.ext.props = versions
-
-allprojects() {
-    if (System.properties['ci.build'] == 'true') {
-        version = '3.8.0.D-' + timestamp
-    } else {
-        version = '3.8.0.BUILD-SNAPSHOT'
-    }
-}
 
 ext.appsProjects = [
         project(':apps:org.eclipse.virgo.apps.repository.core'),
@@ -617,15 +607,12 @@ configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + ker
 
     apply plugin: 'org.eclipse.virgo.bundlor'
 
-    task('addProjectVersionToGradlePropertiesTask', type: Copy) {
+    task('copyGradlePropertiesTask', type: Copy) {
         ext.outputDir = new File(buildDir, 'bundlor-properties')
         inputs.file project.rootProject.file('gradle.properties')
         outputs.dir ext.outputDir
         from project.rootProject.file('gradle.properties')
         into ext.outputDir
-        filter(ReplaceTokens, tokens: [
-                'VIRGO.VERSION': version,
-        ])
     }
 
     task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
@@ -638,7 +625,7 @@ configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + ker
         into ext.bundlorInputPath
     }
 
-    project.tasks.'bundlor'.dependsOn('addProjectVersionToGradlePropertiesTask', 'mergeClassesAndResources')
+    project.tasks.'bundlor'.dependsOn('copyGradlePropertiesTask', 'mergeClassesAndResources')
 
     bundlor {
         ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
