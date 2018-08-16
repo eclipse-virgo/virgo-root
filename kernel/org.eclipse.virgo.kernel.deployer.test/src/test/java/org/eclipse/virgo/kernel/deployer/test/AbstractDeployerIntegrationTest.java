@@ -36,7 +36,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 @RunWith(DmKernelTestRunner.class)
 public abstract class AbstractDeployerIntegrationTest {
@@ -51,8 +50,6 @@ public abstract class AbstractDeployerIntegrationTest {
 
     protected volatile ApplicationDeployer deployer;
 
-    volatile PackageAdmin packageAdmin;
-
     @Before
     public void setup() {
         this.kernelContext = getKernelContext();
@@ -64,11 +61,6 @@ public abstract class AbstractDeployerIntegrationTest {
         ServiceReference<ApplicationDeployer> applicationDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         if (applicationDeployerServiceReference != null) {
             this.deployer = this.context.getService(applicationDeployerServiceReference);
-        }
-
-        ServiceReference<PackageAdmin> packageAdminServiceReference = context.getServiceReference(PackageAdmin.class);
-        if (packageAdminServiceReference != null) {
-            this.packageAdmin = context.getService(packageAdminServiceReference);
         }
     }
 

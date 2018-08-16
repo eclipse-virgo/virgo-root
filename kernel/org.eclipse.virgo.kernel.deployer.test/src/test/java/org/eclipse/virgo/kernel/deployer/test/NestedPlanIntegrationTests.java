@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
@@ -27,13 +24,12 @@ import org.eclipse.virgo.kernel.model.ArtifactState;
 import org.eclipse.virgo.kernel.model.RuntimeArtifactRepository;
 import org.eclipse.equinox.region.Region;
 import org.junit.*;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
-import org.osgi.service.packageadmin.ExportedPackage;
+import org.osgi.framework.*;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 
 import static org.junit.Assert.*;
+import static org.osgi.framework.namespace.PackageNamespace.PACKAGE_NAMESPACE;
 
 
 /**
@@ -315,13 +311,12 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private Bundle[] getBundlesImportingPackage(String pkg) {
-        ExportedPackage[] exportedPackages = this.packageAdmin.getExportedPackages(pkg);
-
+        BundleWiring bundleWiring = this.context.getBundle().adapt(BundleWiring.class);
+        List<BundleWire> providedWires = bundleWiring.getProvidedWires(PACKAGE_NAMESPACE);
         // The tests should not export a package from multiple bundles at any point in time.
-        assertEquals("The Package '" + pkg + "' is exported from " + exportedPackages.length + " bundles.", 1, exportedPackages.length);
+        assertEquals("The Package '" + pkg + "' is exported from " + providedWires.size() + " bundles.", 1, providedWires.size());
 
-        ExportedPackage parentExportedPackage = exportedPackages[0];
-        return parentExportedPackage.getImportingBundles();
+        return new Bundle[] { providedWires.get(0).getRequirer().getBundle() };
     }
 
     private void checkNoSyntheticContextBundle() {
@@ -333,9 +328,13 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     private Bundle getSyntheticContextBundle(String scopeName) {
         String bsn = scopeName + SYNTHETIC_CONTEXT_BSN_SUFFIX;
-        Bundle[] bundles = this.packageAdmin.getBundles(bsn, null);
+        Bundle[] bundles = getBundles(bsn);
         assertTrue(bundles.length <= 1);
         return bundles.length == 0 ? null : bundles[0];
+    }
+
+    private Bundle[] getBundles(String bsn) {
+        return Arrays.stream(this.context.getBundles()).filter(bundle -> bundle.getSymbolicName().equals(bsn)).toArray(Bundle[]::new);
     }
 
     private void checkImportPromotion(Model model) {
@@ -381,7 +380,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private Artifact getPlan(TestPlanArtifactInfo plan) {
-        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), globalRegion);       
+        return getPlan(plan.getType(), plan.getName(), plan.getVersion(), globalRegion);
     }
     
     private Artifact getPlan(String type, String name, Version version, Region region) {
@@ -514,7 +513,9 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
     }
 
     private Bundle getSpecificBundle(String bsn, Version version) {
-        Bundle[] bundles = packageAdmin.getBundles(bsn, "[" + version.toString() + ", " + version.toString() + "]");
+        Bundle[] bundles = Arrays.stream(getBundles(bsn))
+                .filter(bundle -> new VersionRange("[" + version.toString() + ", " + version.toString() + "]").includes(bundle.getVersion()))
+                .toArray(Bundle[]::new);
         assertNotNull(bundles);
         assertEquals(1, bundles.length);
         return bundles[0];

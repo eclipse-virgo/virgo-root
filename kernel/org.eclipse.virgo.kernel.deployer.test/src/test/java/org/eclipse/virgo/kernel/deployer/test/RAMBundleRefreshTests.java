@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.kernel.deployer.test;
 
+import static org.eclipse.virgo.util.osgi.BundleUtils.getExportedPackages;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,12 +20,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
-import org.osgi.service.packageadmin.ExportedPackage;
-
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentException;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
@@ -226,9 +226,9 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
     
     private void assertStateOfNewExportBundle() {
         Bundle bundle = getBundle("refresh", new Version(1,0,0));
-        ExportedPackage[] exportedPackages = this.packageAdmin.getExportedPackages(bundle);
+        Set<String> exportedPackages = getExportedPackages(bundle);
         
-        assertEquals(2, exportedPackages.length);
+        assertEquals(2, exportedPackages.size());
     }
 
     private void assertStateOfNewEntryBundle() {
@@ -245,9 +245,9 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         assertNotNull(bundle);
         assertNotNull(bundle.getEntry("one/foo.txt"));
         
-        ExportedPackage[] exportedPackages = this.packageAdmin.getExportedPackages(bundle);
+        Set<String> exportedPackages = getExportedPackages(bundle);
         
-        assertEquals(1, exportedPackages.length);
+        assertEquals(1, exportedPackages.size());
     }
 
     private void assertStateOfInitialBundle() {
@@ -263,8 +263,8 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
     private void assertStateOfInitialBundle(Bundle initialBundle) {
         assertNotNull(initialBundle);
         assertNull(initialBundle.getEntry("one/foo.txt"));
-        
-        ExportedPackage[] exportedPackages = this.packageAdmin.getExportedPackages(initialBundle);
-        assertEquals(1, exportedPackages.length);
+
+        Set<String> exportedPackages = getExportedPackages(initialBundle);
+        assertEquals(1, exportedPackages.size());
     }
 }
