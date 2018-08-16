@@ -24,7 +24,6 @@ import org.eclipse.virgo.medic.dump.Dump;
 import org.eclipse.virgo.medic.dump.DumpContributionFailedException;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.impl.heap.HeapDumpContributor;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -38,18 +37,13 @@ public class HeapDumpContributorTests {
     @Rule
     public TemporaryFolder dumpDirectory = new TemporaryFolder();
 
-    @Before
-    public void cleanupHeadDumps() {
-        System.setProperty("jdk.management.heapdump.allowAnyFileSuffix", "true");
-    }
-
     @Test
     public void dumpHeap() throws DumpContributionFailedException {
         DumpContributor contributor = new HeapDumpContributor();
 
         String cause = "failure";
         long timestamp = System.currentTimeMillis();
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
 
         Dump dump = new StubDump(cause, timestamp, context, new Throwable[0], this.dumpDirectory.getRoot());
 
