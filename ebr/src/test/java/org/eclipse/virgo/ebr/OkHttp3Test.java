@@ -14,18 +14,18 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 public class OkHttp3Test extends AbstractBaseTest {
 
     private static final String OKIO = "com.squareup.okio";
-    private static final String OKIO_VERSION = "1.13.0";
+    private static final String OKIO_VERSION_KEY = "okioVersion";
 
     private static final String OKHTTP3 = "com.squareup.okhttp3";
-    private static final String OKHTTP3_VERSION = "3.8.0";
+    private static final String OKHTTP3_VERSION_KEY = "okhttp3Version";
 
     @Configuration
     @Override
     public Option[] config() {
         return options(
                 // maven local
-                mavenBundle(MIRROR_GROUP, OKIO, OKIO_VERSION),
-                mavenBundle(MIRROR_GROUP, OKHTTP3, OKHTTP3_VERSION),
+                mavenBundle(MIRROR_GROUP, OKIO, resolveVersionFromGradleProperties(OKIO_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, OKHTTP3, resolveVersionFromGradleProperties(OKHTTP3_VERSION_KEY)),
                 // specify junit bundles
                 junitBundles()
         );

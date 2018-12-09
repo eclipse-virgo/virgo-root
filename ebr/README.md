@@ -1,24 +1,28 @@
-## Publishing 3rd party bundles
+# Publishing 3rd party bundles
 
-### Building 
+We use our JIPP instance to publish 3rd party bundles.
+The job [virgo-mirrored-master](https://ci.eclipse.org/virgo/view/Virgo/job/virgo-mirrored-master/) publishes the artifacts created with subproject `ebr`.
+
+## Building 
 
 Gradle default tasks:
  1. `clean` - Cleans old build output
- 2. `bundlor` - Generates the OSGiifed MF and outputs jar bundles
+ 2. `bundlor` - Generates the OSGi metadata plus jar bundles
  3. `publishToMavenLocal` - Publishes jar bundles to `[USER_HOME]/.m2/org/eclipse/virgo/mirrored/[artifactId]/[version]/[bundle].jar`
  4. `test` - Executes the PaxExam tests, the bundles are resolved against local Maven repo thus `publishToMavenLocal` is required to be executed before `test`
  5. `publishIvyPublicationToIvyRepository` - Publishes the jar bundles to `build.eclipse.org` ivy repo (only possible on HIPP)
- 
-Building locally:
+
+Build and test locally:
 
 ```bash
 $ ./gradlew clean bundlor publishToMavenLocal test
 ```
 
-### Add new Version of Spring
+## Update Version of a Spring Framework stream
 
-TBD
+* Rename the directories to the new version of Spring.
+* Check and update the versions of the dependencies in `gradle.properties`, if required.
 
-### Writing PaxExam test for 3rd party bundle
+## Add a new Spring Framework stream
 
-TBD
+* Create new folder structure e.g. `5.1.<version>`

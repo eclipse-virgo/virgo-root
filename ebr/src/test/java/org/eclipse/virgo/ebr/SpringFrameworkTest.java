@@ -13,10 +13,11 @@ import static org.ops4j.pax.exam.CoreOptions.*;
  */
 public class SpringFrameworkTest extends AbstractBaseTest {
 
+    private static final String ASPECTJ_WEAVER_VERSION_KEY = "aspectjVersion";
     private static final String ASPECTJ_WEAVER = "org.aspectj.weaver";
-    private static final String ASPECTJ_WEAVER_VERSION = "1.8.10";
 
-    private static final String SF_VERSION = "4.3.18.RELEASE";
+    private static final String SF_VERSION_KEY = "springframeworkVersion";
+
     private static final String SF_PREFIX = "org.springframework.";
     private static final String SF_CORE = SF_PREFIX + "core";
     private static final String SF_BEANS = SF_PREFIX + "beans";
@@ -47,24 +48,24 @@ public class SpringFrameworkTest extends AbstractBaseTest {
                 bundle("http://build.eclipse.org/rt/virgo/ivy/bundles/release/org.eclipse.virgo.mirrored/oevm.org.aopalliance/1.0.0/oevm.org.aopalliance-1.0.0.jar"),
                 bundle("http://build.eclipse.org/rt/virgo/ivy/bundles/release/org.eclipse.virgo.mirrored/javax.jms/1.1.0.v201205091237/javax.jms-1.1.0.v201205091237.jar"),
                 // maven local
-                mavenBundle(MIRROR_GROUP, ASPECTJ_WEAVER, ASPECTJ_WEAVER_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_CORE, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_BEANS, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_AOP, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_ASPECTS, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_EXPRESSION, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_CONTEXT, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_CONTEXT_SUPPORT, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_TRANSACTION, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_JDBC, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_MESSAGING, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_JMS, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_ORM, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_OXM, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_WEB, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_WEBMVC, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_WEBMVC_PORTLET, SF_VERSION),
-                mavenBundle(MIRROR_GROUP, SF_WEBSOCKET, SF_VERSION),
+                mavenBundle(MIRROR_GROUP, ASPECTJ_WEAVER, resolveVersionFromGradleProperties(ASPECTJ_WEAVER_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_CORE, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_BEANS, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_AOP, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_ASPECTS, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_EXPRESSION, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_CONTEXT, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_CONTEXT_SUPPORT, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_TRANSACTION, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_JDBC, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_MESSAGING, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_JMS, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_ORM, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_OXM, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_WEB, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_WEBMVC, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_WEBMVC_PORTLET, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
+                mavenBundle(MIRROR_GROUP, SF_WEBSOCKET, resolveVersionFromGradleProperties(SF_VERSION_KEY)),
                 // specify junit bundles
                 junitBundles()
         );
