@@ -10,6 +10,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 import javax.inject.Inject;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
@@ -25,14 +28,14 @@ import static org.osgi.framework.Bundle.ACTIVE;
 @ExamReactorStrategy(PerClass.class)
 public abstract class AbstractBaseTest {
 
-    public static final String MIRROR_GROUP = "org.eclipse.virgo.mirrored";
+    static final String MIRROR_GROUP = "org.eclipse.virgo.mirrored";
 
     @Inject
-    protected BundleContext bundleContext;
+    private BundleContext bundleContext;
 
     public abstract Option[] config();
 
-    protected void assertBundleActive(String symbolicName) throws BundleException {
+    void assertBundleActive(String symbolicName) throws BundleException {
         assumeNotNull(symbolicName);
         assumeFalse(symbolicName.isEmpty());
         for (Bundle b : this.bundleContext.getBundles()) {
@@ -44,5 +47,21 @@ public abstract class AbstractBaseTest {
             }
         }
         fail("Bundle with symbolicName [" + symbolicName + "] could not be found.");
+    }
+
+    static String resolveVersionFromGradleProperties(String libraryName) {
+        String versionString = "unresolved";
+        String gradlePropertiesFile = "gradle.properties";
+        try {
+            Properties gradleProperties = new Properties();
+            gradleProperties.load(new FileInputStream(gradlePropertiesFile));
+            if (!gradleProperties.containsKey(libraryName)) {
+                fail("Couldn't resolve '" + libraryName + "' in '" + gradlePropertiesFile + "'.");
+            }
+            return gradleProperties.getProperty(libraryName);
+        } catch (IOException e) {
+            fail("Failed to load '" + gradlePropertiesFile + " ' to get version for '" + libraryName + "'.");
+        }
+        return versionString;
     }
 }
