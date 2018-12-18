@@ -1,7 +1,8 @@
-import org.apache.tools.ant.filters.ReplaceTokens
+import aspectj.AspectJPlugin
 import virgobuild.Config
+import virgobuild.VirgoToolsPlugin
 
-apply plugin: virgobuild.VirgoToolsPlugin
+apply plugin: VirgoToolsPlugin
 
 buildscript {
     repositories {
@@ -10,6 +11,7 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
         maven {
+            // Jenkins currently doesn't resolve eclipse.org: Name or service not known
             url "http://build.eclipse.org/rt/virgo/gradle/bundles"
         }
         if (System.properties['local.build'] == 'true') {
@@ -18,7 +20,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor.gradle.plugin:1.1.3.M01"
+        classpath "org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor.gradle.plugin:1.2.0.D-20181221073312"
         if (System.properties['include.docs'] == 'true') {
             // docbook processing
             classpath 'net.sf.docbook:docbook-xsl:1.78.1:resources@zip'
@@ -698,7 +700,7 @@ configure(aspectjProjects) {
         ajtools "org.aspectj:aspectjtools:${project.aspectjVersion}"
     }
 
-    apply plugin: aspectj.AspectJPlugin
+    apply plugin: AspectJPlugin
 
     // Add nature and buildCommand
     eclipse.project {
