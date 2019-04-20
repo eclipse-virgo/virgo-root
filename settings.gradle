@@ -83,12 +83,6 @@ include ':apps:org.eclipse.virgo.apps.splash'
 include ':util:org.eclipse.virgo.util.integrationtest'
 //include ':medic:org.eclipse.virgo.medic.integrationtest'
 
-if (System.properties['include.docs'] == 'true') {
-	include ':documentation:programmer-guide'
-	include ':documentation:tooling-guide'
-	include ':documentation:user-guide'
-}
-
 include ':org.eclipse.virgo.site'
 // TODO - rename feature to region'_'
 include ':org.eclipse.virgo.site:org.eclipse.equinox.regions'

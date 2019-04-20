@@ -564,17 +564,11 @@ project.tasks.addRule("Pattern: publish<ID>") { String taskName ->
             group = Constants.gradleTaskGroupName
             description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
 
-            // TODO rework to something like createP2repository.outputs.repository?
-            // File repositoryDir = file(project.rootProject.tasks[":org.eclipse.virgo.site:${CREATE_P2_REPOSITORY_TASK_NAME}"].buildDir + "/repository/")
-            File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
             File productFileLocation = project.file("${project.projectDir}/publish_resources/products/${product}/${product}.product")
-            File javaProfileLocation = project.file("${project.projectDir}/src/main/dist/configuration/java-server.profile")
 
-            inputs.dir repositoryDir
             inputs.file productFileLocation
-            inputs.file javaProfileLocation
 
-            doLast { publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation) }
+            doLast { publishProduct(project, productFileLocation) }
         }
     }
 }

@@ -14,33 +14,9 @@ buildscript {
             // Jenkins currently doesn't resolve eclipse.org: Name or service not known
             url "http://build.eclipse.org/rt/virgo/gradle/bundles"
         }
-        if (System.properties['local.build'] == 'true') {
-            jcenter()
-            maven { url 'https://repo.spring.io/libs-release' }
-        }
     }
     dependencies {
         classpath "org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor.gradle.plugin:1.2.0.D-20181221073312"
-        if (System.properties['include.docs'] == 'true') {
-            // docbook processing
-            classpath 'net.sf.docbook:docbook-xsl:1.78.1:resources@zip'
-            // TODO use docbook 4.5 to reduce buildtime? 4.5 DTDs are not available locally?
-            // TODO alternatively switch to docbook 5.0?
-            classpath 'net.sf.docbook:docbook-xml:5.0:xsd-resources@zip'
-            classpath 'net.sf.docbook:docbook-xsl-saxon:1.0.0'
-            classpath 'org.apache.xerces:resolver:2.9.1'
-            classpath 'org.apache.xerces:xercesImpl:2.9.1'
-            classpath 'saxon:saxon:6.5.3'
-            classpath 'net.sf.xslthl:xslthl:2.0.1'
-            classpath 'org.apache.xmlgraphics:fop:0.95-1@jar'
-            classpath 'org.apache.xmlgraphics:xmlgraphics-commons:1.3'
-            classpath 'org.apache.xmlgraphics:batik-bridge:1.7@jar'
-            classpath 'org.apache.xmlgraphics:batik-util:1.7@jar'
-            classpath 'org.apache.xmlgraphics:batik-css:1.7@jar'
-            classpath 'org.apache.xmlgraphics:batik-dom:1.7'
-            classpath 'org.apache.xmlgraphics:batik-svg-dom:1.7@jar'
-            classpath 'org.apache.avalon.framework:avalon-framework-api:4.3.1'
-        }
     }
 }
 
@@ -167,13 +143,6 @@ ext.javaProjects = ext.utilProjects + ext.medicProjects + ext.repositoryProjects
                 project(':nano:org.eclipse.virgo.nano.shutdown'),
         ]
 
-if (System.properties['local.build'] == 'true') {
-    ext.javaProjects += [
-            // project(':system-tests:org.eclipse.virgo.server.svt'),
-            // project(':performance-tests:org.eclipse.virgo.qa.performance'),
-    ]
-}
-
 ext.aspectjProjects = [
         // these projects contain aspects
         project(':util:org.eclipse.virgo.util.jmx'),
@@ -185,20 +154,18 @@ ext.aspectjProjects = [
         project(':kernel:org.eclipse.virgo.kernel.osgi'),
 ]
 
-if (System.properties['local.build'] == 'true') {
-    if (System.properties['weaving.enabled'] == 'true') {
-        ext.aspectjProjects + [
-                project(':apps:org.eclipse.virgo.apps.repository.core'),
-                project(':kernel:org.eclipse.virgo.kernel.deployer'),
-                project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
-                project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
-                project(':kernel:org.eclipse.virgo.shell.command'),
-                project(':repository:org.eclipse.virgo.repository'),
-                project(':web:org.eclipse.virgo.web.core'),
-                project(':web:org.eclipse.virgo.web.dm'),
-                project(':web:org.eclipse.virgo.web.tomcat.support'),
-        ]
-    }
+if (System.properties['weaving.enabled'] == 'true') {
+    ext.aspectjProjects + [
+            project(':apps:org.eclipse.virgo.apps.repository.core'),
+            project(':kernel:org.eclipse.virgo.kernel.deployer'),
+            project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
+            project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
+            project(':kernel:org.eclipse.virgo.shell.command'),
+            project(':repository:org.eclipse.virgo.repository'),
+            project(':web:org.eclipse.virgo.web.core'),
+            project(':web:org.eclipse.virgo.web.dm'),
+            project(':web:org.eclipse.virgo.web.tomcat.support'),
+    ]
 }
 
 /*

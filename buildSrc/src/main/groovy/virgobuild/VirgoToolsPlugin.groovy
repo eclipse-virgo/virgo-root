@@ -2,8 +2,6 @@ package virgobuild
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.logging.LogLevel
-
 import eclipsebuild.FileSemaphore
 
 // new comment
@@ -36,15 +34,12 @@ class VirgoToolsPlugin implements Plugin<Project> {
         project.logger.info("Generated p2 instructions for '${assemblyFeatureDir}'.")
     }
 
-    static void publishProduct(Project project, File productFileLocation, File javaProfileLocation) {
+    static void publishProduct(Project project, File productFileLocation) {
         File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
-        publishProduct(project, repositoryDir, productFileLocation, javaProfileLocation)
-
+        internalPublishProduct(project, repositoryDir, productFileLocation)
     }
 
-    // TODO remove unnecessary variable javaProfileLocation as this can be always oev.site/config/something?!
-    @Deprecated
-    static void publishProduct(Project project, File repositoryDir, File productFileLocation, File javaProfileLocation) {
+    private static void internalPublishProduct(Project project, File repositoryDir, File productFileLocation) {
         project.logger.info("Publishing Virgo ${productFileLocation} to '${repositoryDir}'.")
         project.javaexec {
             main = 'org.eclipse.equinox.launcher.Main'

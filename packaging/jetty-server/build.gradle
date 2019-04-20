@@ -57,9 +57,8 @@ task ('publishJettyServer', dependsOn: [
 
     def product = 'jetty-server'
     def productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
-    def javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java-server.profile")
 
-    doLast() { publishProduct(project, productFileLocation, javaProfileLocation) }
+    doLast() { publishProduct(project, productFileLocation) }
 }
 
 task ('installProductJettyServer', dependsOn: [
