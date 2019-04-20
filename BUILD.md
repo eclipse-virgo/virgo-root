@@ -26,11 +26,11 @@ Build the Virgo deliverables
 
 To build distributable zipped files run:
 
-    $ ./gradlew clean jar build distZip fullDistZip rapDistZip
+    $ ./gradlew clean jar build distZip fullDistZip
 
 There is an additional task to install the zips, too. This comes quite handy to quickly check the distributables:
 
-    $ ./gradlew installDist installFullDist installRapDist
+    $ ./gradlew installDist installFullDist
 
 To speed up local builds you can skip some time-consuming processes like follows:
  * `-Dskip.normalize.bundles=true`

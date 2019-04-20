@@ -53,42 +53,17 @@ distributions {
             from ( "${buildDir}/common_resources/" )
         }
     }
-    rap {
-        baseName = 'virgo-nano-rap'
-        contents {
-            from ( 'src/main/filtered' ) {
-                include ( '**/*.properties' )
-                include ( '**/.version' )
-                filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
-            }
-            from ( 'src/main/filtered' ) {
-                include ( 'bin/*.sh' )
-                fileMode 0755
-            }
-            from ( 'src/main/dist' ) {
-            }
-            from ( "${buildDir}/VNR/nano-rap/" ) {
-                exclude ( 'Eclipse.app' )
-                // Remove unwanted *kernel* bundles from nano deliverable
-                exclude('plugins/*.kernel.*')
-            }
-            from ( "${buildDir}/common_resources/" )
-        }
-    }
 }
 
 task ('assembleNano', dependsOn: [
     'installProductNano',
     'installProductNanoFull',
-    'installProductNanoRap',
     'packageResourcesAndProducts'
 ]) {
     installDist.dependsOn(['assembleNano'])
     installFullDist.dependsOn(['assembleNano'])
-    installRapDist.dependsOn(['installProductNanoRap'])
     distZip.dependsOn(['assembleNano'])
     fullDistZip.dependsOn(['assembleNano'])
-    rapDistZip.dependsOn(['installProductNanoRap'])
 }
 
 task ('packageResourcesAndProducts', dependsOn: [
@@ -117,7 +92,6 @@ tasks.addRule("Pattern: publish<ID>") { String taskName ->
             switch (taskName.toString() - 'publish') {
                 case 'Nano': product = 'nano'; break
                 case 'NanoFull': product = 'nano-full'; break
-                case 'NanoRap': product = 'nano-rap'; break
             }
 
             description = "Publishes a product to a p2 repository. The publishing uses ANY environment configurations."
@@ -136,7 +110,6 @@ task ('groupPublish', dependsOn: [
     ':org.eclipse.virgo.site:publishNanoBase',
     'publishNano',
     'publishNanoFull',
-    'publishNanoRap',
 ]){ }
 
 tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
@@ -147,7 +120,6 @@ tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
             switch (taskName.toString() - 'installProduct') {
                 case 'Nano': product = 'nano'; shortProduct = "VN"; break;
                 case 'NanoFull': product = 'nano-full'; shortProduct = "VNF"; break;
-                case 'NanoRap': product = 'nano-rap'; shortProduct = "VNR"; break;
             }
 
             description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
@@ -164,5 +136,4 @@ tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
 task ('groupInstall', dependsOn: [
     'installProductNano',
     'installProductNanoFull',
-    'installProductNanoRap',
 ]){ }

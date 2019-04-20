@@ -150,20 +150,6 @@ dependencies {
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.rap')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.rwt", version: rapRwtVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.rwt.osgi", version: rapRwtOsgiVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.commands", version: eclipseCoreCommandsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.jface", version: rapJfaceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.ibm.icu.base", version: icuBaseVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding", version: eclipseCoreDatabindingVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding.property", version: eclipseCoreDatabindingPropertyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding.observable", version: eclipseCoreDatabindingObservableVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.jface.databinding", version: rapJfaceDatabindingVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.ui", version: rapUiVersion, configuration: "compile", ext: "jar"
-
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
-
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
 

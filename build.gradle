@@ -311,10 +311,6 @@ ext {
             'JAVAX.XML.RPC'                : javaxXmlRpcVersion,
 
             'JETTY.VERSION'                : jettyVersion,
-            'RAP.RWT.VERSION'              : rapRwtVersion,
-            'RAP.RWT.OSGI.VERSION'         : rapRwtOsgiVersion,
-            'RAP.JFACE.VERSION'            : rapJfaceVersion,
-            'RAP.JFACE.DATABINDING.VERSION': rapJfaceDatabindingVersion,
 
             'P2.A.R.VERSION'               : p2ArtifactRepositoryVersion,
             'P2.CONSOLE.VERSION'           : p2ConsoleVersion,
