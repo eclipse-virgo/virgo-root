@@ -133,7 +133,6 @@ ext.integrationTestProjects = [
 ext.smokeTestProjects = [
         project(':packaging:nano:org.eclipse.virgo.nano.smoketest'),
         project(':packaging:kernel:org.eclipse.virgo.kernel.smoketest'),
-        project(':packaging:jetty-server:org.eclipse.virgo.jetty.smoketest'),
         project(':packaging:tomcat-server:org.eclipse.virgo.tomcat.smoketest'),
 ]
 
@@ -178,7 +177,6 @@ if (System.properties['weaving.enabled'] == 'true') {
 ext.packagingProjects = [
         project(':packaging:nano'),
         project(':packaging:kernel'),
-        project(':packaging:jetty-server'),
         project(':packaging:tomcat-server'),
 ]
 
@@ -349,8 +347,6 @@ ext {
             'umbrella.product.name.short'  : 'Virgo Runtime',
             'tomcat.product.name'          : 'Virgo Server for Apache Tomcat',
             'tomcat.product.name.short'    : 'VTS',
-            'jetty.product.name'           : 'Virgo Jetty Server',
-            'jetty.product.name.short'     : 'VJS',
             'kernel.product.name'          : 'Virgo Kernel',
             'kernel.product.name.short'    : 'VK',
             'nano.product.name'            : 'Virgo Nano',

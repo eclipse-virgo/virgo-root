@@ -13,7 +13,6 @@ def packageConfiguration(configurationName, configuration, target) {
 configure([
         project(':packaging:nano'),
         project(':packaging:kernel'),
-        project(':packaging:jetty-server'),
         project(':packaging:tomcat-server'),
 ]) {
     dependencies {
@@ -42,7 +41,6 @@ if (System.properties['skip.smoke.tests'] != 'true') {
 
 configure([
         project(':packaging:kernel'),
-        project(':packaging:jetty-server'),
         project(':packaging:tomcat-server'),
 ]) {
     dependencies {
@@ -90,7 +88,6 @@ configure([
 ]) { dependencies {} }
 
 configure([
-        project(':packaging:jetty-server'),
         project(':packaging:tomcat-server'),
 ]) {
     dependencies {
@@ -124,39 +121,6 @@ configure([
         repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
 
         nanoPickup project(':apps:org.eclipse.virgo.apps.splash')
-    }
-}
-
-configure([
-        project(':packaging:jetty-server'),
-]) {
-    dependencies {
-        repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.deploy", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.http", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.io", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.osgi.boot", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.security", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.server", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.webapp", version: jettyVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.xml", version: jettyVersion, configuration: "compile", ext: "jar"
-
-        /* TODO think about adding additional Jetty bundles - e.g. for WebSocket support
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.ajp_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.annotations_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.client_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.jmx_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.jndi_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.osgi.boot.jsp_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.plus_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.policy_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.rewrite_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.servlets_8.1.16.v20140903.jar
-         packaging/jetty-server/build/install/virgo-jetty-server/repository/ext/org.eclipse.jetty.websocket_8.1.16.v20140903.jar
-         */
     }
 }
 

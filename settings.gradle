@@ -112,7 +112,6 @@ include ':org.eclipse.virgo.site:org.eclipse.virgo.tools'
 
 include ':packaging:nano'
 include ':packaging:kernel'
-include ':packaging:jetty-server'
 include ':packaging:tomcat-server'
 
 include ':test:org.eclipse.virgo.test.launcher'
@@ -123,7 +122,6 @@ if (System.properties['skip.smoke.tests'] != 'true') {
 	include ':test:org.eclipse.virgo.test.tools'
 	include ':packaging:nano:org.eclipse.virgo.nano.smoketest'
 	include ':packaging:kernel:org.eclipse.virgo.kernel.smoketest'
-	include ':packaging:jetty-server:org.eclipse.virgo.jetty.smoketest'
 	include ':packaging:tomcat-server:org.eclipse.virgo.tomcat.smoketest'
 
 	// TODO - check if this module is still needed - only in unused?! feature org.eclipse.virgo.nano.detailed
