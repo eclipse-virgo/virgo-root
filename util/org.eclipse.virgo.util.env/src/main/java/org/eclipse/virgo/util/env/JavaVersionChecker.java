@@ -37,10 +37,14 @@ public class JavaVersionChecker {
             System.exit(-1);
         } 
 
-        if (!javaVersion.startsWith("1.6.") && !javaVersion.startsWith("1.7.") && !javaVersion.startsWith("1.8.")) {
-            System.out.println("JavaVersionChecker: Java version must be at 1.6+ (detected version "+javaVersion+").");
+        if (!isJavaEightOrLater(javaVersion)) {
+            System.out.println("JavaVersionChecker: Java version must be at 1.8+ (detected version "+javaVersion+").");
             System.exit(-1);
         }
         System.exit(0);
+    }
+
+    static boolean isJavaEightOrLater(String javaVersion) {
+        return !javaVersion.startsWith("1.") || javaVersion.startsWith("1.8");
     }
 }
