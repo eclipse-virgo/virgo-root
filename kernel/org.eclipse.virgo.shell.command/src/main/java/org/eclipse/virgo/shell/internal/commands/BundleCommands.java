@@ -11,7 +11,7 @@
 
 package org.eclipse.virgo.shell.internal.commands;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.equinox.region.RegionDigraph;
@@ -61,7 +61,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return examine(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -71,7 +71,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return start(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -81,7 +81,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return stop(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -91,7 +91,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return refresh(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -101,7 +101,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return uninstall(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -111,7 +111,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return diag(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -132,7 +132,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         if (bundle != null) {
             return headers(bundle.getSymbolicName(), bundle.getVersion().toString(), bundle.getRegion().getName());
         } else {
-            return Arrays.asList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
+            return Collections.singletonList(String.format(NO_BUNDLE_FOR_BUNDLE_ID, id));
         }
     }
 
@@ -145,7 +145,7 @@ final class BundleCommands extends AbstractInstallArtifactBasedCommands<Manageab
         Version v = new Version(version);
         List<QuasiBundle> bundles = this.quasiBundleUtil.getAllBundles();
         for (QuasiBundle bundle : bundles) {
-            if (bundle.getSymbolicName().equals(name) && bundle.getVersion().equals(v) && bundle.getRegion().equals(region)) {
+            if (bundle.getSymbolicName().equals(name) && bundle.getVersion().equals(v) && bundle.getRegion().getName().equals(region)) {
                 return bundle;
             }
         }
