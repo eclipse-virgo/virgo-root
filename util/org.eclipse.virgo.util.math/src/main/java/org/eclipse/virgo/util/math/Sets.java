@@ -34,7 +34,7 @@ public class Sets {
      * @return the difference between <code>a</code> and <code>b</code>.
      */
 	public static <T> Set<T> difference(Set<T> a, Set<T> b) {
-        Set<T> result = new HashSet<T>(a);
+        Set<T> result = new HashSet<>(a);
         result.removeAll(b);
         return result;
     }
@@ -51,7 +51,7 @@ public class Sets {
         Set<T> iter = a.size() < b.size() ? a : b;
         Set<T> other = iter == a ? b : a;
 
-        Set<T> result = new HashSet<T>();
+        Set<T> result = new HashSet<>();
         for (T t : iter) {
             if (other.contains(t)) {
                 result.add(t);
@@ -67,8 +67,8 @@ public class Sets {
      * @param items the <code>Set</code> contents.
      * @return the resultant <code>Set</code>.
      */
-    public static <T> Set<T> asSet(T... items) {
-        Set<T> set = new HashSet<T>(items.length);
+    public static <T> Set<T> asSet(T[] items) {
+        Set<T> set = new HashSet<>(items.length);
         Collections.addAll(set, items);
         return set;
     }

@@ -26,11 +26,9 @@ import org.eclipse.virgo.util.math.Sets;
 
 public final class ApplicationNameTrackingListener implements ContainerListener, LifecycleListener {
 
-    private static final Set<String> BEFORE_EVENTS = Sets.asSet("beforeSessionCreated", "beforeSessionDestroyed", "beforeSessionAttributeRemoved",
-        "beforeSessionAttributeReplaced", "beforeSessionAttributeAdded");
+    private static final Set<String> BEFORE_EVENTS = Sets.asSet(new String[]{"beforeSessionCreated", "beforeSessionDestroyed", "beforeSessionAttributeRemoved", "beforeSessionAttributeReplaced", "beforeSessionAttributeAdded"});
 
-    private static final Set<String> AFTER_EVENTS = Sets.asSet("afterSessionCreated", "afterSessionDestroyed", "afterSessionAttributeRemoved",
-        "afterSessionAttributeReplaced", "afterSessionAttributeAdded");
+    private static final Set<String> AFTER_EVENTS = Sets.asSet(new String[]{"afterSessionCreated", "afterSessionDestroyed", "afterSessionAttributeRemoved", "afterSessionAttributeReplaced", "afterSessionAttributeAdded"});
 
     private final ApplicationNameTrackingDelegate delegate = ApplicationNameTrackingDelegate.getInstance();
 
