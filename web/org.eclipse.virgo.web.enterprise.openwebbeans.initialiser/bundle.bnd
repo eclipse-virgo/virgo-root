@@ -1,0 +1,4 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise OpenWebBeans Initializer
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.openwebbeans.initialiser
+Fragment-Host: org.eclipse.gemini.web.tomcat

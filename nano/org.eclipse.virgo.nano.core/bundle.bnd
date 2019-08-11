@@ -1,0 +1,4 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Nano Core
+Service-Component: OSGI-INF/*.xml
+Export-Package: org.eclipse.virgo.nano.*,!org.eclipse.virgo.nano.config.internal.*,!org.eclipse.virgo.nano.core.internal.*,!org.eclipse.virgo.nano.serviceability.internal,!org.eclipse.virgo.nano.shim.scope.internal,!org.eclipse.virgo.nano.shim.serviceability.internal

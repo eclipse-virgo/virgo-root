@@ -23,7 +23,7 @@ import org.eclipse.virgo.nano.core.AbortableSignal;
 
 public final class TestSignal implements AbortableSignal {
     
-    private final AtomicReference<Throwable> causeReference = new AtomicReference<Throwable>(null);
+    private final AtomicReference<Throwable> causeReference = new AtomicReference<>(null);
     
     private final CountDownLatch completionLatch = new CountDownLatch(1);
 

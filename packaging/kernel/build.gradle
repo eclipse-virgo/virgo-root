@@ -1,10 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
 import static virgobuild.VirgoToolsPlugin.installProduct
 import static virgobuild.VirgoToolsPlugin.publishProduct
-
-import virgobuild.Config
 
 apply plugin: 'distribution'
 
@@ -41,7 +38,7 @@ task ('assembleKernel', dependsOn: [
 
 task ('packageResourcesAndProducts', dependsOn: [
     ':kernel:org.eclipse.virgo.kernel.equinox.extensions:jar',
-    ':kernel:org.eclipse.virgo.management.console:war',
+    ':kernel:org.eclipse.virgo.management.console:jar',
     ':nano:org.eclipse.virgo.nano.authentication:jar',
     ':nano:org.eclipse.virgo.nano.shutdown:jar',
     ':util:org.eclipse.virgo.util.env:jar',

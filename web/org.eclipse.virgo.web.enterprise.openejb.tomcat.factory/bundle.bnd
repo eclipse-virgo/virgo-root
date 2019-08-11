@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise OpenEJB Generic Service Provider
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.openejb.tomcat.factory
+Fragment-Host: org.apache.openejb.core
+Import-Template: !org.apache.openejb.util,!org.apache.naming,*

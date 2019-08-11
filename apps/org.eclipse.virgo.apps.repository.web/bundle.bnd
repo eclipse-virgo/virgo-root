@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Hosted Provisioning Repository Web Interface
+Bundle-SymbolicName: org.eclipse.virgo.apps.repository.web
+Bundle-ClassPath: WEB-INF/classes
+Web-ContextPath: org.eclipse.virgo.apps.repository

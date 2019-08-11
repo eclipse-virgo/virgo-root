@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Servlet Adapter
+Bundle-SymbolicName: org.eclipse.virgo.web.servlet.adapter
+Require-Bundle: javax.servlet
+Export-Package: javax.servlet;version="3.0.0",javax.servlet.http;version="3.0.0",javax.servlet.annotation;version="3.0.0",javax.servlet.descriptor;version="3.0.0",javax.servlet.resources;version="3.0.0"

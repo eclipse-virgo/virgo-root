@@ -1,4 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: Environment Utility Code
-Bundle-SymbolicName: org.eclipse.virgo.util.env
-Bundle-Version: ${version}

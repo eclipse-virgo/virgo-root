@@ -1,0 +1,17 @@
+jar.manifest.attributes(
+        '-wab': 'src/main/webapp'
+)
+
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion,ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+
+    compile project(':util:org.eclipse.virgo.util.io')
+    compile project(':apps:org.eclipse.virgo.apps.repository.core')
+}

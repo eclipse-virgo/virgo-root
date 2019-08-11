@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel Deployer
+Bundle-SymbolicName: org.eclipse.virgo.kernel.deployer
+Import-Package: org.osgi.service.cm,org.eclipse.virgo.nano.serviceability.dump,org.eclipse.virgo.kernel.services.work,!org.eclipse.virgo.kernel.equinox.*,!org.eclipse.virgo.nano.deployer.hotenabler,*
+Export-Package: org.eclipse.virgo.kernel.deployer.*,org.eclipse.virgo.kernel.install.*,org.eclipse.virgo.kernel.management.*,org.eclipse.virgo.kernel.module.*

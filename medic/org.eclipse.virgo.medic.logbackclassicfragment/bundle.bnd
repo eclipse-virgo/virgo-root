@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.virgo.medic.logbackclassicfragment
+Bundle-Name: Medic Logback Core Fragment
+Fragment-Host: ch.qos.logback.classic
+Import-Package: org.eclipse.virgo.medic.log.logback;version="0"

@@ -1,0 +1,3 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: OSGi Utility Code
+Export-Package: org.eclipse.virgo.util.osgi

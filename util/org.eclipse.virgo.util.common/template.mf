@@ -1,4 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: Common Utility Code
-Bundle-SymbolicName: org.eclipse.virgo.util.common
-Bundle-Version: ${version}

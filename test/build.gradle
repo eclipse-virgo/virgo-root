@@ -1,5 +1,7 @@
 project(':test:org.eclipse.virgo.test.stubs') {
 	dependencies {
+		compile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+
 		compile project(':util:org.eclipse.virgo.util.io')
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
@@ -9,6 +11,8 @@ project(':test:org.eclipse.virgo.test.stubs') {
 
 project(':test:org.eclipse.virgo.test.tools') {
 	dependencies {
+		compile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+
 		compile project(':util:org.eclipse.virgo.util.io')
 		compile group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
 		compile group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
@@ -34,11 +38,12 @@ project(':test:org.eclipse.virgo.test.framework') {
 }
 
 project(':test:org.eclipse.virgo.test.test') {
-	sourceSets {
-		test {
-			output.resourcesDir = "${buildDir}/classes/test"
-		}
+	task copyTestResources(type: Copy) {
+		from "${projectDir}/src/test/resources"
+		into "${buildDir}/classes/java/test"
 	}
+
+	processTestResources.dependsOn copyTestResources
 
 	dependencies {
 		compile project(':util:org.eclipse.virgo.util.common')

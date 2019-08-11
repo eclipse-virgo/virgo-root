@@ -2,22 +2,169 @@ import aspectj.AspectJPlugin
 import virgobuild.Config
 import virgobuild.VirgoToolsPlugin
 
-apply plugin: VirgoToolsPlugin
-
 buildscript {
     repositories {
-        mavenLocal()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        maven {
-            // Jenkins currently doesn't resolve eclipse.org: Name or service not known
-            url "http://build.eclipse.org/rt/virgo/gradle/bundles"
-        }
+        mavenCentral()
     }
     dependencies {
-        classpath "org.eclipse.virgo.bundlor:org.eclipse.virgo.bundlor.gradle.plugin:1.2.0.D-20181221073312"
+        classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:4.2.0"
     }
+}
+
+plugins {
+    id "biz.aQute.bnd.builder" version "4.2.0" apply false
+    id "com.github.spotbugs" version "1.7.1" apply false
+}
+
+apply plugin: VirgoToolsPlugin
+
+ext {
+    aspectjVersion = "1.9.3"
+
+    javaProjects = [
+            project(':nano:org.eclipse.virgo.nano.authentication'),
+            project(':nano:org.eclipse.virgo.nano.shutdown'),
+
+            project(':test:org.eclipse.virgo.test.stubs'),
+            project(':test:org.eclipse.virgo.test.launcher'),
+            project(':test:org.eclipse.virgo.test.framework'),
+            project(':test:org.eclipse.virgo.test.tools'),
+            project(':test:org.eclipse.virgo.test.test'),
+
+            project(':kernel:org.eclipse.virgo.kernel.stubs'),
+
+            project(':medic:org.eclipse.virgo.medic.test'),
+            project(':kernel:org.eclipse.virgo.kernel.deployer.test'),
+            project(':kernel:org.eclipse.virgo.kernel.test'),
+
+            project(':util:org.eclipse.virgo.util.integrationtest'),
+            //	project(':medic:org.eclipse.virgo.medic.integrationtest'),
+
+            project(':packaging:nano:org.eclipse.virgo.nano.smoketest'),
+            project(':packaging:kernel:org.eclipse.virgo.kernel.smoketest'),
+            project(':packaging:tomcat-server:org.eclipse.virgo.tomcat.smoketest'),
+    ]
+
+    osgiProjects = [
+            project(':kernel:org.eclipse.virgo.kernel.equinox.extensions'),
+
+            project(':util:org.eclipse.virgo.util.common'),
+            project(':util:org.eclipse.virgo.util.env'),
+            project(':util:org.eclipse.virgo.util.io'),
+            project(':util:org.eclipse.virgo.util.jmx'),
+            project(':util:org.eclipse.virgo.util.math'),
+            project(':util:org.eclipse.virgo.util.osgi'),
+            project(':util:org.eclipse.virgo.util.osgi.manifest'),
+            project(':util:org.eclipse.virgo.util.parser.launcher'),
+            project(':util:org.eclipse.virgo.util.parser.manifest'),
+
+            project(':test:org.eclipse.virgo.test.launcher'),
+
+            project(':medic:org.eclipse.virgo.medic'),
+            project(':medic:org.eclipse.virgo.medic.core'),
+            project(':medic:org.eclipse.virgo.medic.logbackclassicfragment'),
+            project(':medic:org.eclipse.virgo.medic.logbackcorefragment'),
+
+            project(':nano:org.eclipse.virgo.nano.core'),
+            project(':nano:org.eclipse.virgo.nano.deployer'),
+            project(':nano:org.eclipse.virgo.nano.deployer.api'),
+            project(':nano:org.eclipse.virgo.nano.deployer.hot'),
+            project(':nano:org.eclipse.virgo.nano.management'),
+            project(':nano:org.eclipse.virgo.nano.management.controller'),
+            project(':nano:org.eclipse.virgo.nano.services.concurrent'),
+            project(':nano:org.eclipse.virgo.nano.services.ds'),
+
+            project(':repository:org.eclipse.virgo.repository'),
+
+            // Gemini Blueprint tracker/extensions
+            project(':kernel:org.eclipse.virgo.kernel.agent.dm'),
+            project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
+            project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment'),
+
+            project(':kernel:org.eclipse.virgo.kernel.artifact'),
+            project(':kernel:org.eclipse.virgo.kernel.deployer'),
+
+            // a test bundle running inside an OSGi container
+            project(':kernel:org.eclipse.virgo.kernel.deployer.test'),
+
+            // FIXME Equinox migration - rename to deployer.blueprint
+            project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
+            project(':kernel:org.eclipse.virgo.kernel.osgi'),
+            project(':kernel:org.eclipse.virgo.kernel.services'),
+            project(':kernel:org.eclipse.virgo.kernel.model'),
+
+            project(':kernel:org.eclipse.virgo.kernel.userregionfactory'),
+            project(':kernel:org.eclipse.virgo.shell.command'),
+
+            project(':kernel:org.eclipse.virgo.kernel.userregion'),
+
+            project(':web:org.eclipse.virgo.web.core'),
+            project(':web:org.eclipse.virgo.web.dm'),
+            project(':web:org.eclipse.virgo.web.tomcat.support'),
+
+            // web.virgo.enterprise - virgo-reloaded, only?
+            project(':web:org.eclipse.virgo.web.enterprise.appdeployer'),
+            project(':web:org.eclipse.virgo.web.enterprise.applistener'),
+            project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans'),
+            project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension'),
+            project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer'),
+            project(':web:org.eclipse.virgo.web.enterprise.jsf.support'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration'),
+            project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory'),
+            project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser'),
+            project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook'),
+            project(':web:org.eclipse.virgo.web.enterprise.security'),
+            project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook'),
+            project(':web:org.eclipse.virgo.web.enterprise.security.valve'),
+            project(':web:org.eclipse.virgo.web.enterprise.services.accessor'),
+            project(':web:org.eclipse.virgo.web.servlet.adapter'),
+            project(':web:org.eclipse.virgo.web.spring.integration'),
+            project(':web:org.eclipse.virgo.web.war.deployer'),
+
+            project(':apps:org.eclipse.virgo.apps.splash'),
+            project(':kernel:org.eclipse.virgo.management.console'),
+            project(':kernel:org.eclipse.virgo.management.fragment'),
+
+            project(':apps:org.eclipse.virgo.apps.repository.core'),
+            project(':apps:org.eclipse.virgo.apps.repository.web'),
+    ]
+
+    aspectjProjects = [
+            // these projects contain aspects
+            project(':util:org.eclipse.virgo.util.jmx'),
+
+            project(':nano:org.eclipse.virgo.nano.core'),
+
+            project(':test:org.eclipse.virgo.test.stubs'),
+            project(':medic:org.eclipse.virgo.medic'),
+
+            // these projects are woven
+            project(':nano:org.eclipse.virgo.nano.deployer.api'),
+            project(':nano:org.eclipse.virgo.nano.deployer.hot'),
+
+            project(':repository:org.eclipse.virgo.repository'), // seems currently no pointcut matches :(
+
+            project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
+
+            project(':kernel:org.eclipse.virgo.kernel.deployer'),
+            project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
+            project(':kernel:org.eclipse.virgo.kernel.osgi'),
+            project(':kernel:org.eclipse.virgo.kernel.model'),
+            project(':kernel:org.eclipse.virgo.kernel.services'),
+
+            project(':kernel:org.eclipse.virgo.shell.command'),
+
+            project(':apps:org.eclipse.virgo.apps.repository.core'),
+
+            project(':web:org.eclipse.virgo.web.core'),
+            project(':web:org.eclipse.virgo.web.dm'),
+            project(':web:org.eclipse.virgo.web.tomcat.support'),
+    ]
 }
 
 defaultTasks 'clean', 'jar', 'build', 'distZip'
@@ -25,154 +172,6 @@ defaultTasks 'clean', 'jar', 'build', 'distZip'
 def Properties versions = new Properties()
 versions.load(new FileInputStream(project.rootProject.file('gradle.properties')))
 project.ext.props = versions
-
-ext.appsProjects = [
-        project(':apps:org.eclipse.virgo.apps.repository.core'),
-        project(':apps:org.eclipse.virgo.apps.repository.web'),
-        project(':apps:org.eclipse.virgo.apps.splash'),
-]
-
-ext.kernelProjects = [
-        project(':kernel:org.eclipse.virgo.kernel.agent.dm'),
-        project(':kernel:org.eclipse.virgo.kernel.artifact'),
-        project(':kernel:org.eclipse.virgo.kernel.deployer'),
-        project(':kernel:org.eclipse.virgo.kernel.deployer.test'),
-        project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
-        project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
-        project(':kernel:org.eclipse.virgo.kernel.equinox.extensions'),
-        project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment'),
-        project(':kernel:org.eclipse.virgo.kernel.model'),
-        project(':kernel:org.eclipse.virgo.kernel.osgi'),
-        project(':kernel:org.eclipse.virgo.kernel.services'),
-        project(':kernel:org.eclipse.virgo.kernel.userregion'),
-        project(':kernel:org.eclipse.virgo.kernel.userregionfactory'),
-        project(':kernel:org.eclipse.virgo.kernel.test'),
-        project(':kernel:org.eclipse.virgo.management.console'),
-        project(':kernel:org.eclipse.virgo.management.fragment'),
-        project(':kernel:org.eclipse.virgo.shell.command'),
-]
-
-ext.medicProjects = [
-        project(':medic:org.eclipse.virgo.medic'),
-        project(':medic:org.eclipse.virgo.medic.core'),
-        project(':medic:org.eclipse.virgo.medic.logbackclassicfragment'),
-        project(':medic:org.eclipse.virgo.medic.logbackcorefragment'),
-]
-
-ext.nanoProjects = [
-        project(':nano:org.eclipse.virgo.nano.core'),
-        project(':nano:org.eclipse.virgo.nano.deployer'),
-        project(':nano:org.eclipse.virgo.nano.deployer.api'),
-        project(':nano:org.eclipse.virgo.nano.deployer.hot'),
-        project(':nano:org.eclipse.virgo.nano.management'),
-        project(':nano:org.eclipse.virgo.nano.management.controller'),
-        project(':nano:org.eclipse.virgo.nano.services.concurrent'),
-        project(':nano:org.eclipse.virgo.nano.services.ds'),
-]
-
-ext.repositoryProjects = [
-        project(':repository:org.eclipse.virgo.repository'),
-]
-
-ext.testUtils = [
-        project(':test:org.eclipse.virgo.test.stubs'),
-        project(':medic:org.eclipse.virgo.medic.test'),
-        project(':kernel:org.eclipse.virgo.kernel.stubs'),
-        project(':test:org.eclipse.virgo.test.tools'),
-        project(':test:org.eclipse.virgo.test.test'),
-]
-
-ext.utilProjects = [
-        project(':util:org.eclipse.virgo.util.common'),
-        project(':util:org.eclipse.virgo.util.env'),
-        project(':util:org.eclipse.virgo.util.io'),
-        project(':util:org.eclipse.virgo.util.jmx'),
-        project(':util:org.eclipse.virgo.util.math'),
-        project(':util:org.eclipse.virgo.util.osgi'),
-        project(':util:org.eclipse.virgo.util.osgi.manifest'),
-        project(':util:org.eclipse.virgo.util.parser.launcher'),
-        project(':util:org.eclipse.virgo.util.parser.manifest'),
-]
-
-ext.webProjects = [
-        project(':web:org.eclipse.virgo.web.core'),
-        project(':web:org.eclipse.virgo.web.dm'),
-        project(':web:org.eclipse.virgo.web.tomcat.support'),
-        project(':web:org.eclipse.virgo.web.enterprise.appdeployer'),
-        project(':web:org.eclipse.virgo.web.enterprise.applistener'),
-        project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans'),
-        project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension'),
-        project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer'),
-        project(':web:org.eclipse.virgo.web.enterprise.jsf.support'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration'),
-        project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory'),
-        project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser'),
-        project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook'),
-        project(':web:org.eclipse.virgo.web.enterprise.security'),
-        project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook'),
-        project(':web:org.eclipse.virgo.web.enterprise.security.valve'),
-        project(':web:org.eclipse.virgo.web.enterprise.services.accessor'),
-        project(':web:org.eclipse.virgo.web.servlet.adapter'),
-        project(':web:org.eclipse.virgo.web.spring.integration'),
-        project(':web:org.eclipse.virgo.web.war.deployer'),
-]
-
-ext.integrationTestProjects = [
-        project(':test:org.eclipse.virgo.test.launcher'),
-        project(':test:org.eclipse.virgo.test.framework'),
-
-        project(':util:org.eclipse.virgo.util.integrationtest'),
-        //	project(':medic:org.eclipse.virgo.medic.integrationtest'),
-]
-
-ext.smokeTestProjects = [
-        project(':packaging:nano:org.eclipse.virgo.nano.smoketest'),
-        project(':packaging:kernel:org.eclipse.virgo.kernel.smoketest'),
-        project(':packaging:tomcat-server:org.eclipse.virgo.tomcat.smoketest'),
-]
-
-ext.javaProjects = ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects + ext.testUtils + ext.integrationTestProjects + smokeTestProjects +
-        [
-                project(':nano:org.eclipse.virgo.nano.authentication'),
-                project(':nano:org.eclipse.virgo.nano.shutdown'),
-        ]
-
-ext.aspectjProjects = [
-        // these projects contain aspects
-        project(':util:org.eclipse.virgo.util.jmx'),
-        project(':test:org.eclipse.virgo.test.stubs'),
-        project(':medic:org.eclipse.virgo.medic'),
-        project(':nano:org.eclipse.virgo.nano.core'),
-        // these projects are woven
-        project(':kernel:org.eclipse.virgo.kernel.model'),
-        project(':kernel:org.eclipse.virgo.kernel.osgi'),
-]
-
-if (System.properties['weaving.enabled'] == 'true') {
-    ext.aspectjProjects + [
-            project(':apps:org.eclipse.virgo.apps.repository.core'),
-            project(':kernel:org.eclipse.virgo.kernel.deployer'),
-            project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
-            project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
-            project(':kernel:org.eclipse.virgo.shell.command'),
-            project(':repository:org.eclipse.virgo.repository'),
-            project(':web:org.eclipse.virgo.web.core'),
-            project(':web:org.eclipse.virgo.web.dm'),
-            project(':web:org.eclipse.virgo.web.tomcat.support'),
-    ]
-}
-
-/*
- TODO - What about these modules? Do they have AspectJ nature in Eclipse?
- aspectpath project(':nano:org.eclipse.virgo.nano.deployer.api')
- aspectpath project(':nano:org.eclipse.virgo.nano.deployer.hot')
- aspectpath project(':kernel:org.eclipse.virgo.kernel.services')
- */
 
 ext.packagingProjects = [
         project(':packaging:nano'),
@@ -347,6 +346,8 @@ ext {
             'umbrella.product.name.short'  : 'Virgo Runtime',
             'tomcat.product.name'          : 'Virgo Server for Apache Tomcat',
             'tomcat.product.name.short'    : 'VTS',
+            'jetty.product.name'           : 'Virgo Jetty Server',
+            'jetty.product.name.short'     : 'VJS',
             'kernel.product.name'          : 'Virgo Kernel',
             'kernel.product.name.short'    : 'VK',
             'nano.product.name'            : 'Virgo Nano',
@@ -360,7 +361,7 @@ ext {
     ]
 }
 
-configure(javaProjects + aspectjProjects) {
+configure(javaProjects + osgiProjects) {
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
@@ -422,7 +423,24 @@ configure(javaProjects + aspectjProjects) {
     }
 }
 
-configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.nanoProjects + ext.kernelProjects + ext.webProjects + ext.appsProjects) {
+configure(aspectjProjects) {
+    configurations {
+        ajtools {
+            transitive = false
+            description = "AspectJ tools runtime"
+        }
+    }
+
+    apply plugin: AspectJPlugin
+
+    dependencies {
+        implementation "org.aspectj:aspectjrt:${aspectjVersion}"
+
+        ajtools "org.aspectj:aspectjtools:${aspectjVersion}"
+    }
+}
+
+configure(javaProjects + osgiProjects) {
     assemble.doLast {
         println '|--> Assembled Jar File: ' + jar.archivePath
         if (System.properties['ci.build.signjars'] == 'true') {
@@ -461,39 +479,43 @@ configure(ext.utilProjects + ext.medicProjects + ext.repositoryProjects + ext.na
     }
 }
 
-configure(javaProjects) {
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
+// FIXME Equinox migration - Investigate how to create Java + OSGi source bundles
+println "FIXME Equinox migration - how to create Java + OSGi source bundles"
+//configure(javaProjects + osgiProjects) {
+//    task sourcesJar(type: Jar, dependsOn: classes) {
+//        classifier = 'sources'
+//        from sourceSets.main.allSource
+//    }
+//
+//    artifacts {
+//        archives sourcesJar
+//    }
+//}
 
-    artifacts {
-        archives sourcesJar
-    }
-}
+// FIXME Equinox migration - Investigate how to publish Java + OSGi bundles
+println "FIXME Equinox migration - how to publish Java + OSGi bundles"
+//configure(javaProjects + osgiProjects) {
+//    apply plugin: 'maven-publish'
+//    publishing {
+//        repositories {
+//            maven {
+//                name = "BuildEclipseOrg"
+//                url "/opt/public/rt/virgo/gradle/bundles"
+//            }
+//        }
+//        publications {
+//            virgo(MavenPublication) {
+//                groupId 'org.eclipse.virgo'
+//                from components.java
+//                artifact sourcesJar {
+//                    classifier "sources"
+//                }
+//            }
+//        }
+//    }
+//}
 
-configure(javaProjects) {
-    apply plugin: 'maven-publish'
-    publishing {
-        repositories {
-            maven {
-                name = "BuildEclipseOrg"
-                url "/opt/public/rt/virgo/gradle/bundles"
-            }
-        }
-        publications {
-            virgo(MavenPublication) {
-                groupId 'org.eclipse.virgo'
-                from components.java
-                artifact sourcesJar {
-                    classifier "sources"
-                }
-            }
-        }
-    }
-}
-
-configure(javaProjects + aspectjProjects + packagingProjects + project(":org.eclipse.virgo.site")) {
+configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclipse.virgo.site")) {
     repositories {
         mavenCentral()
         ivy {
@@ -507,22 +529,24 @@ configure(javaProjects + aspectjProjects + packagingProjects + project(":org.ecl
     }
 }
 
-configure(javaProjects) {
-    if (System.properties['ci.build'] == 'true' || System.properties['include.findbugs'] == 'true') {
-        apply plugin: 'findbugs'
+configure(javaProjects + osgiProjects) {
+    if (System.properties['ci.build'] == 'true' || System.properties['include.spotbugs'] == 'true') {
+        apply plugin: "com.github.spotbugs"
 
-        findbugs {
-            toolVersion = "3.0.1"
-            sourceSets = [sourceSets.main]
+        spotbugs {
+            toolVersion = '3.1.12'
             ignoreFailures = true
-            effort = "max"
+            effort = 'max'
+            showProgress = true
             reportLevel = "high"
             excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
         }
+        // only run 'spotbugsMain'
+        tasks['spotbugsTest'].enabled = false
     }
 }
 
-configure(javaProjects) {
+configure(javaProjects + osgiProjects) {
     if (System.properties['ci.build'] == 'true' || System.properties['include.jacoco'] == 'true') {
         apply plugin: "jacoco"
 
@@ -561,68 +585,16 @@ configure(packagingProjects) {
     }
 }
 
-ext.wabProjects = [
-        project(':apps:org.eclipse.virgo.apps.splash'),
-        project(':kernel:org.eclipse.virgo.management.console'),
-]
+configure(osgiProjects) {
+    apply plugin: 'biz.aQute.bnd.builder'
 
-configure(utilProjects + medicProjects + repositoryProjects + nanoProjects + kernelProjects + webProjects + appsProjects) {
-
-    apply plugin: 'org.eclipse.virgo.bundlor'
-
-    task('copyGradlePropertiesTask', type: Copy) {
-        ext.outputDir = new File(buildDir, 'bundlor-properties')
-        inputs.file project.rootProject.file('gradle.properties')
-        outputs.dir ext.outputDir
-        from project.rootProject.file('gradle.properties')
-        into ext.outputDir
-    }
-
-    if (it.name == 'org.eclipse.virgo.kernel.test' || it.name == 'org.eclipse.virgo.kernel.deployer.test') {
-        // We deploy the JUnit tests inside this bundle
-        task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
-            ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
-            inputs.file sourceSets.test.output.classesDir
-            inputs.file sourceSets.test.resources
-            outputs.dir ext.bundlorInputPath
-            from sourceSets.test.output.classesDir
-            from sourceSets.test.resources
-            into ext.bundlorInputPath
-        }
-    } else {
-        task('mergeClassesAndResources', type: Copy, dependsOn: 'compileJava') {
-            ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
-            inputs.file sourceSets.main.output.classesDir
-            inputs.file sourceSets.main.resources
-            outputs.dir ext.bundlorInputPath
-            from sourceSets.main.output.classesDir
-            from sourceSets.main.resources
-            into ext.bundlorInputPath
-        }
-    }
-
-    project.tasks.'bundlor'.dependsOn('copyGradlePropertiesTask', 'mergeClassesAndResources')
-
-    bundlor {
-        ext.bundlorInputPath = new File(buildDir, 'bundlor-inputPath')
-        project.tasks['bundlor'].inputs.file ext.bundlorInputPath
-        manifestTemplatePath = "template.mf"
-        propertiesPath = new File("${project.buildDir}/bundlor-properties/gradle.properties")
-        inputPath = ext.bundlorInputPath
-        failOnWarnings = false
-    }
-}
-
-configure(wabProjects) {
-    apply plugin: 'war'
-
-    war.dependsOn('bundlor')
-
-    war {
-        extension = 'jar'
-        rootSpec.exclude("**/*.jar")
-        manifest = project.manifest { from 'build/bundlor/META-INF/MANIFEST.MF' }
-    }
+    jar.bndfile = "bundle.bnd"
+    jar.manifest.attributes(
+            '-classpath': sourceSets.main.output.classesDirs.asPath,
+            'Bundle-Vendor': 'Eclipse Virgo',
+            'Bundle-SymbolicName': project.name,
+            '-removeheaders': 'Bnd-LastModified,Created-By',
+    )
 }
 
 configure(aspectjProjects) {
@@ -687,14 +659,10 @@ configure(aspectjProjects) {
     }
 }
 
-configure(testUtils) {
-    dependencies {
-        // changing junit dependency to configuration compile - this is a test util project based on JUnit :)
-        compile group: 'junit', name: 'junit', version: junitVersion
-    }
-}
-
-configure(integrationTestProjects) {
+configure([
+        project(':util:org.eclipse.virgo.util.integrationtest'),
+        //	project(':medic:org.eclipse.virgo.medic.integrationtest'),
+]) {
     dependencies {
         // OSGi runtime
         testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
@@ -710,37 +678,4 @@ configure(integrationTestProjects) {
         testRuntime group: "org.ops4j.pax.url", name: "pax-url-aether", version: paxUrlAetherVersion
         testRuntime group: "org.ops4j.pax.url", name: "pax-url-wrap", version: paxUrlWrapVersion
     }
-}
-
-configure(smokeTestProjects) {
-    sourceSets {
-        smokeTest {
-            java.srcDir file('src/smokeTest/java')
-            resources.srcDir file('src/smokeTest/resources')
-        }
-    }
-
-    task smokeTest(type: Test) {
-        testClassesDir = sourceSets.smokeTest.output.classesDir
-        classpath = sourceSets.smokeTest.runtimeClasspath
-    }
-
-    dependencies {
-        testCompile project(':test:org.eclipse.virgo.test.tools')
-        testCompile project(':util:org.eclipse.virgo.util.io')
-
-        testRuntime group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
-        testRuntime group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
-
-        smokeTestCompile sourceSets.main.output
-        smokeTestCompile configurations.testCompile
-        smokeTestCompile sourceSets.test.output
-        smokeTestRuntime configurations.testRuntime
-    }
-}
-
-task wrapper(type: Wrapper) {
-    description 'Creates a local Gradle Wrapper'
-    group = 'Build Setup'
-    gradleVersion = '3.5' // CQ 13634
 }

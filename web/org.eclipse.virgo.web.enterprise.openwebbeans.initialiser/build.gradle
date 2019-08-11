@@ -1,0 +1,12 @@
+dependencies {
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+    compile group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+    // Required for bnd to generate proper OSGi metadata
+    compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+}

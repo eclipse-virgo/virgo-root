@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Nano MBean Exporter
+Bundle-SymbolicName: org.eclipse.virgo.nano.management
+Service-Component: OSGI-INF/org.eclipse.virgo.nano.management.deployer.xml,OSGI-INF/org.eclipse.virgo.nano.management.recovery.xml
+Export-Package: org.eclipse.virgo.nano.management.*

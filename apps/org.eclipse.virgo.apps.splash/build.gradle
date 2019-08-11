@@ -1,0 +1,10 @@
+jar.manifest.attributes(
+        '-wab': 'src/main/webapp'
+)
+
+dependencies {
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+    compile project(':apps:org.eclipse.virgo.apps.repository.core')
+}

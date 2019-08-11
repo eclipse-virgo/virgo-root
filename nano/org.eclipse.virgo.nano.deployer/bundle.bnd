@@ -1,0 +1,4 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Nano Core
+Export-Package: !org.eclipse.virgo.nano.deployer.internal,org.eclipse.virgo.nano.deployer.*
+Import-Package: !org.eclipse.virgo.nano.deployer, *

@@ -1,4 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: Mathematical Utility Code
-Bundle-SymbolicName: org.eclipse.virgo.util.math
-Bundle-Version: ${version}

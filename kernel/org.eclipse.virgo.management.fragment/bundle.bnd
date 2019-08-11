@@ -1,0 +1,6 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Management Fragment
+Fragment-Host: org.eclipse.gemini.management
+Bundle-SymbolicName: org.eclipse.virgo.management.fragment
+GeminiManagement-ObjectNameTranslator: org.eclipse.virgo.management.fragment.VirgoObjectNameTranslator
+Import-Package: !org.eclipse.gemini.management,*

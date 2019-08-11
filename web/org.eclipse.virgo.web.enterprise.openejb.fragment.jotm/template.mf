@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Virgo Web Enterprise OpenEjb Transaction Integration
-Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.openejb.fragment.jotm
-Bundle-Version: ${version}
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Fragment-Host: org.apache.openejb.core
-Import-Package: javax.transaction, org.objectweb.jotm

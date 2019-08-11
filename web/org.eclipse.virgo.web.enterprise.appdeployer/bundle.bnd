@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise App Deployer
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.appdeployer
+Service-Component: OSGI-INF/virgo.web.enterprise.appdeployer.deployer.xml
+Export-Package: org.eclipse.virgo.web.enterprise.openejb.deployer.*

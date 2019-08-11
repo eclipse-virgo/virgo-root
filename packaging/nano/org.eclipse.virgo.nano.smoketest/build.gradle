@@ -1,0 +1,42 @@
+sourceSets {
+    smokeTest {
+        java {
+            srcDirs = ['src/smokeTest/java']
+        }
+    }
+    smokeTest {
+        resources {
+            srcDirs = ['src/smokeTest/resources']
+        }
+    }
+}
+
+configurations {
+    smokeTestImplementation.extendsFrom testImplementation
+    smokeTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+task smokeTest(type: Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    dependsOn ':packaging:nano:installDist' // Virgo nano
+    dependsOn ':packaging:nano:installFullDist' // Virgo nano full
+
+    testClassesDirs = sourceSets.smokeTest.output.classesDirs
+    classpath = sourceSets.smokeTest.runtimeClasspath
+
+    shouldRunAfter test
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+
+    testImplementation project(':test:org.eclipse.virgo.test.tools')
+    testImplementation project(':util:org.eclipse.virgo.util.io')
+
+    testRuntime group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
+    testRuntime group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
+}
+
+check.dependsOn smokeTest

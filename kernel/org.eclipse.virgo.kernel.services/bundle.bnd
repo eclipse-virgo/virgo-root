@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Kernel Services
+Bundle-SymbolicName: org.eclipse.virgo.kernel.services
+Export-Package: !org.eclipse.virgo.kernel.services.internal,org.eclipse.virgo.kernel.services.*
+Import-Package: org.eclipse.virgo.nano.core,org.eclipse.virgo.kernel.artifact.bundle,org.eclipse.virgo.kernel.artifact.library,org.eclipse.virgo.kernel.artifact.par,org.eclipse.virgo.kernel.artifact.plan,org.eclipse.virgo.kernel.artifact.properties,org.osgi.service.cm,*

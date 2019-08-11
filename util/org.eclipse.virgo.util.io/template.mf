@@ -1,7 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: IO Utility Code
-Bundle-SymbolicName: org.eclipse.virgo.util.io
-Bundle-Version: ${version}
-Import-Template: 
- org.eclipse.virgo.util.*;version="${version:[=.=.=, =.=.+1)}",
- org.slf4j.*;version="${slf4jVersion:[=.=.0, +1.0.0)}"

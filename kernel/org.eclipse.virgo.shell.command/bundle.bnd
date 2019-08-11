@@ -1,0 +1,6 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Admin Shell
+Bundle-SymbolicName: org.eclipse.virgo.shell.command
+Bundle-Activator: org.eclipse.virgo.shell.osgicommand.Activator
+Export-Package: !org.eclipse.virgo.shell.internal.*,!org.eclipse.virgo.shell.osgicommand.internal,org.eclipse.virgo.shell.osgicommand.helper.*
+Import-Package: org.eclipse.virgo.medic.eventlog,*

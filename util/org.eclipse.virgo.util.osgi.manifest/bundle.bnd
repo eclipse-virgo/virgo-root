@@ -1,0 +1,3 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: OSGi Manifest Utility Code
+Export-Package: !org.eclipse.virgo.util.osgi.manifest.internal.*,!org.eclipse.virgo.util.osgi.manifest.parse.standard.*,org.eclipse.virgo.util.osgi.manifest.*

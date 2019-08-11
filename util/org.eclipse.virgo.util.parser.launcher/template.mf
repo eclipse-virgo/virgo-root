@@ -1,4 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: Virgo Launcher Parser
-Bundle-SymbolicName: org.eclipse.virgo.util.parser.launcher
-Bundle-Version: ${version}

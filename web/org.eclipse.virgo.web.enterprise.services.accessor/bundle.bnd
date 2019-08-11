@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise Services Accessor
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.services.accessor
+Service-Component: OSGI-INF/wab_classloader_customizer.xml, OSGI-INF/command.xml
+Import-Package: org.eclipse.virgo.kernel.equinox.extensions.hooks,*

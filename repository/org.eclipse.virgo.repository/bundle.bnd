@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Artifact Repository
+Bundle-Activator: org.eclipse.virgo.repository.internal.RepositoryBundleActivator
+Bundle-SymbolicName: org.eclipse.virgo.repository
+Export-Package: !org.eclipse.virgo.repository.internal.*,!org.eclipse.virgo.repository.storage.*,org.eclipse.virgo.repository.*

@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Catalina Integration With OpenWebBeans
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans
+Fragment-host: org.apache.catalina
+Import-Package: org.apache.webbeans.web.tomcat,org.apache.webbeans.servlet

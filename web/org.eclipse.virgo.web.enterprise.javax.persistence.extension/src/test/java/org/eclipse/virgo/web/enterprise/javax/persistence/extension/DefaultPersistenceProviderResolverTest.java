@@ -23,9 +23,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DefaultPersistenceProviderResolverTest {
-		
+
+	private static final String TEST_CLASSES = "./build/classes/java/test";
+
 	@Before
-	public void prepare() throws Exception {
+	public void prepare() {
 		clean();
 	}
 	
@@ -54,44 +56,33 @@ public class DefaultPersistenceProviderResolverTest {
 	}
 	
 	private void prepareServicesFile(String[] persistenceProviderNames) throws Exception {
-		new File("./build/classes/test/META-INF").mkdir();
-		File servicesDir = new File("./build/classes/test/META-INF/services");
+		new File(TEST_CLASSES + "/META-INF").mkdir();
+		File servicesDir = new File(TEST_CLASSES + "/META-INF/services");
 		servicesDir.mkdir();
 		
-		File persistenceProviderFile = new File("./build/classes/test//META-INF/services/javax.persistence.spi.PersistenceProvider");
-		
-		PrintWriter writer = null; 
-		try {
-			writer = new PrintWriter(persistenceProviderFile);
-			for(String persistenceProviderName : persistenceProviderNames) {
+		File persistenceProviderFile = new File(TEST_CLASSES + "/META-INF/services/javax.persistence.spi.PersistenceProvider");
+
+		try (PrintWriter writer = new PrintWriter(persistenceProviderFile)) {
+			for (String persistenceProviderName : persistenceProviderNames) {
 				writer.println(persistenceProviderName);
 			}
 			writer.flush();
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (Exception e) {
-					// nothing
-				}
-			}
-			
-		}	
+		}
 	}
-	
+
 	@After
 	public void clean() {
-		File persistenceProviderFile = new File("./build/classes/test/META-INF/services/javax.persistence.spi.PersistenceProvider");
+		File persistenceProviderFile = new File(TEST_CLASSES + "/META-INF/services/javax.persistence.spi.PersistenceProvider");
 		if (persistenceProviderFile.exists()) {
 			persistenceProviderFile.delete();
 		}
-		
-		File servicesDir = new File("./build/classes/test/META-INF/services");
+
+		File servicesDir = new File(TEST_CLASSES + "/META-INF/services");
 		if (servicesDir.exists()) {
 			servicesDir.delete();
 		}
-		
-		File metaInfDir = new File("./build/classes/test/META-INF");
+
+		File metaInfDir = new File(TEST_CLASSES + "/META-INF");
 		if (metaInfDir.exists()) {
 			metaInfDir.delete();
 		}

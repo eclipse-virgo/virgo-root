@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Medic Core Implementation
+Bundle-Activator: org.eclipse.virgo.medic.impl.MedicActivator
+Medic-LoggingConfiguration: org.eclipse.virgo.medic
+Export-Package = !org.eclipse.virgo.medic.log.impl.*,org.eclipse.virgo.medic.log.*,org.eclipse.virgo.medic.management.*

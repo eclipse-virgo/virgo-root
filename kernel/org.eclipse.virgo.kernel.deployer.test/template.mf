@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Virgo Kernel Deployer Test
-Bundle-SymbolicName: org.eclipse.virgo.kernel.deployer.test.loadable
-Bundle-Version: ${version}
-Excluded-Exports: 
- *
-Excluded-Imports: 
- *

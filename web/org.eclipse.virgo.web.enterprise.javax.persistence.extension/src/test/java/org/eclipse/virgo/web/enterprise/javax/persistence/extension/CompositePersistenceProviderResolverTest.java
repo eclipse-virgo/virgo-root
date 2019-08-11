@@ -28,15 +28,17 @@ import org.osgi.framework.BundleContext;
 import org.eclipse.virgo.web.enterprise.javax.persistence.extension.CompositePersistenceProviderResolver;
 
 public class CompositePersistenceProviderResolverTest {
-	
+
+	private static final String TEST_CLASSES = "./build/classes/java/test";
+
 	@Before
 	public void prepare() throws Exception {
 		clean();
 		prepareServicesFile();
 	}
-	
+
 	@Test
-	public void testGetPersistenceProviders() throws Exception {
+	public void testGetPersistenceProviders() {
 		BundleContext context = EasyMock.createMock(BundleContext.class);
 		CompositePersistenceProviderResolver compositePersistenceProviderResolver = new CompositePersistenceProviderResolver(context);
 		List<PersistenceProvider> persistenceProviders = compositePersistenceProviderResolver.getPersistenceProviders();
@@ -44,9 +46,9 @@ public class CompositePersistenceProviderResolverTest {
 		Assert.assertEquals("First provider not OSGi Persistence Provider", persistenceProviders.get(0).getClass(),  OSGiProviderResolver.class);
 		Assert.assertEquals("Second provider not Test Persistence Provider", persistenceProviders.get(1).getClass(),  TestPersistenceProvider.class);
 	}
-	
+
 	@Test
-	public void testGetPersistenceProvidersNoOSGiProvider() throws Exception {
+	public void testGetPersistenceProvidersNoOSGiProvider() {
 		BundleContext context = EasyMock.createMock(BundleContext.class);
 		CompositePersistenceProviderResolver compositePersistenceProviderResolver = new CompositePersistenceProviderResolver(context);
 		compositePersistenceProviderResolver.removeOsgiProviderResolver();
@@ -56,42 +58,31 @@ public class CompositePersistenceProviderResolverTest {
 	}
 	
 	private void prepareServicesFile() throws Exception {
-		new File("./build/classes/test/META-INF").mkdir();
-		File servicesDir = new File("./build/classes/test/META-INF/services");
+		new File(TEST_CLASSES + "/META-INF").mkdir();
+		File servicesDir = new File(TEST_CLASSES + "/META-INF/services");
 		servicesDir.mkdir();
 		
-		File persistenceProviderFile = new File("./build/classes/test/META-INF/services/javax.persistence.spi.PersistenceProvider");
-		
-		PrintWriter writer = null; 
-		try {
-			writer = new PrintWriter(persistenceProviderFile);
+		File persistenceProviderFile = new File(TEST_CLASSES + "/META-INF/services/javax.persistence.spi.PersistenceProvider");
+
+		try (PrintWriter writer = new PrintWriter(persistenceProviderFile)) {
 			writer.println("org.eclipse.virgo.web.enterprise.javax.persistence.extension.TestPersistenceProvider");
 			writer.flush();
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (Exception e) {
-					// nothing
-				}
-			}
-			
-		}	
+		}
 	}
 	
 	@After
 	public void clean() {
-		File persistenceProviderFile = new File("./build/classes/test/META-INF/services/javax.persistence.spi.PersistenceProvider");
+		File persistenceProviderFile = new File(TEST_CLASSES + "/META-INF/services/javax.persistence.spi.PersistenceProvider");
 		if (persistenceProviderFile.exists()) {
 			persistenceProviderFile.delete();
 		}
 		
-		File servicesDir = new File("./build/classes/test/META-INF/services");
+		File servicesDir = new File(TEST_CLASSES + "/META-INF/services");
 		if (servicesDir.exists()) {
 			servicesDir.delete();
 		}
 		
-		File metaInfDir = new File("./build/classes/test/META-INF");
+		File metaInfDir = new File(TEST_CLASSES + "/META-INF");
 		if (metaInfDir.exists()) {
 			metaInfDir.delete();
 		}

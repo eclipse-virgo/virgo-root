@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Enterprise Security Integration
+Bundle-SymbolicName: org.eclipse.virgo.web.enterprise.security
+Export-Package: org.eclipse.virgo.web.enterprise.security
+Fragment-Host: org.apache.openejb.core

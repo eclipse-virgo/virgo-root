@@ -1,7 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Name: Equinox Specific OSGi Extensions
-Bundle-SymbolicName: org.eclipse.virgo.test.launcher
-Bundle-Version: ${version}
-Main-Class: org.eclipse.virgo.test.launcher.Launcher
-Import-Template: 
- org.osgi.framework.*;version="0"
