@@ -136,7 +136,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
     /**
      * Triggers bulk deployment of source artifacts that are not yet deployed.
      * 
-     * @param sourceArtefact the source artifact URI string
+     * @param sourceArtefacts the source artifacts URI strings
      * @throws DeploymentException
      */
     private void bulkDeployIfNotDeployed(List<String> sourceArtefacts) throws DeploymentException {
@@ -170,7 +170,7 @@ final class HotDeploymentFileSystemListener implements FileSystemListener {
     private void undeploy(String sourceArtefact) throws DeploymentException {
         DeploymentIdentity deploymentIdentity = getDeploymentIdentity(sourceArtefact);
         if (deploymentIdentity != null) {
-            this.deployer.undeploy(deploymentIdentity);
+            this.deployer.undeploy(deploymentIdentity, true);
         }
     }
 

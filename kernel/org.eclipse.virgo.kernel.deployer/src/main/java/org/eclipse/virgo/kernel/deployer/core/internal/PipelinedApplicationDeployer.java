@@ -576,7 +576,7 @@ final class PipelinedApplicationDeployer implements ApplicationDeployer, Applica
      */
     public void undeploy(DeploymentIdentity deploymentIdentity, boolean deleted) throws DeploymentException {
         synchronized (this.monitor) {
-            undeployInternal(deploymentIdentity, false, true);
+            undeployInternal(deploymentIdentity, false, deleted);
         }
     }
     

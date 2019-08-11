@@ -86,7 +86,7 @@ public class HotDeployerFileSystemListenerTests {
     public void appDeleted() throws Exception {
         File app = new File("path/to/app");
         expect(deployer.getDeploymentIdentity(app.toURI())).andReturn(this.deploymentIdentity);
-        deployer.undeploy(this.deploymentIdentity);
+        deployer.undeploy(this.deploymentIdentity, true);
 
         replay(deployer);
         listener.onChange("path/to/app", FileSystemEvent.DELETED);
