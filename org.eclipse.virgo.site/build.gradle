@@ -121,12 +121,11 @@ dependencies {
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
 
-    // TODO - rename feature to region'_'
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.region.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.core')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.ds')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.core.feature')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.ds.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.common", version: equinoxCommonVersion, configuration: "compile", ext: "jar"
@@ -135,9 +134,9 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.cm", version: equinoxCmVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.feature')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.http.jetty')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.http.jetty.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.jetty", version: equinoxHttpJettyVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.servlet", version: equinoxHttpServletVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
@@ -150,23 +149,23 @@ dependencies {
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
     // contains org.osgi.jmx
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic.feature')
     signedExternalPlugin group: "ch.qos.logback", name: "logback-core", version: logbackVersion
     signedExternalPlugin group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.controller')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer.feature')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.feature')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.controller.feature')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.shell')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.shell.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console", version: equinoxConsoleVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console.ssh", version: equinoxConsoleSshVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.mina.core", version: minaCoreVersion, configuration: "compile", ext: "jar"
@@ -175,14 +174,13 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.shell", version: gogoShellVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator.manipulator", version: equinoxSimpleConfiguratorManipulatorVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin", version: equinoxFrameworkadminVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin.equinox", version: equinoxFrameworkadminEquinoxVersion, configuration: "compile", ext: "jar"
 
-    // TODO - rename feature to org.eclipse.gemini.blueprint
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.blueprint.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
@@ -194,18 +192,18 @@ dependencies {
 
     // nano base
     // TODO - merge to oev.nano.services ?
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.concurrent')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.ds')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.concurrent.feature')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.ds.feature')
 
     // TODO - merge with management features above?
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps.feature')
 
     signedExternalPlugin group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
     signedExternalPlugin group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
     signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     // nano full
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.p2.provisioning')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.p2.provisioning.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.contenttype", version: eclipseCoreContenttypeVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.jobs", version: eclipseCoreJobsVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.net", version: eclipseCoreNetVersion, configuration: "compile", ext: "jar"
@@ -238,9 +236,9 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.natives", version: p2TouchpointNativesVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.transport.ecf", version: p2TransportEcfVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.war.deployer')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.enterprise')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.web')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.war.deployer.feature')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.enterprise.feature')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.web.feature')
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.extender", version: geminiWebVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
@@ -360,7 +358,7 @@ dependencies {
     signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.services.accessor')
     signedExternalPlugin project(':web:org.eclipse.virgo.web.war.deployer')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.tools')
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.tools.feature')
 }
 
 task zipUpdateSite(type: Zip, dependsOn: createP2Repository) {
