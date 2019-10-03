@@ -110,13 +110,29 @@ project(':kernel:org.eclipse.virgo.kernel.deployer.test') {
         testCompile project(':test:org.eclipse.virgo.test.stubs')
         testCompile project(':test:org.eclipse.virgo.test.framework')
 
+        // some the libraries are used by configuration items during integration tests -> testRuntime
+        // @see org.eclipse.virgo.kernel.userregion.properties and others
+        testRuntime group: "org.slf4j", name: "jcl-over-slf4j", version: slf4jVersion
         testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console", version: equinoxConsoleVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
         testCompile group: "org.hsqldb", name:"hsqldb", version: hsqldbVersion
+
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.command", version: gogoCommandVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.shell", version: gogoShellVersion, configuration: "compile", ext: "jar"
+
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.pool", version: commonsPoolVersion, configuration: "compile", ext: "jar"
 
         testCompile project(':util:org.eclipse.virgo.util.parser.launcher')
         testCompile project(':util:org.eclipse.virgo.util.osgi')
