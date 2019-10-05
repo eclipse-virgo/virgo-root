@@ -403,8 +403,6 @@ configure(javaProjects + aspectjProjects) {
         if (System.properties['ci.build'] == 'true') {
             ignoreFailures = true
         }
-        // Since JDK 8u141 heap dump names are required to have the suffix 'hprof' @see Bug 535730
-        systemProperty "jdk.management.heapdump.allowAnyFileSuffix", "true"
     }
 
     configurations { ecj {} }

@@ -92,7 +92,7 @@ public class DumpIntegrationTests {
 
         assertDumpContributionsNumberOf(file.listFiles()[0], 3);               
         assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
-        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
+        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out.hprof", "heap.err", "summary.txt", "thread.txt");
 
 		
 		properties.put("dump.root.directory", "build/dumps/2");
@@ -109,7 +109,7 @@ public class DumpIntegrationTests {
 
 		assertDumpContributionsNumberOf(file.listFiles()[0], 3);               
 		assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
-		assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
+		assertDumpContributionsAllowable(file.listFiles()[0], "heap.out.hprof", "heap.err.hprof", "summary.txt", "thread.txt");
 
 	}
 	
@@ -167,7 +167,7 @@ public class DumpIntegrationTests {
 
 		assertDumpContributionsNumberOf(file.listFiles()[0], 3);               
         assertDumpContributionsEssential(file.listFiles()[0], "summary.txt", "thread.txt");               
-        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out", "heap.err", "summary.txt", "thread.txt");               
+        assertDumpContributionsAllowable(file.listFiles()[0], "heap.out.hprof", "heap.err.hprof", "summary.txt", "thread.txt");
 	}
 	
 	private Configuration getConfiguration(String pid) throws IOException {
