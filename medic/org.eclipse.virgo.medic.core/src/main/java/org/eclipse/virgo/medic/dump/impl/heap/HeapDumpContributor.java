@@ -53,7 +53,6 @@ public final class HeapDumpContributor implements DumpContributor {
                 Method method = managementFactoryClass.getMethod("getDiagnosticMXBean");
                 diagnosticMBean = method.invoke(null);
             } catch (Exception e) {
-                heapDumpMethod = null;
                 diagnosticMBean = null;
             }
         }
@@ -62,7 +61,6 @@ public final class HeapDumpContributor implements DumpContributor {
             try {
                 heapDumpMethod = diagnosticMBean.getClass().getMethod("dumpHeap", String.class, boolean.class);
             } catch (Exception e) {
-                heapDumpMethod = null;
                 diagnosticMBean = null;
             }
         }
@@ -74,23 +72,13 @@ public final class HeapDumpContributor implements DumpContributor {
     public void contribute(Dump dump) throws DumpContributionFailedException {
         try {
             if (this.heapDumpMethod != null && this.diagnosticMBean != null) {
-                heapDumpMethod.invoke(this.diagnosticMBean, dump.createFile("heap.out").getAbsolutePath(), true);
+                heapDumpMethod.invoke(this.diagnosticMBean, dump.createFile("heap.out.hprof").getAbsolutePath(), true);
             } else {
-                PrintWriter writer = null;
-                try {
-                    writer = new PrintWriter(dump.createFileWriter("heap.err"));
+                try (PrintWriter writer = new PrintWriter(dump.createFileWriter("heap.err.hprof"))) {
                     writer.println("Diagnostic MXBean is not available. Heap dump cannot be generated.");
-                } finally {
-                    if (writer != null) {
-                        writer.close();
-                    }
                 }
             }
-        } catch (InvocationTargetException e) {
-            throw new DumpContributionFailedException("Failed to generate heap dump contribution", e);
-        } catch (IllegalArgumentException e) {
-            throw new DumpContributionFailedException("Failed to generate heap dump contribution", e);
-        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
             throw new DumpContributionFailedException("Failed to generate heap dump contribution", e);
         }
     }

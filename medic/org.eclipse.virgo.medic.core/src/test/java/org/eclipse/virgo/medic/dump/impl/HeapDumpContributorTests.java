@@ -64,11 +64,10 @@ public class HeapDumpContributorTests {
             try {
                 Class.forName("sun.management.ManagementFactory").getMethod("getDiagnosticMXBean");
                 diagnostMbeanAvailable = true;
-            } catch (Exception e) {
-                diagnostMbeanAvailable = false;
+            } catch (Exception ignored) {
             }
         }
 
-        assertEquals(diagnostMbeanAvailable, new File(this.dumpDirectory.getRoot(), "heap.out").exists());
+        assertEquals(diagnostMbeanAvailable, new File(this.dumpDirectory.getRoot(), "heap.out.hprof").exists());
     }
 }

@@ -186,7 +186,6 @@ then
 			$JMX_OPTS \
 			-XX:+HeapDumpOnOutOfMemoryError \
 			-XX:ErrorFile="$KERNEL_HOME/serviceability/error.log" \
-            -Djdk.management.heapdump.allowAnyFileSuffix=true \
             -XX:HeapDumpPath="$KERNEL_HOME/serviceability/heap_dump.hprof" \
 			-Djava.security.auth.login.config="$AUTH_LOGIN" \
 			-Dorg.eclipse.virgo.kernel.authentication.file="$AUTH_FILE" \
