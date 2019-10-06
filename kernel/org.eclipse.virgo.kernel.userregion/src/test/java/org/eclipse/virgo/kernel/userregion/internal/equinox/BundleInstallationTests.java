@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 
+import org.eclipse.virgo.util.osgi.manifest.ManifestUtils;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;

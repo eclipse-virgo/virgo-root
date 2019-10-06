@@ -433,7 +433,6 @@ project(':kernel:org.eclipse.virgo.kernel.test') {
 
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-        testCompile project(':test:org.eclipse.virgo.test.stubs')
         testCompile project(':test:org.eclipse.virgo.test.framework')
 
         testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"

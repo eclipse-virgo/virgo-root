@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal.equinox;
+package org.eclipse.virgo.util.osgi.manifest;
 
 import java.io.*;
 import java.util.jar.JarEntry;

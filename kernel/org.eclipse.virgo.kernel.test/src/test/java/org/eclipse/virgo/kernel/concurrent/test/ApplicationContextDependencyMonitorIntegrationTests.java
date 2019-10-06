@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.kernel.userregion.internal.equinox.ManifestUtils;
+import org.eclipse.virgo.util.osgi.manifest.ManifestUtils;
 import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.eclipse.virgo.nano.core.BundleStarter;
 import org.eclipse.virgo.kernel.osgi.framework.OsgiFrameworkUtils;
