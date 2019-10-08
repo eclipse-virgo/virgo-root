@@ -2,7 +2,8 @@ import java.util.jar.JarEntry
 import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
+
+import static java.nio.charset.StandardCharsets.UTF_8
 
 def customOrder(ZipEntry a, ZipEntry b) {
     if (a.name == 'META-INF/MANIFEST.MF' && b.name == 'META-INF/MANIFEST.MF') return 0
@@ -317,7 +318,7 @@ project(':kernel:org.eclipse.virgo.kernel.services') {
             println "------------"
             println "Reordering content of jar file ${jarFileName}:"
             println "------------"
-            new ZipFile(jarFileName).entries().findAll{ !it.directory }.each { println it.name }
+            jarFile.entries().findAll{ !it.directory }.each { println it.name }
             println "------------"
             String cloneFileName = new File(jarFileName).path + "-clone"
             FileOutputStream fos = new FileOutputStream(cloneFileName)
@@ -331,16 +332,15 @@ project(':kernel:org.eclipse.virgo.kernel.services') {
             println "------------"
 
             JarOutputStream jarOutputStream = new JarOutputStream(fos,
-                    new java.util.jar.Manifest(new ByteArrayInputStream(manifest.getBytes(java.nio.charset.Charset.forName("UTF-8")))))
+                    new java.util.jar.Manifest(new ByteArrayInputStream(manifest.getBytes(UTF_8))))
 
             println "------------"
-            byte[] readBuffer = new byte[2156]
             jarFile.entries().findAll { !it.directory && !(it.name == "META-INF/MANIFEST.MF") }.sort( {a,b -> customOrder(a,b) } ).each {
                 println "adding ${it.name} to ${cloneFileName}"
                 jarOutputStream.putNextEntry(new JarEntry(it.name))
                 jarOutputStream << jarFile.getInputStream(it)
             }
-            jarOutputStream.finish()
+            jarOutputStream.close()
             println "finished writing ${cloneFileName}"
             println "------------"
 
