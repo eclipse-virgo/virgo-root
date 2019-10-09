@@ -341,6 +341,7 @@ project(':kernel:org.eclipse.virgo.kernel.services') {
                 jarOutputStream << jarFile.getInputStream(it)
             }
             jarOutputStream.close()
+            jarFile.close()
             println "finished writing ${cloneFileName}"
             println "------------"
 
