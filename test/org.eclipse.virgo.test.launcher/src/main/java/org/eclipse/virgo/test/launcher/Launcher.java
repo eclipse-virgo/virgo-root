@@ -42,7 +42,7 @@ public class Launcher {
 		for (BundleEntry bundleDeclaration : bundleDeclarations) {
 			builder.addBundle(bundleDeclaration.getURI());
 		}
-		
+
 		Map<String, String> declaredProperties = command.getDeclaredProperties();
 		for (Map.Entry<String, String> entry : declaredProperties.entrySet()) {
 			builder.addFrameworkProperty(entry.getKey(), entry.getValue());

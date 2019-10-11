@@ -11,22 +11,19 @@
 
 package org.eclipse.virgo.test.launcher;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.eclipse.virgo.test.launcher.FrameworkBuilder;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 
-/**
- */
+import java.io.File;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class FrameworkBuilderTests {
 
     @Test
@@ -104,7 +101,7 @@ public class FrameworkBuilderTests {
     }
 
     @Test
-    public void testStartWithBundleAutostart() throws BundleException {
+    public void testStartWithBundleAutoStart() throws BundleException {
         Properties frameworkProperties = basicFrameworkProperties();
 
         FrameworkBuilder builder = new FrameworkBuilder(frameworkProperties);

@@ -11,11 +11,10 @@
 
 package org.eclipse.virgo.test.launcher;
 
-import static org.junit.Assert.assertNotNull;
-
-import org.eclipse.virgo.test.launcher.FrameworkFactoryLocator;
 import org.junit.Test;
 import org.osgi.framework.launch.FrameworkFactory;
+
+import static org.junit.Assert.assertNotNull;
 
 
 public class FrameworkFactoryLocatorTests {

@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
+import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.eclipse.virgo.util.parser.launcher.ArgumentParser;
 import org.eclipse.virgo.util.parser.launcher.BundleEntry;
 import org.osgi.framework.Bundle;
@@ -28,6 +30,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -48,11 +52,13 @@ import org.osgi.framework.launch.FrameworkFactory;
  */
 public class FrameworkBuilder {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FrameworkBuilder.class);
+
     private static final String PROP_LAUNCHER_BUNDLES = "launcher.bundles";
 
     private final ArgumentParser parser = new ArgumentParser();
 
-    private final List<BundleEntry> bundleEntries = new ArrayList<BundleEntry>();
+    private final List<BundleEntry> bundleEntries = new ArrayList<>();
 
     private final FrameworkCustomizer customizer;
 
@@ -85,7 +91,7 @@ public class FrameworkBuilder {
      * @param uri the <code>URI</code> of the bundle.
      * @return the <code>FrameworkBuilder</code>.
      */
-    public final FrameworkBuilder addBundle(URI uri) {
+    final FrameworkBuilder addBundle(URI uri) {
         return addBundle(uri, false);
     }
 
@@ -154,17 +160,26 @@ public class FrameworkBuilder {
         Map<String, String> resolvedConfigurationMap = convertPropertiesToMap(resolvedConfiguration);
         Framework fwk = frameworkFactory.newFramework(resolvedConfigurationMap);
 
+        LOG.debug("Starting OSGi framework from '{}'...", fwk.getLocation());
         fwk.start();
+        LOG.debug("Successfully started OSGi framework.");
+
+        LOG.debug("Running before install bundles customizer '{}'...", this.customizer.getClass().getSimpleName());
         this.customizer.beforeInstallBundles(fwk);
+        LOG.debug("Done.");
+
         installAndStartBundles(fwk.getBundleContext());
+
+        LOG.debug("Running after install bundles customizer '{}'...", this.customizer.getClass().getSimpleName());
         this.customizer.afterInstallBundles(fwk);
+        LOG.debug("Done.");
 
         return fwk;
     }
 
 	private Map<String, String> convertPropertiesToMap(
 			Properties props) {
-		Map<String, String> map = new HashMap<String,String>();
+		Map<String, String> map = new HashMap<>();
         Set<String> stringPropertyNames = props.stringPropertyNames();
         for (String propName : stringPropertyNames) {
 			map.put(propName, props.getProperty(propName));
@@ -173,18 +188,25 @@ public class FrameworkBuilder {
 	}
 
     private void installAndStartBundles(BundleContext bundleContext) throws BundleException {
-        List<Bundle> bundlesToStart = new ArrayList<Bundle>();
+        List<Bundle> bundlesToStart = new ArrayList<>();
         for (BundleEntry entry : this.bundleEntries) {
             Bundle bundle = bundleContext.installBundle(entry.getURI().toString());
+            LOG.debug("Checking bundle entry '{}'...", bundle.getSymbolicName());
 
+            LOG.debug("isAutostart = {}", entry.isAutoStart());
+            LOG.debug("isFragment = {}", BundleUtils.isFragmentBundle(bundle));
             if (entry.isAutoStart()) {
                 bundlesToStart.add(bundle);
+            } else {
+                LOG.debug("Skipping bundle '{}'.", bundle.getSymbolicName());
             }
         }
 
         for (Bundle bundle : bundlesToStart) {
             try {
+                LOG.debug("Starting bundle '{}'...", bundle.getSymbolicName());
                 bundle.start();
+                LOG.debug("Successfully started bundle '{}'.", bundle.getSymbolicName());
             } catch (BundleException be) {
                 throw new BundleException("Bundle " + bundle.getSymbolicName() + " " + bundle.getVersion() + " failed to start.", be);
             }
@@ -192,12 +214,14 @@ public class FrameworkBuilder {
     }
 
     private void parseLauncherBundlesProperty(Properties configuration) {
+        LOG.debug("Parsing property {}...", PROP_LAUNCHER_BUNDLES);
         String launcherBundlesProp = configuration.getProperty(PROP_LAUNCHER_BUNDLES);
         if (launcherBundlesProp != null) {
             BundleEntry[] entries = this.parser.parseBundleEntries(launcherBundlesProp);
             Collections.addAll(this.bundleEntries, entries);
-
         }
+        LOG.debug("Found {} entries.", this.bundleEntries.size());
+        this.bundleEntries.forEach(bundleEntry -> LOG.debug("Found bundle entry {}.", bundleEntry.getURI()));
     }
 
     /**
@@ -205,7 +229,7 @@ public class FrameworkBuilder {
      * 
      * @see FrameworkBuilder
      */
-    public static interface FrameworkCustomizer {
+    public interface FrameworkCustomizer {
 
         /**
          * Called before the {@link FrameworkBuilder} installs any bundles into the {@link Framework}.

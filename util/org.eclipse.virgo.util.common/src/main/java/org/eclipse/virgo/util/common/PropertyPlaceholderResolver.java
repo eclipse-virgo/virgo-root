@@ -21,34 +21,28 @@ import java.util.regex.Pattern;
 /**
  * Utility class for resolving placeholders inside a {@link Properties} instance. These placeholders can refer to other
  * properties in the <code>Properties</code> instance. The place holders may also have a modifier in them
- * 
+ *
  * <pre>
  * ${com.springsource:modifier}
  * </pre>
- * 
+ *
  * where everything after the colon is considered the modifier. This class does not interpret these modifiers but
  * rather delegates to a {@link PlaceholderValueTransformer} for processing.
  * <p />
- * 
+ *
  * <strong>Concurrent Semantics</strong><br />
- * 
+ *
  * Threadsafe.
  */
 public final class PropertyPlaceholderResolver {
-    
-    private static final Pattern PATTERN = Pattern.compile("\\$\\{([^:\\}]*):?([^\\}]*)?\\}");
 
-    private static final PlaceholderValueTransformer IDENTITY_TRANSFORMER = new PlaceholderValueTransformer() {
+    private static final Pattern PATTERN = Pattern.compile("\\$\\{([^:}]*):?([^}]*)?}");
 
-        public String transform(String propertyName, String propertyValue, String modifier) {
-            return propertyValue;
-        }
-
-    };
+    private static final PlaceholderValueTransformer IDENTITY_TRANSFORMER = (propertyName, propertyValue, modifier) -> propertyValue;
 
     /**
      * Resolves all placeholders in the supplied {@link Properties} instance.
-     * 
+     *
      * @param input the properties to resolve.
      * @return the resolved properties.
      */
@@ -58,7 +52,7 @@ public final class PropertyPlaceholderResolver {
 
     /**
      * Resolves all placeholders in the supplied {@link Properties} instance and transform any based on their modifiers.
-     * 
+     *
      * @param input the properties to resolve.
      * @param transformer a transformer for handling property modifiers
      * @return the resolved properties.
@@ -70,7 +64,7 @@ public final class PropertyPlaceholderResolver {
         while (propertyNames.hasMoreElements()) {
 			String propertyName = (String) propertyNames.nextElement();
 			result.setProperty(propertyName, resolveProperty(propertyName, input, transformer));
-			
+
 		}
 
         return result;
@@ -78,7 +72,7 @@ public final class PropertyPlaceholderResolver {
 
     /**
      * Resolves all placeholders in the supplied string with values from a {@link Properties} instance.
-     * 
+     *
      * @param input the string to resolve
      * @param props the properties to use for resolution
      * @return the resolved string
@@ -90,7 +84,7 @@ public final class PropertyPlaceholderResolver {
     /**
      * Resolves all placeholders in the supplied string with values from a {@link Properties} instance and transform any
      * based on their modifiers.
-     * 
+     *
      * @param input the string to resolve
      * @param props the properties to use for resolution
      * @param transformer a transformer for handling property modifiers
@@ -105,7 +99,7 @@ public final class PropertyPlaceholderResolver {
     }
 
     private String resolveProperty(String name, Properties props, PlaceholderValueTransformer transformer) {
-        Stack<String> visitState = new Stack<String>();
+        Stack<String> visitState = new Stack<>();
         return resolve(name, props, transformer, visitState);
     }
 
@@ -143,15 +137,15 @@ public final class PropertyPlaceholderResolver {
         int bsIndex = string.indexOf("\\");
         int pos = 0;
         while (bsIndex != -1) {
-            sb.append(string.substring(pos,bsIndex+1));
+            sb.append(string, pos, bsIndex+1);
             sb.append("\\"); // another backslash
             pos = bsIndex+1;
             bsIndex = string.indexOf("\\",pos);
         }
-        sb.append(string.substring(pos, string.length()));
+        sb.append(string.substring(pos));
         return new String(sb);
     }
-    
+
     private String formatPropertyCycleMessage(Stack<String> visitState) {
         StringBuilder sb = new StringBuilder();
         sb.append("Circular reference in property definitions: ");
@@ -167,17 +161,17 @@ public final class PropertyPlaceholderResolver {
      * An interface for property placeholder modifiers. Implementations of this interface are called when a property
      * placeholder modifier is detected on a class.
      * <p />
-     * 
+     *
      * <strong>Concurrent Semantics</strong><br />
-     * 
+     *
      * Implementations must be threadsafe.
-     * 
+     *
      */
-    public static interface PlaceholderValueTransformer {
+    public interface PlaceholderValueTransformer {
 
         /**
          * Transforms a property from its initial value to some other value
-         * 
+         *
          * @param propertyName the name of the property being transformed
          * @param propertyValue the original value of the property
          * @param modifier the modifer string attached to the placeholder

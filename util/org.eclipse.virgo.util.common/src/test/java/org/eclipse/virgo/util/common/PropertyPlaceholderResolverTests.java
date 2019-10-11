@@ -15,8 +15,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import org.eclipse.virgo.util.common.PropertyPlaceholderResolver;
-import org.eclipse.virgo.util.common.PropertyPlaceholderResolver.PlaceholderValueTransformer;
 import org.junit.Test;
 
 
@@ -124,14 +122,11 @@ public class PropertyPlaceholderResolverTests {
         Properties p = new Properties();
         p.setProperty("bundle.name", "fooBundle");
 
-        assertEquals("Bundle-Name: yyy", resolver.resolve("Bundle-Name: ${bundle.name:xxx}", p, new PlaceholderValueTransformer() {
-
-            public String transform(String propertyName, String propertyValue, String modifier) {
-                assertEquals("bundle.name", propertyName);
-                assertEquals("fooBundle", propertyValue);
-                assertEquals("xxx", modifier);
-                return "yyy";
-            }
+        assertEquals("Bundle-Name: yyy", resolver.resolve("Bundle-Name: ${bundle.name:xxx}", p, (propertyName, propertyValue, modifier) -> {
+            assertEquals("bundle.name", propertyName);
+            assertEquals("fooBundle", propertyValue);
+            assertEquals("xxx", modifier);
+            return "yyy";
         }));
     }
 

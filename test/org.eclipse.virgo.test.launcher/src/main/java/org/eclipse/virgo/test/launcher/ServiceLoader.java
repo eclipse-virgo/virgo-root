@@ -42,11 +42,11 @@ public final class ServiceLoader<T> {
     }
 
     public static <T> ServiceLoader<T> load(Class<T> serviceClass) {
-        return new ServiceLoader<T>(serviceClass);
+        return new ServiceLoader<>(serviceClass);
     }
 
     /**
-     * Gets all known implementations of the service interface. Eqivalent to calling {@link #get(ClassLoader)} with
+     * Gets all known implementations of the service interface. Equivalent to calling {@link #get(ClassLoader)} with
      * {@link ClassLoader#getSystemClassLoader()}.
      * @return set of implementation types
      * 
@@ -62,12 +62,12 @@ public final class ServiceLoader<T> {
      * @return set of implementation types
      */
     public Set<T> get(ClassLoader classLoader) {
-        Set<T> results = new HashSet<T>();
+        Set<T> results = new HashSet<>();
         try {
             Enumeration<URL> serviceFiles = findServiceFiles(classLoader);
-            Set<Class<?>> implTypes = new HashSet<Class<?>>();
+            Set<Class<?>> implTypes = new HashSet<>();
             while (serviceFiles.hasMoreElements()) {
-                URL url = (URL) serviceFiles.nextElement();
+                URL url = serviceFiles.nextElement();
                 String implName = readImplementationClassName(url);
                 Class<?> cl = loadImplType(classLoader, implName);
                 if (implTypes.add(cl)) {
@@ -105,7 +105,7 @@ public final class ServiceLoader<T> {
     private String readImplementationClassName(URL input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input.openStream()));
         String name = null;
-        String line = null;
+        String line;
         try {
             while ((line = reader.readLine()) != null) {
                 String trimmed = line.trim();
@@ -141,22 +141,9 @@ public final class ServiceLoader<T> {
 
         private static final long serialVersionUID = 6134843287168204658L;
 
-        public ServiceLoaderError() {
-            super();
-        }
-
-        public ServiceLoaderError(String message, Throwable cause) {
+        ServiceLoaderError(String message, Throwable cause) {
             super(message, cause);
         }
-
-        public ServiceLoaderError(String message) {
-            super(message);
-        }
-
-        public ServiceLoaderError(Throwable cause) {
-            super(cause);
-        }
-
     }
 
 }
