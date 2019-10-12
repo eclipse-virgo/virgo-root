@@ -1,0 +1,98 @@
+import java.util.jar.JarEntry
+import java.util.jar.JarOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+
+import static java.nio.charset.StandardCharsets.UTF_8
+
+def customOrder(ZipEntry a, ZipEntry b) {
+    if (a.name == 'META-INF/MANIFEST.MF' && b.name == 'META-INF/MANIFEST.MF') return 0
+    if (a.name == 'META-INF/MANIFEST.MF') return -1
+    if (b.name == 'META-INF/MANIFEST.MF') return 1
+    return a.name.compareTo(b.name)
+}
+
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile project(':test:org.eclipse.virgo.test.stubs')
+    testCompile project(':medic:org.eclipse.virgo.medic.test')
+
+    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+
+    compile project(':util:org.eclipse.virgo.util.math')
+    compile project(':util:org.eclipse.virgo.util.io')
+    compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+    compile project(':medic:org.eclipse.virgo.medic')
+    compile project(':nano:org.eclipse.virgo.nano.core')
+    compile project(':repository:org.eclipse.virgo.repository')
+    compile project(':kernel:org.eclipse.virgo.kernel.artifact')
+}
+
+task rewriteJar(dependsOn: jar) {
+    tasks['uploadArchives'].dependsOn('rewriteJar')
+    tasks['assemble'].dependsOn('rewriteJar')
+    String jarFileName
+    // store name of the created jar file
+    jar.outputs.files.each {
+        println it.getPath()
+        jarFileName = it.getPath()
+    }
+    doLast() {
+        ZipFile jarFile = new ZipFile(jarFileName)
+        println "------------"
+        println "Reordering content of jar file ${jarFileName}:"
+        println "------------"
+        jarFile.entries().findAll{ !it.directory }.each { println it.name }
+        println "------------"
+        String cloneFileName = new File(jarFileName).path + "-clone"
+        FileOutputStream fos = new FileOutputStream(cloneFileName)
+
+        String manifest
+        jarFile.entries().findAll { it.name == "META-INF/MANIFEST.MF" }.each {
+            manifest = jarFile.getInputStream(it).text
+        }
+        println "------------"
+        println manifest
+        println "------------"
+
+        JarOutputStream jarOutputStream = new JarOutputStream(fos,
+                new java.util.jar.Manifest(new ByteArrayInputStream(manifest.getBytes(UTF_8))))
+
+        println "------------"
+        jarFile.entries().findAll { !it.directory && !(it.name == "META-INF/MANIFEST.MF") }.sort( {a,b -> customOrder(a,b) } ).each {
+            println "adding ${it.name} to ${cloneFileName}"
+            jarOutputStream.putNextEntry(new JarEntry(it.name))
+            jarOutputStream << jarFile.getInputStream(it)
+        }
+        jarOutputStream.close()
+        jarFile.close()
+
+        println "finished writing ${cloneFileName}"
+        println "------------"
+
+        println "from ${cloneFileName} to ${jarFileName}"
+        println "within ${file(cloneFileName).parentFile.path} is ${file(cloneFileName).name}"
+        println "rename ${file(cloneFileName).name} -> ${file(jarFileName).name}"
+
+        delete file(jarFileName)
+        copy {
+            from file(file(cloneFileName).parentFile.path)
+            into file(file(cloneFileName).parentFile.path)
+            rename { String fileName ->
+                fileName.replace(file(cloneFileName).name, file(jarFileName).name)
+            }
+        }
+        delete file(cloneFileName)
+        println "------------"
+        println "Reordered content of jar file ${jarFileName}:"
+        println "------------"
+        new ZipFile(jarFileName).entries().findAll{ !it.directory }.each { println it.name }
+        println "------------"
+    }
+}

@@ -1,0 +1,25 @@
+dependencies {
+    aspectpath project(':medic:org.eclipse.virgo.medic')
+    aspectpath project(':nano:org.eclipse.virgo.nano.core')
+
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
+    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
+    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+
+    implementation project(':medic:org.eclipse.virgo.medic')
+    implementation project(':nano:org.eclipse.virgo.nano.core')
+
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
+}

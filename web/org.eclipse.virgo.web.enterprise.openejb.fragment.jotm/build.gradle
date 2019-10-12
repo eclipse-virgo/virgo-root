@@ -1,0 +1,4 @@
+dependencies {
+    compile group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+    compile group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
+}

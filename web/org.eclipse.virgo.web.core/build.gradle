@@ -1,0 +1,30 @@
+dependencies {
+    aspectpath project(':medic:org.eclipse.virgo.medic')
+    aspectpath project(':nano:org.eclipse.virgo.nano.core')
+
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+
+    implementation group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+    implementation project(':util:org.eclipse.virgo.util.common')
+    implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
+    implementation project(':medic:org.eclipse.virgo.medic')
+    implementation project(':nano:org.eclipse.virgo.nano.core')
+    implementation project(':nano:org.eclipse.virgo.nano.deployer.api')
+    implementation project(':repository:org.eclipse.virgo.repository')
+    implementation project(':kernel:org.eclipse.virgo.kernel.artifact')
+    implementation project(':kernel:org.eclipse.virgo.kernel.deployer')
+    implementation project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
+
+    testImplementation project(':util:org.eclipse.virgo.util.parser.manifest')
+    testImplementation project(':kernel:org.eclipse.virgo.kernel.stubs')
+    testImplementation project(':test:org.eclipse.virgo.test.stubs')
+}

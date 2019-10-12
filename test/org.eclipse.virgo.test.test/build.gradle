@@ -1,0 +1,15 @@
+task copyTestResources(type: Copy) {
+	from "${projectDir}/src/test/resources"
+	into "${buildDir}/classes/java/test"
+}
+
+processTestResources.dependsOn copyTestResources
+
+dependencies {
+	compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+	implementation project(':util:org.eclipse.virgo.util.common')
+	implementation project(':test:org.eclipse.virgo.test.stubs')
+	implementation project(':test:org.eclipse.virgo.test.launcher')
+	implementation project(':test:org.eclipse.virgo.test.framework')
+}

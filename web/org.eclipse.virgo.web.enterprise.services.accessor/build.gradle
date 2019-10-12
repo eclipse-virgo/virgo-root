@@ -1,0 +1,18 @@
+dependencies {
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
+
+    compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+    compile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+}

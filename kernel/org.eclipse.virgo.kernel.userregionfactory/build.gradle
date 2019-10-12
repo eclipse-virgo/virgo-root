@@ -1,0 +1,18 @@
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile project(':test:org.eclipse.virgo.test.stubs')
+
+    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+
+    compile project(':util:org.eclipse.virgo.util.parser.launcher')
+    compile project(':util:org.eclipse.virgo.util.osgi')
+    compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+    compile project(':util:org.eclipse.virgo.util.parser.manifest')
+    compile project(':medic:org.eclipse.virgo.medic')
+    compile project(':nano:org.eclipse.virgo.nano.core')
+    compile project(':kernel:org.eclipse.virgo.kernel.osgi')
+}

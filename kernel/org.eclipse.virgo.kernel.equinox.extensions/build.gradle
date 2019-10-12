@@ -1,0 +1,7 @@
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile project(':test:org.eclipse.virgo.test.stubs')
+    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+}

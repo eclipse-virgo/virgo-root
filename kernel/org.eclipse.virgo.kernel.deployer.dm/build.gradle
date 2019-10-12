@@ -1,0 +1,24 @@
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile project(':medic:org.eclipse.virgo.medic.test')
+    testCompile project(':test:org.eclipse.virgo.test.stubs')
+
+    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+
+    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
+
+    compile project(':kernel:org.eclipse.virgo.kernel.agent.dm')
+    compile project(':kernel:org.eclipse.virgo.kernel.deployer')
+    compile project(':medic:org.eclipse.virgo.medic')
+    compile project(':nano:org.eclipse.virgo.nano.core')
+
+    if (System.properties['weaving.enabled'] == 'true') {
+        aspectpath project(':medic:org.eclipse.virgo.medic')
+    }
+}

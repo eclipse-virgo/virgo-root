@@ -1,0 +1,33 @@
+import org.gradle.plugins.ide.eclipse.model.AccessRule
+
+dependencies {
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+    compile group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
+
+    implementation project(':util:org.eclipse.virgo.util.common')
+    implementation project(':util:org.eclipse.virgo.util.io')
+    implementation project(':util:org.eclipse.virgo.util.jmx')
+    implementation project(':util:org.eclipse.virgo.util.math')
+    implementation project(':util:org.eclipse.virgo.util.osgi')
+    implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
+    implementation project(':medic:org.eclipse.virgo.medic')
+
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+    testImplementation project(':medic:org.eclipse.virgo.medic.test')
+    testImplementation project(':test:org.eclipse.virgo.test.stubs')
+
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
+}
+
+eclipse.classpath {
+    file.whenMerged {
+        entries.each { source ->
+            if (source.kind == 'con' && source.path.startsWith('org.eclipse.jdt.launching.JRE_CONTAINER')) {
+                source.accessRules.add(new AccessRule('0', 'com/sun/net/httpserver/*'))
+            }
+        }
+    }
+}

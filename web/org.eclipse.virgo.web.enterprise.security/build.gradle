@@ -1,0 +1,20 @@
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+    testCompile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+
+    testRuntime group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+}

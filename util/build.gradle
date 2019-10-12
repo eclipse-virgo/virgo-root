@@ -1,42 +1,11 @@
-project(':util:org.eclipse.virgo.util.common') {
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-    }
-}
+configure(subprojects.findAll { !it.name.contains('integrationtest') }) { Project project ->
+    apply plugin: 'biz.aQute.bnd.builder'
 
-project(':util:org.eclipse.virgo.util.io') {
-    dependencies {
-        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
-        compile project(':util:org.eclipse.virgo.util.common')
-        compile project(':util:org.eclipse.virgo.util.math')
-    }
-}
-
-project(':util:org.eclipse.virgo.util.jmx') {
-    dependencies {
-        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-    }
-}
-
-project(':util:org.eclipse.virgo.util.osgi') {
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-
-        compile project(':util:org.eclipse.virgo.util.common')
-        compile project(':util:org.eclipse.virgo.util.parser.manifest')
-    }
-}
-
-project(':util:org.eclipse.virgo.util.osgi.manifest') {
-    dependencies {
-
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-
-        compile project(':util:org.eclipse.virgo.util.common')
-        compile project(':util:org.eclipse.virgo.util.io')
-        compile project(':util:org.eclipse.virgo.util.parser.manifest')
-    }
+    jar.bndfile = "bundle.bnd"
+    jar.manifest.attributes(
+            '-classpath': sourceSets.main.output.classesDirs.asPath,
+            'Bundle-Vendor': 'Eclipse Virgo',
+            'Bundle-SymbolicName': project.name,
+            '-removeheaders': 'Bnd-LastModified,Created-By',
+    )
 }

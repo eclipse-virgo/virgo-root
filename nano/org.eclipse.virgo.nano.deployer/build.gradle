@@ -1,0 +1,20 @@
+dependencies {
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator.manipulator", version: equinoxSimpleConfiguratorManipulatorVersion, configuration: "compile", ext: "jar"
+
+    implementation project(':util:org.eclipse.virgo.util.io')
+    implementation project(':util:org.eclipse.virgo.util.osgi')
+    implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
+    implementation project(':util:org.eclipse.virgo.util.parser.manifest')
+    implementation project(':medic:org.eclipse.virgo.medic')
+    implementation project(':nano:org.eclipse.virgo.nano.core')
+    implementation project(':nano:org.eclipse.virgo.nano.deployer.api')
+    implementation project(':nano:org.eclipse.virgo.nano.deployer.hot')
+
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testImplementation project(':medic:org.eclipse.virgo.medic.test')
+}

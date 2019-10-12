@@ -1,0 +1,9 @@
+dependencies {
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+
+    compile project(':web:org.eclipse.virgo.web.enterprise.security')
+}

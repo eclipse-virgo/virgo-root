@@ -1,0 +1,11 @@
+dependencies {
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+
+    compile project(':util:org.eclipse.virgo.util.common')
+    compile project(':util:org.eclipse.virgo.util.osgi.manifest')
+    compile project(':nano:org.eclipse.virgo.nano.core')
+    compile project(':nano:org.eclipse.virgo.nano.deployer.api')
+    compile project(':kernel:org.eclipse.virgo.kernel.artifact')
+    compile project(':kernel:org.eclipse.virgo.kernel.deployer')
+    compile project(':kernel:org.eclipse.virgo.kernel.osgi')
+}

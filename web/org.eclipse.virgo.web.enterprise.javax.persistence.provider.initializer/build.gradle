@@ -1,0 +1,10 @@
+dependencies {
+    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+
+    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+
+    compile project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
+
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+}
