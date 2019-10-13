@@ -12,7 +12,6 @@
 package org.eclipse.virgo.repository.internal.remote;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +33,7 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.commons.httpclient.HttpStatus;
+import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +42,6 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
 import org.eclipse.virgo.repository.ArtifactBridge;
 import org.eclipse.virgo.repository.ArtifactDescriptor;
-import org.eclipse.virgo.repository.ArtifactGenerationException;
 import org.eclipse.virgo.repository.DuplicateArtifactException;
 import org.eclipse.virgo.repository.IndexFormatException;
 import org.eclipse.virgo.repository.Repository;
@@ -53,7 +51,6 @@ import org.eclipse.virgo.repository.configuration.RemoteRepositoryConfiguration;
 import org.eclipse.virgo.repository.configuration.StubRepositoryConfiguration;
 import org.eclipse.virgo.repository.internal.PersistentRepository;
 import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
-import org.eclipse.virgo.repository.internal.remote.RemoteRepository;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.NetUtils;
@@ -254,7 +251,7 @@ public class RemoteRepositoryTests {
     }
 
     @Test
-    public void indexlessRepository() throws Exception {
+    public void indexlessRepository() {
         URI repositoryUri = URI.create("http://localhost:" + this .port + "/does-not-exist");
 
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
@@ -270,13 +267,13 @@ public class RemoteRepositoryTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void badScheme() throws Exception {
+    public void badScheme() {
         URI repositoryUri = URI.create("hotp://localhost:" + this .port + "/repository");
 
         RemoteRepositoryConfiguration configuration = new RemoteRepositoryConfiguration("remote-repo", this.proxyIndexLocation, repositoryUri, 1,
             null, this.cacheDirectory);
         RemoteRepository repository = new RemoteRepository(configuration, new MockEventLogger());
-        assertFalse("Managed to create a badly formed RemoteRepository!", repository != null);
+        assertNull("Managed to create a badly formed RemoteRepository!", repository);
     }
 
     @Test(timeout = 5 * 60 * 1000)
@@ -285,17 +282,14 @@ public class RemoteRepositoryTests {
         createRepository(bridge, this.mockEventLogger);
         final AtomicBoolean sendProperIndex = new AtomicBoolean(false);
 
-        bootstrapHttpServer(new HttpHandler() {
-
-            public void handle(HttpExchange exchange) throws IOException {
-                if (sendProperIndex.get()) {
-                    sendIndex(exchange);
-                } else {
-                    long responseLength = 1234;
-                    exchange.sendResponseHeaders(HttpStatus.SC_OK, responseLength);
-                }
-                exchange.getResponseBody().close();
+        bootstrapHttpServer(exchange -> {
+            if (sendProperIndex.get()) {
+                sendIndex(exchange);
+            } else {
+                long responseLength = 1234;
+                exchange.sendResponseHeaders(HttpStatus.SC_OK, responseLength);
             }
+            exchange.getResponseBody().close();
         });
 
         URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
@@ -314,7 +308,7 @@ public class RemoteRepositoryTests {
         repository.stop();
     }
 
-    void pollUntilDescriptorAvailable(Repository repository, String type, String name, VersionRange version) {
+    private void pollUntilDescriptorAvailable(Repository repository, String type, String name, VersionRange version) {
         while (repository.get(type, name, version) == null) {
         }
     }
@@ -325,17 +319,14 @@ public class RemoteRepositoryTests {
         createRepository(bridge, this.mockEventLogger);
         final AtomicBoolean sendProperIndex = new AtomicBoolean(false);
 
-        bootstrapHttpServer(new HttpHandler() {
-
-            public void handle(HttpExchange exchange) throws IOException {
-                if (sendProperIndex.get()) {
-                    sendIndex(exchange);
-                } else {
-                    exchange.sendResponseHeaders(200, 4);
-                    exchange.getResponseBody().write(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-                }
-                exchange.getResponseBody().close();
+        bootstrapHttpServer(exchange -> {
+            if (sendProperIndex.get()) {
+                sendIndex(exchange);
+            } else {
+                exchange.sendResponseHeaders(200, 4);
+                exchange.getResponseBody().write(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
             }
+            exchange.getResponseBody().close();
         });
 
         URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
@@ -361,18 +352,15 @@ public class RemoteRepositoryTests {
         createRepository(bridge, this.mockEventLogger);
         final AtomicBoolean sendProperIndex = new AtomicBoolean(false);
 
-        bootstrapHttpServer(new HttpHandler() {
-
-            public void handle(HttpExchange exchange) throws IOException {
-                if (sendProperIndex.get()) {
-                    sendIndex(exchange);
-                } else {
-                    byte[] indexBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-                    exchange.sendResponseHeaders(200, indexBytes.length);
-                    exchange.getResponseBody().write(indexBytes);
-                }
-                exchange.getResponseBody().close();
+        bootstrapHttpServer(exchange -> {
+            if (sendProperIndex.get()) {
+                sendIndex(exchange);
+            } else {
+                byte[] indexBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                exchange.sendResponseHeaders(200, indexBytes.length);
+                exchange.getResponseBody().write(indexBytes);
             }
+            exchange.getResponseBody().close();
         });
 
         URI repositoryUri = URI.create("http://localhost:" + this .port + "/repository");
@@ -409,7 +397,7 @@ public class RemoteRepositoryTests {
         try {
             platformMBeanServer.getMBeanInfo(objectName);
             fail("MBean should not be present until repository has been started");
-        } catch (InstanceNotFoundException infe) {
+        } catch (InstanceNotFoundException ignored) {
         }
 
         repository.start();
@@ -424,7 +412,7 @@ public class RemoteRepositoryTests {
         try {
             platformMBeanServer.getMBeanInfo(objectName);
             fail("MBean should not be present once repository has been stopped");
-        } catch (InstanceNotFoundException infe) {
+        } catch (InstanceNotFoundException ignored) {
         }
     }
 
@@ -440,7 +428,7 @@ public class RemoteRepositoryTests {
         try {
             platformMBeanServer.getMBeanInfo(objectName);
             fail("MBean should not be present before start");
-        } catch (InstanceNotFoundException infe) {
+        } catch (InstanceNotFoundException ignored) {
         }
 
         repository.start();
@@ -448,7 +436,7 @@ public class RemoteRepositoryTests {
         try {
             platformMBeanServer.getMBeanInfo(objectName);
             fail("MBean should not be present after start");
-        } catch (InstanceNotFoundException infe) {
+        } catch (InstanceNotFoundException ignored) {
         }
 
         repository.stop();
@@ -456,7 +444,7 @@ public class RemoteRepositoryTests {
         try {
             platformMBeanServer.getMBeanInfo(objectName);
             fail("MBean should not be present once repository has been stopped");
-        } catch (InstanceNotFoundException infe) {
+        } catch (InstanceNotFoundException ignored) {
         }
     }
 
@@ -470,7 +458,7 @@ public class RemoteRepositoryTests {
             this.exception = null;
         }
 
-        public ArtifactDescriptor generateArtifactDescriptor(File artifact) throws ArtifactGenerationException {
+        public ArtifactDescriptor generateArtifactDescriptor(File artifact) {
             if (this.exception == null) {
                 return new ArtifactDescriptorBuilder().setUri(artifact.toURI()).setType("dummy").setName("dummy").setVersion(
                     String.valueOf(this.version++)).build();
@@ -485,11 +473,11 @@ public class RemoteRepositoryTests {
             super(new StubRepositoryConfiguration(artifactBridge, indexLocation), eventLogger);
         }
 
-        public void persist() throws IOException {
+        void persist() throws IOException {
             getDepository().persist();
         }
 
-        public void addArtifact(File artifact) throws DuplicateArtifactException {
+        void addArtifact(File artifact) throws DuplicateArtifactException {
             RepositoryAwareArtifactDescriptor artifactDescriptor = createArtifactDescriptor(artifact);
             if (artifactDescriptor != null) {
                 getDepository().addArtifactDescriptor(artifactDescriptor);

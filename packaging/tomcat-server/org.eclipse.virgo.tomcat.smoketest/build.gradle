@@ -29,13 +29,13 @@ task smokeTest(type: Test) {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+    testImplementation 'junit:junit'
 
     testImplementation project(':test:org.eclipse.virgo.test.tools')
     testImplementation project(':util:org.eclipse.virgo.util.io')
 
-    testRuntime group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
-    testRuntime group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
+    testRuntimeOnly 'org.apache.httpcomponents:httpcore'
+    testRuntimeOnly 'org.apache.httpcomponents:httpclient'
 }
 
 check.dependsOn smokeTest

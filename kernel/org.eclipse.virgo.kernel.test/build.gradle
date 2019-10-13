@@ -1,46 +1,45 @@
 import aQute.bnd.gradle.Bundle
 
-project(':kernel:org.eclipse.virgo.kernel.test') {
+test.dependsOn ':3rd-party:bundles'
 
-    task bundle(type: Bundle) {
-        bndfile = 'bundle.bnd'
-        from sourceSets.test.output
-        sourceSet = sourceSets.test
-    }
+task bundle(type: Bundle) {
+    bndfile = 'bundle.bnd'
+    from sourceSets.test.output
+    sourceSet = sourceSets.test
+}
 
-    task copyTestResources(type: Copy) {
-        from "${projectDir}/src/test/resources"
-        into "${buildDir}/classes/java/test"
-    }
-    processTestResources.dependsOn copyTestResources
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/java/test"
+}
+processTestResources.dependsOn copyTestResources
 
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-        testCompile project(':test:org.eclipse.virgo.test.framework')
+dependencies {
+    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testCompile project(':test:org.eclipse.virgo.test.framework')
 
-        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
-        testCompile project(':util:org.eclipse.virgo.util.parser.launcher')
-        testCompile project(':util:org.eclipse.virgo.util.osgi')
-        testCompile project(':util:org.eclipse.virgo.util.osgi.manifest')
-        testCompile project(':util:org.eclipse.virgo.util.parser.manifest')
-        testCompile project(':medic:org.eclipse.virgo.medic')
-        testCompile project(':medic:org.eclipse.virgo.medic.core')
-        testCompile project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
-        testCompile project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
-        testCompile project(':nano:org.eclipse.virgo.nano.core')
-        testCompile project(':nano:org.eclipse.virgo.nano.management')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.agent.dm')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.dmfragment')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.userregion')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.userregionfactory')
-        testCompile project(':kernel:org.eclipse.virgo.shell.command')
-        testCompile project(':kernel:org.eclipse.virgo.kernel.osgi')
-    }
+    testCompile project(':util:org.eclipse.virgo.util.parser.launcher')
+    testCompile project(':util:org.eclipse.virgo.util.osgi')
+    testCompile project(':util:org.eclipse.virgo.util.osgi.manifest')
+    testCompile project(':util:org.eclipse.virgo.util.parser.manifest')
+    testCompile project(':medic:org.eclipse.virgo.medic')
+    testCompile project(':medic:org.eclipse.virgo.medic.core')
+    testCompile project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
+    testCompile project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
+    testCompile project(':nano:org.eclipse.virgo.nano.core')
+    testCompile project(':nano:org.eclipse.virgo.nano.management')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.agent.dm')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.dmfragment')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.userregion')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.userregionfactory')
+    testCompile project(':kernel:org.eclipse.virgo.shell.command')
+    testCompile project(':kernel:org.eclipse.virgo.kernel.osgi')
 }

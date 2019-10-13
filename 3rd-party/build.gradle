@@ -1,0 +1,25 @@
+plugins {
+    id "org.standardout.bnd-platform" version "1.7.0"
+}
+
+platform {
+    fetchSources = false
+    useBndHashQualifiers =false
+    defaultQualifier = ''
+
+    bnd {
+        instruction 'Bundle-Vendor', 'Eclipse Virgo'
+    }
+
+    bundle('org.apache.httpcomponents:httpcore') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.apache.httpcomponents.httpcore'
+        }
+    }
+
+    bundle('org.apache.httpcomponents:httpclient') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.apache.httpcomponents.httpclient'
+        }
+    }
+}

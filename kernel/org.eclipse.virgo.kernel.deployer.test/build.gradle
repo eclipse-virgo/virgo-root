@@ -1,5 +1,7 @@
 import aQute.bnd.gradle.Bundle
 
+test.dependsOn ':3rd-party:bundles'
+
 task bundle(type: Bundle) {
     bndfile = 'bundle.bnd'
     from sourceSets.test.output

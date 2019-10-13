@@ -4,7 +4,7 @@ dependencies {
     compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-    compile group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
+    implementation "org.apache.httpcomponents:httpclient:${httpcomponentsClientVersion}"
 
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.io')

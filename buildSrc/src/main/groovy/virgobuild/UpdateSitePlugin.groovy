@@ -6,7 +6,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.FileCollection
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.JavaPlugin
 
 import eclipsebuild.FeaturePlugin
@@ -46,7 +45,7 @@ class UpdateSitePlugin implements Plugin<Project> {
     static final String REPOSITORY_DIR_NAME = 'repository'
 
     @Override
-    public void apply(Project project) {
+    void apply(Project project) {
         configureProject(project)
         addTaskCopyBundles(project)
         addTaskNormalizeBundles(project)
@@ -80,6 +79,7 @@ class UpdateSitePlugin implements Plugin<Project> {
     static void addTaskCopyBundles(Project project) {
         def copyBundlesTask = project.task(COPY_BUNDLES_TASK_NAME) {
 
+            dependsOn ':3rd-party:bundles'
             dependsOn ':kernel:org.eclipse.virgo.kernel.services:rewriteJar'
 
             group = Constants.gradleTaskGroupName

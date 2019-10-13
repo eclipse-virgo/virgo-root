@@ -74,7 +74,8 @@ dependencies {
     signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
     // optional requirement for org.springframework.core
 
-    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
+    externalPlugin files("../3rd-party/build/plugins/oevm.org.apache.httpcomponents.httpcore_${httpcomponentsCoreVersion}.jar")
+    externalPlugin files("../3rd-party/build/plugins/oevm.org.apache.httpcomponents.httpclient_${httpcomponentsClientVersion}.jar")
 
     localPlugin project(':util:org.eclipse.virgo.util.common')
     localPlugin project(':util:org.eclipse.virgo.util.env')
