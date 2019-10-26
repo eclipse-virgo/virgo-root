@@ -11,9 +11,9 @@
 	</appender>
 
 	<appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>target/serviceability/log/log.log</file>
+		<file>build/serviceability/log/log.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<FileNamePattern>target/serviceability/log/log_%i.log</FileNamePattern>
+			<FileNamePattern>build/serviceability/log/log_%i.log</FileNamePattern>
 			<MinIndex>1</MinIndex>
 			<MaxIndex>4</MaxIndex>
 		</rollingPolicy>
@@ -32,9 +32,9 @@
 	</appender>
 
 	<appender name="EVENT_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>target/serviceability/eventlog/eventlog.log</file>
+		<file>build/serviceability/eventlog/eventlog.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<FileNamePattern>target/serviceability/eventlog/eventlog_%i.log</FileNamePattern>
+			<FileNamePattern>build/serviceability/eventlog/eventlog_%i.log</FileNamePattern>
 			<MinIndex>1</MinIndex>
 			<MaxIndex>4</MaxIndex>
 		</rollingPolicy>

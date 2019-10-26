@@ -50,7 +50,7 @@ public class Spring256ABundleTests extends AbstractDeployerIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        PathReference pr = new PathReference("./target/work/org.eclipse.virgo.kernel");
+        PathReference pr = new PathReference("./build/work/org.eclipse.virgo.kernel");
         pr.delete(true);
 
         this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);

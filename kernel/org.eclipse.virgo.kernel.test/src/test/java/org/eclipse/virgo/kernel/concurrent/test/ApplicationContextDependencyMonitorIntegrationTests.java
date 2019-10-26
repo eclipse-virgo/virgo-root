@@ -83,7 +83,7 @@ public class ApplicationContextDependencyMonitorIntegrationTests extends Abstrac
         } catch (InterruptedException ignored) {
         }
 
-        File loggingOutput = new File("./target/serviceability/eventlog/eventlog.log");
+        File loggingOutput = new File("./build/serviceability/eventlog/eventlog.log");
         Assert.assertTrue("The log file " + loggingOutput.getAbsolutePath() + " does not exist.", loggingOutput.exists());
 
         BufferedReader reader = new BufferedReader(new FileReader(loggingOutput));

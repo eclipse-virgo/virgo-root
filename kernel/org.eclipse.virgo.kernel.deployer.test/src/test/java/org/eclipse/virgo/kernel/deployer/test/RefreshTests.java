@@ -54,14 +54,14 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        PathReference pr = new PathReference("./target/org.eclipse.virgo.kernel");
+        PathReference pr = new PathReference("./build/org.eclipse.virgo.kernel");
         pr.delete(true);
         pr.createDirectory();
 
         this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         this.appDeployer = this.context.getService(this.appDeployerServiceReference);
 
-        explodedPar = new PathReference("./target/refresh-test/refresh.par");
+        explodedPar = new PathReference("./build/refresh-test/refresh.par");
         explodedPar.delete(true);
 
         par = new PathReference("src/test/resources/refresh.par");
@@ -88,8 +88,8 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
 
         checkV1Classes();
 
-        PathReference exporter = new PathReference("./target/refresh-test/refresh.par/RefreshExporter.jar");
-        PathReference v2 = new PathReference("./target/refresh-test/refresh.par/build/RefreshExporterv2.jar");
+        PathReference exporter = new PathReference("./build/refresh-test/refresh.par/RefreshExporter.jar");
+        PathReference v2 = new PathReference("./build/refresh-test/refresh.par/build/RefreshExporterv2.jar");
         exporter.delete();
         v2.copy(exporter);
         this.appDeployer.refresh(explodedPar.toURI(), "RefreshExporter");
@@ -98,7 +98,7 @@ public class RefreshTests extends AbstractDeployerIntegrationTest {
         
         checkV2Classes();
 
-        PathReference v3 = new PathReference("./target/refresh-test/refresh.par/build/RefreshExporterv3.jar");
+        PathReference v3 = new PathReference("./build/refresh-test/refresh.par/build/RefreshExporterv3.jar");
         exporter.delete();
         v3.copy(exporter);
         this.appDeployer.refresh(explodedPar.toURI(), "RefreshExporter");

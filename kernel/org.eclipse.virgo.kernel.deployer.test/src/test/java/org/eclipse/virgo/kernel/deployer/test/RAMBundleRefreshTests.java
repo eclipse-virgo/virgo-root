@@ -40,7 +40,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
 
     @Test
     public void refresh() throws DeploymentException {
-        PathReference copyToDeploy = new PathReference("target/initial.jar");
+        PathReference copyToDeploy = new PathReference("build/initial.jar");
         if (copyToDeploy.exists() && !copyToDeploy.delete(true)) {
             fail("Failed to delete " + copyToDeploy);
         }
@@ -91,14 +91,14 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
   
     @Test
     public void refreshWithinAnUnscopedPlan() throws DeploymentException, InterruptedException {
-        PathReference watchedRepository = new PathReference("target/watched");
+        PathReference watchedRepository = new PathReference("build/watched");
         if (watchedRepository.exists() && ! watchedRepository.delete(true)) {
             fail("Failed to delete watched repository");
         }
         
         watchedRepository.createDirectory();
         
-        PathReference copyToDeploy = new PathReference("target/watched/refresh.jar");
+        PathReference copyToDeploy = new PathReference("build/watched/refresh.jar");
         PathReference original = new PathReference("src/test/resources/ram-bundle-refresh/initial.jar");
         original.copy(copyToDeploy, true);
         
@@ -133,7 +133,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test
     public void refreshWithinAPar() throws DeploymentException {
-        PathReference copyToDeploy = new PathReference("target/bundle-refresh.par");
+        PathReference copyToDeploy = new PathReference("build/bundle-refresh.par");
         if (copyToDeploy.exists() && !copyToDeploy.delete(true)) {
             fail("Failed to delete " + copyToDeploy);
         }
@@ -146,7 +146,7 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
         assertStateOfScopedInitialBundle();
         
         PathReference refreshSource = new PathReference("src/test/resources/ram-bundle-refresh/new-entry.jar");
-        PathReference refreshTarget = new PathReference("target/bundle-refresh.par/initial.jar");
+        PathReference refreshTarget = new PathReference("build/bundle-refresh.par/initial.jar");
         refreshTarget.delete(true);
         refreshSource.copy(refreshTarget, true);
         
@@ -184,18 +184,18 @@ public class RAMBundleRefreshTests extends AbstractRAMIntegrationTests {
     
     @Test
     public void refreshWithinAnUnscopedPlanWithAScopedParent() throws DeploymentException, InterruptedException {
-        PathReference watchedRepository = new PathReference("target/watched");
+        PathReference watchedRepository = new PathReference("build/watched");
         if (watchedRepository.exists() && ! watchedRepository.delete(true)) {
             fail("Failed to delete watched repository");
         }
         
         watchedRepository.createDirectory();
         
-        PathReference copyToDeploy = new PathReference("target/watched/refresh.jar");
+        PathReference copyToDeploy = new PathReference("build/watched/refresh.jar");
         PathReference original = new PathReference("src/test/resources/ram-bundle-refresh/initial.jar");
         original.copy(copyToDeploy, true);
         
-        new PathReference("src/test/resources/ram-bundle-refresh/test.plan").copy(new PathReference("target/watched/test.plan"));
+        new PathReference("src/test/resources/ram-bundle-refresh/test.plan").copy(new PathReference("build/watched/test.plan"));
         
         Thread.sleep(2000);
         

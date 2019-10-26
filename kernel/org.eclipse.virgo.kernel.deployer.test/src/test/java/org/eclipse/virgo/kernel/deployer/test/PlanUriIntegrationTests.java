@@ -34,7 +34,7 @@ public class PlanUriIntegrationTests extends AbstractDeployerIntegrationTest {
 
     private static final String TEST_RESOURCES_DIRECTORY = "src/test/resources/plan-deployment/";
 
-    private static final String GENERATED_PLAN_DIRECTORY = "target/PlanUriIntegrationTests/";
+    private static final String GENERATED_PLAN_DIRECTORY = "build/PlanUriIntegrationTests/";
 
     private static final String PLAN_EXTENSION = ".plan";
 

@@ -41,7 +41,7 @@ public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTe
 
     private ApplicationDeployer appDeployer;
 
-    private final PathReference pickup = new PathReference("./target/pickup");
+    private final PathReference pickup = new PathReference("./build/pickup");
 
     private StubInstallArtifactLifecycleListener lifecycleListener;
 
@@ -49,7 +49,7 @@ public class PipelinedDeployerTimeOutTests extends AbstractDeployerIntegrationTe
 
     @Before
     public void setUp() {
-        PathReference pr = new PathReference("./target/deployer");
+        PathReference pr = new PathReference("./build/deployer");
         pr.delete(true);
         pr.createDirectory();
 

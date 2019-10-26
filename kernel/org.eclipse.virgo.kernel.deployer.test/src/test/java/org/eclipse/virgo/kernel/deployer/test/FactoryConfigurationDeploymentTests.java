@@ -175,7 +175,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         hotDeployConfiguration.setProperty("prop1", "prop1");
         hotDeployConfiguration.setProperty("prop2", "2");
 
-        File target = new File("target/pickup/factory-config-a-hot.properties");
+        File target = new File("build/pickup/factory-config-a-hot.properties");
 
         if (target.exists()) {
             assertTrue(target.delete());
@@ -231,7 +231,7 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         hotDeployConfiguration.setProperty("prop1", "prop1");
         hotDeployConfiguration.setProperty("prop2", "2");
 
-        File target = new File("target/pickup/factory-config-a-hot-update.properties");
+        File target = new File("build/pickup/factory-config-a-hot-update.properties");
 
         if (target.exists()) {
             assertTrue(target.delete());
@@ -320,8 +320,8 @@ public class FactoryConfigurationDeploymentTests extends AbstractDeployerIntegra
         configTwo.setProperty("prop1", "prop2");
         configTwo.setProperty("prop2", "2");
 
-        final File targetOne = new File("target/pickup/factory-config-a-hot-update-1.properties");
-        final File targetTwo = new File("target/pickup/factory-config-a-hot-update-2.properties");
+        final File targetOne = new File("build/pickup/factory-config-a-hot-update-1.properties");
+        final File targetTwo = new File("build/pickup/factory-config-a-hot-update-2.properties");
 
         if (targetOne.exists()) {
             assertTrue(targetOne.delete());

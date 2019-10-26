@@ -75,7 +75,7 @@ public class NestedPlanIntegrationTests extends AbstractDeployerIntegrationTest 
 
     private static final String TEST_RESOURCES_DIRECTORY = "src/test/resources/plan-deployment/";
 
-    private static final String GENERATED_PLAN_DIRECTORY = "target/watched/";
+    private static final String GENERATED_PLAN_DIRECTORY = "build/watched/";
 
     private static final String PLAN_EXTENSION = ".plan";
 

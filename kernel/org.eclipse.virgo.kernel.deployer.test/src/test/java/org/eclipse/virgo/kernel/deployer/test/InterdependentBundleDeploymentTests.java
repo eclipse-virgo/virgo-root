@@ -34,7 +34,7 @@ public class InterdependentBundleDeploymentTests extends AbstractDeployerIntegra
     private ApplicationDeployer appDeployer;
 
     @Before public void setUp() {
-        PathReference pr = new PathReference("./target/org.eclipse.virgo.kernel");
+        PathReference pr = new PathReference("./build/org.eclipse.virgo.kernel");
         pr.delete(true);
         pr.createDirectory();
         

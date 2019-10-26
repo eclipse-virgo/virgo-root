@@ -58,7 +58,7 @@ public class QuasiFrameworkStateDumpIntegrationTests extends AbstractKernelInteg
         Assert.assertNotNull(this.quasiFrameworkFactory);
         this.quasiFramework = this.quasiFrameworkFactory.create();
         Assert.assertNotNull(this.quasiFramework);
-        this.dumpDir = new File("target/serviceability/dump/");
+        this.dumpDir = new File("build/serviceability/dump/");
         if(this.dumpDir.exists()){
         	FileSystemUtils.deleteRecursively(this.dumpDir);
         }

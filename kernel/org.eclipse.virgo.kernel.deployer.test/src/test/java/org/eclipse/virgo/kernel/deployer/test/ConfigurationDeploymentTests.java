@@ -121,7 +121,7 @@ public class ConfigurationDeploymentTests extends AbstractDeployerIntegrationTes
     @Test
     public void testHotDeployConfig() throws Exception {
         File source = new File("src/test/resources/configuration.deployment/t.properties");
-        File target = new File("target/pickup/t.properties");
+        File target = new File("build/pickup/t.properties");
 
         if (target.exists()) {
             assertTrue(target.delete());

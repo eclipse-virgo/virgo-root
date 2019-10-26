@@ -44,7 +44,7 @@ public class RedeployRefreshTests extends AbstractDeployerIntegrationTest {
         // The following races with server startup and causes unpleasantness on
         // the console, but is unfortunately
         // necessary until the test framework cold starts the server.
-        PathReference pr = new PathReference("./target/redeploy-refresh");
+        PathReference pr = new PathReference("./build/redeploy-refresh");
         pr.delete(true);
         pr.createDirectory();
         simpleModule = pr.newChild("simple.module.jar");

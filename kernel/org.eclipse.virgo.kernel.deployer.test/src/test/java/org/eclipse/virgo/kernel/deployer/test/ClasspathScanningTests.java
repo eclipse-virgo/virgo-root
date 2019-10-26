@@ -59,9 +59,9 @@ public class ClasspathScanningTests extends AbstractDeployerIntegrationTest {
     }
 
     private void cleanUp() {
-        cleanDirectory("./target/org.eclipse.virgo.kernel");
-        cleanDirectory("./target/install");
-        cleanDirectory("./target/locationCache");
+        cleanDirectory("./build/org.eclipse.virgo.kernel");
+        cleanDirectory("./build/install");
+        cleanDirectory("./build/locationCache");
     }
 
     private void cleanDirectory(String dir) {

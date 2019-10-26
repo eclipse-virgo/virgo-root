@@ -56,7 +56,7 @@ public class HotDeploymentTests extends AbstractDeployerIntegrationTest {
     }
     
     private void doTest(PathReference artifact, String type, String version) throws DeploymentException {
-        PathReference copyInPickup = artifact.copy(new PathReference("target/pickup"), true);
+        PathReference copyInPickup = artifact.copy(new PathReference("build/pickup"), true);
 
         try {
             while (!this.deployer.isDeployed(copyInPickup.toURI())) {

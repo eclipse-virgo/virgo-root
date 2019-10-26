@@ -50,26 +50,26 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
 
     @Before
     public void setUp() {
-        PathReference pr = new PathReference("./target/org.eclipse.virgo.kernel");
+        PathReference pr = new PathReference("./build/org.eclipse.virgo.kernel");
         pr.delete(true);
         pr.createDirectory();
-        pr = new PathReference("./target/deployer-edge-test");
+        pr = new PathReference("./build/deployer-edge-test");
         pr.delete(true);
         pr.createDirectory();
-        pr = new PathReference("./target/deployer-edge-test/other");
+        pr = new PathReference("./build/deployer-edge-test/other");
         pr.createDirectory();
 
         this.appDeployerServiceReference = this.context.getServiceReference(ApplicationDeployer.class);
         this.appDeployer = this.context.getService(this.appDeployerServiceReference);
 
-        parCopy1 = new PathReference("./target/deployer-edge-test/app0.par");
-        parCopy2 = new PathReference("./target/deployer-edge-test/app0copy.par");
-        parCopy3 = new PathReference("./target/deployer-edge-test/other/app0.par");
+        parCopy1 = new PathReference("./build/deployer-edge-test/app0.par");
+        parCopy2 = new PathReference("./build/deployer-edge-test/app0copy.par");
+        parCopy3 = new PathReference("./build/deployer-edge-test/other/app0.par");
         par = new PathReference("src/test/resources/app0.par");
 
-        jarCopy1 = new PathReference("./target/deployer-edge-test/dummy.jar");
-        jarCopy2 = new PathReference("./target/deployer-edge-test/dummycopy.jar");
-        jarCopy3 = new PathReference("./target/deployer-edge-test/other/dummy.jar");
+        jarCopy1 = new PathReference("./build/deployer-edge-test/dummy.jar");
+        jarCopy2 = new PathReference("./build/deployer-edge-test/dummycopy.jar");
+        jarCopy3 = new PathReference("./build/deployer-edge-test/other/dummy.jar");
         jar = new PathReference("src/test/resources/dummy.jar");
     }
 
@@ -78,9 +78,9 @@ public class DeployerEdgeTests extends AbstractDeployerIntegrationTest {
         if (this.appDeployerServiceReference != null) {
             this.context.ungetService(this.appDeployerServiceReference);
         }
-        PathReference pr = new PathReference("./target/org.eclipse.virgo.kernel");
+        PathReference pr = new PathReference("./build/org.eclipse.virgo.kernel");
         pr.delete(true);
-        pr = new PathReference("./target/deployer-edge-test");
+        pr = new PathReference("./build/deployer-edge-test");
         pr.delete(true);
     }
 
