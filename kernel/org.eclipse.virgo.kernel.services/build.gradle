@@ -16,7 +16,7 @@ dependencies {
     testCompile project(':test:org.eclipse.virgo.test.stubs')
     testCompile project(':medic:org.eclipse.virgo.medic.test')
 
-    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+    testRuntime 'org.aspectj:aspectjrt'
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 

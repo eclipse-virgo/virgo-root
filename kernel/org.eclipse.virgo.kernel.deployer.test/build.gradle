@@ -24,7 +24,7 @@ dependencies {
     // some the libraries are used by configuration items during integration tests -> testRuntime
     // @see org.eclipse.virgo.kernel.userregion.properties and others
     testRuntimeOnly 'org.slf4j:jcl-over-slf4j'
-    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+    testRuntimeOnly 'org.aspectj:aspectjrt'
 
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"

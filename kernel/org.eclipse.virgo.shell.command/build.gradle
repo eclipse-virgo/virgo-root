@@ -2,7 +2,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-nop'
     testCompile project(':test:org.eclipse.virgo.test.stubs')
 
-    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+    testRuntime 'org.aspectj:aspectjrt'
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"

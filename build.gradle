@@ -20,8 +20,6 @@ plugins {
 apply plugin: VirgoToolsPlugin
 
 ext {
-    aspectjVersion = "1.9.3"
-
     javaProjects = [
             project(':nano:org.eclipse.virgo.nano.authentication'),
             project(':nano:org.eclipse.virgo.nano.shutdown'),
@@ -418,23 +416,6 @@ configure(javaProjects + osgiProjects) {
     }
 }
 
-configure(aspectjProjects) {
-    configurations {
-        ajtools {
-            transitive = false
-            description = "AspectJ tools runtime"
-        }
-    }
-
-    apply plugin: AspectJPlugin
-
-    dependencies {
-        implementation "org.aspectj:aspectjrt:${aspectjVersion}"
-
-        ajtools "org.aspectj:aspectjtools:${aspectjVersion}"
-    }
-}
-
 configure(javaProjects + osgiProjects) {
     assemble.doLast {
         println '|--> Assembled Jar File: ' + jar.archivePath
@@ -562,6 +543,9 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             dependency "javax.servlet.jsp:javax.servlet.jsp-api:${javaxServletJspVersion}"
             dependency "javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:${javaxServletJspJstlVersion}"
 
+            dependency "org.aspectj:aspectjrt:${aspectjVersion}" // used by AspectJ compiler
+            dependency "org.aspectj:aspectjtools:${aspectjVersion}" // used by AspectJ compiler -> configuration ajtools
+
             dependencySet(group:'org.springframework', version: springframeworkVersion) {
                 entry 'spring-aspects'
                 entry 'spring-aop'
@@ -677,8 +661,19 @@ configure(osgiProjects) {
 }
 
 configure(aspectjProjects) {
-    configurations.compile.dependencies.each { dep ->
+    configurations {
+        ajtools {
+            transitive = false
+            description = "AspectJ tools runtime"
+        }
+    }
+
+    apply plugin: AspectJPlugin
+
+    configurations.compile.dependencies.each { Dependency dep ->
+        println dep.class
         if (dep.hasProperty("dependencyProject")) {
+            println "Has property dependencyProject" + dep.class
             println "dependent project: ${dep}"
             iajcClasspath += ":" + dep.dependencyProject.buildDir + "/bundles/release/classes.jar"
         } else {
@@ -704,11 +699,10 @@ configure(aspectjProjects) {
     }
 
     dependencies {
-        compile "org.aspectj:aspectjrt:${project.aspectjVersion}"
-        ajtools "org.aspectj:aspectjtools:${project.aspectjVersion}"
-    }
+        implementation 'org.aspectj:aspectjrt'
 
-    apply plugin: AspectJPlugin
+        ajtools 'org.aspectj:aspectjtools'
+    }
 
     // Add nature and buildCommand
     eclipse.project {

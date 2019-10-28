@@ -5,9 +5,9 @@ dependencies {
 
     testImplementation 'org.springframework:spring-beans'
     testImplementation 'org.springframework:spring-core'
-    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
-
     testRuntimeOnly 'org.slf4j:slf4j-nop' // used in EquinoxOsgiFrameworkTests
+    testRuntimeOnly 'org.slf4j:jcl-over-slf4j'
+    testRuntimeOnly 'org.aspectj:aspectjrt'
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
