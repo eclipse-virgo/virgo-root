@@ -191,9 +191,9 @@ dependencies {
     signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.core_${springframeworkVersion}.jar")
     signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.expression_${springframeworkVersion}.jar")
 
-    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
+    signedExternalPlugin 'org.eclipse.gemini.blueprint:gemini-blueprint-io'
+    signedExternalPlugin 'org.eclipse.gemini.blueprint:gemini-blueprint-core'
+    signedExternalPlugin 'org.eclipse.gemini.blueprint:gemini-blueprint-extender'
 
     // nano base
     // TODO - merge to oev.nano.services ?

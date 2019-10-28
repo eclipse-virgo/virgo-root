@@ -536,6 +536,27 @@ configure(
                 entry 'spring-test'
             }
 
+            dependencySet(group:'org.eclipse.gemini.blueprint', version: geminiBlueprintVersion) {
+                entry ('gemini-blueprint-io') {
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-beans'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-context'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-core'
+                }
+                entry ('gemini-blueprint-core') {
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-aop'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-beans'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-context'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-core'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-expression'
+                }
+                entry 'gemini-blueprint-extender'
+                entry ('gemini-blueprint-extensions') {
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-beans'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-context'
+                    exclude group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.spring-core'
+                }
+            }
+
             dependency "com.squareup.okio:okio:${okioVersion}"
             dependency "com.squareup.okhttp3:okhttp:${okhttp3Version}"
 

@@ -8,7 +8,7 @@ dependencies {
 
     implementation 'org.springframework:spring-context'
 
-    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
+    implementation 'org.eclipse.gemini.blueprint:gemini-blueprint-core'
 
     compile project(':kernel:org.eclipse.virgo.kernel.agent.dm')
     compile project(':kernel:org.eclipse.virgo.kernel.deployer')

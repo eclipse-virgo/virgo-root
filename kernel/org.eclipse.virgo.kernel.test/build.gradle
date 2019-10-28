@@ -25,6 +25,7 @@ dependencies {
     testCompile project(':test:org.eclipse.virgo.test.framework')
 
     testImplementation 'org.springframework:spring-context'
+    testImplementation 'org.eclipse.gemini.blueprint:gemini-blueprint-core'
 
     testRuntimeOnly 'org.aspectj:aspectjrt'
 

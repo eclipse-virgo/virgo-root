@@ -66,10 +66,10 @@ configure([
         repositoryExt files("../../3rd-party/build/plugins/oevm.com.squareup.okio_${okioVersion}.jar")
         repositoryExt files("../../3rd-party/build/plugins/oevm.com.squareup.okhttp3_${okhttp3Version}.jar")
 
-        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extensions", version: geminiBlueprintVersion, ext: "jar"
+        repositoryExt 'org.eclipse.gemini.blueprint:gemini-blueprint-io'
+        repositoryExt 'org.eclipse.gemini.blueprint:gemini-blueprint-core'
+        repositoryExt 'org.eclipse.gemini.blueprint:gemini-blueprint-extender'
+        repositoryExt 'org.eclipse.gemini.blueprint:gemini-blueprint-extensions'
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
         repositoryExt project(':kernel:org.eclipse.virgo.management.fragment')

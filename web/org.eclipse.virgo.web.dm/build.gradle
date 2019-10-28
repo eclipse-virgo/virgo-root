@@ -5,9 +5,9 @@ dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     implementation 'javax.servlet:javax.servlet-api'
 
-    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
-    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
-    compile group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
+    implementation 'org.eclipse.gemini.blueprint:gemini-blueprint-io'
+    implementation 'org.eclipse.gemini.blueprint:gemini-blueprint-core'
+    implementation 'org.eclipse.gemini.blueprint:gemini-blueprint-extender'
 
     implementation 'org.springframework:spring-aop'
     implementation 'org.springframework:spring-beans'
