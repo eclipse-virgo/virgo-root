@@ -4,7 +4,7 @@ dependencies {
     compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-    implementation "org.apache.httpcomponents:httpclient:${httpcomponentsClientVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.io')
@@ -18,8 +18,6 @@ dependencies {
 
     testImplementation project(':medic:org.eclipse.virgo.medic.test')
     testImplementation project(':test:org.eclipse.virgo.test.stubs')
-
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
 }
 
 eclipse.classpath {

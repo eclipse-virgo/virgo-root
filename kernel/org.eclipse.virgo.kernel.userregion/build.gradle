@@ -4,13 +4,12 @@ dependencies {
     testCompile project(':medic:org.eclipse.virgo.medic.test')
     testCompile project(':repository:org.eclipse.virgo.repository')
 
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    testImplementation 'org.springframework:spring-beans'
+    testImplementation 'org.springframework:spring-core'
     testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
     compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+    testRuntimeOnly group: "org.slf4j", name: "slf4j-nop", version: slf4jVersion // used in EquinoxOsgiFrameworkTests
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"

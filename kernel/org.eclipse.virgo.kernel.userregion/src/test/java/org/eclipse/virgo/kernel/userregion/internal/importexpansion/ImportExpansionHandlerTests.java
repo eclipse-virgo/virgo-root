@@ -11,26 +11,6 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.importexpansion;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.virgo.kernel.artifact.bundle.BundleBridge;
 import org.eclipse.virgo.kernel.artifact.library.LibraryBridge;
 import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyBundleDependenciesException;
@@ -38,23 +18,26 @@ import org.eclipse.virgo.kernel.osgi.framework.UnableToSatisfyDependenciesExcept
 import org.eclipse.virgo.kernel.userregion.internal.equinox.StubHashGenerator;
 import org.eclipse.virgo.medic.test.eventlog.LoggedEvent;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.repository.ArtifactDescriptor;
-import org.eclipse.virgo.repository.ArtifactGenerationException;
-import org.eclipse.virgo.repository.Attribute;
-import org.eclipse.virgo.repository.Query;
-import org.eclipse.virgo.repository.Repository;
-import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
-import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
-import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
-import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
-import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
-import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
-import org.eclipse.virgo.util.osgi.manifest.Resolution;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
+import org.eclipse.virgo.repository.*;
+import org.eclipse.virgo.util.osgi.manifest.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
+import org.springframework.core.io.FileSystemResource;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.easymock.EasyMock.*;
+import static org.eclipse.virgo.kernel.userregion.internal.TestUtils.fromBndPlatform;
+import static org.junit.Assert.*;
+import static org.springframework.core.io.support.PropertiesLoaderUtils.loadProperties;
 
 public class ImportExpansionHandlerTests {
 
@@ -69,16 +52,16 @@ public class ImportExpansionHandlerTests {
     }
 
     @Before
-    public void populateRepository() throws ArtifactGenerationException {
+    public void populateRepository() throws ArtifactGenerationException, IOException {
         BundleBridge bundleBridge = new BundleBridge(new StubHashGenerator());
         LibraryBridge libraryBridge = new LibraryBridge(new StubHashGenerator());
 
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/5.0.8.RELEASE"
-            + "/415c7d22dcab46985f27bbe1ce6de968e073497c/org.springframework.core-5.0.8.RELEASE.jar")));
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.beans/5.0.8.RELEASE"
-            + "/bf5fd324c11eb63777f810250cb8c2ea292f9279/org.springframework.beans-5.0.8.RELEASE.jar")));
+        Properties gradleProperties = loadProperties(new FileSystemResource("../../gradle.properties"));
+
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(fromBndPlatform("oevm.org.springframework.core_" +
+                gradleProperties.getProperty("springframeworkVersion") + ".jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(fromBndPlatform("oevm.org.springframework.beans_" +
+                gradleProperties.getProperty("springframeworkVersion") + ".jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
@@ -97,7 +80,7 @@ public class ImportExpansionHandlerTests {
         List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
-        expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
+        expect(bundleImport.getBundleSymbolicName()).andReturn("oevm.org.springframework.core").atLeastOnce();
         expect(bundleImport.getVersion()).andReturn(new VersionRange("[5,6)")).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
@@ -117,7 +100,7 @@ public class ImportExpansionHandlerTests {
         List<ImportedPackage> packageImports = bundleManifest.getImportPackage().getImportedPackages();
         for (ImportedPackage packageImport : packageImports) {
             Map<String, String> attributes = packageImport.getAttributes();
-            assertEquals("org.springframework.core", attributes.get("bundle-symbolic-name"));
+            assertEquals("oevm.org.springframework.core", attributes.get("bundle-symbolic-name"));
             assertEquals(new VersionRange("[5.0.8.RELEASE,5.0.8.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
     }
@@ -139,7 +122,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -149,13 +132,12 @@ public class ImportExpansionHandlerTests {
         for (ImportedPackage packageImport : packageImports) {
             Map<String, String> attributes = packageImport.getAttributes();
             if (packageImport.getPackageName().startsWith("org.springframework.beans")) {
-                assertEquals("org.springframework.beans", attributes.get("bundle-symbolic-name"));
+                assertEquals("oevm.org.springframework.beans", attributes.get("bundle-symbolic-name"));
             } else {
-                assertEquals("org.springframework.core", attributes.get("bundle-symbolic-name"));
+                assertEquals("oevm.org.springframework.core", attributes.get("bundle-symbolic-name"));
             }
             assertEquals(new VersionRange("[5.0.8.RELEASE,5.0.8.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
-
     }
 
     @Test
@@ -174,7 +156,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -203,7 +185,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
     }
@@ -224,7 +206,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -256,7 +238,7 @@ public class ImportExpansionHandlerTests {
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
             "Manifest-Version: 1.0\nBundle-SymbolicName: test.bundle"));
 
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
     }
 
     @Test
@@ -275,7 +257,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -300,7 +282,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -324,7 +306,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
     }
 
     /**
@@ -346,7 +328,7 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -373,7 +355,7 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(asList(libraryImport1, libraryImport2), asList(new ImportedBundle[0]),
+        handler.expandImports(asList(libraryImport1, libraryImport2), emptyList(),
             bundleManifest);
     }
 
@@ -396,7 +378,7 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(asList(libraryImport1, libraryImport2), asList(new ImportedBundle[0]),
+        handler.expandImports(asList(libraryImport1, libraryImport2), emptyList(),
             bundleManifest);
     }
 
@@ -415,7 +397,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
             "Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[1,2]\""));
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
     }
 
     @Test(expected = UnableToSatisfyDependenciesException.class)
@@ -435,7 +417,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
             "Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[1,2]\""));
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
     }
 
     @Test
@@ -443,7 +425,7 @@ public class ImportExpansionHandlerTests {
         List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
-        expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
+        expect(bundleImport.getBundleSymbolicName()).andReturn("oevm.org.springframework.core").atLeastOnce();
         expect(bundleImport.getVersion()).andReturn(new VersionRange("[5,6)")).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false);
@@ -454,7 +436,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
             "Manifest-Version: 1.0, Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[4.5,4.6)\""));
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -475,7 +457,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
             "Manifest-Version: 1.0\nBundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[4.5,4.6)\""));
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -504,7 +486,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(asList(new ImportedLibrary[0]), asList(bundleImport1, bundleImport2),
+        handler.expandImports(emptyList(), asList(bundleImport1, bundleImport2),
             bundleManifest);
     }
 
@@ -513,7 +495,7 @@ public class ImportExpansionHandlerTests {
         List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
-        expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
+        expect(bundleImport.getBundleSymbolicName()).andReturn("oevm.org.springframework.core").atLeastOnce();
         expect(bundleImport.getVersion()).andReturn(new VersionRange("[5.0.8,6)")).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
@@ -548,7 +530,7 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
     }
 
     @Test
@@ -572,7 +554,7 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(asList(new ImportedLibrary[0]),
+        handler.expandImports(emptyList(),
             asList(hostImportedBundle, fragmentImportedBundle), bundleManifest);
         assertEquals(0, bundleManifest.getImportPackage().getImportedPackages().size());
     }
@@ -635,7 +617,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), emptyList(), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -658,7 +640,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
+        handler.expandImports(emptyList(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -710,23 +692,17 @@ public class ImportExpansionHandlerTests {
 
         private final List<RepositoryAwareArtifactDescriptor> artifactDescriptors = new ArrayList<>();
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public Query createQuery(String key, String value) {
             throw new UnsupportedOperationException();
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public Query createQuery(String key, String value, Map<String, Set<String>> properties) {
             throw new UnsupportedOperationException();
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public RepositoryAwareArtifactDescriptor get(String type, String name, VersionRange versionRange) {
             RepositoryAwareArtifactDescriptor bestMatch = null;
 
@@ -740,16 +716,12 @@ public class ImportExpansionHandlerTests {
             return bestMatch;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public String getName() {
             throw new UnsupportedOperationException();
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public void stop() {
             throw new UnsupportedOperationException();
         }

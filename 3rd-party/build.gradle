@@ -4,11 +4,24 @@ plugins {
 
 platform {
     fetchSources = false
-    useBndHashQualifiers =false
+    useBndHashQualifiers = false
     defaultQualifier = ''
 
     bnd {
         instruction 'Bundle-Vendor', 'Eclipse Virgo'
+    }
+
+    bundle('org.aspectj:aspectjweaver') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.aspectj.weaver'
+            instruction 'Import-Package', 'sun.misc.*;resolution:=optional,com.bea.jvm.*;resolution:=optional,org.apache.commons.logging.*;resolution:=optional, *'
+        }
+    }
+
+    bundle('aopalliance:aopalliance') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.aopalliance.aopalliance'
+        }
     }
 
     bundle('org.apache.httpcomponents:httpcore') {
@@ -22,4 +35,330 @@ platform {
             instruction 'Bundle-SymbolicName', 'oevm.org.apache.httpcomponents.httpclient'
         }
     }
+
+    bundle('org.springframework:spring-aop') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.aop'
+            optionalImport 'com.jamonapi.*'
+            optionalImport 'org.apache.commons.pool.*'
+            optionalImport 'org.apache.commons.pool2.*'
+            optionalImport 'org.aspectj.*'
+            optionalImport 'org.springframework.cglib.*'
+            optionalImport 'org.codehaus.groovy.*'
+        }
+    }
+
+    bundle('org.springframework:spring-aspects') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.aspects'
+        }
+    }
+
+    bundle('org.springframework:spring-beans') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.beans'
+            optionalImport 'javax.el.*'
+            optionalImport 'javax.inject.*'
+            optionalImport 'javax.xml.*'
+            optionalImport 'groovy.*'
+            optionalImport 'org.yaml.snakeyaml.*'
+            optionalImport 'org.codehaus.groovy.*'
+            optionalImport 'kotlin.*'
+            optionalImport 'org.jetbrains.annotations.*'
+        }
+    }
+
+    bundle('org.springframework:spring-context') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.context'
+            optionalImport 'bsh.*'
+            optionalImport 'com.sun.net.*'
+            optionalImport 'edu.emory.mathcs.backport.*'
+            optionalImport 'groovy.*'
+            optionalImport 'javax.annotation.*'
+            optionalImport 'javax.cache.*'
+            optionalImport 'javax.ejb.*'
+            optionalImport 'javax.enterprise.concurrent'
+            optionalImport 'javax.interceptor.*'
+            optionalImport 'javax.jms.*'
+            optionalImport 'javax.management.*'
+            optionalImport 'javax.money.*'
+            optionalImport 'javax.naming.*'
+            optionalImport 'javax.persistence.*'
+            optionalImport 'javax.rmi.*'
+            optionalImport 'javax.script'
+            optionalImport 'javax.validation.*'
+            optionalImport 'javax.xml.*'
+            optionalImport 'net.sf.ehcache.*'
+            optionalImport 'org.apache.commons.logging.*'
+            optionalImport 'org.aspectj.*'
+            optionalImport 'org.codehaus.groovy.*'
+            optionalImport 'org.hibernate.validator.*'
+            optionalImport 'org.joda.*'
+            optionalImport 'org.omg.CORBA.*'
+            optionalImport 'org.jruby.*'
+            optionalImport 'kotlin.*'
+            optionalImport 'org.jetbrains.annotations.*'
+            optionalImport 'org.springframework.instrument'
+        }
+    }
+
+    bundle('org.springframework:spring-context-support') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.context.support'
+            optionalImport 'com.github.benmanes.caffeine.cache'
+            optionalImport 'commonj.*'
+            optionalImport 'freemarker.*'
+            optionalImport 'javax.cache.*'
+            optionalImport 'javax.mail.*'
+            optionalImport 'net.sf.ehcache.*'
+            optionalImport 'org.quartz.*'
+        }
+    }
+
+    bundle('org.springframework:spring-core') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.core'
+            optionalImport 'android.os.*'
+            optionalImport 'joptsimple.*'
+            optionalImport 'org.apache.tools.ant.*'
+            optionalImport 'org.apache.commons.codec.*'
+            optionalImport 'org.apache.log4j.*'
+            optionalImport 'org.aspectj.*'
+            optionalImport 'javax.annotation.*'
+            optionalImport 'io.netty.*'
+            optionalImport 'reactor.core.*'
+            optionalImport 'reactor.adapter.*'
+            optionalImport 'org.reactivestreams.*'
+            optionalImport 'io.reactivex.*'
+            optionalImport 'rx.*'
+            optionalImport 'kotlin.*'
+            optionalImport 'org.jetbrains.annotations.*'
+            optionalImport 'COM.newmonics.PercClassLoader'
+            optionalImport 'sun.*'
+            // FIXME Equinox migration check strange import issue with 'org.springframework.asm.util'
+            optionalImport 'org.springframework.asm.util'
+        }
+    }
+
+    bundle('org.springframework:spring-expression') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.expression'
+        }
+    }
+
+    bundle('org.springframework:spring-jcl') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.jcl'
+            optionalImport 'org.apache.logging.log4j.*'
+            optionalImport 'org.apache.log4j.*'
+            optionalImport 'org.slf4j.*'
+        }
+    }
+
+    bundle('org.springframework:spring-jdbc') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.jdbc'
+            optionalImport 'kotlin.*'
+            optionalImport 'org.apache.derby.jdbc'
+        }
+    }
+
+    bundle('org.springframework:spring-jms') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.jms'
+            optionalImport 'com.fasterxml.jackson.*'
+            optionalImport 'javax.jms'
+            optionalImport 'javax.resource.*'
+        }
+    }
+
+    bundle('org.springframework:spring-messaging') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.messaging'
+            optionalImport 'com.fasterxml.jackson.*'
+            optionalImport 'io.netty.*'
+            optionalImport 'org.reactivestreams.*'
+            optionalImport 'reactor.core.*'
+            optionalImport 'reactor.ipc.*'
+        }
+    }
+
+    bundle('org.springframework:spring-orm') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.orm'
+            optionalImport 'javax.persistence'
+            optionalImport 'javax.persistence.spi'
+            optionalImport 'org.eclipse.persistence.*'
+            optionalImport 'org.hibernate.*'
+        }
+    }
+
+    bundle('org.springframework:spring-oxm') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.oxm'
+            optionalImport 'com.thoughtworks.xstream.*'
+            optionalImport 'javax.activation.*'
+            optionalImport 'javax.xml.*'
+            optionalImport 'javax.xml.bind.*'
+            optionalImport 'com.thoughtworks.xstream.*'
+            optionalImport 'org.apache.commons.logging.*'
+            optionalImport 'org.apache.xmlbeans.*'
+            optionalImport 'org.exolab.castor.*'
+            optionalImport 'org.jibx.runtime.*'
+            instruction 'Import', 'org.w3c.dom.*;version="0"'
+            instruction 'Import', 'org.xml.sax.*;version="0"'
+        }
+    }
+
+    bundle('org.springframework:spring-tx') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.transaction'
+            optionalImport 'com.ibm.wsspi.uow'
+            optionalImport 'javax.ejb'
+            optionalImport 'javax.resource.*'
+        }
+    }
+
+    bundle('org.springframework:spring-web') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.web'
+            optionalImport 'com.caucho.*'
+            optionalImport 'com.fasterxml.aalto.*'
+            optionalImport 'com.fasterxml.jackson.*'
+            optionalImport 'com.google.gson.*'
+            optionalImport 'com.google.protobuf.*'
+            optionalImport 'com.googlecode.protobuf.format'
+            optionalImport 'com.rometools.rome.*'
+            optionalImport 'com.squareup.okhttp3.*'
+            optionalImport 'okhttp3.*'
+            optionalImport 'com.sun.net.*'
+            optionalImport 'groovy.*'
+            optionalImport 'io.netty.*'
+            optionalImport 'javax.activation.*'
+            optionalImport 'javax.el.*'
+            optionalImport 'javax.faces.*'
+            optionalImport 'javax.imageio.*'
+            optionalImport 'javax.jws.*'
+            optionalImport 'javax.mail.*'
+            optionalImport 'javax.portlet.*'
+            optionalImport 'javax.servlet.*'
+            optionalImport 'javax.servlet.annotation'
+            optionalImport 'javax.servlet.jsp.*'
+            optionalImport 'javax.validation.*'
+            optionalImport 'javax.xml.*'
+            optionalImport 'javax.net.ssl'
+            optionalImport 'org.apache.commons.fileupload.*'
+            optionalImport 'org.apache.commons.httpclient.*'
+            optionalImport 'org.apache.commons.logging.*'
+            optionalImport 'org.apache.http.*'
+            optionalImport 'org.apache.log4j.*'
+            optionalImport 'org.codehaus.jackson.*'
+            optionalImport 'org.xml.sax.*'
+            optionalImport 'org.w3c.dom.*'
+            optionalImport 'io.undertow.*'
+            optionalImport 'org.apache.catalina.*'
+            optionalImport 'org.eclipse.jetty.*'
+            optionalImport 'reactor.core.*'
+            optionalImport 'reactor.ipc.*'
+            optionalImport 'reactor.util.*'
+            optionalImport 'javax.json.bind'
+            optionalImport 'org.synchronoss.cloud.nio.*'
+            optionalImport 'org.xnio.*'
+            optionalImport 'org.reactivestreams.*'
+            optionalImport 'kotlin.*'
+            optionalImport 'org.jetbrains.annotations.*'
+        }
+    }
+
+    bundle('org.springframework:spring-webflux') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.webflux'
+            optionalImport 'freemarker.*'
+            optionalImport 'io.netty.*'
+            optionalImport 'io.undertow.*'
+            optionalImport 'javax.websocket.*'
+            optionalImport 'kotlin.*'
+            optionalImport 'org.apache.tomcat.websocket.*'
+            optionalImport 'org.eclipse.jetty.websocket.*'
+            optionalImport 'org.reactivestreams.*'
+            optionalImport 'org.webjars'
+            optionalImport 'org.xnio'
+            optionalImport 'reactor.core.*'
+            optionalImport 'reactor.ipc.*'
+            optionalImport 'reactor.util.*'
+        }
+    }
+
+    bundle('org.springframework:spring-webmvc') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.webmvc'
+            optionalImport 'com.fasterxml.jackson.*'
+            optionalImport 'com.lowagie.text.*'
+            optionalImport 'com.rometools.rome.*'
+            optionalImport 'freemarker.*'
+            optionalImport 'groovy.*'
+            optionalImport 'org.apache.poi.*'
+            optionalImport 'org.apache.tiles.*'
+            optionalImport 'org.reactivestreams.*'
+            optionalImport 'org.webjars'
+        }
+    }
+
+    bundle('org.springframework:spring-websocket') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.org.springframework.websocket'
+            optionalImport 'com.fasterxml.jackson.*'
+            optionalImport 'io.undertow.*'
+            optionalImport 'javax.websocket.*'
+            optionalImport 'org.apache.tomcat.websocket.*'
+            optionalImport 'org.eclipse.jetty.*'
+            optionalImport 'org.glassfish.tyrus.*'
+            optionalImport 'org.xnio.*'
+        }
+    }
+
+    bundle('com.squareup.okio:okio') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.com.squareup.okio'
+            optionalImport 'javax.annotation'
+            optionalImport 'javax.crypto.*'
+            optionalImport 'org.codehaus.mojo.animal_sniffer'
+        }
+    }
+
+    bundle('com.squareup.okhttp3:okhttp') {
+        bnd {
+            instruction 'Bundle-SymbolicName', 'oevm.com.squareup.okhttp3'
+            optionalImport 'android.net.*'
+            optionalImport 'android.os'
+            optionalImport 'android.security'
+            optionalImport 'android.util'
+            optionalImport 'com.android.org.conscrypt'
+            optionalImport 'dalvik.system'
+            optionalImport 'javax.annotation'
+            optionalImport 'javax.net.*'
+            optionalImport 'javax.security.auth.x500'
+            optionalImport 'org.apache.harmony.xnet.provider.jsse'
+            optionalImport 'sun.security.ssl'
+        }
+    }
 }
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.eclipse.platform:org.eclipse.osgi'
+    testImplementation 'org.glassfish.hk2.external:javax.inject'
+
+    testImplementation 'org.ops4j.pax.exam:pax-exam-junit4'
+    testImplementation 'org.ops4j.pax.exam:pax-exam-container-native'
+    testImplementation 'org.ops4j.pax.exam:pax-exam-link-mvn'
+    testImplementation 'org.ops4j.pax.url:pax-url-aether'
+}
+
+test.dependsOn(tasks['bundles'])

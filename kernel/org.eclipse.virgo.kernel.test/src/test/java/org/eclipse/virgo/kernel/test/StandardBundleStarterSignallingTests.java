@@ -11,13 +11,6 @@
 
 package org.eclipse.virgo.kernel.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
 import org.eclipse.virgo.nano.core.AbortableSignal;
 import org.eclipse.virgo.nano.core.BundleStarter;
 import org.junit.Before;
@@ -25,6 +18,10 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
+
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrationTest {
 
@@ -111,8 +108,7 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
                 if (countWaits-- == 0) break;
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    continue;
+                } catch (InterruptedException ignored) {
                 }
             }
         }
@@ -308,15 +304,15 @@ public class StandardBundleStarterSignallingTests extends AbstractKernelIntegrat
             this.aborted = true;
 		}
         
-        public boolean isComplete() {
+        boolean isComplete() {
             return this.complete;
         }
         
-        public boolean isAborted() {
+        boolean isAborted() {
             return this.aborted;
         }
         
-        public Throwable getCause() {
+        Throwable getCause() {
             return this.cause;
         }
         

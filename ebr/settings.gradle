@@ -1,22 +1,5 @@
-include "org.springframework.aop-${springframeworkVersion}"
-include "org.springframework.aspects-${springframeworkVersion}"
-include "org.springframework.beans-${springframeworkVersion}"
-include "org.springframework.context-${springframeworkVersion}"
-include "org.springframework.context.support-${springframeworkVersion}"
-include "org.springframework.core-${springframeworkVersion}"
-include "org.springframework.expression-${springframeworkVersion}"
-include "org.springframework.jdbc-${springframeworkVersion}"
-include "org.springframework.jcl-${springframeworkVersion}"
-include "org.springframework.jms-${springframeworkVersion}"
-include "org.springframework.messaging-${springframeworkVersion}"
-include "org.springframework.orm-${springframeworkVersion}"
-include "org.springframework.oxm-${springframeworkVersion}"
-include "org.springframework.transaction-${springframeworkVersion}"
-include "org.springframework.web-${springframeworkVersion}"
-include "org.springframework.webflux-${springframeworkVersion}"
-include "org.springframework.webmvc-${springframeworkVersion}"
-include "org.springframework.websocket-${springframeworkVersion}"
-include "org.springframework.test-${springframeworkVersion}"
-include "org.aspectj.weaver-${aspectjVersion}"
-include "com.squareup.okio-${okioVersion}"
-include "com.squareup.okhttp3-${okhttp3Version}"
+// Empty settings.gradle
+
+// Why?
+//* What went wrong:
+//Project directory '/jobs/genie.virgo/virgo-master/workspace/ebr' is not part of the build defined by settings file '/jobs/genie.virgo/virgo-master/workspace/settings.gradle'. If this is an unrelated build, it must have its own settings file.

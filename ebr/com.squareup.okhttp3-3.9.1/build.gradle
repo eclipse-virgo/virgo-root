@@ -1,3 +1,0 @@
-dependencies {
-    sourceBundle group: 'com.squareup.okhttp3', name: 'okhttp', version: okhttp3Version
-}

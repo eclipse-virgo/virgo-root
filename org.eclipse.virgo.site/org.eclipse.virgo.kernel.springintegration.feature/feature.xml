@@ -19,7 +19,7 @@
    </license>
 
     <plugin
-         id="org.springframework.expression"
+         id="oevm.org.springframework.expression"
          download-size="0"
          install-size="0"
          version="0.0.0"

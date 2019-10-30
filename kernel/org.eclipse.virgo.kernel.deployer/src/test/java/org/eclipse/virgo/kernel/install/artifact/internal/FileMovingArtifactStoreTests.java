@@ -11,28 +11,34 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
 import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static junit.framework.TestCase.assertNotNull;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.*;
 
 public class FileMovingArtifactStoreTests {
 
-    private static final String TEST_PATH = "build/fileMovingArtifactStoreTests/";
+    @Rule
+    public TemporaryFolder artifactStore = new TemporaryFolder();
 
     private static final String TEST_FILENAME = "some.jar";
 
     private ArtifactStore artifactHistory;
 
     @Before
-    public void setUp() throws Exception {
-        PathReference basePathReference = new PathReference(TEST_PATH + TEST_FILENAME);
+    public void setUp() {
+        Path artifactStoreRoot = Paths.get(artifactStore.getRoot().toURI());
+        PathReference basePathReference = new PathReference(artifactStoreRoot + File.separator + TEST_FILENAME);
         basePathReference.delete(true);
         this.artifactHistory = new FileMovingArtifactStore(basePathReference);
     }
@@ -49,7 +55,7 @@ public class FileMovingArtifactStoreTests {
         this.artifactHistory.save();
         PathReference c = this.artifactHistory.getCurrentPath();
         checkPath(c);
-        assertTrue(original.equals(c));
+        assertEquals(original, c);
     }
 
     @Test
@@ -59,7 +65,7 @@ public class FileMovingArtifactStoreTests {
         this.artifactHistory.restore();
         PathReference c = this.artifactHistory.getCurrentPath();
         checkPath(c);
-        assertTrue(original.equals(c));
+        assertEquals(original, c);
     }
 
     @Test
@@ -70,8 +76,8 @@ public class FileMovingArtifactStoreTests {
         this.artifactHistory.save();
         PathReference last = this.artifactHistory.getCurrentPath();
         checkPath(last);
-        assertTrue(original.equals(next));
-        assertTrue(original.equals(last));
+        assertEquals(original, next);
+        assertEquals(original, last);
     }
 
     @Test
@@ -149,10 +155,11 @@ public class FileMovingArtifactStoreTests {
 
     private void checkPath(PathReference c) {
         File file = c.toFile();
-        assertTrue(file.toURI().toString().indexOf(TEST_PATH) != -1);
+        assertThat(file.toURI().toString(), containsString(artifactStore.getRoot().toString()));
         assertEquals(TEST_FILENAME, c.getName());
-        assertFalse(c.exists());
+        assertFalse("PathReference " + c + " should not exist", c.exists());
         PathReference parent = c.getParent();
+        assertNotNull(parent);
         assertTrue(parent.isDirectory());
         assertTrue(parent.exists());
     }

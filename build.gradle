@@ -412,8 +412,7 @@ configure(javaProjects + osgiProjects) {
     dependencies {
         ecj group: "org.eclipse.jdt.core.compiler", name: "ecj", version: ecjVersion
 
-        testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
-        testRuntime group: 'org.eclipse.virgo.mirrored', name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
+        testImplementation 'junit:junit'
     }
 
     eclipse {
@@ -516,26 +515,11 @@ println "FIXME Equinox migration - how to publish Java + OSGi bundles"
 //    }
 //}
 
-configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclipse.virgo.site")) {
-    repositories {
-        mavenCentral()
-        ivy {
-            url "http://build.eclipse.org/rt/virgo/ivy/bundles/release/"
-            layout "pattern", { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
-        }
-        ivy {
-            url "http://build.eclipse.org/rt/virgo/ivy/bundles/milestone/"
-            layout "pattern", { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
-        }
-    }
-}
-
-configure(project("3rd-party")) {
+configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclipse.virgo.site") + project("3rd-party")) {
     apply plugin: "io.spring.dependency-management"
 
     repositories {
         mavenCentral()
-
         // Gemini Web and Tomcat dependencies aren't at Maven Central
         ivy {
             url "https://build.eclipse.org/rt/virgo/ivy/bundles/release/"
@@ -545,12 +529,70 @@ configure(project("3rd-party")) {
 
     dependencyManagement {
         dependencies {
+            // Equinox OSGi runtime
+            dependency "org.eclipse.platform:org.eclipse.osgi:3.11.2"
+
+            dependency "org.apache.felix:org.apache.felix.gogo.command:${gogoCommandVersion}"
+            dependency "org.apache.felix:org.apache.felix.gogo.runtime:${gogoRuntimeVersion}"
+            dependency "org.apache.felix:org.apache.felix.gogo.shell:${gogoShellVersion}"
+
             // 3rd party dependencies
-            dependency "org.apache.httpcomponents:httpcore:${httpcomponentsCoreVersion}"
-            dependency "org.apache.httpcomponents:httpclient:${httpcomponentsClientVersion}"
+            dependency "org.glassfish.hk2.external:javax.inject:${glassfishJavaxInjectVersion}"
+            dependencySet(group:'org.slf4j', version: slf4jVersion) {
+                entry 'jcl-over-slf4j'
+                entry 'jul-to-slf4j'
+                entry 'slf4j-api'
+                entry 'slf4j-nop'
+            }
+            dependencySet(group:'ch.qos.logback', version: logbackVersion) {
+                entry 'logback-core'
+                entry 'logback-classic'
+            }
+
+            dependency "commons-codec:commons-codec:${commonsCodecVersion}"
+            dependency "commons-cli:commons-cli:${commonsCliVersion}"
+
+            dependency "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
+            dependency "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+
+            dependency "org.hibernate:hibernate-core:${hibernateCoreVersion}"
+
+            // Spring dependencies
+            dependency "aopalliance:aopalliance:${aopallianceVersionMaven}"
+            dependency "org.aspectj:aspectjweaver:${aspectjVersion}"
+
+            dependencySet(group:'org.springframework', version: springframeworkVersion) {
+                entry 'spring-aspects'
+                entry 'spring-aop'
+                entry 'spring-beans'
+                entry 'spring-context'
+                entry 'spring-context-support'
+                entry 'spring-core'
+                entry 'spring-expression'
+                entry 'spring-jdbc'
+                entry 'spring-messaging'
+                entry 'spring-jms'
+                entry 'spring-orm'
+                entry 'spring-oxm'
+                entry 'spring-tx'
+                entry 'spring-web'
+                entry 'spring-webflux'
+                entry 'spring-webmvc'
+                entry 'spring-websocket'
+
+                entry 'spring-test'
+            }
+
+            dependency "com.squareup.okio:okio:${okioVersion}"
+            dependency "com.squareup.okhttp3:okhttp:${okhttp3Version}"
 
             // testing
-            dependency 'junit:junit:4.12' // CQ4129 (PB CQ3480) 4.7
+            dependency "junit:junit:${junitVersion}"
+
+            dependency "org.ops4j.pax.exam:pax-exam-junit4:${paxExamJunit4Version}"
+            dependency "org.ops4j.pax.exam:pax-exam-container-native:${paxExamContainerNativeVersion}"
+            dependency "org.ops4j.pax.exam:pax-exam-link-mvn:${paxExamLinkMvnVersion}"
+            dependency "org.ops4j.pax.url:pax-url-aether:${paxUrlAetherVersion}"
         }
     }
 }
@@ -576,7 +618,15 @@ configure(javaProjects + osgiProjects) {
     if (System.properties['ci.build'] == 'true' || System.properties['include.jacoco'] == 'true') {
         apply plugin: "jacoco"
 
-        jacoco { toolVersion = "0.8.1" }
+        jacoco {
+            toolVersion = "0.8.5"
+        }
+
+        test {
+            jacoco {
+                excludes = [ 'aspectj.*' ]
+            }
+        }
     }
 }
 
@@ -693,7 +743,7 @@ configure([
         // OSGi runtime
         testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-        testCompile group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
+        testImplementation 'org.glassfish.hk2.external:javax.inject'
 
         // PaxExam
         testRuntime group: "org.slf4j", name: "slf4j-api", version: slf4jVersion

@@ -1,3 +1,0 @@
-dependencies {
-    sourceBundle group: 'org.springframework', name: 'spring-aspects', version: "${springframeworkVersion}"
-}

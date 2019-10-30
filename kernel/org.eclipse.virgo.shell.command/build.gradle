@@ -13,7 +13,7 @@ dependencies {
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
 
-    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    implementation 'org.springframework:spring-core'
 
     compile project(':kernel:org.eclipse.virgo.kernel.deployer')
     compile project(':kernel:org.eclipse.virgo.kernel.model')

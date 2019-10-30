@@ -1,23 +1,27 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.virgo.kernel.test;version="3.8.0.BUILD-SNA
- PSHOT";uses:="org.eclipse.virgo.nano.core,org.junit,org.junit.runner"
- ,delay
+Export-Package: delay
 Bundle-SymbolicName: org.eclipse.virgo.kernel.test
 Bundle-Name: Virgo Kernel Test
 Bundle-Version: 3.8.0.BUILD-SNAPSHOT
 Bundle-ClassPath: .,SlowService.jar,QuickConsumer.jar,quasi/simpleimpo
  rter.jar,quasi/simpleexporter.jar
 Bundle-ManifestVersion: 2
-Import-Package: javax.management;version="0",org.eclipse.equinox.regio
- n,org.eclipse.gemini.blueprint.context.support;version="[3.0.0,4)",or
- g.eclipse.gemini.blueprint.service.importer.support;version="[3.0.0,4
- )",org.eclipse.virgo.kernel.osgi.framework;version="[3.8.0,4)",org.ec
- lipse.virgo.kernel.osgi.quasi;version="[3.8.0,4)",org.eclipse.virgo.n
- ano.core;version="[3.8.0,4)",org.eclipse.virgo.nano.deployer.api.core
- ;version="[3.8.0,4)",org.eclipse.virgo.shell.osgicommand.helper,org.e
- clipse.virgo.util.io;version="[3.8.0,4)",org.eclipse.virgo.util.osgi.
- manifest;version="[3.8.0,4)",org.junit;version="[4.7.0,5)",org.junit.
- runner;version="[4.7.0,5)",org.osgi.framework;version="0",org.springf
- ramework.context;version="[5.0.8.RELEASE,6)",org.springframework.jmx.
- export;version="[5.0.8.RELEASE,6)"
+Import-Package: javax.management;version="0",
+ org.osgi.framework;version="0",
+ org.osgi.service.packageadmin,
+ org.eclipse.equinox.region,
+ org.eclipse.virgo.repository;version="[3.8.0,4)",
+ org.eclipse.virgo.medic.eventlog;version="[3.8.0,4)",
+ org.eclipse.virgo.kernel.osgi.framework;version="[3.8.0,4)",
+ org.eclipse.virgo.kernel.osgi.quasi;version="[3.8.0,4)",
+ org.eclipse.virgo.kernel.services.work;version="[3.8.0,4)",
+ org.eclipse.virgo.nano.core;version="[3.8.0,4)",
+ org.eclipse.virgo.nano.deployer.api.core;version="[3.8.0,4)",
+ org.eclipse.virgo.shell.osgicommand.helper,
+ org.eclipse.virgo.util.io;version="[3.8.0,4)",
+ org.eclipse.virgo.util.osgi.manifest;version="[3.8.0,4)",
+ org.junit;version="[4.7.0,5)",
+ org.junit.runner;version="[4.7.0,5)",
+ org.springframework.aop;version="[5.0.8,6)",
+ org.springframework.context;version="[5.0.8,6)"
 Tool: Bundlor 1.1.3.M01

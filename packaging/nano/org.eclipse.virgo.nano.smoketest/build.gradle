@@ -30,8 +30,6 @@ task smokeTest(type: Test) {
 }
 
 dependencies {
-    testImplementation 'junit:junit'
-
     testImplementation project(':test:org.eclipse.virgo.test.tools')
     testImplementation project(':util:org.eclipse.virgo.util.io')
 

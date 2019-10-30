@@ -39,6 +39,7 @@ remotes {
 }
 
 dependencies {
+
     localPlugin project(':kernel:org.eclipse.virgo.kernel.agent.dm')
     localPlugin project(':kernel:org.eclipse.virgo.kernel.artifact')
     localPlugin project(':kernel:org.eclipse.virgo.kernel.deployer')
@@ -70,12 +71,10 @@ dependencies {
     localPlugin project(':nano:org.eclipse.virgo.nano.services.ds')
 
     localPlugin project(':repository:org.eclipse.virgo.repository')
-    // TODO - review if all those signedExternalPlugins are signed
-    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
-    // optional requirement for org.springframework.core
+    signedExternalPlugin 'commons-codec:commons-codec'
 
-    externalPlugin files("../3rd-party/build/plugins/oevm.org.apache.httpcomponents.httpcore_${httpcomponentsCoreVersion}.jar")
-    externalPlugin files("../3rd-party/build/plugins/oevm.org.apache.httpcomponents.httpclient_${httpcomponentsClientVersion}.jar")
+    externalPlugin files("../3rd-party/build/plugins/oevm.org.apache.httpcomponents.httpcore_${httpcoreVersion}.jar")
+    externalPlugin files("../3rd-party/build/plugins/oevm.org.apache.httpcomponents.httpclient_${httpclientVersion}.jar")
 
     localPlugin project(':util:org.eclipse.virgo.util.common')
     localPlugin project(':util:org.eclipse.virgo.util.env')
@@ -120,7 +119,7 @@ dependencies {
     signedExternalPlugin group: "org.slf4j", name: "jcl-over-slf4j", version: slf4jVersion
     signedExternalPlugin group: "org.slf4j", name: "log4j-over-slf4j", version: slf4jVersion
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.aspectj.weaver_${aspectjVersion}.jar")
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.region.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
@@ -151,7 +150,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration.feature')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.expression_${springframeworkVersion}.jar")
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management.feature')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
@@ -182,11 +181,14 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin.equinox", version: equinoxFrameworkadminEquinoxVersion, configuration: "compile", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.blueprint.feature')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.aopalliance.aopalliance_${aopallianceVersion}.jar")
+
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.aop_${springframeworkVersion}.jar")
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.beans_${springframeworkVersion}.jar")
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.context_${springframeworkVersion}.jar")
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.core_${springframeworkVersion}.jar")
+    signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.expression_${springframeworkVersion}.jar")
+
     signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
     signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
@@ -258,7 +260,7 @@ dependencies {
     signedExternalPlugin group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'org.glassfish.hk2.external:javax.inject'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
@@ -280,7 +282,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.registry", version: geronimoSpecsOsgiRegistryVersion, configuration: "compile", ext: "jar"
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.beanutils", version: commonsBeanutilsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.cli", version: commonsCliVersion, ext: "jar"
+    signedExternalPlugin 'commons-cli:commons-cli'
     signedExternalPlugin group: "commons-collections", name: "commons-collections", version: commonsCollectionsVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.lang", version: commonsLangVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"

@@ -1,7 +1,7 @@
 dependencies {
-    compile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+    implementation 'junit:junit'
 
     compile project(':util:org.eclipse.virgo.util.io')
-    compile group: "org.apache.httpcomponents", name: "httpcore", version: httpcomponentsCoreVersion
-    compile group: "org.apache.httpcomponents", name: "httpclient", version: httpcomponentsClientVersion
+    compile group: "org.apache.httpcomponents", name: "httpcore", version: httpcoreVersion
+    compile group: "org.apache.httpcomponents", name: "httpclient", version: httpclientVersion
 }

@@ -1,3 +1,0 @@
-dependencies {
-    sourceBundle group: 'com.squareup.okio', name: 'okio', version: okioVersion
-}

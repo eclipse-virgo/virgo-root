@@ -5,14 +5,14 @@ jar.manifest.attributes(
 dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
-    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
+    implementation 'org.springframework:spring-beans'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-core'
+    implementation 'org.springframework:spring-web'
 
     implementation project(':util:org.eclipse.virgo.util.io')
     implementation project(':apps:org.eclipse.virgo.apps.repository.core')
 
     testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-    testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion, ext: "jar"
+    testImplementation 'org.springframework:spring-test'
 }

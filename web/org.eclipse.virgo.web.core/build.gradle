@@ -22,7 +22,7 @@ dependencies {
 
     testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 
-    testCompile group: "org.eclipse.virgo.mirrored", name: "org.springframework.test", version: springframeworkVersion,ext: "jar"
+    testImplementation 'org.springframework:spring-test'
 
     testImplementation project(':util:org.eclipse.virgo.util.parser.manifest')
     testImplementation project(':kernel:org.eclipse.virgo.kernel.stubs')

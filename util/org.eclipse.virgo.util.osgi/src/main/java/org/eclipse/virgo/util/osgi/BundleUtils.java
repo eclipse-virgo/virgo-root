@@ -11,7 +11,6 @@
 
 package org.eclipse.virgo.util.osgi;
 
-import org.eclipse.osgi.framework.internal.core.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.*;
 import org.osgi.framework.BundleContext;

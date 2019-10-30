@@ -54,16 +54,16 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+        repositoryExt files("../../3rd-party/build/plugins/oevm.aopalliance.aopalliance_${aopallianceVersion}.jar")
+        repositoryExt 'commons-codec:commons-codec'
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.aop_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.beans_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.context_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.core_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.expression_${springframeworkVersion}.jar")
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.squareup.okio", version: okioVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "com.squareup.okhttp3", version: okhttp3Version, ext: "jar"
+        repositoryExt files("../../3rd-party/build/plugins/oevm.com.squareup.okio_${okioVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.com.squareup.okhttp3_${okhttp3Version}.jar")
 
         repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
         repositoryExt group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
@@ -100,22 +100,23 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
 
         // missing Spring Framework dependencies
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.aspects", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.context.support", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.jdbc", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.messaging", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.jms", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.orm", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.oxm", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.transaction", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.web", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webflux", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.webmvc", version: springframeworkVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.springframework.websocket", version: springframeworkVersion, ext: "jar"
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.aspects_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.context.support_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.jdbc_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.messaging_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.jms_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.orm_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.oxm_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.tx_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.web_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.webflux_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.webmvc_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.websocket_${springframeworkVersion}.jar")
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.aspectj.weaver_${aspectjVersion}.jar")
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.javax.portlet", version: javaxPortletVersion, ext: "jar"
+        // TODO - think about removing portlet-api from standard VTS
+        repositoryExt 'javax.portlet:portlet-api:3.0.1'
 
         repositoryExt group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
         repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
@@ -149,7 +150,8 @@ configure([
 
         repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
         repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
+        // TODO - Equinox migration - rethink removal of taglibs.standard
+//        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         repositoryExt group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion

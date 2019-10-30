@@ -4,7 +4,7 @@ repositories {
 
 dependencies {
     // OSGi runtime
-    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    testImplementation group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
     testRuntime project(':util:org.eclipse.virgo.util.common')
     testRuntime project(':util:org.eclipse.virgo.util.env')

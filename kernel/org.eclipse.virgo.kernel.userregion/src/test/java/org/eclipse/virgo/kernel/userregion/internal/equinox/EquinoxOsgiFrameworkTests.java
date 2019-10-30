@@ -11,22 +11,20 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.equinox;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.lang.instrument.ClassFileTransformer;
-import java.security.ProtectionDomain;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
+import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
 import org.eclipse.virgo.util.osgi.BundleUtils;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.eclipse.virgo.kernel.osgi.framework.BundleClassLoaderUnavailableException;
-import org.eclipse.virgo.kernel.osgi.framework.InstrumentableClassLoader;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.eclipse.virgo.kernel.userregion.internal.TestUtils.*;
+import static org.junit.Assert.*;
 
 public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTests {
 
@@ -58,7 +56,7 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
     @Test
     public void testLoadClassAndGetClassLoader() throws Exception {
         Bundle bundle = installSpringCore(this.framework);
-        assertEquals("incorrect bundle loaded", "org.springframework.core", bundle.getSymbolicName());
+        assertEquals("incorrect bundle loaded", "oevm.org.springframework.core", bundle.getSymbolicName());
         Class<?> cls = bundle.loadClass("org.springframework.core.SpringVersion");
         assertNotNull(cls);
         assertTrue(cls.getClassLoader() instanceof KernelBundleClassLoader);
@@ -72,28 +70,19 @@ public class EquinoxOsgiFrameworkTests extends AbstractOsgiFrameworkLaunchingTes
         assertNotNull(bundleClassLoader);
         InstrumentableClassLoader icl = (InstrumentableClassLoader) bundleClassLoader;
         final AtomicInteger count = new AtomicInteger(0);
-        icl.addClassFileTransformer(new ClassFileTransformer() {
-
-            public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-                byte[] classfileBuffer) {
-                count.incrementAndGet();
-                return null;
-            }
-
+        icl.addClassFileTransformer((loader, className, classBeingRedefined, protectionDomain, classfileBuffer) -> {
+            count.incrementAndGet();
+            return null;
         });
         bundle.loadClass("org.springframework.core.SpringVersion");
         assertEquals(1, count.get());
     }
 
-    private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException {
-        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.logging/1.2.0/"
-            + "16f574f7c054451477d7fc9d1f294e22b70a8eba/org.apache.commons.logging-1.2.0.jar").getAbsolutePath());
-        osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.codec/1.10.0/"
-            + "8aff50e99bd7e53f8c4f5fe45c2a63f1d47dd19c/org.apache.commons.codec-1.10.0.jar").getAbsolutePath());
-        return osgi.getBundleContext().installBundle("file:///" + new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/5.0.8.RELEASE"
-            + "/415c7d22dcab46985f27bbe1ce6de968e073497c/org.springframework.core-5.0.8.RELEASE.jar").getAbsolutePath());
+    private Bundle installSpringCore(EquinoxOsgiFramework osgi) throws BundleException, IOException {
+        osgi.getBundleContext().installBundle("file:///" + fromGradleCache("slf4j-api", "slf4jVersion").getAbsolutePath());
+        osgi.getBundleContext().installBundle("file:///" + fromGradleCache("slf4j-nop", "slf4jVersion").getAbsolutePath());
+        osgi.getBundleContext().installBundle("file:///" + fromGradleCache("jcl-over-slf4j", "slf4jVersion").getAbsolutePath()).start();
+
+        return osgi.getBundleContext().installBundle("file:///" + fromBndPlatform("oevm.org.springframework.core").getAbsolutePath());
     }
 }

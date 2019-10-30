@@ -1,6 +1,7 @@
 dependencies {
+	implementation 'junit:junit'
+
 	compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-	testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
 
 	compile project(':util:org.eclipse.virgo.util.common')
 	compile project(':util:org.eclipse.virgo.util.parser.launcher')

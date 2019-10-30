@@ -1,8 +1,14 @@
+apply plugin: 'idea'
+idea {
+	module {
+		inheritOutputDirs = true
+	}
+}
+
 task copyTestResources(type: Copy) {
 	from "${projectDir}/src/test/resources"
 	into "${buildDir}/classes/java/test"
 }
-
 processTestResources.dependsOn copyTestResources
 
 dependencies {

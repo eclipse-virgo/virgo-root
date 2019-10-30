@@ -2,6 +2,13 @@ import aQute.bnd.gradle.Bundle
 
 test.dependsOn ':3rd-party:bundles'
 
+apply plugin: 'idea'
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
 task bundle(type: Bundle) {
     bndfile = 'bundle.bnd'
     from sourceSets.test.output
@@ -18,7 +25,9 @@ dependencies {
     testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testCompile project(':test:org.eclipse.virgo.test.framework')
 
-    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+    testImplementation 'org.springframework:spring-context'
+
+    testRuntimeOnly "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"

@@ -58,7 +58,7 @@ public class ArgumentParserTests {
     
     @Test
     public void testGradleCachePlaceholderSubstitution() {
-        String commandLine = "-B%gradle.cache%/junit/junit/4.7/d9444742a5b897c6280724a49f57a8155517d21f/junit-4.7.jar";
+        String commandLine = "-B%gradle.cache%/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar";
         LaunchCommand command = parse(commandLine);
 
         BundleEntry[] bundleDeclarations = command.getBundleEntries();
@@ -67,15 +67,14 @@ public class ArgumentParserTests {
 
         BundleEntry bd = bundleDeclarations[0];
         assertFalse(bd.isAutoStart());
-        assertEquals(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/junit/junit/4.7/d9444742a5b897c6280724a49f57a8155517d21f/junit-4.7.jar").toURI(), bd.getURI());
+        assertEquals(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar").toURI(), bd.getURI());
     }
-    
+
     @Test(expected=ParseException.class)
     public void testParseRelativeFileBundleEntryNotExists() {
         String commandLine = "-B/src/test/resources/test-bundleoeuoeu@start";
         parse(commandLine);
     }
-    
 
     @Test
     public void testParseAbsoluteFileBundleEntry() {

@@ -5,5 +5,5 @@ dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
 
-    compile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
+    implementation 'junit:junit'
 }
