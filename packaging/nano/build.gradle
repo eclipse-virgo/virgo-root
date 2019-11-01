@@ -1,10 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
 import static virgobuild.VirgoToolsPlugin.installProduct
 import static virgobuild.VirgoToolsPlugin.publishProduct
-
-import virgobuild.Config
 
 apply plugin: 'distribution'
 
@@ -116,17 +113,16 @@ tasks.addRule("Pattern: installProduct<ID>") { String taskName ->
             def product = 'undefined'
             def shortProduct = 'undefined'
             switch (taskName.toString() - 'installProduct') {
-                case 'Nano': product = 'nano'; shortProduct = "VN"; break;
-                case 'NanoFull': product = 'nano-full'; shortProduct = "VNF"; break;
+                case 'Nano': product = 'nano'; shortProduct = "VN"; break
+                case 'NanoFull': product = 'nano-full'; shortProduct = "VNF"; break
             }
 
             description = "Installs a Virgo product to a desired destination. Default profile(roaming) is VIRGOProfile, the environment cofigurations are ANY."
 
-            File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
             def destinationDir = file("${buildDir}/${shortProduct}/${product}")
             def productIu = "${product}.product"
 
-            doLast() { installProduct(project, productIu, repositoryDir, destinationDir) }
+            doLast() { installProduct(project, productIu, destinationDir) }
         }
     }
 }

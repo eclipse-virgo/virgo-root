@@ -1,7 +1,5 @@
 package virgobuild
 
-import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
-
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
@@ -9,6 +7,8 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
 
 import eclipsebuild.FeaturePlugin
+
+import static virgobuild.VirgoToolsPlugin.DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME
 
 // Derived from buildship Plugins
 class UpdateSitePlugin implements Plugin<Project> {
@@ -171,7 +171,7 @@ class UpdateSitePlugin implements Plugin<Project> {
     static void addTaskNormalizeBundles(Project project) {
         project.task(NORMALIZE_BUNDLES_TASK_NAME, dependsOn: [
             COPY_BUNDLES_TASK_NAME,
-            ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}"
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
         ]) {
             group = Constants.gradleTaskGroupName
             description = 'Repacks the bundles that make up the update site using the pack200 tool.'
@@ -226,7 +226,7 @@ class UpdateSitePlugin implements Plugin<Project> {
         project.task(COMPRESS_BUNDLES_TASK_NAME, dependsOn: [
             NORMALIZE_BUNDLES_TASK_NAME,
             SIGN_BUNDLES_TASK_NAME,
-            ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}"
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
         ]) {
             group = Constants.gradleTaskGroupName
             description = 'Compresses the bundles that make up the update using the pack200 tool.'
@@ -266,7 +266,8 @@ class UpdateSitePlugin implements Plugin<Project> {
     static void addTaskCreateP2Repository(Project project) {
         def createP2RepositoryTask = project.task(CREATE_P2_REPOSITORY_TASK_NAME, dependsOn: [
             COMPRESS_BUNDLES_TASK_NAME,
-            ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}"
+            ':3rd-party:checkEclipse', // download bnd-platform Eclipse, if necessary
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
         ]) {
             group = Constants.gradleTaskGroupName
             description = 'Generates the P2 repository.'
@@ -291,12 +292,6 @@ class UpdateSitePlugin implements Plugin<Project> {
 
         // create the P2 update site
         publishContentToLocalP2Repository(project, repositoryDir)
-
-        // add custom properties to the artifacts.xml file
-        def mutateArtifactsXml = project.updateSite.mutateArtifactsXml
-        if (mutateArtifactsXml) {
-            updateArtifactsXmlFromArchive(project, repositoryDir, mutateArtifactsXml)
-        }
     }
 
     static void publishContentToLocalP2Repository(Project project, File repositoryDir) {
@@ -306,7 +301,7 @@ class UpdateSitePlugin implements Plugin<Project> {
         project.logger.info("Publish plugins and features from '${rootDir.absolutePath}' to the update site '${repositoryDir.absolutePath}'")
         project.javaexec {
             main = 'org.eclipse.equinox.launcher.Main'
-            classpath Config.on(project).equinoxLauncherJar
+            classpath Config.on(project).bndPlatformLauncherJar
             args = [
                 '-application',
                 'org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher',
@@ -328,7 +323,7 @@ class UpdateSitePlugin implements Plugin<Project> {
         project.logger.info("Publish categories defined in '${project.updateSite.siteDescriptor.absolutePath}' to the update site '${repositoryDir.absolutePath}'")
         project.javaexec {
             main = 'org.eclipse.equinox.launcher.Main'
-            classpath Config.on(project).equinoxLauncherJar
+            classpath Config.on(project).bndPlatformLauncherJar
             args = [
                 '-application',
                 'org.eclipse.equinox.p2.publisher.CategoryPublisher',
@@ -345,23 +340,6 @@ class UpdateSitePlugin implements Plugin<Project> {
             from project.updateSite.extraResources
             into repositoryDir
         }
-    }
-
-    static void updateArtifactsXmlFromArchive(Project project, File repositoryLocation, Closure mutateArtifactsXml) {
-        //        // get the artifacts.xml file from the artifacts.jar
-        //        def artifactsJarFile = new File(repositoryLocation, "artifacts.jar")
-        //        def artifactsXmlFile = project.zipTree(artifactsJarFile).matching { 'artifacts.xml' }.singleFile
-        //
-        //        // parse the xml
-        //        def xml = new XmlParser().parse(artifactsXmlFile)
-        //
-        //        // apply artifacts.xml customization (append mirrors url, link to stat servers, etc.)
-        //        mutateArtifactsXml(xml)
-        //
-        //        // write the updated artifacts.xml back to its source
-        //        // the artifacts.xml is a temporary file hence it has to be copied back to the archive
-        //        new XmlNodePrinter(new PrintWriter(new FileWriter(artifactsXmlFile)), "  ", "'").print(xml)
-        //        project.ant.zip(update: true, filesonly: true, destfile: artifactsJarFile) { fileset(file: artifactsXmlFile) }
     }
 
     static void validateRequiredFilesExist(Project project) {

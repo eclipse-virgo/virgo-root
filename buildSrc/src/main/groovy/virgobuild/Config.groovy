@@ -27,15 +27,29 @@ class Config {
         new File(virgoBuildToolsBaseDir, virgoBuildToolsBaseName)
     }
 
-    File getVirgoBuildToolsArchive() {
-        new File(virgoBuildToolsDir, 'virgo-tools.zip')
+    static File getBndPlatformDir() {
+        new File(System.getProperty('user.home'), '.gradle/bnd-platform/eclipse')
     }
 
-    File getEquinoxLauncherJar() {
-        new File(virgoBuildToolsDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.launcher_') }
+    static File getEclipsePhotonDir() {
+        new File(System.getProperty('user.home'), '.gradle/eclipse-photon-sdk/eclipse')
     }
 
-    File getJarProcessorJar() {
-        new File(virgoBuildToolsDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.p2.jarprocessor_') }
+    static File getEclipsePhotonSdkArchive() {
+        new File(System.getProperty('user.home'), '.gradle/eclipse-java-photon-R-linux-gtk-x86_64.tar.gz')
+    }
+
+    // used by publishContentToLocalP2Repository - old virgo-tools simply aren't able to publish OSGi framework bundle to p2 repository :(
+    static File getBndPlatformLauncherJar() {
+        new File(bndPlatformDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.launcher_') }
+    }
+
+    // used by installProduct - old virgo-tools' p2.director simply isn't able to install products properly anymore :(
+    static File getEclipsePhotonLauncherJar() {
+        new File(eclipsePhotonDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.launcher_') }
+    }
+
+    static File getJarProcessorJar() {
+        new File(eclipsePhotonDir.path, '/plugins').listFiles().find { it.name.startsWith('org.eclipse.equinox.p2.jarprocessor_') }
     }
 }
