@@ -54,10 +54,10 @@
     unpack="false"/>
     
     <plugin
-    id="javax.servlet"
+    id="javax.servlet-api"
     download-size="0"
     install-size="0"
-    version="@JAVAX.SERVLET@"
+    version="@JAVAX.SERVLET.VERSION@"
     unpack="false"/>
     
 </feature>

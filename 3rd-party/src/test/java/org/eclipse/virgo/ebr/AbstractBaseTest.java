@@ -14,6 +14,8 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleWiring;
 
 import javax.inject.Inject;
 import java.io.FileInputStream;
@@ -21,7 +23,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -30,6 +35,7 @@ import static org.junit.Assume.assumeNotNull;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.streamBundle;
 import static org.osgi.framework.Bundle.ACTIVE;
+import static org.osgi.framework.namespace.PackageNamespace.PACKAGE_NAMESPACE;
 
 /**
  * Abstract test class to be extended by all test implementations.
@@ -43,12 +49,17 @@ public abstract class AbstractBaseTest {
     private static final String SF_VERSION_KEY = "springframeworkVersion";
 
     private static final String ASPECTJ_WEAVER_VERSION_KEY = "aspectjVersion";
+    private static final String JAVAX_EL_VERSION_KEY = "javaxElVersion";
     private static final String JAVAX_SERVLET_VERSION_KEY = "javaxServletVersion";
-    private static final String JAVAX_EL_VERSION_KEY = "javaxServletVersion";
-    private static final String JAVAX_SEVLET_JSP_VERSION_KEY = "javaxServletVersion";
+    private static final String JAVAX_SEVLET_JSP_VERSION_KEY = "javaxServletJspVersion";
+    private static final String JAVAX_SEVLET_JSP_JSTL_VERSION_KEY = "javaxServletJspJstlVersion";
 
     @Inject
     private BundleContext bundleContext;
+
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
     public static UrlProvisionOption springframework(String module) {
         return getUrlProvisionOption("oevm.org.springframework." + module, SF_VERSION_KEY);
@@ -134,13 +145,22 @@ public abstract class AbstractBaseTest {
 
     Option servletDependencies() {
             return new DefaultCompositeOption(
-                    // TODO - switch to shared version
-//                mavenBundle("javax.servlet", "javax.servlet-api", resolveVersionFromGradleProperties(JAVAX_SERVLET_VERSION_KEY)),
-                    mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
-                    mavenBundle("javax.el", "javax.el-api", "3.0.1-b06"),
-                    mavenBundle("javax.servlet.jsp", "javax.servlet.jsp-api", "2.3.3"),
-                    mavenBundle("javax.servlet.jsp.jstl", "javax.servlet.jsp.jstl-api", "1.2.2")
+                    mavenBundle("javax.servlet", "javax.servlet-api", resolveVersionFromGradleProperties(JAVAX_SERVLET_VERSION_KEY)),
+                    mavenBundle("javax.el", "javax.el-api", resolveVersionFromGradleProperties(JAVAX_EL_VERSION_KEY)),
+                    mavenBundle("javax.servlet.jsp", "javax.servlet.jsp-api", resolveVersionFromGradleProperties(JAVAX_SEVLET_JSP_VERSION_KEY)),
+                    mavenBundle("javax.servlet.jsp.jstl", "javax.servlet.jsp.jstl-api", resolveVersionFromGradleProperties(JAVAX_SEVLET_JSP_JSTL_VERSION_KEY))
             );
+    }
+
+    static Set<String> getExportedPackages(Bundle bundle) {
+        Set<String> packagesExportedBySystemBundle = new HashSet<>(30);
+        BundleWiring systemBundleWiring = bundle.adapt(BundleWiring.class);
+        List<BundleCapability> packageWires = systemBundleWiring.getCapabilities(PACKAGE_NAMESPACE);
+        for (BundleCapability packageWire : packageWires) {
+            packagesExportedBySystemBundle.add((String) packageWire.getAttributes()
+                    .get(PACKAGE_NAMESPACE));
+        }
+        return packagesExportedBySystemBundle;
     }
 
 }

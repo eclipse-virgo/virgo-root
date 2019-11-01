@@ -3,8 +3,14 @@ package org.eclipse.virgo.ebr;
 import org.junit.Test;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
+import org.osgi.framework.Bundle;
 
-import static org.ops4j.pax.exam.CoreOptions.*;
+import java.util.Arrays;
+
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 /**
  * Test class testing Spring Framework bundle resolution.
@@ -134,6 +140,20 @@ public class SpringFrameworkTest extends AbstractBaseTest {
     @Test
     public void testSpringWebsocket() {
         assertMirroredSpringframeworkBundleActive("websocket");
+    }
+
+    @Test
+    public void testServletRelatedBundles() {
+        assertThat(getExportedPackages(findBundleBySymbolicName("javax.el-api")), hasItem("javax.el"));
+        assertThat(getExportedPackages(findBundleBySymbolicName("javax.servlet-api")), hasItem("javax.servlet"));
+        assertThat(getExportedPackages(findBundleBySymbolicName("javax.servlet.jsp-api")), hasItem("javax.servlet.jsp"));
+        assertThat(getExportedPackages(findBundleBySymbolicName("javax.servlet.jsp.jstl-api")), hasItem("javax.servlet.jsp.jstl.fmt"));
+    }
+
+    private Bundle findBundleBySymbolicName(String symbolicName) {
+        return Arrays.stream(getBundleContext().getBundles()).filter(bundle -> bundle.getSymbolicName().equals(symbolicName)).findFirst().orElseThrow(
+                    () -> new IllegalStateException("Failed to resolve bundle '" + symbolicName + "'")
+            );
     }
 
     private void assertMirroredSpringframeworkBundleActive(String module) {

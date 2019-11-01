@@ -254,7 +254,6 @@ ext {
             'JAVAX.ACTIVATION'             : javaxActivationVersion,
             'JAVAX.ANNOTATION'             : javaxAnnotationVersion,
             'JAVAX.EJB'                    : javaxEjbVersion,
-            'JAVAX.EL'                     : javaxElVersion,
             'JAVAX.INJECT'                 : javaxInjectVersion,
             'JAVAX.JMS'                    : javaxJmsVersion,
             'JAVAX.MAIL'                   : javaxMailVersion,
@@ -262,11 +261,8 @@ ext {
             'JAVAX.RESOURCE'               : javaxResourceVersion,
             'JAVAX.SECURITY.AUTH'          : javaxSecurityAuthMessageVersion,
             'JAVAX.SECURITY.JACC'          : javaxSecurityJaccVersion,
-            // TODO remove duplication 'JAVAX.SERVLET.VERSION' and 'JAVAX.SERVLET'
             'JAVAX.SERVLET.VERSION'        : javaxServletVersion,
-            'JAVAX.SERVLET'                : javaxServletVersion,
-            'JAVAX.SERVLET.JSP'            : javaxServletJspVersion,
-            'JSTL.API'                     : javaxServletJspJstlApiVersion,
+            'JAVAX.SERVLET.JSTL.VERSION'   : javaxServletJspJstlVersion,
             'JSTL.IMPL'                    : javaxServletJspJstlImplOsgiVersion,
             'JAVAX.TRANSACTION'            : javaxTransactionVersion,
             'JAVAX.VALIDATION'             : javaxValidationVersion,
@@ -560,6 +556,11 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             // Spring dependencies
             dependency "aopalliance:aopalliance:${aopallianceVersionMaven}"
             dependency "org.aspectj:aspectjweaver:${aspectjVersion}"
+
+            dependency "javax.el:javax.el-api:${javaxElVersion}"
+            dependency "javax.servlet:javax.servlet-api:${javaxServletVersion}"
+            dependency "javax.servlet.jsp:javax.servlet.jsp-api:${javaxServletJspVersion}"
+            dependency "javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:${javaxServletJspJstlVersion}"
 
             dependencySet(group:'org.springframework', version: springframeworkVersion) {
                 entry 'spring-aspects'

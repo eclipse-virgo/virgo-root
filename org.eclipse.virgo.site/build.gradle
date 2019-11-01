@@ -147,7 +147,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
+    signedExternalPlugin 'javax.servlet:javax.servlet-api'
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration.feature')
     signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.springframework.expression_${springframeworkVersion}.jar")
@@ -266,7 +266,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
+    signedExternalPlugin 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
     signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.wsdl", version: javaxWsdlVersion, configuration: "compile", ext: "jar"
@@ -312,12 +312,12 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.reflect", version: apacheXBeanReflectVersion, configuration: "compile", ext: "jar"
 
     // Tomcat Runtime
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.el:javax.el-api'
     signedExternalPlugin group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
     // TODO - check CQ and put version into properties
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.activation", version: '1.1.0.v201211130549', configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.servlet.jsp:javax.servlet.jsp-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"

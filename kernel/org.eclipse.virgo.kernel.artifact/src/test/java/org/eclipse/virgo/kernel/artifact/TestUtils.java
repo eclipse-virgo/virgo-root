@@ -9,7 +9,7 @@
  *   VMware Inc. - initial contribution
  *******************************************************************************/
 
-package org.eclipse.virgo.kernel.userregion.internal;
+package org.eclipse.virgo.kernel.artifact;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,17 +23,8 @@ import static org.junit.Assert.fail;
 
 public class TestUtils {
 
-    private static final Path BND_PLATFORM = Paths.get("..", "..", "3rd-party", "build", "plugins");
     private static final Path GRADLE_CACHE = Paths.get(System.getProperty("user.home"),
             ".gradle", "caches", "modules-2", "files-2.1");
-
-    public static File fromBndPlatform(String locationInBndPlatform) throws IOException {
-        Path bundlePath = walk(BND_PLATFORM)
-                .filter(s -> s.toString().contains(locationInBndPlatform))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Failed to locate '" + locationInBndPlatform + "' in " + BND_PLATFORM));
-        return bundlePath.toFile();
-    }
 
     public static File fromGradleCache(String bundleName, String key) throws IOException {
         String filename = bundleName + "-" + resolveVersionFromGradleProperties(key) + ".jar";

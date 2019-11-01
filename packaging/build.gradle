@@ -97,7 +97,7 @@ configure([
 
         // 3rd party dependencies from Spring Framework
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.servlet:javax.servlet-api'
 
         // missing Spring Framework dependencies
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.aspects_${springframeworkVersion}.jar")
@@ -118,7 +118,7 @@ configure([
         // TODO - think about removing portlet-api from standard VTS
         repositoryExt 'javax.portlet:portlet-api:3.0.1'
 
-        repositoryExt group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
+        repositoryExt 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
         repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
 
         nanoPickup project(':apps:org.eclipse.virgo.apps.splash')
@@ -136,12 +136,12 @@ configure([
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.el:javax.el-api'
         repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.servlet:javax.servlet-api'
+        repositoryExt 'javax.servlet.jsp:javax.servlet.jsp-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"

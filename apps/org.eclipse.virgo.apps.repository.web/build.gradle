@@ -3,7 +3,7 @@ jar.manifest.attributes(
 )
 
 dependencies {
-    compile group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "compile", ext: "jar"
+    implementation 'javax.servlet:javax.servlet-api'
 
     implementation 'org.springframework:spring-beans'
     implementation 'org.springframework:spring-context'

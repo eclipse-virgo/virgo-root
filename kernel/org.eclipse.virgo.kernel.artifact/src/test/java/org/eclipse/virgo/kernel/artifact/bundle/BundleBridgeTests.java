@@ -11,11 +11,15 @@
 
 package org.eclipse.virgo.kernel.artifact.bundle;
 
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.virgo.kernel.artifact.bundle.BundleBridge.convertToDictionary;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import org.eclipse.virgo.kernel.artifact.StubHashGenerator;
+import org.eclipse.virgo.kernel.artifact.TestUtils;
+import org.eclipse.virgo.repository.ArtifactDescriptor;
+import org.eclipse.virgo.repository.ArtifactGenerationException;
+import org.eclipse.virgo.repository.Attribute;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,14 +29,9 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
-import org.eclipse.virgo.kernel.artifact.StubHashGenerator;
-import org.eclipse.virgo.repository.ArtifactDescriptor;
-import org.eclipse.virgo.repository.ArtifactGenerationException;
-import org.eclipse.virgo.repository.Attribute;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Version;
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.virgo.kernel.artifact.bundle.BundleBridge.convertToDictionary;
+import static org.junit.Assert.*;
 
 /**
  * <p>
@@ -129,9 +128,7 @@ public class BundleBridgeTests {
 
     @Test
     public void testBuildDictionary() throws ArtifactGenerationException, IOException {
-        File testFile = new File(System.getProperty("user.home")
-            + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/javax.servlet/3.1.0.20170128/"
-            + "e1928d3e6307028208245e12ca5d11b9a451daf9/javax.servlet-3.1.0.20170128.jar");
+        File testFile = TestUtils.fromGradleCache("javax.servlet-api", "javaxServletVersion");
 
         ArtifactDescriptor inputArtefact = BUNDLE_BRIDGE.generateArtifactDescriptor(testFile);
 
