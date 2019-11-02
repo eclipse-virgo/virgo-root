@@ -1,5 +1,4 @@
 dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     implementation 'javax.servlet:javax.servlet-api'
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
@@ -13,6 +12,4 @@ dependencies {
 
     compile project(':util:org.eclipse.virgo.util.osgi.manifest')
     compile project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
-
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 }

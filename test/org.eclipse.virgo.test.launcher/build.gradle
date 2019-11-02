@@ -1,8 +1,8 @@
 dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-    compile group: "ch.qos.logback", name: "logback-core", version: logbackVersion
-    compile group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
+    implementation 'ch.qos.logback:logback-core'
+    implementation 'ch.qos.logback:logback-classic'
 
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.osgi')

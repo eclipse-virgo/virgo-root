@@ -1,7 +1,6 @@
 import org.gradle.plugins.ide.eclipse.model.AccessRule
 
 dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
     implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
@@ -13,8 +12,6 @@ dependencies {
     implementation project(':util:org.eclipse.virgo.util.osgi')
     implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
     implementation project(':medic:org.eclipse.virgo.medic')
-
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 
     testImplementation project(':medic:org.eclipse.virgo.medic.test')
     testImplementation project(':test:org.eclipse.virgo.test.stubs')

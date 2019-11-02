@@ -2,8 +2,6 @@ dependencies {
     aspectpath project(':medic:org.eclipse.virgo.medic')
     aspectpath project(':util:org.eclipse.virgo.util.jmx')
 
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
     implementation group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
@@ -16,6 +14,5 @@ dependencies {
     implementation project(':repository:org.eclipse.virgo.repository')
     implementation project(':kernel:org.eclipse.virgo.kernel.services')
 
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testImplementation project(':medic:org.eclipse.virgo.medic.test')
 }

@@ -3,6 +3,5 @@ jar.manifest.attributes(
 )
 
 dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     implementation 'javax.servlet:javax.servlet-api'
 }

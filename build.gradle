@@ -237,11 +237,6 @@ ext {
             'CATALINA.VERSION'             : apacheCatalinaVersion,
 
             'ASPECTJ'                      : aspectjVersion,
-            'LOGBACK.CLASSIC.VERSION'      : logbackVersion,
-            'LOGBACK.CORE.VERSION'         : logbackVersion,
-            'SLF4J.API'                    : slf4jVersion,
-            'SLF4J.JCL'                    : slf4jVersion,
-            'SLF4J.LOG4J'                  : slf4jVersion,
 
             'C.FILEUPLOAD.VERSION'         : commonsFileuploadVersion,
             'C.IO.VERSION'                 : commonsIoVersion,
@@ -408,7 +403,11 @@ configure(javaProjects + osgiProjects) {
     dependencies {
         ecj group: "org.eclipse.jdt.core.compiler", name: "ecj", version: ecjVersion
 
+        implementation 'org.slf4j:slf4j-api'
+
         testImplementation 'junit:junit'
+        testImplementation 'org.hamcrest:hamcrest-core'
+        testImplementation 'org.easymock:easymock'
     }
 
     eclipse {
@@ -536,6 +535,7 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             dependency "org.glassfish.hk2.external:javax.inject:${glassfishJavaxInjectVersion}"
             dependencySet(group:'org.slf4j', version: slf4jVersion) {
                 entry 'jcl-over-slf4j'
+                entry 'log4j-over-slf4j'
                 entry 'jul-to-slf4j'
                 entry 'slf4j-api'
                 entry 'slf4j-nop'
@@ -589,6 +589,8 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
 
             // testing
             dependency "junit:junit:${junitVersion}"
+            dependency "org.hamcrest:hamcrest-core:${hamcrestCoreVersion}"
+            dependency "org.easymock:easymock:${easymockVersion}"
 
             dependency "org.ops4j.pax.exam:pax-exam-junit4:${paxExamJunit4Version}"
             dependency "org.ops4j.pax.exam:pax-exam-container-native:${paxExamContainerNativeVersion}"
@@ -747,7 +749,6 @@ configure([
         testImplementation 'org.glassfish.hk2.external:javax.inject'
 
         // PaxExam
-        testRuntime group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         testCompile group: "org.ops4j.pax.exam", name: "pax-exam-junit4", version: paxExamJunit4Version
         testRuntime group: "org.ops4j.pax.exam", name: "pax-exam-container-native", version: paxExamContainerNativeVersion
         testRuntime group: "org.ops4j.pax.exam", name: "pax-exam-link-mvn", version: paxExamLinkMvnVersion

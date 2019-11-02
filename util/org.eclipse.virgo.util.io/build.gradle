@@ -1,6 +1,4 @@
 dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.math')
 }

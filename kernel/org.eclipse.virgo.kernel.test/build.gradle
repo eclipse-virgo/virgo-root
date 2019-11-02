@@ -22,7 +22,6 @@ task copyTestResources(type: Copy) {
 processTestResources.dependsOn copyTestResources
 
 dependencies {
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testCompile project(':test:org.eclipse.virgo.test.framework')
 
     testImplementation 'org.springframework:spring-context'

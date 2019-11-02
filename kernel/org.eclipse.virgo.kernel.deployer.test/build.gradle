@@ -18,13 +18,12 @@ test {
 }
 
 dependencies {
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testCompile project(':test:org.eclipse.virgo.test.stubs')
     testCompile project(':test:org.eclipse.virgo.test.framework')
 
     // some the libraries are used by configuration items during integration tests -> testRuntime
     // @see org.eclipse.virgo.kernel.userregion.properties and others
-    testRuntime group: "org.slf4j", name: "jcl-over-slf4j", version: slf4jVersion
+    testRuntimeOnly 'org.slf4j:jcl-over-slf4j'
     testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"

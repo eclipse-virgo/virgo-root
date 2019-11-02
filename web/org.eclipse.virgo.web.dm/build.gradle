@@ -2,8 +2,6 @@ dependencies {
     aspectpath project(':medic:org.eclipse.virgo.medic')
     aspectpath project(':nano:org.eclipse.virgo.nano.core')
 
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     implementation 'javax.servlet:javax.servlet-api'
 
@@ -19,8 +17,6 @@ dependencies {
 
     implementation project(':medic:org.eclipse.virgo.medic')
     implementation project(':nano:org.eclipse.virgo.nano.core')
-
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 
     testImplementation 'org.springframework:spring-test'
 }

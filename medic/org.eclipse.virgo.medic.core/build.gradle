@@ -1,14 +1,12 @@
 dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-    compile group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
-    compile "ch.qos.logback:logback-core:${logbackVersion}"
-    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation 'org.slf4j:jul-to-slf4j'
+    implementation 'ch.qos.logback:logback-core'
+    implementation 'ch.qos.logback:logback-classic'
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.cm", version: equinoxCmVersion, configuration: "compile", ext: "jar"
 
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testImplementation project(':test:org.eclipse.virgo.test.stubs')
 
     implementation project(':util:org.eclipse.virgo.util.io')

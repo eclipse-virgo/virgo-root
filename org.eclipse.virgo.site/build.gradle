@@ -113,11 +113,11 @@ dependencies {
     localPlugin project(':web:org.eclipse.virgo.web.war.deployer')
 
     // TODO - review if all those signedExternalPlugins are signed
-    signedExternalPlugin group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-    signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
+    signedExternalPlugin 'org.slf4j:slf4j-api'
+    signedExternalPlugin 'org.slf4j:jul-to-slf4j'
     // exports package org.apache.commons.logging (jcl - Jakarta Commons Logging)
-    signedExternalPlugin group: "org.slf4j", name: "jcl-over-slf4j", version: slf4jVersion
-    signedExternalPlugin group: "org.slf4j", name: "log4j-over-slf4j", version: slf4jVersion
+    signedExternalPlugin 'org.slf4j:jcl-over-slf4j'
+    signedExternalPlugin 'org.slf4j:log4j-over-slf4j'
 
     signedExternalPlugin files("../3rd-party/build/plugins/oevm.org.aspectj.weaver_${aspectjVersion}.jar")
 
@@ -158,8 +158,8 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic.feature')
-    signedExternalPlugin group: "ch.qos.logback", name: "logback-core", version: logbackVersion
-    signedExternalPlugin group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
+    signedExternalPlugin 'ch.qos.logback:logback-core'
+    signedExternalPlugin 'ch.qos.logback:logback-classic'
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer.feature')
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.feature')

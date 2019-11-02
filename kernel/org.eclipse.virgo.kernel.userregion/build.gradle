@@ -1,5 +1,4 @@
 dependencies {
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testCompile project(':test:org.eclipse.virgo.test.stubs')
     testCompile project(':medic:org.eclipse.virgo.medic.test')
     testCompile project(':repository:org.eclipse.virgo.repository')
@@ -8,8 +7,7 @@ dependencies {
     testImplementation 'org.springframework:spring-core'
     testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
 
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-    testRuntimeOnly group: "org.slf4j", name: "slf4j-nop", version: slf4jVersion // used in EquinoxOsgiFrameworkTests
+    testRuntimeOnly 'org.slf4j:slf4j-nop' // used in EquinoxOsgiFrameworkTests
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"

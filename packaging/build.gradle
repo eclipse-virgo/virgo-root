@@ -153,13 +153,13 @@ configure([
         // TODO - Equinox migration - rethink removal of taglibs.standard
 //        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-        repositoryExt group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
-        repositoryExt group: "org.slf4j", name: "jcl-over-slf4j", version: slf4jVersion
-        repositoryExt group: "org.slf4j", name: "log4j-over-slf4j", version: slf4jVersion
-        repositoryExt group: "org.slf4j", name: "slf4j-nop", version: slf4jVersion
-        repositoryExt group: "ch.qos.logback", name: "logback-core", version: logbackVersion
-        repositoryExt group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
+        repositoryExt 'org.slf4j:slf4j-api'
+        repositoryExt 'org.slf4j:jul-to-slf4j'
+        repositoryExt 'org.slf4j:jcl-over-slf4j'
+        repositoryExt 'org.slf4j:log4j-over-slf4j'
+        repositoryExt 'org.slf4j:slf4j-nop'
+        repositoryExt 'ch.qos.logback:logback-core'
+        repositoryExt 'ch.qos.logback:logback-classic'
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 

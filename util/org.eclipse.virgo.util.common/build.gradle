@@ -1,3 +1,2 @@
 dependencies {
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
 }

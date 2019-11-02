@@ -1,6 +1,4 @@
 dependencies {
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-
     testImplementation 'javax.servlet:javax.servlet-api'
 
     testRuntime group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"

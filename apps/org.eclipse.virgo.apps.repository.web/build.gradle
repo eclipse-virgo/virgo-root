@@ -13,6 +13,5 @@ dependencies {
     implementation project(':util:org.eclipse.virgo.util.io')
     implementation project(':apps:org.eclipse.virgo.apps.repository.core')
 
-    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
     testImplementation 'org.springframework:spring-test'
 }

@@ -1,6 +1,4 @@
 dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
     implementation 'org.springframework:spring-context-support'
