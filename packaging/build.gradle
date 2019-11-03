@@ -140,7 +140,6 @@ configure([
         repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
 
-        repositoryExt 'javax.servlet:javax.servlet-api'
         repositoryExt 'javax.servlet.jsp:javax.servlet.jsp-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
 
