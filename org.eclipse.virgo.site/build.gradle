@@ -258,7 +258,7 @@ dependencies {
 
     signedExternalPlugin group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
     signedExternalPlugin group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.annotation:javax.annotation-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin 'org.glassfish.hk2.external:javax.inject'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"

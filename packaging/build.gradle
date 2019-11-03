@@ -25,7 +25,7 @@ configure([
 
         nanoLibPersistence project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
 
-        nanoLibEndorsed group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+        nanoLibEndorsed 'javax.annotation:javax.annotation-api'
         nanoLibEndorsed group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
         nanoLibEndorsed group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
 
@@ -134,7 +134,7 @@ configure([
         repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
         repositoryExt project(':web:org.eclipse.virgo.web.spring.integration')
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.annotation:javax.annotation-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
         repositoryExt 'javax.el:javax.el-api'
         repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
