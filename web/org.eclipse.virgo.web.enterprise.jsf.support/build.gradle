@@ -1,6 +1,6 @@
 dependencies {
     implementation 'javax.ejb:javax.ejb-api'
-    compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+    implementation 'javax.persistence:javax.persistence-api'
 
     implementation 'javax.enterprise:cdi-api'
     compile group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"

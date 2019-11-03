@@ -1,6 +1,7 @@
 dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+
+    implementation 'javax.persistence:javax.persistence-api'
 
     compile project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
 }

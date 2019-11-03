@@ -131,7 +131,7 @@ configure([
         repositoryExt 'javax.ejb:javax.ejb-api:3.2.2'
         repositoryExt 'javax.el:javax.el-api'
         repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.persistence:javax.persistence-api'
 
         repositoryExt 'javax.servlet.jsp:javax.servlet.jsp-api'
         repositoryExt 'javax.security.auth.message:javax.security.auth.message-api'
@@ -147,9 +147,6 @@ configure([
         repositoryExt 'org.slf4j:jul-to-slf4j'
         repositoryExt 'org.slf4j:jcl-over-slf4j'
         repositoryExt 'org.slf4j:log4j-over-slf4j'
-        repositoryExt 'org.slf4j:slf4j-nop'
-        repositoryExt 'ch.qos.logback:logback-core'
-        repositoryExt 'ch.qos.logback:logback-classic'
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 

@@ -83,7 +83,7 @@ dependencies {
     repositoryExt 'javax.el:javax.el-api'
     repositoryExt 'javax.jms:javax.jms-api'
     repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
-    repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+    repositoryExt 'javax.persistence:javax.persistence-api'
     repositoryExt 'javax.portlet:portlet-api:3.0.1'
     repositoryExt 'javax.security.auth.message:javax.security.auth.message-api'
     repositoryExt 'javax.servlet:javax.servlet-api'

@@ -267,7 +267,7 @@ dependencies {
 
     signedExternalPlugin 'org.glassfish.hk2.external:javax.inject'
     signedExternalPlugin 'javax.jms:javax.jms-api'
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.persistence:javax.persistence-api'
     signedExternalPlugin 'javax.security.auth.message:javax.security.auth.message-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
@@ -336,11 +336,11 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.antlr", version: eclipsePersistenceAntlrVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.asm", version: eclipsePersistenceAsmVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa", version: eclipsePersistenceJpaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa.jpql", version: eclipsePersistenceJpaJpqlVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'org.eclipse.persistence:org.eclipse.persistence.antlr'
+    signedExternalPlugin 'org.eclipse.persistence:org.eclipse.persistence.asm'
+    signedExternalPlugin 'org.eclipse.persistence:org.eclipse.persistence.core'
+    signedExternalPlugin 'org.eclipse.persistence:org.eclipse.persistence.jpa'
+    signedExternalPlugin 'org.eclipse.persistence:org.eclipse.persistence.jpa.jpql'
 
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.derby", version: apacheDerbyVersion, configuration: "compile", ext: "jar"
 

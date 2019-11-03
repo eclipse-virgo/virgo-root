@@ -309,11 +309,6 @@ ext {
             'XB.FINDER'                    : apacheXBeanFinderVersion,
             'XB.NAMING'                    : apacheXBeanNamingVersion,
             'XB.REFLECT'                   : apacheXBeanReflectVersion,
-            'EL.ANTLR'                     : eclipsePersistenceAntlrVersion,
-            'EL.ASM'                       : eclipsePersistenceAsmVersion,
-            'EL.CORE'                      : eclipsePersistenceCoreVersion,
-            'EL.JPA'                       : eclipsePersistenceJpaVersion,
-            'EL.JPQL'                      : eclipsePersistenceJpaJpqlVersion,
             'FACES.API'                    : glassfishJavaxFacesVersion,
             'FACES.IMPL'                   : glassfishComSunFacesVersion,
 
@@ -537,6 +532,7 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             dependency "javax.el:javax.el-api:${javaxElVersion}"
             dependency "javax.enterprise:cdi-api:${cdiApiVersion}"
             dependency "javax.jms:javax.jms-api:${javaxJmsVersion}"
+            dependency "javax.persistence:javax.persistence-api:${javaxPersistenceVersion}"
             dependency "javax.resource:javax.resource-api:${javaxResourceVersion}"
             dependency "javax.security.auth.message:javax.security.auth.message-api:${javaxSecurityAuthMessageVersion}"
             dependency "javax.servlet:javax.servlet-api:${javaxServletVersion}"
@@ -578,6 +574,14 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             dependencySet(group:'org.apache.geronimo.components', version: geronimoComponentsVersion) {
                 entry 'geronimo-transaction'
                 entry 'geronimo-connector'
+            }
+
+            dependencySet(group:'org.eclipse.persistence', version: eclipsePersistenceVersion) {
+                entry 'org.eclipse.persistence.antlr'
+                entry 'org.eclipse.persistence.asm'
+                entry 'org.eclipse.persistence.core'
+                entry 'org.eclipse.persistence.jpa'
+                entry 'org.eclipse.persistence.jpa.jpql'
             }
 
             // testing
