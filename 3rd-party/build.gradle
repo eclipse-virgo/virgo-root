@@ -181,6 +181,7 @@ platform {
             optionalImport 'org.reactivestreams.*'
             optionalImport 'reactor.core.*'
             optionalImport 'reactor.ipc.*'
+            optionalImport 'reactor.netty.*'
         }
     }
 
@@ -258,9 +259,12 @@ platform {
             optionalImport 'org.w3c.dom.*'
             optionalImport 'io.undertow.*'
             optionalImport 'org.apache.catalina.*'
+            optionalImport 'org.apache.coyote'
+            optionalImport 'org.apache.tomcat.util.*'
             optionalImport 'org.eclipse.jetty.*'
             optionalImport 'reactor.core.*'
             optionalImport 'reactor.ipc.*'
+            optionalImport 'reactor.netty.*'
             optionalImport 'reactor.util.*'
             optionalImport 'javax.json.bind'
             optionalImport 'org.synchronoss.cloud.nio.*'
@@ -286,6 +290,7 @@ platform {
             optionalImport 'org.xnio'
             optionalImport 'reactor.core.*'
             optionalImport 'reactor.ipc.*'
+            optionalImport 'reactor.netty.*'
             optionalImport 'reactor.util.*'
         }
     }

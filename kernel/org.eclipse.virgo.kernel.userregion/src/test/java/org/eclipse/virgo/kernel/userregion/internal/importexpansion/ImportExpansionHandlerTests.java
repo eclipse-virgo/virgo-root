@@ -101,7 +101,7 @@ public class ImportExpansionHandlerTests {
         for (ImportedPackage packageImport : packageImports) {
             Map<String, String> attributes = packageImport.getAttributes();
             assertEquals("oevm.org.springframework.core", attributes.get("bundle-symbolic-name"));
-            assertEquals(new VersionRange("[5.0.8.RELEASE,5.0.8.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
+            assertEquals(new VersionRange("[5.1.11.RELEASE,5.1.11.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
     }
 
@@ -136,7 +136,7 @@ public class ImportExpansionHandlerTests {
             } else {
                 assertEquals("oevm.org.springframework.core", attributes.get("bundle-symbolic-name"));
             }
-            assertEquals(new VersionRange("[5.0.8.RELEASE,5.0.8.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
+            assertEquals(new VersionRange("[5.1.11.RELEASE,5.1.11.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
     }
 
@@ -496,13 +496,13 @@ public class ImportExpansionHandlerTests {
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("oevm.org.springframework.core").atLeastOnce();
-        expect(bundleImport.getVersion()).andReturn(new VersionRange("[5.0.8,6)")).atLeastOnce();
+        expect(bundleImport.getVersion()).andReturn(new VersionRange("[5.1.11,6)")).atLeastOnce();
         expect(bundleImport.isApplicationImportScope()).andReturn(false).atLeastOnce();
         expect(bundleImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
-        expect(libraryImport.getVersion()).andReturn(new VersionRange("[5.0.8,6)")).atLeastOnce();
+        expect(libraryImport.getVersion()).andReturn(new VersionRange("[5.1.11,6)")).atLeastOnce();
         expect(libraryImport.getResolution()).andReturn(Resolution.MANDATORY).atLeastOnce();
 
         ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());

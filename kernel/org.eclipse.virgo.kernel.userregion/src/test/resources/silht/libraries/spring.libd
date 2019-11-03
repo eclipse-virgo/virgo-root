@@ -1,4 +1,4 @@
 Library-SymbolicName: org.springframework
-Library-Version: 5.0.8
-Import-Bundle: oevm.org.springframework.core;version="[5.0.8.RELEASE,5.0.8.RELEASE]",
- oevm.org.springframework.beans;version="[5.0.8.RELEASE,5.0.8.RELEASE]"
+Library-Version: 5.1.11
+Import-Bundle: oevm.org.springframework.core;version="[5.1.11.RELEASE,5.1.11.RELEASE]",
+ oevm.org.springframework.beans;version="[5.1.11.RELEASE,5.1.11.RELEASE]"
