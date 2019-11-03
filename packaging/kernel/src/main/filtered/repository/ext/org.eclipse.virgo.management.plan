@@ -3,7 +3,7 @@
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
 
-		<artifact type="bundle" name="osgi.enterprise" version="[4.2, 5)"/>
+		<artifact type="bundle" name="osgi.enterprise" version="[4, 6)"/>
 		<artifact type="bundle" name="org.eclipse.gemini.management" version="[1.0, 2)"/>
 
 		<artifact type="bundle" name="org.eclipse.virgo.management.fragment" version="[@VIRGO.VERSION.LOWER_BOUND@, @VIRGO.VERSION.UPPER_BOUND@)"/>

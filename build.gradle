@@ -502,6 +502,8 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             dependency "org.apache.felix:org.apache.felix.gogo.runtime:${gogoRuntimeVersion}"
             dependency "org.apache.felix:org.apache.felix.gogo.shell:${gogoShellVersion}"
 
+            dependency "org.osgi:osgi.enterprise:5.0.0"
+
             // 3rd party dependencies
             dependency "org.glassfish.hk2.external:javax.inject:${glassfishJavaxInjectVersion}"
             dependencySet(group:'org.slf4j', version: slf4jVersion) {

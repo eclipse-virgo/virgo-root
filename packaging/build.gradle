@@ -47,8 +47,9 @@ configure([
         kernelPluginsExtras project(':kernel:org.eclipse.virgo.kernel.userregion')
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
-        // contains org.osgi.jmx
+        repositoryExt 'org.osgi:osgi.enterprise' // contains org.osgi.jmx
+        repositoryExt 'org.osgi:org.osgi.service.useradmin:1.1.0'
+        repositoryExt 'org.osgi:org.osgi.service.provisioning:1.2.0'
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
