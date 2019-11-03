@@ -98,8 +98,8 @@ dependencies {
     repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 
     repositoryExt 'commons-codec:commons-codec'
-    repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
-    repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+    repositoryExt 'commons-io:commons-io'
+    repositoryExt 'commons-fileupload:commons-fileupload'
 
     repositoryExt files("../../3rd-party/build/plugins/oevm.com.squareup.okio_${okioVersion}.jar")
     repositoryExt files("../../3rd-party/build/plugins/oevm.com.squareup.okhttp3_${okhttp3Version}.jar")

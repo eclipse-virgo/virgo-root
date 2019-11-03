@@ -10,7 +10,7 @@ dependencies {
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: 'jar'
 
-    compile group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+    implementation 'commons-fileupload:commons-fileupload'
     compile group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     testImplementation 'org.slf4j:slf4j-nop'
@@ -18,5 +18,5 @@ dependencies {
     testImplementation 'org.springframework:spring-web'
     testImplementation 'org.springframework:spring-test'
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.mozilla.javascript", version: mozillaJavascriptVersion, configuration: "compile", ext: "jar"
-    testCompile group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
+    testCompile 'commons-io:commons-io'
 }

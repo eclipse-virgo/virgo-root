@@ -77,8 +77,8 @@ configure([
         repositoryExt project(':kernel:org.eclipse.virgo.kernel.deployer.dm')
         repositoryExt project(':kernel:org.eclipse.virgo.kernel.dmfragment')
 
-        repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
-        repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+        repositoryExt 'commons-io:commons-io'
+        repositoryExt 'commons-fileupload:commons-fileupload'
         repositoryExt group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
     }
 }
@@ -139,8 +139,6 @@ configure([
         repositoryExt 'javax.websocket:javax.websocket-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
 
-        repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
-        repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
         // TODO - Equinox migration - rethink removal of taglibs.standard
 //        repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"

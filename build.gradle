@@ -243,9 +243,6 @@ ext {
 
             'ASPECTJ'                      : aspectjVersion,
 
-            'C.FILEUPLOAD.VERSION'         : commonsFileuploadVersion,
-            'C.IO.VERSION'                 : commonsIoVersion,
-
             'SCANNOTATION'                 : scannotationVersion,
             'JAVASSIST'                    : javassistVersion,
             'JOTM'                         : jotmVersion,
@@ -521,6 +518,8 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
 
             dependency "commons-codec:commons-codec:${commonsCodecVersion}"
             dependency "commons-cli:commons-cli:${commonsCliVersion}"
+            dependency "commons-fileupload:commons-fileupload:${commonsFileuploadVersion}"
+            dependency "commons-io:commons-io:${commonsIoVersion}"
 
             dependency "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
             dependency "org.apache.httpcomponents:httpclient:${httpclientVersion}"

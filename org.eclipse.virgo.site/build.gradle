@@ -203,8 +203,8 @@ dependencies {
     // TODO - merge with management features above?
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps.feature')
 
-    signedExternalPlugin group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
-    signedExternalPlugin group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
+    signedExternalPlugin 'commons-fileupload:commons-fileupload'
+    signedExternalPlugin 'commons-io:commons-io'
     signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     // nano full

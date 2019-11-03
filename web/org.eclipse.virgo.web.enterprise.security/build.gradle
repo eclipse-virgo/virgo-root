@@ -1,7 +1,7 @@
 dependencies {
     testImplementation 'javax.servlet:javax.servlet-api'
 
-    testRuntime group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+    testImplementation 'commons-fileupload:commons-fileupload'
 
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
 
