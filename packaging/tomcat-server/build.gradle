@@ -43,6 +43,7 @@ task ('packageResourcesAndProducts', dependsOn: [
     ':nano:org.eclipse.virgo.nano.authentication:jar',
     ':nano:org.eclipse.virgo.nano.shutdown:jar',
     ':util:org.eclipse.virgo.util.env:jar',
+    ':apps:org.eclipse.virgo.apps.splash:jar',
 ]) {
     doLast {
         packageConfiguration('lib', configurations.nanoLib, file("${buildDir}/common_resources/lib/"))
