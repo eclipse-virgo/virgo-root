@@ -259,12 +259,10 @@ ext {
             'JAVAX.SERVLET.VERSION'        : javaxServletVersion,
             'JAVAX.SERVLET.JSTL.VERSION'   : javaxServletJspJstlVersion,
             'JSTL.IMPL'                    : javaxServletJspJstlImplOsgiVersion,
-            'JAVAX.TRANSACTION'            : javaxTransactionVersion,
             'JAVAX.VALIDATION'             : javaxValidationVersion,
             'JAVAX.WEBSOCKET'              : javaxWebsocketVersion,
             'JAVAX.WSDL'                   : javaxWsdlVersion,
             'JAVAX.WS.RS'                  : javaxWsRsVersion,
-            'JAVAX.XML.RPC'                : javaxXmlRpcVersion,
 
             'JETTY.VERSION'                : jettyVersion,
 
@@ -302,20 +300,12 @@ ext {
             'COMMONS.POOL'                 : commonsPoolVersion,
 
             'BVAL'                         : apacheBvalVersion,
-            'G.CONNECTOR'                  : geronimoComponentsConnectorVersion,
-            'G.TRANSACTIONS'               : geronimoComponentsTransactionVersion,
             'G.MANAGEMENT'                 : geronimoSpecsJ2eeManagementVersion,
             'G.OSGI.LOCATOR'               : geronimoSpecsOsgiLocatorVersion,
             'G.OSGI.REGISTRY'              : geronimoSpecsOsgiRegistryVersion,
 
             'CDI.API'                      : cdiApiVersion,
 
-            'OE.API'                       : apacheOpenejbVersion,
-            'OE.CORE'                      : apacheOpenejbCoreVersion,
-            'OE.JAVAAGENT'                 : apacheOpenejbVersion,
-            'OE.JEE'                       : apacheOpenejbVersion,
-            'OE.LOADER'                    : apacheOpenejbVersion,
-            'OE.JPA.INTEGRATION'           : apacheOpenejbVersion,
             'XB.ASM'                       : apacheXBeanAsmVersion,
             'XB.BUNDLEUTILS'               : apacheXBeanBundleutilsVersion,
             'XB.FINDER'                    : apacheXBeanFinderVersion,
@@ -541,10 +531,16 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
             dependency "org.aspectj:aspectjweaver:${aspectjVersion}"
 
             dependency "javax.annotation:javax.annotation-api:${javaxAnnotationVersion}"
+            dependency "javax.ejb:javax.ejb-api:${javaxEjbVersion}"
             dependency "javax.el:javax.el-api:${javaxElVersion}"
+            dependency "javax.enterprise:cdi-api:${cdiApiVersion}"
+            dependency "javax.resource:javax.resource-api:${javaxResourceVersion}"
             dependency "javax.servlet:javax.servlet-api:${javaxServletVersion}"
             dependency "javax.servlet.jsp:javax.servlet.jsp-api:${javaxServletJspVersion}"
             dependency "javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:${javaxServletJspJstlVersion}"
+            dependency "javax.transaction:javax.transaction-api:${javaxTransactionVersion}"
+            dependency "javax.xml.rpc:javax.xml.rpc-api:${javaxXmlRpcVersion}"
+
 
             dependency "org.aspectj:aspectjrt:${aspectjVersion}" // used by AspectJ compiler
             dependency "org.aspectj:aspectjtools:${aspectjVersion}" // used by AspectJ compiler -> configuration ajtools
@@ -573,6 +569,12 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
 
             dependency "com.squareup.okio:okio:${okioVersion}"
             dependency "com.squareup.okhttp3:okhttp:${okhttp3Version}"
+
+            // Virgo Nano Full
+            dependencySet(group:'org.apache.geronimo.components', version: geronimoComponentsVersion) {
+                entry 'geronimo-transaction'
+                entry 'geronimo-connector'
+            }
 
             // testing
             dependency "junit:junit:${junitVersion}"

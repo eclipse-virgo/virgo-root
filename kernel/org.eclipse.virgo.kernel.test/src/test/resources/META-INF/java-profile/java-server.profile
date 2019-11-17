@@ -88,9 +88,11 @@ org.osgi.framework.system.packages = \
  javax.transaction,\
  javax.transaction;version="1.0.1",\
  javax.transaction;version="1.1.0",\
+ javax.transaction;version="1.3.0",\
  javax.transaction.xa,\
  javax.transaction.xa;version="1.0.1",\
  javax.transaction.xa;version="1.1.0",\
+ javax.transaction.xa;version="1.3.0",\
  javax.xml,\
  javax.xml;version="1.0.1",\
  javax.xml.bind,\

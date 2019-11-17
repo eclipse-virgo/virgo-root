@@ -256,17 +256,18 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.quartz", version: quartzVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
-    signedExternalPlugin group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
     signedExternalPlugin 'javax.annotation:javax.annotation-api'
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.ejb:javax.ejb-api'
+    signedExternalPlugin 'javax.interceptor:javax.interceptor-api:1.2.2'
+    signedExternalPlugin 'javax.resource:javax.resource-api'
+    signedExternalPlugin 'javax.transaction:javax.transaction-api'
+    signedExternalPlugin 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
+
     signedExternalPlugin 'org.glassfish.hk2.external:javax.inject'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
     signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.wsdl", version: javaxWsdlVersion, configuration: "compile", ext: "jar"
@@ -275,8 +276,8 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.javax.faces", version: glassfishJavaxFacesVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.connector", version: geronimoComponentsConnectorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.transaction", version: geronimoComponentsTransactionVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'org.apache.geronimo.components:geronimo-connector'
+    signedExternalPlugin 'org.apache.geronimo.components:geronimo-transaction'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.j2ee.management", version: geronimoSpecsJ2eeManagementVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.locator", version: geronimoSpecsOsgiLocatorVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.registry", version: geronimoSpecsOsgiRegistryVersion, configuration: "compile", ext: "jar"
@@ -288,7 +289,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.pool", version: commonsPoolVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "cdi.api", version: cdiApiVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.enterprise:cdi-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.api", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.javaagent", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
@@ -319,7 +320,7 @@ dependencies {
 
     signedExternalPlugin 'javax.servlet.jsp:javax.servlet.jsp-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.xml.rpc:javax.xml.rpc-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.tribes", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"

@@ -27,7 +27,7 @@ configure([
 
         nanoLibEndorsed 'javax.annotation:javax.annotation-api'
         nanoLibEndorsed group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
-        nanoLibEndorsed group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+        nanoLibEndorsed 'javax.transaction:javax.transaction-api'
 
         nanoPickup project(':kernel:org.eclipse.virgo.management.console')
     }
@@ -135,7 +135,7 @@ configure([
         repositoryExt project(':web:org.eclipse.virgo.web.spring.integration')
 
         repositoryExt 'javax.annotation:javax.annotation-api'
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.ejb:javax.ejb-api:3.2.2'
         repositoryExt 'javax.el:javax.el-api'
         repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
@@ -143,7 +143,7 @@ configure([
         repositoryExt 'javax.servlet.jsp:javax.servlet.jsp-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.xml.rpc:javax.xml.rpc-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
 
@@ -184,5 +184,11 @@ configure([
         // TODO - gradle-build build :apps:repository.par
         //        <dependency org="org.eclipse.virgo.apps" name="org.eclipse.virgo.apps.repository" rev="${org.eclipse.virgo.apps}" conf="pickup->runtime"/>
         //        nanoPickup project(':apps:org.eclipse.virgo.apps.repository')
+
+//        repositoryExt 'org.glassfish.hk2.external:javax.inject:2.5.0-b62'
+//        repositoryExt 'javax.resource:javax.resource-api:1.7.1'
+//        repositoryExt 'javax.interceptor:javax.interceptor-api:1.2.2'
+//        repositoryExt 'javax.enterprise:cdi-api'
+//        repositoryExt 'javax.transaction:javax.transaction-api'
     }
 }

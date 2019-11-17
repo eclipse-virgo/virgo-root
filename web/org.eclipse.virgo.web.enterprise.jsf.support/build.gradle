@@ -1,8 +1,8 @@
 dependencies {
-    compile group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+    implementation 'javax.ejb:javax.ejb-api'
     compile group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
 
-    compile group: "org.eclipse.virgo.mirrored", name: "cdi.api", version: cdiApiVersion, configuration: "compile", ext: "jar"
+    implementation 'javax.enterprise:cdi-api'
     compile group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
 }

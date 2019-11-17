@@ -1,5 +1,5 @@
 dependencies {
-    compile group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+    implementation 'javax.transaction:javax.transaction-api'
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
     compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
