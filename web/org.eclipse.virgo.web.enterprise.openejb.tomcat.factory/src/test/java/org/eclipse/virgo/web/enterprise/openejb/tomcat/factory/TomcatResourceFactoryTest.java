@@ -15,12 +15,12 @@ import java.util.Hashtable;
 
 import javax.naming.NamingException;
 
-import junit.framework.Assert;
-
 import org.apache.catalina.core.NamingContextListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.naming.NamingContext;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class TomcatResourceFactoryTest {
 
@@ -40,19 +40,19 @@ public class TomcatResourceFactoryTest {
 
     private static class MyNamingContextListener extends NamingContextListener {
 
-        public MyNamingContextListener(NamingContext context) {
+        MyNamingContextListener(NamingContext context) {
             namingContext = context;
         }
     }
 
     private static class MyNamingContext extends NamingContext {
 
-        public MyNamingContext(Hashtable<String, Object> env, String name) throws NamingException {
+        MyNamingContext(Hashtable<String, Object> env, String name) {
             super(env, name);
         }
 
         public Object lookup(String name) {
-            Assert.assertEquals("Wrong lookup name", searchName, name);
+            assertEquals("Wrong lookup name", searchName, name);
             return null;
         }
     }

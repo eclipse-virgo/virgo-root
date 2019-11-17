@@ -13,12 +13,11 @@
 
 package org.eclipse.virgo.nano.shutdown;
 
+import org.junit.Test;
+
 import java.util.Properties;
 
-import junit.framework.Assert;
-
-import org.eclipse.virgo.nano.shutdown.KernelAuthenticationConfiguration;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class KernelAuthenticationConfigurationTests {
 
@@ -28,8 +27,8 @@ public class KernelAuthenticationConfigurationTests {
             System.setProperty(KernelAuthenticationConfiguration.FILE_LOCATION_PROPERTY, "src/test/resources/test.users.properties");
             KernelAuthenticationConfiguration kac = new KernelAuthenticationConfiguration();
 
-            Assert.assertEquals("testuser", kac.getUserName());
-            Assert.assertEquals("testpw", kac.getPassword());
+            assertEquals("testuser", kac.getUserName());
+            assertEquals("testpw", kac.getPassword());
         } finally {
             System.clearProperty(KernelAuthenticationConfiguration.FILE_LOCATION_PROPERTY);
         }
@@ -47,8 +46,8 @@ public class KernelAuthenticationConfigurationTests {
     }
 
     private void assertDefaults(KernelAuthenticationConfiguration kac) {
-        Assert.assertEquals(KernelAuthenticationConfiguration.DEFAULT_USERNAME, kac.getUserName());
-        Assert.assertEquals(KernelAuthenticationConfiguration.DEFAULT_PASSWORD, kac.getPassword());
+        assertEquals(KernelAuthenticationConfiguration.DEFAULT_USERNAME, kac.getUserName());
+        assertEquals(KernelAuthenticationConfiguration.DEFAULT_PASSWORD, kac.getPassword());
     }
 
     @Test
@@ -69,8 +68,8 @@ public class KernelAuthenticationConfigurationTests {
         props.put("user.u", "p");
         props.put("role.admin", "u");
         KernelAuthenticationConfiguration kac = new KernelAuthenticationConfiguration(props);
-        Assert.assertEquals("u", kac.getUserName());
-        Assert.assertEquals("p", kac.getPassword());
+        assertEquals("u", kac.getUserName());
+        assertEquals("p", kac.getPassword());
     }
     
     @Test
@@ -96,8 +95,8 @@ public class KernelAuthenticationConfigurationTests {
         props.put("user.", "pw");
         props.put("role.admin", "");
         KernelAuthenticationConfiguration kac = new KernelAuthenticationConfiguration(props);
-        Assert.assertEquals("", kac.getUserName());
-        Assert.assertEquals("pw", kac.getPassword());
+        assertEquals("", kac.getUserName());
+        assertEquals("pw", kac.getPassword());
 
     }
     
@@ -107,8 +106,8 @@ public class KernelAuthenticationConfigurationTests {
         props.put("user.u", "");
         props.put("role.admin", "u");
         KernelAuthenticationConfiguration kac = new KernelAuthenticationConfiguration(props);
-        Assert.assertEquals("u", kac.getUserName());
-        Assert.assertEquals("", kac.getPassword());
+        assertEquals("u", kac.getUserName());
+        assertEquals("", kac.getPassword());
     }
     
     @Test

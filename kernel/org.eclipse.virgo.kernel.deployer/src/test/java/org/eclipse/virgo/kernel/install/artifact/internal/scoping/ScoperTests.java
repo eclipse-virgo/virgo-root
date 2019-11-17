@@ -1,27 +1,21 @@
 
 package org.eclipse.virgo.kernel.install.artifact.internal.scoping;
 
+import org.eclipse.virgo.kernel.install.artifact.internal.scoping.Scoper.DuplicateBundleSymbolicNameException;
+import org.eclipse.virgo.kernel.install.artifact.internal.scoping.Scoper.DuplicateExportException;
+import org.eclipse.virgo.kernel.install.artifact.internal.scoping.Scoper.UnsupportedBundleManifestVersionException;
+import org.eclipse.virgo.util.osgi.manifest.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.eclipse.virgo.kernel.install.artifact.internal.scoping.Scoper.DuplicateBundleSymbolicNameException;
-import org.eclipse.virgo.kernel.install.artifact.internal.scoping.Scoper.DuplicateExportException;
-import org.eclipse.virgo.kernel.install.artifact.internal.scoping.Scoper.UnsupportedBundleManifestVersionException;
-import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
-import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
-import org.eclipse.virgo.util.osgi.manifest.DynamicImportPackage;
-import org.eclipse.virgo.util.osgi.manifest.DynamicallyImportedPackage;
-import org.eclipse.virgo.util.osgi.manifest.ExportPackage;
-import org.eclipse.virgo.util.osgi.manifest.ExportedPackage;
-import org.eclipse.virgo.util.osgi.manifest.ImportPackage;
-import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ScoperTests {
 
@@ -31,7 +25,7 @@ public class ScoperTests {
 
     private static BundleManifest unscopedManifest = null;
 
-    private static List<BundleManifest> bundleManifests = new ArrayList<BundleManifest>();
+    private static List<BundleManifest> bundleManifests = new ArrayList<>();
 
     private static final File bundleFile = new File("src/test/resources/scoping/bundles/bug331767");
 
@@ -48,7 +42,7 @@ public class ScoperTests {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    public static void tearDownAfterClass() {
     }
 
     @Test
@@ -66,13 +60,13 @@ public class ScoperTests {
         List<ImportedPackage> ipList = importPackage.getImportedPackages();
         List<ImportedPackage> uipList = unscopedImportPackage.getImportedPackages();
         for (int i = 0; i < ipList.size(); i++) {
-            Assert.assertTrue(ipList.get(i).getPackageName().equals(uipList.get(i).getPackageName()));
-            Assert.assertTrue(ipList.get(i).getVersion().equals(uipList.get(i).getVersion()));
+            assertEquals(ipList.get(i).getPackageName(), uipList.get(i).getPackageName());
+            assertEquals(ipList.get(i).getVersion(), uipList.get(i).getVersion());
             for (String scopedAttribute : uipList.get(i).getAttributes().keySet()) {
-                Assert.assertTrue(ipList.get(i).getAttributes().containsKey(scopedAttribute));
+                assertTrue(ipList.get(i).getAttributes().containsKey(scopedAttribute));
             }
-            Assert.assertTrue(ipList.get(i).getAttributes().containsKey(SCOPING_ATTRIBUTE_NAME));
-            Assert.assertTrue(uipList.get(i).getAttributes().size() + 1 == ipList.get(i).getAttributes().size());
+            assertTrue(ipList.get(i).getAttributes().containsKey(SCOPING_ATTRIBUTE_NAME));
+            assertEquals(uipList.get(i).getAttributes().size() + 1, ipList.get(i).getAttributes().size());
         }
     }
 
@@ -82,15 +76,15 @@ public class ScoperTests {
         List<DynamicallyImportedPackage> dipList = dynamicImportPackage.getDynamicallyImportedPackages();
         List<DynamicallyImportedPackage> udipList = unscopedDynamicImportPackage.getDynamicallyImportedPackages();
         for (int i = 0; i < udipList.size(); i++) {
-            Assert.assertTrue(dipList.get(i).getPackageName().equals(udipList.get(i).getPackageName()));
-            Assert.assertTrue(dipList.get(i).getVersion().equals(udipList.get(i).getVersion()));
+            assertEquals(dipList.get(i).getPackageName(), udipList.get(i).getPackageName());
+            assertEquals(dipList.get(i).getVersion(), udipList.get(i).getVersion());
             for (String scopedAttribute : udipList.get(i).getAttributes().keySet()) {
-                Assert.assertTrue(dipList.get(i).getAttributes().containsKey(scopedAttribute));
+                assertTrue(dipList.get(i).getAttributes().containsKey(scopedAttribute));
             }
-            Assert.assertTrue(dipList.get(i).getAttributes().containsKey(SCOPING_ATTRIBUTE_NAME));
-            Assert.assertTrue(udipList.get(i).getAttributes().size() + 1 == dipList.get(i).getAttributes().size());
+            assertTrue(dipList.get(i).getAttributes().containsKey(SCOPING_ATTRIBUTE_NAME));
+            assertEquals(udipList.get(i).getAttributes().size() + 1, dipList.get(i).getAttributes().size());
         }
-        Assert.assertTrue(dipList.size() == udipList.size() * 2);
+        assertEquals(dipList.size(), udipList.size() * 2);
     }
 
     private void checkExports() {
@@ -99,13 +93,13 @@ public class ScoperTests {
         List<ExportedPackage> epList = exportPackage.getExportedPackages();
         List<ExportedPackage> uepList = unscopedExportPackage.getExportedPackages();
         for (int i = 0; i < epList.size(); i++) {
-            Assert.assertTrue(epList.get(i).getPackageName().equals(uepList.get(i).getPackageName()));
-            Assert.assertTrue(epList.get(i).getVersion().equals(uepList.get(i).getVersion()));
+            assertEquals(epList.get(i).getPackageName(), uepList.get(i).getPackageName());
+            assertEquals(epList.get(i).getVersion(), uepList.get(i).getVersion());
             for (String scopedAttribute : uepList.get(i).getAttributes().keySet()) {
-                Assert.assertTrue(epList.get(i).getAttributes().containsKey(scopedAttribute));
+                assertTrue(epList.get(i).getAttributes().containsKey(scopedAttribute));
             }
-            Assert.assertTrue(epList.get(i).getAttributes().containsKey(SCOPING_ATTRIBUTE_NAME));
-            Assert.assertTrue(uepList.get(i).getAttributes().size() + 1 == epList.get(i).getAttributes().size());
+            assertTrue(epList.get(i).getAttributes().containsKey(SCOPING_ATTRIBUTE_NAME));
+            assertEquals(uepList.get(i).getAttributes().size() + 1, epList.get(i).getAttributes().size());
         }
     }
 

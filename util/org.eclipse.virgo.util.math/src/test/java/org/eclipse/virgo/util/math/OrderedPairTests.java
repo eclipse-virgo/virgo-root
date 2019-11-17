@@ -11,13 +11,9 @@
 
 package org.eclipse.virgo.util.math;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertEquals;
-
-import org.eclipse.virgo.util.math.OrderedPair;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class OrderedPairTests {
 
@@ -25,7 +21,7 @@ public class OrderedPairTests {
     public void getters() {
         String orange = "orange";
         String blue = "blue";
-        OrderedPair<String, String> o = new OrderedPair<String, String>(orange, blue);
+        OrderedPair<String, String> o = new OrderedPair<>(orange, blue);
 
         assertSame(orange, o.getFirst());
         assertSame(blue, o.getSecond());
@@ -34,29 +30,29 @@ public class OrderedPairTests {
 
     @Test
     public void equalsAndHashCode() {
-        OrderedPair<Integer, Integer> alpha = new OrderedPair<Integer, Integer>(1, 2);
-        OrderedPair<String, String> bravo = new OrderedPair<String, String>("first", "second");
-        OrderedPair<String, String> charlie = new OrderedPair<String, String>("orange", "blue");
-        OrderedPair<String, String> delta = new OrderedPair<String, String>("orange", "blue");
+        OrderedPair<Integer, Integer> alpha = new OrderedPair<>(1, 2);
+        OrderedPair<String, String> bravo = new OrderedPair<>("first", "second");
+        OrderedPair<String, String> charlie = new OrderedPair<>("orange", "blue");
+        OrderedPair<String, String> delta = new OrderedPair<>("orange", "blue");
 
         assertNotEqualsAndHashCodeNotEqual(alpha, bravo);
         assertEqualsAndHashCodeEqual(alpha, alpha);
         assertNotEqualsAndHashCodeNotEqual(bravo, charlie);
         assertEqualsAndHashCodeEqual(charlie, delta);
 
-        assertFalse(alpha.equals(null));
-        assertFalse(alpha.equals(new Integer(1)));
+        assertNotEquals(null, alpha);
+        assertNotEquals(1, alpha);
     }
 
     @Test
     public void nullElements() {
-        OrderedPair<Integer, Integer> abel = new OrderedPair<Integer, Integer>(null, null);
-        OrderedPair<Integer, Integer> baker = new OrderedPair<Integer, Integer>(null, null);
-        OrderedPair<Integer, Integer> charlie = new OrderedPair<Integer, Integer>(1, null);
-        OrderedPair<Integer, Integer> dog = new OrderedPair<Integer, Integer>(1, null);
-        OrderedPair<Integer, Integer> easy = new OrderedPair<Integer, Integer>(null, 2);
-        OrderedPair<Integer, Integer> fox = new OrderedPair<Integer, Integer>(null, 2);
-        OrderedPair<Integer, String> gorilla = new OrderedPair<Integer, String>(null, null);
+        OrderedPair<Integer, Integer> abel = new OrderedPair<>(null, null);
+        OrderedPair<Integer, Integer> baker = new OrderedPair<>(null, null);
+        OrderedPair<Integer, Integer> charlie = new OrderedPair<>(1, null);
+        OrderedPair<Integer, Integer> dog = new OrderedPair<>(1, null);
+        OrderedPair<Integer, Integer> easy = new OrderedPair<>(null, 2);
+        OrderedPair<Integer, Integer> fox = new OrderedPair<>(null, 2);
+        OrderedPair<Integer, String> gorilla = new OrderedPair<>(null, null);
         
         assertSame(null, abel.getFirst());
         assertSame(null, abel.getSecond());
@@ -74,14 +70,14 @@ public class OrderedPairTests {
     }
 
     private void assertEqualsAndHashCodeEqual(OrderedPair<?, ?> o, OrderedPair<?, ?> p) {
-        assertTrue(o.equals(p));
-        assertTrue(o.hashCode() == p.hashCode());
+        assertEquals(o, p);
+        assertEquals(o.hashCode(), p.hashCode());
         assertEquals(o.toString(), p.toString());
     }
 
     private void assertNotEqualsAndHashCodeNotEqual(OrderedPair<?, ?> o, OrderedPair<?, ?> p) {
-        assertFalse(o.equals(p));
-        assertFalse(o.hashCode() == p.hashCode());
-        assertFalse(o.toString().equals(p.toString()));
+        assertNotEquals(o, p);
+        assertNotEquals(o.hashCode(), p.hashCode());
+        assertNotEquals(o.toString(), p.toString());
     }
 }

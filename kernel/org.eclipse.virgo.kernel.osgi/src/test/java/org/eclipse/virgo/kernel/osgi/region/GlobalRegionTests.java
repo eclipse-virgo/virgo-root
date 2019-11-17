@@ -11,13 +11,13 @@
 
 package org.eclipse.virgo.kernel.osgi.region;
 
-import junit.framework.Assert;
-
 import org.eclipse.equinox.region.Region;
 import org.eclipse.virgo.nano.serviceability.Assert.FatalAssertionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
+
+import static org.junit.Assert.assertEquals;
 
 public class GlobalRegionTests {
 
@@ -30,13 +30,13 @@ public class GlobalRegionTests {
     private Region region;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.region = new GlobalRegion(TEST_REGION_NAME);
     }
 
     @Test
     public void testGetName() {
-        Assert.assertEquals(TEST_REGION_NAME, this.region.getName());
+        assertEquals(TEST_REGION_NAME, this.region.getName());
     }
     
     @Test(expected=UnsupportedOperationException.class)

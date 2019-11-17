@@ -10,14 +10,6 @@
  *******************************************************************************/
 package org.eclipse.virgo.management.console;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.script.ScriptException;
-
-import junit.framework.Assert;
-
 import org.eclipse.virgo.management.console.stubs.objects.Dollar;
 import org.eclipse.virgo.management.console.stubs.objects.Util;
 import org.eclipse.virgo.management.console.stubs.objects.Window;
@@ -25,28 +17,26 @@ import org.eclipse.virgo.management.console.stubs.types.Element;
 import org.eclipse.virgo.management.console.stubs.types.Server;
 import org.junit.After;
 import org.junit.Before;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 
-/**
- * 
- *
- */
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+import static org.junit.Assert.fail;
+
 public abstract class AbstractJSTests {
 	
 	protected Context context; 
 	
 	protected ScriptableObject scope;
 
-	protected static String alertMsg;
+	static String alertMsg;
 	
-	protected Util commonUtil = null;
+	Util commonUtil = null;
 	
 	@Before
-	public void setUp() throws ScriptException, IOException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
+	public void setUp() throws IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException{
 		context = Context.enter();
 		scope = context.initStandardObjects();
 
@@ -72,7 +62,7 @@ public abstract class AbstractJSTests {
 	}
 	
 	// callback from JS function doesn't work with non static field
-	public static void alert(String msg){
+	private static void alert(String msg){
 		System.out.println(msg);
 		alertMsg = msg;
 	}
@@ -81,23 +71,23 @@ public abstract class AbstractJSTests {
 		context.evaluateReader(scope, new FileReader(fileName), fileName, 0, null);
 	}
 	
-	protected final void readString(String js) throws IOException{
+	final void readString(String js) {
 		context.evaluateString(scope, js, "snippet", 0, null);
 	}
 	
-	protected final void addCommonObjects(){
+	final void addCommonObjects(){
 		commonUtil = new Util(context, scope);
 		Object wrapped = Context.javaToJS(commonUtil, scope);
 		ScriptableObject.putProperty(scope, "util", wrapped);
 	}
 	
-	protected final void invokePageInit() throws ScriptException, NoSuchMethodException{
+	final void invokePageInit() {
 		Object fObj = scope.get("pageinit", scope);
 		if (fObj instanceof Function) {
 		    Function f = (Function)fObj;
 		    f.call(context, scope, scope, Context.emptyArgs);
 		} else {
-			Assert.fail("pageinit function not found");
+			fail("pageinit function not found");
 		}		
 	}
 

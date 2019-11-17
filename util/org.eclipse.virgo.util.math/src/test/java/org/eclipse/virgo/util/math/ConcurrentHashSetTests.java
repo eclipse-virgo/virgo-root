@@ -11,17 +11,16 @@
 
 package org.eclipse.virgo.util.math;
 
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.Assert;
-
-import org.eclipse.virgo.util.math.ConcurrentHashSet;
-import org.eclipse.virgo.util.math.ConcurrentSet;
-import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ConcurrentHashSetTests {
 
@@ -29,53 +28,47 @@ public class ConcurrentHashSetTests {
 
     private final static String extra = "Adrian";
 
-    private final Set<String> strings = new HashSet<String>();
+    private final Set<String> strings = new HashSet<>();
 
-    final ConcurrentSet<String> s = new ConcurrentHashSet<String>();
+    private final ConcurrentSet<String> s = new ConcurrentHashSet<>();
 
-    @Before public void setUp() throws Exception {
-        for (final String s : names) {
-            this.strings.add(s);
-        }
+    @Before public void setUp() {
+        Collections.addAll(this.strings, names);
         this.s.clear();
     }
 
-    @After public void tearDown() throws Exception {
-    }
-
     @Test public void cornerCases() {
-        Assert.assertTrue(this.s.isEmpty());
-        Assert.assertFalse(this.s.contains(names[0]));
-        Assert.assertFalse(this.s.remove(names[0]));
-        Assert.assertFalse(this.s.removeAll(this.strings));
-        Assert.assertFalse(this.s.retainAll(this.strings));
+        assertTrue(this.s.isEmpty());
+        assertFalse(false);
+        assertFalse(this.s.remove(names[0]));
+        assertFalse(this.s.removeAll(this.strings));
+        assertFalse(this.s.retainAll(this.strings));
     }
 
     @Test public void mainline() {
-        Assert.assertTrue(this.s.add(names[0]));
-        Assert.assertFalse(this.s.containsAll(this.strings));
-        Assert.assertTrue(this.s.addAll(this.strings));
+        assertTrue(this.s.add(names[0]));
+        assertFalse(this.s.containsAll(this.strings));
+        assertTrue(this.s.addAll(this.strings));
         Assert.assertEquals(this.s.size(), this.strings.size());
-        Iterator<String> i = this.s.iterator();
-        while (i.hasNext()) {
-            Assert.assertTrue(this.strings.contains(i.next()));
+        for (String value : this.s) {
+            assertTrue(this.strings.contains(value));
         }
-        Assert.assertTrue(this.s.remove(names[0]));
-        Assert.assertTrue(this.s.removeAll(this.strings));
+        assertTrue(this.s.remove(names[0]));
+        assertTrue(this.s.removeAll(this.strings));
     }
 
     @Test public void extras() {
-        Assert.assertTrue(this.s.addAll(this.strings));
-        Assert.assertTrue(this.s.add(extra));
-        Assert.assertTrue(this.s.retainAll(this.strings));
-        Assert.assertTrue(this.s.containsAll(this.strings));
-        Assert.assertFalse(this.s.contains(extra));
+        assertTrue(this.s.addAll(this.strings));
+        assertTrue(this.s.add(extra));
+        assertTrue(this.s.retainAll(this.strings));
+        assertTrue(this.s.containsAll(this.strings));
+        assertFalse(this.s.contains(extra));
         Assert.assertEquals(this.s.toArray().length, this.strings.size());
         String[] str = new String[this.strings.size()];
         String[] str2 = this.s.toArray(str);
         Assert.assertEquals(str2.length, this.strings.size());
         for (String t : str2) {
-            Assert.assertTrue(this.s.contains(t));
+            assertTrue(this.s.contains(t));
         }
     }
 }

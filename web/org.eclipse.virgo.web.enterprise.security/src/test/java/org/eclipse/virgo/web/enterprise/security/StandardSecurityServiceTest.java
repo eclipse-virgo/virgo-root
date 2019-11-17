@@ -13,12 +13,13 @@ package org.eclipse.virgo.web.enterprise.security;
 import java.lang.reflect.Field;
 import java.security.Principal;
 
-import junit.framework.Assert;
-
 import org.apache.catalina.Realm;
 import org.apache.catalina.Wrapper;
 import org.easymock.EasyMock;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertFalse;
 
 /**
  * The class StandardSecurityService has a method enterWebApp,
@@ -43,22 +44,22 @@ public class StandardSecurityServiceTest {
 	public void testWrapper() throws Exception {
 		StandardSecurityService securityService = new StandardSecurityService();
 		
-		Wrapper wrapper1 = EasyMock.createMock(Wrapper.class);
-		Principal principal1 = EasyMock.createMock(Principal.class);
-		Realm realm1 = EasyMock.createMock(Realm.class);
+		Wrapper wrapper1 = createMock(Wrapper.class);
+		Principal principal1 = createMock(Principal.class);
+		Realm realm1 = createMock(Realm.class);
 		EasyMock.expect(wrapper1.getRealm()).andReturn(realm1);
 		EasyMock.expect(wrapper1.getName()).andReturn("wrapper1").anyTimes();
 		
-		Wrapper wrapper2 = EasyMock.createMock(Wrapper.class);
-		Principal principal2 = EasyMock.createMock(Principal.class);
-		Realm realm2 = EasyMock.createMock(Realm.class);
+		Wrapper wrapper2 = createMock(Wrapper.class);
+		Principal principal2 = createMock(Principal.class);
+		Realm realm2 = createMock(Realm.class);
 		EasyMock.expect(wrapper2.getRealm()).andReturn(realm2);
 		EasyMock.expect(wrapper2.getName()).andReturn("wrapper2").anyTimes();
 		
 		EasyMock.replay(wrapper1, wrapper2);
 		
-		ApplicationThread applicationThread1 = new ApplicationThread(securityService, wrapper1, principal1, "user1");
-		ApplicationThread applicationThread2 = new ApplicationThread(securityService, wrapper2, principal2, "user2");
+		ApplicationThread applicationThread1 = new ApplicationThread(securityService, wrapper1, "user1");
+		ApplicationThread applicationThread2 = new ApplicationThread(securityService, wrapper2, "user2");
 		applicationThread1.setCoworkerThread(applicationThread2);
 		applicationThread1.setName("Thread-1");
 		applicationThread2.setCoworkerThread(applicationThread1);
@@ -73,7 +74,7 @@ public class StandardSecurityServiceTest {
 		
 		String errorMessage1 = applicationThread1.getErrorMessage() == null ? "no error" : applicationThread1.getErrorMessage();
 		String errorMessage2 = applicationThread2.getErrorMessage() == null ? "no error" : applicationThread2.getErrorMessage();
-		Assert.assertFalse("ApplicationThread1 error message: " + errorMessage1 + "; ApplicationThread2 error message: " + errorMessage2, applicationThread1.isError() || applicationThread2.isError());
+		assertFalse("ApplicationThread1 error message: " + errorMessage1 + "; ApplicationThread2 error message: " + errorMessage2, applicationThread1.isError() || applicationThread2.isError());
 	}
 	
 	private static class ApplicationThread extends Thread {
@@ -85,7 +86,7 @@ public class StandardSecurityServiceTest {
 		private boolean isError = false;
 		private String errorMessage = null;
 		
-		public ApplicationThread(StandardSecurityService serv, Wrapper wrap, Principal p, String runAs) {
+		ApplicationThread(StandardSecurityService serv, Wrapper wrap, String runAs) {
 			service = serv;
 			wrapper = wrap;
 			this.runAs = runAs;
@@ -138,45 +139,36 @@ public class StandardSecurityServiceTest {
 		
 		private boolean checkWrapper(Wrapper expectedWrapper) {
 			Wrapper currentWrapper;
-			boolean result = false;
+			boolean result;
 			try {
 				currentWrapper = getWrapper();
 				result = (expectedWrapper == currentWrapper);
 				if (!result) {
 					isError = true;
-					errorMessage = "epxected [" + ((expectedWrapper.getName() == null) ? null : expectedWrapper.getName()) + "] but found [" + ((currentWrapper.getName() == null) ? null : currentWrapper.getName()) + "] instead";  
+					errorMessage = "epxected [" + (expectedWrapper.getName()) + "] but found [" + (currentWrapper.getName()) + "] instead";
 				}
 				
 				return result;
-			} catch (SecurityException e) {
-				isError = true;
-				errorMessage = e.getMessage();
-			} catch (IllegalArgumentException e) {
-				isError = true;
-				errorMessage = e.getMessage();
-			} catch (NoSuchFieldException e) {
-				isError = true;
-				errorMessage = e.getMessage();
-			} catch (IllegalAccessException e) {
+			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
 				isError = true;
 				errorMessage = e.getMessage();
 			}
 			return false;
 		}
 		
-		public void setCoworkerThread(ApplicationThread thread) {
+		void setCoworkerThread(ApplicationThread thread) {
 			coworkerThread = thread;
 		}
 		
-		public void setReady() {
+		void setReady() {
 			isReady = true;
 		}
 		
-		public boolean isError() {
+		boolean isError() {
 			return isError;
 		}
 		
-		public String getErrorMessage() {
+		String getErrorMessage() {
 			return errorMessage;
 		}
 		
