@@ -46,7 +46,7 @@ class AspectJPlugin implements Plugin<Project> {
     void setupAspectJ(Project project) {
         project.tasks.withType(JavaCompile) { javaCompileTask ->
             def javaCompileTaskName = javaCompileTask.name
-            def ajCompileTask = project.tasks.create(name: javaCompileTaskName + 'Aspect', overwrite: true, description: 'Compiles AspectJ Source', type: Ajc) {
+            def ajCompileTask = project.tasks.create(name: javaCompileTaskName + 'Aspect', description: 'Compiles AspectJ Source', type: Ajc) {
                 inputs.files(javaCompileTask.inputs.files)
                 inputs.properties(javaCompileTask.inputs.properties.findAll {it.value != null})
 

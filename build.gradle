@@ -499,7 +499,7 @@ configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclips
         // Gemini Web and Tomcat dependencies aren't at Maven Central
         ivy {
             url "https://build.eclipse.org/rt/virgo/ivy/bundles/release/"
-            layout "pattern", { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
+            patternLayout { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
         }
     }
 
