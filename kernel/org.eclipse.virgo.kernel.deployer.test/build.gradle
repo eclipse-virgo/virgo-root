@@ -33,6 +33,7 @@ dependencies {
     testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
     testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
     testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
+    testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
     testCompile group: "org.hsqldb", name:"hsqldb", version: hsqldbVersion
 
     testRuntimeOnly 'org.apache.felix:org.apache.felix.gogo.command'
