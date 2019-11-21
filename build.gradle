@@ -339,41 +339,16 @@ ext {
 
 configure(javaProjects + osgiProjects) {
 
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'eclipse'
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 
     compileJava {
-        options.encoding = 'utf-8'
-        options.fork = true
-        doFirst {
-            options.forkOptions.with {
-                executable = 'java'
-                jvmArgs = [
-                        '-cp',
-                        configurations.ecj.asPath,
-                        'org.eclipse.jdt.internal.compiler.batch.Main',
-                        '-warn:-unused'
-                ]
-            }
-        }
-    }
-    compileTestJava {
-        options.encoding = 'utf-8'
-        options.fork = true
-        doFirst {
-            options.forkOptions.with {
-                executable = 'java'
-                jvmArgs = [
-                        '-cp',
-                        configurations.ecj.asPath,
-                        'org.eclipse.jdt.internal.compiler.batch.Main',
-                        '-warn:-unused'
-                ]
-            }
-        }
+        options.incremental = true
     }
 
     test {
@@ -382,23 +357,12 @@ configure(javaProjects + osgiProjects) {
         }
     }
 
-    configurations { ecj {} }
-
     dependencies {
-        ecj group: "org.eclipse.jdt.core.compiler", name: "ecj", version: ecjVersion
-
         implementation 'org.slf4j:slf4j-api'
 
         testImplementation 'junit:junit'
         testImplementation 'org.hamcrest:hamcrest-core'
         testImplementation 'org.easymock:easymock'
-    }
-
-    eclipse {
-        jdt {
-            sourceCompatibility = 1.8
-            targetCompatibility = 1.8
-        }
     }
 }
 

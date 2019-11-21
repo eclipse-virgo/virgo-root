@@ -1,6 +1,6 @@
 #!/bin/sh
 
-./gradlew -Dskip.normalize.bundles=true -Dskip.local.signing=true -Dskip.compress.bundles=true clean packaging:tomcat-server:installDist -x test
+./gradlew -Dskip.normalize.bundles=true -Dskip.local.signing=true -Dskip.compress.bundles=true packaging:tomcat-server:installDist -x test
 
 # build and deploy test app(s)
 
