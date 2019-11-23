@@ -131,6 +131,9 @@ ext {
 
             project(':apps:org.eclipse.virgo.apps.repository.core'),
             project(':apps:org.eclipse.virgo.apps.repository.web'),
+
+            // test-apps
+            project(':web:test-apps:osgi-webapp'),
     ]
 
     aspectjProjects = [

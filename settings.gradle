@@ -100,6 +100,8 @@ include ':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension'
 include ':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer'
 include ':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory'
 
+include ':web:test-apps:osgi-webapp'
+
 // 3rd party bundles
 include ':3rd-party'
 
