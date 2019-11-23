@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Test-App spring-capability-tests
+Bundle-SymbolicName: org.eclipse.virgo.web.test.spring-capability-tests
+Web-ContextPath: /spring-capability-tests
+Import-Library: org.springframework.spring

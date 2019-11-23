@@ -107,7 +107,7 @@ configure([
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.jms_${springframeworkVersion}.jar")
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.orm_${springframeworkVersion}.jar")
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.oxm_${springframeworkVersion}.jar")
-        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.tx_${springframeworkVersion}.jar")
+        repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.transaction_${springframeworkVersion}.jar")
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.web_${springframeworkVersion}.jar")
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.webflux_${springframeworkVersion}.jar")
         repositoryExt files("../../3rd-party/build/plugins/oevm.org.springframework.webmvc_${springframeworkVersion}.jar")

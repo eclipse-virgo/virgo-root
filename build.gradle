@@ -134,7 +134,7 @@ ext {
 
             // test-apps
             project(':web:test-apps:osgi-webapp'),
-    ]
+            project(':web:test-apps:spring-capability-tests'),    ]
 
     aspectjProjects = [
             // these projects contain aspects
