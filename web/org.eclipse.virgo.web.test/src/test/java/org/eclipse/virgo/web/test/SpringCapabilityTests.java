@@ -13,9 +13,10 @@ package org.eclipse.virgo.web.test;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-
+@Ignore
 public class SpringCapabilityTests extends AbstractWebIntegrationTests {
 
     @Test

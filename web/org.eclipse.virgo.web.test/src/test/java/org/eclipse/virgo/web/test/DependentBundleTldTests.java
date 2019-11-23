@@ -11,39 +11,39 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import static java.util.Collections.singletonList;
+import static org.apache.http.HttpStatus.SC_OK;
+
+@Ignore
 public class DependentBundleTldTests extends AbstractWebIntegrationTests {
 
-	final CountDownLatch latch = new CountDownLatch(1);
-	final Map<String, List<String>> expectations = new HashMap<String, List<String>>();
+	private final CountDownLatch latch = new CountDownLatch(1);
+	private final Map<String, List<String>> expectations = new HashMap<>();
 
 	@Test
 	public void testTldsInDependentBundle() throws Exception {
-		expectations.put("index.jsp", Arrays.asList("OODMO"));
+		expectations.put("index.jsp", singletonList("OODMO"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity jardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity jarDeploymentIdentity = assertDeployBehavior(
 				"tldbundletest", new File("src/test/apps/tld.bundle.jar"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"tldbundletest", new File("src/test/apps/tld.web.bundle.war"));
 		for (String resource : expectations.keySet()) {
 			List<String> expectedContents = expectations.get(resource);
 			assertGetRequest("tldbundletest", resource, SC_OK, expectedContents);
 		}
-		this.appDeployer.undeploy(jardeploymentIdentity);
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(jarDeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 }

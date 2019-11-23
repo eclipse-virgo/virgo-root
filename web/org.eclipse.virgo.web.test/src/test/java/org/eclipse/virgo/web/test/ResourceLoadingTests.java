@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,6 +26,7 @@ import org.junit.Test;
  * may be <em>Spring-DM powered</em>) and via the <code>ServletContext</code>.
  * 
  */
+@Ignore
 public class ResourceLoadingTests extends AbstractWebIntegrationTests {
 
     protected static String encode(String str) throws Exception {

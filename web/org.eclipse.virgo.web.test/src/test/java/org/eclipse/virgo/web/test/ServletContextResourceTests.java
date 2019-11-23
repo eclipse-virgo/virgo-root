@@ -13,12 +13,13 @@ package org.eclipse.virgo.web.test;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 
 /**
  */
-
+@Ignore
 public class ServletContextResourceTests extends AbstractWebIntegrationTests {
     @Test
     public void handlingOfJndiProtocolUrls() throws Exception {

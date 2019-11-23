@@ -11,84 +11,80 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.management.InstanceNotFoundException;
-import javax.management.JMException;
-import javax.management.JMX;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.junit.AfterClass;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
+import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
+import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.springframework.util.StreamUtils;
 
-import org.eclipse.virgo.nano.deployer.api.core.ApplicationDeployer;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
-import org.eclipse.virgo.kernel.model.management.ManageableArtifact;
-import org.eclipse.virgo.kernel.osgi.framework.OsgiFramework;
-import org.eclipse.virgo.test.framework.dmkernel.DmKernelTestRunner;
-import org.eclipse.virgo.util.io.PathReference;
+import javax.management.JMException;
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.apache.http.HttpHeaders.LOCATION;
+import static org.apache.http.HttpStatus.*;
+import static org.junit.Assert.*;
 
 /**
  * Abstract base class for all web integration tests. Transparently retrieves the {@link ApplicationDeployer} from the
  * OSGi service registry and provides support for subclasses to deploy web applications (i.e., WARs, hybrid WARs, and
  * PARs which contain a web module). In addition, simple assertion facilities are provided for verifying that a
  * particular web resource is available (e.g., via an HTTP GET or POST request).
- * 
  */
 @RunWith(DmKernelTestRunner.class)
-public abstract class AbstractWebIntegrationTests {
+public abstract class AbstractWebIntegrationTests extends AbstractTomcatServerIntegrationTest {
 
     private static final long HOT_DEPLOY_TIMEOUT = 30000;
 
-    private static final long WEB_PLAN_DEPLOY_TIMEOUT = 5*60*1000; // 5 minutes
+//    private static final long WEB_PLAN_DEPLOY_TIMEOUT = 5*60*1000; // 5 minutes
 
-	private static final String CURRENT_VERSION = "3.7.0";
+//	private static final String CURRENT_VERSION = "3.7.0";
 
     private static final String USER_REGION_NAME = "org.eclipse.virgo.region.user";
 
-    protected final List<String> deployedWebApps = new ArrayList<String>();
-
-    protected OsgiFramework osgiFramework;
+    final List<String> deployedWebApps = new ArrayList<>();
 
     protected ApplicationDeployer appDeployer;
 
-    protected boolean reuseHttpClient = true;
+    boolean reuseHttpClient = true;
 
-    private final HttpClient httpClient = new HttpClient();
+    private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    protected boolean followRedirects = true;
+    boolean followRedirects = true;
 
     /**
-     * Gets the {@link HttpClient} to use for the current request. If {@link #reuseHttpClient} is set to
+     * Gets the {@link CloseableHttpClient} to use for the current request. If {@link #reuseHttpClient} is set to
      * <code>true</code>, this method will return the same, pre-instantiated client; otherwise, this method will
      * instantiate and return a new client.
      */
-    protected HttpClient getHttpClient() {
-        return reuseHttpClient ? this.httpClient : new HttpClient();
+    private CloseableHttpClient getHttpClient() {
+        return reuseHttpClient ? this.httpClient : HttpClientBuilder.create().build();
     }
 
     /**
@@ -97,7 +93,7 @@ public abstract class AbstractWebIntegrationTests {
      * @param expectedResponseCode the expected HTTP response code
      */
     protected void assertGetRequest(String context, String resource, int expectedResponseCode) throws Exception {
-        assertGetRequest(context, resource, expectedResponseCode, (List<String>) null);
+        assertGetRequest(context, resource, expectedResponseCode, null);
     }
 
     /**
@@ -141,14 +137,20 @@ public abstract class AbstractWebIntegrationTests {
     protected void assertGetRequest(String address, boolean followRedirects, int expectedResponseCode, List<String> expectedContents)
         throws Exception {
         System.out.println("AbstractWebIntegrationTests: executing GET request for [" + address + "].");
-        GetMethod get = new GetMethod(address);
-        get.setFollowRedirects(followRedirects);
-        int responseCode = getHttpClient().executeMethod(get);
-        System.out.println(get.getResponseBodyAsString());
+        HttpGet get = new HttpGet(address);
+        // FIXME - this is set in the HttpClient now
+        // HttpClient instance = HttpClientBuilder.create().disableRedirectHandling().build()
+        // get.setFollowRedirects(followRedirects);
+        if (!followRedirects) {
+            throw new UnsupportedOperationException("Currently the HttpClient always follows redirects!");
+        }
+        CloseableHttpResponse response = httpClient.execute(get);
+        int responseCode = response.getStatusLine().getStatusCode();
+        String body = StreamUtils.copyToString(response.getEntity().getContent(), UTF_8);
+        System.out.println(body);
         assertEquals("Verifying HTTP response code for URL [" + address + "]", expectedResponseCode, responseCode);
 
         if (responseCode / 100 == 2 && expectedContents != null) {
-            String body = get.getResponseBodyAsString();
             System.out.println(body);
             assertNotNull("The response body for URL [" + address + "] should not be null.", body);
             // System.err.println(body);
@@ -168,27 +170,29 @@ public abstract class AbstractWebIntegrationTests {
      * @param expectedGetAfterPostResponseCode the expected HTTP response code for the subsequent GET request
      * @param expectedContents text expected to exist in the returned resource
      */
-    protected void assertPostRequest(String context, String resource, Map<String, String> params, boolean followRedirectsForGet,
-        int expectedPostResponseCode, int expectedGetAfterPostResponseCode, String expectedContents) throws Exception {
+    void assertPostRequest(String context, String resource, Map<String, String> params, boolean followRedirectsForGet,
+                           int expectedPostResponseCode, int expectedGetAfterPostResponseCode, String expectedContents) throws Exception {
 
         final String address = "http://localhost:8080/" + (context == null ? "" : context + "/") + resource;
         System.out.println("AbstractWebIntegrationTests: executing POST request for [" + address + "].");
-        final PostMethod post = new PostMethod(address);
-        for (String name : params.keySet()) {
-            post.setParameter(name, params.get(name));
-        }
+        HttpPost post = new HttpPost(address);
 
-        int responseCode = getHttpClient().executeMethod(post);
+        List<BasicNameValuePair> valuePairs = params.entrySet().stream().map(e -> new BasicNameValuePair(e.getKey(), e.getValue())).collect(toList());
+        post.setEntity(new UrlEncodedFormEntity(valuePairs));
+
+        CloseableHttpResponse response = getHttpClient().execute(post);
+
+        int responseCode = response.getStatusLine().getStatusCode();
         assertEquals("Verifying HTTP POST response code for URL [" + address + "]", expectedPostResponseCode, responseCode);
 
         if (responseCode / 100 == 2 && expectedContents != null) {
-            String body = post.getResponseBodyAsString();
+            String body = StreamUtils.copyToString(response.getEntity().getContent(), UTF_8);
             assertNotNull("The response body for URL [" + address + "] should not be null.", body);
             // System.err.println(body);
             assertTrue("The response body for URL [" + address + "] should contain [" + expectedContents + "].", body.contains(expectedContents));
-        } else if (responseCode == SC_FOUND && expectedContents != null) {
-            String location = post.getResponseHeader("Location").getValue();
-            assertGetRequest(location, followRedirectsForGet, expectedGetAfterPostResponseCode, Arrays.asList(expectedContents));
+        } else if (responseCode == SC_MOVED_TEMPORARILY && expectedContents != null) {
+            String location = post.getFirstHeader(LOCATION).getValue();
+            assertGetRequest(location, followRedirectsForGet, expectedGetAfterPostResponseCode, asList(expectedContents));
         }
     }
 
@@ -269,8 +273,8 @@ public abstract class AbstractWebIntegrationTests {
      * @param file the file from which to deploy the web-app
      * @return the {@link DeploymentIdentity} of the deployed application
      */
-    protected DeploymentIdentity assertDeployBehavior(String context, File file) throws Exception {
-        return assertDeployBehavior(context, file, new HashMap<String, List<String>>());
+    DeploymentIdentity assertDeployBehavior(String context, File file) throws Exception {
+        return assertDeployBehavior(context, file, new HashMap<>());
     }
 
     /**
@@ -279,7 +283,7 @@ public abstract class AbstractWebIntegrationTests {
      * @param expectations a map of expected contents per resource, keyed by resource path.
      * @return the {@link DeploymentIdentity} of the deployed application
      */
-    protected DeploymentIdentity assertDeployBehavior(String context, File file, Map<String, List<String>> expectations) throws Exception {
+    DeploymentIdentity assertDeployBehavior(String context, File file, Map<String, List<String>> expectations) throws Exception {
         final URI uri = file.toURI();
         // Deploy non-recoverably and not owned by the deployer. Non-recoverable should speed up the tests.
         DeploymentIdentity deploymentIdentity = this.appDeployer.deploy(uri, new DeploymentOptions(false, false, true));
@@ -319,8 +323,8 @@ public abstract class AbstractWebIntegrationTests {
      * @param context the context path of the web-app
      * @param deploymentIdentity the {@link DeploymentIdentity} of the deployed web-app
      */
-    protected void assertUndeployBehavior(String context, DeploymentIdentity deploymentIdentity) throws Exception {
-        assertUndeployBehavior(context, deploymentIdentity, new HashMap<String, List<String>>());
+    void assertUndeployBehavior(String context, DeploymentIdentity deploymentIdentity) throws Exception {
+        assertUndeployBehavior(context, deploymentIdentity, new HashMap<>());
     }
 
     /**
@@ -328,7 +332,7 @@ public abstract class AbstractWebIntegrationTests {
      * @param deploymentIdentity the {@link DeploymentIdentity} of the deployed web-app
      * @param expectations a map of expected contents per resource, keyed by resource path.
      */
-    protected void assertUndeployBehavior(String context, DeploymentIdentity deploymentIdentity, Map<String, List<String>> expectations)
+    private void assertUndeployBehavior(String context, DeploymentIdentity deploymentIdentity, Map<String, List<String>> expectations)
         throws Exception {
         this.appDeployer.undeploy(deploymentIdentity);
         for (String resource : expectations.keySet()) {
@@ -336,9 +340,10 @@ public abstract class AbstractWebIntegrationTests {
         }
     }
 
+    // move to super class?
     @Before
-    public void setUp() throws Exception {
-        awaitInitialArtifactDeployment();
+    public void setup() throws Exception {
+        super.setup();
 
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
@@ -348,38 +353,38 @@ public abstract class AbstractWebIntegrationTests {
         assertNotNull("ApplicationDeployer service not found", this.appDeployer);
     }
 
-    @AfterClass
-    public static void cleanup() throws Exception {
-        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION + ",region=global");
+//    @AfterClass
+//    public static void cleanup() throws Exception {
+//        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+//        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION + ",region=global");
+//
+//        try {
+//            mBeanServer.invoke(objectName, "stop", null, null);
+//            mBeanServer.invoke(objectName, "uninstall", null, null);
+//        } catch (JMException ignored) {
+//        }
+//    }
 
-        try {
-            mBeanServer.invoke(objectName, "stop", null, null);
-            mBeanServer.invoke(objectName, "uninstall", null, null);
-        } catch (JMException _) {
-        }
-    }
+//    private void awaitInitialArtifactDeployment() throws JMException, InterruptedException {
+//        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+//        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION + ",region=global");
+//
+//        Object state = null;
+//        long startTime = System.currentTimeMillis();
+//
+//        while (!"ACTIVE".equals(state)) {
+//            try {
+//                state = mBeanServer.getAttribute(objectName, "State");
+//                Thread.sleep(100);
+//            } catch (InstanceNotFoundException ignored) {
+//            }
+//            if (System.currentTimeMillis() - startTime > WEB_PLAN_DEPLOY_TIMEOUT) {
+//                throw new RuntimeException("Web plan did not start within " + (WEB_PLAN_DEPLOY_TIMEOUT / 1000) + " seconds.");
+//            }
+//        }
+//    }
 
-    private void awaitInitialArtifactDeployment() throws JMException, InterruptedException {
-        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("org.eclipse.virgo.kernel:type=ArtifactModel,artifact-type=plan,name=org.eclipse.virgo.web.tomcat,version=" + CURRENT_VERSION + ",region=global");
-
-        Object state = null;
-        long startTime = System.currentTimeMillis();
-
-        while (!"ACTIVE".equals(state)) {
-            try {
-                state = mBeanServer.getAttribute(objectName, "State");
-                Thread.sleep(100);
-            } catch (InstanceNotFoundException _) {
-            }
-            if (System.currentTimeMillis() - startTime > WEB_PLAN_DEPLOY_TIMEOUT) {
-                throw new RuntimeException("Web plan did not start within " + (WEB_PLAN_DEPLOY_TIMEOUT / 1000) + " seconds.");
-            }
-        }
-    }
-
-    protected PathReference hotDeploy(PathReference toDeploy, String name, String version) throws InterruptedException {
+    PathReference hotDeploy(PathReference toDeploy, String name, String version) throws InterruptedException {
         PathReference deployed = toDeploy.copy(new PathReference("build/pickup"), true);
 
         awaitDeployment(toDeploy, deployed);
@@ -419,7 +424,7 @@ public abstract class AbstractWebIntegrationTests {
         }
     }
 
-    protected void hotUnDeploy(PathReference deployed) throws InterruptedException {
+    void hotUnDeploy(PathReference deployed) throws InterruptedException {
         URI uri = deployed.toURI();
         assertTrue(this.appDeployer.isDeployed(uri));
 

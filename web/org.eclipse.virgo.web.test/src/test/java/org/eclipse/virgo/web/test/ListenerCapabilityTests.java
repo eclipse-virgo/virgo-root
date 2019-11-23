@@ -11,31 +11,29 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
-import org.junit.Test;
+import static java.util.Collections.singletonList;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 
-	final Map<String, List<String>> expectations = new HashMap<String, List<String>>();
-	final CountDownLatch latch = new CountDownLatch(1);
+	private final Map<String, List<String>> expectations = new HashMap<>();
+	private final CountDownLatch latch = new CountDownLatch(1);
 	private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-
 
 	@Test
 	public void servletRequestListener() throws Exception {
@@ -43,7 +41,7 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 				"Request Listener Test Servlet", "Product Name: virgo"));
 
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"listenertest", new File(
 						"src/test/apps/listeners.tests.war"), expectations);
 
@@ -52,7 +50,7 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("listenertest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 		server.unregisterMBean(getObjectName());
 	}
 
@@ -64,7 +62,7 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 				"Password: springsource"));
 
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"listenertest", new File(
 						"src/test/apps/listeners.tests.war"), expectations);
 
@@ -73,21 +71,21 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("listenertest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 		server.unregisterMBean(getObjectName());
 	}
 
 
 	@Test
 	public void sessionListener() throws Exception {
-		expectations.put("session.jsp", Arrays.asList("Session Id:"));
+		expectations.put("session.jsp", singletonList("Session Id:"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"listenertest", new File(
 						"src/test/apps/listeners.tests.war"), expectations);
 		assertGetRequest("listenertest", "session.jsp", SC_OK);
 		assertEquals(1,getSessionCount());
-		expectations.put("session.jsp", Arrays.asList(getSessionId()));
+		expectations.put("session.jsp", singletonList(getSessionId()));
 
 		for (String resource : expectations.keySet()) {
 			List<String> expectedContents = expectations.get(resource);
@@ -97,7 +95,7 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 	     server.invoke(getObjectName(), "awaitNextDecrement", null, null);
 	     assertEquals(0, getSessionCount());
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 		server.unregisterMBean(getObjectName());
 	}
 	
@@ -108,7 +106,7 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 				"foo1: bar1", "foo2: bar2"));
 
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"listenertest", new File(
 						"src/test/apps/listeners.tests.war"), expectations);
 	
@@ -128,41 +126,36 @@ public class ListenerCapabilityTests extends AbstractWebIntegrationTests {
 			assertEquals("bar1",getReplacedSessionAttribute().get("foo1"));
 			}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 		server.unregisterMBean(getObjectName());
 	}
 
 	private int getSessionCount() throws Exception {
-		ObjectName oname = getObjectName();
-		int count = (Integer) server.getAttribute(oname, "SessionCount");
-		return count;
+		ObjectName objectName = getObjectName();
+		return (int) (Integer) server.getAttribute(objectName, "SessionCount");
 	}
 	
 	public String getSessionId() throws Exception{
-		ObjectName oname = getObjectName();
-		String id = server.getAttribute(oname, "SessionId").toString();
-		return id;
+		ObjectName objectName = getObjectName();
+		return server.getAttribute(objectName, "SessionId").toString();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> getAddedSessionAttribute() throws Exception{
-		ObjectName oname = getObjectName();
-		Map<String,Object> attList = (Map<String, Object>) server.getAttribute(oname, "AddedSessionAttribute");
-		return attList;
+		ObjectName objectName = getObjectName();
+		return (Map<String, Object>) server.getAttribute(objectName, "AddedSessionAttribute");
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> getRemovedSessionAttribute() throws Exception{
-		ObjectName oname = getObjectName();
-		Map<String,Object> attList = (Map<String, Object>) server.getAttribute(oname, "RemovedSessionAttribute");
-		return attList;
+		ObjectName objectName = getObjectName();
+		return (Map<String, Object>) server.getAttribute(objectName, "RemovedSessionAttribute");
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> getReplacedSessionAttribute() throws Exception{
-		ObjectName oname = getObjectName();
-		Map<String,Object> attList = (Map<String, Object>) server.getAttribute(oname, "ReplacedSessionAttribute");
-		return attList;
+		ObjectName objectName = getObjectName();
+		return (Map<String, Object>) server.getAttribute(objectName, "ReplacedSessionAttribute");
 	}
 
 	private ObjectName getObjectName() throws MalformedObjectNameException {

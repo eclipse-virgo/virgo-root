@@ -1,0 +1,20 @@
+<plan name="org.eclipse.virgo.web.tomcat" version="3.8.0" scoped="false" atomic="false"
+                xmlns="http://www.eclipse.org/virgo/schema/plan"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="
+				        http://www.eclipse.org/virgo/schema/plan 
+				        http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+
+        <artifact type="configuration" name="org.eclipse.virgo.web"/>
+
+<!-- TODO add oev.web.spring.integration back to Tomcat plan
+        <artifact type="bundle" name="org.eclipse.virgo.web.spring.integration" version="[3.8,4)"/>
+-->
+        <artifact type="bundle" name="org.eclipse.gemini.web.core" version="[3.0, 4.0)"/>
+        <artifact type="bundle" name="org.eclipse.gemini.web.tomcat" version="[3.0, 4.0)"/>
+
+        <artifact type="bundle" name="org.eclipse.virgo.web.core" version="[3.8,4)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.web.dm" version="[3.8,4)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.web.tomcat.support" version="[3.8,4)"/>
+        <artifact type="bundle" name="org.eclipse.virgo.web.servlet.adapter" version="[3.8,4)"/>
+</plan>

@@ -14,11 +14,12 @@ package org.eclipse.virgo.web.test;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  */
-
+@Ignore
 public class SpringWebFlowWarTests extends AbstractWebIntegrationTests {
 
     private static final String WEBFLOW_VERSION = "2.0.8.RELEASE";

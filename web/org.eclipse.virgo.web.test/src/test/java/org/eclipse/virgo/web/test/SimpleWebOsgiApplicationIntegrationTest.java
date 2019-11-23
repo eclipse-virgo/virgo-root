@@ -13,13 +13,14 @@ package org.eclipse.virgo.web.test;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Web personality inside OSGi application integration test.
  * 
  */
-
+@Ignore
 public class SimpleWebOsgiApplicationIntegrationTest extends AbstractWebIntegrationTests {
 
     @Test

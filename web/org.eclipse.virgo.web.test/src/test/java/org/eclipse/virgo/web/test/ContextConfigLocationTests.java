@@ -14,12 +14,12 @@ package org.eclipse.virgo.web.test;
 import java.io.File;
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- */
+@Ignore
 public class ContextConfigLocationTests extends AbstractWebIntegrationTests {
-    
+
     @Test
     public void applicationContextsInRootOfClasspath() throws Exception {
         URI testApp = new File("src/test/apps-static/classpath-context-config-locations.war").toURI();

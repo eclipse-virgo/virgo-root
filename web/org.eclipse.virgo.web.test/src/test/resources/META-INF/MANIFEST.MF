@@ -1,22 +1,34 @@
 Manifest-Version: 1.0
-Export-Package: 
- org.eclipse.virgo.web.test;version="3.0.0";uses:="org.apache.commons.httpclient,org.junit,org.junit.runner",
- repository.ext;version="3.0.0"
-Bundle-Version: 3.0.0
-Tool: Bundlor 1.0.0.RELEASE
-Bundle-Name: Virgo Web Test Bundle
+Export-Package: delay
+Bundle-SymbolicName: org.eclipse.virgo.kernel.test
+Bundle-Name: Virgo Kernel Test
+Bundle-Version: 3.8.0.BUILD-SNAPSHOT
+Bundle-ClassPath: .,SlowService.jar,QuickConsumer.jar,quasi/simpleimpo
+ rter.jar,quasi/simpleexporter.jar
 Bundle-ManifestVersion: 2
-Import-Package: 
- javax.management;version="0",
- org.apache.commons.httpclient;version="[3.1.0,4)",
- org.apache.commons.httpclient.methods;version="[3.1.0,4)",
+Import-Package: javax.management;version="0",
+ org.osgi.framework;version="0",
+ org.osgi.service.cm,
+ org.osgi.service.packageadmin,
+ org.eclipse.equinox.region,
+ org.eclipse.virgo.repository;version="[3.8.0,4)",
+ org.eclipse.virgo.medic.eventlog;version="[3.8.0,4)",
+ org.eclipse.virgo.kernel.osgi.framework;version="[3.8.0,4)",
+ org.eclipse.virgo.kernel.osgi.quasi;version="[3.8.0,4)",
+ org.eclipse.virgo.kernel.services.work;version="[3.8.0,4)",
+ org.eclipse.virgo.nano.core;version="[3.8.0,4)",
+ org.eclipse.virgo.nano.deployer.api.core;version="[3.8.0,4)",
+ org.eclipse.virgo.shell.osgicommand.helper,
+ org.eclipse.virgo.util.io;version="[3.8.0,4)",
+ org.eclipse.virgo.util.osgi.manifest;version="[3.8.0,4)",
+ org.springframework.aop;version="[5.0.8,6)",
+ org.springframework.context;version="[5.0.8,6)",
+ org.springframework.util;version="[5.0.8,6)",
+ org.apache.http,
+ org.apache.http.client.entity,
+ org.apache.http.client.methods,
+ org.apache.http.impl.client,
+ org.apache.http.message,
  org.junit;version="[4.7.0,5)",
- org.junit.runner;version="[4.7.0,5)",
- org.eclipse.virgo.nano.deployer.api.config;version="[3.0.0,4)",
- org.eclipse.virgo.nano.deployer.api.core;version="[3.0.0,4)",
- org.eclipse.virgo.kernel.model.management;version="[3.0.0,4)",
- org.eclipse.virgo.kernel.osgi.framework;version="[3.0.0,4)",
- org.eclipse.virgo.util.io;version="[3.0.0,4)",
- org.osgi.framework;version="0"
-Bundle-SymbolicName: org.eclipse.virgo.web.test
-
+ org.junit.runner;version="[4.7.0,5)"
+Tool: Bundlor 1.1.3.M01

@@ -11,21 +11,21 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-
 import java.io.File;
 
 import org.eclipse.virgo.util.io.PathReference;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
 
 /**
  * War in a directory.
- * 
  */
-
-public class WarDirectoryDeploymentTests extends AbstractWebIntegrationTests {    
+@Ignore
+public class WarDirectoryDeploymentTests extends AbstractWebIntegrationTests {
 
     @Before
     public void clean() {

@@ -11,13 +11,8 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
@@ -25,21 +20,22 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- */
+import static java.util.Collections.singletonList;
+import static org.apache.http.HttpStatus.SC_OK;
+
 @Ignore("[DMS-2876] comment this out until the failure can be debugged")
 public class ServiceBundleRedeploymentTests extends AbstractWebIntegrationTests {
 
     private static final DeploymentOptions DEPLOYMENT_OPTIONS = new DeploymentOptions(false, false, true);
 
-    private final Map<String, List<String>> expectations = new HashMap<String, List<String>>();
+    private final Map<String, List<String>> expectations = new HashMap<>();
 
     @Before 
     public void setUpExpectations() {
-        expectations.put("", Arrays.asList("Choose an apprentice magician"));
+        expectations.put("", singletonList("Choose an apprentice magician"));
         expectations.put("form.htm?id=1", Arrays.asList("Harry Potter", "Promising Wizard..."));
-        expectations.put("form.htm?id=2", Arrays.asList("Ronald Weasly"));
-        expectations.put("form.htm?id=3", Arrays.asList("Hermione Granger"));
+        expectations.put("form.htm?id=2", singletonList("Ronald Weasly"));
+        expectations.put("form.htm?id=3", singletonList("Hermione Granger"));
     }
 
     @Test 

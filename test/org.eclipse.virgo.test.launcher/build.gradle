@@ -1,8 +1,7 @@
 dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-    implementation 'ch.qos.logback:logback-core'
-    implementation 'ch.qos.logback:logback-classic'
+    implementation 'org.slf4j:slf4j-api'
 
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.osgi')

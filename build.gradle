@@ -36,6 +36,8 @@ ext {
             project(':kernel:org.eclipse.virgo.kernel.deployer.test'),
             project(':kernel:org.eclipse.virgo.kernel.test'),
 
+            project(':web:org.eclipse.virgo.web.test'),
+
             project(':util:org.eclipse.virgo.util.integrationtest'),
             //	project(':medic:org.eclipse.virgo.medic.integrationtest'),
 

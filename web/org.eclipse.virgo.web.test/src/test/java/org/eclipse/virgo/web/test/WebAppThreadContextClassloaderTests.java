@@ -20,8 +20,10 @@ import java.util.Map;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentOptions;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class WebAppThreadContextClassloaderTests extends AbstractWebIntegrationTests {
 
     @Test

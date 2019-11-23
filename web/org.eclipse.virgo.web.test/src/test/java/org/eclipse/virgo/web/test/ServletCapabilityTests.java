@@ -11,26 +11,24 @@
 
 package org.eclipse.virgo.web.test;
 
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.virgo.nano.deployer.api.core.DeploymentIdentity;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import static java.util.Collections.singletonList;
+import static org.apache.http.HttpStatus.SC_OK;
 
+@Ignore
 public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 
-	final Map<String, List<String>> expectations = new HashMap<String, List<String>>();
-	final List<String> expectedContent = new ArrayList<String>();
-	final CountDownLatch latch = new CountDownLatch(1);
+	private final Map<String, List<String>> expectations = new HashMap<>();
+	private final List<String> expectedContent = new ArrayList<>();
+	private final CountDownLatch latch = new CountDownLatch(1);
 
 	@Test
 	public void directJspRequest() throws Exception {
@@ -42,9 +40,9 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 
 	@Test
 	public void directServletRequest() throws Exception {
-		expectations.put("test", Arrays.asList("Test Servlet"));
+		expectations.put("test", singletonList("Test Servlet"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -53,7 +51,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 
 	}
 
@@ -68,7 +66,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 				"requestURI:/webtest/fa", "ContextPath:/webtest",
 				"ServletPath:/fa", "PathInfo:null", "QueryString:foo=bar"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -77,7 +75,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
@@ -93,7 +91,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 				"ServletPath:/fa", "PathInfo:null",
 				"QueryString:test=forward-servlet"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -102,7 +100,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
@@ -123,7 +121,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 										"QueryString:test=forward-path-translation"));
 
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -132,7 +130,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
@@ -149,7 +147,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 				"QueryString:test=include-servlet",
 				"After forwarding the request to /ia in DispatcherServlet"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -158,7 +156,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
@@ -173,7 +171,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 				"ServletPath:/rd", "PathInfo:null",
 				"QueryString:test=include-path-translation"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -182,14 +180,14 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
 	public void requestDispatcherForwardJspRequest() throws Exception {
-		expectations.put("rd?test=forward-jsp", Arrays.asList("index"));
+		expectations.put("rd?test=forward-jsp", singletonList("index"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -198,14 +196,14 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
 	public void requestDispatcherIncludeJspRequest() throws Exception {
-		expectations.put("rd?test=include-jsp", Arrays.asList("index"));
+		expectations.put("rd?test=include-jsp", singletonList("index"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -214,7 +212,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
@@ -223,7 +221,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 				"RequestUri=/webtest/path/1", "ContextPath=/webtest",
 				"ServletPath=/path", "PathInfo=/1"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -232,7 +230,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 
 	@Test
@@ -241,7 +239,7 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 				"RequestUri=/webtest/exact", "ContextPath=/webtest",
 				"ServletPath=/exact", "PathInfo=null"));
 		latch.await(5, TimeUnit.SECONDS);
-		DeploymentIdentity wardeploymentIdentity = assertDeployBehavior(
+		DeploymentIdentity warDeploymentIdentity = assertDeployBehavior(
 				"webtest", new File("src/test/apps/webfeature.tests.war"),
 				expectations);
 
@@ -250,6 +248,6 @@ public class ServletCapabilityTests extends AbstractWebIntegrationTests {
 			assertGetRequest("webtest", resource, SC_OK, expectedContents);
 		}
 
-		this.appDeployer.undeploy(wardeploymentIdentity);
+		this.appDeployer.undeploy(warDeploymentIdentity);
 	}
 }

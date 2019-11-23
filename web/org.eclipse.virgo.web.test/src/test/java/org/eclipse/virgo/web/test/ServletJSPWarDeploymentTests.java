@@ -14,12 +14,14 @@ package org.eclipse.virgo.web.test;
 import java.io.File;
 
 import org.eclipse.virgo.test.framework.ConfigLocation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * WAR (not a Web Application Bundle) which will fail if its Bundle-ClassPath is not correctly defaulted. This test must
  * be run with WABHeaders=strict.
  */
+@Ignore
 @ConfigLocation("META-INF/test.config.strict.properties")
 public class ServletJSPWarDeploymentTests extends AbstractWebIntegrationTests {
 
