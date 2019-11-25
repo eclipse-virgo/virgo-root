@@ -81,18 +81,18 @@ dependencies {
     repositoryExt 'javax.annotation:javax.annotation-api'
     repositoryExt 'javax.ejb:javax.ejb-api:3.2.2'
     repositoryExt 'javax.el:javax.el-api'
-    repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+    repositoryExt 'javax.jms:javax.jms-api'
     repositoryExt group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
     repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
     repositoryExt 'javax.portlet:portlet-api:3.0.1'
-    repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
+    repositoryExt 'javax.security.auth.message:javax.security.auth.message-api'
     repositoryExt 'javax.servlet:javax.servlet-api'
     repositoryExt 'javax.servlet.jsp:javax.servlet.jsp-api'
     repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
     repositoryExt 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
     // TODO - think about removing portlet-api from standard VTS
 
-    repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+    repositoryExt 'javax.websocket:javax.websocket-api'
     repositoryExt 'javax.xml.rpc:javax.xml.rpc-api'
 
     repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
@@ -172,7 +172,8 @@ dependencies {
 
     repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
     repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
-    repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.jaspic.fragment", version: geminiWebVersion, configuration: "compile", ext: "jar"
+    repositoryExt project(':web:org.eclipse.virgo.web.jaspic.integration')
+//    repositoryExt group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.jaspic.fragment", version: geminiWebVersion, configuration: "compile", ext: "jar"
 
     repositoryExt project(':web:org.eclipse.virgo.web.core')
     repositoryExt project(':web:org.eclipse.virgo.web.tomcat.support')

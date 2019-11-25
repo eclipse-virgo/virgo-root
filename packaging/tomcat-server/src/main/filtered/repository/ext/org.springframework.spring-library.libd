@@ -18,4 +18,4 @@ Import-Bundle:
  oevm.org.springframework.webflux;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  oevm.org.springframework.webmvc;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
  oevm.org.springframework.websocket;version="[@SPRING.VERSION@, @SPRING.VERSION@]",
- javax.jms;version="[1.1,2)"
+ javax.jms-api;version="[2,3)"

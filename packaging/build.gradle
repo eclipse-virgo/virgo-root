@@ -96,7 +96,7 @@ configure([
         repositoryExt project(':web:org.eclipse.virgo.web.dm')
 
         // 3rd party dependencies from Spring Framework
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.jms:javax.jms-api'
         repositoryExt 'javax.servlet:javax.servlet-api'
 
         // missing Spring Framework dependencies
@@ -121,14 +121,6 @@ configure([
         repositoryExt 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
         repositoryExt group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
 
-        nanoPickup project(':apps:org.eclipse.virgo.apps.splash')
-    }
-}
-
-configure([
-        project(':packaging:tomcat-server'),
-]) {
-    dependencies {
         repositoryExt project(':web:org.eclipse.virgo.web.core')
         repositoryExt project(':web:org.eclipse.virgo.web.tomcat.support')
         repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
@@ -141,10 +133,10 @@ configure([
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
 
         repositoryExt 'javax.servlet.jsp:javax.servlet.jsp-api'
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.security.auth.message:javax.security.auth.message-api'
 
         repositoryExt 'javax.xml.rpc:javax.xml.rpc-api'
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+        repositoryExt 'javax.websocket:javax.websocket-api'
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
@@ -161,8 +153,6 @@ configure([
         repositoryExt 'ch.qos.logback:logback-classic'
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
-
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
@@ -190,5 +180,7 @@ configure([
 //        repositoryExt 'javax.interceptor:javax.interceptor-api:1.2.2'
 //        repositoryExt 'javax.enterprise:cdi-api'
 //        repositoryExt 'javax.transaction:javax.transaction-api'
+
+        nanoPickup project(':apps:org.eclipse.virgo.apps.splash')
     }
 }

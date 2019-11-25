@@ -42,11 +42,13 @@
          unpack="false"
          autostart="true"/>
 
+   <!-- Note: The original Gemini Web fragment contains: "Fragment-Host: javax.security.auth.message" -->
+   <!-- Note: With the switch to Maven Central we need: "Fragment-Host: javax.security.auth.message-api" -->
    <plugin
-         id="org.eclipse.gemini.web.jaspic.fragment"
+         id="org.eclipse.virgo.web.jaspic.integration"
          download-size="0"
          install-size="0"
-         version="@GEMINI.WEB.VERSION@"
+         version="@VIRGO.VERSION@"
          unpack="false"/>
     
     <plugin
@@ -78,10 +80,10 @@
         unpack="false"/>
     
     <plugin
-        id="javax.websocket"
+        id="javax.websocket-api"
         download-size="0"
         install-size="0"
-        version="@JAVAX.WEBSOCKET@"
+        version="0.0.0"
         unpack="false"/>
 
 </feature>

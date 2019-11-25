@@ -1,0 +1,5 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Virgo Web Gemini Web JASPIC Integration
+Bundle-SymbolicName: org.eclipse.virgo.web.jaspic.integration
+Fragment-Host: javax.security.auth.message-api
+Import-Package: org.apache.catalina.authenticator.jaspic

@@ -112,6 +112,8 @@ dependencies {
     localPlugin project(':web:org.eclipse.virgo.web.spring.integration')
     localPlugin project(':web:org.eclipse.virgo.web.war.deployer')
 
+    localPlugin project(':web:org.eclipse.virgo.web.jaspic.integration')
+
     // TODO - review if all those signedExternalPlugins are signed
     signedExternalPlugin 'org.slf4j:slf4j-api'
     signedExternalPlugin 'org.slf4j:jul-to-slf4j'
@@ -264,9 +266,9 @@ dependencies {
     signedExternalPlugin 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api'
 
     signedExternalPlugin 'org.glassfish.hk2.external:javax.inject'
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.jms:javax.jms-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.security.auth.message:javax.security.auth.message-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
@@ -319,7 +321,7 @@ dependencies {
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.activation", version: '1.1.0.v201211130549', configuration: "compile", ext: "jar"
 
     signedExternalPlugin 'javax.servlet.jsp:javax.servlet.jsp-api'
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin 'javax.websocket:javax.websocket-api'
     signedExternalPlugin 'javax.xml.rpc:javax.xml.rpc-api'
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
