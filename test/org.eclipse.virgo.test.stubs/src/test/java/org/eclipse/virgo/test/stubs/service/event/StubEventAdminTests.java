@@ -39,7 +39,7 @@ public class StubEventAdminTests {
     private final Dictionary<String, ?> expectedProperties = createProperties();
     
     private Dictionary<String, ?> createProperties() {
-        Dictionary<String, Object> properties = new Hashtable<String, Object>();
+        Dictionary<String, Object> properties = new Hashtable<>();
         
         properties.put("booleanArray", new boolean[] {false, true});
         properties.put("byteArray", new byte[] {1, 2});
@@ -104,12 +104,9 @@ public class StubEventAdminTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Thread awaitingThread = new Thread(new Runnable() {
-
-            public void run() {
-                if (eventAdmin.awaitPostingOfEvent(expected, 10000)) {
-                    latch.countDown();
-                }
+        Thread awaitingThread = new Thread(() -> {
+            if (eventAdmin.awaitPostingOfEvent(expected, 10000)) {
+                latch.countDown();
             }
         });
 
@@ -127,12 +124,9 @@ public class StubEventAdminTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Thread awaitingThread = new Thread(new Runnable() {
-
-            public void run() {
-                if (eventAdmin.awaitSendingOfEvent(expected, 10000)) {
-                    latch.countDown();
-                }
+        Thread awaitingThread = new Thread(() -> {
+            if (eventAdmin.awaitSendingOfEvent(expected, 10000)) {
+                latch.countDown();
             }
         });
 
@@ -169,19 +163,16 @@ public class StubEventAdminTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Thread awaitingThread = new Thread(new Runnable() {
-
-            public void run() {
-                eventAdmin.awaitSendingOfEvent(expected, Long.MAX_VALUE);
-                latch.countDown();
-            }
+        Thread awaitingThread = new Thread(() -> {
+            eventAdmin.awaitSendingOfEvent(expected, Long.MAX_VALUE);
+            latch.countDown();
         });
 
         awaitingThread.start();
 
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 
-        ThreadInfo threadInfo = null;
+        ThreadInfo threadInfo;
 
         while ((threadInfo = threadBean.getThreadInfo(awaitingThread.getId())) == null || threadInfo.getThreadState() != State.TIMED_WAITING) {
             Thread.sleep(10);
@@ -240,12 +231,9 @@ public class StubEventAdminTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Thread awaitingThread = new Thread(new Runnable() {
-
-            public void run() {
-                if (eventAdmin.awaitPostingOfEvent("topic", 10000) != null) {
-                    latch.countDown();
-                }
+        Thread awaitingThread = new Thread(() -> {
+            if (eventAdmin.awaitPostingOfEvent("topic", 1000) != null) {
+                latch.countDown();
             }
         });
 
@@ -262,12 +250,9 @@ public class StubEventAdminTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Thread awaitingThread = new Thread(new Runnable() {
-
-            public void run() {
-                if (eventAdmin.awaitSendingOfEvent("topic", 10000) != null) {
-                    latch.countDown();
-                }
+        Thread awaitingThread = new Thread(() -> {
+            if (eventAdmin.awaitSendingOfEvent("topic", 1000) != null) {
+                latch.countDown();
             }
         });
 
@@ -301,19 +286,16 @@ public class StubEventAdminTests {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        Thread awaitingThread = new Thread(new Runnable() {
-
-            public void run() {
-                eventAdmin.awaitSendingOfEvent("topic", Long.MAX_VALUE);
-                latch.countDown();
-            }
+        Thread awaitingThread = new Thread(() -> {
+            eventAdmin.awaitSendingOfEvent("topic", Long.MAX_VALUE);
+            latch.countDown();
         });
 
         awaitingThread.start();
 
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 
-        ThreadInfo threadInfo = null;
+        ThreadInfo threadInfo;
 
         while ((threadInfo = threadBean.getThreadInfo(awaitingThread.getId())) == null || threadInfo.getThreadState() != State.TIMED_WAITING) {
             Thread.sleep(10);
