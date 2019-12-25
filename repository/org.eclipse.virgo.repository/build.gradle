@@ -3,7 +3,7 @@ import org.gradle.plugins.ide.eclipse.model.AccessRule
 dependencies {
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-    implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    implementation 'org.apache.httpcomponents:httpclient'
 
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.io')
@@ -11,7 +11,7 @@ dependencies {
     implementation project(':util:org.eclipse.virgo.util.math')
     implementation project(':util:org.eclipse.virgo.util.osgi')
     implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
-    implementation project(':medic:org.eclipse.virgo.medic')
+    aspect project(':medic:org.eclipse.virgo.medic')
 
     testImplementation project(':medic:org.eclipse.virgo.medic.test')
     testImplementation project(':test:org.eclipse.virgo.test.stubs')

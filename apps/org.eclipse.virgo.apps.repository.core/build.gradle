@@ -1,6 +1,6 @@
 dependencies {
-    aspectpath project(':medic:org.eclipse.virgo.medic')
-    aspectpath project(':util:org.eclipse.virgo.util.jmx')
+    aspect project(':medic:org.eclipse.virgo.medic')
+    aspect project(':util:org.eclipse.virgo.util.jmx')
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
@@ -8,9 +8,7 @@ dependencies {
 
     implementation project(':util:org.eclipse.virgo.util.math')
     implementation project(':util:org.eclipse.virgo.util.io')
-    implementation project(':util:org.eclipse.virgo.util.jmx')
     implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
-    implementation project(':medic:org.eclipse.virgo.medic')
     implementation project(':repository:org.eclipse.virgo.repository')
     implementation project(':kernel:org.eclipse.virgo.kernel.services')
 

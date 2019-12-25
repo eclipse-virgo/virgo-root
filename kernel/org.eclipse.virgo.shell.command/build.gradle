@@ -15,15 +15,11 @@ dependencies {
     compile project(':kernel:org.eclipse.virgo.kernel.deployer')
     compile project(':kernel:org.eclipse.virgo.kernel.model')
     compile project(':kernel:org.eclipse.virgo.kernel.osgi')
-    compile project(':medic:org.eclipse.virgo.medic')
+    aspect project(':medic:org.eclipse.virgo.medic')
     compile project(':nano:org.eclipse.virgo.nano.deployer.api')
     compile project(':repository:org.eclipse.virgo.repository')
     compile project(':util:org.eclipse.virgo.util.common')
     compile project(':util:org.eclipse.virgo.util.io')
     compile project(':util:org.eclipse.virgo.util.osgi')
     compile project(':util:org.eclipse.virgo.util.osgi.manifest')
-
-    if (System.properties['weaving.enabled'] == 'true') {
-        aspectpath project(':medic:org.eclipse.virgo.medic')
-    }
 }

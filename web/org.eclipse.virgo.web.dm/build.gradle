@@ -1,6 +1,6 @@
 dependencies {
-    aspectpath project(':medic:org.eclipse.virgo.medic')
-    aspectpath project(':nano:org.eclipse.virgo.nano.core')
+    aspect project(':medic:org.eclipse.virgo.medic')
+    aspect project(':nano:org.eclipse.virgo.nano.core')
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     implementation 'javax.servlet:javax.servlet-api'
@@ -14,9 +14,6 @@ dependencies {
     implementation 'org.springframework:spring-context'
     implementation 'org.springframework:spring-core'
     implementation 'org.springframework:spring-web'
-
-    implementation project(':medic:org.eclipse.virgo.medic')
-    implementation project(':nano:org.eclipse.virgo.nano.core')
 
     testImplementation 'org.springframework:spring-test'
 }

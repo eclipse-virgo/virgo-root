@@ -1,4 +1,3 @@
-import aspectj.AspectJPlugin
 import virgobuild.Config
 import virgobuild.VirgoToolsPlugin
 
@@ -13,6 +12,7 @@ buildscript {
 
 plugins {
     id "io.spring.dependency-management" version "1.0.7.RELEASE" apply false
+    id "io.freefair.aspectj" version "4.1.6" apply false
     id "biz.aQute.bnd.builder" version "4.2.0" apply false
     id "com.github.spotbugs" version "1.7.1" apply false
 }
@@ -59,8 +59,6 @@ ext {
             project(':util:org.eclipse.virgo.util.parser.launcher'),
             project(':util:org.eclipse.virgo.util.parser.manifest'),
 
-            project(':test:org.eclipse.virgo.test.launcher'),
-
             project(':medic:org.eclipse.virgo.medic'),
             project(':medic:org.eclipse.virgo.medic.core'),
             project(':medic:org.eclipse.virgo.medic.logbackclassicfragment'),
@@ -84,9 +82,6 @@ ext {
 
             project(':kernel:org.eclipse.virgo.kernel.artifact'),
             project(':kernel:org.eclipse.virgo.kernel.deployer'),
-
-            // a test bundle running inside an OSGi container
-            project(':kernel:org.eclipse.virgo.kernel.deployer.test'),
 
             // FIXME Equinox migration - rename to deployer.blueprint
             project(':kernel:org.eclipse.virgo.kernel.deployer.dm'),
@@ -123,6 +118,7 @@ ext {
             project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook'),
             project(':web:org.eclipse.virgo.web.enterprise.security.valve'),
             project(':web:org.eclipse.virgo.web.enterprise.services.accessor'),
+
             project(':web:org.eclipse.virgo.web.servlet.adapter'),
             project(':web:org.eclipse.virgo.web.spring.integration'),
             project(':web:org.eclipse.virgo.web.war.deployer'),
@@ -138,22 +134,27 @@ ext {
 
             // test-apps
             project(':web:test-apps:osgi-webapp'),
-            project(':web:test-apps:spring-capability-tests'),    ]
+            project(':web:test-apps:spring-capability-tests'),
+    ]
 
+    // these projects contain aspects
     aspectjProjects = [
-            // these projects contain aspects
             project(':util:org.eclipse.virgo.util.jmx'),
 
-            project(':nano:org.eclipse.virgo.nano.core'),
-
             project(':test:org.eclipse.virgo.test.stubs'),
+
             project(':medic:org.eclipse.virgo.medic'),
 
-            // these projects are woven
+            project(':nano:org.eclipse.virgo.nano.core'),
+    ]
+
+    // these projects are woven (contain MBeans, etc...)
+    wovenProjects = [
             project(':nano:org.eclipse.virgo.nano.deployer.api'),
             project(':nano:org.eclipse.virgo.nano.deployer.hot'),
+            project(':nano:org.eclipse.virgo.nano.deployer'),
 
-            project(':repository:org.eclipse.virgo.repository'), // seems currently no pointcut matches :(
+            project(':repository:org.eclipse.virgo.repository'),
 
             project(':kernel:org.eclipse.virgo.kernel.dmfragment'),
 
@@ -476,7 +477,11 @@ println "FIXME Equinox migration - how to publish Java + OSGi bundles"
 //    }
 //}
 
-configure(javaProjects + osgiProjects + packagingProjects + project(":org.eclipse.virgo.site") + project("3rd-party")) {
+configure(
+        javaProjects + osgiProjects + packagingProjects
+                + project(":org.eclipse.virgo.site")
+                + project("3rd-party")
+) {
     apply plugin: "io.spring.dependency-management"
 
     repositories {
@@ -674,50 +679,35 @@ configure(osgiProjects) {
 }
 
 configure(aspectjProjects) {
-    configurations {
-        ajtools {
-            transitive = false
-            description = "AspectJ tools runtime"
-        }
+    apply plugin: "io.freefair.aspectj"
+
+    dependencies {
+        compile 'org.aspectj:aspectjrt'
     }
 
-    apply plugin: AspectJPlugin
+    sourceSets.main.aspectj.srcDir "src/main/java"
+    sourceSets.main.java.srcDirs = files()
 
-    configurations.compile.dependencies.each { Dependency dep ->
-        println dep.class
-        if (dep.hasProperty("dependencyProject")) {
-            println "Has property dependencyProject" + dep.class
-            println "dependent project: ${dep}"
-            iajcClasspath += ":" + dep.dependencyProject.buildDir + "/bundles/release/classes.jar"
-        } else {
-            println "other dependency: ${dep}"
-        }
+    sourceSets.test.aspectj.srcDir "src/test/java"
+    sourceSets.test.java.srcDirs = files()
+
+    compileAspectj.ajcOptions.outxmlfile = "META-INF/aop.xml"
+
+    aspectj {
+        version = aspectjVersion
     }
+}
 
-    configurations {
-        ajtools {
-            transitive = false
-            description = "AspectJ tools runtime"
-        }
-
-        aspectpath {
-            transitive = false
-            description = "Aspects are applied to types present in the project"
-        }
-
-        testAspectpath {
-            transitive = false
-            description = "Aspects are applied to tests present in the project"
-        }
-    }
+configure(wovenProjects) {
+    apply plugin: "io.freefair.aspectj.post-compile-weaving"
 
     dependencies {
         implementation 'org.aspectj:aspectjrt'
-
-        ajtools 'org.aspectj:aspectjtools'
     }
+}
 
-    // Add nature and buildCommand
+// Add nature and buildCommand
+configure(aspectjProjects + wovenProjects) {
     eclipse.project {
         natures 'org.eclipse.ajdt.ui.ajnature'
         buildCommand 'org.eclipse.ajdt.core.ajbuilder'

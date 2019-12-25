@@ -11,14 +11,8 @@ dependencies {
 
     compile project(':kernel:org.eclipse.virgo.kernel.osgi')
     compile project(':kernel:org.eclipse.virgo.kernel.deployer')
-    compile project(':medic:org.eclipse.virgo.medic')
-    compile project(':nano:org.eclipse.virgo.nano.core')
+    aspect project(':medic:org.eclipse.virgo.medic')
+    aspect project(':nano:org.eclipse.virgo.nano.core')
     compile project(':nano:org.eclipse.virgo.nano.deployer.api')
-    compile project(':util:org.eclipse.virgo.util.jmx')
-
-    aspectpath project(':nano:org.eclipse.virgo.nano.core')
-    if (System.properties['weaving.enabled'] == 'true') {
-        aspectpath project(':medic:org.eclipse.virgo.medic')
-        aspectpath project(':util:org.eclipse.virgo.util.jmx')
-    }
+    aspect project(':util:org.eclipse.virgo.util.jmx')
 }

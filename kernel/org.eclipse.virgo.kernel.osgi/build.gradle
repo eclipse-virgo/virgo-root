@@ -9,5 +9,5 @@ dependencies {
     compile project(':nano:org.eclipse.virgo.nano.core')
     compile project(':kernel:org.eclipse.virgo.kernel.artifact')
 
-    aspectpath project(':nano:org.eclipse.virgo.nano.core')
+    aspect project(':nano:org.eclipse.virgo.nano.core')
 }

@@ -33,9 +33,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- */
-@Ignore
 public class HotDeployerTests {
 
     private static final PathReference PICKUP_DIR = new PathReference("build/pickup");

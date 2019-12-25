@@ -1,9 +1,6 @@
 package org.eclipse.virgo.util.jmx;
 
-import javax.management.MXBean;
-
-@MXBean
-public class ExceptionCleanerMXBean implements JmxExceptionCleanerExtensionTestInterface {
+public class ExceptionCleanerNoMXBean implements JmxExceptionCleanerExtensionTestInterface {
 
     private StackTraceElement[] steArray = null;
 

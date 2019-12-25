@@ -1,6 +1,6 @@
 dependencies {
-    aspectpath project(':medic:org.eclipse.virgo.medic')
-    aspectpath project(':nano:org.eclipse.virgo.nano.core')
+    aspect project(':medic:org.eclipse.virgo.medic')
+    aspect project(':nano:org.eclipse.virgo.nano.core')
 
     implementation 'javax.servlet:javax.servlet-api'
 

@@ -12,10 +12,6 @@ dependencies {
 
     compile project(':kernel:org.eclipse.virgo.kernel.agent.dm')
     compile project(':kernel:org.eclipse.virgo.kernel.deployer')
-    compile project(':medic:org.eclipse.virgo.medic')
+    aspect project(':medic:org.eclipse.virgo.medic')
     compile project(':nano:org.eclipse.virgo.nano.core')
-
-    if (System.properties['weaving.enabled'] == 'true') {
-        aspectpath project(':medic:org.eclipse.virgo.medic')
-    }
 }

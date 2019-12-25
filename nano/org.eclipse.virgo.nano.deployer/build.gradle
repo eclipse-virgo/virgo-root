@@ -9,7 +9,7 @@ dependencies {
     implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
     implementation project(':util:org.eclipse.virgo.util.parser.manifest')
     implementation project(':medic:org.eclipse.virgo.medic')
-    implementation project(':nano:org.eclipse.virgo.nano.core')
+    aspect project(':nano:org.eclipse.virgo.nano.core')
     implementation project(':nano:org.eclipse.virgo.nano.deployer.api')
     implementation project(':nano:org.eclipse.virgo.nano.deployer.hot')
 

@@ -27,9 +27,7 @@ dependencies {
     compile project(':util:org.eclipse.virgo.util.osgi')
     compile project(':util:org.eclipse.virgo.util.osgi.manifest')
 
-    if (System.properties['weaving.enabled'] == 'true') {
-        aspectpath project(':medic:org.eclipse.virgo.medic')
-        aspectpath project(':nano:org.eclipse.virgo.nano.core')
-        aspectpath project(':util:org.eclipse.virgo.util.jmx')
-    }
+    aspect project(':medic:org.eclipse.virgo.medic')
+    aspect project(':nano:org.eclipse.virgo.nano.core')
+    aspect project(':util:org.eclipse.virgo.util.jmx')
 }

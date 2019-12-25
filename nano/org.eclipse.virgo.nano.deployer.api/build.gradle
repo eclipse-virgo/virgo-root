@@ -4,4 +4,6 @@ dependencies {
     implementation project(':util:org.eclipse.virgo.util.io')
     implementation project(':medic:org.eclipse.virgo.medic')
     implementation project(':nano:org.eclipse.virgo.nano.core')
+
+    aspect project(':nano:org.eclipse.virgo.nano.core')
 }
