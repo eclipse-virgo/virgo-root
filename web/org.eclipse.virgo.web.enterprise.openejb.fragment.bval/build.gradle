@@ -1,3 +1,0 @@
-dependencies {
-// <dependency org="org.eclipse.virgo.mirrored" name="org.apache.bval" rev="${org.apache.bval}" conf="compile->runtime"/>
-}
