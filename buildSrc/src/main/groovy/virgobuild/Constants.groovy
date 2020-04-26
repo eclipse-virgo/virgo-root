@@ -7,10 +7,10 @@ class Constants {
     }
 
     static String getVirgoBuildToolsVersion() {
-        return '1.4.1.RELEASE'
+        return '1.5.0.RELEASE'
     }
 
     static URL getVirgoBuildToolsDownloadUrl() {
-        return new URL("http://build.eclipse.org/rt/virgo/zips/release/VB/${virgoBuildToolsVersion}/virgo-build-tools-${virgoBuildToolsVersion}.zip")
+        return new URL("https://build.eclipse.org/rt/virgo/zips/release/VB/${virgoBuildToolsVersion}/virgo-build-tools-${virgoBuildToolsVersion}.zip")
     }
 }
