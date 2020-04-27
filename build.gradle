@@ -772,5 +772,5 @@ configure(smokeTestProjects) {
 task wrapper(type: Wrapper) {
     description 'Creates a local Gradle Wrapper'
     group = 'Build Setup'
-    gradleVersion = '3.5' // CQ 13634
+    gradleVersion = '3.5.1' // CQ 13634 3.5.x
 }
