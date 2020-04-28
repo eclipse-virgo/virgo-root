@@ -15,10 +15,10 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
-            url "http://build.eclipse.org/rt/virgo/gradle/bundles"
+            url "https://build.eclipse.org/rt/virgo/gradle/bundles"
         }
         ivy {
-            url "http://build.eclipse.org/rt/virgo/ivy/bundles/release/"
+            url "https://build.eclipse.org/rt/virgo/ivy/bundles/release/"
             layout "pattern", { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
         }
     }
@@ -90,7 +90,11 @@ subprojects {
         }
         repositories {
             ivy {
-                url "/opt/public/rt/virgo/ivy/bundles/release"
+                // doesn't work anymore on JIPP - no access to /opt/public
+//                url "/opt/public/rt/virgo/ivy/bundles/release"
+                // use this path and the script publish.sh to push the bundles to build server
+                url "/tmp/ivy"
+//                url "/home/data/httpd/download.eclipse.org/virgo"
             }
         }
     }

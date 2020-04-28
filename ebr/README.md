@@ -10,12 +10,12 @@ Gradle default tasks:
  2. `bundlor` - Generates the OSGi metadata plus jar bundles
  3. `publishToMavenLocal` - Publishes jar bundles to `[USER_HOME]/.m2/org/eclipse/virgo/mirrored/[artifactId]/[version]/[bundle].jar`
  4. `test` - Executes the PaxExam tests, the bundles are resolved against local Maven repo thus `publishToMavenLocal` is required to be executed before `test`
- 5. `publishIvyPublicationToIvyRepository` - Publishes the jar bundles to `build.eclipse.org` ivy repo (only possible on HIPP)
+ 5. !!Note!! Doesn't work anymore! No access to /opt/... `publishIvyPublicationToIvyRepository` - Publishes the jar bundles to `build.eclipse.org` ivy repo (only possible on HIPP)
 
 Build and test locally:
 
 ```bash
-$ ./gradlew clean bundlor publishToMavenLocal test
+./gradlew clean bundlor publishToMavenLocal test
 ```
 
 ## Update Version of a Spring Framework stream
@@ -26,3 +26,11 @@ $ ./gradlew clean bundlor publishToMavenLocal test
 ## Add a new Spring Framework stream
 
 * Create new folder structure e.g. `5.1.<version>`
+
+## Publishing (from local build)
+
+```bash
+./gradlew clean bundlor publishIvyPublicationToIvyRepository
+```
+
+Upload via `publish.sh`...until we know how to populate from our JIPP.
