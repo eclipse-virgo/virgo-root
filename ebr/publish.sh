@@ -4,4 +4,6 @@ SPRING_VERSION=4.3.27.RELEASE
 
 for module in "test" aop aspects beans context context.support core expression jdbc jms messaging orm oxm transaction web webmvc webmvc.portlet websocket; do
   scp -r /tmp/ivy/org.eclipse.virgo.mirrored/org.springframework.${module}/${SPRING_VERSION} virgoBuild@build.eclipse.org:/shared/rt/virgo/ivy/bundles/release/org.eclipse.virgo.mirrored/org.springframework.${module}
+  ssh virgoBuild@build.eclipse.org "chmod a+x /shared/rt/virgo/ivy/bundles/release/org.eclipse.virgo.mirrored/org.springframework.${module}/${SPRING_VERSION}"
+  ssh virgoBuild@build.eclipse.org "chmod -R a+r /shared/rt/virgo/ivy/bundles/release/org.eclipse.virgo.mirrored/org.springframework.${module}/${SPRING_VERSION}/*"
 done
