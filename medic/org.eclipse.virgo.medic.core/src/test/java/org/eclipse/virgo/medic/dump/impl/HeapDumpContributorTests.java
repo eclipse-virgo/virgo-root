@@ -12,7 +12,6 @@
 package org.eclipse.virgo.medic.dump.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -25,9 +24,10 @@ import org.eclipse.virgo.medic.dump.Dump;
 import org.eclipse.virgo.medic.dump.DumpContributionFailedException;
 import org.eclipse.virgo.medic.dump.DumpContributor;
 import org.eclipse.virgo.medic.dump.impl.heap.HeapDumpContributor;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class HeapDumpContributorTests {
 
@@ -35,15 +35,12 @@ public class HeapDumpContributorTests {
 
     private static final String HOTSPOT_DIAGNOSTIC_MBEAN_NAME = "com.sun.management:type=HotSpotDiagnostic";
 
-    private final File dumpDirectory = new File("build");
+    @Rule
+    public TemporaryFolder dumpDirectory = new TemporaryFolder();
 
     @Before
-    @After
     public void cleanupHeadDumps() {
-        File heapDumpFile = new File("build", "heap.out");
-        if (heapDumpFile.exists()) {
-            assertTrue(heapDumpFile.delete());
-        }
+        System.setProperty("jdk.management.heapdump.allowAnyFileSuffix", "true");
     }
 
     @Test
@@ -54,7 +51,7 @@ public class HeapDumpContributorTests {
         long timestamp = System.currentTimeMillis();
         Map<String, Object> context = new HashMap<String, Object>();
 
-        Dump dump = new StubDump(cause, timestamp, context, new Throwable[0], dumpDirectory);
+        Dump dump = new StubDump(cause, timestamp, context, new Throwable[0], this.dumpDirectory.getRoot());
 
         contributor.contribute(dump);
 
@@ -62,7 +59,7 @@ public class HeapDumpContributorTests {
 
         try {
             Class<?> diagnosticMbeanClass = Class.forName("com.sun.management.HotSpotDiagnosticMXBean", true,
-                HeapDumpContributor.class.getClassLoader());
+                    HeapDumpContributor.class.getClassLoader());
             ManagementFactory.newPlatformMXBeanProxy(MBEAN_SERVER, HOTSPOT_DIAGNOSTIC_MBEAN_NAME, diagnosticMbeanClass);
             diagnostMbeanAvailable = true;
         } catch (Exception e) {
@@ -78,6 +75,6 @@ public class HeapDumpContributorTests {
             }
         }
 
-        assertEquals(diagnostMbeanAvailable, new File(this.dumpDirectory, "heap.out").exists());
+        assertEquals(diagnostMbeanAvailable, new File(this.dumpDirectory.getRoot(), "heap.out").exists());
     }
 }

@@ -3,19 +3,6 @@ import virgobuild.Config
 
 apply plugin: virgobuild.VirgoToolsPlugin
 
-if (System.properties['eclipse.build'] == 'true') {
-    // https://gradle.org/docs/current/userguide/build_environment.html
-    // https://wiki.eclipse.org/Hudson#Why_use_a_Proxy.3F
-    println "Checking that proxy properties are set before proceeding..."
-    if (!System.properties['http.proxyHost'] && !System.properties['http.proxyPort']) {
-        throw new StopActionException("Properties 'http.proxyHost' and 'http.proxyPort' are both not set.")
-    }
-    println 'http.proxyHost = ' + System.properties['http.proxyHost']
-    println 'http.proxyPort = ' + System.properties['http.proxyPort']
-    println 'http.nonProxyHosts = ' + System.properties['http.nonProxyHosts']
-    println 'Done.'
-}
-
 buildscript {
     repositories {
         mavenLocal()
@@ -62,9 +49,9 @@ project.ext.props = versions
 
 allprojects() {
     if (System.properties['ci.build'] == 'true') {
-        version = '3.7.2.D-' + timestamp
+        version = '3.7.4.D-' + timestamp
     } else {
-        version = '3.7.2.RELEASE'
+        version = '3.7.4.RELEASE'
     }
 }
 
@@ -579,7 +566,7 @@ configure(javaProjects) {
     if (System.properties['ci.build'] == 'true' || System.properties['include.jacoco'] == 'true') {
         apply plugin: "jacoco"
 
-        jacoco { toolVersion = "0.7.4.201502262128" }
+        jacoco { toolVersion = "0.8.1" }
     }
 }
 
@@ -785,5 +772,5 @@ configure(smokeTestProjects) {
 task wrapper(type: Wrapper) {
     description 'Creates a local Gradle Wrapper'
     group = 'Build Setup'
-    gradleVersion = '3.5' // CQ 13634
+    gradleVersion = '3.5.1' // CQ 13634 3.5.x
 }

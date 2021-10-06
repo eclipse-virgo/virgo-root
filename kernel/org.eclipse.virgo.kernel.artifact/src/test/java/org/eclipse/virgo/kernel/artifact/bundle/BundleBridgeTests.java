@@ -11,9 +11,11 @@
 
 package org.eclipse.virgo.kernel.artifact.bundle;
 
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.virgo.kernel.artifact.bundle.BundleBridge.convertToDictionary;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,14 +36,13 @@ import org.osgi.framework.Version;
 
 /**
  * <p>
- * Unit tests for {@link org.eclipse.virgo.kernel.artifact.bundle.BundleBridge BundleBridge}. Uses a combination of real
- * bundle files and static test data.
+ * Unit tests for {@link BundleBridge BundleBridge}. Uses a combination of real bundle files and static test data.
  * </p>
- * 
+ *
  * <strong>Concurrent Semantics</strong><br />
- * 
+ *
  * Threadsafe test case
- * 
+ *
  */
 public class BundleBridgeTests {
 
@@ -62,7 +63,7 @@ public class BundleBridgeTests {
     private static final String BUNDLE_NAME_HEADER_NAME = "Bundle-Name";
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         BUNDLE_BRIDGE = new BundleBridge(new StubHashGenerator());
     }
 
@@ -71,7 +72,7 @@ public class BundleBridgeTests {
         File file = new File("foo/bar.jar");
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
-            assertTrue("Should throw exception", false);
+            fail("Should throw exception");
         } catch (ArtifactGenerationException age) {
             assertEquals("ArtifactType in exception is incorrect", age.getArtifactType(), BundleBridge.BRIDGE_TYPE);
         }
@@ -82,7 +83,7 @@ public class BundleBridgeTests {
         File file = new File("./src/test/resources/wars/testbad01.war"); // contains Erroneous-Data: Bundle-Version
         try {
             BUNDLE_BRIDGE.generateArtifactDescriptor(file);
-            assertTrue("Should throw exception", false);
+            fail("Should throw exception");
         } catch (ArtifactGenerationException age) {
             assertEquals("ArtifactType in exception is incorrect", age.getArtifactType(), BundleBridge.BRIDGE_TYPE);
         }
@@ -90,11 +91,12 @@ public class BundleBridgeTests {
 
     @Test
     public void testGenerateArtefact() throws ArtifactGenerationException {
-        File jarsDirectory = new File(
-            System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/4378c1a6c057f1e1da2b8287351b288c2c13e6c0/org.apache.commons.dbcp-1.4.0.v201204271417.jar");
+        File jarsDirectory = new File(System.getProperty("user.home")
+                + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.apache.commons.dbcp/1.4.0.v201204271417/"
+                + "4378c1a6c057f1e1da2b8287351b288c2c13e6c0/org.apache.commons.dbcp-1.4.0.v201204271417.jar");
         File directoriesDirectory = new File("./src/test/resources/directories");
 
-        Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
+        Set<ArtifactDescriptor> artefacts = new HashSet<>();
 
         artefacts.add(BUNDLE_BRIDGE.generateArtifactDescriptor(jarsDirectory));
 
@@ -115,24 +117,24 @@ public class BundleBridgeTests {
             testAttributes = testArtefact.getAttribute(Constants.BUNDLE_SYMBOLICNAME);
 
             assertEquals("Error on: " + testArtefact.toString(), stubAttributes.iterator().next().getValue(),
-                testAttributes.iterator().next().getValue());
+                    testAttributes.iterator().next().getValue());
 
             stubAttributes = stubArtefact.getAttribute(ARTEFACT_ATTRIBUTE_VERSION);
             testAttributes = testArtefact.getAttribute(Constants.BUNDLE_VERSION);
 
             assertEquals("Error on: " + testArtefact.toString(), stubAttributes.iterator().next().getValue(),
-                testAttributes.iterator().next().getValue());
+                    testAttributes.iterator().next().getValue());
         }
     }
 
     @Test
     public void testBuildDictionary() throws ArtifactGenerationException, IOException {
-        File testFile = new File(
-            System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/javax.servlet/3.1.0.v201410161800/e0e698d1be57aaef38e54428f5c09c7fe0cf594e/javax.servlet-3.1.0.v201410161800.jar");
+        File testFile = new File(System.getProperty("user.home")
+                + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/javax.servlet/3.1.0.20200621/db9aadeedc05485e4345e1c0ec1e0943371cb70d/javax.servlet-3.1.0.20200621.jar");
 
         ArtifactDescriptor inputArtefact = BUNDLE_BRIDGE.generateArtifactDescriptor(testFile);
 
-        Dictionary<String, String> dictionary = BundleBridge.convertToDictionary(inputArtefact);
+        Dictionary<String, String> dictionary = requireNonNull(convertToDictionary(inputArtefact));
 
         JarFile testJar = new JarFile(testFile);
         Attributes attributes = testJar.getManifest().getMainAttributes();
@@ -140,13 +142,13 @@ public class BundleBridgeTests {
         testJar.close();
 
         assertEquals("Failed to match regenerated " + Constants.BUNDLE_SYMBOLICNAME, dictionary.get(Constants.BUNDLE_SYMBOLICNAME),
-            attributes.getValue(Constants.BUNDLE_SYMBOLICNAME));
+                attributes.getValue(Constants.BUNDLE_SYMBOLICNAME));
         assertEquals("Failed to match regenerated " + Constants.BUNDLE_VERSION, dictionary.get(Constants.BUNDLE_VERSION),
-            attributes.getValue(Constants.BUNDLE_VERSION));
+                attributes.getValue(Constants.BUNDLE_VERSION));
         assertEquals("Failed to match regenerated " + BUNDLE_MANIFEST_VERSION_HEADER_NAME, dictionary.get(BUNDLE_MANIFEST_VERSION_HEADER_NAME),
-            attributes.getValue(BUNDLE_MANIFEST_VERSION_HEADER_NAME));
+                attributes.getValue(BUNDLE_MANIFEST_VERSION_HEADER_NAME));
         assertEquals("Failed to match regenerated " + BUNDLE_NAME_HEADER_NAME, dictionary.get(BUNDLE_NAME_HEADER_NAME),
-            attributes.getValue(BUNDLE_NAME_HEADER_NAME));
+                attributes.getValue(BUNDLE_NAME_HEADER_NAME));
 
     }
 
@@ -187,13 +189,13 @@ public class BundleBridgeTests {
     }
 
     private Set<ArtifactDescriptor> generateArtefacts(File directory) throws ArtifactGenerationException {
-        Set<ArtifactDescriptor> artefacts = new HashSet<ArtifactDescriptor>();
+        Set<ArtifactDescriptor> artefacts = new HashSet<>();
 
         File[] fileList = directory.listFiles();
         if (fileList == null) {
-        	throw new IllegalStateException("Failed to list files inside '" + directory + "'.");
-		}
-		for (File fileInDir : fileList) {
+            throw new IllegalStateException("Failed to list files inside '" + directory + "'.");
+        }
+        for (File fileInDir : fileList) {
             if (!fileInDir.getName().endsWith(".jar") && !fileInDir.getName().contains("sources")) {
                 ArtifactDescriptor artefact = BUNDLE_BRIDGE.generateArtifactDescriptor(fileInDir);
                 if (artefact != null) {

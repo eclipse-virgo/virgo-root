@@ -11,6 +11,8 @@
 
 package org.eclipse.virgo.kernel.userregion.internal.importexpansion;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -23,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +44,13 @@ import org.eclipse.virgo.repository.Attribute;
 import org.eclipse.virgo.repository.Query;
 import org.eclipse.virgo.repository.Repository;
 import org.eclipse.virgo.repository.RepositoryAwareArtifactDescriptor;
-import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifest;
 import org.eclipse.virgo.util.osgi.manifest.BundleManifestFactory;
 import org.eclipse.virgo.util.osgi.manifest.ImportedBundle;
 import org.eclipse.virgo.util.osgi.manifest.ImportedLibrary;
 import org.eclipse.virgo.util.osgi.manifest.ImportedPackage;
 import org.eclipse.virgo.util.osgi.manifest.Resolution;
+import org.eclipse.virgo.util.osgi.manifest.VersionRange;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +62,7 @@ public class ImportExpansionHandlerTests {
 
     private StubRepository repository = new StubRepository();
 
-    private static Set<String> packagesExportedBySystemBundle = new HashSet<String>();
+    private static Set<String> packagesExportedBySystemBundle = new HashSet<>();
 
     static {
         packagesExportedBySystemBundle.add("javax.crypto.spec");
@@ -73,8 +75,12 @@ public class ImportExpansionHandlerTests {
         BundleBridge bundleBridge = new BundleBridge(new StubHashGenerator());
         LibraryBridge libraryBridge = new LibraryBridge(new StubHashGenerator());
 
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.2.9.RELEASE/1c660c77b174384012745d391694de1d56f2c19a/org.springframework.core-4.2.9.RELEASE.jar")));
-        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.beans/4.2.9.RELEASE/6895116b764a2820b829cef9dd1b3833b7cdfcaa/org.springframework.beans-4.2.9.RELEASE.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home")
+                + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.core/4.3.27.RELEASE"
+                + "/b918f743498d206aa467bfe58267ceaada75b5b4/org.springframework.core-4.3.27.RELEASE.jar")));
+        this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File(System.getProperty("user.home")
+                + "/.gradle/caches/modules-2/files-2.1/org.eclipse.virgo.mirrored/org.springframework.beans/4.3.27.RELEASE"
+                + "/c1b26cbb24ade64dc058508454c8c67f77ca18db/org.springframework.beans-4.3.27.RELEASE.jar")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentOne")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentTwo")));
         this.repository.addArtifactDescriptor(bundleBridge.generateArtifactDescriptor(new File("src/test/resources/silht/bundles/fragmentThree")));
@@ -90,7 +96,7 @@ public class ImportExpansionHandlerTests {
 
     @Test
     public void basicImportBundle() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
@@ -104,7 +110,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(new ArrayList<ImportedLibrary>(), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(new ArrayList<ImportedLibrary>(), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -113,20 +119,20 @@ public class ImportExpansionHandlerTests {
         List<ImportedPackage> packageImports = bundleManifest.getImportPackage().getImportedPackages();
         for (ImportedPackage packageImport : packageImports) {
             Map<String, String> attributes = packageImport.getAttributes();
-            assertTrue("org.springframework.core".equals(attributes.get("bundle-symbolic-name")));
-            assertEquals(new VersionRange("[4.2.9.RELEASE,4.2.9.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
+            assertEquals("org.springframework.core", attributes.get("bundle-symbolic-name"));
+            assertEquals(new VersionRange("[4.3.27.RELEASE,4.3.27.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
     }
 
     @Test
     public void basicImportLibrary() throws UnableToSatisfyDependenciesException {
 
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
 
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
-        expect(libraryImport.getVersion()).andReturn(new VersionRange("[4.2,5)")).atLeastOnce();
+        expect(libraryImport.getVersion()).andReturn(new VersionRange("[4.3,5)")).atLeastOnce();
         expect(libraryImport.getResolution()).andReturn(Resolution.MANDATORY).anyTimes();
 
         ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());
@@ -135,7 +141,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -145,18 +151,18 @@ public class ImportExpansionHandlerTests {
         for (ImportedPackage packageImport : packageImports) {
             Map<String, String> attributes = packageImport.getAttributes();
             if (packageImport.getPackageName().startsWith("org.springframework.beans")) {
-                assertTrue("org.springframework.beans".equals(attributes.get("bundle-symbolic-name")));
+                assertEquals("org.springframework.beans", attributes.get("bundle-symbolic-name"));
             } else {
-                assertTrue("org.springframework.core".equals(attributes.get("bundle-symbolic-name")));
+                assertEquals("org.springframework.core", attributes.get("bundle-symbolic-name"));
             }
-            assertEquals(new VersionRange("[4.2.9.RELEASE,4.2.9.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
+            assertEquals(new VersionRange("[4.3.27.RELEASE,4.3.27.RELEASE]"), new VersionRange(attributes.get("bundle-version")));
         }
 
     }
 
     @Test
     public void basicImportFragmentBundle() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("com.foo.fragment.one").atLeastOnce();
@@ -170,7 +176,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -185,7 +191,7 @@ public class ImportExpansionHandlerTests {
 
     @Test
     public void basicImportFragmentBundleSpecifyingExactBundleVersionRange() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("com.foo.fragment.two").atLeastOnce();
@@ -199,14 +205,14 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
     }
 
     @Test
     public void basicImportFragmentBundleWithNoFragmentHostBundleVersion() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("com.foo.fragment.three").atLeastOnce();
@@ -220,7 +226,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -237,7 +243,7 @@ public class ImportExpansionHandlerTests {
     @Test(expected = UnableToSatisfyBundleDependenciesException.class)
     public void importLibraryReferringToNonExistentBundle() throws UnableToSatisfyDependenciesException, IOException {
 
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
 
@@ -250,14 +256,14 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
-            "Manifest-Version: 1.0\nBundle-SymbolicName: test.bundle"));
+                "Manifest-Version: 1.0\nBundle-SymbolicName: test.bundle"));
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
     }
 
     @Test
     public void optionalImportBundle() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.dosnt.exist").atLeastOnce();
@@ -271,18 +277,18 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
-        assertTrue("" + bundleManifest.getImportPackage().getImportedPackages().size(),
-            bundleManifest.getImportPackage().getImportedPackages().size() == 0);
+        assertEquals("" + bundleManifest.getImportPackage().getImportedPackages().size(), 0,
+                bundleManifest.getImportPackage().getImportedPackages().size());
     }
 
     @Test
     public void optionalImportLibrary() throws UnableToSatisfyDependenciesException {
 
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
 
@@ -296,17 +302,17 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
 
         verifyMocks(mocks);
 
-        assertTrue(bundleManifest.getImportPackage().getImportedPackages().size() == 0);
+        assertEquals(0, bundleManifest.getImportPackage().getImportedPackages().size());
     }
 
     @Test(expected = UnableToSatisfyDependenciesException.class)
     public void optionalImportLibraryException() throws UnableToSatisfyDependenciesException {
 
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
 
@@ -320,19 +326,17 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
     }
 
     /**
      * Test the expansion of the following import:
      *
      * Import-Library: com.foo;bundle-version="[1.0,2.0)"
-     *
-     * @throws UnableToSatisfyDependenciesException
      */
     @Test
     public void importLibraryWithFragment() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport.getLibrarySymbolicName()).andReturn("com.foo").atLeastOnce();
@@ -344,17 +348,17 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
 
         verifyMocks(mocks);
 
-        assertImported(bundleManifest, Arrays.asList(new String[] { "com.foo.host", "com.foo.host.a", "com.foo.host.b", "com.foo.fragment.two" }),
-            Arrays.asList(new String[] { "1.5.0", "1.0.0", "1.0.0", "1.0.0" }));
+        assertImported(bundleManifest, asList("com.foo.host", "com.foo.host.a", "com.foo.host.b", "com.foo.fragment.two"),
+                asList("1.5.0", "1.0.0", "1.0.0", "1.0.0"));
     }
 
     @Test(expected = UnableToSatisfyDependenciesException.class)
     public void incompatibleBundleVersions() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport1 = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport1.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
@@ -371,17 +375,13 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        try {
-            handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport1, libraryImport2 }), Arrays.asList(new ImportedBundle[0]),
+        handler.expandImports(asList(libraryImport1, libraryImport2), asList(new ImportedBundle[0]),
                 bundleManifest);
-        } catch (UnableToSatisfyDependenciesException e) {
-            throw e;
-        }
     }
 
     @Test(expected = UnableToSatisfyDependenciesException.class)
     public void incompatibleIntersection() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport1 = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport1.getLibrarySymbolicName()).andReturn("com.intersect.one").atLeastOnce();
@@ -398,16 +398,13 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        try {
-            handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport1, libraryImport2 }), Arrays.asList(new ImportedBundle[0]),
+        handler.expandImports(asList(libraryImport1, libraryImport2), asList(new ImportedBundle[0]),
                 bundleManifest);
-        } catch (UnableToSatisfyDependenciesException e) {
-            throw e;
-        }
     }
 
+    @Test(expected = UnableToSatisfyBundleDependenciesException.class)
     public void disjointImportedPackageAndImportedLibraryVersionRanges() throws UnableToSatisfyDependenciesException, IOException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
@@ -419,12 +416,14 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
-            "Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[1,2]\""));
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+                "Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[1,2]\""));
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
     }
 
+    @Test(expected = UnableToSatisfyDependenciesException.class)
+    // TODO review - this test had a missing @Test annotation
     public void disjointImportedPackageAndImportedBundleVersionRanges() throws UnableToSatisfyDependenciesException, IOException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.bundle.spring.core").atLeastOnce();
@@ -437,13 +436,13 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
-            "Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[1,2]\""));
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+                "Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[1,2]\""));
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
     }
 
     @Test
     public void packageImportAndImportedBundleVersionRangeIntersection() throws UnableToSatisfyDependenciesException, IOException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
@@ -456,8 +455,8 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
-            "Manifest-Version: 1.0, Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[4.5,4.6)\""));
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+                "Manifest-Version: 1.0, Bundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[4.5,4.6)\""));
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -466,19 +465,19 @@ public class ImportExpansionHandlerTests {
 
     @Test
     public void packageImportAndImportedLibraryVersionRangeIntersection() throws UnableToSatisfyDependenciesException, IOException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
         expect(libraryImport.getLibrarySymbolicName()).andReturn("org.springframework").atLeastOnce();
-        expect(libraryImport.getVersion()).andReturn(new VersionRange("[4.2,5)")).atLeastOnce();
+        expect(libraryImport.getVersion()).andReturn(new VersionRange("[4.3,5)")).atLeastOnce();
 
         ImportExpansionHandler handler = new ImportExpansionHandler(repository, packagesExportedBySystemBundle, new MockEventLogger());
 
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest(new StringReader(
-            "Manifest-Version: 1.0\nBundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[4.5,4.6)\""));
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+                "Manifest-Version: 1.0\nBundle-SymbolicName: B\nImport-Package: org.springframework.core;version=\"[4.5,4.6)\""));
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -487,7 +486,7 @@ public class ImportExpansionHandlerTests {
 
     @Test(expected = UnableToSatisfyDependenciesException.class)
     public void disjointImportedBundleVersionRangeIntersection() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport1 = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport1.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
@@ -507,17 +506,13 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        try {
-            handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport1, bundleImport2 }),
+        handler.expandImports(asList(new ImportedLibrary[0]), asList(bundleImport1, bundleImport2),
                 bundleManifest);
-        } catch (UnableToSatisfyDependenciesException utsde) {
-            throw utsde;
-        }
     }
 
     @Test
     public void overlappingBundleAndImportedLibrarys() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("org.springframework.core").atLeastOnce();
@@ -536,13 +531,13 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[] { bundleImport }),
-            bundleManifest);
+        handler.expandImports(singletonList(libraryImport), singletonList(bundleImport),
+                bundleManifest);
     }
 
     @Test
     public void importBundleWithNoExports() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("silht.bundles.noexports").atLeastOnce();
@@ -555,12 +550,12 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
     }
 
     @Test
     public void importBundleWithFragmentWithNoExports() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle hostImportedBundle = createAndStoreMock(ImportedBundle.class, mocks);
         expect(hostImportedBundle.getBundleSymbolicName()).andReturn("silht.bundles.noexports").atLeastOnce();
@@ -579,36 +574,36 @@ public class ImportExpansionHandlerTests {
         replayMocks(mocks);
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]),
-            Arrays.asList(new ImportedBundle[] { hostImportedBundle, fragmentImportedBundle }), bundleManifest);
-        assertTrue(bundleManifest.getImportPackage().getImportedPackages().size() == 0);
+        handler.expandImports(asList(new ImportedLibrary[0]),
+                asList(hostImportedBundle, fragmentImportedBundle), bundleManifest);
+        assertEquals(0, bundleManifest.getImportPackage().getImportedPackages().size());
     }
 
     @Test
     public void importBundleBetweenManifests() throws Exception {
-        List<BundleManifest> manifests = new ArrayList<BundleManifest>();
+        List<BundleManifest> manifests = new ArrayList<>();
 
         BundleManifest manifest = BundleManifestFactory.createBundleManifest(new StringReader("Manifest-Version: 1.0\nImport-Bundle: com.foo"));
         manifests.add(manifest);
         manifests.add(BundleManifestFactory.createBundleManifest(new StringReader(
-            "Manifest-Version: 1.0\nExport-Package: com.foo;version=1.0\nBundle-SymbolicName: com.foo\n")));
+                "Manifest-Version: 1.0\nExport-Package: com.foo;version=1.0\nBundle-SymbolicName: com.foo\n")));
 
         ImportExpansionHandler handler = new ImportExpansionHandler(this.repository, packagesExportedBySystemBundle, new MockEventLogger());
         handler.expandImports(manifests);
-        assertImported(manifest, Arrays.asList(new String[] { "com.foo" }), Arrays.asList(new String[] { "1.0.0" }));
+        assertImported(manifest, singletonList("com.foo"), singletonList("1.0.0"));
     }
 
     @Test
     public void importBundleExportingPackagesExportedBySystemBundle() throws Exception {
-        List<BundleManifest> manifests = new ArrayList<BundleManifest>();
+        List<BundleManifest> manifests = new ArrayList<>();
         BundleManifest manifest = BundleManifestFactory.createBundleManifest(new StringReader("Manifest-Version: 1.0\nImport-Bundle: overlapper"));
         manifests.add(manifest);
 
         MockEventLogger eventLogger = new MockEventLogger();
         ImportExpansionHandler handler = new ImportExpansionHandler(this.repository, packagesExportedBySystemBundle, eventLogger);
         handler.expandImports(manifests);
-        assertImported(manifest, Arrays.asList(new String[] { "javax.crypto.spec", "javax.imageio", "javax.imageio.event", "overlapper.pkg" }),
-            Arrays.asList(new String[] { "0.0.0", "0.0.0", "0.0.0", "0.0.0" }));
+        assertImported(manifest, asList("javax.crypto.spec", "javax.imageio", "javax.imageio.event", "overlapper.pkg"),
+                asList("0.0.0", "0.0.0", "0.0.0", "0.0.0"));
 
         Assert.assertTrue("No events were logged.", eventLogger.getCalled());
         Assert.assertTrue("The correct event was not logged.", eventLogger.containsLogged("UR0003W"));
@@ -621,16 +616,14 @@ public class ImportExpansionHandlerTests {
         Assert.assertTrue("Insert at index 2 is not a String", overlap instanceof String);
         String overlapString = (String)overlap;
         String[] splitOverlap = overlapString.substring(1, overlapString.length()-1).split(", ");
-        Set<String> overlapSet = new HashSet<String>();
-        for (String pkg : splitOverlap) {
-            overlapSet.add(pkg);
-        }
+        Set<String> overlapSet = new HashSet<>();
+        Collections.addAll(overlapSet, splitOverlap);
         Assert.assertEquals("Unexpected overlap with system bundle exports", packagesExportedBySystemBundle, overlapSet);
     }
 
     @Test
     public void importLibraryThatImportsMissingOptionalBundle() throws Exception {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedLibrary libraryImport = createAndStoreMock(ImportedLibrary.class, mocks);
 
@@ -644,7 +637,7 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[] { libraryImport }), Arrays.asList(new ImportedBundle[0]), bundleManifest);
+        handler.expandImports(singletonList(libraryImport), asList(new ImportedBundle[0]), bundleManifest);
 
         verifyMocks(mocks);
 
@@ -653,7 +646,7 @@ public class ImportExpansionHandlerTests {
 
     @Test
     public void importBundleThatExportsPackageAtMultipleVersions() throws UnableToSatisfyDependenciesException {
-        List<Object> mocks = new ArrayList<Object>();
+        List<Object> mocks = new ArrayList<>();
 
         ImportedBundle bundleImport = createAndStoreMock(ImportedBundle.class, mocks);
         expect(bundleImport.getBundleSymbolicName()).andReturn("multi.version.export").atLeastOnce();
@@ -667,11 +660,11 @@ public class ImportExpansionHandlerTests {
 
         BundleManifest bundleManifest = BundleManifestFactory.createBundleManifest();
 
-        handler.expandImports(Arrays.asList(new ImportedLibrary[0]), Arrays.asList(new ImportedBundle[] { bundleImport }), bundleManifest);
+        handler.expandImports(asList(new ImportedLibrary[0]), singletonList(bundleImport), bundleManifest);
 
         verifyMocks(mocks);
 
-        assertImported(bundleManifest, Arrays.asList(new String[] { "a" }), Arrays.asList(new String[] { "1.0.0" }));
+        assertImported(bundleManifest, singletonList("a"), singletonList("1.0.0"));
     }
 
     private static <T> T createAndStoreMock(Class<T> classToMock, List<Object> mocks) {
@@ -681,19 +674,19 @@ public class ImportExpansionHandlerTests {
     }
 
     private static void replayMocks(List<Object> mocks) {
-        Object[] mocksArray = mocks.toArray(new Object[mocks.size()]);
+        Object[] mocksArray = mocks.toArray(new Object[0]);
         replay(mocksArray);
     }
 
     private static void verifyMocks(List<Object> mocks) {
-        Object[] mocksArray = mocks.toArray(new Object[mocks.size()]);
+        Object[] mocksArray = mocks.toArray(new Object[0]);
         verify(mocksArray);
     }
 
     private static void assertImported(BundleManifest bundleManifest, List<String> packages, List<String> versions) {
         List<ImportedPackage> packageImports = bundleManifest.getImportPackage().getImportedPackages();
-        List<String> expectedPackages = new ArrayList<String>(packages);
-        List<String> expectedVersions = new ArrayList<String>(versions);
+        List<String> expectedPackages = new ArrayList<>(packages);
+        List<String> expectedVersions = new ArrayList<>(versions);
         for (ImportedPackage packageImport : packageImports) {
 
             String packageName = packageImport.getPackageName();
@@ -711,13 +704,13 @@ public class ImportExpansionHandlerTests {
 
         if (expectedPackages.size() > 0) {
             fail("No import(s) were found for package(s) " + expectedPackages + " with version(s) " + expectedVersions + " in manifest: \n"
-                + bundleManifest);
+                    + bundleManifest);
         }
     }
 
     private static final class StubRepository implements Repository {
 
-        private final List<RepositoryAwareArtifactDescriptor> artifactDescriptors = new ArrayList<RepositoryAwareArtifactDescriptor>();
+        private final List<RepositoryAwareArtifactDescriptor> artifactDescriptors = new ArrayList<>();
 
         /**
          * {@inheritDoc}
@@ -771,9 +764,6 @@ public class ImportExpansionHandlerTests {
 
             private final ArtifactDescriptor delegate;
 
-            /**
-             * @param delegate
-             */
             private StubRepositoryAwareArtifactDescriptor(ArtifactDescriptor delegate) {
                 this.delegate = delegate;
             }

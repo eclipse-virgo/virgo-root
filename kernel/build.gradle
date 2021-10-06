@@ -40,6 +40,7 @@ project(':kernel:org.eclipse.virgo.kernel.agent.dm') {
 project(':kernel:org.eclipse.virgo.kernel.artifact') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+        testCompile group: 'org.eclipse.virgo.mirrored', name: 'javax.servlet', version: javaxServletVersion, configuration: "compile", ext: "jar"
         testRuntime group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
 
         compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
