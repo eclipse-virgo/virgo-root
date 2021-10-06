@@ -9,7 +9,6 @@ All Virgo related repositories are listed [here](https://wiki.eclipse.org/Virgo/
 
     $ git clone git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.root.git virgo
     $ cd virgo
-    $ git submodule update --init
 
 For the impatient
 -----------------
@@ -26,11 +25,12 @@ Build the Virgo deliverables
 
 To build distributable zipped files run:
 
-    $ ./gradlew clean jar build distZip fullDistZip rapDistZip
+    $ ./gradlew clean jar build distZip fullDistZip
 
-There is an additional task to install the zips, too. This comes quite handy to quickly check the distributables:
+There is an additional task to install the zips, too.
+This comes quite handy to quickly check the distributable:
 
-    $ ./gradlew installDist installFullDist installRapDist
+    $ ./gradlew installDist installFullDist
 
 To speed up local builds you can skip some time-consuming processes like follows:
  * `-Dskip.normalize.bundles=true`
@@ -55,7 +55,8 @@ You can upload the create p2 update site with `./gradlew uploadUpdateSite`. This
 * normalize, compress and sign
 * then upload the bundles into a composite repository at eclipse.org.
 
-Please review the configuration located in `org.eclipse.virgo.updatesite/gradle.properties`. You can test your setup with `./gradlew testEclipseConnection`:
+Please review the configuration located in `org.eclipse.virgo.updatesite/gradle.properties`.
+You can test your setup with `./gradlew testEclipseConnection`:
 
 ```
 $ ./gradlew testEclipseConnection
