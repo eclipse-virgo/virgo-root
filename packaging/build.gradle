@@ -22,7 +22,7 @@ configure([
         nanoLib project(':nano:org.eclipse.virgo.nano.authentication')
         nanoLib project(':nano:org.eclipse.virgo.nano.shutdown')
         nanoLib project(':util:org.eclipse.virgo.util.env')
-        nanoLib group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.launcher", version: equinoxLauncherVersion, configuration: "compile", ext: "jar"
+        nanoLib group: "org.eclipse.platform", name: "org.eclipse.equinox.launcher", version: equinoxLauncherVersion
 
         nanoLibPersistence project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
 
@@ -48,13 +48,13 @@ configure([
     dependencies {
         kernelPluginsExtras project(':kernel:org.eclipse.virgo.kernel.userregion')
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
+        repositoryExt group: "org.osgi", name: "osgi.enterprise", version: osgiEnterpriseVersion
         // contains org.osgi.jmx
 
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.platform", name: "org.eclipse.equinox.ds", version: equinoxDsVersion
+        repositoryExt group: "org.eclipse.platform", name: "org.eclipse.equinox.util", version: equinoxUtilVersion
+        repositoryExt group: "org.eclipse.platform", name: "org.eclipse.equinox.region", version: equinoxRegionVersion
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.codec", version: commonsCodecVersion, ext: "jar"
@@ -181,12 +181,12 @@ configure([
 
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.platform", name: "org.eclipse.equinox.event", version: equinoxEventVersion
 
         repositoryExt group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
         repositoryExt group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
         repositoryExt group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.taglibs.standard", version: apacheTaglibsStandardVersion, ext: "jar"
-        repositoryExt group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+        repositoryExt group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
         repositoryExt group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         repositoryExt group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
         repositoryExt group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion

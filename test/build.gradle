@@ -1,8 +1,8 @@
 project(':test:org.eclipse.virgo.test.stubs') {
 	dependencies {
-		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+		compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
+		compile group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
+		compile group: "org.eclipse.platform", name: "org.eclipse.equinox.region", version: equinoxRegionVersion
 	}
 }
 
@@ -17,7 +17,7 @@ project(':test:org.eclipse.virgo.test.tools') {
 project(':test:org.eclipse.virgo.test.launcher') {
 	dependencies {
 		compile project(':util:org.eclipse.virgo.util.parser.launcher')
-		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+		compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
 		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
 	}
 }
@@ -27,7 +27,7 @@ project(':test:org.eclipse.virgo.test.framework') {
 		compile project(':util:org.eclipse.virgo.util.common')
         compile project(':test:org.eclipse.virgo.test.stubs')
         compile project(':test:org.eclipse.virgo.test.launcher')
-		compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+		compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
 		testCompile group: 'junit', name: 'junit', version: junitVersion, configuration: "compile", ext: "jar"
 	}
 }

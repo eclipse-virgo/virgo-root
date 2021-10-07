@@ -127,17 +127,17 @@ dependencies {
 
     // TODO - rename feature to region'_'
     localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.region", version: equinoxRegionVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.region", version: equinoxRegionVersion
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.core')
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.ds')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.common", version: equinoxCommonVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.ds", version: equinoxDsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.event", version: equinoxEventVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.util", version: equinoxUtilVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.cm", version: equinoxCmVersion, configuration: "compile", ext: "jar"
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.common", version: equinoxCommonVersion
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.ds", version: equinoxDsVersion
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.event", version: equinoxEventVersion
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.util", version: equinoxUtilVersion
+    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.cm", version: equinoxCmVersion
 
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel')
 

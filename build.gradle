@@ -721,7 +721,7 @@ configure(testUtils) {
 configure(integrationTestProjects) {
     dependencies {
         // OSGi runtime
-        testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        testRuntime group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
 
         testCompile group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
 

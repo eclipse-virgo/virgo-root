@@ -4,7 +4,7 @@ project(':medic:org.eclipse.virgo.medic') {
 
         compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
 
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
     }
 }
 
@@ -18,9 +18,9 @@ project(':medic:org.eclipse.virgo.medic.core') {
         compile project(':medic:org.eclipse.virgo.medic')
         compile project(':util:org.eclipse.virgo.util.io')
         compile project(':util:org.eclipse.virgo.util.osgi')
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
-        compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.cm", version: equinoxCmVersion, configuration: "compile", ext: "jar"
+        compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
+        compile group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
+        compile group: "org.eclipse.platform", name: "org.eclipse.equinox.cm", version: equinoxCmVersion
         compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
         compile group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
 
