@@ -1,15 +1,14 @@
 package virgobuild
 
-import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
-
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.FileCollection
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.JavaPlugin
 
 import eclipsebuild.FeaturePlugin
+
+import static virgobuild.VirgoToolsPlugin.DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME
 
 // Derived from buildship Plugins
 class UpdateSitePlugin implements Plugin<Project> {
@@ -46,7 +45,7 @@ class UpdateSitePlugin implements Plugin<Project> {
     static final String REPOSITORY_DIR_NAME = 'repository'
 
     @Override
-    public void apply(Project project) {
+    void apply(Project project) {
         configureProject(project)
         addTaskCopyBundles(project)
         addTaskNormalizeBundles(project)
@@ -171,7 +170,7 @@ class UpdateSitePlugin implements Plugin<Project> {
     static void addTaskNormalizeBundles(Project project) {
         project.task(NORMALIZE_BUNDLES_TASK_NAME, dependsOn: [
             COPY_BUNDLES_TASK_NAME,
-            ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}"
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
         ]) {
             group = Constants.gradleTaskGroupName
             description = 'Repacks the bundles that make up the update site using the pack200 tool.'
@@ -226,7 +225,7 @@ class UpdateSitePlugin implements Plugin<Project> {
         project.task(COMPRESS_BUNDLES_TASK_NAME, dependsOn: [
             NORMALIZE_BUNDLES_TASK_NAME,
             SIGN_BUNDLES_TASK_NAME,
-            ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}"
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
         ]) {
             group = Constants.gradleTaskGroupName
             description = 'Compresses the bundles that make up the update using the pack200 tool.'
@@ -266,7 +265,7 @@ class UpdateSitePlugin implements Plugin<Project> {
     static void addTaskCreateP2Repository(Project project) {
         def createP2RepositoryTask = project.task(CREATE_P2_REPOSITORY_TASK_NAME, dependsOn: [
             COMPRESS_BUNDLES_TASK_NAME,
-            ":${DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME}"
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
         ]) {
             group = Constants.gradleTaskGroupName
             description = 'Generates the P2 repository.'

@@ -7,10 +7,10 @@ class Constants {
     }
 
     static String getVirgoBuildToolsVersion() {
-        return '1.5.0.RELEASE'
+        return '3.8.0.RELEASE'
     }
 
-    static URL getVirgoBuildToolsDownloadUrl() {
-        return new URL("https://build.eclipse.org/rt/virgo/zips/release/VB/${virgoBuildToolsVersion}/virgo-build-tools-${virgoBuildToolsVersion}.zip")
+    static URL getEclipsePhotonSdkDownloadUrl() {
+        return new URL("https://ftp.halifax.rwth-aachen.de/eclipse/technology/epp/downloads/release/photon/R/eclipse-java-photon-R-linux-gtk-x86_64.tar.gz")
     }
 }
