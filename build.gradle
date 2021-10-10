@@ -234,8 +234,6 @@ ext {
             'EQUINOX.CONSOLE.VERSION'      : equinoxConsoleVersion,
             'EQUINOX.CONSOLE.SSH.VERSION'  : equinoxConsoleSshVersion,
             'EQUINOX.EVENT'                : equinoxEventVersion,
-            'EQUINOX.FRKA.E.VERSION'       : equinoxFrameworkadminEquinoxVersion,
-            'EQUINOX.FRKA.VERSION'         : equinoxFrameworkadminVersion,
             'EQUINOX.PFRCS.VERSION'        : equinoxPreferencesVersion,
             'REGION.VERSION'               : equinoxRegionVersion,
             'EQUINOX.REGISTRY.VERSION'     : equinoxRegistryVersion,

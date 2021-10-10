@@ -195,8 +195,6 @@ dependencies {
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator')
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"
     signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator.manipulator", version: equinoxSimpleConfiguratorManipulatorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin", version: equinoxFrameworkadminVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.frameworkadmin.equinox", version: equinoxFrameworkadminEquinoxVersion, configuration: "compile", ext: "jar"
 
     // TODO - rename feature to org.eclipse.gemini.blueprint
     localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
