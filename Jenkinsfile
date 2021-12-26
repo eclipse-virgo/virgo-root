@@ -51,7 +51,7 @@ pipeline {
 				expression { currentBuild.result == null }
 			}
 			steps {
-				archiveArtifacts artifacts: '**/build/libs/*.jar' excludes: 'buildSrc/*'
+				archiveArtifacts '**/build/libs/*.jar'
 			}
 		}
 
