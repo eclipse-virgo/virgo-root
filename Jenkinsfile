@@ -30,6 +30,12 @@ pipeline {
     	    }
         }
 
+        stage('build') {
+			steps {
+                sh 'gradle -x test -Dci.build=true distZip'
+    	    }
+        }
+
         stage ('junit') {
 			steps {
 		        junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml', skipPublishingChecks: true
@@ -51,7 +57,7 @@ pipeline {
 				expression { currentBuild.result == null }
 			}
 			steps {
-				archiveArtifacts '**/build/libs/*.jar'
+				archiveArtifacts '**/build/distributions/*.zip'
 			}
 		}
 
