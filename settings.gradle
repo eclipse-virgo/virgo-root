@@ -2,7 +2,7 @@
 include ':util:org.eclipse.virgo.util.common'
 include ':util:org.eclipse.virgo.util.env'
 include ':util:org.eclipse.virgo.util.io'
-//include ':util:org.eclipse.virgo.util.jmx'
+include ':util:org.eclipse.virgo.util.jmx'
 include ':util:org.eclipse.virgo.util.math'
 //include ':util:org.eclipse.virgo.util.osgi'
 //include ':util:org.eclipse.virgo.util.osgi.manifest'
