@@ -19,7 +19,7 @@ include ':medic:org.eclipse.virgo.medic.core'
 
 //include ':repository:org.eclipse.virgo.repository'
 
-//include ':nano:org.eclipse.virgo.nano.authentication'
+include ':nano:org.eclipse.virgo.nano.authentication'
 include ':nano:org.eclipse.virgo.nano.core'
 //include ':nano:org.eclipse.virgo.nano.deployer'
 //include ':nano:org.eclipse.virgo.nano.deployer.api'
