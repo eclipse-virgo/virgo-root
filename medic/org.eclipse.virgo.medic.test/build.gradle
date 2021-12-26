@@ -1,0 +1,7 @@
+plugins {
+    id 'virgo.java-conventions'
+}
+
+dependencies {
+    implementation project(':medic:org.eclipse.virgo.medic')
+}

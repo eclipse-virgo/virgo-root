@@ -1,0 +1,25 @@
+plugins {
+    id 'virgo.java-conventions'
+}
+
+apply plugin: "io.freefair.aspectj.post-compile-weaving"
+
+dependencies {
+    implementation "org.aspectj:aspectjrt:1.9.7"
+
+    implementation project(':util:org.eclipse.virgo.util.common')
+    implementation project(':util:org.eclipse.virgo.util.io')
+    implementation project(':util:org.eclipse.virgo.util.osgi')
+    implementation project(':medic:org.eclipse.virgo.medic')
+
+    testImplementation project(':test:org.eclipse.virgo.test.stubs')
+    testImplementation project(':medic:org.eclipse.virgo.medic.test')
+
+    implementation 'org.slf4j:slf4j-api'
+
+    implementation 'org.eclipse.platform:org.eclipse.osgi'
+    implementation 'org.eclipse.platform:org.eclipse.osgi.services'
+    implementation 'org.eclipse.platform:org.eclipse.equinox.region'
+}
+
+compileTestJava.ajc.options.aspectpath.from sourceSets.main.output

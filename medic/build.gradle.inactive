@@ -1,7 +1,0 @@
-project(':medic:org.eclipse.virgo.medic.test') {
-    dependencies {
-        compile project(':medic:org.eclipse.virgo.medic')
-
-        testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
-    }
-}

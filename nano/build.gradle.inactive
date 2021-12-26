@@ -1,22 +1,3 @@
-project(':nano:org.eclipse.virgo.nano.core') {
-    dependencies {
-		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-        testCompile project(':test:org.eclipse.virgo.test.stubs')
-        testCompile project(':medic:org.eclipse.virgo.medic.test')
-
-        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
-        compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
-        compile group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
-        compile group: "org.eclipse.platform", name: "org.eclipse.equinox.region", version: equinoxRegionVersion
-
-        compile project(':util:org.eclipse.virgo.util.common')
-        compile project(':util:org.eclipse.virgo.util.io')
-        compile project(':util:org.eclipse.virgo.util.osgi')
-        compile project(':medic:org.eclipse.virgo.medic')
-	}
-}
-
 project(':nano:org.eclipse.virgo.nano.deployer') {
     dependencies {
 		testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion

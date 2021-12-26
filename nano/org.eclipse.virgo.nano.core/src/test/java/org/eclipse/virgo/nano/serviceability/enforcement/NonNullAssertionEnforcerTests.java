@@ -18,14 +18,13 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.eclipse.virgo.nano.serviceability.Assert;
-import org.eclipse.virgo.nano.serviceability.dump.DumpCoordinator;
 import org.eclipse.virgo.medic.dump.DumpGenerator;
 
 public class NonNullAssertionEnforcerTests {
 
     @Before
     public void injectDumpGenerator() {
-        DumpCoordinator.aspectOf().setDumpGenerator(new StubDumpGenerator());
+//        DumpCoordinator.aspectOf().setDumpGenerator(new StubDumpGenerator());
     }
 
     @Test(expected = Assert.FatalAssertionException.class)

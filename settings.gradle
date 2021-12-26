@@ -10,7 +10,7 @@ include ':util:org.eclipse.virgo.util.parser.launcher'
 include ':util:org.eclipse.virgo.util.parser.manifest'
 
 include ':test:org.eclipse.virgo.test.stubs'
-//include ':medic:org.eclipse.virgo.medic.test'
+include ':medic:org.eclipse.virgo.medic.test'
 
 include ':medic:org.eclipse.virgo.medic'
 include ':medic:org.eclipse.virgo.medic.core'
@@ -20,7 +20,7 @@ include ':medic:org.eclipse.virgo.medic.core'
 //include ':repository:org.eclipse.virgo.repository'
 
 //include ':nano:org.eclipse.virgo.nano.authentication'
-//include ':nano:org.eclipse.virgo.nano.core'
+include ':nano:org.eclipse.virgo.nano.core'
 //include ':nano:org.eclipse.virgo.nano.deployer'
 //include ':nano:org.eclipse.virgo.nano.deployer.api'
 //include ':nano:org.eclipse.virgo.nano.deployer.hot'
