@@ -32,7 +32,7 @@ pipeline {
 
         stage ('junit') {
 			steps {
-		        junit allowEmptyResults: true, testResults: 'build/test-results/test/*.xml', skipPublishingChecks: true
+		        junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml', skipPublishingChecks: true
     	    }
         }
 
