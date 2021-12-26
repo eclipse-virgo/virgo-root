@@ -1,0 +1,11 @@
+plugins {
+    id 'virgo.java-conventions'
+}
+
+dependencies {
+    implementation project(':util:org.eclipse.virgo.util.common')
+    implementation project(':util:org.eclipse.virgo.util.io')
+    implementation project(':util:org.eclipse.virgo.util.parser.manifest')
+
+    implementation 'org.eclipse.platform:org.eclipse.osgi'
+}
