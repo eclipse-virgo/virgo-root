@@ -1,1 +1,43 @@
+plugins {
+    id 'java'
+    id "io.freefair.aspectj" version "6.3.0" apply false
+}
+
+//plugins {
+//    // https://plugins.gradle.org/plugin/io.freefair.aspectj
+//    id "io.freefair.aspectj" version "6.3" apply false
+//}
+
 version = '3.7.5-SNAPSHOT'
+
+ext {
+    // these projects contain aspects
+    aspectjProjects = [
+            project(':util:org.eclipse.virgo.util.jmx'),
+    ]
+}
+
+configure(aspectjProjects) {
+    apply plugin: "java"
+    apply plugin: "io.freefair.aspectj"
+
+    dependencies {
+        implementation "org.aspectj:aspectjrt:1.9.7"
+    }
+
+//    dependencies {
+//        compile 'org.aspectj:aspectjrt'
+//    }
+
+//    sourceSets.main.aspectj.srcDir "src/main/java"
+//    sourceSets.main.java.srcDirs = files()
+//
+//    sourceSets.test.aspectj.srcDir "src/test/java"
+//    sourceSets.test.java.srcDirs = files()
+//
+//    compileAspectj.ajcOptions.outxmlfile = "META-INF/aop.xml"
+//
+//    aspectj {
+//        version = aspectjVersion
+//    }
+}
