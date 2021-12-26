@@ -1,9 +1,3 @@
-project(':util:org.eclipse.virgo.util.common') {
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-    }
-}
-
 project(':util:org.eclipse.virgo.util.io') {
     dependencies {
         compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion

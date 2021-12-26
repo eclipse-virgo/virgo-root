@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-import static virgobuild.VirgoToolsPlugin.installProduct
-import static virgobuild.VirgoToolsPlugin.publishProduct
+import static VirgoToolsPlugin.installProduct
+import static VirgoToolsPlugin.publishProduct
 
 apply plugin: 'distribution'
 

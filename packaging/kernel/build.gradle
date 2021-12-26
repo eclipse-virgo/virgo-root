@@ -1,10 +1,10 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-import static virgobuild.VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
-import static virgobuild.VirgoToolsPlugin.installProduct
-import static virgobuild.VirgoToolsPlugin.publishProduct
+import static VirgoToolsPlugin.DOWNLOAD_VIRGO_BUILD_TOOLS_TASK_NAME
+import static VirgoToolsPlugin.installProduct
+import static VirgoToolsPlugin.publishProduct
 
-import virgobuild.Config
+import Config
 
 apply plugin: 'distribution'
 

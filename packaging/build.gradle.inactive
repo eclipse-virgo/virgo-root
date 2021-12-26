@@ -11,39 +11,39 @@ def packageConfiguration(configurationName, configuration, target) {
 }
 
 configure([
-        project(':packaging:nano'),
-        project(':packaging:kernel'),
-        project(':packaging:jetty-server'),
-        project(':packaging:tomcat-server'),
+//        project(':packaging:nano'),
+//        project(':packaging:kernel'),
+//        project(':packaging:jetty-server'),
+//        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         // TODO - rename to virgoLib, virgoLibPersistence, virgoLibEndorsed and virgoPickup?!
-        nanoLib project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
-        nanoLib project(':nano:org.eclipse.virgo.nano.authentication')
-        nanoLib project(':nano:org.eclipse.virgo.nano.shutdown')
-        nanoLib project(':util:org.eclipse.virgo.util.env')
-        nanoLib group: "org.eclipse.platform", name: "org.eclipse.equinox.launcher", version: equinoxLauncherVersion
+//        nanoLib project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+//        nanoLib project(':nano:org.eclipse.virgo.nano.authentication')
+//        nanoLib project(':nano:org.eclipse.virgo.nano.shutdown')
+//        nanoLib project(':util:org.eclipse.virgo.util.env')
+//        nanoLib group: "org.eclipse.platform", name: "org.eclipse.equinox.launcher", version: equinoxLauncherVersion
 
-        nanoLibPersistence project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
+//        nanoLibPersistence project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
 
-        nanoLibEndorsed group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
-        nanoLibEndorsed group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
-        nanoLibEndorsed group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+//        nanoLibEndorsed group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+//        nanoLibEndorsed group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
+//        nanoLibEndorsed group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
 
-        nanoPickup project(':kernel:org.eclipse.virgo.management.console')
+//        nanoPickup project(':kernel:org.eclipse.virgo.management.console')
     }
 }
 
 project(':packaging:nano') { dependencies {} }
 
 if (System.properties['skip.smoke.tests'] != 'true') {
-    project(':packaging:nano:org.eclipse.virgo.nano.smoketest') { dependencies {} }
+//    project(':packaging:nano:org.eclipse.virgo.nano.smoketest') { dependencies {} }
 }
 
 configure([
-        project(':packaging:kernel'),
-        project(':packaging:jetty-server'),
-        project(':packaging:tomcat-server'),
+//        project(':packaging:kernel'),
+//        project(':packaging:jetty-server'),
+//        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         kernelPluginsExtras project(':kernel:org.eclipse.virgo.kernel.userregion')
@@ -90,8 +90,8 @@ configure([
 ]) { dependencies {} }
 
 configure([
-        project(':packaging:jetty-server'),
-        project(':packaging:tomcat-server'),
+//        project(':packaging:jetty-server'),
+//        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         repositoryExt project(':medic:org.eclipse.virgo.medic')
@@ -128,7 +128,7 @@ configure([
 }
 
 configure([
-        project(':packaging:jetty-server'),
+//        project(':packaging:jetty-server'),
 ]) {
     dependencies {
         repositoryExt project(':web:org.eclipse.virgo.web.servlet.adapter')
@@ -161,7 +161,7 @@ configure([
 }
 
 configure([
-        project(':packaging:tomcat-server'),
+//        project(':packaging:tomcat-server'),
 ]) {
     dependencies {
         repositoryExt project(':web:org.eclipse.virgo.web.core')

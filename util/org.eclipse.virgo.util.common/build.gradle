@@ -1,0 +1,7 @@
+plugins {
+    id 'virgo.java-conventions'
+}
+
+dependencies {
+    testImplementation 'org.easymock:easymock'
+}
