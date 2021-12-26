@@ -11,6 +11,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url file("$rootProject.projectDir/mirror/mavenRepository").toURI().toURL()
+    }
 }
 
 dependencies {
@@ -23,6 +26,9 @@ dependencies {
         // https://search.maven.org/artifact/org.slf4j/slf4j-api
 //        implementation 'org.slf4j:slf4j-api:1.7.32'
         implementation 'org.slf4j:slf4j-api:1.7.25'
+
+        // Eclipse Kepler 4.3.2 (SR2)
+        implementation 'org.eclipse.platform:org.eclipse.osgi:3.9.1.v20140110-1610'
 
         // CQ4132 (PB CQ1887)
         // https://search.maven.org/artifact/org.easymock/easymock

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.virgo.mirrored</groupId>
+  <artifactId>org.springframework.context</artifactId>
+  <versioning>
+    <release>4.3.27.RELEASE</release>
+    <versions>
+      <version>4.3.27.RELEASE</version>
+    </versions>
+    <lastUpdated>20211007192338</lastUpdated>
+  </versioning>
+</metadata>

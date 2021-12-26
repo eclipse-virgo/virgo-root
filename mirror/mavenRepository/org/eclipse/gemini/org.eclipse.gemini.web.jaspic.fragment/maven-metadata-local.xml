@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.gemini</groupId>
+  <artifactId>org.eclipse.gemini.web.jaspic.fragment</artifactId>
+  <versioning>
+    <release>3.0.6.RELEASE</release>
+    <versions>
+      <version>3.0.6.RELEASE</version>
+    </versions>
+    <lastUpdated>20211007192355</lastUpdated>
+  </versioning>
+</metadata>

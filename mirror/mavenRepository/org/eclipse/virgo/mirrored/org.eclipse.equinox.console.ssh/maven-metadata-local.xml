@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.virgo.mirrored</groupId>
+  <artifactId>org.eclipse.equinox.console.ssh</artifactId>
+  <versioning>
+    <release>1.0.0.v20130515-2026</release>
+    <versions>
+      <version>1.0.0.v20130515-2026</version>
+    </versions>
+    <lastUpdated>20211007182707</lastUpdated>
+  </versioning>
+</metadata>

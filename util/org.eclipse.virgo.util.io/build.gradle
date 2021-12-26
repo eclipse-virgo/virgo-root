@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api'
-
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.math')
+
+    implementation 'org.slf4j:slf4j-api'
 }

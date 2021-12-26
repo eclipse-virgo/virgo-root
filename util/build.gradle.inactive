@@ -1,14 +1,3 @@
-project(':util:org.eclipse.virgo.util.osgi') {
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-
-        compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
-
-        compile project(':util:org.eclipse.virgo.util.common')
-        compile project(':util:org.eclipse.virgo.util.parser.manifest')
-    }
-}
-
 project(':util:org.eclipse.virgo.util.osgi.manifest') {
     dependencies {
 
