@@ -13,7 +13,7 @@ include ':test:org.eclipse.virgo.test.stubs'
 //include ':medic:org.eclipse.virgo.medic.test'
 
 include ':medic:org.eclipse.virgo.medic'
-//include ':medic:org.eclipse.virgo.medic.core'
+include ':medic:org.eclipse.virgo.medic.core'
 //include ':medic:org.eclipse.virgo.medic.logbackcorefragment'
 //include ':medic:org.eclipse.virgo.medic.logbackclassicfragment'
 

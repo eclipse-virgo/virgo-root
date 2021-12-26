@@ -1,0 +1,25 @@
+plugins {
+    id 'virgo.java-conventions'
+}
+
+dependencies {
+    implementation project(':medic:org.eclipse.virgo.medic')
+    implementation project(':util:org.eclipse.virgo.util.io')
+    implementation project(':util:org.eclipse.virgo.util.osgi')
+
+//    testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
+    testImplementation project(':test:org.eclipse.virgo.test.stubs')
+
+//    testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+
+    implementation 'org.eclipse.platform:org.eclipse.osgi'
+    implementation 'org.eclipse.platform:org.eclipse.osgi.services'
+    implementation 'org.eclipse.platform:org.eclipse.equinox.cm'
+//    compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+//    compile group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
+
+//    compile 'org.fusesource.jansi:jansi:1.11'
+
+//    compile "ch.qos.logback:logback-core:${logbackVersion}"
+//    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+}
