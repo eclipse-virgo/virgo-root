@@ -32,7 +32,7 @@ public final class JoranLoggerContextConfigurer implements LoggerContextConfigur
         try {
             configurator.doConfigure(new InputSource(new StringReader(configurationString)));
             List<Status> statusList = loggerContext.getStatusManager().getCopyOfStatusList();
-            List<String> failureMessages = new ArrayList<String>();
+            List<String> failureMessages = new ArrayList<>();
             for (Status status : statusList) {
                 if (Status.INFO != status.getLevel()) {
                     Throwable cause = null;

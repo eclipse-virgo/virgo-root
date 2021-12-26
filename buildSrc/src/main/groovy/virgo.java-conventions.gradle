@@ -26,6 +26,13 @@ dependencies {
         // https://search.maven.org/artifact/org.slf4j/slf4j-api
 //        implementation 'org.slf4j:slf4j-api:1.7.32'
         implementation 'org.slf4j:slf4j-api:1.7.25'
+        // https://search.maven.org/artifact/org.slf4j/jul-to-slf4j
+        implementation 'org.slf4j:jul-to-slf4j:1.7.25'
+
+        // CQ 13636 - Logback Classic Version 1.2.3
+        // CQ 13635 - Logback Core Version: 1.2.3
+        implementation 'ch.qos.logback:logback-core:1.2.3'
+        implementation 'ch.qos.logback:logback-classic:1.2.3'
 
         // Eclipse Kepler 4.3.2 (SR2) - local Maven mirror
         // https://search.maven.org/artifact/org.eclipse.platform/org.eclipse.osgi
