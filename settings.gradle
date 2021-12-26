@@ -28,7 +28,7 @@ include ':nano:org.eclipse.virgo.nano.core'
 //include ':nano:org.eclipse.virgo.nano.management.controller'
 //include ':nano:org.eclipse.virgo.nano.services.concurrent'
 //include ':nano:org.eclipse.virgo.nano.services.ds'
-//include ':nano:org.eclipse.virgo.nano.shutdown'
+include ':nano:org.eclipse.virgo.nano.shutdown'
 
 //include ':kernel:org.eclipse.virgo.kernel.agent.dm'
 //include ':kernel:org.eclipse.virgo.kernel.artifact'
