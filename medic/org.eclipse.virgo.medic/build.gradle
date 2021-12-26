@@ -1,0 +1,8 @@
+plugins {
+    id 'virgo.aspectj-conventions'
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.eclipse.platform:org.eclipse.osgi'
+}

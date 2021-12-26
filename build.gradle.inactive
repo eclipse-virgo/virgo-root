@@ -173,9 +173,7 @@ if (System.properties['local.build'] == 'true') {
 
 ext.aspectjProjects = [
         // these projects contain aspects
-//        project(':util:org.eclipse.virgo.util.jmx'),
 //        project(':test:org.eclipse.virgo.test.stubs'),
-//        project(':medic:org.eclipse.virgo.medic'),
 //        project(':nano:org.eclipse.virgo.nano.core'),
         // these projects are woven
 //        project(':kernel:org.eclipse.virgo.kernel.model'),

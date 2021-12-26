@@ -1,13 +1,3 @@
-project(':medic:org.eclipse.virgo.medic') {
-    dependencies {
-        testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
-
-        compile group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
-
-        compile group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
-    }
-}
-
 project(':medic:org.eclipse.virgo.medic.core') {
     dependencies {
         testCompile group: 'org.easymock', name: 'easymock', version: easymockVersion
