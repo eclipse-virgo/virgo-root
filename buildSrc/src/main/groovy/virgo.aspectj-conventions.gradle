@@ -1,0 +1,7 @@
+plugins {
+    id 'virgo.java-conventions'
+}
+
+dependencies {
+    implementation "org.aspectj:aspectjrt:1.9.7"
+}

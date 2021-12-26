@@ -1,3 +1,4 @@
+// https://docs.gradle.org/current/samples/sample_convention_plugins.html
 plugins {
     id 'java'
 }

@@ -1,5 +1,5 @@
 plugins {
-    id 'virgo.java-conventions'
+    id 'virgo.aspectj-conventions'
 }
 
 dependencies {
