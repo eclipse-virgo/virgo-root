@@ -7,6 +7,23 @@ plugins {
 version = '3.7.5-SNAPSHOT'
 
 ext {
+    // used when copying features and products
+    tokenMap = [
+            'VIRGO.VERSION'                : version,
+
+            'OSGI.SERVICES.VERSION'        : osgiServicesVersion, // used in oev.kernel.userregion.properties
+
+            'EQUINOX.CONFIGADMIN.VERSION'  : equinoxCmVersion,
+//            'EQUINOX.CONSOLE.VERSION'      : equinoxConsoleVersion,
+//            'EQUINOX.CONSOLE.SSH.VERSION'  : equinoxConsoleSshVersion,
+
+//            'MINA.CORE.VERSION'            : minaCoreVersion,
+//            'SSHD.CORE.VERSION'            : apacheSshdCoreVersion,
+//            'FELIX.GOGO.COMMAND.VERSION'   : gogoCommandVersion,
+//            'FELIX.GOGO.RUNTIME.VERSION'   : gogoRuntimeVersion,
+//            'FELIX.GOGO.SHELL.VERSION'     : gogoShellVersion,
+    ]
+
     // these projects contain aspects
     aspectjProjects = [
             project(':util:org.eclipse.virgo.util.jmx'),

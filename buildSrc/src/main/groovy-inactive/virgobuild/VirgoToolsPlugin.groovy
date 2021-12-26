@@ -2,7 +2,7 @@ package virgobuild
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import FileSemaphore
+import eclipsebuild.FileSemaphore
 
 // new comment
 // Derived from buildship Plugins

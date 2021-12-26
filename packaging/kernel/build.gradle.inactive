@@ -8,7 +8,6 @@ distributions {
         contents {
             from ( 'src/main/filtered' ) {
                 include ( '**/*.properties' )
-                include ( '**/*.plan' )
                 include ( '**/.version' )
                 filter(ReplaceTokens, tokens: tokenMap) // tokens are used in e.g. oev.kernel.userregion.properties
             }

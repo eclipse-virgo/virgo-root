@@ -87,7 +87,7 @@ if (System.properties['include.docs'] == 'true') {
 	include ':documentation:user-guide'
 }
 
-//include ':org.eclipse.virgo.site'
+include ':org.eclipse.virgo.site'
 // TODO - rename feature to region'_'
 //include ':org.eclipse.virgo.site:org.eclipse.equinox.regions'
 //include ':org.eclipse.virgo.site:org.eclipse.equinox.http.jetty'
@@ -116,7 +116,7 @@ if (System.properties['include.docs'] == 'true') {
 //include ':org.eclipse.virgo.site:org.eclipse.virgo.tools'
 
 //include ':packaging:nano'
-//include ':packaging:kernel'
+include ':packaging:kernel'
 //include ':packaging:jetty-server'
 //include ':packaging:tomcat-server'
 

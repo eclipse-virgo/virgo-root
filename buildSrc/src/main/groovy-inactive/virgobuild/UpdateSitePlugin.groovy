@@ -1,60 +1,60 @@
-//package virgobuild
-//
-//import org.gradle.api.Plugin
-//import org.gradle.api.Project
+package virgobuild
+
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 //import org.gradle.api.artifacts.ProjectDependency
-//import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileCollection
 //import org.gradle.api.plugins.JavaPlugin
 //
 //import FeaturePlugin
 //
-//import static VirgoToolsPlugin.DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME
-//
-//// Derived from buildship Plugins
-//class UpdateSitePlugin implements Plugin<Project> {
-//
-//    /**
-//     * Extension class to configure the UpdateSite plugin.
-//     */
-//    static class Extension {
-//        File siteDescriptor
-//        FileCollection extraResources
-//        // TOOD - remove this hook once all of our features are consolidated are migrated to feature projects
-//        Closure hook
-//        Closure signing
-//        Closure mutateArtifactsXml
-//    }
-//
-//    // name of the root node in the DSL
-//    static final String DSL_EXTENSION_NAME = 'updateSite'
-//
+import static VirgoToolsPlugin.DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME
+
+// Derived from buildship Plugins
+class UpdateSitePlugin implements Plugin<Project> {
+
+    /**
+     * Extension class to configure the UpdateSite plugin.
+     */
+    static class Extension {
+        File siteDescriptor
+        FileCollection extraResources
+        // TOOD - remove this hook once all of our features are consolidated are migrated to feature projects
+        Closure hook
+        Closure signing
+        Closure mutateArtifactsXml
+    }
+
+    // name of the root node in the DSL
+    static final String DSL_EXTENSION_NAME = 'updateSite'
+
 //    // buildship task names (in order of execution)
 //    static final String COPY_BUNDLES_TASK_NAME = 'copyBundles'
 //    static final String NORMALIZE_BUNDLES_TASK_NAME = 'normalizeBundles'
 //    static final String SIGN_BUNDLES_TASK_NAME = 'signBundles'
-//    static final String COMPRESS_BUNDLES_TASK_NAME = 'compressBundles'
-//    static final String CREATE_P2_REPOSITORY_TASK_NAME = 'createP2Repository'
+    static final String COMPRESS_BUNDLES_TASK_NAME = 'compressBundles'
+    static final String CREATE_P2_REPOSITORY_TASK_NAME = 'createP2Repository'
 //
 //    // temporary folder names during build
-//    static final String PRE_NORMALIZED_BUNDLES_DIR_NAME = 'unconditioned-bundles'
+    static final String PRE_NORMALIZED_BUNDLES_DIR_NAME = 'unconditioned-bundles'
 //    static final String UNSIGNED_BUNDLES_DIR_NAME = 'unsigned-bundles'
 //    static final String SIGNED_BUNDLES_DIR_NAME = 'signed-bundles'
 //    static final String COMPRESSED_BUNDLES_DIR_NAME = 'compressed-bundles'
 //    static final String FEATURES_DIR_NAME = 'features'
 //    static final String PLUGINS_DIR_NAME = 'plugins'
 //    static final String REPOSITORY_DIR_NAME = 'repository'
-//
-//    @Override
-//    void apply(Project project) {
-//        configureProject(project)
+
+    @Override
+    void apply(Project project) {
+        configureProject(project)
 //        addTaskCopyBundles(project)
 //        addTaskNormalizeBundles(project)
 //        addTaskSignBundles(project)
 //        addTaskCompressBundles(project)
-//        addTaskCreateP2Repository(project)
-//    }
-//
-//    static void configureProject(Project project) {
+        addTaskCreateP2Repository(project)
+    }
+
+    static void configureProject(Project project) {
 //        // apply the Java plugin to have the life-cycle tasks
 //        project.plugins.apply(JavaPlugin)
 //
@@ -65,7 +65,7 @@
 //        project.configurations.create('signedExternalPlugin')
 //
 //        // add the 'updateSite' extension
-//        project.extensions.create(DSL_EXTENSION_NAME, Extension)
+        project.extensions.create(DSL_EXTENSION_NAME, Extension)
 //        project.updateSite.siteDescriptor = project.file('category.xml')
 //        project.updateSite.extraResources = project.files()
 //        project.updateSite.hook = null
@@ -74,8 +74,8 @@
 //
 //        // validate the content
 //        validateRequiredFilesExist(project)
-//    }
-//
+    }
+
 //    static void addTaskCopyBundles(Project project) {
 //        def copyBundlesTask = project.task(COPY_BUNDLES_TASK_NAME) {
 //
@@ -261,24 +261,24 @@
 //            }
 //        }
 //    }
-//
-//    static void addTaskCreateP2Repository(Project project) {
-//        def createP2RepositoryTask = project.task(CREATE_P2_REPOSITORY_TASK_NAME, dependsOn: [
-//            COMPRESS_BUNDLES_TASK_NAME,
-//            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
-//        ]) {
-//            group = Constants.gradleTaskGroupName
-//            description = 'Generates the P2 repository.'
-//            inputs.file project.updateSite.siteDescriptor
-//            inputs.files project.updateSite.extraResources
-//            inputs.dir new File(project.buildDir, COMPRESSED_BUNDLES_DIR_NAME)
-//            outputs.dir new File(project.buildDir, REPOSITORY_DIR_NAME)
-//            doLast { createP2Repository(project) }
-//        }
-//
-//        project.tasks.assemble.dependsOn createP2RepositoryTask
-//    }
-//
+
+    static void addTaskCreateP2Repository(Project project) {
+        def createP2RepositoryTask = project.task(CREATE_P2_REPOSITORY_TASK_NAME, dependsOn: [
+            COMPRESS_BUNDLES_TASK_NAME,
+            ":${DOWNLOAD_ECLIPSE_PHOTON_SDK_TASK_NAME}"
+        ]) {
+            group = Constants.gradleTaskGroupName
+            description = 'Generates the P2 repository.'
+            inputs.file project.updateSite.siteDescriptor
+            inputs.files project.updateSite.extraResources
+            inputs.dir new File(project.buildDir, COMPRESSED_BUNDLES_DIR_NAME)
+            outputs.dir new File(project.buildDir, REPOSITORY_DIR_NAME)
+            doLast { createP2Repository(project) }
+        }
+
+        project.tasks.assemble.dependsOn createP2RepositoryTask
+    }
+
 //    static void createP2Repository(Project project) {
 //        def repositoryDir = new File(project.buildDir, REPOSITORY_DIR_NAME)
 //
@@ -370,4 +370,4 @@
 //        }
 //    }
 //
-//}
+}

@@ -1,13 +1,13 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-import static virgobuild.UpdateSitePlugin.CREATE_P2_REPOSITORY_TASK_NAME
-import static virgobuild.UpdateSitePlugin.PRE_NORMALIZED_BUNDLES_DIR_NAME
-import static virgobuild.VirgoToolsPlugin.installProduct
-import static virgobuild.VirgoToolsPlugin.publishProduct
+import static UpdateSitePlugin.CREATE_P2_REPOSITORY_TASK_NAME
+import static UpdateSitePlugin.PRE_NORMALIZED_BUNDLES_DIR_NAME
+import static VirgoToolsPlugin.installProduct
+import static VirgoToolsPlugin.publishProduct
 
-import virgobuild.Constants
+import Constants
 
-apply plugin: virgobuild.UpdateSitePlugin
+apply plugin: UpdateSitePlugin
 apply plugin: 'org.hidetake.ssh'
 
 buildscript {
@@ -42,339 +42,339 @@ remotes {
 }
 
 dependencies {
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.agent.dm')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.artifact')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.deployer')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.deployer.dm')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.dmfragment')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.model')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.osgi')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.services')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.userregion')
-    localPlugin project(':kernel:org.eclipse.virgo.kernel.userregionfactory')
-    localPlugin project(':kernel:org.eclipse.virgo.management.console')
-    localPlugin project(':kernel:org.eclipse.virgo.management.fragment')
-    localPlugin project(':kernel:org.eclipse.virgo.shell.command')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.agent.dm')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.artifact')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.deployer')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.deployer.dm')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.dmfragment')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.equinox.extensions')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.kerneldmfragment')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.model')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.osgi')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.services')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.userregion')
+//    localPlugin project(':kernel:org.eclipse.virgo.kernel.userregionfactory')
+//    localPlugin project(':kernel:org.eclipse.virgo.management.console')
+//    localPlugin project(':kernel:org.eclipse.virgo.management.fragment')
+//    localPlugin project(':kernel:org.eclipse.virgo.shell.command')
 
-    localPlugin project(':medic:org.eclipse.virgo.medic')
-    localPlugin project(':medic:org.eclipse.virgo.medic.core')
-    localPlugin project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
-    localPlugin project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
+//    localPlugin project(':medic:org.eclipse.virgo.medic')
+//    localPlugin project(':medic:org.eclipse.virgo.medic.core')
+//    localPlugin project(':medic:org.eclipse.virgo.medic.logbackclassicfragment')
+//    localPlugin project(':medic:org.eclipse.virgo.medic.logbackcorefragment')
 
-    localPlugin project(':nano:org.eclipse.virgo.nano.core')
-    localPlugin project(':nano:org.eclipse.virgo.nano.deployer')
-    localPlugin project(':nano:org.eclipse.virgo.nano.deployer.api')
-    localPlugin project(':nano:org.eclipse.virgo.nano.deployer.hot')
-    localPlugin project(':nano:org.eclipse.virgo.nano.management')
-    localPlugin project(':nano:org.eclipse.virgo.nano.management.controller')
-    localPlugin project(':nano:org.eclipse.virgo.nano.services.concurrent')
-    localPlugin project(':nano:org.eclipse.virgo.nano.services.ds')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.core')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.deployer')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.deployer.api')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.deployer.hot')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.management')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.management.controller')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.services.concurrent')
+//    localPlugin project(':nano:org.eclipse.virgo.nano.services.ds')
 
-    localPlugin project(':repository:org.eclipse.virgo.repository')
+//    localPlugin project(':repository:org.eclipse.virgo.repository')
     // TODO - review if all those signedExternalPlugins are signed
-    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
+//    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
     // optional requirement for org.springframework.core
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.logging", version: commonsLoggingVersion, ext: "jar"
 
-    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
+//    signedExternalPlugin group: 'org.eclipse.virgo.mirrored', name: 'oevm.org.apache.commons.httpclient', version: commonsHttpClientVersion, ext: "jar"
 
-    localPlugin project(':util:org.eclipse.virgo.util.common')
-    localPlugin project(':util:org.eclipse.virgo.util.env')
-    localPlugin project(':util:org.eclipse.virgo.util.io')
-    localPlugin project(':util:org.eclipse.virgo.util.jmx')
-    localPlugin project(':util:org.eclipse.virgo.util.math')
-    localPlugin project(':util:org.eclipse.virgo.util.osgi')
-    localPlugin project(':util:org.eclipse.virgo.util.osgi.manifest')
-    localPlugin project(':util:org.eclipse.virgo.util.parser.launcher')
-    localPlugin project(':util:org.eclipse.virgo.util.parser.manifest')
+//    localPlugin project(':util:org.eclipse.virgo.util.common')
+//    localPlugin project(':util:org.eclipse.virgo.util.env')
+//    localPlugin project(':util:org.eclipse.virgo.util.io')
+//    localPlugin project(':util:org.eclipse.virgo.util.jmx')
+//    localPlugin project(':util:org.eclipse.virgo.util.math')
+//    localPlugin project(':util:org.eclipse.virgo.util.osgi')
+//    localPlugin project(':util:org.eclipse.virgo.util.osgi.manifest')
+//    localPlugin project(':util:org.eclipse.virgo.util.parser.launcher')
+//    localPlugin project(':util:org.eclipse.virgo.util.parser.manifest')
 
-    localPlugin project(':web:org.eclipse.virgo.web.core')
-    localPlugin project(':web:org.eclipse.virgo.web.dm')
-    localPlugin project(':web:org.eclipse.virgo.web.tomcat.support')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.applistener')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.jsf.support')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.security')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.security.valve')
-    localPlugin project(':web:org.eclipse.virgo.web.enterprise.services.accessor')
-    localPlugin project(':web:org.eclipse.virgo.web.servlet.adapter')
-    localPlugin project(':web:org.eclipse.virgo.web.spring.integration')
-    localPlugin project(':web:org.eclipse.virgo.web.war.deployer')
+//    localPlugin project(':web:org.eclipse.virgo.web.core')
+//    localPlugin project(':web:org.eclipse.virgo.web.dm')
+//    localPlugin project(':web:org.eclipse.virgo.web.tomcat.support')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.applistener')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.jsf.support')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.jpa.integration')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.security')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.security.valve')
+//    localPlugin project(':web:org.eclipse.virgo.web.enterprise.services.accessor')
+//    localPlugin project(':web:org.eclipse.virgo.web.servlet.adapter')
+//    localPlugin project(':web:org.eclipse.virgo.web.spring.integration')
+//    localPlugin project(':web:org.eclipse.virgo.web.war.deployer')
 
     // TODO - review if all those signedExternalPlugins are signed
-    signedExternalPlugin group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
+//    signedExternalPlugin group: "org.slf4j", name: "slf4j-api", version: slf4jVersion
     // exports package org.apache.commons.logging (jcl - Jakarta Commons Logging)
-    signedExternalPlugin group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
-    signedExternalPlugin group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
-    signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
+//    signedExternalPlugin group: "org.slf4j", name: "slf4j-jcl", version: slf4jVersion
+//    signedExternalPlugin group: "org.slf4j", name: "slf4j-log4j12", version: slf4jVersion
+//    signedExternalPlugin group: "org.slf4j", name: "jul-to-slf4j", version: slf4jVersion
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.aspectj.weaver", version: aspectjVersion, ext: "jar"
 
     // TODO - rename feature to region'_'
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.region", version: equinoxRegionVersion
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.regions')
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.region", version: equinoxRegionVersion
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.core')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.ds')
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.common", version: equinoxCommonVersion
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.ds", version: equinoxDsVersion
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.event", version: equinoxEventVersion
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.util", version: equinoxUtilVersion
-    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.cm", version: equinoxCmVersion
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.core')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.ds')
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.osgi", version: equinoxVersion
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.osgi.services", version: osgiServicesVersion
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.common", version: equinoxCommonVersion
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.ds", version: equinoxDsVersion
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.event", version: equinoxEventVersion
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.util", version: equinoxUtilVersion
+//    signedExternalPlugin group: "org.eclipse.platform", name: "org.eclipse.equinox.cm", version: equinoxCmVersion
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.http.jetty')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.jetty", version: equinoxHttpJettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.servlet", version: equinoxHttpServletVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.http", version: jettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.io", version: jettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.security", version: jettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.server", version: jettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.equinox.http.jetty')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.jetty", version: equinoxHttpJettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.http.servlet", version: equinoxHttpServletVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.continuation", version: jettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.http", version: jettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.io", version: jettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.security", version: jettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.server", version: jettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.servlet", version: jettyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jetty.util", version: jettyVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.rap')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.rwt", version: rapRwtVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.rwt.osgi", version: rapRwtOsgiVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.commands", version: eclipseCoreCommandsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.jface", version: rapJfaceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.ibm.icu.base", version: icuBaseVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding", version: eclipseCoreDatabindingVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding.property", version: eclipseCoreDatabindingPropertyVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding.observable", version: eclipseCoreDatabindingObservableVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.jface.databinding", version: rapJfaceDatabindingVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.ui", version: rapUiVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.rap')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.rwt", version: rapRwtVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.rwt.osgi", version: rapRwtOsgiVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.commands", version: eclipseCoreCommandsVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.jface", version: rapJfaceVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "com.ibm.icu.base", version: icuBaseVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding", version: eclipseCoreDatabindingVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding.property", version: eclipseCoreDatabindingPropertyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.databinding.observable", version: eclipseCoreDatabindingObservableVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.jface.databinding", version: rapJfaceDatabindingVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.rap.ui", version: rapUiVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet", version: javaxServletVersion, configuration: "runtime", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.kernel.springintegration')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.expression", version: springframeworkVersion, ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar" // contains org.osgi.jmx
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.management')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "osgi.enterprise", version: osgiEnterpriseVersion, configuration: "compile", ext: "jar" // contains org.osgi.jmx
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.gemini.management", version: geminiManagementVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
-    signedExternalPlugin group: "ch.qos.logback", name: "logback-core", version: logbackVersion
-    signedExternalPlugin group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.medic')
+//    signedExternalPlugin group: "ch.qos.logback", name: "logback-core", version: logbackVersion
+//    signedExternalPlugin group: "ch.qos.logback", name: "logback-classic", version: logbackVersion
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.controller')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.deployer')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.mbeans.controller')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.shell')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console", version: equinoxConsoleVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console.ssh", version: equinoxConsoleSshVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.mina.core", version: minaCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.sshd.core", version: apacheSshdCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.command", version: gogoCommandVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.shell", version: gogoShellVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.shell')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console", version: equinoxConsoleVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console.ssh", version: equinoxConsoleSshVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.mina.core", version: minaCoreVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.sshd.core", version: apacheSshdCoreVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.command", version: gogoCommandVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.runtime", version: gogoRuntimeVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.felix.gogo.shell", version: gogoShellVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator.manipulator", version: equinoxSimpleConfiguratorManipulatorVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.simpleconfigurator')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator", version: equinoxSimpleConfiguratorVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.simpleconfigurator.manipulator", version: equinoxSimpleConfiguratorManipulatorVersion, configuration: "compile", ext: "jar"
 
-    // TODO - rename feature to org.eclipse.gemini.blueprint
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
+//     TODO - rename feature to org.eclipse.gemini.blueprint
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.springdm')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.aopalliance", version: orgAopAllianceVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.aop", version: springframeworkVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.beans", version: springframeworkVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.context", version: springframeworkVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.springframework.core", version: springframeworkVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-io", version: geminiBlueprintVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-core", version: geminiBlueprintVersion, ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.gemini.blueprint", name: "gemini-blueprint-extender", version: geminiBlueprintVersion, ext: "jar"
 
     // nano base
     // TODO - merge to oev.nano.services ?
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.concurrent')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.ds')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.concurrent')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.services.ds')
 
     // TODO - merge with management features above?
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.webconsole.deps')
 
-    signedExternalPlugin group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
-    signedExternalPlugin group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
-    signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
+//    signedExternalPlugin group: "commons-fileupload", name: "commons-fileupload", version: commonsFileuploadVersion, ext: "jar"
+//    signedExternalPlugin group: "commons-io", name: "commons-io", version: commonsIoVersion, ext: "jar"
+//    signedExternalPlugin group: "org.jolokia", name: "jolokia-osgi", version: jolokiaVersion, ext: "jar"
 
     // nano full
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.p2.provisioning')
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.contenttype", version: eclipseCoreContenttypeVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.jobs", version: eclipseCoreJobsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.net", version: eclipseCoreNetVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.runtime", version: eclipseCoreRuntimeVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf", version: eclipseEcfVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.filetransfer", version: eclipseEcfFiletransferVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.identity", version: eclipseEcfIdentityVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.provider.filetransfer", version: eclipseEcfProviderFiletransferVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.ssl", version: eclipseEcfSslVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.preferences", version: equinoxPreferencesVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.registry", version: equinoxRegistryVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.security", version: equinoxSecurityVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.sat4j.core", version: sat4jCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.sat4j.pb", version: sat4jPbVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.p2.provisioning')
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.contenttype", version: eclipseCoreContenttypeVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.jobs", version: eclipseCoreJobsVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.net", version: eclipseCoreNetVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.core.runtime", version: eclipseCoreRuntimeVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf", version: eclipseEcfVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.filetransfer", version: eclipseEcfFiletransferVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.identity", version: eclipseEcfIdentityVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.provider.filetransfer", version: eclipseEcfProviderFiletransferVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.ecf.ssl", version: eclipseEcfSslVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.preferences", version: equinoxPreferencesVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.registry", version: equinoxRegistryVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.security", version: equinoxSecurityVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.sat4j.core", version: sat4jCoreVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.sat4j.pb", version: sat4jPbVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.artifact.repository", version: p2ArtifactRepositoryVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.console", version: p2ConsoleVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.core", version: p2CoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.director", version: p2DirectorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.engine", version: p2EngineVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.garbagecollector", version: p2GarbageCollectorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.jarprocessor", version: p2JarProcessorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.metadata", version: p2MetadataVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.metadata.repository", version: p2MetadataRepositoryVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.publisher", version: p2PublisherVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.publisher.eclipse", version: p2PublisherEclipseVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.repository", version: p2RepositoryVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.eclipse", version: p2TouchpointEclipseVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.natives", version: p2TouchpointNativesVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.transport.ecf", version: p2TransportEcfVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.artifact.repository", version: p2ArtifactRepositoryVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.console", version: p2ConsoleVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.core", version: p2CoreVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.director", version: p2DirectorVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.engine", version: p2EngineVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.garbagecollector", version: p2GarbageCollectorVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.jarprocessor", version: p2JarProcessorVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.metadata", version: p2MetadataVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.metadata.repository", version: p2MetadataRepositoryVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.publisher", version: p2PublisherVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.publisher.eclipse", version: p2PublisherEclipseVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.repository", version: p2RepositoryVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.eclipse", version: p2TouchpointEclipseVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.touchpoint.natives", version: p2TouchpointNativesVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.p2.transport.ecf", version: p2TransportEcfVersion, configuration: "compile", ext: "jar"
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.war.deployer')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.enterprise')
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.web')
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.extender", version: geminiWebVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.jaspic.fragment", version: geminiWebVersion, configuration: "compile", ext: "jar"
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.nano.war.deployer')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.enterprise')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.gemini.web')
+//    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.extender", version: geminiWebVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.jaspic.fragment", version: geminiWebVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.log4j", version: apacheLog4jVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.log4j", version: apacheLog4jVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.objectweb.asm", version: objectwebAsmVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javassist", version: javassistVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "scannotation", version: scannotationVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.bval", version: apacheBvalVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.quartz", version: quartzVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.objectweb.asm", version: objectwebAsmVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javassist", version: javassistVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "scannotation", version: scannotationVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.bval", version: apacheBvalVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.quartz", version: quartzVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.ow2.jotm.jotm-core", version: jotmVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
-    signedExternalPlugin group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
-    signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.wsdl", version: javaxWsdlVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ws.rs", version: javaxWsRsVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "javax.interceptor", name: "javax.interceptor-api", version: javaxInterceptorVersion
+//    signedExternalPlugin group: "javax.transaction", name: "javax.transaction-api", version: javaxTransactionVersion
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.annotation", version: javaxAnnotationVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ejb", version: javaxEjbVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.inject", version: javaxInjectVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.jms", version: javaxJmsVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.persistence", version: javaxPersistenceVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.resource", version: javaxResourceVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.auth.message", version: javaxSecurityAuthMessageVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.security.jacc", version: javaxSecurityJaccVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: javaxServletJspJstlApiVersion
+//    signedExternalPlugin group: "org.glassfish.web", name: "javax.servlet.jsp.jstl", version: javaxServletJspJstlImplVersion
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.wsdl", version: javaxWsdlVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.ws.rs", version: javaxWsRsVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.javax.faces", version: glassfishJavaxFacesVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.javax.faces", version: glassfishJavaxFacesVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.connector", version: geronimoComponentsConnectorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.transaction", version: geronimoComponentsTransactionVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.j2ee.management", version: geronimoSpecsJ2eeManagementVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.locator", version: geronimoSpecsOsgiLocatorVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.registry", version: geronimoSpecsOsgiRegistryVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.connector", version: geronimoComponentsConnectorVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.components.transaction", version: geronimoComponentsTransactionVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.j2ee.management", version: geronimoSpecsJ2eeManagementVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.locator", version: geronimoSpecsOsgiLocatorVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.geronimo.specs.osgi.registry", version: geronimoSpecsOsgiRegistryVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.beanutils", version: commonsBeanutilsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.cli", version: commonsCliVersion, ext: "jar"
-    signedExternalPlugin group: "commons-collections", name: "commons-collections", version: commonsCollectionsVersion
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.lang", version: commonsLangVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.pool", version: commonsPoolVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.beanutils", version: commonsBeanutilsVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "oevm.org.apache.commons.cli", version: commonsCliVersion, ext: "jar"
+//    signedExternalPlugin group: "commons-collections", name: "commons-collections", version: commonsCollectionsVersion
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.lang", version: commonsLangVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.dbcp", version: commonsDbcpVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.commons.pool", version: commonsPoolVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "cdi.api", version: cdiApiVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.api", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.javaagent", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jpa-integration", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "cdi.api", version: cdiApiVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.api", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.javaagent", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jpa-integration", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ee", version: apacheOpenwebbeansEEVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ee.common", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ejb", version: apacheOpenwebbeansEEVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.jsf", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.spi", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.tomcat7", version: apacheOpenwebbeansTomcat7Version, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.web", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ee", version: apacheOpenwebbeansEEVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ee.common", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.ejb", version: apacheOpenwebbeansEEVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.jsf", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.spi", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.tomcat7", version: apacheOpenwebbeansTomcat7Version, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.web", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.asm", version: apacheXBeanAsmVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.bundleutils", version: apacheXBeanBundleutilsVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.finder", version: apacheXBeanFinderVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.naming", version: apacheXBeanNamingVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.reflect", version: apacheXBeanReflectVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.asm", version: apacheXBeanAsmVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.bundleutils", version: apacheXBeanBundleutilsVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.finder", version: apacheXBeanFinderVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.naming", version: apacheXBeanNamingVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.reflect", version: apacheXBeanReflectVersion, configuration: "compile", ext: "jar"
 
     // Tomcat Runtime
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.el", version: javaxElVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "com.sun.mail", name: "javax.mail", version: javaxMailVersion
     // TODO - check CQ and put version into properties
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.activation", version: '1.1.0.v201211130549', configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.activation", version: '1.1.0.v201211130549', configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.tribes", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.el", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.jasper", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.jni", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.servlet.jsp", version: javaxServletJspVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.websocket", version: javaxWebsocketVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "javax.xml.rpc", version: javaxXmlRpcVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.ha", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina.tribes", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.coyote", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.el", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.jasper", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.juli", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.jni", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.websocket", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.jdt.core.compiler.batch", version: eclipseJdtCoreCompilerBatchVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.antlr", version: eclipsePersistenceAntlrVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.asm", version: eclipsePersistenceAsmVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa", version: eclipsePersistenceJpaVersion, configuration: "compile", ext: "jar"
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa.jpql", version: eclipsePersistenceJpaJpqlVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.antlr", version: eclipsePersistenceAntlrVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.asm", version: eclipsePersistenceAsmVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.core", version: eclipsePersistenceCoreVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa", version: eclipsePersistenceJpaVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.eclipse.persistence.jpa.jpql", version: eclipsePersistenceJpaJpqlVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.derby", version: apacheDerbyVersion, configuration: "compile", ext: "jar"
+//    signedExternalPlugin group: "org.eclipse.virgo.mirrored", name: "org.apache.derby", version: apacheDerbyVersion, configuration: "compile", ext: "jar"
 
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.applistener')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.jsf.support')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security.valve')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.services.accessor')
-    signedExternalPlugin project(':web:org.eclipse.virgo.web.war.deployer')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.applistener')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.catalina.fragment.webbeans')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.extension')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.javax.persistence.provider.initializer')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.jsf.support')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.bval')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jotm')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.jpa')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.fragment.webbeans')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.initialiser')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openejb.tomcat.factory')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.openwebbeans.initialiser')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.persistence.openejb.classloading.hook')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security.openejb.classloading.hook')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.security.valve')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.enterprise.services.accessor')
+//    signedExternalPlugin project(':web:org.eclipse.virgo.web.war.deployer')
 
-    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.tools')
+//    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.tools')
 }
 
 task zipUpdateSite(type: Zip, dependsOn : createP2Repository) {
