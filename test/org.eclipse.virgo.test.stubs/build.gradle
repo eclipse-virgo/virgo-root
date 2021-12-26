@@ -1,0 +1,12 @@
+plugins {
+    id 'virgo.aspectj-conventions'
+}
+
+dependencies {
+    // uses Assert.assertEquals in the testframework itself
+    implementation 'junit:junit'
+
+    implementation 'org.eclipse.platform:org.eclipse.osgi'
+    implementation 'org.eclipse.platform:org.eclipse.osgi.services'
+    implementation 'org.eclipse.platform:org.eclipse.equinox.region'
+}

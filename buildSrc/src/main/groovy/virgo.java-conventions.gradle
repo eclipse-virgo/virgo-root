@@ -30,6 +30,11 @@ dependencies {
         // Eclipse Kepler 4.3.2 (SR2) - local Maven mirror
         // https://search.maven.org/artifact/org.eclipse.platform/org.eclipse.osgi
         implementation 'org.eclipse.platform:org.eclipse.osgi:3.9.1.v20140110-1610'
+        // https://search.maven.org/artifact/org.eclipse.platform/org.eclipse.osgi.services
+        implementation 'org.eclipse.platform:org.eclipse.osgi.services:3.3.100.v20130513-1956'
+        // https://search.maven.org/artifact/org.eclipse.platform/org.eclipse.equinox.region
+        // Hint: equinoxRegionExportedPackageVersion = 1.1.0
+        implementation 'org.eclipse.platform:org.eclipse.equinox.region:1.1.101.v20130722-1314'
 
         // CQ4132 (PB CQ1887)
         // https://search.maven.org/artifact/org.easymock/easymock
@@ -39,6 +44,7 @@ dependencies {
         // CQ4129 (PB CQ3480)
         // https://search.maven.org/artifact/junit/junit
 //        testImplementation 'junit:junit:4.13.2'
+        implementation 'junit:junit:4.7'
         testImplementation 'junit:junit:4.7'
     }
 }

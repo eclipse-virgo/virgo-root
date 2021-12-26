@@ -10,6 +10,7 @@ ext {
     // these projects contain aspects
     aspectjProjects = [
             project(':util:org.eclipse.virgo.util.jmx'),
+            project(':test:org.eclipse.virgo.test.stubs'),
     ]
 }
 

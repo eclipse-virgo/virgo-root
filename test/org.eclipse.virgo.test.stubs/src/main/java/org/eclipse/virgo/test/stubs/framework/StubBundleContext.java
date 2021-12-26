@@ -55,7 +55,7 @@ public final class StubBundleContext implements BundleContext {
 
     private final Object bundleMonitor = new Object();
 
-    private final List<BundleListener> bundleListeners = new ArrayList<BundleListener>();
+    private final List<BundleListener> bundleListeners = new ArrayList<>();
 
     private final Object bundleListenersMonitor = new Object();
 

@@ -156,9 +156,7 @@ public final class StubConfiguration implements Configuration {
     /**
      * {@inheritDoc}
      */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void update(Dictionary<String, ?> properties) throws IOException {
+    public void update(Dictionary properties) throws IOException {
         assertNotNull(properties, "properties");
         synchronized (this.propertiesMonitor) {
             Dictionary<String, Object> copy = (Dictionary<String, Object>) shallowCopy(properties);
