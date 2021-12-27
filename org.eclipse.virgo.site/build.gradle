@@ -1,7 +1,8 @@
 apply plugin: eclipsebuild.UpdateSitePlugin
 
 updateSite {
-    extraResources = files('epl-v20.html', 'notice.html', 'p2.index')
+    // Virgo still has license version 1.0 - epl-v10.html
+    extraResources = files('epl-v10.html', 'notice.html', 'p2.index')
     signing { File unsignedFolder, File signedFolder ->
         if (gradle.taskGraph.hasTask(uploadUpdateSite)) {
             signWithEclipseService(signedFolder, unsignedFolder)
@@ -12,4 +13,41 @@ updateSite {
     mutateArtifactsXml { Node artifactsXml ->
         addExtraPropertiesToArtifactsXml(artifactsXml)
     }
+}
+
+dependencies {
+    // We build the bundles ourself with bundlor/bnd - don't use configuration.[localPlugin]
+    externalPlugin project(':util:org.eclipse.virgo.util.common')
+
+    localFeature project(':org.eclipse.virgo.site:org.eclipse.virgo.core')
+}
+
+private void signLocally(File unsignedFolder, File signedFolder) {
+    def unsignedPluginsDir = new File(unsignedFolder, "plugins")
+    def unsignedFeaturesDir = new File(unsignedFolder, "features")
+    def signedPluginsDir = new File(signedFolder, "plugins")
+    def signedFeaturesDir = new File(signedFolder, "features")
+
+    signedPluginsDir.mkdirs()
+    signedFeaturesDir.mkdirs()
+
+    File targetDir = signedPluginsDir
+    def signBundle = {
+        project.logger.info("Sign '${it.absolutePath}'")
+        project.ant.signjar(
+                verbose: 'true',
+                destDir: targetDir,
+                alias: 'EclipsePlugins',
+                jar: it,
+                keystore: project.findProject(':').file('gradle/config/signing/DevKeystore.ks'),
+                storepass: 'tooling',
+                keypass: 'tooling',
+                sigalg: 'SHA1withDSA',
+                digestalg: 'SHA1',
+                preservelastmodified: 'true')
+    }
+
+    unsignedPluginsDir.listFiles().each signBundle
+    targetDir = signedFeaturesDir
+    unsignedFeaturesDir.listFiles().each signBundle
 }
