@@ -3,6 +3,6 @@ kind: Pod
 spec:
   containers:
     - name: gradle
-      image: gradle:7.3.3-jdk11
+      image: gradle:7.3.3-jdk8
       command: ["tail", "-f", "/dev/null"]  # this or any command that is basically a noop is required, this is so that you don't overwrite the entrypoint of the base container
       imagePullPolicy: IfNotPresent
