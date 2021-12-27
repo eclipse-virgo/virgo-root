@@ -21,17 +21,13 @@ import org.eclipse.virgo.medic.eventlog.EventLogger;
 import org.eclipse.virgo.medic.eventlog.Level;
 import org.eclipse.virgo.medic.eventlog.LogEvent;
 import org.eclipse.virgo.medic.test.eventlog.MockEventLogger;
-import org.eclipse.virgo.repository.internal.eventlog.DynamicDelegationEventLogger;
 import org.eclipse.virgo.test.stubs.framework.StubBundleContext;
 import org.eclipse.virgo.test.stubs.support.ObjectClassFilter;
 
-
-/** 
- */
 public class DynamicDelegationEventLoggerTests {
     
 	@Test
-    public void dynamicDelegation() throws Exception {
+    public void dynamicDelegation() {
         StubBundleContext bundleContext = new StubBundleContext();
         bundleContext.addFilter(new ObjectClassFilter(EventLogger.class));
         

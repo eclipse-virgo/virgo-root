@@ -34,7 +34,7 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.commons.httpclient.HttpStatus;
+import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,6 @@ import org.eclipse.virgo.repository.configuration.RemoteRepositoryConfiguration;
 import org.eclipse.virgo.repository.configuration.StubRepositoryConfiguration;
 import org.eclipse.virgo.repository.internal.PersistentRepository;
 import org.eclipse.virgo.repository.internal.RepositoryLogEvents;
-import org.eclipse.virgo.repository.internal.remote.RemoteRepository;
 import org.eclipse.virgo.repository.management.RepositoryInfo;
 import org.eclipse.virgo.util.io.FileCopyUtils;
 import org.eclipse.virgo.util.io.NetUtils;

@@ -11,17 +11,19 @@
 
 package org.eclipse.virgo.repository.internal.remote;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.Header;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.eclipse.virgo.repository.configuration.RemoteRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 
 final class ArtifactDescriptorStoreWatcher {
@@ -42,17 +44,17 @@ final class ArtifactDescriptorStoreWatcher {
 
     static final class StoreUpdaterThread extends Thread {
 
+        private static final Logger LOGGER = LoggerFactory.getLogger(StoreUpdaterThread.class);
+
         private static final String RESPONSE_HEADER_ETAG = "Etag";
-        
-        private static final String REPONSE_HEADER_CONTENT_ENCODING = "Content-Encoding";
-        
+
+        private static final String RESPONSE_HEADER_CONTENT_ENCODING = "Content-Encoding";
+
         private static final String CONTENT_ENCODING_GZIP = "gzip";
 
         private static final String REQUEST_HEADER_IF_NONE_MATCH = "If-None-Match";
 
-        private static final Logger LOGGER = LoggerFactory.getLogger(StoreUpdaterThread.class);
-
-        private final HttpClient httpClient = new HttpClient();
+        private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
         private final long msUpdateInterval;
 
@@ -84,22 +86,23 @@ final class ArtifactDescriptorStoreWatcher {
             DescriptorStore descriptorStore = descriptorStoreFactory.recoverDescriptorStore();
 
             while (this.update) {
-                GetMethod getIndex = new GetMethod(this.repositoryUri);
+                HttpGet getIndex = new HttpGet(this.repositoryUri);
 
                 if (descriptorStore != null) {
-                    getIndex.addRequestHeader(REQUEST_HEADER_IF_NONE_MATCH, descriptorStore.getEtag());
+                    getIndex.addHeader(REQUEST_HEADER_IF_NONE_MATCH, descriptorStore.getEtag());
                 }
 
                 int responseCode;
                 try {
-                    responseCode = this.httpClient.executeMethod(getIndex);
+                    CloseableHttpResponse response = httpClient.execute(getIndex);
+                    responseCode = response.getStatusLine().getStatusCode();
                     if (this.countContiguousHttpClientFailures > 0) {
                         LOGGER.info(String.format("Remote repository '%s' re-accessed after failure.", this.repositoryName));
                         this.countContiguousHttpClientFailures = 0;
                     }
                     if (responseCode == HttpStatus.SC_OK || responseCode == HttpStatus.SC_NOT_MODIFIED) {
                         if (responseCode == HttpStatus.SC_OK) {
-                            descriptorStore = readNewDescriptorStore(getIndex);
+                            descriptorStore = readNewDescriptorStore(response);
                         }
                         this.mutableDepository.setDescriptorStore(descriptorStore);
                     } else {
@@ -134,18 +137,18 @@ final class ArtifactDescriptorStoreWatcher {
                 this.repositoryName));
         }
 
-        private String getETag(GetMethod getIndex) {
-            Header responseHeader = getIndex.getResponseHeader(RESPONSE_HEADER_ETAG);
+        private String getETag(CloseableHttpResponse response) {
+            Header responseHeader = response.getFirstHeader(RESPONSE_HEADER_ETAG);
             return responseHeader == null ? null : responseHeader.getValue();
         }
 
-        private DescriptorStore readNewDescriptorStore(GetMethod getDescriptorStore) {
+        private DescriptorStore readNewDescriptorStore(CloseableHttpResponse response) {
             try {
-                String etag = getETag(getDescriptorStore);
+                String etag = getETag(response);
                 
-                InputStream storeStream = getDescriptorStore.getResponseBodyAsStream();
+                InputStream storeStream = response.getEntity().getContent();
                 
-                Header contentEncodingResponseHeader = getDescriptorStore.getResponseHeader(REPONSE_HEADER_CONTENT_ENCODING);
+                Header contentEncodingResponseHeader = response.getFirstHeader(RESPONSE_HEADER_CONTENT_ENCODING);
                 if (contentEncodingResponseHeader != null && CONTENT_ENCODING_GZIP.equals(contentEncodingResponseHeader.getValue())) {
                     storeStream = new GZIPInputStream(storeStream);
                 }

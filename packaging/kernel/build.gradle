@@ -21,3 +21,11 @@ distributions {
         }
     }
 }
+
+tasks.register('publishVirgoKernel', PublishProduct) {
+    product = 'kernel'
+    productFileLocation = file("${projectDir}/publish_resources/products/${product}/${product}.product")
+    javaProfileLocation = file("${projectDir}/src/main/dist/configuration/java-server.profile")
+}
+
+distZip.dependsOn(['publishVirgoKernel'])

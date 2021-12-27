@@ -24,6 +24,9 @@ dependencies {
         implementation "ch.qos.logback:logback-core:${logbackVersion}"
         implementation "ch.qos.logback:logback-classic:${logbackVersion}"
 
+        implementation "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
+        implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+
         // Eclipse Kepler 4.3.2 (SR2) - local Maven mirror
         implementation "org.eclipse.platform:org.eclipse.osgi:${equinoxVersion}"
         implementation "org.eclipse.platform:org.eclipse.osgi.services:${osgiServicesVersion}"

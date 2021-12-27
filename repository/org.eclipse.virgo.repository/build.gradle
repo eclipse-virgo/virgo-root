@@ -1,0 +1,35 @@
+plugins {
+	id 'virgo.java-conventions'
+}
+
+project(':repository:org.eclipse.virgo.repository') {
+    dependencies {
+		implementation project(':util:org.eclipse.virgo.util.common')
+		implementation project(':util:org.eclipse.virgo.util.io')
+		implementation project(':util:org.eclipse.virgo.util.jmx')
+		implementation project(':util:org.eclipse.virgo.util.math')
+		implementation project(':util:org.eclipse.virgo.util.osgi')
+		implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
+		implementation project(':medic:org.eclipse.virgo.medic')
+
+        implementation 'org.slf4j:slf4j-api'
+        implementation 'org.eclipse.platform:org.eclipse.osgi'
+
+		implementation 'org.apache.httpcomponents:httpcore'
+		implementation 'org.apache.httpcomponents:httpclient'
+
+//		testimplementation group: 'org.easymock', name: 'easymock', version: easymockVersion
+
+		testImplementation project(':medic:org.eclipse.virgo.medic.test')
+		testImplementation project(':test:org.eclipse.virgo.test.stubs')
+//		testImplementation group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.codec', version: commonsCodecVersion, ext: "jar"
+//		testImplementation group: 'org.eclipse.virgo.mirrored', name: 'org.apache.commons.logging', version: commonsLoggingVersion, ext: "jar"
+
+//		testRuntime "org.aspectj:aspectjrt:${project.aspectjVersion}"
+//
+//		if (System.properties['weaving.enabled'] == 'true') {
+//            aspectpath project(':medic:org.eclipse.virgo.medic')
+//            aspectpath project(':util:org.eclipse.virgo.util.jmx')
+//        }
+	}
+}
