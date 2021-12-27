@@ -4,6 +4,22 @@ plugins {
     id "io.freefair.aspectj" version "6.3.0" apply false
 }
 
+apply plugin: eclipsebuild.BuildDefinitionPlugin
+
+eclipseBuild {
+    defaultEclipseVersion = '43'
+
+    targetPlatform {
+        // https://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700/
+        eclipseVersion = '43'
+        targetDefinition = file('eclipse-kepler.target')
+        versionMapping = [
+                'org.eclipse.core.runtime'           : '3.10.0',
+                'org.junit'                          : '4.11.0',
+        ] /*+ eclipseVersionAgnosticDependencies*/
+    }
+}
+
 version = '3.7.5-SNAPSHOT'
 
 ext {

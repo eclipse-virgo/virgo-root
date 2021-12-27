@@ -1,1 +1,1 @@
-apply plugin: FeaturePlugin
+apply plugin: eclipsebuild.FeaturePlugin

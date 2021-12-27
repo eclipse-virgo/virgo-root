@@ -1,0 +1,15 @@
+apply plugin: eclipsebuild.UpdateSitePlugin
+
+updateSite {
+    extraResources = files('epl-v20.html', 'notice.html', 'p2.index')
+    signing { File unsignedFolder, File signedFolder ->
+        if (gradle.taskGraph.hasTask(uploadUpdateSite)) {
+            signWithEclipseService(signedFolder, unsignedFolder)
+        } else {
+            signLocally(unsignedFolder, signedFolder)
+        }
+    }
+    mutateArtifactsXml { Node artifactsXml ->
+        addExtraPropertiesToArtifactsXml(artifactsXml)
+    }
+}

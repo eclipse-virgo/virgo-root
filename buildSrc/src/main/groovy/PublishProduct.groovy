@@ -16,7 +16,7 @@ abstract class PublishProduct extends DefaultTask {
     abstract public Property<File> getJavaProfileLocation();
 
     @TaskAction
-    public void resolveLatestVersion() {
+    public void publishProduct() {
         System.out.println("TODO build " + getProduct().get());
 
 //        File repositoryDir = project.file("${project.rootProject.projectDir}/org.eclipse.virgo.site/build/repository/")
