@@ -11,6 +11,6 @@ class Constants {
     }
 
     static URL getEclipsePhotonSdkDownloadUrl() {
-        return new URL("https://ftp.halifax.rwth-aachen.de/eclipse/technology/epp/downloads/release/photon/R/eclipse-java-photon-R-linux-gtk-x86_64.tar.gz")
+        return new URL("https://archive.eclipse.org/technology/epp/downloads/release/photon/R/eclipse-java-photon-R-linux-gtk-x86_64.tar.gz")
     }
 }
