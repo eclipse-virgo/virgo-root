@@ -56,7 +56,7 @@ ext {
             project(':util:org.eclipse.virgo.util.common'),
             project(':util:org.eclipse.virgo.util.env'),
             project(':util:org.eclipse.virgo.util.io'),
-//            project(':util:org.eclipse.virgo.util.jmx'),
+            project(':util:org.eclipse.virgo.util.jmx'),
             project(':util:org.eclipse.virgo.util.math'),
 //            project(':util:org.eclipse.virgo.util.osgi'),
 //            project(':util:org.eclipse.virgo.util.osgi.manifest'),
@@ -143,7 +143,7 @@ ext {
 
     // these projects contain aspects
     aspectjProjects = [
-//            project(':util:org.eclipse.virgo.util.jmx'),
+            project(':util:org.eclipse.virgo.util.jmx'),
 
 //            project(':test:org.eclipse.virgo.test.stubs'),
 
@@ -671,20 +671,20 @@ configure(aspectjProjects) {
     apply plugin: "io.freefair.aspectj"
 
     dependencies {
-        compile 'org.aspectj:aspectjrt'
+        implementation 'org.aspectj:aspectjrt'
     }
 
-    sourceSets.main.aspectj.srcDir "src/main/java"
-    sourceSets.main.java.srcDirs = files()
+//    sourceSets.main.aspectj.srcDir "src/main/java"
+//    sourceSets.main.java.srcDirs = files()
 
-    sourceSets.test.aspectj.srcDir "src/test/java"
-    sourceSets.test.java.srcDirs = files()
+//    sourceSets.test.aspectj.srcDir "src/test/java"
+//    sourceSets.test.java.srcDirs = files()
 
-    compileAspectj.ajcOptions.outxmlfile = "META-INF/aop.xml"
+//    compileAspectj.ajcOptions.outxmlfile = "META-INF/aop.xml"
 
-    aspectj {
-        version = aspectjVersion
-    }
+//    aspectj {
+//        version = aspectjVersion
+//    }
 }
 
 configure(wovenProjects) {
