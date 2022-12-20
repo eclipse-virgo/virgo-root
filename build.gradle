@@ -57,7 +57,7 @@ ext {
             project(':util:org.eclipse.virgo.util.env'),
 //            project(':util:org.eclipse.virgo.util.io'),
 //            project(':util:org.eclipse.virgo.util.jmx'),
-//            project(':util:org.eclipse.virgo.util.math'),
+            project(':util:org.eclipse.virgo.util.math'),
 //            project(':util:org.eclipse.virgo.util.osgi'),
 //            project(':util:org.eclipse.virgo.util.osgi.manifest'),
 //            project(':util:org.eclipse.virgo.util.parser.launcher'),
