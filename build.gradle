@@ -54,7 +54,7 @@ ext {
 //            project(':kernel:org.eclipse.virgo.kernel.equinox.extensions'),
 
             project(':util:org.eclipse.virgo.util.common'),
-//            project(':util:org.eclipse.virgo.util.env'),
+            project(':util:org.eclipse.virgo.util.env'),
 //            project(':util:org.eclipse.virgo.util.io'),
 //            project(':util:org.eclipse.virgo.util.jmx'),
 //            project(':util:org.eclipse.virgo.util.math'),

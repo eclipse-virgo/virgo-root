@@ -7,7 +7,7 @@
 // virgo/bundles
 
 include ':util:org.eclipse.virgo.util.common'
-//include ':util:org.eclipse.virgo.util.env'
+include ':util:org.eclipse.virgo.util.env'
 //include ':util:org.eclipse.virgo.util.io'
 //include ':util:org.eclipse.virgo.util.jmx' // contains AspectJ code
 //include ':util:org.eclipse.virgo.util.math'
