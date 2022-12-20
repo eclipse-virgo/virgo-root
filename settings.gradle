@@ -13,8 +13,8 @@ include ':util:org.eclipse.virgo.util.jmx' // contains AspectJ code
 include ':util:org.eclipse.virgo.util.math'
 //include ':util:org.eclipse.virgo.util.osgi'
 //include ':util:org.eclipse.virgo.util.osgi.manifest'
-//include ':util:org.eclipse.virgo.util.parser.launcher'
-//include ':util:org.eclipse.virgo.util.parser.manifest'
+include ':util:org.eclipse.virgo.util.parser.launcher'
+include ':util:org.eclipse.virgo.util.parser.manifest'
 
 //include ':util:org.eclipse.virgo.util.integrationtest'
 

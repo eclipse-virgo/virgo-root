@@ -133,15 +133,15 @@ public class RecoveringManifestParserTests extends TestCase {
 
         ManifestParser mParser = new RecoveringManifestParser();
 
-        mParser.parse("Manifest-Version: 1.0\nName: " + new Character((char) 257));
+        mParser.parse("Manifest-Version: 1.0\nName: " + (char) 257);
 
         mParser = new RecoveringManifestParser();
 
-        mParser.parse("Manifest-Version: 1.0\n" + new Character((char) 257) + "ame: value");
+        mParser.parse("Manifest-Version: 1.0\n" + (char) 257 + "ame: value");
 
         mParser = new RecoveringManifestParser();
 
-        mParser.parse("Manifest-Version: 1.0\nN" + new Character((char) 257) + "ame: value");
+        mParser.parse("Manifest-Version: 1.0\nN" + (char) 257 + "ame: value");
 
     }
 

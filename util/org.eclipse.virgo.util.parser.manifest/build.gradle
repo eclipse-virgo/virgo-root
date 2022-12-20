@@ -1,0 +1,4 @@
+compileTestJava {
+    // avoid - error: unmappable character (0xBD) for encoding US-ASCII
+    options.encoding = "UTF-8"
+}
