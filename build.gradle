@@ -58,7 +58,7 @@ ext {
             project(':util:org.eclipse.virgo.util.io'),
             project(':util:org.eclipse.virgo.util.jmx'),
             project(':util:org.eclipse.virgo.util.math'),
-//            project(':util:org.eclipse.virgo.util.osgi'),
+            project(':util:org.eclipse.virgo.util.osgi'),
 //            project(':util:org.eclipse.virgo.util.osgi.manifest'),
             project(':util:org.eclipse.virgo.util.parser.launcher'),
             project(':util:org.eclipse.virgo.util.parser.manifest'),
@@ -454,10 +454,9 @@ configure(
 
     repositories {
         mavenCentral()
-        // Gemini Web and Tomcat dependencies aren't at Maven Central
-        ivy {
-            url "https://build.eclipse.org/rt/virgo/ivy/bundles/release/"
-            patternLayout { artifact "[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" }
+        // Some dependencies aren't at Maven Central
+        flatDir {
+            dirs '3rd-party/lib'
         }
     }
 

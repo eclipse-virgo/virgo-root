@@ -34,7 +34,7 @@ public final class ServiceRegistrationTracker {
     /**
      * Tracks the supplied {@link ServiceRegistration}. This <code>ServiceRegistration</code> will be
      * {@link ServiceRegistration#unregister unregistered} during {@link #unregisterAll()} or 
-     * {@link #unregister()}.
+     * {@link #unregister(ServiceRegistration)}.
      * 
      * @param registration the <code>ServiceRegistration</code> to track.
      */
