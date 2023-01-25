@@ -265,7 +265,7 @@ public class StringUtilsTests extends TestCase {
 	public void testQuoteIfString() {
 		assertEquals("'myString'", StringUtils.quoteIfString("myString"));
 		assertEquals("''", StringUtils.quoteIfString(""));
-		assertEquals(new Integer(5), StringUtils.quoteIfString(new Integer(5)));
+		assertEquals(Integer.valueOf(5), StringUtils.quoteIfString(Integer.valueOf(5)));
 		assertNull(StringUtils.quoteIfString(null));
 	}
 

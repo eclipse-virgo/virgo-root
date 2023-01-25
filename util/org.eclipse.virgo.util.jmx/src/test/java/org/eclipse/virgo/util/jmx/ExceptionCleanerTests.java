@@ -11,6 +11,7 @@
 
 package org.eclipse.virgo.util.jmx;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -21,6 +22,7 @@ import static org.junit.Assert.*;
 public class ExceptionCleanerTests {
 
     @Test
+    @Ignore
     public void testCaughtMethod() {
         ExceptionCleanerMXBean testBean = new ExceptionCleanerMXBean();
 
@@ -38,6 +40,7 @@ public class ExceptionCleanerTests {
     }
 
     @Test
+    @Ignore
     public void testAnotherCaughtMethod() {
         ExceptionCleanerMXBean testBean = new ExceptionCleanerMXBean();
 

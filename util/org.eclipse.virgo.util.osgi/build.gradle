@@ -1,5 +1,5 @@
 dependencies {
-    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    implementation fileTree(dir: '../../3rd-party/lib', includes: ['org.eclipse.osgi-3.9.1.v20140110-1610.jar'])
 
     implementation project(':util:org.eclipse.virgo.util.common')
     implementation project(':util:org.eclipse.virgo.util.parser.manifest')

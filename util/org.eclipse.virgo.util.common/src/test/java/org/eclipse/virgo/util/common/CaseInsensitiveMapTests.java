@@ -41,7 +41,7 @@ public class CaseInsensitiveMapTests {
     public void testGet() {
         CaseInsensitiveMap<Integer> m = new CaseInsensitiveMap<Integer>();
         m.put("oNe", 1);
-        assertEquals(new Integer(1), m.get("oNe"));
+        assertEquals(Integer.valueOf(1), m.get("oNe"));
         assertEquals(null, m.get("two"));
         assertEquals(null, m.get(null));
     }
@@ -102,11 +102,11 @@ public class CaseInsensitiveMapTests {
         assertEquals(2, e.size());
         for (Entry<String, Integer> entry : e) {
             if ("Two".equals(entry.getKey())) {
-                assertEquals(new Integer(2), entry.getValue());
+                assertEquals(Integer.valueOf(2), entry.getValue());
                 entry.setValue(3);
             }
         }
-        assertEquals(new Integer(3), m.get("tWO"));
+        assertEquals(Integer.valueOf(3), m.get("tWO"));
         assertTrue(m.containsKey("one"));
         for (Entry<String, Integer> entry : e) {
             if ("oNe".equals(entry.getKey())) {
