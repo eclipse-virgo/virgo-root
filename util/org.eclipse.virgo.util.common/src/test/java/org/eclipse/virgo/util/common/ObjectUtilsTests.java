@@ -168,19 +168,19 @@ public final class ObjectUtilsTests extends TestCase {
 
 	public void testHashCodeWithDouble() {
 		double dbl = 9830.43;
-		int expected = (new Double(dbl)).hashCode();
+		int expected = (Double.valueOf(dbl)).hashCode();
 		assertEquals(expected, ObjectUtils.hashCode(dbl));
 	}
 
 	public void testHashCodeWithFloat() {
 		float flt = 34.8f;
-		int expected = (new Float(flt)).hashCode();
+		int expected = (Float.valueOf(flt)).hashCode();
 		assertEquals(expected, ObjectUtils.hashCode(flt));
 	}
 
 	public void testHashCodeWithLong() {
 		long lng = 883l;
-		int expected = (new Long(lng)).hashCode();
+		int expected = (Long.valueOf(lng)).hashCode();
 		assertEquals(expected, ObjectUtils.hashCode(lng));
 	}
 
@@ -491,7 +491,7 @@ public final class ObjectUtilsTests extends TestCase {
 	}
 
 	public void testNullSafeToStringWithObjectArray() {
-		Object[] array = {"Han", new Long(43)};
+		Object[] array = {"Han", Long.valueOf(43)};
 		assertEquals("{Han, 43}", ObjectUtils.nullSafeToString(array));
 	}
 
