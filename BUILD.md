@@ -7,9 +7,15 @@ Getting the Code
 The Virgo source code is managed with Git and hosted at the Eclipse Foundation.
 All Virgo related repositories are listed [here](https://wiki.eclipse.org/Virgo/Source#Virgo_git_Repositories).
 
-    $ git clone git://git.eclipse.org/gitroot/virgo/org.eclipse.virgo.root.git virgo
-    $ cd virgo
-    $ git submodule update --init
+```shell
+git clone git@github.com:eclipse-virgo/virgo-root.git virgo-with-submodules
+```
+
+Inside the repository, run:
+
+```shell
+git submodule update --init
+```
 
 For the impatient
 -----------------
