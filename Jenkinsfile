@@ -13,6 +13,10 @@ spec:
     - cat
     tty: true
 
+    env:
+    - name: GRADLE_USER_HOME
+      value: "/tmp/gradle"
+
     resources:
       limits:
         memory: "2Gi"
