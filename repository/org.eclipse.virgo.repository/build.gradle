@@ -1,7 +1,7 @@
 import org.gradle.plugins.ide.eclipse.model.AccessRule
 
 dependencies {
-    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse", name: "osgi", version: equinoxVersion
 
     implementation 'org.apache.httpcomponents:httpclient'
 

@@ -1,16 +1,30 @@
+configurations {
+    implementation {
+        exclude group: 'org.eclipse.virgo.util'
+        exclude group: 'org.eclipse.virgo.mirrored'
+    }
+}
+
+
 dependencies {
     aspect project(':medic:org.eclipse.virgo.medic')
     aspect project(':util:org.eclipse.virgo.util.jmx')
 
-    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse", name: "osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
 
-    implementation group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+//    implementation group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion, configuration: "compile", ext: "jar"
+    implementation group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.core", version: geminiWebVersion
 
     implementation project(':util:org.eclipse.virgo.util.math')
     implementation project(':util:org.eclipse.virgo.util.io')
     implementation project(':util:org.eclipse.virgo.util.osgi.manifest')
     implementation project(':repository:org.eclipse.virgo.repository')
     implementation project(':kernel:org.eclipse.virgo.kernel.services')
+//    implementation 'org.eclipse.ecf:javax.servlet:3.1.0.v201410161800'
 
     testImplementation project(':medic:org.eclipse.virgo.medic.test')
+
+    
 }
+
+

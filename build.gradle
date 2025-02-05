@@ -450,6 +450,8 @@ configure(
 
     repositories {
         mavenCentral()
+        maven { url=uri("https://download.eclipse.org/gemini/mvn/") }
+        
         // Gemini Web and Tomcat dependencies aren't at Maven Central
         ivy {
             url "https://build.eclipse.org/rt/virgo/ivy/bundles/release/"
