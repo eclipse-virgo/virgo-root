@@ -4,15 +4,22 @@ dependencies {
 
     implementation 'javax.servlet:javax.servlet-api'
     implementation 'javax.ejb:javax.ejb-api:3.2.2'
-    compile group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
+//  compile group: "org.eclipse.virgo.mirrored", name: "javax.validation", version: javaxValidationVersion, configuration: "compile", ext: "jar"
+    implementation 'javax.validation:validation-api:1.1.0.Final'
 
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.finder", version: apacheXBeanFinderVersion, configuration: "compile", ext: "jar"
-
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.catalina", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.util.scan", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.core", version: apacheOpenejbCoreVersion, configuration: "compile", ext: "jar"
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.jee", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openejb.loader", version: apacheOpenejbVersion, configuration: "compile", ext: "jar"
+    // compile group: "org.eclipse.virgo.mirrored", name: "org.apache.xbean.finder", version: apacheXBeanFinderVersion, configuration: "compile", ext: "jar"
+    implementation files('../../local-dependencies/org.apache.catalina_8.5.16.jar')
+    implementation files('../../local-dependencies/org.apache.tomcat.api_8.5.16.jar')
+    implementation files('../../local-dependencies/org.apache.tomcat.util.scan_8.5.16.jar')
+    implementation files('../../local-dependencies/org.apache.openejb.core_4.5.2.virgo-3.jar')
+    implementation files('../../local-dependencies/org.apache.openejb.jee_4.5.2.jar')
+    implementation files('../../local-dependencies/org.apache.openejb.loader_4.5.2.jar')
+    implementation files('local-dependencies/org.apache.xbean.finder_3.12.0.v201304201405.jar')
     compile project(':medic:org.eclipse.virgo.medic')
 }

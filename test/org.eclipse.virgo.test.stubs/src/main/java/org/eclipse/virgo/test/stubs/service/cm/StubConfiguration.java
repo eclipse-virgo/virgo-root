@@ -158,10 +158,10 @@ public final class StubConfiguration implements Configuration {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void update(Dictionary<String, ?> properties) throws IOException {
+    public void update(Dictionary properties) throws IOException {
         assertNotNull(properties, "properties");
         synchronized (this.propertiesMonitor) {
-            Dictionary<String, Object> copy = (Dictionary<String, Object>) shallowCopy(properties);
+            Dictionary copy = shallowCopy(properties);
             updateSystemProperties(copy);
             this.properties = copy;
         }
@@ -213,7 +213,7 @@ public final class StubConfiguration implements Configuration {
         return this.deleted;
     }
 
-    private void updateSystemProperties(Dictionary<String, Object> properties) {
+    private void updateSystemProperties(Dictionary properties) {
         properties.put(Constants.SERVICE_PID, this.pid);
         if (this.factoryPid == null) {
             properties.remove(ConfigurationAdmin.SERVICE_FACTORYPID);
