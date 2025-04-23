@@ -3,6 +3,6 @@ dependencies {
     implementation 'javax.persistence:javax.persistence-api'
 
     implementation 'javax.enterprise:cdi-api'
-    compile group: "org.eclipse.virgo.mirrored", name: "org.glassfish.com.sun.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.apache.openwebbeans.impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
+    compile group: "org.glassfish", name: "javax.faces", version: glassfishComSunFacesVersion, configuration: "compile", ext: "jar"
+    compile group: "org.apache.openwebbeans", name: "openwebbeans-impl", version: apacheOpenwebbeansVersion, configuration: "compile", ext: "jar"
 }

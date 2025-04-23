@@ -3,4 +3,11 @@ dependencies {
 
     compile project(':medic:org.eclipse.virgo.medic')
     compile project(':web:org.eclipse.virgo.web.enterprise.appdeployer')
+    implementation files('../../local-dependencies/org.apache.catalina_8.5.16.jar')
+    implementation files('../../local-dependencies/org.apache.tomcat.api_8.5.16.jar')
+    implementation files('../../local-dependencies/org.apache.tomcat.util.scan_8.5.16.jar')
+    implementation files('../../local-dependencies/org.apache.openejb.core_4.5.2.virgo-3.jar')
+    implementation files('../../local-dependencies/org.apache.openejb.jee_4.5.2.jar')
+    implementation files('../../local-dependencies/org.apache.openejb.loader_4.5.2.jar')
+    // implementation files('../../local-dependencies/org.apache.xbean.finder_3.12.0.v201304201405.jar')
 }

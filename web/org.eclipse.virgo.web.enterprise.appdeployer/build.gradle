@@ -20,6 +20,6 @@ dependencies {
     implementation files('../../local-dependencies/org.apache.openejb.core_4.5.2.virgo-3.jar')
     implementation files('../../local-dependencies/org.apache.openejb.jee_4.5.2.jar')
     implementation files('../../local-dependencies/org.apache.openejb.loader_4.5.2.jar')
-    implementation files('local-dependencies/org.apache.xbean.finder_3.12.0.v201304201405.jar')
+    implementation files('../../local-dependencies/org.apache.xbean.finder_3.12.0.v201304201405.jar')
     compile project(':medic:org.eclipse.virgo.medic')
 }
