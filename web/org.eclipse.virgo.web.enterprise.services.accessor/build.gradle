@@ -1,8 +1,8 @@
 dependencies {
     implementation 'javax.servlet:javax.servlet-api'
 
-    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
-    compile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
+    compile group: "org.eclipse", name: "osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    implementation group: 'org.eclipse.birt.runtime.3_7_1', name: 'org.eclipse.osgi.services' , version: osgiServicesVersion
     compile group: "org.eclipse.gemini", name: "org.eclipse.gemini.web.tomcat", version: geminiWebVersion, configuration: "compile", ext: "jar"
 
     compile group: "org.eclipse.virgo.mirrored", name: "org.apache.tomcat.api", version: apacheCatalinaVersion, configuration: "compile", ext: "jar"

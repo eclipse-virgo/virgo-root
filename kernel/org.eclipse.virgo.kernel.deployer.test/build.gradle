@@ -26,7 +26,7 @@ dependencies {
     testRuntimeOnly 'org.slf4j:jcl-over-slf4j'
     testRuntimeOnly 'org.aspectj:aspectjrt'
 
-    testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
+    testCompile group: "org.eclipse", name: "osgi", version: equinoxVersion, configuration: "compile", ext: "jar"
     testCompile group: "org.eclipse.virgo.mirrored", name: "org.eclipse.osgi.services", version: osgiServicesVersion, configuration: "compile", ext: "jar"
 
     testRuntime group: "org.eclipse.virgo.mirrored", name: "org.eclipse.equinox.console", version: equinoxConsoleVersion, configuration: "compile", ext: "jar"
